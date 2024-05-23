@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>me.flyray.bsin</groupId>
+        <artifactId>bsin-paas-dependencies</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../bsin-paas-dependencies/pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>me.flyray.bsin</groupId>
+    <artifactId>bsin-server-scaffold</artifactId>
+    <packaging>pom</packaging>
+    <name>bsin-server-scaffold</name>
+    <version>2.0.0-SNAPSHOT</version>
+    <description>bsin-paas平台：脚手架</description>
+
+    <modules>
+        <module>bsin-server-scaffold-dubbo</module>
+        <module>bsin-server-scaffold-sofa</module>
+        <module>bsin-server-scaffold-http</module>
+<!--        <module>bsin-server-scaffold-websocket</module>-->
+    </modules>
+
+    <properties>
+        <java.version>11</java.version>
+        <upms.version>1.0.0-SNAPSHOT</upms.version>
+        <bsin.paas.starter>1.0.0-SNAPSHOT</bsin.paas.starter>
+        <lombok.version>1.18.26</lombok.version>
+        <maven-compiler-plugin.verison>3.11.0</maven-compiler-plugin.verison>
+    </properties>
+
+    <dependencies>
+        <!--<dependency>
+            <groupId>me.flyray.bsin</groupId>
+            <artifactId>bsin-paas-starter</artifactId>
+            <version>${bsin.paas.starter}</version>
+        </dependency>-->
+
+    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.verison}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>UTF-8</encoding>
+                    <compilerArguments>
+                        <!-- 编译时使用 lib 目录下的外部 jar 包 -->
+                        <extdirs>${project.basedir}/doc/lib</extdirs>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.ProductAppMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.SysProductApp">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="productId" column="product_id" jdbcType="VARCHAR"/>
+            <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, product_id,app_id
+    </sql>
+
+    <resultMap id="appInfo" type="me.flyray.bsin.domain.entity.SysApp">
+        <id column="app_id" jdbcType="VARCHAR" property="appId" />
+        <result column="app_code" jdbcType="VARCHAR" property="appCode" />
+        <result column="app_name" jdbcType="VARCHAR" property="appName" />
+        <result column="logo" jdbcType="VARCHAR" property="logo" />
+        <result column="url" jdbcType="VARCHAR" property="url" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
+        <result column="theme" jdbcType="VARCHAR" property="theme" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="tenantAppType" jdbcType="INTEGER" property="tenantAppType" />
+        <result column="base_flag" jdbcType="VARCHAR" property="baseFlag" />
+        <result column="app_Language" jdbcType="INTEGER" property="appLanguage" />
+    </resultMap>
+
+    <insert id="insert" parameterType="me.flyray.bsin.domain.entity.SysProductApp">
+        insert into sys_product_app (id, product_id,
+                                     app_id, base_flag, biz_role_type)
+        values (#{id,jdbcType=VARCHAR},
+                #{productId,jdbcType=VARCHAR},
+                #{appId,jdbcType=VARCHAR},
+                #{baseFlag,jdbcType=VARCHAR},
+                #{bizRoleType,jdbcType=VARCHAR})
+    </insert>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        DELETE FROM sys_product_app
+        WHERE product_id = #{productId} and app_id = #{appId}
+    </delete>
+
+    <select id="selectListByProductId"  resultMap="appInfo">
+        select
+        pa.app_id,pa.product_id, pa.base_flag,pa.biz_role_type,
+        a.app_id,
+        a.app_code, a.app_name, a.logo, a.url, a.status, a.remark, a.create_by, a.create_time, a.update_by,
+        a.update_time, a.theme, a.app_Language
+        from sys_product_app pa left join sys_app a on pa.app_id = a.app_id
+        <where>
+            <if test="productId != null and productId != ''">
+                and pa.product_id = #{productId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectListByProductCode"  resultType="java.lang.String">
+        select
+        app_id
+        from sys_product_app left join sys_product  on sys_product_app.product_id = sys_product.product_id
+        <where>
+            <if test="productCode != null and productCode != ''">
+                and sys_product.product_code = #{productCode}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPageList"  resultMap="appInfo">
+        select
+        pa.app_id,pa.product_id, pa.base_flag,pa.biz_role_type,
+        a.app_id,
+        a.app_code, a.app_name, a.logo, a.url, a.status, a.remark, a.create_by, a.create_time, a.update_by,
+        a.update_time, a.theme, a.app_Language
+        from sys_product_app pa left join sys_app a on pa.app_id = a.app_id
+        <where>
+            <if test="productId != null and productId != ''">
+                and pa.product_id = #{productId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByProductIdAndAppId"  resultMap="BaseResultMap">
+        select
+            id, product_id,app_id
+        from sys_product_app
+        where product_id = #{productId} and app_id = #{appId}
+    </select>
+
+</mapper>

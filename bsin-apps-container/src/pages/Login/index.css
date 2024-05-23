@@ -1,0 +1,25 @@
+.image {
+    width: 100%;
+    height: 300px;
+    grid-column: 1/2;
+    grid-row: 1/2;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.5s;
+}
+
+.img1 {
+    transform: translate(0, -50px);
+}
+
+.img2 {
+    transform: scale(0.4, 0.5);
+}
+
+.img3 {
+    transform: scale(0.3) rotate(-20deg);
+}
+
+.image.show {
+    opacity: 1;
+    transform: none;
+}

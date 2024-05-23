@@ -1,0 +1,9 @@
+# Goerli testnet token address in wallet account
+accountTokenAddress: "0x5FDE75e7df280316E1c8763AcFBA5a275bbEfA16"
+# erc20 token contract address
+erc20ContractAddress: "0x4841E7f371D31ccf29D0BaaA0aE870d2D6597BF6"
+privateKey: "b9dc3ace7375b77d1cb157b3fcd1554f7f8fb5e34a39e39ad60a12bf8dae3a2a"
+# address to receive token （mpc钱包）
+toAddress: "0x2e9e18937879adAA27fccD3056Dc7C687a564e23"
+# Ethereum RPC API
+ethereumRpcApi: https://data-seed-prebsc-1-s2.bnbchain.org:8545

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.TaskMapper">
+
+    <resultMap id="taskInfoMap" type="me.flyray.bsin.domain.entity.Task">
+        <id property="id" column="ID_" jdbcType="VARCHAR"/>
+        <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+        <result property="owner" column="OWNER_" jdbcType="VARCHAR"/>
+        <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR"/>
+        <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
+        <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR"/>
+        <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP"/>
+        <result property="processDefinitionName" column="procefName" jdbcType="VARCHAR"/>
+        <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
+        <result property="delegation" column="DELEGATION_" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="taskHistoricInfoMap" type="me.flyray.bsin.domain.entity.Task">
+        <id property="id" column="ID_" jdbcType="VARCHAR"/>
+        <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+        <result property="owner" column="OWNER_" jdbcType="VARCHAR"/>
+        <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR"/>
+        <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
+        <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR"/>
+        <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP"/>
+        <result property="processDefinitionName" column="procefName" jdbcType="VARCHAR"/>
+        <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
+        <result property="delegation" column="DELEGATION_" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="taskInfo">
+        a.ID_,a.NAME_,a.OWNER_,a.ASSIGNEE_,a.PROC_INST_ID_,PROC_DEF_ID_,a.CREATE_TIME_,b.NAME_ as procefName,a.PRIORITY_,a.DELEGATION_ ,a.TENANT_ID_
+    </sql>
+
+    <sql id="taskHistoricInfo">
+        a.ID_,a.NAME_,a.OWNER_,a.ASSIGNEE_,a.PROC_INST_ID_,PROC_DEF_ID_,a.START_TIME_,a.END_TIME_,b.NAME_ as procefName,a.PRIORITY_,a.DELEGATION_
+    </sql>
+
+    <select id="selectTasksByUser"
+            parameterType="map" resultMap="taskInfoMap">
+        select
+        <include refid="taskInfo"/>
+        from ACT_RU_TASK a
+        LEFT JOIN ACT_RE_PROCDEF b ON a.PROC_DEF_ID_ = b.ID_
+        where a.SUSPENSION_STATE_ = 1 and a.ASSIGNEE_ = #{assignee} and a.TENANT_ID_ = #{tenantId}
+        <if test="owner != null and owner != ''">
+            and a.OWNER_ like concat('%',#{owner},'%')
+        </if>
+        order by
+        a.PRIORITY_ desc,
+        a.CREATE_TIME_ desc
+    </select>
+
+    <select id="selectTasks"
+            parameterType="map" resultMap="taskInfoMap">
+        select
+        <include refid="taskInfo"/>
+        from ACT_RU_TASK a
+        LEFT JOIN ACT_RE_PROCDEF b ON a.PROC_DEF_ID_ = b.ID_
+        <where>
+            <if test="processInstanceId != null and processInstanceId != ''">
+                and PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR}
+            </if>
+            <if test="processDefinitionName != null and processDefinitionName != ''">
+                and b.NAME_ like concat('%',#{processDefinitionName},'%')
+            </if>
+            <if test="owner != null and owner != ''">
+                and OWNER_ like concat('%',#{owner},'%')
+            </if>
+            <if test="assignee != null and assignee != ''">
+                and ASSIGNEE_ like concat('%',#{assignee},'%')
+            </if>
+            <if test="name != null and name != ''">
+                and NAME_ like concat('%',#{name},'%')
+            </if>
+        </where>
+        order by
+        PRIORITY_ desc,
+        CREATE_TIME_ desc
+    </select>
+
+    <select id="selectHistoricTasks"
+            parameterType="map" resultMap="taskHistoricInfoMap">
+        select
+        <include refid="taskHistoricInfo"/>
+        from ACT_HI_TASKINST a
+        LEFT JOIN ACT_RE_PROCDEF b ON a.PROC_DEF_ID_ = b.ID_
+        <where>
+            <if test="processInstanceId != null and processInstanceId != ''">
+                and PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR}
+            </if>
+            <if test="processDefinitionName != null and processDefinitionName != ''">
+                and b.NAME_ like concat('%',#{processDefinitionName},'%')
+            </if>
+            <if test="owner != null and owner != ''">
+                and OWNER_ like concat('%',#{owner},'%')
+            </if>
+            <if test="assignee != null and assignee != ''">
+                and ASSIGNEE_ like concat('%',#{assignee},'%')
+            </if>
+            <if test="name != null and name != ''">
+                and NAME_ like concat('%',#{name},'%')
+            </if>
+        </where>
+        order by END_TIME_ desc
+    </select>
+</mapper>

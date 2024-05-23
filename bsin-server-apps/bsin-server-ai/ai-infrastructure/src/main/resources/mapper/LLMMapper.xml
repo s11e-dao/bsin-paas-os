@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.LLMMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.LLMParam">
+        <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+        <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="proxyUrl" column="proxy_url" jdbcType="VARCHAR"/>
+        <result property="proxyPort" column="proxy_port" jdbcType="VARCHAR"/>
+        <result property="apiBaseUrl" column="api_base_url" jdbcType="VARCHAR"/>
+        <result property="enableSearch" column="enable_search" jdbcType="VARCHAR"/>
+        <result property="streaming" column="streaming" jdbcType="BOOLEAN"/>
+        <result property="apiKey" column="api_key" jdbcType="VARCHAR"/>
+        <result property="secretKey" column="secret_key" jdbcType="VARCHAR"/>
+        <result property="temperature" column="temperature" jdbcType="DECIMAL"/>
+        <result property="maxRespTokens" column="max_resp_tokens" jdbcType="INTEGER"/>
+        <result property="maxRequestTokens" column="max_request_tokens" jdbcType="INTEGER"/>
+        <result property="maxMessages" column="max_messages" jdbcType="INTEGER"/>
+        <result property="maxSummaryMessages" column="max_summary_messages" jdbcType="INTEGER"/>
+        <result property="coverImage" column="cover_image" jdbcType="VARCHAR"/>
+        <result property="accessAuthority" column="access_authority" jdbcType="VARCHAR"/>
+        <result property="defaultFlag" column="default_flag" jdbcType="VARCHAR"/>
+        <result property="editable" column="editable" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no
+        ,max_summary_messages,enable_search,streaming,default_flag,editable,secret_key
+        ,proxy_url,proxy_port,max_resp_tokens,max_request_tokens,max_messages
+        ,tenant_id,merchant_no,customer_no,temperature,api_key,api_base_url,
+        ,type,cover_image,access_authority,`status`,create_time,update_time
+    </sql>
+
+</mapper>

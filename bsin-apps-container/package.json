@@ -1,0 +1,40 @@
+{
+  "name": "bsin-apps-container",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env PORT=8889 max dev",
+    "preview": "max preview --port 8889",
+    "setup": "max setup",
+    "start": "npm run dev",
+    "build": "max build"
+  },
+  "dependencies": {
+    "@ant-design/plots": "^2.1.12",
+    "@ant-design/pro-chat": "^1.7.0",
+    "@ant-design/pro-components": "^2.6.43",
+    "@antv/g2": "^5.1.14",
+    "@emotion/css": "^11.11.2",
+    "@mui/material": "^5.15.7",
+    "@umijs/max": "^4.1.10",
+    "@umijs/plugins": "^4.1.10",
+    "ahooks": "^3.7.8",
+    "antd": "^5.4.7",
+    "antd-style": "^3.6.1",
+    "js-conflux-sdk": "^2.3.0",
+    "postcss-import": "^16.0.0",
+    "qiankun": "^2.10.16",
+    "rc-resize-observer": "^1.4.0",
+    "rc-virtual-list": "^3.11.3",
+    "react": "18.1.0",
+    "react-dom": "18.1.0",
+    "reactflow": "^11.7.0",
+    "runes2": "^1.1.3",
+    "socket.io-client": "^4.7.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss7-compat": "^2.2.17",
+    "autoprefixer": "^9",
+    "cross-env": "^7.0.3",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
+  }
+}

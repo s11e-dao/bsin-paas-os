@@ -1,0 +1,90 @@
+server:
+  port: 8013
+  address: 0.0.0.0
+  servlet:
+    context-path: /
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: dev
+  application:
+    name: upms-server
+  redis:
+    # 地址
+    host: 127.0.0.1
+    # 端口，默认为6379
+    port: 6379
+    # 数据库索引
+    database: 9
+    # 密码(如没有密码请注释掉)
+    password: 123456
+    # 连接超时时间
+    timeout: 10s
+    # 是否开启ssl
+    ssl: false
+
+bsin:
+  security:
+    authentication-secretKey: shenyu-test-shenyu-test-shenyu-test
+    # 过期时间，单位分钟
+    authentication-expiration: 60
+  tenant:
+    appId: 6345489506536636416 # 权限管理
+    qixietongAppId: 1649584597970849792
+    roleName: 默认角色
+    bizRoleName: 平台默认角色
+    postName: 默认岗位
+    platformMenus:
+      - dao管理
+      - 企业管理
+      - 企业信息
+      - api费用配置
+      - 商户管理
+      - 平台管理
+      - 协会管理
+  default-menu:
+    app-id: xxx123xxx
+    menu-name: 权限管理
+    menu-icon: &#xe67e;
+    role-name: 应用默认角色
+    sort: 0
+    type: 0
+    permission: sys
+    path: /bsin-ui-upms
+    parentId: -1
+
+#日志
+#日志
+logging:
+  level:
+    me.flyray.bsin: debug
+    org.springframework: warn
+
+# redis 单机配置(单机与集群只能开启一个另一个需要注释掉)
+
+redisson:
+  # redis key前缀
+  keyPrefix:
+  # 线程池数量
+  threads: 4
+  # Netty线程池数量
+  nettyThreads: 8
+  # 单节点配置
+  singleServerConfig:
+    # 客户端名称
+    clientName: ${ruoyi.name}
+    # 最小空闲连接数
+    connectionMinimumIdleSize: 8
+    # 连接池大小
+    connectionPoolSize: 32
+    # 连接空闲超时，单位：毫秒
+    idleConnectionTimeout: 10000
+    # 命令等待超时，单位：毫秒
+    timeout: 3000
+    # 发布和订阅连接池大小
+    subscriptionConnectionPoolSize: 50
+
+
+

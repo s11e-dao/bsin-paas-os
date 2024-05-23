@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.WalletAccountMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.WalletAccount">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="chainCoinNo" column="chain_coin_no" jdbcType="VARCHAR"/>
+            <result property="balance" column="balance" jdbcType="DECIMAL"/>
+            <result property="freezeBalance" column="freeze_balance" jdbcType="DECIMAL"/>
+            <result property="walletNo" column="wallet_no" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        wallet_account_id,address,chain_coin_id,
+        balance,wallet_id,create_time,
+        create_by,update_time,update_by,
+        del_flag
+    </sql>
+
+<!--    <select id="selectByChainCoinIdAndCustomerId" resultType="me.flyray.bsin.domain.entity.WalletAccount">-->
+<!--        select * from crm_wallet_account as cwa-->
+<!--        left join crm_wallet as cw-->
+<!--        on cwa.wallet_id = cw.wallet_id and cw.customer_id = #{customerId} and cw.del_flag = 0-->
+<!--        where cwa.del_flag = 0-->
+<!--        and cwa.chain_coin_id = #{chainCoinId}-->
+<!--    </select>-->
+
+    <select id="pageList" resultType="me.flyray.bsin.domain.response.WalletAccountVO">
+        select
+            cwa.serial_no,
+            cwa.address,
+            cwa.chain_coin_no,
+            c3.chain_coin_key,
+            c3.chain_coin_name,
+            c3.short_name,
+            c3.coin,
+            c3.chain_name,
+            cwa.balance,
+            cwa.status,
+            cwa.wallet_no,
+            cwa.tenant_id,
+            cwa.create_time,
+            cwa.create_by,
+            cwa.update_time,
+            cwa.update_by
+        from crm_wallet_account as cwa
+        left join crm_chain_coin as c3
+        on cwa.chain_coin_no = c3.serial_no and c3.del_flag = 0
+        where cwa.del_flag = 0
+        and c3.status = 1
+        and cwa.wallet_no = #{params.walletNo}
+    </select>
+
+    <select id="selectBySerialNo" resultType="me.flyray.bsin.domain.response.WalletAccountVO">
+        select
+            cwa.serial_no as serialNo,
+            cwa.address as address,
+            cw.wallet_name as walletName,
+            cwa.chain_coin_no as chainCoinNo,
+            c3.chain_coin_key as chainCoinKey,
+            c3.chain_coin_name as chainCoinName,
+            c3.short_name as shortName,
+            c3.coin as coin,
+            c3.chain_name as chainName,
+            cwa.balance as balance,
+            cwa.freeze_balance as freezeBalance,
+            cwa.`status` as `status`,
+            cwa.create_time as createTime,
+            cwa.create_by as createBy,
+            cwa.update_time as updateTime,
+            cwa.update_by as updateBy
+        from crm_wallet_account as cwa
+        left join crm_wallet as cw
+        on cwa.wallet_no = cw.serial_no and cw.del_flag = 0
+        left join crm_chain_coin as c3
+        on cwa.chain_coin_no = c3.serial_no and c3.del_flag = 0
+        where cwa.del_flag = 0
+          and c3.status = 1
+          and cwa.serial_no = #{serialNo}
+    </select>
+</mapper>

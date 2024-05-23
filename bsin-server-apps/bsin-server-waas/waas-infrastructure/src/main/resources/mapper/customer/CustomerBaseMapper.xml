@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.customer.CustomerBaseMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.customer.CustomerBase">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="authMethod" column="auth_method" jdbcType="VARCHAR"/>
+            <result property="credential" column="credential" jdbcType="VARCHAR"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="realName" column="real_name" jdbcType="VARCHAR"/>
+            <result property="idNumber" column="id_number" jdbcType="VARCHAR"/>
+            <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+            <result property="txPassword" column="tx_password" jdbcType="VARCHAR"/>
+            <result property="txPasswordStatus" column="tx_password_status" jdbcType="VARCHAR"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="vipFlag" column="vip_flag" jdbcType="BIT"/>
+            <result property="certificationStatus" column="certification_status" jdbcType="BIT"/>
+            <result property="walletAddress" column="wallet_address" jdbcType="VARCHAR"/>
+            <result property="walletPrivateKey" column="wallet_private_key" jdbcType="VARCHAR"/>
+            <result property="evmWalletAddress" column="evm_wallet_address" jdbcType="VARCHAR"/>
+            <result property="evmWalletPrivateKey" column="evm_wallet_private_key" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="birthday" column="birthday" jdbcType="VARCHAR"/>
+            <result property="sex" column="sex" jdbcType="VARCHAR"/>
+            <result property="info" column="info" jdbcType="VARCHAR"/>
+            <result property="inviteCode" column="invite_code" jdbcType="VARCHAR"/>
+            <result property="profileAddress" column="profile_address" jdbcType="VARCHAR"/>
+            <result property="evmProfileAddress" column="evm_profile_address" jdbcType="VARCHAR"/>
+            <result property="copilotNo" column="copilot_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        customer_id,auth_method,credential,
+        username,password,real_name,
+        id_number,nickname,tx_password,
+        tx_password_status,phone,email,
+        avatar,type,vip_flag,
+        certification_status,wallet_address,wallet_private_key,
+        evm_wallet_address,evm_wallet_private_key,description,
+        birthday,sex,info,
+        invite_code,profile_address,evm_profile_address,
+        copilot_no,tenant_id,create_time,
+        update_time,del_flag
+    </sql>
+
+    <update id="updateDeleteFlagById" parameterType="java.lang.String">
+        update crm_customer_base set del_flag = '1' where  serial_no = #{serialNo}
+    </update>
+</mapper>

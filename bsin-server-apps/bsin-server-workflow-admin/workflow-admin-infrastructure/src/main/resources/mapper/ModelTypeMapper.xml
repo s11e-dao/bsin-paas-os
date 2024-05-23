@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.ModelTypeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="map" type="me.flyray.bsin.domain.entity.ModelType">
+        <id column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="type_code" property="typeCode"/>
+        <result column="type_name" property="typeName"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="description" property="description"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <select id="getModelTypeListByTenantId" resultMap="map">
+        select id, type_code, type_name, parent_id, description,create_time, update_time, tenant_id
+        from bsin_model_type where del_flag = 0 and tenant_id = #{tenantId}
+    </select>
+
+    <insert id="insertModelType" parameterType="me.flyray.bsin.domain.entity.ModelType">
+        insert into bsin_model_type(id, type_code, type_name, parent_id, description, tenant_id)
+        values(#{id}, #{typeCode}, #{typeName}, #{parentId}, #{description}, #{tenantId})
+    </insert>
+
+    <update id="updateModelTypeById" parameterType="me.flyray.bsin.domain.entity.ModelType">
+        update bsin_model_type
+        set
+            type_code = #{typeCode},
+            type_name = #{typeName},
+            description = #{description},
+            update_time = now()
+        where id = #{id} and del_flag = 0
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        update bsin_model_type set del_flag = 1 where id = #{id}
+    </delete>
+
+    <select id="selectModelTypeList" parameterType="me.flyray.bsin.domain.entity.ModelType"
+            resultMap="map">
+        select id, type_code, type_name, parent_id, description, create_time, update_time, tenant_id
+        from bsin_model_type
+        where del_flag = 0
+        <if test="id != null and id != ''">
+            AND id = #{id}
+        </if>
+        <if test="typeName != null and typeName != ''">
+            AND type_name LIKE concat('%',#{typeName},'%')
+        </if>
+        <if test="typeCode != null and typeCode != ''">
+            AND type_code = #{typeCode}
+        </if>
+    </select>
+</mapper>

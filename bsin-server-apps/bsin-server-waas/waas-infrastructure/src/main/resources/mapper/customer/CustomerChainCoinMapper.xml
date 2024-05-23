@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.customer.CustomerChainCoinMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.customer.CustomerChainCoin">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="businessRoleType" column="business_role_type" jdbcType="VARCHAR"/>
+            <result property="businessRoleNo" column="business_role_no" jdbcType="INTEGER"/>
+            <result property="chainCoinNo" column="chain_coin_no" jdbcType="VARCHAR"/>
+            <result property="createRoleAccountFlag" column="create_role_account_flag" jdbcType="INTEGER"/>
+            <result property="createUserAccountFlag" column="create_user_account_flag" jdbcType="INTEGER"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="selectChainCoinList" resultType="me.flyray.bsin.domain.entity.ChainCoin">
+        select
+        c3.serial_no,
+        c3.chain_coin_key,
+        c3.chain_coin_name,
+        c3.short_name,
+        c3.coin,
+        c3.chain_name,
+        c3.contract_address,
+        c3.coin_decimal,
+        c3.unit,
+        c3.status,
+        c3.type,
+        c3.remark,
+        c3.logo_url
+        from crm_chain_coin as c3
+        left join crm_customer_chain_coin as c4
+        on c3.serial_no = c4.chain_coin_no and c4.del_flag = '0'
+        <trim prefix="where" prefixOverrides="and">
+            <if test="params.createRoleAccountFlag != null ">
+                and c4.create_role_account_flag = #{params.createRoleAccountFlag}
+            </if>
+            <if test="params.createUserAccountFlag != null ">
+                and c4.create_user_account_flag = #{params.createUserAccountFlag}
+            </if>
+            <if test="params.businessRoleNo != null and params.businessRoleNo != ''">
+                and c4.business_role_no = #{params.businessRoleNo}
+            </if>
+            <if test="params.businessRoleType != null and params.businessRoleType != ''">
+                and c4.business_role_type = #{params.businessRoleType}
+            </if>
+            and c4.tenant_id = #{params.tenantId}
+            and c4.del_flag = '0'
+        </trim>
+    </select>
+
+    <update id="updateDelFlag">
+        update crm_customer_chain_coin set del_flag = '1' ,update_by = #{params.updateBy} ,update_time = #{params.updateTime}
+        where serial_no = #{params.serialNo}
+    </update>
+
+    <select id="pageList" parameterType="me.flyray.bsin.domain.request.customer.CustomerChainCoinDTO" resultType="me.flyray.bsin.domain.response.CustomerChainCoinVO">
+        select
+        c3.chain_coin_key as chainCoinKey,
+        c3.chain_coin_name as chainCoinName,
+        c3.short_name as shortName,
+        c3.coin as coin,
+        c3.chain_name as chainName,
+        c4.serial_no as serialNo,
+        c4.chain_coin_no as chainCoinNo,
+        c4.create_role_account_flag as createRoleAccountFlag,
+        c4.create_user_account_flag as createUserAccountFlag,
+        c4.business_role_type as businessRoleType,
+        c4.business_role_no as businessRoleNo,
+        c4.tenant_id as tenantId,
+        c4.create_by as createBy,
+        c4.create_time as createTime
+        from crm_customer_chain_coin as c4
+        left join crm_chain_coin as c3
+        on c3.serial_no = c4.chain_coin_no and c3.del_flag = '0'
+        <trim prefix="where" prefixOverrides="and">
+            <if test="params.coin != null and params.coin !=''">
+                and c3.coin = #{params.coin}
+            </if>
+            <if test="params.chainCoinKey != null and params.chainCoinKey !=''">
+                and c3.chain_coin_key = #{params.chainCoinKey}
+            </if>
+            <if test="params.chainCoinName != null and params.chainCoinName !=''">
+                and c3.chain_coin_name like concat ('%',#{params.chainCoinName},'%')
+            </if>
+            <if test="params.createRoleAccountFlag != null ">
+                and c4.create_role_account_flag = #{params.createRoleAccountFlag}
+            </if>
+            <if test="params.createUserAccountFlag != null ">
+                and c4.create_user_account_flag = #{params.createUserAccountFlag}
+            </if>
+            <if test="params.bizRoleNo != null and params.bizRoleNo != ''">
+                and c4.biz_role_no = #{params.bizRoleNo}
+            </if>
+            <if test="params.bizRoleType != null and params.bizRoleType != ''">
+                and c4.biz_role_type = #{params.bizRoleType}
+            </if>
+            <if test="params.startTime != null" >
+                <![CDATA[and c4.create_time >= #{params.startTime}]]>
+            </if>
+            <if test="params.endTime != null" >
+                <![CDATA[and c4.create_time <= #{params.endTime}]]>
+            </if>
+            and c4.tenant_id = #{params.tenantId}
+            and c3.status = 1
+            and c4.del_flag = '0'
+        </trim>
+        order by c4.create_time desc
+    </select>
+</mapper>

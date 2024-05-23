@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.OrgMapper">
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.SysOrg">
+        <id column="org_id" property="orgId"/>
+        <result column="org_code" property="orgCode"/>
+        <result column="org_name" property="orgName"/>
+        <result column="sort" property="sort"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="level" property="level"/>
+        <result column="type" property="type"/>
+        <result column="leader" property="leader"/>
+        <result column="phone" property="phone"/>
+        <result column="address" property="address"/>
+        <result column="email" property="email"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+    <select id="selectOrgList" parameterType="me.flyray.bsin.domain.entity.SysPost" resultMap="BaseResultMap">
+        select org_id, org_code, org_name,parent_id, level, type, leader, phone, address, email, tenant_id, create_time, update_time, remark from
+        sys_org
+        <where>
+            <if test="orgCode != null and orgCode != ''">
+                org_code = #{orgCode}
+            </if>
+            <if test="orgName != null and orgName != ''">
+                and org_name like concat('%',#{orgName},'%')
+            </if>
+            <if test="tenantId != null and tenantId != ''">
+                and tenant_id = #{tenantId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectOrgListByTenantId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select org_id, org_code, org_name, `sort`, parent_id, level, type, leader,
+         phone, address, remark, email, tenant_id, create_time, update_time, `del_flag`
+        from sys_org
+        where sys_org.tenant_id = #{tenantId}
+          and `del_flag` = 0
+    </select>
+
+    <update id="deleteById" parameterType="java.lang.String">
+        update sys_org
+        set `del_flag`=1
+        where org_id = #{orgId}
+    </update>
+
+    <insert id="insertOrg" parameterType="me.flyray.bsin.domain.entity.SysOrg">
+        insert into sys_org (org_id, org_code, org_name, `sort`, parent_id, level, type,
+        leader, phone, address, email, tenant_id, remark)
+        values (#{orgId}, #{orgCode}, #{orgName}, #{sort}, #{parentId}, #{level}, #{type}, #{leader}, #{phone},
+                #{address}, #{email}, #{tenantId}, #{remark})
+    </insert>
+
+    <update id="updateById" parameterType="me.flyray.bsin.domain.entity.SysOrg">
+        update sys_org set org_name=#{orgName},org_code=#{orgCode},`sort`=#{sort},parent_id=#{parentId},level=#{level},type=#{type},leader=#{leader},phone=#{phone},address=#{address},
+        email=#{email},remark=#{remark},update_time = now() where org_id = #{orgId}
+    </update>
+
+    <delete id="deleteAppAssociationById" parameterType="java.lang.String">
+        delete
+        from sys_org_app
+        where org_id = #{orgId}
+    </delete>
+
+    <select id="selectInfoById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select org_id,
+               org_code,
+               org_name,
+               `sort`,
+               parent_id,
+               level,
+               type,
+               leader,
+               phone,
+               address,
+               email,
+               tenant_id,
+               create_time,
+               update_time,
+               remark
+        from sys_org
+        where org_id = #{orgId}
+          and `del_flag` = 0
+    </select>
+
+    <!--根据租户id删除机构-->
+    <update id="deleteByTenantId" parameterType="java.lang.String">
+        update sys_org
+        set `del_flag` = 1
+        where tenant_id = #{tenantId}
+    </update>
+
+    <select id="selectByOrgCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select org_code from sys_org where org_code=#{orgCode}
+    </select>
+
+    <select id="selectTopOrgByTenantId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select org_id, org_code, org_name, `sort`, parent_id, level, type, leader,
+               phone, address, remark, email, tenant_id, create_time, update_time, `del_flag`
+        from sys_org
+        where sys_org.tenant_id = #{tenantId}
+          and `del_flag` = 0 and parent_id = '-1'
+    </select>
+
+    <select id="selectOrg" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select org_id, org_code, org_name,parent_id, level, type, leader, phone, address, email, tenant_id, create_time, update_time, remark
+        from sys_org where tenant_id = #{tenantId} and org_code = #{orgCode}
+    </select>
+    <select id="selectOrgListById" resultType="me.flyray.bsin.domain.entity.SysOrg"
+            parameterType="java.lang.String">
+        WITH RECURSIVE SubDepartments AS (
+            SELECT
+                org_id,
+                parent_id,
+                org_name,
+                sort,
+                level,
+                type,
+                leader,
+                phone,
+                address,
+                remark,
+                email,
+                tenant_id,
+                create_time,
+                update_time,
+                del_flag
+            FROM sys_org
+            WHERE org_id = #{orgId}
+            UNION ALL
+            SELECT
+                so.org_id,
+                so.parent_id,
+                so.org_name,
+                so.sort,
+                so.level,
+                so.type,
+                so.leader,
+                so.phone,
+                so.address,
+                so.remark,
+                so.email,
+                so.tenant_id,
+                so.create_time,
+                so.update_time,
+                so.del_flag
+            FROM sys_org so
+                     INNER JOIN SubDepartments sd ON so.parent_id = sd.org_id
+        )
+        SELECT
+            org_id,
+            parent_id,
+            org_name,
+            sort,
+            level,
+            type,
+            leader,
+            phone,
+            address,
+            remark,
+            email,
+            tenant_id,
+            create_time,
+            update_time,
+            del_flag
+        FROM SubDepartments;
+    </select>
+    <select id="selectListByIds" resultType="me.flyray.bsin.domain.entity.SysOrg"
+            parameterType="java.util.List">
+            SELECT org_id, parent_id,org_name
+            FROM sys_org
+            <where>
+                <if test="orgIds != null and orgIds.size() > 0">
+                    org_id in
+                    <foreach collection="orgIds" item="item" index="index" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+            </where>
+    </select>
+    <select id="selectOrgListByParentId" resultType="me.flyray.bsin.domain.entity.SysOrg"
+            parameterType="java.lang.String">
+        select org_id, org_code, org_name, `sort`, parent_id, level, type, leader,
+               phone, address, remark, email, tenant_id, create_time, update_time, `del_flag`
+        from sys_org
+        where sys_org.tenant_id = #{tenantId}
+          and `del_flag` = 0 and parent_id = #{parentId}
+    </select>
+
+    <select id="getSubOrgList" resultType="me.flyray.bsin.domain.entity.SysOrg">
+        select * from sys_org
+        where del_flag=0 and  parent_id = (select org_id
+        from sys_org where parent_id ='-1' and tenant_id = #{tenantId} )
+        order by sort
+    </select>
+
+</mapper>

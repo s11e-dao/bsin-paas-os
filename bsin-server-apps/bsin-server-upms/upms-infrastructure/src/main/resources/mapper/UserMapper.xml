@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.UserMapper">
+    <resultMap id="map" type="me.flyray.bsin.domain.entity.SysUser">
+        <id column="user_id" property="userId"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="status" property="status"/>
+        <result column="org_id" property="orgId"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="nickname" property="nickname"/>
+        <result column="phone" property="phone"/>
+        <result column="avatar" property="avatar"/>
+        <result column="email" property="email"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="type" property="type"/>
+    </resultMap>
+
+    <resultMap id="maps" type="me.flyray.bsin.domain.response.UserPostResp">
+        <id column="user_id" property="userId"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="status" property="status"/>
+        <result column="org_id" property="orgId"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="nickname" property="nickname"/>
+        <result column="phone" property="phone"/>
+        <result column="avatar" property="avatar"/>
+        <result column="email" property="email"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="type" property="type"/>
+        <result column="post_id" property="postId"/>
+        <result column="post_name" property="postName"/>
+    </resultMap>
+
+
+    <resultMap id="pageResultMap" type="me.flyray.bsin.domain.entity.SysUser">
+        <id column="user_id" property="userId"/>
+        <result column="username" property="username"/>
+        <result column="status" property="status"/>
+        <result column="org_id" property="orgId"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="nickname" property="nickname"/>
+        <result column="phone" property="phone"/>
+        <result column="avatar" property="avatar"/>
+        <result column="email" property="email"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="type" property="type"/>
+        <association property="org" javaType="me.flyray.bsin.domain.entity.SysOrg"
+                     column="user_id" select="me.flyray.bsin.infrastructure.mapper.OrgMapper.selectInfoById"/>
+        <collection property="postList" ofType="me.flyray.bsin.domain.entity.SysPost"
+                    column="user_id" select="me.flyray.bsin.infrastructure.mapper.PostMapper.getPostByUserId"/>
+        <collection property="roles" ofType="me.flyray.bsin.domain.entity.SysRole" column="user_id"
+                    select="me.flyray.bsin.infrastructure.mapper.RoleMapper.getRoleListByUserId"/>
+    </resultMap>
+
+
+    <insert id="insertUser" parameterType="me.flyray.bsin.domain.entity.SysUser">
+        insert into sys_user(user_id, username, password, org_id, tenant_id, nickname, phone, avatar, email,
+                             create_by, type)
+        VALUES (#{userId}, #{username}, #{password}, #{orgId}, #{tenantId}, #{nickname}, #{phone}, #{avatar}, #{email},
+                #{createBy}, #{type})
+    </insert>
+
+    <update id="deleteById" parameterType="java.lang.String">
+        update sys_user
+        set del_flag = 1
+        where user_id = #{userId}
+    </update>
+
+
+    <select id="selectByUsername" resultMap="map" parameterType="java.lang.String">
+        select user_id, username, status, org_id, tenant_id, nickname, phone, avatar, email, del_flag, create_by,
+        create_time, update_by, update_time, type from sys_user
+        <where>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="nickname != null and nickname != ''">
+                and nickname like concat('%',#{nickname},'%')
+            </if>
+            <if test="tenantId != null and tenantId != ''">
+                and tenant_id = #{tenantId}
+            </if>
+            and del_flag=0
+        </where>
+    </select>
+
+    <select id="login" parameterType="java.lang.String" resultMap="map">
+        select user_id,
+               username,
+               password,
+               status,
+               org_id,
+               tenant_id,
+               nickname,
+               phone,
+               avatar,
+               email,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               type
+        from sys_user
+        where tenant_id = #{tenantId}
+          and username = #{username}
+          and password = #{password}
+          and status = 0
+          and del_flag = 0
+    </select>
+
+    <select id="getById" parameterType="java.lang.String" resultMap="map">
+        select user_id,
+               username,
+               password,
+               status,
+               org_id,
+               tenant_id,
+               nickname,
+               phone,
+               avatar,
+               email,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               type,
+        from sys_user
+        where user_id = #{userId}
+          and del_flag = 0
+    </select>
+
+    <update id="deleteByTenantId" parameterType="java.lang.String">
+        update sys_user
+        set del_flag = 1
+        where tenant_id = #{tenantId}
+    </update>
+
+    <select id="selectByTenantId" parameterType="java.lang.String">
+        select user_id
+        from sys_user
+        where tenant_id = #{tenantId}
+    </select>
+
+    <update id="deleteUserById" parameterType="java.lang.String">
+        update sys_user
+        set del_flag=1
+        where org_id = #{orgId}
+    </update>
+    <update id="updateByUserId" parameterType="me.flyray.bsin.domain.entity.SysUser">
+        update sys_user
+        set username=#{user.username},
+            phone=#{user.phone},
+            org_id=#{user.orgId},
+            update_by=#{user.updateBy},
+            update_time=#{user.updateTime}
+        where user_id = #{user.userId}
+    </update>
+
+    <select id="selectPageList" resultMap="pageResultMap">
+        select u.user_id, u.username,u.status, u.org_id,o.org_name, u.tenant_id, u.nickname, u.phone, u.avatar, u.email,
+        u.create_by, u.create_time, u.update_by, u.update_time, u.type
+        from sys_user u
+        left join sys_org o on u.org_id = o.org_id
+        <where>
+            u.del_flag = 0
+            <if test="query.tenantId != null and query.tenantId != ''">
+                and u.tenant_id = #{query.tenantId}
+            </if>
+            <if test="query.username != null and query.username != ''">
+                and (u.username LIKE CONCAT('%', #{query.username}, '%')
+                or u.nickname LIKE CONCAT('%', #{query.username}, '%')
+                )
+            </if>
+            <if test="query.orgId != null and query.orgId != ''">
+                and u.org_id=#{query.orgId}
+            </if>
+            <if test="query.nickname != null and query.nickname != ''">
+                and u.nickname LIKE CONCAT('%', #{query.nickname}, '%')
+            </if>
+            <if test="query.phone != null and query.phone != ''">
+                and u.phone=#{query.phone}
+            </if>
+            <if test="query.userType != null">
+                and u.type=#{query.userType}
+            </if>
+            <if test="query.beginTime != null and query.beginTime!=''">
+                AND u.create_time <![CDATA[>=]]> #{query.beginTime}
+            </if>
+            <if test="query.endTime != null and query.endTime!=''">
+                AND u.create_time <![CDATA[<=]]> #{query.endTime}
+            </if>
+            <if test="query.orgName!=null and query.orgName!=''">
+                AND o.org_name like concat('%',#{query.orgName},'%')
+            </if>
+            <if test="query.status!=null and query.status!=''">
+                AND u.status=#{query.status}
+            </if>
+            <if test="query.orgIds!=null and query.orgIds.size()>0">
+                and u.org_id in
+                <foreach collection="query.orgIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="query.excludeUserIds!=null and query.excludeUserIds.length>0">
+                and u.user_id not in
+                <foreach collection="query.excludeUserIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectUserList" resultMap="maps">
+        select user_id, username,status, org_id, tenant_id, nickname, phone, avatar, email,
+        create_by, create_time, update_by, update_time, type from sys_user
+        where tenant_id = #{tenantId,jdbcType=VARCHAR}
+        <if test="username != null and username != ''">
+            and username LIKE CONCAT('%', #{username}, '%')
+        </if>
+        <if test="orgId != null and orgId != ''">
+            and org_id=#{orgId}
+        </if>
+        <if test="nickname != null and nickname != ''">
+            and nickname LIKE CONCAT('%', #{nickname}, '%')
+        </if>
+        <if test="phone != null and phone != ''">
+            and phone=#{phone}
+        </if>
+        and del_flag = 0
+    </select>
+
+    <select id="selectUserByPostIdAndOrgId" resultMap="maps">
+        select sys_user.user_id
+        from sys_user
+        left join sys_user_post sup on sys_user.user_id = sup.user_id
+        <where>
+            <if test="orgId != null and orgId != ''">
+                and org_id = #{orgId}
+            </if>
+            <if test="postId != null and postId != ''">
+                and post_id = #{postId}
+            </if>
+            and del_flag = 0
+        </where>
+    </select>
+
+    <select id="selectListByUserIds" resultMap="map">
+        select user_id, username,status, org_id, tenant_id, nickname, phone, avatar, email,
+        create_by, create_time, update_by, update_time, type from sys_user
+        where user_id in
+        <foreach collection="userIds" item="userId" index="index" open="(" close=")" separator=",">
+            #{userId}
+        </foreach>
+        and del_flag = 0
+    </select>
+
+    <select id="selectUserInfo" resultMap="map">
+        select user_id, username, status, org_id, tenant_id, nickname, phone, avatar, email,
+        create_by, create_time, update_by, update_time, type from sys_user
+        <where>
+            tenant_id = #{tenantId,jdbcType=VARCHAR}
+            <if test="username != null and username != ''">
+                and username = #{username,jdbcType=VARCHAR}
+            </if>
+            <if test="userId != null and userId != ''">
+                and user_id=#{userId}
+            </if>
+            and del_flag = 0
+        </where>
+
+
+    </select>
+
+    <select id="selectEmail" resultMap="map">
+        select user_id,
+               username,
+               status,
+               org_id,
+               tenant_id,
+               nickname,
+               phone,
+               avatar,
+               email,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               type
+        from sys_user
+        where email = #{email}
+          and del_flag = 0
+    </select>
+    <select id="selectByUserId" resultType="me.flyray.bsin.domain.entity.SysUser"
+            parameterType="java.lang.String">
+        select *
+        from sys_user
+        where user_id = #{userId}
+    </select>
+    <select id="selectUserByUsername" resultType="me.flyray.bsin.domain.entity.SysUser">
+        select user_id,
+               username,
+               status,
+               org_id,
+               tenant_id,
+               nickname,
+               phone,
+               avatar,
+               email,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               type
+        from sys_user
+        where username = #{username}
+          and del_flag = 0
+
+    </select>
+
+    <select id="getUserIdByName" resultType="java.lang.String">
+        select user_id
+        from sys_user s
+        where s.del_flag = 0
+          and tenant_id = #{tenantId}
+          and (
+                    s.username like concat(#{name}, '%') or s.nickname like concat(#{name}, '%')
+            )
+    </select>
+
+
+    <select id="getUserByRoleCode" resultType="me.flyray.bsin.domain.entity.SysUser">
+        select u.* from sys_role r
+        left join sys_user_role ur on (r.role_id = ur.role_id)
+        left join sys_user u on (u.user_id = ur.user_id)
+        <where>
+            <if test="roleCode != null and roleCode != ''">
+                and r.role_code = #{roleCode}
+            </if>
+        </where>
+    </select>
+
+    <select id="getUserIdsByCondition" resultType="java.lang.String">
+        select u.user_id
+        from sys_user u
+        left join sys_org o on u.org_id = o.org_id
+        <where>
+            u.del_flag = 0
+            <if test="query.tenantId != null and query.tenantId != ''">
+                and u.tenant_id = #{query.tenantId}
+            </if>
+            <if test="query.username != null and query.username != ''">
+                and u.username LIKE CONCAT('%', #{query.username}, '%')
+            </if>
+            <if test="query.orgId != null and query.orgId != ''">
+                and u.org_id=#{query.orgId}
+            </if>
+            <if test="query.nickname != null and query.nickname != ''">
+                and u.nickname LIKE CONCAT('%', #{query.nickname}, '%')
+            </if>
+            <if test="query.phone != null and query.phone != ''">
+                and u.phone=#{query.phone}
+            </if>
+            <if test="query.userType != null">
+                and u.type=#{query.userType}
+            </if>
+            <if test="query.beginTime != null and query.beginTime!=''">
+                AND u.create_time <![CDATA[>=]]> #{query.beginTime}
+            </if>
+            <if test="query.endTime != null and query.endTime!=''">
+                AND u.create_time <![CDATA[<=]]> #{query.endTime}
+            </if>
+            <if test="query.orgName!=null and query.orgName!=''">
+                AND o.org_name like concat('%',#{query.orgName},'%')
+            </if>
+            <if test="query.status!=null and query.status!=''">
+                AND u.status=#{query.status}
+            </if>
+            <if test="query.orgIds!=null and query.orgIds.size()>0">
+                and u.org_id in
+                <foreach collection="query.orgIds" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="getUserInfoByIds" resultType="java.util.Map">
+        select u.user_id,
+        u.username,
+        u.nickname,
+        u.avatar,
+        u.email,
+        u.phone,
+        u.STATUS,
+        u.create_time,
+        u.org_id,
+        o.org_name
+        from sys_user u
+        left join sys_org o on o.org_id = u.org_id
+        <where>
+            u.user_id in
+            <foreach collection="userId" separator="," item="item" open="(" close=")">
+                #{item}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="verifyIfUserExists" resultType="java.lang.Integer" parameterType="me.flyray.bsin.domain.entity.SysUser">
+        select 1 from sys_user where del_flag =0
+        <if test="tenantId != null and tenantId != ''">
+            and tenant_id = #{tenantId}
+        </if>
+        <if test="username != null and username != ''">
+            and username = #{username}
+        </if>
+        <if test="phone != null and phone != ''">
+            and phone = #{phone}
+        </if>
+        <if test="email != null and email != ''">
+            and email = #{email}
+        </if>
+        <if test="userId != null and userId != ''">
+            and user_id != #{userId}
+        </if>
+        limit 1
+    </select>
+    <select id="selectPageAllList" resultType="me.flyray.bsin.domain.entity.SysUser">
+        WITH RECURSIVE org_hierarchy AS (
+        SELECT org_id, org_name, parent_id
+        FROM sys_org
+        WHERE org_id = #{query.orgId}
+
+        UNION ALL
+
+        SELECT o.org_id, o.org_name, o.parent_id
+        FROM sys_org o
+        INNER JOIN org_hierarchy oh ON o.parent_id = oh.org_id
+        )
+        SELECT u.user_id, u.username, u.status, u.org_id, o.org_name, u.nickname, u.phone, u.avatar, u.email,
+        u.create_time, u.update_time
+        FROM sys_user u
+        INNER JOIN org_hierarchy o ON u.org_id = o.org_id
+        <where>
+            <if test="query.username != null and query.username != ''">
+                and u.username LIKE CONCAT('%', #{query.username}, '%')
+            </if>
+            <if test="query.nickname != null and query.nickname != ''">
+                and u.nickname LIKE CONCAT('%', #{query.nickname}, '%')
+            </if>
+            AND u.del_flag = 0
+            order by u.create_time desc
+        </where>
+    </select>
+
+</mapper>
+

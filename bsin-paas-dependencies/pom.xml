@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+<!--    <parent>-->
+<!--        <groupId>com.alipay.sofa</groupId>-->
+<!--        <artifactId>sofaboot-dependencies</artifactId>-->
+<!--        <version>3.12.1</version>-->
+<!--        <relativePath />-->
+<!--    </parent>-->
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>me.flyray.bsin</groupId>
+    <artifactId>bsin-paas-dependencies</artifactId>
+    <packaging>pom</packaging>
+    <version>2.0.0-SNAPSHOT</version>
+    <name>bsin-paas-dependencies</name>
+    <description>公共依赖模块</description>
+
+    <properties>
+        <java.version>11</java.version>
+        <version>${project.version}</version>
+        <dubbo.version>3.2.5</dubbo.version>
+        <mysql.version>8.0.33</mysql.version>
+        <sofa.version>5.8.3</sofa.version>
+        <spring-boot.version>2.7.17</spring-boot.version>
+        <jackson.version>2.11.4</jackson.version>
+        <spring.version>5.3.28</spring.version>
+        <druid-starter.version>1.2.19</druid-starter.version>
+        <shenyu.version>2.6.1</shenyu.version>
+        <sofa-boot.version>3.12.1</sofa-boot.version>
+        <pagehelper.version>1.4.6</pagehelper.version>
+        <spring-cloud.version>3.1.2</spring-cloud.version>
+        <bsin-paas.version>2.0.0-SNAPSHOT</bsin-paas.version>
+        <maven-compiler-plugin.verison>3.11.0</maven-compiler-plugin.verison>
+        <pagehelper-starter.version>1.4.6</pagehelper-starter.version>
+        <aliyun.sdk.oss.version>3.8.1</aliyun.sdk.oss.version>
+        <lombok.version>1.18.26</lombok.version>
+        <motan.version>1.2.1</motan.version>
+        <hutool.version>5.8.15</hutool.version>
+        <zookeeper.version>3.6.3</zookeeper.version>
+        <junit-jupiter.version>5.7.2</junit-jupiter.version>
+        <nacos-client.version>2.3.2</nacos-client.version>
+        <nacos-config.version>0.3.0-RC</nacos-config.version>
+        <shiro.version>1.8.0</shiro.version>
+        <jwt.version>3.12.0</jwt.version>
+        <slf4j.version>1.7.32</slf4j.version>
+        <consul.api.version>1.4.5</consul.api.version>
+        <consul.version>2.2.6.RELEASE</consul.version>
+        <opengauss-jdbc.version>5.0.0-og</opengauss-jdbc.version>
+        <ojdbc8.version>19.3.0.0</ojdbc8.version>
+        <aspectjweaver.version>1.9.6</aspectjweaver.version>
+        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
+        <mybatis-spring-boot.version>2.2.2</mybatis-spring-boot.version>
+        <curator.version>5.2.1</curator.version>
+        <docker-maven-plugin.version>0.40.1</docker-maven-plugin.version>
+        <fastjson.version>2.0.49</fastjson.version>
+        <fastjson2.version>2.0.49</fastjson2.version>
+        <spring-cloud-commons.version>3.1.2</spring-cloud-commons.version>
+        <netty.version>4.1.90.Final</netty.version>
+        <sensitive-logback.version>1.7.0</sensitive-logback.version>
+    </properties>
+
+    <dependencies>
+        <!--<dependency>
+            <groupId>me.flyray.bsin</groupId>
+            <artifactId>bsin-paas-starter</artifactId>
+            <version>${bsin.paas.starter}</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- SpringBoot的依赖配置-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+          </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.verison}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        
+    </distributionManagement>
+
+</project>

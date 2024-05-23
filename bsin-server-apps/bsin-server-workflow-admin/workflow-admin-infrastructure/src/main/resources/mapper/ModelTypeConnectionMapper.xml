@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.ModelTypeConnectionMapper">
+
+    <insert id="insert" >
+        insert into bsin_model_model_type(model_type_id, model_id)
+        values(#{modelTypeId}, #{modelId})
+    </insert>
+
+</mapper>

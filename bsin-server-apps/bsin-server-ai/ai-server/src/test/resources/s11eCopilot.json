@@ -1,0 +1,44 @@
+{
+  "nodes": [
+    {
+      "id": "1",
+      "type": "startEvent",
+      "data": {
+        "label": "开始节点"
+      }
+    },
+    {
+      "id": "2",
+      "type": "llm",
+      "data": {
+        "llm": "chatgpt",
+        "model": "3.5",
+        "label": "根据角色定义获取营销热点信息"
+      }
+    },
+    {
+      "id": "3",
+      "type": "endEvent",
+      "data": {
+        "label": "结束节点"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1-2",
+      "source": "1",
+      "target": "2"
+    },
+    {
+      "id": "e2-3",
+      "source": "2",
+      "target": "3"
+    }
+  ],
+  "viewport": {
+    "x": 1,
+    "y": 1,
+    "zoom": 1
+  }
+}

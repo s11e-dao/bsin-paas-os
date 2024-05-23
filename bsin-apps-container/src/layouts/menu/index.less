@@ -1,0 +1,122 @@
+.submenu{
+    // overflow: hidden auto !important;
+    padding-inline: 0.2px !important;
+}
+
+.submenu::-webkit-scrollbar {
+    width: 0.3em !important; /* 设置滚动条宽度为0.5em */
+}
+
+.submenu::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* 设置滚动条背景色为#f1f1f1 */
+}
+ 
+/* 设置滚动条上按钮（向上/向下）的样式 */
+.submenu::-webkit-scrollbar-thumb {
+    background-color: #cac6c6; /* 设置滚动条上按钮的背景色为#888 */
+}
+ 
+/* 当鼠标悬停在滚动条上时的样式 */
+.submenu::-webkit-scrollbar-thumb:hover {
+    background-color: #cac6c6; /* 设置滚动条上按钮的背景色为#555 */
+}
+
+.submenu {
+    @apply flex box-border;
+    height: 100vh;
+    overflow: auto;
+    flex-shrink: 0;
+
+    &-nav {
+        max-width: 120px;
+        @apply flex flex-col bg-blue-50;
+
+        h3 {
+            @apply box-border px-2 truncate h-6 pb-0 text-base font-semibold text-center mt-4 mb-4;
+            min-height: 25px;
+            cursor: pointer
+        }
+
+        ul {
+            @apply space-y-1 pl-2 mt-0;
+        }
+
+        li {
+            @apply relative flex items-center cursor-pointer pl-2 pr-4 rounded-l-lg h-10 leading-10 transition-colors;
+
+            svg {
+                @apply block w-4 h-4 mr-2;
+
+                min-width: 16px;
+            }
+
+            span {
+                @apply truncate;
+            }
+
+            i {
+                @apply hidden absolute right-0 w-2 h-2 bg-white;
+
+                &::before {
+                    @apply block w-full h-full bg-blue-50;
+
+                    content: '.';
+                    text-indent: -9999px;
+                }
+
+                &.corner-top {
+                    @apply -top-2;
+
+                    &::before {
+                        clip-path: ellipse(100% 100% at 0% 0%);
+                    }
+                }
+
+                &.corner-bottom {
+                    @apply -bottom-2;
+
+                    &::before {
+                        clip-path: ellipse(100% 100% at 0% 100%);
+                    }
+                }
+            }
+
+            &:hover {
+                @apply text-blue-400;
+            }
+
+            &.active {
+                @apply cursor-default bg-white text-blue-400;
+
+                i {
+                    @apply block;
+                }
+            }
+        }
+    }
+
+    &-links {
+        @apply overflow-auto h-full bg-white px-2 py-3;
+
+        max-width: 100px;
+
+        ul {
+            @apply space-y-1;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            @apply cursor-pointer px-2 rounded-lg h-10 leading-10 truncate transition-colors;
+
+            &:hover {
+                @apply bg-blue-50;
+            }
+
+            &.active {
+                @apply cursor-default bg-blue-50 text-blue-400;
+            }
+        }
+    }
+}

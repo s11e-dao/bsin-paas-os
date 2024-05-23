@@ -1,0 +1,116 @@
+
+
+.wrap{
+    display: flex;
+    flex-direction: row;
+}
+
+.content{
+    height: 100vh-16vh;
+    overflow: hidden;
+    margin-top: 6px;
+    // background: #fff;
+}
+
+.subTop{
+    width: 200px;
+    text-align: center;
+    font-size: large;
+    font-weight: 600;
+    margin: 0 auto;
+    color: #9c5adb;
+}
+
+.nav{
+    background-color: #dfe0e3;
+    width: 100px;
+    margin: 0 auto;
+    margin-top: 10px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center; /* 在交叉轴上居中 */
+    justify-content: center; /* 在主轴上居中 */
+}
+
+.flowNav{
+    background-color: #dfe0e3;
+    width: 220px;
+    margin: 0 auto;
+    margin-top: 10px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center; /* 在交叉轴上居中 */
+    justify-content: center; /* 在主轴上居中 */
+}
+.conentNav{
+    display: flex;
+    margin-bottom: 10px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.conentTabs{
+    display: flex;
+}
+
+.conentTabsItem{
+    cursor: pointer;
+    height: 23px;
+    line-height: 23px;
+    padding: 0 10px;
+    font-size: 12px;
+    margin: 0 5px;
+    color: #232323;
+    border-radius: 10px;
+}
+
+.conentTabsItemA{
+    cursor: pointer;
+    height: 23px;
+    line-height: 23px;
+    padding: 0 10px;
+    font-size: 12px;
+    margin: 0 5px;
+    color: #fff;
+    background-color: #8943ff;
+    border-radius: 10px;
+}
+
+.conentTabsItemAdd{
+    height: 23px;
+    line-height: 23px;
+    padding: 0 10px;
+    font-size: 12px;
+    margin: 0 5px;
+    color: #232323;
+    background-color: #fff;
+    border: #8943ff solid 1px;
+    border-radius: 5px;
+}
+
+.sideWrap{
+    position: relative;
+}
+
+.flowCollapsedButton {
+    position: absolute;
+    inset-block-start: 18px;
+    top: 10px; /* 调整以适应容器边缘 */
+    right: 10px; /* 调整以适应容器边缘 */
+    z-index: 101;
+    text-align: center;
+    border-radius: 40px;
+    inset-inline-end: -13px;
+    transition: transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: rgba(0,0,0,0.45);
+    background-color: #fff;
+    box-shadow: 0 2px 8px -2px rgba(0,0,0,0.05), 0 1px 4px -1px rgba(25,15,15,0.07), 0 0 1px 0 rgba(0,0,0,0.08);
+}

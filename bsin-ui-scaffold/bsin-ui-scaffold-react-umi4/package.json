@@ -1,0 +1,34 @@
+{
+  "name": "bsin-ui-asset-management",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env PORT=5555 max dev",
+    "e2e:ci": "npm run e2e:ci:dev",
+    "e2e:ci:dev": "cross-env PORT=8889 start-test start:all-qiankun:dev 8889 test:ci",
+    "e2e:ci:preview": "cross-env PORT=8889 start-test start:all-qiankun:preview 8889 test:ci:preview",
+    "e2e:local": "cross-env PORT=8889 start-test start:all-qiankun:dev 8889 test:local",
+    "e2e:local:preview": "cross-env-shell PORT=8889 start-test start:all-qiankun:preview 8889 test:local",
+    "preview": "cross-env PORT=5555 max preview --port 5555",
+    "setup": "max setup",
+    "start": "npm run dev",
+    "start:all-qiankun:dev": "pnpm umi-scripts turbo --filter @example/qiankun-* --filter @example/mf-* dev",
+    "start:all-qiankun:preview": "pnpm umi-scripts turbo --filter @example/qiankun-* --filter @example/mf-* preview",
+    "test:ci": "pnpm umi-scripts cypress",
+    "test:local": "cypress open",
+    "build": "max build"
+  },
+  "dependencies": {
+    "@umijs/max": "^4.1.10",
+    "@umijs/plugins": "^4.1.10",
+    "react": "18.1.0",
+    "react-dom": "18.1.0",
+    "antd": "^5.4.7",
+    "react-custom-scrollbars": "^4.2.1"
+  },
+  "devDependencies": {
+    "@umijs/plugin-qiankun": "^2.44.1",
+    "cross-env": "^7.0.3",
+    "cypress": "^12.0.0",
+    "start-server-and-test": "^1.15.2"
+  }
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.customer.CustomerConfigMapper">
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.customer.CustomerConfig">
+        <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="logoUrl" column="logo_url" jdbcType="VARCHAR"/>
+        <result property="contactName" column="contact_name" jdbcType="INTEGER"/>
+        <result property="contactPhone" column="contact_phone" jdbcType="INTEGER"/>
+        <result property="enableCallback" column="enable_callback" jdbcType="INTEGER"/>
+        <result property="loopbackAddress" column="loopback_address" jdbcType="INTEGER"/>
+        <result property="bizRoleType" column="biz_role_type" jdbcType="VARCHAR"/>
+        <result property="bizRoleNo" column="biz_role_no" jdbcType="INTEGER"/>
+        <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <update id="batchDeleteByMerchantId" parameterType="java.lang.String">
+        update crm_merchant_config set del_flag = 1 where merchant_id = #{merchantId}
+    </update>
+
+    <update id="updateDelFlag">
+        update crm_merchant_config set del_flag = '1' ,update_by = #{params.updateBy} ,update_time = #{params.updateTime}
+        where serial_no = #{params.serialNo}
+    </update>
+</mapper>

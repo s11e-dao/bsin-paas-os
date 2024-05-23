@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.WxPlatformMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.WxPlatform">
+        <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+        <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+        <result property="corpId" column="corp_id" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="agentId" column="agent_id" jdbcType="VARCHAR"/>
+        <result property="copilotNo" column="copilot_no" jdbcType="VARCHAR"/>
+        <result property="menuNo" column="menu_no" jdbcType="VARCHAR"/>
+        <result property="bindingWxPlatformNo" column="binding_wx_platform_no" jdbcType="VARCHAR"/>
+        <result property="appSecret" column="app_secret" jdbcType="VARCHAR"/>
+        <result property="aesKey" column="aes_key" jdbcType="VARCHAR"/>
+        <result property="token" column="token" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="templateEnable" column="template_enable" jdbcType="VARCHAR"/>
+        <result property="exceptionResp" column="exception_resp" jdbcType="VARCHAR"/>
+        <result property="subscribeResponse" column="subscribe_response" jdbcType="VARCHAR"/>
+        <result property="defaultFlag" column="default_flag" jdbcType="VARCHAR"/>
+        <result property="preResp" column="pre_resp" jdbcType="VARCHAR"/>
+        <result property="groupChat" column="group_chat" jdbcType="VARCHAR"/>
+        <result property="uuid" column="uuid" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="wxNo" column="wx_no" jdbcType="VARCHAR"/>
+        <result property="loginStatus" column="login_status" jdbcType="VARCHAR"/>
+        <result property="coverImage" column="cover_image" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="editable" column="editable" jdbcType="VARCHAR"/>
+        <result property="requestIntervalLimit" column="request_interval_limit" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="baseColumnList">
+        serial_no
+        ,binding_wx_platform_no
+        ,nickname,uuid,login_status,cover_image,wx_no,editable,menu_no
+        ,name,template_enable,exception_resp,pre_resp,default_flag,group_chat
+        ,description,status,merchant_no,customer_no,subscribe_response
+        ,tenant_id,type,agent_id,corp_id,app_id,copilot_no,token
+        ,app_secret,aes_key,create_time,request_interval_limit
+        ,update_time
+    </sql>
+
+
+    <select id="selectByAppId" resultMap="BaseResultMap">
+        select
+        <include refid="baseColumnList"/>
+        from ai_wx_platform
+        where app_id = #{appId}
+    </select>
+
+    <select id="selectByCorpAgentId" resultMap="BaseResultMap">
+        select
+        <include refid="baseColumnList"/>
+        from ai_wx_platform
+        <where>
+            <if test="corpId != null and corpId != ''">
+                corp_id = #{corpId}
+            </if>
+            <if test="agentId != null and agentId != ''">
+                agent_id = #{agentId}
+            </if>
+        </where>
+        order by create_time desc
+        limit 1
+    </select>
+
+
+</mapper>

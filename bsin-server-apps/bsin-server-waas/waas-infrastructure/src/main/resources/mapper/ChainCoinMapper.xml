@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.ChainCoinMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.ChainCoin">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="chainCoinKey" column="chain_coin_key" jdbcType="VARCHAR"/>
+            <result property="chainCoinName" column="chain_coin_name" jdbcType="VARCHAR"/>
+            <result property="shortName" column="short_name" jdbcType="VARCHAR"/>
+            <result property="coin" column="coin" jdbcType="VARCHAR"/>
+            <result property="chainName" column="chain_name" jdbcType="VARCHAR"/>
+            <result property="contractAddress" column="contract_address" jdbcType="VARCHAR"/>
+            <result property="coinDecimal" column="coin_decimal" jdbcType="VARCHAR"/>
+            <result property="unit" column="unit" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="type" column="type" jdbcType="INTEGER"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="logoUrl" column="logo_url" jdbcType="VARCHAR"/>
+            <result property="bizRoleType" column="biz_role_type" jdbcType="INTEGER"/>
+            <result property="bizRoleNo" column="biz_role_no" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+        <update id="updateDelFlag">
+                update crm_chain_coin set del_flag = '1' ,update_by = #{params.updateBy} ,update_time = #{params.updateTime}
+                where serial_no = #{params.serialNo}
+        </update>
+
+        <select id="coinDropDown" resultType="java.lang.String">
+                select coin from crm_chain_coin group by coin
+        </select>
+
+        <select id="chainDropDown" resultType="java.lang.String">
+                select chain_name from crm_chain_coin group by chain_name
+        </select>
+</mapper>

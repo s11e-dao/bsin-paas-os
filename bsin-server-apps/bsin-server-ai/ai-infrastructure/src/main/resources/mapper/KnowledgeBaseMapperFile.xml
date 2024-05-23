@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.KnowledgeBaseFileMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.KnowledgeBaseFile">
+        <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="knowledgeBaseNo" column="knowledge_base_no" jdbcType="VARCHAR"/>
+        <result property="fileUri" column="file_uri" jdbcType="VARCHAR"/>
+        <result property="localPath" column="local_path" jdbcType="VARCHAR"/>
+        <result property="fileType" column="file_type" jdbcType="VARCHAR"/>
+        <result property="chunkNum" column="chunk_num" jdbcType="VARCHAR"/>
+        <result property="coverImage" column="cover_image" jdbcType="VARCHAR"/>
+        <result property="accessAuthority" column="access_authority" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="editable" column="editable" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no
+        ,editable,chunk_num,local_path
+        ,type,knowledge_base_no,cover_image,access_authority,`status`,create_time,update_time,file_uri,file_type
+    </sql>
+
+</mapper>

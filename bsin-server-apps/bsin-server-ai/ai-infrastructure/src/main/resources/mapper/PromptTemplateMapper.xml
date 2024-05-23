@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.PromptTemplateMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.PromptTemplateParam">
+        <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+        <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="systemPromptTemplate" column="system_prompt_template" jdbcType="VARCHAR"/>
+        <result property="systemRole" column="system_role" jdbcType="VARCHAR"/>
+        <result property="determiner" column="determiner" jdbcType="VARCHAR"/>
+        <result property="knowledgeBase" column="knowledge_base" jdbcType="VARCHAR"/>
+        <result property="chatHistorySummary" column="chat_history_summary" jdbcType="INTEGER"/>
+        <result property="summaryPromptTemplate" column="summary_prompt_template" jdbcType="VARCHAR"/>
+        <result property="chatBufferWindow" column="chat_buffer_window" jdbcType="VARCHAR"/>
+        <result property="question" column="question" jdbcType="VARCHAR"/>
+        <result property="coverImage" column="cover_image" jdbcType="VARCHAR"/>
+        <result property="accessAuthority" column="access_authority" jdbcType="VARCHAR"/>
+        <result property="defaultFlag" column="default_flag" jdbcType="VARCHAR"/>
+        <result property="editable" column="editable" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no
+        ,system_prompt_template,default_flag,summary_prompt_template,editable
+        ,tenant_id,merchant_no,customer_no,system_role,determiner,knowledge_base,chat_history_summary,chat_buffer_window,question,
+        ,type,cover_image,access_authority,`status`,create_time,update_time
+    </sql>
+
+</mapper>

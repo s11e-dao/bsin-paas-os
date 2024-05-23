@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.customer.MerchantMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.customer.Merchant">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="merchantName" column="merchant_name" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="step" column="step" jdbcType="INTEGER"/>
+            <result property="uploadFileTime" column="upload_file_time" jdbcType="TIMESTAMP"/>
+            <result property="auditStatus" column="audit_status" jdbcType="INTEGER"/>
+            <result property="auditTime" column="audit_time" jdbcType="TIMESTAMP"/>
+            <result property="comment" column="comment" jdbcType="VARCHAR"/>
+            <result property="registrationName" column="registration_name" jdbcType="VARCHAR"/>
+            <result property="registrationCntrCode" column="registration_cntr_code" jdbcType="VARCHAR"/>
+            <result property="registrationNumber" column="registration_number" jdbcType="VARCHAR"/>
+            <result property="legalPersonName" column="legal_person_name" jdbcType="VARCHAR"/>
+            <result property="legalPersonIdType" column="legal_person_id_type" jdbcType="VARCHAR"/>
+            <result property="legalPersonIdno" column="legal_person_idno" jdbcType="VARCHAR"/>
+            <result property="businessLicenceImg" column="business_licence_img" jdbcType="VARCHAR"/>
+            <result property="registrationDate" column="registration_date" jdbcType="TIMESTAMP"/>
+            <result property="validityRegistrationDate" column="validity_registration_date" jdbcType="TIMESTAMP"/>
+            <result property="addressLine" column="address_line" jdbcType="VARCHAR"/>
+            <result property="netAddress" column="net_address" jdbcType="VARCHAR"/>
+            <result property="addressIndex" column="address_index" jdbcType="VARCHAR"/>
+            <result property="busunessScope" column="busuness_scope" jdbcType="VARCHAR"/>
+            <result property="corpEmail" column="corp_email" jdbcType="VARCHAR"/>
+            <result property="corpType" column="corp_type" jdbcType="INTEGER"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="pageList" parameterType="me.flyray.bsin.domain.request.customer.MerchantDTO" resultType="me.flyray.bsin.domain.entity.customer.Merchant">
+        select
+        cm.serial_no,
+        cm.merchant_name,
+        cm.type,
+        cm.status,
+        cm.registration_name,
+        cm.company_type,
+        cm.comment,
+        cm.registration_cntr_code,
+        cm.registration_number,
+        cm.legal_person_name,
+        cm.legal_person_id_type,
+        cm.legal_person_idno,
+        cm.business_licence_img,
+        cm.registration_date,
+        cm.validity_registration_date,
+        cm.address_line,
+        cm.net_address,
+        cm.address_index,
+        cm.busuness_scope,
+        cm.corp_email,
+        cm.corp_type,
+        cm.customer_no,
+        cm.create_time
+        from crm_merchant as cm
+        <trim prefix="where" prefixOverrides="and">
+            <if test="merchant.merchantName != null and merchant.merchantName != ''">
+                and cm.merchant_name LIKE CONCAT ("%",#{merchant.merchantName},"%")
+            </if>
+            <if test="merchant.status != null and merchant.status != ''">
+                and cm.status = #{merchant.status}
+            </if>
+            <if test="merchant.startTime != null" >
+                <![CDATA[and cm.create_time >= #{merchant.startTime}]]>
+           </if>
+            <if test="merchant.endTime != null" >
+                <![CDATA[and cm.create_time <= #{merchant.endTime}]]>
+            </if>
+                and cm.del_flag = '0'
+        </trim>
+    </select>
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.ProductMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.SysProduct">
+            <id property="productId" column="product_id" jdbcType="VARCHAR"/>
+            <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+            <result property="productCode" column="product_code" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="BIT"/>
+            <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        product_id,product_name,product_code,
+        remark,status,del_flag,create_time
+    </sql>
+
+    <insert id="insert" parameterType="me.flyray.bsin.domain.entity.SysProduct">
+        insert into sys_product (product_id,product_name,product_code,
+                                 remark,status)
+        values (#{productId,jdbcType=VARCHAR},
+                #{productName,jdbcType=VARCHAR},
+                #{productCode,jdbcType=VARCHAR},
+                #{remark,jdbcType=VARCHAR},
+                #{status,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="deleteById" parameterType="java.lang.String">
+        update  sys_product set del_flag = 1
+        where product_id = #{productId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateById" parameterType="me.flyray.bsin.domain.entity.SysProduct">
+        update sys_product
+        <set>
+            <if test="productName != null and productName != ''">
+                product_name = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="productCode != null and productCode != ''">
+                product_code = #{productCode,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where product_id = #{productId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectList"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from sys_product
+        <where>
+            <if test="productName != null and productName != ''">
+                product_name = #{productName}
+            </if>
+            and del_flag = 0
+        </where>
+        ORDER BY create_time desc
+    </select>
+
+    <select id="selectPageList"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from sys_product
+        <where>
+            <if test="productName != null and productName != ''">
+                product_name LIKE CONCAT('%', #{productName}, '%')
+            </if>
+            and del_flag = 0
+        </where>
+        ORDER BY create_time desc
+    </select>
+
+    <select id="selectByProductCode"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from sys_product
+        where product_code = #{productCode} and del_flag = 0
+    </select>
+
+</mapper>

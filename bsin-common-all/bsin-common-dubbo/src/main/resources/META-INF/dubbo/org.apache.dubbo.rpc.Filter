@@ -1,0 +1,2 @@
+dubboRequestFilter=me.flyray.bsin.dubbo.filter.DubboRequestFilter
+genericSerializerFilter=me.flyray.bsin.dubbo.filter.GenericSerializerFilter

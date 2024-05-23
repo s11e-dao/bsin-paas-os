@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.AppFunctionMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.SysAppFunction">
+            <id property="appFunctionId" column="app_function_id" jdbcType="VARCHAR"/>
+            <result property="functionName" column="function_name" jdbcType="VARCHAR"/>
+            <result property="functionCode" column="function_code" jdbcType="VARCHAR"/>
+            <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="baseFlag" column="base_flag" jdbcType="BIT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        app_id, app_function_id,function_name,function_code,
+        remark,base_flag
+    </sql>
+
+    <insert id="insert" parameterType="me.flyray.bsin.domain.entity.SysAppFunction">
+        insert into sys_app_function (app_id, app_function_id,
+                                      function_name, remark, base_flag)
+        values (#{appId,jdbcType=VARCHAR},
+                #{appFunctionId,jdbcType=VARCHAR},
+                #{functionName,jdbcType=VARCHAR},
+                #{remark,jdbcType=VARCHAR},#{baseFlag,jdbcType=VARCHAR})
+    </insert>
+
+    <delete id="deleteById">
+        DELETE FROM sys_app_function WHERE app_function_id = #{appFunctionId}
+    </delete>
+
+    <select id="selectListByAppId"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"></include>
+        from sys_app_function
+        <where>
+            <if test="appId != null and appId != ''">
+                and app_id= #{appId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPageListByAppId"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"></include>
+        from sys_app_function
+        <where>
+            <if test="appId != null and appId != ''">
+                and app_id= #{appId}
+            </if>
+        </where>
+    </select>
+
+</mapper>

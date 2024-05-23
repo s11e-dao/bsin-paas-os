@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.ActDeModelMapper">
+    <resultMap id="actDeModelMap" type="me.flyray.bsin.domain.entity.ActDeModel">
+        <id column="id" property="id"></id>
+        <result column="model_key" property="modelKey"/>
+        <result column="description" property="description"/>
+        <result column="model_comment" property="modelComment"/>
+        <result column="created" property="created"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="last_updated" property="lastUpdated"/>
+        <result column="last_updated_by" property="lastUpdatedBy"/>
+        <result column="version" property="version"/>
+        <result column="model_editor_json" property="modelEditorJson"/>
+        <result column="thumbnail" property="thumbnail"/>
+        <result column="model_type" property="modelType"/>
+        <result column="tenant_id" property="tenantId"/>
+    </resultMap>
+    <sql id="actDeModelSql">
+        id,name,model_key,description,model_comment,created,created_by,last_updated,
+        last_updated_by,version,model_editor_json,thumbnail,model_type,tenant_id
+    </sql>
+    <select id="getProcessModelByType" resultMap="actDeModelMap">
+        select
+        <include refid="actDeModelSql"/>
+        from act_de_model adm left join bsin_model_model_type cmtc on adm.id = cmtc.model_id
+        <where>
+            adm.model_type = 0
+            <if test="tenantId != null and tenantId != ''">
+              and  adm.tenant_id = #{tenantId}
+            </if>
+            <if test="modelTypeId != null and modelTypeId != ''">
+              and  cmtc.model_type_id = #{modelTypeId}
+            </if>
+        </where>
+    </select>
+
+<!--    <select id="getFormModel" resultMap="actDeModelMap">-->
+<!--        select-->
+<!--        <include refid="actDeModelSql"/>-->
+<!--        from act_de_model-->
+<!--        <where>-->
+<!--            1=1-->
+<!--            <if test="tenantId != null and tenantId != ''">-->
+<!--                and tenant_id = #{tenantId}-->
+<!--            </if>-->
+<!--            <if test="modelType != null and modelType != ''">-->
+<!--                and model_type = #{modelType}-->
+<!--            </if>-->
+<!--            <if test="modelKey != null and modelKey != ''">-->
+<!--                and model_key = #{modelKey}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--        order by created desc-->
+<!--    </select>-->
+
+    <select id="getFormModel" resultMap="actDeModelMap">
+        select
+        <include refid="actDeModelSql"/>
+        from act_de_model
+        <where>
+            1=1
+            <if test="actDeModel.tenantId != null and actDeModel.tenantId != ''">
+                and tenant_id = #{actDeModel.tenantId}
+            </if>
+            <if test="actDeModel.modelType != null and actDeModel.modelType != ''">
+                and model_type = #{actDeModel.modelType}
+            </if>
+            <if test="actDeModel.modelKey != null and actDeModel.modelKey != ''">
+                and model_key = #{actDeModel.modelKey}
+            </if>
+            <if test="actDeModel.name != null and actDeModel.name != ''">
+                and name like concat('%',#{actDeModel.name},'%')
+            </if>
+        </where>
+        order by created desc
+    </select>
+
+    <update id="setActDeModelTenantId" >
+        update act_de_model
+        set tenant_id = #{tenantId}
+        where id = #{id}
+    </update>
+
+    <select id="getActDeModelKey" resultMap="actDeModelMap">
+        select
+        <include refid="actDeModelSql"/>
+        from act_de_model
+        where model_key = #{modelKey}
+    </select>
+</mapper>

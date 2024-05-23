@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.ActReProcdefMapper">
+
+    <resultMap id="actReProcdefMap" type="me.flyray.bsin.domain.entity.ProcessDefinition">
+        <id column="id" property="id"></id>
+        <result column="ID_" property="id"/>
+        <result column="NAME_" property="name"/>
+        <result column="KEY_" property="key"/>
+        <result column="VERSION_" property="version"/>
+        <result column="DEPLOYMENT_ID_" property="deploymentId"/>
+        <result column="DESCRIPTION_" property="description"/>
+        <result column="TENANT_ID_" property="tenantId"/>
+    </resultMap>
+
+    <sql id="actReProcdefSql">
+        ID_,REV_,CATEGORY_,NAME_,KEY_,VERSION_,DEPLOYMENT_ID_,RESOURCE_NAME_,
+        DGRM_RESOURCE_NAME_,DESCRIPTION_,HAS_START_FORM_KEY_,HAS_GRAPHICAL_NOTATION_,SUSPENSION_STATE_,TENANT_ID_,
+        ENGINE_VERSION_,DERIVED_FROM_,DERIVED_FROM_ROOT_,DERIVED_VERSION_
+    </sql>
+
+    <select id="getProcessDefinitionPageList" resultMap="actReProcdefMap">
+        select
+        arp.ID_,arp.REV_,arp.CATEGORY_,arp.NAME_,arp.KEY_,arp.VERSION_,DEPLOYMENT_ID_,RESOURCE_NAME_,
+        DGRM_RESOURCE_NAME_,DESCRIPTION_,HAS_START_FORM_KEY_,HAS_GRAPHICAL_NOTATION_,SUSPENSION_STATE_,arp.TENANT_ID_,
+        arp.ENGINE_VERSION_,arp.DERIVED_FROM_,arp.DERIVED_FROM_ROOT_,DERIVED_VERSION_
+        from act_re_procdef arp
+        left join act_re_deployment ard on arp.DEPLOYMENT_ID_ = ard.ID_
+        <where>
+            <if test="tenantId != null and tenantId != ''">
+                and arp.TENANT_ID_ = #{tenantId}
+            </if>
+            <if test="name != null and name != ''">
+              and  arp.NAME_ LIKE concat('%',#{name},'%')
+            </if>
+            <if test="key != null and key != ''">
+                and  arp.KEY_ LIKE concat('%',#{key},'%')
+            </if>
+        </where>
+        order by ard.DEPLOY_TIME_ desc
+    </select>
+
+</mapper>

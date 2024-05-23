@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.UserRoleMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.SysRole">
+        <id column="role_id" property="roleId"/>
+        <result column="role_code" property="roleCode"/>
+        <result column="role_name" property="roleName"/>
+        <result column="app_id" property="appId"/>
+        <result column="remark" property="remark"/>
+        <result column="app_name" property="appName"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="type" property="type"/>
+    </resultMap>
+
+    <insert id="assignRoles" >
+        insert into sys_user_role(role_id, user_id,app_id) VALUES
+        <foreach collection="roleIds" item="roleId" separator=",">
+            (#{roleId},#{userId},#{appId})
+        </foreach>
+
+    </insert>
+
+    <insert id="assignRole" >
+        insert into sys_user_role(role_id, user_id,app_id) VALUES (#{roleId},#{userId},#{appId})
+    </insert>
+
+    <delete id="unAssignRoles">
+        delete from sys_user_role
+        where user_id = #{userId} and app_id = #{appId}
+    </delete>
+
+    <select id="selectListByUserId" resultMap="BaseResultMap">
+        select sys_user_role.role_id, user_id,  role_code, role_name, sys_role.app_id
+        from sys_user_role
+                 LEFT JOIN sys_role
+                           on sys_user_role.role_id = sys_role.role_id
+        where sys_user_role.user_id = #{userId}
+        and sys_user_role.app_id = #{appId}
+    </select>
+
+</mapper>

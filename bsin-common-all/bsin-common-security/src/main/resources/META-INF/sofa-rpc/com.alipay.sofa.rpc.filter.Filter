@@ -1,0 +1,2 @@
+sofaLoginInfoFilter=me.flyray.bsin.security.filter.SofaLoginInfoFilter
+sofaRpcRequestLogFilter=me.flyray.bsin.security.filter.SofaRpcRequestLogFilter

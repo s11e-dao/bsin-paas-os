@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.TenantAppMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.SysApp">
+        <id column="app_id" jdbcType="VARCHAR" property="appId" />
+        <result column="app_code" jdbcType="VARCHAR" property="appCode" />
+        <result column="app_name" jdbcType="VARCHAR" property="appName" />
+        <result column="logo" jdbcType="VARCHAR" property="logo" />
+        <result column="url" jdbcType="VARCHAR" property="url" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
+        <result column="theme" jdbcType="VARCHAR" property="theme" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="tenantAppType" jdbcType="INTEGER" property="tenantAppType" />
+        <result column="app_Language" jdbcType="INTEGER" property="appLanguage" />
+    </resultMap>
+
+    <insert id="authorizeApps" >
+        insert into sys_tenant_app(tenant_id, app_id,type) values
+        <foreach collection="appIds" item="appId" separator=",">
+        (#{tenantId},#{appId},#{type})
+        </foreach>
+    </insert>
+
+    <delete id="unAuthorizeAppByTenantId" parameterType="java.lang.String">
+        delete from sys_tenant_app where tenant_id = #{tenantId} and type = #{type}
+    </delete>
+
+    <delete id="unAuthorizeApp" parameterType="java.lang.String">
+        delete from sys_tenant_app
+        where tenant_id = #{tenantId} and app_id = #{appId}
+    </delete>
+
+    <select id="selectTenantAppType" resultType="java.lang.String">
+        select type from sys_tenant_app
+        where tenant_id = #{tenantId} and app_id = #{appId}
+    </select>
+
+    <select id="selectTenantBaseApp" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select ta.app_id, ta.tenant_id, a.app_id, a.app_code, a.url, a.logo, a.app_name,
+               pa.app_id, pa.product_id, pa.base_flag
+        from sys_tenant_app as ta left join sys_product_app as pa on ta.app_id = pa.app_id
+                                  left join sys_app as a on ta.app_id = a.app_id
+        where ta.tenant_id = #{tenantId} and pa.product_id = #{productId} and  pa.base_flag = '1'
+    </select>
+
+</mapper>

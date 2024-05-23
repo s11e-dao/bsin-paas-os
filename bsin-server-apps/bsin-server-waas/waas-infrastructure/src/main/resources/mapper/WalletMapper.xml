@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.WalletMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.Wallet">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="walletName" column="wallet_name" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="bizRoleType" column="business_role_type" jdbcType="VARCHAR"/>
+            <result property="bizRoleNo" column="business_role_no" jdbcType="INTEGER"/>
+            <result property="balance" column="balance" jdbcType="INTEGER"/>
+            <result property="walletTag" column="wallet_tag" jdbcType="VARCHAR"/>
+            <result property="outUserId" column="out_user_id" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        wallet_id,wallet_name,type,
+        status,customer_type,wallet_tag,
+        out_user_id,remark,customer_id,
+        create_time,create_by,update_time,
+        update_by,del_flag
+    </sql>
+
+    <select id="pageList" parameterType="me.flyray.bsin.domain.request.WalletDTO" resultType="me.flyray.bsin.domain.response.WalletVO">
+        select
+        cw.serial_no as serialNo,
+        cw.wallet_name as walletName,
+        cw.type as type,
+        cw.status as status,
+        cw.business_role_type as businessRoleType,
+        cw.business_role_no as businessRoleNo,
+        cw.wallet_tag as walletTag,
+        cw.category as category,
+        cw.env as env,
+        T1.balance as balance,
+        cw.out_user_id as outUserId,
+        cw.remark as remark,
+        cp.platform_name as platformName,
+        cw.create_time as createTime,
+        cw.create_by as createBy,
+        cw.update_time as updateTime,
+        cw.update_by as updateBy
+        from crm_wallet as cw
+        left join crm_platform as cp
+        on cw.tenant_id = cp.tenant_id and cp.del_flag = '0'
+        left join (
+            select wallet_no,sum(balance) as balance from crm_wallet_account group by wallet_no
+        )as T1
+        on T1.wallet_no = cw.serial_no
+        <trim prefix="where" prefixOverrides="and">
+            <if test="wallet.serialNo != null and wallet.serialNo != ''">
+                and cw.serial_no = #{wallet.serialNo}
+            </if>
+            <if test="wallet.walletName != null and wallet.walletName != ''">
+                and  cw.wallet_name LIKE CONCAT ("%",#{wallet.walletName},"%")
+            </if>
+            <if test="wallet.status != null">
+                and cw.status = #{wallet.status}
+            </if>
+            <if test="wallet.bizRoleType != null">
+                and cw.biz_role_type = #{wallet.bizRoleType}
+            </if>
+<!--            <if test="wallet.businessRoleNo != null">-->
+<!--                and cw.business_role_no = #{wallet.businessRoleNo}-->
+<!--            </if>-->
+            <if test="wallet.startTime != null" >
+                <![CDATA[and cw.create_time >= #{wallet.startTime}]]>
+            </if>
+            <if test=" wallet.endTime != null">
+                <![CDATA[and cw.create_time <= #{wallet.endTime}]]>
+            </if>
+            and cw.del_flag = '0'
+        </trim>
+    </select>
+
+    <update id="updateDelFlag">
+        update crm_wallet set del_flag = '1' ,update_by = #{params.updateBy} ,update_time = #{params.updateTime}
+        where serial_no = #{params.serialNo}
+    </update>
+</mapper>

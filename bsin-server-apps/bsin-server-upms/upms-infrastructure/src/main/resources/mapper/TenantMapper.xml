@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.TenantMapper">
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.SysTenant">
+        <id column="tenant_id" jdbcType="VARCHAR" property="tenantId"/>
+        <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode"/>
+        <result column="tenant_name" jdbcType="VARCHAR" property="tenantName"/>
+        <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="del_flag" jdbcType="INTEGER" property="delFlag"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="logo" jdbcType="VARCHAR" property="logo"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        tenant_id, tenant_code, tenant_name, status, create_time, update_time,
+        type, remark, logo, product_code
+    </sql>
+
+    <select id="selectList" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_tenant
+        <where>
+            1=1
+            <if test="tenantCode != null and tenantCode != ''">
+                and tenant_code = #{tenantCode,jdbcType=VARCHAR} or tenant_name = #{tenantName,jdbcType=VARCHAR}
+            </if>
+            <if test="tenantName != null and tenantName != ''">
+                and tenant_name = #{tenantName,jdbcType=VARCHAR}
+            </if>
+            and del_flag=0
+        </where>
+        order by type ,create_time desc
+    </select>
+
+    <select id="selectPageList" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_tenant
+        <where>
+            1=1
+            <if test="tenantCode != null and tenantCode != ''">
+                and tenant_code = #{tenantCode,jdbcType=VARCHAR} or tenant_name = #{tenantName,jdbcType=VARCHAR}
+            </if>
+            <if test="tenantId != null and tenantId != ''">
+                and tenant_id = #{tenantId}
+            </if>
+            <if test="tenantName != null and tenantName != ''">
+                and tenant_name = #{tenantName,jdbcType=VARCHAR}
+            </if>
+            and del_flag=0
+        </where>
+        order by create_time desc
+    </select>
+
+    <update id="deleteById" parameterType="java.lang.String">
+        update sys_tenant
+        set del_flag = 1
+        where tenant_id = #{tenantId,jdbcType=VARCHAR}
+    </update>
+
+    <insert id="insert" parameterType="me.flyray.bsin.domain.entity.SysTenant">
+        insert into sys_tenant (tenant_id, tenant_code, tenant_name,
+                                status, remark, product_code, logo)
+        values (#{tenantId,jdbcType=VARCHAR}, #{tenantCode,jdbcType=VARCHAR}, #{tenantName,jdbcType=VARCHAR},
+                #{status,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{productCode,jdbcType=VARCHAR},
+                #{logo,jdbcType=VARCHAR})
+    </insert>
+
+    <!--    兼顾租户添加和dao创建流程，两个参数都会出现为空-->
+    <select id="getTenantByTenantCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"></include>
+        from sys_tenant
+        where del_flag = 0
+        <if test="tenantCode != null and tenantCode != ''">
+            and tenant_code = #{tenantCode}
+        </if>
+        <if test="tenantId != null and tenantId != ''">
+            and tenant_id=#{tenantId}
+        </if>
+    </select>
+
+    <!--    <update id="updateById" parameterType="SysTenant">-->
+    <!--        update sys_tenant-->
+    <!--        set tenant_name = #{tenantName,jdbcType=VARCHAR},-->
+    <!--            tenant_code = #{tenantCode,jdbcType=INTEGER},-->
+    <!--            status      = #{status,jdbcType=INTEGER},-->
+    <!--            update_time = now(),-->
+    <!--            remark      = #{remark,jdbcType=VARCHAR},-->
+    <!--            tenant_app_type      = #{tenantAppType,jdbcType=VARCHAR},-->
+    <!--            logo        = #{logo,jdbcType=VARCHAR}-->
+    <!--        where tenant_id = #{tenantId,jdbcType=VARCHAR}-->
+    <!--    </update>-->
+
+    <select id="selectTenantInfoByTenantId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_tenant where tenant_id = #{tenantId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllList" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select tenant_id,
+               tenant_name
+        from sys_tenant
+        where del_flag = 0
+        order by create_time desc
+    </select>
+
+    <select id="getCountByTenantCode" resultType="java.lang.Integer">
+        select count(*) from sys_tenant
+        <where>
+            tenant_code = #{tenantCode}
+            <if test="tenantId!=null and tenantId!=''">
+                and tenant_id !=#{tenantId}
+            </if>
+        </where>
+
+    </select>
+
+</mapper>

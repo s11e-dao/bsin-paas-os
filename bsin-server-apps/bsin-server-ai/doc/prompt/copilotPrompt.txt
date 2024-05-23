@@ -1,0 +1,23 @@
+Answer the following question to the best of your ability:
+
+Question:
+{{question}}
+
+Base your answer on the following information if ist is useful and not null:
+{{knowledgeBase}}
+
+and the following summary of past chat history if necessary and not null:
+
+{{chatHistorySummary}}
+
+and the following recent history chat should also be considered if it is useful and not null:
+
+{{chatBufferWindow}}
+
+USER:who is Charlie?
+AI:Charlie is a character mentioned in the previous statement. The specific details about Charlie, such as their background or role in the story, are not provided.
+USER:我的上一个问题是?
+AI:您上一个问题是关于初始化MilvusClient的情况。测试用例中不需要单独初始化MilvusClient。
+USER:我的上ss一个问题是?
+AI:抱歉，我不知道您上一个问题是什么。请您再告诉我一次，我将尽力回答您的问题。
+USER:我的上sss一个问题是?

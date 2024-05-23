@@ -1,0 +1,50 @@
+*.iml
+*.idea
+*/target/
+*target
+*.log
+/logs/
+/dist
+
+
+# dependencies
+/node_modules
+/npm-debug.log*
+/yarn-error.log
+/yarn.lock
+/package-lock.json
+
+# production
+/dist
+
+# misc
+.DS_Store
+
+# umi
+/src/.umi
+/src/.umi-production
+/src/.umi-test
+/.env.local
+
+/bsin-server-upms/upms-server/src/main/resources/application.properties
+/bsin-server-targe-gateway/src/main/resources/application.properties
+/bsin-server-intelligent-decision/intelligent-decision-server/src/main/resources/application.properties
+/bsin-server-workflow/workflow-server/src/main/resources/application.properties
+/bsin-server-workflow-admin/workflow-admin-server/src/main/resources/application.properties
+/bsin-server-ai/ai-server/src/main/resources/application.properties
+/bsin-server-apps/bsin-server-workflow/workflow-server/src/main/resources/application.properties
+/bsin-server-apps/bsin-server-ai/ai-server/src/main/resources/application.properties
+/bsin-server-apps/bsin-server-intelligent-decision/intelligent-decision-server/src/main/resources/application.properties
+/bsin-server-apps/bsin-server-workflow-admin/workflow-admin-server/src/main/resources/application.properties
+
+bsin-ui-apps/bsin-ui-upms/dist/
+
+doc/script/apps-container.tar
+
+doc/script/ui-upms.tar
+
+bsin-targe-gateway-admin/src/main/resources/application-mysql.yml
+
+bsin-server-apps/bsin-server-upms/upms-server/src/main/resources/application-pro.yml
+/bsin-server-apps/bsin-server-ai/ai-server/src/main/resources/application-prod.properties
+/bsin-server-apps/bsin-server-ai/ai-server/src/main/resources/application-local.properties

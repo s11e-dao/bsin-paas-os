@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.WxPlatformUserTagMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.WxPlatformUserTag">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="openId" column="open_id" jdbcType="VARCHAR"/>
+            <result property="tag" column="tag" jdbcType="VARCHAR"/>
+            <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="baseColumnList">
+        serial_no,tenant_id,open_id,tag,
+        app_id
+    </sql>
+
+
+    <select id="selectByOpenId" resultMap="BaseResultMap">
+        select
+        <include refid="baseColumnList"/>
+        from ai_tenant_wxplatform_user_tag
+        where  open_id = #{openId}
+    </select>
+
+</mapper>

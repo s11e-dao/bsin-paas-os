@@ -1,0 +1,1 @@
+dubboSecurityFilter=me.flyray.bsin.security.filter.DubboLoginInfoFilter
