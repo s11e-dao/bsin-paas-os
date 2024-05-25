@@ -17,10 +17,8 @@
 
 package me.flyray.bsin.server;
 
-import me.flyray.bsin.infrastructure.biz.TransactionBiz;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -34,14 +32,14 @@ import org.springframework.context.annotation.ComponentScan;
 @MapperScan("me.flyray.bsin.infrastructure.mapper")
 @ComponentScan({"me.flyray.bsin.infrastructure.biz","me.flyray.bsin.infrastructure.config"})
 @SpringBootApplication
-public class CrmApplication {
-    
+public class WaasApplication {
+
     /**
      * Main Entrance.
      *
      * @param args startup arguments
      */
     public static void main(final String[] args) {
-        SpringApplication.run(CrmApplication.class, args);
+        SpringApplication.run(WaasApplication.class, args);
     }
 }

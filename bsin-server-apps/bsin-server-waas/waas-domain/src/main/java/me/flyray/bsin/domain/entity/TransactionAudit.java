@@ -16,7 +16,7 @@ import java.util.Date;
  * @TableName crm_transaction_audit
  */
 @Data
-@TableName(value ="crm_transaction_audit")
+@TableName(value ="waas_transaction_audit")
 public class TransactionAudit extends BaseEntity implements Serializable {
     /**
      * 审核类型;1、交易转出审核

@@ -20,7 +20,7 @@ import java.util.Date;
  * @TableName crm_transaction
  */
 @Data
-@TableName(value ="crm_transaction")
+@TableName(value ="waas_transaction")
 public class Transaction extends BaseEntity implements Serializable {
     /**
      * 交易类型;1、转入 2、转出 3、资金归集

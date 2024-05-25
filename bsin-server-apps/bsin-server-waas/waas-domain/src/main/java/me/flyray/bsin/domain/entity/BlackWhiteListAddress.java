@@ -18,7 +18,7 @@ import java.io.Serializable;
  * @TableName crm_address_black_white_list
  */
 @Data
-@TableName(value ="crm_black_white_list_address")
+@TableName(value ="waas_black_white_list_address")
 public class BlackWhiteListAddress extends BaseEntity implements Serializable {
     /**
      * 币种ID

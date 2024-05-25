@@ -19,7 +19,7 @@ import java.math.BigDecimal;
  * @TableName crm_coin
  */
 @Data
-@TableName(value ="crm_chain_coin")
+@TableName(value ="waas_chain_coin")
 public class ChainCoin extends BaseEntity implements Serializable {
 
     /**

@@ -20,7 +20,7 @@ import java.util.Date;
  * @TableName crm_wallet
  */
 @Data
-@TableName(value ="crm_wallet")
+@TableName(value ="waas_wallet")
 public class Wallet extends BaseEntity implements Serializable {
     /**
      * 账户名称

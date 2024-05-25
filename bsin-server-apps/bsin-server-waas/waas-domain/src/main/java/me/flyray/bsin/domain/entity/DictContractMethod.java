@@ -8,11 +8,11 @@ import lombok.Data;
 import me.flyray.bsin.entity.BaseEntity;
 
 /**
-* 
+*
 * @TableName crm_dict_contract_method
 */
 @Data
-@TableName(value ="crm_dict_contract_method")
+@TableName(value ="waas_dict_contract_method")
 public class DictContractMethod  extends BaseEntity implements Serializable {
 
     /**
