@@ -8,7 +8,6 @@ import me.flyray.bsin.infrastructure.mapper.SmsLogMapper;
 import me.flyray.bsin.infrastructure.mapper.ValidateCodeMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.sms.infobip.InfobipSmsUtil;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,7 @@ import java.util.*;
 
 @Service
 public class SmsBiz {
+
     @Autowired
     public SmsLogMapper smsLogMapper;
     @Autowired
@@ -123,7 +123,7 @@ public class SmsBiz {
             smsLog.setCreateTime(new Date());
             smsLog.setCreateBy(user.getUserId());
             // 发送短信
-            String rspMsg = InfobipSmsUtil.sendCode(mobile, msg);
+            String rspMsg = null;
             smsLog.setRspMsg(rspMsg);
             smsLogMapper.insert(smsLog);
         }catch (Exception e){

@@ -229,7 +229,6 @@ public class TransactionBiz {
                     transactionDTO.setCompletedTime(LocalDateTime.now().toString());
                     transactionDTO.setCreateTime(new Date());
 
-
                     // 转入交易
                     if (to != null) {
                         QueryWrapper<WalletAccount> walletAccountQueryWrapper = new QueryWrapper();

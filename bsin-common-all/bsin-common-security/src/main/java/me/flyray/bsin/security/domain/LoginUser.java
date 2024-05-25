@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class LoginUser implements Serializable {
 
-     
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -102,6 +102,16 @@ public class LoginUser implements Serializable {
      * 用户类型
      */
     private String userType;
+
+    /**
+     * 用户业务角色类型
+     */
+    private Integer bizRoleType;
+
+    /**
+     * 用户业务角色类型编号
+     */
+    private String bizRoleTypeNo;
 
     /**
      * 用户key值

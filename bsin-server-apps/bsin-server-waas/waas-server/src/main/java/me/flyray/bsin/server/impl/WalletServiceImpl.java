@@ -87,7 +87,7 @@ public class WalletServiceImpl implements WalletService {
             wallet.setCreateBy(user.getUserId());
             wallet.setCreateTime(new Date());
             wallet.setTenantId(user.getTenantId());
-            wallet.setBizRoleNo(user.getBizRoleNo());
+            wallet.setBizRoleNo(user.getBizRoleTypeNo());
             wallet.setBizRoleType(user.getBizRoleType());
             walletMapper.insert(wallet);
 

@@ -63,7 +63,7 @@ public class BlackWhiteListAddressServiceImpl implements BlackWhiteListAddressSe
             blackWhiteListAddress.setSerialNo(addressId);
             blackWhiteListAddress.setCreateTime(new Date());
             blackWhiteListAddress.setCreateBy(user.getUserId());
-            blackWhiteListAddress.setBizRoleNo(user.getBizRoleNo());
+            blackWhiteListAddress.setBizRoleNo(user.getBizRoleTypeNo());
             blackWhiteListAddress.setBizRoleType(user.getBizRoleType());
             blackWhiteListAddressMapper.insert(blackWhiteListAddress);
         }catch (BusinessException be){
@@ -147,7 +147,7 @@ public class BlackWhiteListAddressServiceImpl implements BlackWhiteListAddressSe
         if(address.getSize() == null){
             address.setSize(10);
         }
-        address.setBizRoleNo(user.getBizRoleNo());
+        address.setBizRoleNo(user.getBizRoleTypeNo());
         address.setBizRoleType(user.getBizRoleType());
         return blackWhiteListAddressMapper.pageList(new Page(address.getCurrent(),address.getSize()),address);
     }

@@ -40,6 +40,11 @@ public class BaseEntity implements Serializable {
     private Date updateTime;
 
     /**
+     * 更新者
+     */
+    private String updateBy;
+
+    /**
      * 逻辑删除 0、未删除 1、已删除
      */
     @TableLogic(value = "0",delval = "1")
