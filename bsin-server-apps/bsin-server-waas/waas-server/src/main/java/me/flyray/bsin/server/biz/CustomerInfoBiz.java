@@ -1,5 +1,7 @@
 package me.flyray.bsin.server.biz;
 
+import me.flyray.bsin.facade.service.AccountService;
+import me.flyray.bsin.facade.service.MerchantService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +18,6 @@ import me.flyray.bsin.blockchain.enums.ChainEnv;
 import me.flyray.bsin.blockchain.enums.ChainType;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.CustomerAccountService;
 import me.flyray.bsin.facade.service.CustomerService;
 
 /**
@@ -38,7 +39,7 @@ public class CustomerInfoBiz {
   private CustomerService customerService;
 
   @DubboReference(version = "dev")
-  private CustomerAccountService customerAccountService;
+  private AccountService accountService;
 
   public Map<String, Object> getMerchantBase(String merchantNo, String chainType) {
     // 1.查找资产商户
@@ -163,7 +164,7 @@ public class CustomerInfoBiz {
       Map reqMap = new HashMap();
       reqMap.put("customerNo", (String) customerBase.get("customerNo"));
       // TODO 调用crm中心冻结账户余额
-      customerAccountService.freeze(reqMap);
+      accountService.freeze(reqMap);
     }
     // TODO 判断用户账户余额是否充足
     else {

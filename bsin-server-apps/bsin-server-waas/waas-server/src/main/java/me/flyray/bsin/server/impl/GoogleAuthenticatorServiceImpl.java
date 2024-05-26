@@ -12,8 +12,9 @@ import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.GoogleAuthenticatorService;
 import me.flyray.bsin.facade.service.TenantService;
 import me.flyray.bsin.facade.service.UserService;
+import me.flyray.bsin.infrastructure.mapper.CustomerChainCoinMapper;
 import me.flyray.bsin.infrastructure.utils.QrCodeUtils;
-import me.flyray.bsin.infrastructure.utils.RedisClientUtil;
+import me.flyray.bsin.redis.manager.BsinCacheProvider;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.utils.AESUtils;
@@ -50,6 +51,8 @@ public class GoogleAuthenticatorServiceImpl implements GoogleAuthenticatorServic
 
     @DubboReference(version = "dev")
     private TenantService tenantService;
+    @Autowired
+    private BsinCacheProvider bsinCacheProvider;
 
 
     @Override
@@ -81,7 +84,7 @@ public class GoogleAuthenticatorServiceImpl implements GoogleAuthenticatorServic
     @ShenyuDubboClient("/checkCode")
     @ApiDoc(desc = "checkCode")
     public Map<String,Object> checkCode(String  tempToken, String authCode) {
-        String userInfoStr = RedisClientUtil.get(tempToken);
+        String userInfoStr = bsinCacheProvider.get(tempToken);
         SysUserVO sysUserVO = JSONUtil.toBean(userInfoStr, SysUserVO.class);
         String googleSecretKey = sysUserVO.getSysUser().getGoogleSecretKey();
         String secretKey = AESUtils.AESDeCode(googleSecretKey);

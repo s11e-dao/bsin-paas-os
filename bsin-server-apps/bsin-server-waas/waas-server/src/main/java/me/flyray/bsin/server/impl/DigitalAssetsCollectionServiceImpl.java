@@ -10,6 +10,8 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import me.flyray.bsin.facade.service.AccountService;
+import me.flyray.bsin.redis.manager.BsinCacheProvider;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -28,7 +30,6 @@ import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.blockchain.dto.ContractTransactionResp;
 import me.flyray.bsin.blockchain.enums.ContractProtocolStandards;
-import me.flyray.bsin.cache.BsinCacheProvider;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.domain.ContractProtocol;
@@ -44,7 +45,6 @@ import me.flyray.bsin.domain.enums.ObtainMethod;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.request.DigitalAssetsIssueReqDTO;
 import me.flyray.bsin.facade.request.DigitalAssetsPutShelvesDTO;
-import me.flyray.bsin.facade.service.CustomerAccountService;
 import me.flyray.bsin.facade.service.DigitalAssetsCollectionService;
 import me.flyray.bsin.infrastructure.mapper.ContractProtocolMapper;
 import me.flyray.bsin.infrastructure.mapper.DigitalAssetsCollectionMapper;
@@ -88,7 +88,7 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
   @Autowired private CustomerInfoBiz customerInfoBiz;
 
   @DubboReference(version = "dev")
-  private CustomerAccountService customerAccountService;
+  private AccountService accountService;
 
   /**
    * 部署数字资产智能合约
@@ -286,7 +286,7 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
     requestMap.put("ccy", digitalAssetsCollection.getSymbol());
     requestMap.put("category", AccountCategory.BALANCE.getCode());
     requestMap.put("name", AccountCategory.BALANCE.getDesc());
-    Map respMap = customerAccountService.inAccount(requestMap);
+    Map respMap = accountService.inAccount(requestMap);
 
     return RespBodyHandler.setRespBodyDto(respMap);
   }

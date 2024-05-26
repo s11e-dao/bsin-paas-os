@@ -102,7 +102,7 @@ public class WalletServiceImpl implements WalletService {
       wallet.setCreateBy(user.getUserId());
       wallet.setCreateTime(new Date());
       wallet.setTenantId(user.getTenantId());
-      wallet.setBizRoleNo(user.getBizRoleTypeNo());
+      wallet.setBizRoleTypeNo(user.getBizRoleTypeNo());
       wallet.setBizRoleType(user.getBizRoleType());
       walletMapper.insert(wallet);
 
@@ -112,7 +112,7 @@ public class WalletServiceImpl implements WalletService {
         CustomerChainCoin customerChainCoin = new CustomerChainCoin();
         customerChainCoin.setTenantId(wallet.getTenantId());
         customerChainCoin.setBizRoleType(wallet.getBizRoleType());
-        customerChainCoin.setBizRoleNo(wallet.getBizRoleNo());
+        customerChainCoin.setBizRoleTypeNo(wallet.getBizRoleTypeNo());
         if(wallet.getBizRoleType() != 4){
           customerChainCoin.setCreateRoleAccountFlag(1);
         }else {

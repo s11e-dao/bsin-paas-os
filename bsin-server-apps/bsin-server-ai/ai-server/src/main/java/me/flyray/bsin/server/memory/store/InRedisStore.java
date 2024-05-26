@@ -3,8 +3,8 @@ package me.flyray.bsin.server.memory.store;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.flyray.bsin.cache.BsinCacheProvider;
 import me.flyray.bsin.domain.domain.RedisChatMessage;
+import me.flyray.bsin.redis.manager.BsinCacheProvider;
 import me.flyray.bsin.server.utils.BsinMD5;
 import me.flyray.bsin.server.utils.ObjectToOther;
 import org.springframework.beans.factory.annotation.Autowired;

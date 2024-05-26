@@ -46,7 +46,7 @@ public class CustomerChainCoinServiceImpl implements CustomerChainCoinService {
             BeanUtils.copyProperties(customerChainCoinDTO,customerChainCoin);
 
             customerChainCoin.setTenantId(user.getTenantId());
-            customerChainCoin.setBizRoleNo(user.getBizRoleTypeNo());
+            customerChainCoin.setBizRoleTypeNo(user.getBizRoleTypeNo());
             customerChainCoin.setBizRoleType(user.getBizRoleType());
             customerChainCoin.setCreateTime(new Date());
             customerChainCoin.setCreateBy(user.getCreateBy());
@@ -132,7 +132,7 @@ public class CustomerChainCoinServiceImpl implements CustomerChainCoinService {
             int current = customerChainCoinDTO.getCurrent() == null ? 1 : customerChainCoinDTO.getCurrent();
             int size = customerChainCoinDTO.getSize() == null ? 10 : customerChainCoinDTO.getSize();
             customerChainCoinDTO.setTenantId(user.getTenantId());
-            customerChainCoinDTO.setBizRoleNo(user.getBizRoleTypeNo());
+            customerChainCoinDTO.setBizRoleTypeNo(user.getBizRoleTypeNo());
             customerChainCoinDTO.setBizRoleType(user.getBizRoleType());
             return customerChainCoinMapper.pageList(new Page<>(current, size), customerChainCoinDTO);
         }catch (BusinessException be){

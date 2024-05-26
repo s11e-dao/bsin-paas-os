@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import me.flyray.bsin.domain.domain.Merchant;
+import me.flyray.bsin.facade.service.*;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -23,11 +25,6 @@ import me.flyray.bsin.domain.domain.CustomerBase;
 import me.flyray.bsin.domain.domain.CustomerPassCard;
 import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
 import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
-import me.flyray.bsin.facade.service.CustomerPassCardService;
-import me.flyray.bsin.facade.service.CustomerProfileService;
-import me.flyray.bsin.facade.service.CustomerService;
-import me.flyray.bsin.facade.service.DigitalAssetsCollectionService;
-import me.flyray.bsin.facade.service.DigitalAssetsItemService;
 import me.flyray.bsin.infrastructure.mapper.CustomerPassCardMapper;
 import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
@@ -224,7 +221,7 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
               digitalAssetsItemRes.getTokenId());
       digitalAssetsItemRes.setMerchantLogo(digitalAssetsDetailRes.getDigitalAssetsItem().getMerchantLogo());
       digitalAssetsItemRes.setMerchantName(digitalAssetsDetailRes.getDigitalAssetsItem().getMerchantName());
-      digitalAssetsDetailRes.setCustomerPassCard(digitalAssetsItemRes); 
+      digitalAssetsDetailRes.setCustomerPassCard(digitalAssetsItemRes);
     }
     // TODO 成交记录数据
     return RespBodyHandler.setRespBodyDto(digitalAssetsDetailRes);

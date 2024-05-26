@@ -3,10 +3,10 @@ package me.flyray.bsin.server.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.entity.ChainCoin;
-import me.flyray.bsin.domain.entity.Transaction;
-import me.flyray.bsin.domain.entity.TransactionAudit;
-import me.flyray.bsin.domain.entity.WalletAccount;
+import me.flyray.bsin.domain.domain.ChainCoin;
+import me.flyray.bsin.domain.domain.Transaction;
+import me.flyray.bsin.domain.domain.TransactionAudit;
+import me.flyray.bsin.domain.domain.WalletAccount;
 import me.flyray.bsin.domain.request.TransactionDTO;
 import me.flyray.bsin.domain.request.TransactionRequest;
 import me.flyray.bsin.domain.response.TransactionVO;
@@ -88,9 +88,9 @@ public class TransactionServiceImpl  implements TransactionService {
             transaction.setOutSerialNo(transactionRequest.getOutSerialNo());
             transaction.setTransactionType(2);       // 交易类型 2、转出
             transaction.setComment(transactionRequest.getComment());
-            transaction.setFromAddress(transactionRequest.getFromAddress());
+            transaction.setFrom(transactionRequest.getFromAddress());
             transaction.setTxAmount(new BigDecimal(transactionRequest.getTxAmount()));
-            transaction.setToAddress(transactionRequest.getToAddress());
+            transaction.setTo(transactionRequest.getToAddress());
             transaction.setBizRoleType(user.getBizRoleType());
             transaction.setBizRoleNo(user.getBizRoleTypeNo());
             transaction.setTenantId(transactionRequest.getTenantId());
@@ -136,8 +136,8 @@ public class TransactionServiceImpl  implements TransactionService {
     @ApiDoc(desc = "transferOut")
     public void transferOut(TransactionDTO transactionDTO) throws Exception {
         log.debug("请求TransactionService.transferOut,参数:{}", transactionDTO);
-        String fromAddress = transactionDTO.getFromAddress();
-        String toAddress = transactionDTO.getToAddress();
+        String fromAddress = transactionDTO.getFrom();
+        String toAddress = transactionDTO.getTo();
         String contractAddress = transactionDTO.getContractAddress();
         BigDecimal txAmount = transactionDTO.getTxAmount();
 

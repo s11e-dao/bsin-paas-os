@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 
+import me.flyray.bsin.facade.service.AccountService;
+import me.flyray.bsin.redis.manager.BsinCacheProvider;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +25,6 @@ import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.blockchain.dto.ContractTransactionResp;
 import me.flyray.bsin.blockchain.enums.ContractProtocolStandards;
-import me.flyray.bsin.cache.BsinCacheProvider;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.domain.domain.ContractProtocol;
 import me.flyray.bsin.domain.domain.CustomerDigitalAssets;
@@ -37,7 +38,6 @@ import me.flyray.bsin.domain.enums.ObtainMethod;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.request.DigitalAssetsIssueReqDTO;
 import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
-import me.flyray.bsin.facade.service.CustomerAccountService;
 import me.flyray.bsin.facade.service.EquityConfigService;
 import me.flyray.bsin.infrastructure.mapper.ContractProtocolMapper;
 import me.flyray.bsin.infrastructure.mapper.CustomerDigitalAssetsMapper;
@@ -90,7 +90,7 @@ public class DigitalAssetsItemBiz {
   private EquityConfigService equityConfigService;
 
   @DubboReference(version = "dev")
-  private CustomerAccountService customerAccountService;
+  private AccountService accountService;
 
   @Autowired private BsinCacheProvider bsinCacheProvider;
 

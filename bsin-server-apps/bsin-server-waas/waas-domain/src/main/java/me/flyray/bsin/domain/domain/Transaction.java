@@ -46,7 +46,7 @@ public class Transaction extends BaseEntity implements Serializable {
     /**
      * 源地址
      */
-    private String fromAddress;
+    private String from;
 
     /**
      * 交易金额
@@ -66,7 +66,7 @@ public class Transaction extends BaseEntity implements Serializable {
     /**
      * 目标地址
      */
-    private String toAddress;
+    private String to;
 
     /**
      * 备注

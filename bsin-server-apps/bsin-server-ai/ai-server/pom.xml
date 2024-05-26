@@ -116,8 +116,8 @@
         <!--引入全部中间件服务-->
         <dependency>
             <groupId>me.flyray.bsin</groupId>
-            <artifactId>bsin-common-cache</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <artifactId>bsin-common-redis</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>

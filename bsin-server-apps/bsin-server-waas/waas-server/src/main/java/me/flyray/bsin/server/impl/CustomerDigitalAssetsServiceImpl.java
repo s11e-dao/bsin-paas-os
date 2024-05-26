@@ -2,6 +2,8 @@ package me.flyray.bsin.server.impl;
 
 import static me.flyray.bsin.constants.ResponseCode.USER_NOT_EXIST;
 
+import me.flyray.bsin.domain.domain.*;
+import me.flyray.bsin.facade.service.MerchantService;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -20,10 +22,6 @@ import me.flyray.bsin.blockchain.BsinBlockChainEngine;
 import me.flyray.bsin.blockchain.service.BsinBlockChainEngineFactory;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.ContractProtocol;
-import me.flyray.bsin.domain.domain.CustomerBase;
-import me.flyray.bsin.domain.domain.DigitalAssetsCollection;
-import me.flyray.bsin.domain.domain.DigitalAssetsItem;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
 import me.flyray.bsin.facade.response.DigitalAssetsItemRes;

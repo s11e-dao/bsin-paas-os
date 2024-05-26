@@ -3,6 +3,7 @@ package me.flyray.bsin.server.biz;
 import static me.chanjar.weixin.common.api.WxConsts.EventType.CLICK;
 
 
+import me.flyray.bsin.redis.manager.BsinCacheProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,6 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
-import me.flyray.bsin.cache.BsinCacheProvider;
 import me.flyray.bsin.domain.domain.WxPlatform;
 import me.flyray.bsin.facade.response.QuestionPreProcessDTO;
 import me.flyray.bsin.facade.service.CustomerService;

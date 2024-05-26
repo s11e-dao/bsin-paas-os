@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import me.flyray.bsin.facade.service.AccountService;
+import me.flyray.bsin.redis.manager.BsinCacheProvider;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -19,7 +21,6 @@ import java.util.Map;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.cache.BsinCacheProvider;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.annotations.CaptureCustomerBehavior;
 import me.flyray.bsin.domain.domain.CustomerAccount;
@@ -29,7 +30,6 @@ import me.flyray.bsin.domain.domain.TokenReleaseJournal;
 import me.flyray.bsin.domain.enums.AccountCategory;
 import me.flyray.bsin.domain.enums.BehaviorCode;
 import me.flyray.bsin.enums.CustomerType;
-import me.flyray.bsin.facade.service.CustomerAccountService;
 import me.flyray.bsin.facade.service.DigitalPointsService;
 import me.flyray.bsin.facade.service.TokenParamService;
 import me.flyray.bsin.infrastructure.mapper.CustomerPassCardMapper;
@@ -61,7 +61,7 @@ public class TokenParamServiceImpl implements TokenParamService {
   @Autowired private BsinCacheProvider bsinCacheProvider;
 
   @DubboReference(version = "dev")
-  private CustomerAccountService customerAccountService;
+  private AccountService accountService;
 
   @CaptureCustomerBehavior(behaviorCode = BehaviorCode.ISSUE, customerType = CustomerType.MEMBER)
   @Override
@@ -240,7 +240,7 @@ public class TokenParamServiceImpl implements TokenParamService {
       } else {
         reqMap.put("serialId", customerAccountNo);
       }
-      Map resMap = (Map) customerAccountService.getDetail(reqMap);
+      Map resMap = (Map) accountService.getDetail(reqMap);
       Map respDataMap = (Map) resMap.get("data");
 
       if (respDataMap.get("code") != null) {
@@ -463,7 +463,7 @@ public class TokenParamServiceImpl implements TokenParamService {
       reqMap.put("ccy", digitalAssetsCollection.getSymbol());
       reqMap.put("category", AccountCategory.BALANCE.getCode());
       reqMap.put("name", AccountCategory.BALANCE.getDesc());
-      customerAccountService.inAccount(reqMap);
+      accountService.inAccount(reqMap);
     }
 
     // 5.生成释放分配流水

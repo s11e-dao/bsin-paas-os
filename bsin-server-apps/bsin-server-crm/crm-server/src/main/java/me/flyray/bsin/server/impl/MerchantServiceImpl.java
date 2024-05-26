@@ -5,9 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-import me.flyray.bsin.domain.domain.CustomerBase;
-import me.flyray.bsin.domain.entity.ChainCoin;
-import me.flyray.bsin.domain.entity.Wallet;
+import me.flyray.bsin.domain.domain.*;
 import me.flyray.bsin.domain.request.MerchantRegisterRequest;
 import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
 import me.flyray.bsin.redis.manager.BsinCacheProvider;
@@ -36,8 +34,6 @@ import cn.hutool.core.bean.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.Merchant;
-import me.flyray.bsin.domain.domain.MerchantSubscribeJournal;
 import me.flyray.bsin.domain.entity.SysUser;
 import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.exception.BusinessException;
@@ -139,7 +135,7 @@ public class MerchantServiceImpl implements MerchantService {
             wallet.setStatus(1);    // 正常
             wallet.setCategory(1);  // 钱包分类 1、MVP 2、多签
             wallet.setEnv("EVM");
-            wallet.setBizRoleNo(serialNo);
+            wallet.setBizRoleTypeNo(serialNo);
             wallet.setCreateBy(user.getUserId());
             wallet.setCreateTime(new Date());
             // walletMapper.insert(wallet);

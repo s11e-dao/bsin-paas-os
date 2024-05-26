@@ -3,6 +3,7 @@ package me.flyray.bsin.server.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import me.flyray.bsin.domain.domain.Hello;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.Hello;
 import me.flyray.bsin.facade.service.HelloService;
 import me.flyray.bsin.infrastructure.mapper.HelloMapper;
 import me.flyray.bsin.server.utils.RespBodyHandler;

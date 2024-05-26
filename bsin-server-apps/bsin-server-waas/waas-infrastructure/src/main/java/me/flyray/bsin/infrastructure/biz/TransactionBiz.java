@@ -2,13 +2,14 @@ package me.flyray.bsin.infrastructure.biz;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import me.flyray.bsin.domain.entity.ChainCoin;
-import me.flyray.bsin.domain.entity.DictContractMethod;
-import me.flyray.bsin.domain.entity.Wallet;
-import me.flyray.bsin.domain.entity.WalletAccount;
+import me.flyray.bsin.domain.domain.ChainCoin;
+import me.flyray.bsin.domain.domain.DictContractMethod;
+import me.flyray.bsin.domain.domain.Wallet;
+import me.flyray.bsin.domain.domain.WalletAccount;
 import me.flyray.bsin.domain.request.TransactionDTO;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.infrastructure.utils.RedisClientUtil;
+import me.flyray.bsin.infrastructure.mapper.*;
+import me.flyray.bsin.redis.manager.BsinCacheProvider;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,9 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.EthFilter;
+import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
+import org.web3j.protocol.core.methods.response.Transaction;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.websocket.WebSocketService;
 import org.web3j.utils.Numeric;
@@ -53,6 +57,8 @@ public class TransactionBiz {
     private TransferBiz transferBiz;
     @Autowired
     private WalletAccountBiz walletAccountBiz;
+    @Autowired
+    private BsinCacheProvider bsinCacheProvider;
 
     @Autowired
     public TransactionBiz(ThreadPoolTaskExecutor taskExecutor) {
@@ -123,19 +129,19 @@ public class TransactionBiz {
                 taskExecutor.shutdown();
             }
             String txHash = ethLog.getTransactionHash();         // 交易hash
-            QueryWrapper<me.flyray.bsin.domain.entity.Transaction> query = Wrappers.query();
+            QueryWrapper<me.flyray.bsin.domain.domain.Transaction> query = Wrappers.query();
             query.eq("tx_hash",txHash);
-            List<me.flyray.bsin.domain.entity.Transaction> transactionList = transactionMapper.selectList(query);
+            List<me.flyray.bsin.domain.domain.Transaction> transactionList = transactionMapper.selectList(query);
             if(!transactionList.isEmpty()){
                 return;
             }
 
             // 对交易进行加锁
-            String value = RedisClientUtil.get(txHash);
+            String value = bsinCacheProvider.get(txHash);
             if (value != null) {
                 return;
             }
-            RedisClientUtil.append(txHash, String.valueOf(ethLog.getBlockNumber()));
+            bsinCacheProvider.set(txHash, String.valueOf(ethLog.getBlockNumber()));
             try{
                 // 1、通过hash获取交易 包含logs
                 EthGetTransactionReceipt ethGetTransactionReceipt = web3j.ethGetTransactionReceipt(txHash).sendAsync().get();
@@ -201,14 +207,14 @@ public class TransactionBiz {
                     } else if (transactionReceipt.getStatus().equals("0x0")) {
                         transactionDTO.setTransactionStatus(3);         // 0x0’ 事务失败
                     }
-                    transactionDTO.setFromAddress(from);  // 交易发起者地址
+                    transactionDTO.setFrom(from);  // 交易发起者地址
                     BigDecimal txAmount = new BigDecimal(tokenTransferAmount);
                     if(txAmount.compareTo(BigDecimal.ZERO)!=0){
                         txAmount = txAmount.divide(new BigDecimal(Math.pow(10, chainCoin.getCoinDecimal().doubleValue())));
                     }
 
                     transactionDTO.setGasFee(new BigDecimal(transactionReceipt.getCumulativeGasUsed())); // 当前交易执行后累计花费的gas总值
-                    transactionDTO.setToAddress(to);    // 交易接受者地址
+                    transactionDTO.setTo(to);    // 交易接受者地址
                     transactionDTO.setCompletedTime(LocalDateTime.now().toString());
                     transactionDTO.setCreateTime(new Date());
 
@@ -231,7 +237,7 @@ public class TransactionBiz {
                                 transactionDTO.setTxAmount(txAmount);     // 交易金额
                                 transactionDTO.setSerialNo(BsinSnowflake.getId());
                                 transactionDTO.setBizRoleType(wallet.getBizRoleType());
-                                transactionDTO.setBizRoleNo(wallet.getBizRoleNo());
+                                transactionDTO.setBizRoleNo(wallet.getBizRoleTypeNo());
                                 transactionDTO.setTenantId(walletAccount.getTenantId());
                                 transactionMapper.insert(transactionDTO);
                                 log.info("生成交易记录成功，to地址：{}",to);
@@ -276,7 +282,7 @@ public class TransactionBiz {
                                 transactionDTO.setTxAmount(txAmount.multiply(new BigDecimal("-1")));
                                 transactionDTO.setSerialNo(BsinSnowflake.getId());
                                 transactionDTO.setBizRoleType(wallet.getBizRoleType());
-                                transactionDTO.setBizRoleNo(wallet.getBizRoleNo());
+                                transactionDTO.setBizRoleNo(wallet.getBizRoleTypeNo());
                                 transactionDTO.setTenantId(walletAccount.getTenantId());
                                 transactionMapper.insert(transactionDTO);
                                 log.info("生成交易记录成功，from地址：{}",from);
@@ -289,7 +295,7 @@ public class TransactionBiz {
                 // TODO 处理失败的hash进行记录
             }finally {
                 // 对交易解锁
-                RedisClientUtil.del(txHash);
+                bsinCacheProvider.del(txHash);
             }
         });
     }
@@ -410,4 +416,6 @@ public class TransactionBiz {
         return null;
     }
 
+    private class RedisClientUtil {
+    }
 }

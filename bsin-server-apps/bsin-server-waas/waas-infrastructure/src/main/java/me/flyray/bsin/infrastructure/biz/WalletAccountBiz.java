@@ -79,7 +79,7 @@ public class WalletAccountBiz {
             walletAccount.setStatus(1);  // 账户状态 1、正常
             walletAccount.setWalletNo(wallet.getSerialNo());
             walletAccount.setBalance(BigDecimal.ZERO);
-            wallet.setBizRoleNo(wallet.getBizRoleNo());
+            wallet.setBizRoleTypeNo(wallet.getBizRoleTypeNo());
             wallet.setBizRoleType(wallet.getBizRoleType());
             walletAccount.setTenantId(wallet.getTenantId());
             walletAccount.setCreateTime(new Date());

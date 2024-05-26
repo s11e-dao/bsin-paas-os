@@ -36,7 +36,6 @@ import me.flyray.bsin.domain.domain.DigitalAssetsCollection;
 import me.flyray.bsin.domain.enums.AssetsCollectionType;
 import me.flyray.bsin.domain.enums.ProfileType;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.CopilotService;
 import me.flyray.bsin.facade.service.CustomerProfileService;
 import me.flyray.bsin.facade.service.CustomerService;
 import me.flyray.bsin.infrastructure.mapper.ContractMapper;
@@ -72,8 +71,8 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
   @Autowired private DigitalAssetsCollectionMapper digitalAssetsCollectionMapper;
   @Autowired private ContractProtocolMapper contractProtocolMapper;
 
-  @DubboReference(version = "dev")
-  private CopilotService copilotService;
+//  @DubboReference(version = "dev")
+//  private CopilotService copilotService;
 
   @DubboReference(version = "dev")
   private CustomerService customerService;
@@ -279,8 +278,8 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
       } else if (customerProfile.getType().equals(ProfileType.BRAND.getDesc())) {
         requestMap.put("type", "1");
       }
-      Map<String, Object> copilotInfoResp =
-          copilotService.createDigitalAvatarOrBrandOfficer(requestMap);
+      Map<String, Object> copilotInfoResp = null;
+          // copilotService.createDigitalAvatarOrBrandOfficer(requestMap);
       // 4. 商户PassCard的TBA账户地址
       if (!"".equals(copilotInfoResp.get("data"))) {
         Map<String, Object> copilotInfo = (Map<String, Object>) copilotInfoResp.get("data");

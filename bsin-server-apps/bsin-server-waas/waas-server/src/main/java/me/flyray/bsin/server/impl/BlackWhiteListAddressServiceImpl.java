@@ -2,7 +2,7 @@ package me.flyray.bsin.server.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.entity.BlackWhiteListAddress;
+import me.flyray.bsin.domain.domain.BlackWhiteListAddress;
 import me.flyray.bsin.domain.request.BlackWhiteListAddressDTO;
 import me.flyray.bsin.domain.response.BlackWhiteListAddressVO;
 import me.flyray.bsin.exception.BusinessException;
@@ -35,8 +35,6 @@ import java.util.List;
 public class BlackWhiteListAddressServiceImpl implements BlackWhiteListAddressService {
     @Autowired
     private BlackWhiteListAddressMapper blackWhiteListAddressMapper;
-    @Autowired
-    private SmsBiz smsBiz;
 
     @Override
     @ShenyuDubboClient("/save")
@@ -46,8 +44,6 @@ public class BlackWhiteListAddressServiceImpl implements BlackWhiteListAddressSe
         log.debug("请求BlackWhiteListAddressService.save,参数:{}", blackWhiteListAddressDTO);
         try{
             LoginUser user = LoginInfoContextHelper.getLoginUser();
-            // 短信验证
-            smsBiz.verifyCode(blackWhiteListAddressDTO.getUniqueKey(), blackWhiteListAddressDTO.getValidateCode());
             BlackWhiteListAddress blackWhiteListAddress = new BlackWhiteListAddress();
             BeanUtils.copyProperties(blackWhiteListAddressDTO,blackWhiteListAddress);
 
@@ -75,8 +71,6 @@ public class BlackWhiteListAddressServiceImpl implements BlackWhiteListAddressSe
         log.debug("请求BlackWhiteListAddressService.edit,参数:{}", blackWhiteListAddressDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
         try{
-            // 短信验证
-            smsBiz.verifyCode(blackWhiteListAddressDTO.getUniqueKey(), blackWhiteListAddressDTO.getValidateCode());
             BlackWhiteListAddress blackWhiteListAddress = new BlackWhiteListAddress();
             BeanUtils.copyProperties(blackWhiteListAddressDTO,blackWhiteListAddress);
 
@@ -99,8 +93,6 @@ public class BlackWhiteListAddressServiceImpl implements BlackWhiteListAddressSe
         log.debug("请求BlackWhiteListAddressService.delete,参数:{}", blackWhiteListAddressDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
         try{
-            // 短信验证
-            smsBiz.verifyCode(blackWhiteListAddressDTO.getUniqueKey(), blackWhiteListAddressDTO.getValidateCode());
 
             BlackWhiteListAddress blackWhiteListAddress = blackWhiteListAddressMapper.selectById(blackWhiteListAddressDTO.getSerialNo());
             if (blackWhiteListAddress == null) {

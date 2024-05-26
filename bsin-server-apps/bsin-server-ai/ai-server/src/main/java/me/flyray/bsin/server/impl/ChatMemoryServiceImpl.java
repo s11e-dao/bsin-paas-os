@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
@@ -22,7 +23,6 @@ import me.flyray.bsin.domain.domain.ChatMemory;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.ChatMemoryService;
 import me.flyray.bsin.infrastructure.mapper.ChatMemoryMapper;
-import me.flyray.bsin.mybatis.utils.StringUtils;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;

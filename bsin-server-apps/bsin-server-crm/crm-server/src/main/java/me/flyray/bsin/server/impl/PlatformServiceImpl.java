@@ -6,9 +6,9 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import me.flyray.bsin.domain.domain.ChainCoin;
 import me.flyray.bsin.domain.domain.Platform;
-import me.flyray.bsin.domain.entity.ChainCoin;
-import me.flyray.bsin.domain.entity.Wallet;
+import me.flyray.bsin.domain.domain.Wallet;
 import me.flyray.bsin.domain.request.PlatformDTO;
 import me.flyray.bsin.infrastructure.mapper.PlatformMapper;
 import me.flyray.bsin.security.domain.LoginUser;
@@ -115,7 +115,7 @@ public class PlatformServiceImpl implements PlatformService {
             wallet.setSerialNo(walletNo);
             wallet.setWalletName(platformDTO.getPlatformName());  // 默认钱包名称
             wallet.setBizRoleType(1);   // 客户类型：1、平台
-            wallet.setBizRoleNo(platformNo);
+            wallet.setBizRoleTypeNo(platformNo);
             wallet.setType(1);  // 1、默认钱包
             wallet.setWalletTag("GATHER");
             wallet.setStatus(1);    // 正常
