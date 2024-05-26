@@ -26,7 +26,7 @@
             <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
     </resultMap>
 
-    <select id="pageList" parameterType="me.flyray.bsin.domain.request.transaction.TransactionDTO" resultType="me.flyray.bsin.domain.response.TransactionVO">
+    <select id="pageList" parameterType="me.flyray.bsin.domain.request.TransactionDTO" resultType="me.flyray.bsin.domain.response.TransactionVO">
         select
         c3.coin,
         c3.chain_name,

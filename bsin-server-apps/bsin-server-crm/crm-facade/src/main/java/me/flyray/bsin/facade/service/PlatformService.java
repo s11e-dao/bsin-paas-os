@@ -1,5 +1,7 @@
 package me.flyray.bsin.facade.service;
 
+import me.flyray.bsin.domain.request.PlatformDTO;
+
 import java.util.Map;
 
 /**
@@ -9,6 +11,19 @@ import java.util.Map;
  */
 
 public interface PlatformService {
+
+    /**
+     * 创建平台
+     * 1、校验平台信息是否重复
+     * 2、添加租户信息
+     * 3、保存平台信息
+     * 4、创建钱包（
+     *      1）、查询平台默认币种
+     *      2）、创建币种的链上钱包，并保存钱包地址
+     *      3）、创建钱包账户
+     *  ）
+     */
+    public void createPlatform(PlatformDTO platformDTO);
 
     /**
      * 开通租户

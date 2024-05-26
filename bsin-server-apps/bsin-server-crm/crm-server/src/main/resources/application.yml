@@ -1,35 +1,59 @@
-server:
-  port: 8114
-
-spring:
-  application:
-    name: crm-server
-#  profiles:
-#    active: dev
-
-# Nacos 配置
-nacos:
-  server-addr: 127.0.0.1:8848
-  username: nacos
-  password: nacos
-  namespace:
-  seata-namespace: public
-  # Nacos 配置中心的配置项，对应 NacosConfigProperties 配置类
-  config:
-    server-addr: 127.0.0.1:8848 # Nacos 服务器地址
-    namespace:
-    username: nacos
-    password: nacos
-    bootstrap:
-      enable: true # 是否开启 Nacos 配置预加载功能。默认为 false。
-      log-enable: true # 是否开启 Nacos 支持日志级别的加载时机。默认为 false。
-    data-ids: scaffold-test.yml # 使用的 Nacos 配置集的 dataId。
-    type: YAML # 使用的 Nacos 配置集的配置格式。默认为 PROPERTIES。
-#    group: test # 使用的 Nacos 配置分组，默认为 DEFAULT_GROUP。
-
-
-#日志
 logging:
   level:
-    me.flyray.bsin: debug
-    org.springframework: warn
+    org.springframework.web: INFO
+    com.github.binarywang.demo.wx.mp: DEBUG
+    me.chanjar.weixin: DEBUG
+
+chatGPT:
+  templateEnable: false #是否启用模板推送消息
+
+shenyu:
+  register:
+    registerType: http #zookeeper #etcd #nacos #consul
+    serverLists: http://127.0.0.1:9095 #localhost:2181 #http://localhost:2379 #localhost:8848
+    props:
+      username: admin
+      password: 123456
+  client:
+    dubbo:
+      props:
+        contextPath: /crm
+        appName: crm
+
+dubbo:
+  application:
+    name: ${spring.application.name}
+    # 注册行为：应用级别  可选值 interface、instance、all
+    register-mode: interface
+    qos-enable: false
+  registry:
+    address: nacos://127.0.0.1:8848
+    username: nacos
+    password: nacos
+  protocol:
+    name: dubbo
+    port: -1
+  scan:
+    base-packages: me.flyray.bsin.server.impl
+  provider:
+    validation: true
+    version: dev
+  consumer:
+    check: false
+    version: dev
+
+wx:
+  mp:
+    useRedis: false
+    redisConfig:
+      host: 127.0.0.1
+      port: 6379
+    configs:
+      - appId: 11 # 第一个公众号的appid
+        secret: 11 # 公众号的appsecret
+        token: 11 # 接口配置里的Token值
+        aesKey: 11 # 接口配置里的EncodingAESKey值
+      - appId: 2222 # 第二个公众号的appid，以下同上
+        secret: 1111
+        token: 111
+        aesKey: 111

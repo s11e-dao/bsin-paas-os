@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.MerchantMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.Merchant">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+            <result property="merchantName" column="merchant_name" jdbcType="VARCHAR"/>
+            <result property="logoUrl" column="logo_url" jdbcType="VARCHAR"/>
+            <result property="businessNo" column="business_no" jdbcType="VARCHAR"/>
+            <result property="legalPersonName" column="legal_person_name" jdbcType="VARCHAR"/>
+            <result property="legalPersonCredType" column="legal_person_cred_type" jdbcType="VARCHAR"/>
+            <result property="legalPersonCredNo" column="legal_person_cred_no" jdbcType="VARCHAR"/>
+            <result property="businessLicenceImg" column="business_licence_img" jdbcType="VARCHAR"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="netAddress" column="net_address" jdbcType="VARCHAR"/>
+            <result property="merchantAddress" column="merchant_address" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="authenticationStatus" column="authentication_status" jdbcType="VARCHAR"/>
+            <result property="businessType" column="business_type" jdbcType="VARCHAR"/>
+            <result property="businessScope" column="business_scope" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,tenant_id,customer_no,
+        merchant_name,logo_url,business_no,legal_person_name,
+        legal_person_cred_type,legal_person_cred_no,business_licence_img,
+        phone,net_address,merchant_address,
+        status,type,create_time,
+        update_time,authentication_status,business_type,
+        business_scope,del_flag
+    </sql>
+</mapper>

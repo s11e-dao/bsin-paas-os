@@ -176,6 +176,17 @@ public class SysUser implements Serializable {
     @TableField(exist = false)
     private Integer rankNum;
 
+    /**
+     * 多因子
+     */
+    private String googleSecretKey;
+
+    /**
+     * 第一次登录标识
+     */
+    private Boolean firstLoginFlag;
+
+
     public SysUser(String userId, String username, String password, String orgId, String tenantId) {
         this.username = username;
         this.password = password;

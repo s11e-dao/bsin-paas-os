@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.CustomerAccountMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.CustomerAccount">
+        <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+        <result property="category" column="category" jdbcType="VARCHAR"/>
+        <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+        <result property="cumulativeAmount" column="cumulative_amount" jdbcType="DECIMAL"/>
+        <result property="balance" column="balance" jdbcType="DECIMAL"/>
+        <result property="decimals" column="decimals" jdbcType="DECIMAL"/>
+        <result property="freezeAmount" column="freeze_amount" jdbcType="DECIMAL"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="ccy" column="ccy" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="checkCode" column="check_code" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no
+        ,name,customer_no,
+        category,tenant_id,merchant_no,cumulative_amount,
+        balance,decimals,freeze_amount,type,
+        ccy,status,check_code,create_time,
+        update_time,del_flag
+    </sql>
+
+    <update id="freezeAmount">
+        update crm_customer_account
+        set freeze_amount = freeze_amount + #{query.freezeAmount},
+        balance =balance - #{query.freezeAmount}
+        where customer_no = #{query.customerNo}
+<!--        <if test="query.category != null and query.category != ‘’">-->
+            and category = #{query.category}
+<!--        </if>-->
+<!--        <if test="query.ccy != null and query.ccy != ‘’">-->
+            and ccy = #{query.ccy}
+<!--        </if>-->
+    </update>
+
+
+    <update id="unFreezeAmount">
+        update crm_customer_account
+        set freeze_amount = freeze_amount - #{query.freezeAmount},
+        balance =balance + #{query.freezeAmount}
+        where customer_no = #{query.customerNo}
+<!--        <if test="query.category != null and query.category != ‘’">-->
+            and category = #{query.category}
+<!--        </if>-->
+<!--        <if test="query.ccy != null and query.ccy != ‘’">-->
+            and ccy = #{query.ccy}
+<!--        </if>-->
+    </update>
+
+    <select id="getTotalAmount" resultType="java.math.BigDecimal"
+            parameterType="me.flyray.bsin.domain.domain.CustomerAccount">
+        select sum(balance) amount
+        from crm_customer_account
+        where customer_no = #{query.customerNo}
+          and category = #{query.category}
+          and ccy = #{query.ccy}
+    </select>
+
+</mapper>

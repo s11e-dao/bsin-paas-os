@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.CustomerAccountJournalMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.CustomerAccountJournal">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+            <result property="accountNo" column="account_no" jdbcType="VARCHAR"/>
+            <result property="accountType" column="account_type" jdbcType="INTEGER"/>
+            <result property="orderType" column="order_type" jdbcType="INTEGER"/>
+            <result property="orderNo" column="order_no" jdbcType="VARCHAR"/>
+            <result property="inOutFlag" column="in_out_flag" jdbcType="INTEGER"/>
+            <result property="amount" column="amount" jdbcType="DECIMAL"/>
+            <result property="ccy" column="ccy" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no
+        ,customer_no,account_no,
+        account_type,order_type,order_no,
+        in_out_flag,amount,ccy,
+        create_time,remark,tenant_id,merchant_no
+    </sql>
+</mapper>

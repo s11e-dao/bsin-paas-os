@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.MemberMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.Member">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+            <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+            <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,tenant_id,merchant_no,customer_no,nickname
+    </sql>
+</mapper>

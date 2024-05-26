@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.MerchantSubscribeJournalMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.MerchantSubscribeJournal">
+            <id property="serialNo" column="serial_no" jdbcType="INTEGER"/>
+            <result property="merchantNo" column="merchant_no" jdbcType="INTEGER"/>
+            <result property="payStatus" column="pay_status" jdbcType="VARCHAR"/>
+            <result property="amout" column="amout" jdbcType="VARCHAR"/>
+            <result property="productId" column="product_id" jdbcType="VARCHAR"/>
+            <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+            <result property="appFunctionId" column="app_function_id" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,merchant_no,pay_status,
+        amout,product_id,app_id,
+        app_function_id,create_time,start_time,
+        end_time
+    </sql>
+</mapper>

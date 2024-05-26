@@ -28,7 +28,7 @@ public class AuthenticationProvider {
      * @param secreteKey
      * @return
      */
-    public static String createToken(LoginUser loginUser, String secreteKey,int minutes) {
+    public static String createToken(LoginUser loginUser, String secreteKey, int minutes) {
         return createToken(BeanUtil.beanToMap(loginUser), secreteKey, Duration.ofMinutes(minutes));
     }
 

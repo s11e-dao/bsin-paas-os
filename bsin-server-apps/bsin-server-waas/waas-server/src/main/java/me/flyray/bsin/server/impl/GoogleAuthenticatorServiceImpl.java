@@ -18,19 +18,15 @@ import me.flyray.bsin.infrastructure.utils.RedisClientUtil;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.utils.AESUtils;
-import me.flyray.bsin.utils.GoogleAuthenticator;
-import me.flyray.bsin.utils.JsonUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
-import org.apache.commons.codec.binary.Base32;
-import org.apache.commons.codec.binary.Hex;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,7 +69,7 @@ public class GoogleAuthenticatorServiceImpl implements GoogleAuthenticatorServic
     public Map<String,Object> getQrcode(String userId){
         Map<String,Object> map = new HashMap<>();
         SysUser sysUser = userService.getByUserId(userId);
-        String googleToken =sysUser.getGoogleSecretKey();
+        String googleToken = sysUser.getGoogleSecretKey();
         String accountName = sysUser.getUsername();
         String secretKey = AESUtils.AESDeCode(googleToken);
 //        String code = GoogleAuthenticator.getCode(secretKey);
@@ -133,12 +129,11 @@ public class GoogleAuthenticatorServiceImpl implements GoogleAuthenticatorServic
         LoginUser loginUser = new LoginUser();
         loginUser.setTenantId(sysUser.getTenantId());
         loginUser.setUserId(sysUser.getUserId());
-        loginUser.setPlatformNo(bizRoleNo);
         loginUser.setUsername(sysUser.getUsername());
         loginUser.setPhone(sysUser.getPhone());
         loginUser.setOrgId(sysUser.getOrgId());
         loginUser.setBizRoleType(bizRoleType);
-        loginUser.setBizRoleNo(bizRoleNo);
+        loginUser.setBizRoleTypeNo(bizRoleNo);
         String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
         loginUser.setToken(token);
         Map<String, Object> sysUserMap = BeanUtil.beanToMap(loginUser);

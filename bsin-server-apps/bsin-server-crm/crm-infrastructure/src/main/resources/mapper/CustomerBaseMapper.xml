@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.CustomerBase">
+            <id property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+            <id property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="authMethod" column="auth_method" jdbcType="VARCHAR"/>
+            <result property="credential" column="credential" jdbcType="VARCHAR"/>
+            <result property="idNumber" column="id_number" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+            <result property="realName" column="real_name" jdbcType="VARCHAR"/>
+            <result property="txPassword" column="tx_password" jdbcType="VARCHAR"/>
+            <result property="txPasswordStatus" column="tx_password_status" jdbcType="INTEGER"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="birthday" column="birthday" jdbcType="VARCHAR"/>
+            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="sex" column="sex" jdbcType="VARCHAR"/>
+            <result property="info" column="info" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+            <result property="vipFlag" column="vip_flag" jdbcType="INTEGER"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="certificationStatus" column="certification_status" jdbcType="VARCHAR"/>
+            <result property="walletAddress" column="wallet_address" jdbcType="VARCHAR"/>
+            <result property="walletPrivateKey" column="wallet_private_key" jdbcType="VARCHAR"/>
+            <result property="evmWalletAddress" column="evm_wallet_address" jdbcType="VARCHAR"/>
+            <result property="profileAddress" column="profile_address" jdbcType="VARCHAR"/>
+            <result property="copilotNo" column="copilot_no" jdbcType="VARCHAR"/>
+            <result property="evmProfileAddress" column="evm_profile_address" jdbcType="VARCHAR"/>
+            <result property="evmWalletPrivateKey" column="evm_wallet_private_key" jdbcType="VARCHAR"/>
+            <result property="inviteCode" column="invite_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        customer_no
+        ,username,auth_method,sex,
+        credential,id_number,password,real_name,birthday,
+        nickname,tx_password,tx_password_status,
+        phone,email,avatar,info,
+        type,create_time,update_time,copilot_no,
+        del_flag,vip_flag,tenant_id,profile_address,evm_profile_address,
+        certification_status,wallet_address,wallet_private_key,evm_wallet_address,evm_wallet_private_key,invite_code
+    </sql>
+
+    <select id="getCustomerInfoByTenantIdAndType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from crm_customer_base
+        WHERE del_flag = 0 and tenant_id = #{tenantId}
+        and type = #{type}
+    </select>
+
+    <select id="selectInviteeList" resultMap="BaseResultMap">
+        select
+         c.customer_no,
+         c.username,c.auth_method,c.sex,
+         c.credential,c.id_number,c.password,c.real_name,c.birthday,
+         c.nickname,c.tx_password,c.tx_password_status,
+         c.phone,c.email,c.avatar,c.info,
+         c.type,c.create_time,c.update_time,
+         c.del_flag,c.vip_flag,c.tenant_id,
+         c.certification_status,c.wallet_address,c.wallet_private_key,c.evm_wallet_address,c.evm_wallet_private_key,
+         ci.parent_no,ci.customer_no
+        from crm_customer_invite_relation as ci left join crm_customer_base as c
+        on ci.customer_no = c.customer_no
+        where ci.parent_no = #{customerNo}
+    </select>
+
+</mapper>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.MemberGradeMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.MemberGrade">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="customerNo" column="customer_no" jdbcType="BIGINT"/>
+            <result property="gradeNo" column="grade_no" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="MemberVO" type="me.flyray.bsin.domain.domain.CustomerBase">
+        <id property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+        <id property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="authMethod" column="auth_method" jdbcType="VARCHAR"/>
+        <result property="credential" column="credential" jdbcType="VARCHAR"/>
+        <result property="idNumber" column="id_number" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="realName" column="real_name" jdbcType="VARCHAR"/>
+        <result property="txPassword" column="tx_password" jdbcType="VARCHAR"/>
+        <result property="txPasswordStatus" column="tx_password_status" jdbcType="INTEGER"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="birthday" column="birthday" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="info" column="info" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <result property="vipFlag" column="vip_flag" jdbcType="INTEGER"/>
+        <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <result property="certificationStatus" column="certification_status" jdbcType="VARCHAR"/>
+        <result property="walletAddress" column="wallet_address" jdbcType="VARCHAR"/>
+        <result property="walletPrivateKey" column="wallet_private_key" jdbcType="VARCHAR"/>
+        <result property="evmWalletAddress" column="evm_wallet_address" jdbcType="VARCHAR"/>
+        <result property="evmWalletPrivateKey" column="evm_wallet_private_key" jdbcType="VARCHAR"/>
+        <result property="bcBalance" column="bc_balance" jdbcType="DECIMAL"/>
+        <result property="bcAccumulatedBalance" column="bc_accumulated_balance" jdbcType="DECIMAL"/>
+        <result property="dpBalance" column="dp_balance" jdbcType="DECIMAL"/>
+        <result property="cnyBalance" column="cny_balance" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,customer_no,grade_no
+    </sql>
+
+    <resultMap id="BaseGradeResultMap" type="me.flyray.bsin.domain.domain.Grade">
+        <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="gradeNum" column="grade_num" jdbcType="VARCHAR"/>
+        <result property="gradeImage" column="grade_image" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectMemberGrade" resultMap="BaseGradeResultMap">
+        select
+            mg.mermber_no,
+            mg.grade_no,
+            g.serial_no,
+            g.name,
+            g.grade_num,
+            g.grade_image
+        from crm_member_grade mg left join crm_grade g on mg.grade_no = g.serial_no
+        where mg.mermber_no = #{mermberNo}
+    </select>
+
+    <select id="selectMemberListByGrade" resultMap="MemberVO">
+        select
+        mg.mermber_no,
+        mg.grade_no,
+        m.serial_no,
+        m.customer_no,
+        cb.customer_no,
+        cb.avatar,
+        cb.username,
+        cb.nickname,
+        cb.sex,
+        cb.phone,
+        cb.birthday,
+        ca.balance as dp_balance
+        from crm_member_grade mg left join crm_member m on mg.mermber_no = m.serial_no
+        left join crm_customer_base cb on m.customer_no = cb.customer_no
+        left join crm_customer_account ca on cb.customer_no = ca.customer_no and ca.ccy = #{ccy}
+        <where>
+            <if test="gradeNo != null and gradeNo != ''">
+                and mg.grade_no = #{gradeNo}
+            </if>
+        </where>
+
+    </select>
+
+    <select id="selectMemberPageListByGrade" resultMap="MemberVO">
+        select
+            mg.mermber_no,
+            mg.grade_no,
+            m.serial_no,
+            m.customer_no,
+            m.create_time
+        from crm_member_grade mg left join crm_member m on mg.mermber_no = m.serial_no
+        where mg.grade_no = #{gradeNo}
+        order by m.create_time desc
+    </select>
+
+</mapper>

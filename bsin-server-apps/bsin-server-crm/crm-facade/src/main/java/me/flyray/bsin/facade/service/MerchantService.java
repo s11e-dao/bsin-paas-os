@@ -1,5 +1,8 @@
 package me.flyray.bsin.facade.service;
 
+import me.flyray.bsin.domain.request.MerchantRegisterRequest;
+import me.flyray.bsin.utils.BsinResultEntity;
+
 import java.util.Map;
 
 /**
@@ -9,6 +12,20 @@ import java.util.Map;
  */
 
 public interface MerchantService {
+
+    /**
+     * 商户注册
+     * 1、校验商户信息是否重复
+     * 2、保存到客户基础信（包括生成谷歌验证器秘钥）
+     * 3、保存商户信息
+     * 4、创建商户配置项
+     * 5、创建钱包（
+     *      1）、查询平台默认币种
+     *      2）、创建币种的链上钱包，并保存钱包地址
+     *      3）、创建钱包账户
+     *  ）
+     */
+    public BsinResultEntity register(MerchantRegisterRequest merchantRegisterRequest);
 
     /**
      * 商户注册
@@ -36,9 +53,6 @@ public interface MerchantService {
      */
     public Map<String, Object> subscribeFunction(Map<String, Object> requestMap);
 
-    /** 商户客户信息查询 */
-    public Map<String, Object> getMerchantCustomerInfoByUsername(Map<String, Object> requestMap);
-
     /**
      * 删除商户
      */
@@ -64,6 +78,5 @@ public interface MerchantService {
      * 查询商户列表
      */
     Map<String, Object> getListByMerchantNos(Map<String, Object> requestMap);
-
 
 }

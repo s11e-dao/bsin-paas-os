@@ -30,7 +30,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableDubbo
 // @EnableTransactionManagement // 默认开启
 @MapperScan("me.flyray.bsin.infrastructure.mapper")
-@ComponentScan({"me.flyray.bsin.infrastructure.biz","me.flyray.bsin.infrastructure.config"})
+@ComponentScan({"me.flyray.bsin"})
 @SpringBootApplication
 public class WaasApplication {
 

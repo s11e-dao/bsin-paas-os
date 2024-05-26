@@ -2,33 +2,23 @@ package me.flyray.bsin.infrastructure.biz;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import lombok.extern.log4j.Log4j;
 import me.flyray.bsin.domain.entity.ChainCoin;
 import me.flyray.bsin.domain.entity.DictContractMethod;
 import me.flyray.bsin.domain.entity.Wallet;
 import me.flyray.bsin.domain.entity.WalletAccount;
 import me.flyray.bsin.domain.entity.customer.Merchant;
-import me.flyray.bsin.domain.request.transaction.TransactionDTO;
+import me.flyray.bsin.domain.request.TransactionDTO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.infrastructure.mapper.*;
 import me.flyray.bsin.infrastructure.mapper.customer.MerchantMapper;
 import me.flyray.bsin.infrastructure.utils.RedisClientUtil;
 import me.flyray.bsin.utils.BsinSnowflake;
-import org.bouncycastle.util.encoders.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.FunctionReturnDecoder;
-import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.Type;
-import org.web3j.abi.datatypes.generated.Uint256;
-import org.web3j.crypto.*;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -36,17 +26,14 @@ import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.websocket.WebSocketService;
-import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class TransactionBiz {

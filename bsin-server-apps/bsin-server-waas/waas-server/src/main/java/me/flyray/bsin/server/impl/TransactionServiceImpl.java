@@ -8,10 +8,9 @@ import me.flyray.bsin.domain.entity.Transaction;
 import me.flyray.bsin.domain.entity.TransactionAudit;
 import me.flyray.bsin.domain.entity.WalletAccount;
 import me.flyray.bsin.domain.entity.customer.Merchant;
-import me.flyray.bsin.domain.request.transaction.TransactionDTO;
-import me.flyray.bsin.domain.request.transaction.TransactionRequest;
+import me.flyray.bsin.domain.request.TransactionDTO;
+import me.flyray.bsin.domain.request.TransactionRequest;
 import me.flyray.bsin.domain.response.TransactionVO;
-import me.flyray.bsin.domain.response.WalletAccountVO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.TransactionService;
 import me.flyray.bsin.infrastructure.biz.TransactionBiz;
@@ -21,21 +20,17 @@ import me.flyray.bsin.infrastructure.mapper.customer.MerchantMapper;
 import me.flyray.bsin.infrastructure.mapper.customer.PlatformMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.utils.BsinResultEntity;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Date;
-import java.util.List;
 
 /**
 * @author Admin
@@ -99,7 +94,7 @@ public class TransactionServiceImpl  implements TransactionService {
             transaction.setTxAmount(new BigDecimal(transactionRequest.getTxAmount()));
             transaction.setToAddress(transactionRequest.getToAddress());
             transaction.setBizRoleType(user.getBizRoleType());
-            transaction.setBizRoleNo(user.getBizRoleNo());
+            transaction.setBizRoleNo(user.getBizRoleTypeNo());
             transaction.setTenantId(transactionRequest.getTenantId());
             transaction.setCreateTime(new Date());
             transaction.setCreateBy(user.getUserId());

@@ -2,7 +2,7 @@ package me.flyray.bsin.server.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.facade.service.BsinFormRepositoryService;
-import me.flyray.bsin.utils.RespBodyHandler;
+import me.flyray.bsin.infrastructure.utils.RespBodyHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;

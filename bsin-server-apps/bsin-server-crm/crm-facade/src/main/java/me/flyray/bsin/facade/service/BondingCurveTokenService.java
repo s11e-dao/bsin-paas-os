@@ -1,0 +1,85 @@
+package me.flyray.bsin.facade.service;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
+
+/**
+ * @author bolei
+ * @description 联合曲线服务,针对表【crm_bonding_curve_token】的数据库操作Service
+ * @createDate 2023-07-19 21:12:25
+ */
+public interface BondingCurveTokenService {
+
+  /** 新增 */
+  public Map<String, Object> addCurve(Map<String, Object> requestMap);
+
+  /** 删除 */
+  public Map<String, Object> deleteCurve(Map<String, Object> requestMap);
+
+  /** 修改 */
+  public Map<String, Object> editCurve(Map<String, Object> requestMap);
+
+  /** 查询曲线列表 */
+  public Map<String, Object> getCurveList(Map<String, Object> requestMap);
+
+
+  /** 查询商戶BC曲线---唯一的 */
+  public Map<String, Object> getMerchantCurve(Map<String, Object> requestMap);
+
+  /** 分页查询曲线详情 */
+  public Map<String, Object> getCurvePageList(Map<String, Object> requestMap);
+
+  /** 查询曲线详情 */
+  public Map<String, Object> getCurveDetail(Map<String, Object> requestMap);
+
+  /**
+   * 根据劳动价值铸造原力(成长值):
+   * 捕获劳动价值的联合曲线积分若绑定了商户发行的数字积分，mint时需要查询tokenParam配置参数，按照配置参数进行数字积分释放铸造
+   *
+   * @param: laborValue 劳动价值(法币标的)
+   * @return: 原力值
+   */
+  public Map<String, Object> mint(Map<String, Object> requestMap) throws UnsupportedEncodingException;
+
+  /**
+   * 原力值兑换商品
+   *
+   * @param: 原力积分数量
+   * @return: laborValue
+   */
+  public Map<String, Object> redeem(Map<String, Object> requestMap) throws UnsupportedEncodingException;
+
+  /**
+   * 获取联合曲线数据
+   *
+   * @param:
+   * @return:
+   */
+  public Map<String, Object> getBondingCurveTokenJournalPageList(Map<String, Object> requestMap);
+
+  /**
+   * 获取联合曲线流水详情
+   *
+   * @param:
+   * @return:
+   */
+  public Map<String, Object> getTransactionDetail(Map<String, Object> requestMap);
+
+
+  /**
+   * 获取联合曲线数据--曲线展示
+   *
+   * @param:
+   * @return:
+   */
+  public Map<String, Object> getBondingCurveTokenJournalList(Map<String, Object> requestMap);
+
+  /**
+   * 获取联合曲线未来数据--曲线展示
+   *
+   * @param:
+   * @return:
+   */
+  public Map<String, Object> getBondingCurveTokenTrendList(Map<String, Object> requestMap);
+
+}

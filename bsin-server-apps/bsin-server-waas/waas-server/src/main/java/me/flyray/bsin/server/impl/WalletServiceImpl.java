@@ -1,50 +1,35 @@
 package me.flyray.bsin.server.impl;
 
 
-import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.entity.BlackWhiteListAddress;
 import me.flyray.bsin.domain.entity.ChainCoin;
 import me.flyray.bsin.domain.entity.Wallet;
-import me.flyray.bsin.domain.entity.WalletAccount;
-import me.flyray.bsin.domain.entity.customer.CustomerChainCoin;
-import me.flyray.bsin.domain.entity.customer.Merchant;
-import me.flyray.bsin.domain.request.WalletCreateRequest;
+import me.flyray.bsin.domain.entity.CustomerChainCoin;
 import me.flyray.bsin.domain.request.WalletDTO;
 import me.flyray.bsin.domain.response.WalletVO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.WalletService;
 import me.flyray.bsin.infrastructure.biz.SmsBiz;
 import me.flyray.bsin.infrastructure.biz.WalletAccountBiz;
-import me.flyray.bsin.infrastructure.mapper.ChainCoinMapper;
 import me.flyray.bsin.infrastructure.mapper.WalletMapper;
-import me.flyray.bsin.infrastructure.mapper.customer.CustomerChainCoinMapper;
-import me.flyray.bsin.infrastructure.mapper.customer.MerchantMapper;
-import me.flyray.bsin.infrastructure.utils.OkHttpUtils;
+import me.flyray.bsin.infrastructure.mapper.CustomerChainCoinMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.utils.BsinResultEntity;
 import me.flyray.bsin.utils.BsinSnowflake;
 import me.flyray.bsin.utils.I18eCode;
-import okhttp3.Response;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
 * @author Admin
