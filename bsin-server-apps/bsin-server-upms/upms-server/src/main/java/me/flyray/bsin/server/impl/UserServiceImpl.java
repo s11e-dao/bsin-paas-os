@@ -51,7 +51,6 @@ import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.enums.TenantOrgAppType;
 import me.flyray.bsin.facade.enums.UserStatusEnum;
 import me.flyray.bsin.facade.enums.UserType;
-import me.flyray.bsin.facade.service.DubboTestService;
 import me.flyray.bsin.facade.service.UserService;
 import me.flyray.bsin.infrastructure.config.TenantConfig;
 import me.flyray.bsin.infrastructure.mapper.AppFunctionMapper;
