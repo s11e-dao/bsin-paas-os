@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.github.ipfs</groupId>
             <artifactId>java-ipfs-api</artifactId>
-            <version>v1.3.3</version>
+            <version>1.3.3</version>
             <!--            <scope>system</scope>-->
             <!--            <systemPath>${project.basedir}/doc/lib/java-ipfs-api-1.3.3.jar</systemPath>-->
         </dependency>
