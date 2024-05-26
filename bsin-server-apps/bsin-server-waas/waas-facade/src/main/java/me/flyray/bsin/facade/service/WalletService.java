@@ -1,21 +1,24 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.IService;
-import me.flyray.bsin.domain.entity.Wallet;
-import me.flyray.bsin.domain.request.WalletCreateRequest;
+import me.flyray.bsin.domain.domain.Wallet;
 import me.flyray.bsin.domain.request.WalletDTO;
 import me.flyray.bsin.domain.response.WalletVO;
-import me.flyray.bsin.utils.BsinResultEntity;
-import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
-* @author Admin
-* @description 针对表【crm_wallet(钱包;)】的数据库操作Service
-* @createDate 2024-04-24 20:22:04
-*/
+ * @author bolei
+ * @date 2023/6/26 13:51
+ * @desc
+ */
 
 public interface WalletService {
+
+    /**
+     * 开链钱包（链账户开通）
+     */
+    Map<String, Object> createWallet(Map<String, Object> requestMap) throws Exception;
 
     /**
      * 创建钱包
@@ -57,4 +60,5 @@ public interface WalletService {
      * @param walletDTO
      */
     public void delWallet(WalletDTO walletDTO);
+
 }

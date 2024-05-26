@@ -244,7 +244,7 @@ public class MerchantServiceImpl implements MerchantService {
         loginUser.setUsername(merchant.getUsername());
         loginUser.setPhone(merchant.getPhone());
         loginUser.setMerchantNo(merchant.getSerialNo());
-        String token = AuthenticationProvider.generateAuthenticationJwt(loginUser, authSecretKey, authExpiration);
+        String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
         res.put("merchantInfo",merchant);
         res.put("token",token);
         // 查询商户信息

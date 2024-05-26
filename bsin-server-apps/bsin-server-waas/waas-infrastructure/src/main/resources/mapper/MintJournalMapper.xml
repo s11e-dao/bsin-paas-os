@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.MintJournalMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.MintJournal">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="digitalAssetsCollectionNo" column="digital_assets_collection_no" jdbcType="VARCHAR"/>
+            <result property="digitalAssetsItemNo" column="digital_assets_item_no" jdbcType="VARCHAR"/>
+            <result property="tokenId" column="token_id" jdbcType="VARCHAR"/>
+            <result property="multimediaType" column="multimedia_type" jdbcType="VARCHAR"/>
+            <result property="metadataImage" column="metadata_image" jdbcType="VARCHAR"/>
+            <result property="metadataUrl" column="metadata_url" jdbcType="VARCHAR"/>
+            <result property="txHash" column="tx_hash" jdbcType="VARCHAR"/>
+            <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="toCustomerNo" column="to_customer_no" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="toPhone" column="to_phone" jdbcType="VARCHAR"/>
+            <result property="toMinterName" column="to_minter_name" jdbcType="VARCHAR"/>
+            <result property="toAddress" column="to_address" jdbcType="VARCHAR"/>
+            <result property="chainEnv" column="chain_env" jdbcType="VARCHAR"/>
+            <result property="chainType" column="chain_type" jdbcType="VARCHAR"/>
+            <result property="itemName" column="item_name" jdbcType="VARCHAR"/>
+            <result property="assetsType" column="assets_type" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no
+        ,digital_assets_collection_no,digital_assets_item_no,token_id,
+        multimedia_type,metadata_image,metadata_url,
+        tx_hash,merchant_no,tenant_id,to_customer_no,
+        create_time,to_phone,to_minter_name,
+        to_address,chain_env,chain_type,item_name,assets_type
+    </sql>
+</mapper>

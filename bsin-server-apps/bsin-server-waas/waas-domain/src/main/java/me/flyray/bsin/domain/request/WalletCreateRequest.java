@@ -1,9 +1,7 @@
 package me.flyray.bsin.domain.request;
 
 import lombok.Data;
-import me.flyray.bsin.domain.entity.Wallet;
-
-import java.util.List;
+import me.flyray.bsin.domain.domain.Wallet;
 
 @Data
 public class WalletCreateRequest extends Wallet {

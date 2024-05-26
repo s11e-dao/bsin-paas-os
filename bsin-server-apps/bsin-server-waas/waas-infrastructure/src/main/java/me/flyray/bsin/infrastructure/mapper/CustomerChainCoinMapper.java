@@ -1,9 +1,9 @@
 package me.flyray.bsin.infrastructure.mapper;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import me.flyray.bsin.domain.entity.ChainCoin;
-import me.flyray.bsin.domain.entity.CustomerChainCoin;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import me.flyray.bsin.domain.domain.ChainCoin;
+import me.flyray.bsin.domain.domain.CustomerChainCoin;
 import me.flyray.bsin.domain.request.CustomerChainCoinDTO;
 import me.flyray.bsin.domain.response.CustomerChainCoinVO;
 import org.apache.ibatis.annotations.Param;

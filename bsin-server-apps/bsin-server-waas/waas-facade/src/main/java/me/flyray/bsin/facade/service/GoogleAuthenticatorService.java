@@ -1,7 +1,5 @@
 package me.flyray.bsin.facade.service;
 
-import me.flyray.bsin.utils.BsinResultEntity;
-
 import java.util.Map;
 
 public interface GoogleAuthenticatorService {

@@ -4,26 +4,25 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.domain.domain.Platform;
 import me.flyray.bsin.domain.entity.SysTenant;
 import me.flyray.bsin.domain.entity.SysUser;
-import me.flyray.bsin.domain.entity.customer.Platform;
 import me.flyray.bsin.domain.response.SysUserVO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.GoogleAuthenticatorService;
 import me.flyray.bsin.facade.service.TenantService;
 import me.flyray.bsin.facade.service.UserService;
-import me.flyray.bsin.infrastructure.mapper.customer.PlatformMapper;
 import me.flyray.bsin.infrastructure.utils.QrCodeUtils;
 import me.flyray.bsin.infrastructure.utils.RedisClientUtil;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.utils.AESUtils;
+import me.flyray.bsin.utils.GoogleAuthenticator;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
-
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,8 +48,6 @@ public class GoogleAuthenticatorServiceImpl implements GoogleAuthenticatorServic
      */
     private static final String CRYPTO = "HmacSHA1";
 
-    @Autowired
-    private PlatformMapper platformMapper;
     @DubboReference(version = "dev")
     private TenantService tenantService;
 
@@ -118,7 +115,7 @@ public class GoogleAuthenticatorServiceImpl implements GoogleAuthenticatorServic
 
         QueryWrapper<Platform> platformQueryWrapper = new QueryWrapper<>();
         platformQueryWrapper.eq("tenant_id",sysUser.getTenantId());
-        Platform platform = platformMapper.selectOne(platformQueryWrapper);
+        Platform platform = new Platform();
         if(platform==null){
             throw  new BusinessException("PLATFORM_NOT_EXIST");
         }

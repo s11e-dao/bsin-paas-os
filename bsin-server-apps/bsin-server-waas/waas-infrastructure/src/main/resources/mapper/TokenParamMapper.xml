@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.TokenParamMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.TokenParam">
+            <id property="serialNo" column="serial_no" jdbcType="INTEGER"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+            <result property="digitalAssetsCollectionNo" column="digital_assets_collection_no" jdbcType="VARCHAR"/>
+            <result property="reservedAmount" column="reserved_amount" jdbcType="DECIMAL"/>
+            <result property="totalSupply" column="total_supply" jdbcType="DECIMAL"/>
+            <result property="captureTotalValue" column="capture_total_value" jdbcType="DECIMAL"/>
+            <result property="releaseMethod" column="release_method" jdbcType="VARCHAR"/>
+            <result property="unitReleaseTriggerValue" column="unit_release_trigger_value" jdbcType="DECIMAL"/>
+            <result property="unitReleaseAmout" column="unit_release_amout" jdbcType="DECIMAL"/>
+            <result property="releaseCycle" column="release_cycle" jdbcType="INTEGER"/>
+            <result property="issueMethod" column="issue_method" jdbcType="VARCHAR"/>
+            <result property="issuerType" column="issuer_type" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="anchoringValue" column="anchoring_value" jdbcType="DECIMAL"/>
+            <result property="circulation" column="circulation" jdbcType="DECIMAL"/>
+            <result property="exchangeRate" column="exchange_rate" jdbcType="DECIMAL"/>
+            <result property="decimals" column="decimals" jdbcType="DECIMAL"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="symbol" column="symbol" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,tenant_id,merchant_no,
+        digital_assets_collection_no,reserved_amount,total_supply,
+        capture_total_value,release_method,unit_release_trigger_value,
+        unit_release_amout,release_cycle,issue_method,
+        issuer_type,status,anchoring_value,decimals,exchange_rate,
+        circulation,name,symbol
+    </sql>
+</mapper>

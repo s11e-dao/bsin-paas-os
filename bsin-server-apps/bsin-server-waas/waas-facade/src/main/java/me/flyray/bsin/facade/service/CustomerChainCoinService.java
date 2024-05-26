@@ -1,7 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import me.flyray.bsin.domain.entity.CustomerChainCoin;
+import me.flyray.bsin.domain.domain.CustomerChainCoin;
 import me.flyray.bsin.domain.request.CustomerChainCoinDTO;
 import me.flyray.bsin.domain.response.CustomerChainCoinVO;
 

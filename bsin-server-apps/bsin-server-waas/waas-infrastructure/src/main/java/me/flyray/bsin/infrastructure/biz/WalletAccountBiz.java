@@ -1,45 +1,36 @@
 package me.flyray.bsin.infrastructure.biz;
 
-import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import me.flyray.bsin.domain.entity.ChainCoin;
-import me.flyray.bsin.domain.entity.Wallet;
-import me.flyray.bsin.domain.entity.WalletAccount;
-import me.flyray.bsin.domain.entity.customer.Platform;
+import me.flyray.bsin.domain.domain.ChainCoin;
+import me.flyray.bsin.domain.domain.Platform;
+import me.flyray.bsin.domain.domain.Wallet;
+import me.flyray.bsin.domain.domain.WalletAccount;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.infrastructure.mapper.ChainCoinMapper;
 import me.flyray.bsin.infrastructure.mapper.WalletAccountMapper;
 import me.flyray.bsin.infrastructure.mapper.WalletMapper;
-import me.flyray.bsin.infrastructure.mapper.customer.PlatformMapper;
 import me.flyray.bsin.infrastructure.utils.OkHttpUtils;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.utils.BsinSnowflake;
-import okhttp3.Response;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class WalletAccountBiz {
+
     private static final Logger log = LoggerFactory.getLogger(WalletAccountBiz.class);
     @Autowired
     private WalletAccountMapper walletAccountMapper;
     @Autowired
     private ChainCoinMapper chainCoinMapper;
-    @Autowired
-    private PlatformMapper platformMapper;
     @Autowired
     private WalletMapper walletMapper;
 
@@ -107,7 +98,7 @@ public class WalletAccountBiz {
     public WalletAccount getGatherAccount(String tenantId,String chainCoinNo) throws Exception {
         QueryWrapper<Platform> platformQueryWrapper = new QueryWrapper<>();
         platformQueryWrapper.eq("tenant_id", tenantId);
-        Platform platform = platformMapper.selectOne(platformQueryWrapper);
+        Platform platform = new Platform();
 
         QueryWrapper<Wallet> walletQueryWrapper = new QueryWrapper<>();
         walletQueryWrapper.eq("wallet_tag", "GATHER");
@@ -116,6 +107,7 @@ public class WalletAccountBiz {
         walletQueryWrapper.eq("type", 1); // 默认钱包
         walletQueryWrapper.eq("tenant_id", tenantId);
         walletQueryWrapper.eq("status", 1);  // 状态正常
+
         Wallet wallet = walletMapper.selectOne(walletQueryWrapper);
 
         QueryWrapper<WalletAccount> queryWrapper = new QueryWrapper();

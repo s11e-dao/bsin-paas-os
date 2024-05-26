@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.CustomerDigitalAssetsMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.CustomerDigitalAssets">
+            <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+            <result property="digitalAssetsItemNo" column="digital_assets_item_no" jdbcType="VARCHAR"/>
+            <result property="tokenId" column="token_id" jdbcType="INTEGER"/>
+            <result property="amount" column="amount" jdbcType="INTEGER"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,customer_no,digital_assets_item_no,token_id,
+        amount,tenant_id,create_time
+    </sql>
+
+    <resultMap id="digitalAssetsItemRes" type="me.flyray.bsin.facade.response.DigitalAssetsItemRes">
+        <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="customerAvatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="memberNo" column="member_no" jdbcType="VARCHAR"/>
+        <result property="multimediaType" column="multimedia_type" jdbcType="VARCHAR"/>
+        <result property="digitalAssetsCollectionNo" column="digital_assets_collection_no" jdbcType="VARCHAR"/>
+        <result property="coverImage" column="cover_image" jdbcType="VARCHAR"/>
+        <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+        <result property="toAmount" column="to_amount" jdbcType="VARCHAR"/>
+        <result property="amount" column="amount" jdbcType="VARCHAR"/>
+        <result property="tokenId" column="token_id" jdbcType="VARCHAR"/>
+        <result property="fromAmount" column="from_amount" jdbcType="VARCHAR"/>
+        <result property="exchangeRate" column="exchangeRate" jdbcType="VARCHAR"/>
+        <result property="merchantName" column="merchant_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectCustomerDigitalAssetsList" resultMap="digitalAssetsItemRes">
+        select
+        cda.customer_no,
+        cda.digital_assets_item_no,
+        cda.token_id,
+        cda.amount,
+        cda.create_time,
+        cda.serial_no,
+        dai.serial_no as dai_serial_no,
+        dai.tenant_id,
+        dai.merchant_no,
+        dai.digital_assets_collection_no,
+        dai.token_id,
+        dai.cover_image,
+        dai.assets_name,
+        dai.assets_type
+        from da_customer_digital_assets cda
+        left join da_digital_assets_item dai on cda.digital_assets_item_no = dai.serial_no
+        <where>
+            <if test="tenantId != null and tenantId != ''">
+                and dai.tenant_id = #{tenantId}
+            </if>
+            <if test="customerNo != null and customerNo != ''">
+                and cda.customer_no = #{customerNo}
+            </if>
+            <if test="merchantNo != null and merchantNo != ''">
+                and dai.merchant_no = #{merchantNo}
+            </if>
+            <if test="assetsType != null and assetsType != ''">
+                and dai.assets_type = #{assetsType}
+            </if>
+            <if test="tokenId != null and tokenId != ''">
+                and dai.token_id = #{tokenId}
+            </if>
+        </where>
+        order by cda.create_time desc
+    </select>
+
+
+    <select id="selectCustomerDigitalAssetsDetail" resultMap="digitalAssetsItemRes">
+        select
+        cda.customer_no,
+        cda.digital_assets_item_no,
+        cda.token_id,
+        cda.amount,
+        cda.create_time,
+        dai.serial_no,
+        dai.tenant_id,
+        dai.merchant_no,
+        dai.digital_assets_collection_no,
+        dai.cover_image,
+        dai.assets_name,
+        dai.assets_type,
+        dmj.tx_hash,
+        dmj.metadata_image,
+        dmj.metadata_url,
+        dmj.item_name as name
+        from da_customer_digital_assets cda
+        left join da_digital_assets_item dai on cda.digital_assets_item_no = dai.serial_no
+        left join da_mint_journal dmj on dai.serial_no = dmj.digital_assets_item_no and dmj.token_id = cda.token_id
+        <where>
+            <if test="serialNo != null and serialNo != ''">
+                and cda.serial_no = #{serialNo}
+            </if>
+        </where>
+    </select>
+
+</mapper>

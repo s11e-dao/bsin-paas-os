@@ -4,21 +4,14 @@ package me.flyray.bsin.server.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.entity.ChainCoin;
-import me.flyray.bsin.domain.entity.ValidateCode;
+import me.flyray.bsin.domain.domain.ChainCoin;
 import me.flyray.bsin.domain.request.ChainCoinDTO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.ChainCoinService;
-import me.flyray.bsin.infrastructure.biz.SmsBiz;
 import me.flyray.bsin.infrastructure.biz.TransactionBiz;
 import me.flyray.bsin.infrastructure.mapper.ChainCoinMapper;
-import me.flyray.bsin.infrastructure.mapper.ValidateCodeMapper;
-import me.flyray.bsin.infrastructure.mapper.WalletAccountMapper;
-import me.flyray.bsin.infrastructure.mapper.WalletMapper;
-import me.flyray.bsin.infrastructure.mapper.customer.MerchantMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.utils.BsinResultEntity;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -30,9 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
 * @author Admin
@@ -49,8 +40,6 @@ public class ChainCoinServiceImpl implements ChainCoinService {
     private ChainCoinMapper chainCoinMapper;
     @Autowired
     private TransactionBiz transactionBiz;
-    @Autowired
-    private SmsBiz  smsBiz;
 
     @Override
     @ShenyuDubboClient("/save")
@@ -61,7 +50,6 @@ public class ChainCoinServiceImpl implements ChainCoinService {
         try{
             LoginUser user = LoginInfoContextHelper.getLoginUser();
             // 短信验证
-            smsBiz.verifyCode(chainCoinDTO.getUniqueKey(), chainCoinDTO.getValidateCode());
             ChainCoin chainCoin = new ChainCoin();
             BeanUtils.copyProperties(chainCoinDTO,chainCoin);
 
@@ -116,8 +104,6 @@ public class ChainCoinServiceImpl implements ChainCoinService {
         log.debug("请求ChainCoinService.editChainCoin,参数:{}", chainCoinDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
         try{
-            // 短信验证
-            smsBiz.verifyCode(chainCoinDTO.getUniqueKey(), chainCoinDTO.getValidateCode());
             ChainCoin chainCoin = new ChainCoin();
             BeanUtils.copyProperties(chainCoinDTO,chainCoin);
 
@@ -167,8 +153,6 @@ public class ChainCoinServiceImpl implements ChainCoinService {
         log.debug("请求ChainCoinService.deleteChainCoin,参数:{}", chainCoinDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
         try{
-            // 短信验证
-            smsBiz.verifyCode(chainCoinDTO.getUniqueKey(), chainCoinDTO.getValidateCode());
 
             ChainCoin chainCoin = chainCoinMapper.selectById(chainCoinDTO.getSerialNo());
             if(chainCoin == null) {

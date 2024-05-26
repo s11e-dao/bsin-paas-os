@@ -3,12 +3,11 @@ package me.flyray.bsin.server.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.entity.CustomerChainCoin;
+import me.flyray.bsin.domain.domain.CustomerChainCoin;
 import me.flyray.bsin.domain.request.CustomerChainCoinDTO;
 import me.flyray.bsin.domain.response.CustomerChainCoinVO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.CustomerChainCoinService;
-import me.flyray.bsin.infrastructure.biz.SmsBiz;
 import me.flyray.bsin.infrastructure.mapper.CustomerChainCoinMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
@@ -35,8 +34,6 @@ import java.util.List;
 public class CustomerChainCoinServiceImpl implements CustomerChainCoinService {
     @Autowired
     private CustomerChainCoinMapper customerChainCoinMapper;
-    @Autowired
-    private SmsBiz smsBiz;
 
     @Override
     @ShenyuDubboClient("/save")
@@ -45,8 +42,6 @@ public class CustomerChainCoinServiceImpl implements CustomerChainCoinService {
         log.debug("请求CustomerChainCoinService.saveCustomerChainCoin,参数:{}", customerChainCoinDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
         try{
-            // 短信验证
-            smsBiz.verifyCode(customerChainCoinDTO.getUniqueKey(), customerChainCoinDTO.getValidateCode());
             CustomerChainCoin customerChainCoin = new CustomerChainCoin();
             BeanUtils.copyProperties(customerChainCoinDTO,customerChainCoin);
 
@@ -71,8 +66,6 @@ public class CustomerChainCoinServiceImpl implements CustomerChainCoinService {
         log.debug("请求CustomerChainCoinService.updateCustomerChainCoin,参数:{}", customerChainCoinDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
         try{
-            // 短信验证
-            smsBiz.verifyCode(customerChainCoinDTO.getUniqueKey(), customerChainCoinDTO.getValidateCode());
             CustomerChainCoin customerChainCoin = new CustomerChainCoin();
             BeanUtils.copyProperties(customerChainCoinDTO,customerChainCoin);
 
@@ -93,8 +86,6 @@ public class CustomerChainCoinServiceImpl implements CustomerChainCoinService {
     public void deleteCustomerChainCoin(CustomerChainCoinDTO customerChainCoinDTO) {
         log.debug("请求CustomerChainCoinService.deleteCustomerChainCoin,参数:{}", customerChainCoinDTO);
         try{
-            // 短信验证
-            smsBiz.verifyCode(customerChainCoinDTO.getUniqueKey(), customerChainCoinDTO.getValidateCode());
             CustomerChainCoin customerChainCoin = new CustomerChainCoin();
             BeanUtils.copyProperties(customerChainCoinDTO,customerChainCoin);
 

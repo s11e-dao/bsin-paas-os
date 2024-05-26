@@ -3,13 +3,14 @@ package me.flyray.bsin.server.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.request.WalletAccountDTO;
 import me.flyray.bsin.domain.response.WalletAccountVO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.WalletAccountService;
 import me.flyray.bsin.infrastructure.biz.WalletAccountBiz;
-import me.flyray.bsin.infrastructure.mapper.*;
+import me.flyray.bsin.infrastructure.mapper.ChainCoinMapper;
+import me.flyray.bsin.infrastructure.mapper.WalletAccountMapper;
+import me.flyray.bsin.infrastructure.mapper.WalletMapper;
 import me.flyray.bsin.infrastructure.utils.QrCodeUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -32,6 +33,7 @@ import java.util.Map;
 @ApiModule(value = "walletAccount")
 @ShenyuDubboService("/walletAccount")
 public class WalletAccountServiceImpl implements WalletAccountService {
+
     @Autowired
     private WalletAccountMapper walletAccountMapper;
     @Autowired

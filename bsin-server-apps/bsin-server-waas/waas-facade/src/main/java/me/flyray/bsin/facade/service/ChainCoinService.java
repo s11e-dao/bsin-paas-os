@@ -1,12 +1,10 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import me.flyray.bsin.domain.entity.ChainCoin;
+import me.flyray.bsin.domain.domain.ChainCoin;
 import me.flyray.bsin.domain.request.ChainCoinDTO;
-import me.flyray.bsin.utils.BsinResultEntity;
 
 import java.util.List;
-import java.util.Map;
 
 /**
 * @author Admin

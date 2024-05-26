@@ -1,8 +1,9 @@
 package me.flyray.bsin.infrastructure.utils;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
 import me.flyray.bsin.exception.BusinessException;
 import okhttp3.*;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class OkHttpUtils {
      * @param jsonObject
      * @return
      */
-    public static JSONObject  httpPost(String url,JSONObject jsonObject){
+    public static JSONObject  httpPost(String url, JSONObject jsonObject){
         OkHttpClient client = new OkHttpClient.Builder()
         .readTimeout(3000, TimeUnit.SECONDS)  // 设置读取超时时间为30秒
         .build();
@@ -60,12 +61,12 @@ public class OkHttpUtils {
         try {
             Response response = client.newCall(postRequest).execute();
             String bodyStr = response.body().string();
-            JSONObject JSONObject = new JSONObject(bodyStr);
-            if((Integer)JSONObject.get("code")!=0){
-                log.info("http调用失败，jsonObject：{},错误信息：{}",jsonObject,JSONObject.get("msg"));
+            JSONObject jsonObject1 = (JSONObject) JSON.parse(bodyStr);
+            if((Integer)jsonObject1.get("code")!=0){
+                log.info("http调用失败，jsonObject：{},错误信息：{}",jsonObject,jsonObject1.get("msg"));
                 throw new BusinessException("调用失败");
             }
-            JSONObject data = (JSONObject)JSONObject.get("data");
+            JSONObject data = (JSONObject)jsonObject1.get("data");
             if(data==null){
                 throw new BusinessException("调用失败");
             }

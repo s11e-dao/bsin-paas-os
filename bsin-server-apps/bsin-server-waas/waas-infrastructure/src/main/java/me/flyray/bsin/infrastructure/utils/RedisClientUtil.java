@@ -3,7 +3,6 @@ package me.flyray.bsin.infrastructure.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
 import java.util.List;
 
@@ -11,7 +10,7 @@ import java.util.List;
 public class RedisClientUtil {
     private static final Logger log = LoggerFactory.getLogger(RedisClientUtil.class);
 
-    
+
     /**
      * 获取指定key的值,如果key不存在返回null
      * 返回值：返回 key 的值，如果 key 不存在时，返回 nil

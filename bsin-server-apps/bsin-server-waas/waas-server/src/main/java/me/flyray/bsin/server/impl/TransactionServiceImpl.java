@@ -7,7 +7,6 @@ import me.flyray.bsin.domain.entity.ChainCoin;
 import me.flyray.bsin.domain.entity.Transaction;
 import me.flyray.bsin.domain.entity.TransactionAudit;
 import me.flyray.bsin.domain.entity.WalletAccount;
-import me.flyray.bsin.domain.entity.customer.Merchant;
 import me.flyray.bsin.domain.request.TransactionDTO;
 import me.flyray.bsin.domain.request.TransactionRequest;
 import me.flyray.bsin.domain.response.TransactionVO;
@@ -15,9 +14,10 @@ import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.TransactionService;
 import me.flyray.bsin.infrastructure.biz.TransactionBiz;
 import me.flyray.bsin.infrastructure.biz.TransferBiz;
-import me.flyray.bsin.infrastructure.mapper.*;
-import me.flyray.bsin.infrastructure.mapper.customer.MerchantMapper;
-import me.flyray.bsin.infrastructure.mapper.customer.PlatformMapper;
+import me.flyray.bsin.infrastructure.mapper.ChainCoinMapper;
+import me.flyray.bsin.infrastructure.mapper.TransactionAuditMapper;
+import me.flyray.bsin.infrastructure.mapper.TransactionMapper;
+import me.flyray.bsin.infrastructure.mapper.WalletAccountMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.utils.BsinSnowflake;
@@ -49,8 +49,6 @@ public class TransactionServiceImpl  implements TransactionService {
     private TransactionMapper transactionMapper;
     @Autowired
     private TransactionAuditMapper transactionAuditMapper;
-    @Autowired
-    private PlatformMapper platformMapper;
     @Autowired
     private ChainCoinMapper chainCoinMapper;
     @Autowired

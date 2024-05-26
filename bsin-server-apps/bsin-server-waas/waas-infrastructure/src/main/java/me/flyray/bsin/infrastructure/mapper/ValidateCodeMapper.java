@@ -1,8 +1,7 @@
 package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import me.flyray.bsin.domain.entity.SmsLog;
-import me.flyray.bsin.domain.entity.ValidateCode;
+import me.flyray.bsin.domain.domain.ValidateCode;
 
 /**
 * @author Admin

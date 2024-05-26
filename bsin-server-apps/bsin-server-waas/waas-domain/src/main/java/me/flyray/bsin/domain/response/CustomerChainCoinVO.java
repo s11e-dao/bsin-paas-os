@@ -1,7 +1,7 @@
 package me.flyray.bsin.domain.response;
 
 import lombok.Data;
-import me.flyray.bsin.domain.entity.CustomerChainCoin;
+import me.flyray.bsin.domain.domain.CustomerChainCoin;
 
 @Data
 public class CustomerChainCoinVO extends CustomerChainCoin {

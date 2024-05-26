@@ -5,67 +5,132 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import org.apache.commons.collections4.MapUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.security.SignatureException;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.domain.CustomerBase;
+import me.flyray.bsin.domain.domain.Grade;
+import me.flyray.bsin.domain.domain.Member;
 import me.flyray.bsin.facade.service.MemberService;
+import me.flyray.bsin.facade.service.TokenParamService;
+import me.flyray.bsin.infrastructure.mapper.MemberGradeMapper;
+import me.flyray.bsin.infrastructure.mapper.MemberMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.server.utils.RespBodyHandler;
 
 /**
  * @author bolei
  * @date 2023/8/6 10:12
  * @desc
  */
+
+@Slf4j
+@ShenyuDubboService(path = "/member", timeout = 6000)
+@ApiModule(value = "member")
+@Service
 public class MemberServiceImpl implements MemberService {
 
-    @Override
-    public Map<String, Object> login(Map<String, Object> requestMap) {
-        return null;
+  @Autowired private MemberGradeMapper memberGradeMapper;
+
+  @Autowired private MemberMapper memberMapper;
+  @DubboReference(version = "dev")
+  private TokenParamService tokenParamService;
+
+  @Override
+  public Map<String, Object> openMember(Map<String, Object> requestMap) {
+    Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
+    if (!memberMapper.exists(
+        new LambdaUpdateWrapper<Member>()
+            .eq(Member::getTenantId, member.getTenantId())
+            .eq(Member::getMerchantNo, member.getCustomerNo())
+            .eq(Member::getCustomerNo, member.getCustomerNo()))) {
+      memberMapper.insert(member);
     }
 
-    @Override
-    public Map<String, Object> register(Map<String, Object> requestMap) throws UnsupportedEncodingException {
-        return null;
-    }
+    return RespBodyHandler.RespBodyDto();
+  }
 
-    @Override
-    public Map<String, Object> getLoginVerifycode(Map<String, Object> requestMap) {
-        return null;
-    }
+  @Override
+  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+    Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
+    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Page<Member> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+    LambdaUpdateWrapper<Member> warapper = new LambdaUpdateWrapper<>();
+    warapper.orderByDesc(Member::getCreateTime);
+    warapper.eq(Member::getTenantId, loginUser.getTenantId());
+    warapper.eq(Member::getMerchantNo, loginUser.getMerchantNo());
+    IPage<Member> pageList = memberMapper.selectPage(page, warapper);
+    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+  }
 
-    @Override
-    public Map<String, Object> registerOrLogin(Map<String, Object> requestMap) throws UnsupportedEncodingException {
-        return null;
+  /**
+   * 查询某一等级下的会员
+   *
+   * @param requestMap
+   * @return
+   */
+  @Override
+  public Map<String, Object> getGradeMemberList(Map<String, Object> requestMap) {
+    String gradeNo = MapUtils.getString(requestMap, "gradeNo");
+    if ((String)requestMap.get("merchantNo") == null) {
+      requestMap.put("merchantNo",LoginInfoContextHelper.getMerchantNo());
     }
+    // 1.商户发行的数字积分(查询tokenParam)
+    Map<String, Object> tokenParamMap = tokenParamService.getDetailByMerchantNo(requestMap);
+    String ccy = null;
+    BigDecimal balance = new BigDecimal("0");
+    if (!"".equals(tokenParamMap.get("data"))) {
+      Map<String, Object> tokenParam = (Map<String, Object>) tokenParamMap.get("data");
+      ccy = MapUtils.getString(tokenParam, "symbol");
+    }
+    List<CustomerBase> memberList = memberGradeMapper.selectMemberListByGrade(gradeNo,ccy);
+    for (CustomerBase customer : memberList) {
 
-    @Override
-    public Map<String, Object> web3Login(Map<String, Object> requestMap) throws SignatureException, UnsupportedEncodingException {
-        return null;
     }
+    return RespBodyHandler.setRespBodyListDto(memberList);
+  }
 
-    @Override
-    public Map<String, Object> openMember(Map<String, Object> requestMap) {
-        return null;
-    }
+  @Override
+  public Map<String, Object> getGradeMemberPageList(Map<String, Object> requestMap) {
+    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Page<CustomerBase> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+    String gradeNo = MapUtils.getString(requestMap, "gradeNo");
+    IPage<CustomerBase> memberList = memberGradeMapper.selectMemberPageListByGrade(page, gradeNo);
+    return RespBodyHandler.setRespPageInfoBodyDto(memberList);
+  }
 
-    @Override
-    public Map<String, Object> getPageList(Map<String, Object> requestMap) {
-        return null;
-    }
+  @Override
+  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+    String serialNo = MapUtils.getString(requestMap, "serialNo");
+    Member member = memberMapper.selectById(serialNo);
+    return RespBodyHandler.setRespBodyDto(member);
+  }
 
-    @Override
-    public Map<String, Object> getDetail(Map<String, Object> requestMap) {
-        return null;
+  /**
+   * 获取社区居民数据 1、查询会员的等级
+   *
+   * @param requestMap
+   * @return
+   */
+  @Override
+  public Map<String, Object> getMemberGradeDetail(Map<String, Object> requestMap) {
+    String customerNo = MapUtils.getString(requestMap, "customerNo");
+    if (customerNo == null) {
+      customerNo = LoginInfoContextHelper.getCustomerNo();
     }
-
-    @Override
-    public Map<String, Object> getMemberGradeDetail(Map<String, Object> requestMap) {
-        return null;
-    }
+    Grade memberGrade = memberGradeMapper.selectMemberGrade(customerNo);
+    return RespBodyHandler.setRespBodyDto(memberGrade);
+  }
 }

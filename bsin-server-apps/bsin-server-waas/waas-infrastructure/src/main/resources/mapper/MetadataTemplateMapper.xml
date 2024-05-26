@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.MetadataTemplateMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.MetadataTemplate">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+            <result property="templateContent" column="template_content" jdbcType="VARCHAR"/>
+            <result property="templateName" column="template_name" jdbcType="VARCHAR"/>
+            <result property="templateCode" column="template_code" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,tenant_id,merchant_no,
+        template_content,template_name,template_code,description,
+        create_time,del_flag
+    </sql>
+</mapper>

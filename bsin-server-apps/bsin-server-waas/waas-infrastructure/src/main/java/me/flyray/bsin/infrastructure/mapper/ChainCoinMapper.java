@@ -1,7 +1,7 @@
 package me.flyray.bsin.infrastructure.mapper;
 
-import me.flyray.bsin.domain.entity.ChainCoin;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import me.flyray.bsin.domain.domain.ChainCoin;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -13,6 +13,7 @@ import java.util.List;
 * @Entity
 */
 public interface ChainCoinMapper extends BaseMapper<ChainCoin> {
+
     int updateDelFlag(@Param("params") ChainCoin chainCoin);
 
     List<String> coinDropDown();

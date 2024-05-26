@@ -1,14 +1,9 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import me.flyray.bsin.domain.entity.ChainCoin;
-import me.flyray.bsin.domain.entity.WalletAccount;
-import com.baomidou.mybatisplus.extension.service.IService;
-import me.flyray.bsin.domain.request.ChainCoinDTO;
+import me.flyray.bsin.domain.domain.WalletAccount;
 import me.flyray.bsin.domain.request.WalletAccountDTO;
-import me.flyray.bsin.domain.request.WalletDTO;
 import me.flyray.bsin.domain.response.WalletAccountVO;
-import me.flyray.bsin.utils.BsinResultEntity;
 
 import java.util.Map;
 

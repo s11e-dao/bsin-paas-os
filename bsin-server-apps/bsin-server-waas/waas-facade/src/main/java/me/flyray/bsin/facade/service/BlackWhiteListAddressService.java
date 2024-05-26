@@ -1,10 +1,8 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import me.flyray.bsin.domain.entity.BlackWhiteListAddress;
 import me.flyray.bsin.domain.request.BlackWhiteListAddressDTO;
 import me.flyray.bsin.domain.response.BlackWhiteListAddressVO;
-import me.flyray.bsin.utils.BsinResultEntity;
 
 import java.util.List;
 

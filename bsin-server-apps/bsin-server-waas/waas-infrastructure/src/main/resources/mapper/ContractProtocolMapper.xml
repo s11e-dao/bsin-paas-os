@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.ContractProtocolMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.ContractProtocol">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <id property="protocolCode" column="protocol_code" jdbcType="VARCHAR"/>
+            <id property="protocolStandards" column="protocol_standards" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="category" column="category" jdbcType="VARCHAR"/>
+            <result property="protocolName" column="protocol_name" jdbcType="VARCHAR"/>
+            <result property="version" column="version" jdbcType="VARCHAR"/>
+            <result property="protocolBytecode" column="protocol_bytecode" jdbcType="VARCHAR"/>
+            <result property="protocolAbi" column="protocol_abi" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+            <result property="chainType" column="chain_type" jdbcType="VARCHAR"/>
+            <result property="coverImage" column="cover_image" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,protocol_code,protocol_standards,tenant_id,
+        `type`,category,protocol_name,version,protocol_bytecode,
+        protocol_abi,description,create_by,
+        create_time,del_flag,chain_type,cover_image
+    </sql>
+
+    <select id="getContractProtocolByContract" resultMap="BaseResultMap">
+        select c.contract,
+               c.contract_protocol_no,
+               cp.serial_no,
+               cp.protocol_code,
+               cp.protocol_standards,
+               cp.tenant_id,
+               cp.type,
+               cp.category,
+               cp.protocol_name,
+               cp.version,
+               cp.protocol_bytecode,
+               cp.protocol_abi,
+               cp.description,
+               cp.create_by,
+               cp.create_time,
+               cp.del_flag,
+               cp.chain_type
+        from da_contract c
+                 join da_contract_protocol cp
+        on c.contract_protocol_no = cp.serial_no
+        where c.contract = #{contract}
+    </select>
+
+</mapper>

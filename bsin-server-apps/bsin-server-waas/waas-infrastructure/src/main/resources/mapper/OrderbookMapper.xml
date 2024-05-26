@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.OrderbookMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.Orderbook">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+            <result property="fromCustomerNo" column="from_customer_no" jdbcType="VARCHAR"/>
+            <result property="customerType" column="customer_type" jdbcType="VARCHAR"/>
+            <result property="fromDigitalAssetsNo" column="from_digital_assets_no" jdbcType="VARCHAR"/>
+            <result property="fromAssetsType" column="from_assets_type" jdbcType="VARCHAR"/>
+            <result property="fromTokenId" column="from_token_id" jdbcType="INTEGER"/>
+            <result property="fromAmount" column="from_amount" jdbcType="DECIMAL"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="toDigitalAssetsNo" column="to_digital_assets_no" jdbcType="VARCHAR"/>
+            <result property="toAssetsType" column="to_assets_type" jdbcType="VARCHAR"/>
+            <result property="toAmount" column="to_amount" jdbcType="DECIMAL"/>
+            <result property="exchangeRate" column="exchange_rate" jdbcType="DECIMAL"/>
+            <result property="exchangedAmount" column="exchanged_amount" jdbcType="DECIMAL"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="digitalAssetsItemRes" type="me.flyray.bsin.facade.response.DigitalAssetsItemRes">
+        <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="memberNo" column="member_no" jdbcType="VARCHAR"/>
+        <result property="multimediaType" column="multimedia_type" jdbcType="VARCHAR"/>
+        <result property="coverImage" column="cover_image" jdbcType="VARCHAR"/>
+        <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+        <result property="toAmount" column="to_amount" jdbcType="VARCHAR"/>
+        <result property="assetsName" column="assets_name" jdbcType="VARCHAR"/>
+        <result property="fromAmount" column="from_amount" jdbcType="VARCHAR"/>
+        <result property="exchangeRate" column="exchangeRate" jdbcType="VARCHAR"/>
+        <result property="merchantName" column="merchant_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,tenant_id,merchant_no,
+        from_customer_no,customer_type,assets_type,status,from_token_id,
+        from_digital_assets_no,from_assets_type,from_amount,to_digital_assets_no,to_assets_type,
+        to_amount,exchange_rate,exchanged_amount,create_time,update_time
+    </sql>
+
+    <select id="selectOrderbookPage" resultMap="digitalAssetsItemRes">
+        select
+        ob.serial_no,
+        ob.tenant_id,
+        ob.create_time,
+        ob.from_digital_assets_no,
+        ob.from_customer_no as member_no,
+        ob.to_amount,
+        ob.merchant_no,
+        ob.from_amount/ob.to_amount as exchangeRate,
+        ob.from_assets_type,
+        ob.from_amount,
+        dai.multimedia_type,
+        dai.cover_image,
+        dai.assets_name,
+        dai.digital_assets_no
+        from da_orderbook ob
+        left join da_digital_assets_item dai on ob.from_digital_assets_no = dai.digital_assets_no
+        <where>
+            <if test="query.tenantId != null">
+                and ob.tenant_id = #{query.tenantId}
+            </if>
+            <if test="query.fromAssetsType != null">
+                and ob.from_assets_type = #{query.fromAssetsType}
+            </if>
+        </where>
+        order by ob.create_time desc
+    </select>
+
+</mapper>

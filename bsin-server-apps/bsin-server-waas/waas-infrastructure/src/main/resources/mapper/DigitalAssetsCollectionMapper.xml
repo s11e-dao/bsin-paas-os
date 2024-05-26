@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.DigitalAssetsCollectionMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.DigitalAssetsCollection">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="symbol" column="symbol" jdbcType="VARCHAR"/>
+            <result property="totalSupply" column="total_supply" jdbcType="INTEGER"/>
+            <result property="initialSupply" column="initial_supply" jdbcType="INTEGER"/>
+            <result property="inventory" column="inventory" jdbcType="INTEGER"/>
+            <result property="decimals" column="decimals" jdbcType="INTEGER"/>
+            <result property="collectionType" column="collection_type" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="contractAddress" column="contract_address" jdbcType="VARCHAR"/>
+            <result property="metadataImageSameFlag" column="metadata_image_same_flag" jdbcType="VARCHAR"/>
+            <result property="metadataFilePathNo" column="metadata_file_path_no" jdbcType="VARCHAR"/>
+            <result property="metadataTemplateNo" column="metadata_template_no" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+            <result property="bondingCurveFlag" column="bonding_curve_flag" jdbcType="VARCHAR"/>
+            <result property="contractProtocolNo" column="contract_protocol_no" jdbcType="VARCHAR"/>
+            <result property="chainEnv" column="chain_env" jdbcType="VARCHAR"/>
+            <result property="chainType" column="chain_type" jdbcType="VARCHAR"/>
+            <result property="sponsorFlag" column="sponsor_flag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,merchant_no,tenant_id,collection_type,
+        `name`,symbol,total_supply,initial_supply,inventory,decimals,status,
+        create_by,create_time,contract_address,
+        metadata_image_same_flag,metadata_file_path_no,
+        metadata_template_no,del_flag,bonding_curve_flag,
+        contract_protocol_no,chain_env,chain_type,
+        sponsor_flag
+    </sql>
+
+</mapper>

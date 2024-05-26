@@ -1,13 +1,11 @@
 package me.flyray.bsin.infrastructure.mapper;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import me.flyray.bsin.domain.entity.WalletAccount;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import me.flyray.bsin.domain.domain.WalletAccount;
 import me.flyray.bsin.domain.request.WalletAccountDTO;
 import me.flyray.bsin.domain.response.WalletAccountVO;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
 * @author Admin

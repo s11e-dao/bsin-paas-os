@@ -1,9 +1,7 @@
 package me.flyray.bsin.domain.request;
 
 import lombok.Data;
-import me.flyray.bsin.domain.entity.WalletAccount;
-
-import javax.validation.constraints.NotBlank;
+import me.flyray.bsin.domain.domain.WalletAccount;
 
 @Data
 public class WalletAccountDTO extends WalletAccount {
