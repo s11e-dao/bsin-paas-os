@@ -1,5 +1,6 @@
 package me.flyray.bsin.server.biz;
 
+import me.flyray.bsin.redis.manager.BsinCacheProvider;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -8,7 +9,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.flyray.bsin.cache.BsinCacheProvider;
 import me.flyray.bsin.domain.domain.CustomerAccount;
 import me.flyray.bsin.domain.enums.AccountCategory;
 import me.flyray.bsin.facade.service.TokenParamService;
@@ -28,6 +28,7 @@ public class TokenReleaseBiz {
   private TokenParamService tokenReleaseParamService;
 
   @Autowired private CustomerAccountBiz customerAccountBiz;
+
   @Autowired private BsinCacheProvider bsinCacheProvider;
 
   /**

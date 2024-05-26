@@ -44,9 +44,6 @@ public class CustomerBiz {
   @Autowired private CustomerInviteRelationMapper inviteRelationMapper;
 
   @DubboReference(version = "dev")
-  private TaskService taskService;
-
-  @DubboReference(version = "dev")
   private EquityService equityService;
 
   public CustomerBase login(CustomerBase customerBase) {
@@ -91,41 +88,32 @@ public class CustomerBiz {
     Map<String, Object> requestMap = new HashMap<>();
     requestMap.put("tenantId", jiujiuTenantId);
     requestMap.put("merchantNo", jiujiumerchantNo);
-    Map respMap = taskService.getInvitationTaskDetail(requestMap);
-    if (!"".equals(respMap.get("data")) && respMap.get("data") != null) {
-      Map taskResMap = (Map) respMap.get("data");
-      List<Equity> equityList = (List<Equity>) taskResMap.get("equityList");
-      // 根据 inviteCode 老用户mint积分
-      if (inviteCode != null) {
-        // 根据邀请码，找到邀请人,写入邀请关系
-        CustomerBase parentCustomer =
-            customerBaseMapper.selectOne(
-                new LambdaQueryWrapper<CustomerBase>().eq(CustomerBase::getInviteCode, inviteCode));
-        if (parentCustomer == null) {
-          throw new BusinessException("800000", "邀请码错误！");
-        }
-        // 添加邀请关系
-        CustomerInviteRelation customerInviteRelation = new CustomerInviteRelation();
-        customerInviteRelation.setCustomerNo(customerBase.getCustomerNo());
-        customerInviteRelation.setParentNo(String.valueOf(parentCustomer.getCustomerNo()));
-        customerInviteRelation.setInviteLevel(1);
-        addInviteRelation(customerInviteRelation);
+    // 根据 inviteCode 老用户mint积分
+    if (inviteCode != null) {
+      // 根据邀请码，找到邀请人,写入邀请关系
+      CustomerBase parentCustomer =
+          customerBaseMapper.selectOne(
+              new LambdaQueryWrapper<CustomerBase>().eq(CustomerBase::getInviteCode, inviteCode));
+      if (parentCustomer == null) {
+        throw new BusinessException("800000", "邀请码错误！");
+      }
+      // 添加邀请关系
+      CustomerInviteRelation customerInviteRelation = new CustomerInviteRelation();
+      customerInviteRelation.setCustomerNo(customerBase.getCustomerNo());
+      customerInviteRelation.setParentNo(String.valueOf(parentCustomer.getCustomerNo()));
+      customerInviteRelation.setInviteLevel(1);
+      addInviteRelation(customerInviteRelation);
 
-        // 找到老用户
-        LambdaQueryWrapper<CustomerBase> warapperOldCustomer = new LambdaQueryWrapper<>();
-        warapperOldCustomer.eq(CustomerBase::getTenantId, customerBase.getTenantId());
-        warapperOldCustomer.eq(CustomerBase::getInviteCode, inviteCode);
-        CustomerBase oldCustomerInfo = customerBaseMapper.selectOne(warapperOldCustomer);
-        if (oldCustomerInfo != null) {
-          requestMap.put("customerNo", oldCustomerInfo.getCustomerNo());
-          for (Equity equity : equityList) {
-            requestMap.put("equity", equity);
-            // 权益发放
-            equityService.grant(requestMap);
-          }
-        } else {
-          // TODO: warning
-        }
+      // 找到老用户
+      LambdaQueryWrapper<CustomerBase> warapperOldCustomer = new LambdaQueryWrapper<>();
+      warapperOldCustomer.eq(CustomerBase::getTenantId, customerBase.getTenantId());
+      warapperOldCustomer.eq(CustomerBase::getInviteCode, inviteCode);
+      CustomerBase oldCustomerInfo = customerBaseMapper.selectOne(warapperOldCustomer);
+      if (oldCustomerInfo != null) {
+        requestMap.put("customerNo", oldCustomerInfo.getCustomerNo());
+        equityService.grant(requestMap);
+      } else {
+        // TODO: warning
       }
     }
     return customerBase;

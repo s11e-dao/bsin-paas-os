@@ -5,7 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import me.flyray.bsin.cache.BsinCacheProvider;
+
+import me.flyray.bsin.redis.manager.BsinCacheProvider;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
