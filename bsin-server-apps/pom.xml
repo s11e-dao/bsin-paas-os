@@ -24,7 +24,6 @@
         <module>bsin-server-http</module>
         <module>bsin-server-ai</module>
         <module>bsin-server-waas</module>
-        <module>bsin-server-digital-assets</module>
         <module>bsin-server-workflow</module>
         <module>bsin-server-workflow-admin</module>
     </modules>
