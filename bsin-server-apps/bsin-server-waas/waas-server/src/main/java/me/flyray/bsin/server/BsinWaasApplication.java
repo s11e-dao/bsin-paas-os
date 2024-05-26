@@ -19,10 +19,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @MapperScan("me.flyray.bsin.infrastructure.mapper")
 @ComponentScan("me.flyray.bsin.*")
 @EnableFileStorage // 文件上传工具
-public class BsinDigitalAssetsApplication {
+public class BsinWaasApplication {
 
     public static void main(String[] args) {
-        SpringApplication springApplication = new SpringApplication(BsinDigitalAssetsApplication.class);
+        SpringApplication springApplication = new SpringApplication(BsinWaasApplication.class);
         springApplication.run(args);
     }
 
