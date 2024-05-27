@@ -1,4 +1,4 @@
-package me.flyray.bsin.redis.config.properties;
+package me.flyray.bsin.redis.config;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

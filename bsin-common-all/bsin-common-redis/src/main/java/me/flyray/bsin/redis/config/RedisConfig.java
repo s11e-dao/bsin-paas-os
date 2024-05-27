@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import me.flyray.bsin.redis.manager.SpringCacheManager;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.redis.config.properties.RedissonProperties;
 import me.flyray.bsin.redis.handler.KeyPrefixHandler;
 import org.redisson.client.codec.StringCodec;
 import org.redisson.codec.CompositeCodec;
