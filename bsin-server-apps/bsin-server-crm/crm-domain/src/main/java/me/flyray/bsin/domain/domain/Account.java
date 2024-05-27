@@ -8,12 +8,12 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 
+ *
  * @TableName crm_customer_account
  */
-@TableName(value ="crm_customer_account")
+@TableName(value ="crm_account")
 @Data
-public class CustomerAccount implements Serializable {
+public class Account implements Serializable {
     /**
      * 账户编号
      */

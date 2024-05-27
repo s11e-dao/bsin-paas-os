@@ -23,7 +23,7 @@ import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.annotations.CaptureCustomerBehavior;
-import me.flyray.bsin.domain.domain.CustomerAccount;
+import me.flyray.bsin.domain.domain.Account;
 import me.flyray.bsin.domain.domain.DigitalAssetsCollection;
 import me.flyray.bsin.domain.domain.TokenParam;
 import me.flyray.bsin.domain.domain.TokenReleaseJournal;
@@ -226,9 +226,9 @@ public class TokenParamServiceImpl implements TokenParamService {
     reqMap.put("merchantNo", merchantNo);
     reqMap.put("customerNo", customerNo);
     // 优先从缓存中获取
-    CustomerAccount customerAccount =
+    Account customerAccount =
         bsinCacheProvider.get(
-            "customerAccount:" + tenantId + merchantNo + customerNo + ccy, CustomerAccount.class);
+            "customerAccount:" + tenantId + merchantNo + customerNo + ccy, Account.class);
     if (customerAccount == null) {
       if (customerAccountNo == null) {
         // 币种：用币种英文代替
@@ -409,7 +409,7 @@ public class TokenParamServiceImpl implements TokenParamService {
     }
     // 2.从请求参数中查询要释放的账户
     BigDecimal releaseAccountBalance = null;
-    CustomerAccount customerAccount = (CustomerAccount) requestMap.get("customerAccount");
+    Account customerAccount = (Account) requestMap.get("customerAccount");
     releaseAccountBalance = customerAccount.getBalance();
 
     // TODO: 根据释放方式：1、劳动价值释放， 2、购买释放， 3、周期释放 优化， 目前只支持：劳动价值释放-单元释放的触发价值(特指捕获劳动价值的积分数量)，每累计达到释放一次

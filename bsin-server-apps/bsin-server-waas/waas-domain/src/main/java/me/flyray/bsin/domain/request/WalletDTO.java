@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 public class WalletDTO extends Wallet {
+
     public String uniqueKey;       // 验证码key
 
     public String validateCode;     // 验证码

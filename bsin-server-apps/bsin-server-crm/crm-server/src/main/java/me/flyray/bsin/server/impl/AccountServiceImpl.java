@@ -27,8 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.domain.AccountFreezeJournal;
-import me.flyray.bsin.domain.domain.CustomerAccount;
-import me.flyray.bsin.domain.domain.CustomerAccountJournal;
+import me.flyray.bsin.domain.domain.Account;
+import me.flyray.bsin.domain.domain.AccountJournal;
 import me.flyray.bsin.domain.enums.AccountCategory;
 import me.flyray.bsin.domain.enums.CcyType;
 import me.flyray.bsin.exception.BusinessException;
@@ -68,8 +68,8 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public Map<String, Object> openAccount(Map<String, Object> requestMap) {
-    CustomerAccount customerAccount =
-        BsinServiceContext.getReqBodyDto(CustomerAccount.class, requestMap);
+    Account customerAccount =
+        BsinServiceContext.getReqBodyDto(Account.class, requestMap);
     customerAccountBiz.openAccount(customerAccount);
     return RespBodyHandler.RespBodyDto();
   }
@@ -127,19 +127,19 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public Map<String, Object> freeze(Map<String, Object> requestMap) {
-    CustomerAccount customerAccount =
-        BsinServiceContext.getReqBodyDto(CustomerAccount.class, requestMap);
+    Account customerAccount =
+        BsinServiceContext.getReqBodyDto(Account.class, requestMap);
     // 1.冻结
     int i = customerAccountMapper.freezeAmount(customerAccount);
 
     // 客户的账户编号
-    CustomerAccount customerFreezeAccount =
+    Account customerFreezeAccount =
         customerAccountMapper.selectOne(
-            new LambdaQueryWrapper<CustomerAccount>()
-                .eq(CustomerAccount::getTenantId, customerAccount.getTenantId())
-                .eq(CustomerAccount::getCustomerNo, customerAccount.getCustomerNo())
-                .eq(CustomerAccount::getCcy, customerAccount.getCcy())
-                .eq(CustomerAccount::getCategory, customerAccount.getCategory()));
+            new LambdaQueryWrapper<Account>()
+                .eq(Account::getTenantId, customerAccount.getTenantId())
+                .eq(Account::getCustomerNo, customerAccount.getCustomerNo())
+                .eq(Account::getCcy, customerAccount.getCcy())
+                .eq(Account::getCategory, customerAccount.getCategory()));
     if (customerFreezeAccount == null) {
       throw new BusinessException(CUSTOMER_ACCOUNT_IS_NULL);
     }
@@ -160,8 +160,8 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public Map<String, Object> unfreeze(Map<String, Object> requestMap) {
-    CustomerAccount customerAccount =
-        BsinServiceContext.getReqBodyDto(CustomerAccount.class, requestMap);
+    Account customerAccount =
+        BsinServiceContext.getReqBodyDto(Account.class, requestMap);
 
     List<String> customerNoList = (List) requestMap.get("customerNoList");
 
@@ -228,15 +228,15 @@ public class AccountServiceImpl implements AccountService {
     if (customerNo == null) {
       customerNo = loginUser.getCustomerNo();
     }
-    CustomerAccount accountDetail = null;
-    CustomerAccount customerAccount =
-        BsinServiceContext.getReqBodyDto(CustomerAccount.class, requestMap);
+    Account accountDetail = null;
+    Account customerAccount =
+        BsinServiceContext.getReqBodyDto(Account.class, requestMap);
     if (serialNo == null) {
-      LambdaQueryWrapper<CustomerAccount> warapper = new LambdaQueryWrapper<>();
-      warapper.eq(CustomerAccount::getTenantId, tenantId);
-      warapper.eq(CustomerAccount::getCustomerNo, customerNo);
-      warapper.eq(CustomerAccount::getCategory, customerAccount.getCategory());
-      warapper.eq(CustomerAccount::getCcy, customerAccount.getCcy());
+      LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
+      warapper.eq(Account::getTenantId, tenantId);
+      warapper.eq(Account::getCustomerNo, customerNo);
+      warapper.eq(Account::getCategory, customerAccount.getCategory());
+      warapper.eq(Account::getCcy, customerAccount.getCcy());
       accountDetail = customerAccountMapper.selectOne(warapper);
     } else {
       accountDetail = customerAccountMapper.selectById(serialNo);
@@ -283,30 +283,30 @@ public class AccountServiceImpl implements AccountService {
     String tenantId = loginUser.getTenantId();
     String merchantNo = loginUser.getMerchantNo();
 
-    CustomerAccount customerAccount =
-        BsinServiceContext.getReqBodyDto(CustomerAccount.class, requestMap);
+    Account customerAccount =
+        BsinServiceContext.getReqBodyDto(Account.class, requestMap);
     Pagination pagination = (Pagination) requestMap.get("pagination");
-    Page<CustomerAccount> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-    LambdaUpdateWrapper<CustomerAccount> warapper = new LambdaUpdateWrapper<>();
-    warapper.orderByDesc(CustomerAccount::getCreateTime);
-    warapper.eq(CustomerAccount::getTenantId, tenantId);
+    Page<Account> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+    LambdaUpdateWrapper<Account> warapper = new LambdaUpdateWrapper<>();
+    warapper.orderByDesc(Account::getCreateTime);
+    warapper.eq(Account::getTenantId, tenantId);
     warapper.eq(
         ObjectUtil.isNotNull(customerAccount.getStatus()),
-        CustomerAccount::getStatus,
+        Account::getStatus,
         customerAccount.getStatus());
     warapper.eq(
         ObjectUtil.isNotNull(customerAccount.getType()),
-        CustomerAccount::getType,
+        Account::getType,
         customerAccount.getType());
     warapper.eq(
         ObjectUtil.isNotNull(customerAccount.getCategory()),
-        CustomerAccount::getCategory,
+        Account::getCategory,
         customerAccount.getCategory());
     warapper.eq(
         ObjectUtil.isNotNull(customerAccount.getCcy()),
-        CustomerAccount::getCcy,
+        Account::getCcy,
         customerAccount.getCcy());
-    IPage<CustomerAccount> pageList = customerAccountMapper.selectPage(page, warapper);
+    IPage<Account> pageList = customerAccountMapper.selectPage(page, warapper);
     return RespBodyHandler.setRespPageInfoBodyDto(pageList);
   }
 
@@ -318,17 +318,17 @@ public class AccountServiceImpl implements AccountService {
    */
   @Override
   public Map<String, Object> getList(Map<String, Object> requestMap) {
-    CustomerAccount customerAccount =
-        BsinServiceContext.getReqBodyDto(CustomerAccount.class, requestMap);
+    Account customerAccount =
+        BsinServiceContext.getReqBodyDto(Account.class, requestMap);
     String tenantId = (String) requestMap.get("tenantId");
-    LambdaQueryWrapper<CustomerAccount> warapper = new LambdaQueryWrapper<>();
-    warapper.eq(CustomerAccount::getTenantId, tenantId);
-    warapper.eq(CustomerAccount::getCustomerNo, customerAccount.getCustomerNo());
+    LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
+    warapper.eq(Account::getTenantId, tenantId);
+    warapper.eq(Account::getCustomerNo, customerAccount.getCustomerNo());
     warapper.eq(
         ObjectUtil.isNotNull(customerAccount.getCcy()),
-        CustomerAccount::getCcy,
+        Account::getCcy,
         customerAccount.getCcy());
-    List<CustomerAccount> accounts = customerAccountMapper.selectList(warapper);
+    List<Account> accounts = customerAccountMapper.selectList(warapper);
     return RespBodyHandler.setRespBodyListDto(accounts);
   }
 
@@ -337,23 +337,23 @@ public class AccountServiceImpl implements AccountService {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = loginUser.getTenantId();
     String merchantNo = loginUser.getMerchantNo();
-    CustomerAccount customerAccount =
-        BsinServiceContext.getReqBodyDto(CustomerAccount.class, requestMap);
+    Account customerAccount =
+        BsinServiceContext.getReqBodyDto(Account.class, requestMap);
     Pagination pagination = (Pagination) requestMap.get("pagination");
-    Page<CustomerAccountJournal> page =
+    Page<AccountJournal> page =
         new Page<>(pagination.getPageNum(), pagination.getPageSize());
-    LambdaUpdateWrapper<CustomerAccountJournal> warapper = new LambdaUpdateWrapper<>();
-    warapper.orderByDesc(CustomerAccountJournal::getCreateTime);
-    warapper.eq(CustomerAccountJournal::getTenantId, tenantId);
+    LambdaUpdateWrapper<AccountJournal> warapper = new LambdaUpdateWrapper<>();
+    warapper.orderByDesc(AccountJournal::getCreateTime);
+    warapper.eq(AccountJournal::getTenantId, tenantId);
     warapper.eq(
         StringUtils.isNotEmpty(customerAccount.getCustomerNo()),
-        CustomerAccountJournal::getCustomerNo,
+        AccountJournal::getCustomerNo,
         customerAccount.getCustomerNo());
     warapper.eq(
         StringUtils.isNotEmpty(customerAccount.getCcy()),
-        CustomerAccountJournal::getCcy,
+        AccountJournal::getCcy,
         customerAccount.getCcy());
-    IPage<CustomerAccountJournal> pageList =
+    IPage<AccountJournal> pageList =
         customerAccountJournalMapper.selectPage(page, warapper);
     return RespBodyHandler.setRespPageInfoBodyDto(pageList);
   }
@@ -361,7 +361,7 @@ public class AccountServiceImpl implements AccountService {
   @Override
   public Map<String, Object> getAccountJournalDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
-    CustomerAccountJournal accountJournal = customerAccountJournalMapper.selectById(serialNo);
+    AccountJournal accountJournal = customerAccountJournalMapper.selectById(serialNo);
     return RespBodyHandler.setRespBodyDto(accountJournal);
   }
 
@@ -434,27 +434,27 @@ public class AccountServiceImpl implements AccountService {
     Map<String, Object> tokenReq = new HashMap();
     tokenReq.put("merchantNo", merchantNo);
     Map<String, Object> tokenParamMap = tokenParamService.getDetailByMerchantNo(tokenReq);
-    CustomerAccount accountDetail = null;
+    Account accountDetail = null;
     if(StringUtils.isNotEmpty(tokenParamMap.get("data").toString())){
       Map tokenParam = (Map) tokenParamMap.get("data");
       String ccy = (String) tokenParam.get("symbol");
       BigDecimal anchoringValue = (BigDecimal) tokenParam.get("anchoringValue");
       // 查询用户在该币种下的余额
-      LambdaQueryWrapper<CustomerAccount> warapper = new LambdaQueryWrapper<>();
-      warapper.eq(CustomerAccount::getTenantId, tenantId);
-      warapper.eq(CustomerAccount::getCustomerNo, customerNo);
-      warapper.eq(CustomerAccount::getCategory, AccountCategory.BALANCE.getCode());
-      warapper.eq(CustomerAccount::getCcy, ccy);
+      LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
+      warapper.eq(Account::getTenantId, tenantId);
+      warapper.eq(Account::getCustomerNo, customerNo);
+      warapper.eq(Account::getCategory, AccountCategory.BALANCE.getCode());
+      warapper.eq(Account::getCcy, ccy);
       accountDetail = customerAccountMapper.selectOne(warapper);
       accountDetail.setAnchoringValue(anchoringValue);
     }
 
-    LambdaQueryWrapper<CustomerAccount> fdWarapper = new LambdaQueryWrapper<>();
-    fdWarapper.eq(CustomerAccount::getTenantId, tenantId);
-    fdWarapper.eq(CustomerAccount::getCustomerNo, customerNo);
-    fdWarapper.eq(CustomerAccount::getCategory, AccountCategory.BALANCE.getCode());
-    fdWarapper.eq(CustomerAccount::getCcy, CcyType.CNY.getCode());
-    CustomerAccount fdAccountDetail = customerAccountMapper.selectOne(fdWarapper);
+    LambdaQueryWrapper<Account> fdWarapper = new LambdaQueryWrapper<>();
+    fdWarapper.eq(Account::getTenantId, tenantId);
+    fdWarapper.eq(Account::getCustomerNo, customerNo);
+    fdWarapper.eq(Account::getCategory, AccountCategory.BALANCE.getCode());
+    fdWarapper.eq(Account::getCcy, CcyType.CNY.getCode());
+    Account fdAccountDetail = customerAccountMapper.selectOne(fdWarapper);
     fdAccountDetail.setAnchoringValue(BigDecimal.valueOf(1));
 
     payAccounts.put("fireDiamond",fdAccountDetail);

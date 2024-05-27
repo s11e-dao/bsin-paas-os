@@ -1,6 +1,6 @@
 package me.flyray.bsin.infrastructure.mapper;
 
-import me.flyray.bsin.domain.domain.CustomerAccount;
+import me.flyray.bsin.domain.domain.Account;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -16,10 +16,10 @@ import java.math.BigDecimal;
  */
 @Repository
 @Mapper
-public interface CustomerAccountMapper extends BaseMapper<CustomerAccount> {
-  int freezeAmount(@Param("query") CustomerAccount customerAccount);
+public interface CustomerAccountMapper extends BaseMapper<Account> {
+  int freezeAmount(@Param("query") Account customerAccount);
 
-  int unFreezeAmount(@Param("query") CustomerAccount customerAccount);
+  int unFreezeAmount(@Param("query") Account customerAccount);
 
-  BigDecimal getTotalAmount(@Param("query") CustomerAccount customerAccount);
+  BigDecimal getTotalAmount(@Param("query") Account customerAccount);
 }

@@ -37,7 +37,7 @@ import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.domain.BondingCurveTokenJournal;
 import me.flyray.bsin.domain.domain.BondingCurveTokenParam;
-import me.flyray.bsin.domain.domain.CustomerAccount;
+import me.flyray.bsin.domain.domain.Account;
 import me.flyray.bsin.domain.enums.AccountCategory;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.BondingCurveTokenService;
@@ -369,7 +369,7 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
       bondingCurveTokenParamMapper.updateById(bondingCurveTokenParam);
 
       // 8.用户BC积分累计账户入账
-      CustomerAccount customerAccount =
+      Account customerAccount =
           customerAccountBiz.inAccount(
               tenantId,
               customerNo,

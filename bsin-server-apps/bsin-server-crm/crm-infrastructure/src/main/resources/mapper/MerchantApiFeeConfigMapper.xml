@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.MerchantApiFeeConfigMapper">
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.MerchantApiFeeConfig">
+        <result column="serial_no" jdbcType="VARCHAR" property="serialNo"/>
+        <result column="tenant_id" jdbcType="VARCHAR" property="tenantId"/>
+        <result column="fee" jdbcType="VARCHAR" property="fee"/>
+        <result column="free_times" jdbcType="INTEGER" property="freeTimes"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="product_id" jdbcType="VARCHAR" property="productId"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no, tenant_id, fee, free_times, create_time, status, product_id
+    </sql>
+
+    <insert id="insert" parameterType="me.flyray.bsin.domain.domain.MerchantApiFeeConfig">
+        insert into market_merchant_product_api_fee (serial_no, tenant_id, fee,
+                                                free_times, create_time, status,
+                                                    product_id)
+        values (#{serialNo,jdbcType=VARCHAR}, #{tenantId,jdbcType=VARCHAR}, #{fee,jdbcType=VARCHAR},
+                #{freeTimes,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR},
+                #{productId,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="delete" parameterType="java.lang.String">
+        delete market_merchant_product_api_fee
+        where serial_no = #{serialNo}
+    </update>
+
+    <update id="update" parameterType="me.flyray.bsin.domain.domain.MerchantApiFeeConfig">
+        update market_merchant_product_api_fee
+        <set>
+            <if test="fee != null and fee !='' ">
+                fee = #{fee,jdbcType=VARCHAR},
+            </if>
+            <if test="freeTimes != null and freeTimes !='' ">
+                free_times = #{freeTimes,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null and status !='' ">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where serial_no = #{serialNo}
+    </update>
+
+    <select id="getPageList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from market_merchant_product_api_fee
+        <where>
+            <if test="tenantId != null">
+                and tenant_id = #{tenantId}
+            </if>
+            <if test="productId != null and productId != ''">
+                and product_id = #{productId}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="getTenantApiFeeConfigById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from market_merchant_product_api_fee
+        where serial_no = #{serialNo}
+    </select>
+
+    <select id="getTenantApiFeeConfig" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from market_merchant_product_api_fee
+        where tenant_id = #{tenantId} and product_id = #{productId}
+    </select>
+</mapper>

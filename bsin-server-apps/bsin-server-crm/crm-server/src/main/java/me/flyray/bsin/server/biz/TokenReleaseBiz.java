@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.flyray.bsin.domain.domain.CustomerAccount;
+import me.flyray.bsin.domain.domain.Account;
 import me.flyray.bsin.domain.enums.AccountCategory;
 import me.flyray.bsin.facade.service.TokenParamService;
 import me.flyray.bsin.infrastructure.mapper.CustomerAccountMapper;
@@ -36,11 +36,11 @@ public class TokenReleaseBiz {
    *
    * @param CustomerAccount
    */
-  public void bcAccountRelease(CustomerAccount customerAccount, BigDecimal amount)
+  public void bcAccountRelease(Account customerAccount, BigDecimal amount)
       throws Exception {
 
     // 1 用户BC积分余额账户入账
-    CustomerAccount customerAccountRet =
+    Account customerAccountRet =
         customerAccountBiz.inAccount(
             customerAccount.getTenantId(),
             customerAccount.getCustomerNo(),

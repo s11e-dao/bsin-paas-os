@@ -191,13 +191,6 @@
             <version>20.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>me.flyray.bsin</groupId>
-            <artifactId>community-facade</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -205,6 +198,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.2.6</version>
                 <configuration>
                     <excludes>
                         <exclude>

@@ -11,13 +11,13 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 
+ *
  * @TableName crm_customer_account_journal
  */
 
 @Data
-@TableName(value ="crm_customer_account_journal")
-public class CustomerAccountJournal implements Serializable {
+@TableName(value ="crm_account_journal")
+public class AccountJournal implements Serializable {
     /**
      * 账户流水编号
      */

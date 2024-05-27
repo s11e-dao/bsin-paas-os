@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="me.flyray.bsin.infrastructure.mapper.CustomerAccountMapper">
 
-    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.CustomerAccount">
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.Account">
         <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
@@ -61,7 +61,7 @@
     </update>
 
     <select id="getTotalAmount" resultType="java.math.BigDecimal"
-            parameterType="me.flyray.bsin.domain.domain.CustomerAccount">
+            parameterType="me.flyray.bsin.domain.domain.Account">
         select sum(balance) amount
         from crm_customer_account
         where customer_no = #{query.customerNo}

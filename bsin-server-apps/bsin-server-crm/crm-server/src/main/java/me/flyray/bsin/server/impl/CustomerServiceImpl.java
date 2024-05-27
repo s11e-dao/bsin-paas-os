@@ -37,13 +37,12 @@ import me.flyray.bsin.blockchain.utils.Web3WalletUtil;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.domain.BondingCurveTokenParam;
-import me.flyray.bsin.domain.domain.CustomerAccount;
+import me.flyray.bsin.domain.domain.Account;
 import me.flyray.bsin.domain.domain.CustomerBase;
 import me.flyray.bsin.domain.domain.Member;
 import me.flyray.bsin.domain.entity.SysUser;
 import me.flyray.bsin.domain.enums.AccountCategory;
 import me.flyray.bsin.domain.enums.LoginMethod;
-import me.flyray.bsin.domain.response.SysUserVO;
 import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.enums.CustomerType;
 import me.flyray.bsin.exception.BusinessException;
@@ -493,7 +492,7 @@ public class CustomerServiceImpl implements CustomerService {
       Map<String, Object> tokenParam = (Map<String, Object>) tokenParamMap.get("data");
       String digitalPointsSymbol = MapUtils.getString(tokenParam, "symbol");
       String digitalPointsName = MapUtils.getString(tokenParam, "name");
-      CustomerAccount digitalPointsAccount =
+      Account digitalPointsAccount =
           customerAccountBiz.getAccountDetail(
               merchantNo, customerNo, digitalPointsSymbol, AccountCategory.BALANCE.getCode());
       // 设置数字积分余额
@@ -543,14 +542,14 @@ public class CustomerServiceImpl implements CustomerService {
     if (bondingCurveTokenParam != null) {
       // 根据币种查询对应账户余额
       // .1 联合曲线余额账户： 扣除释放的账户
-      CustomerAccount bondingCurveBalanceAccount =
+      Account bondingCurveBalanceAccount =
           customerAccountBiz.getAccountDetail(
               merchantNo,
               customerNo,
               bondingCurveTokenParam.getSymbol(),
               AccountCategory.BALANCE.getCode());
       // .2 联合曲线累计账户： 累计贡献值
-      CustomerAccount bondingCurveAccumulatedIncomeBalanceAccount =
+      Account bondingCurveAccumulatedIncomeBalanceAccount =
           customerAccountBiz.getAccountDetail(
               merchantNo,
               customerNo,
@@ -597,7 +596,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     // 3.法币(CNY)余额
     balance = new BigDecimal("0");
-    CustomerAccount cnyAccount =
+    Account cnyAccount =
         customerAccountBiz.getAccountDetail(
             merchantNo, customerNo, "cny", AccountCategory.BALANCE.getCode());
     if (cnyAccount != null) {

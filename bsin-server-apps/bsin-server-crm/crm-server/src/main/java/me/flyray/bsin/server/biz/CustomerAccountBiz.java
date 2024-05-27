@@ -10,14 +10,12 @@ import org.springframework.stereotype.Component;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.Map;
 
 import cn.hutool.crypto.digest.MD5;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.domain.domain.CustomerAccount;
-import me.flyray.bsin.domain.domain.CustomerAccountJournal;
-import me.flyray.bsin.domain.domain.CustomerBase;
+import me.flyray.bsin.domain.domain.Account;
+import me.flyray.bsin.domain.domain.AccountJournal;
 import me.flyray.bsin.domain.enums.AccountEnum;
 import me.flyray.bsin.domain.enums.AccountJournalEnum;
 import me.flyray.bsin.infrastructure.mapper.CustomerAccountJournalMapper;
@@ -35,12 +33,12 @@ public class CustomerAccountBiz {
   @Autowired private CustomerAccountMapper customerAccountMapper;
   @Autowired private CustomerAccountJournalMapper customerAccountJournalMapper;
 
-  public CustomerAccount openAccount(CustomerAccount customerAccount) {
+  public Account openAccount(Account customerAccount) {
     customerAccountMapper.insert(customerAccount);
     return customerAccount;
   }
 
-  public CustomerAccount inAccount(
+  public Account inAccount(
       String tenantId,
       String customerNo,
       String accountCategory,
@@ -60,7 +58,7 @@ public class CustomerAccountBiz {
         AccountJournalEnum.INT_ACCOUNT.getCode());
   }
 
-  public CustomerAccount outAccount(
+  public Account outAccount(
       String tenantId,
       String customerNo,
       String accountCategory,
@@ -80,7 +78,7 @@ public class CustomerAccountBiz {
         AccountJournalEnum.OUT_ACCOUNT.getCode());
   }
 
-  private CustomerAccount handleAccount(
+  private Account handleAccount(
       String tenantId,
       String customerNo,
       String category,
@@ -89,20 +87,20 @@ public class CustomerAccountBiz {
       Integer decimals,
       BigDecimal amount,
       Integer journalDirection) {
-    LambdaQueryWrapper<CustomerAccount> warapper = new LambdaQueryWrapper<>();
-    warapper.eq(CustomerAccount::getTenantId, tenantId);
-    warapper.eq(CustomerAccount::getCustomerNo, customerNo);
-    warapper.eq(CustomerAccount::getCcy, ccy);
-    warapper.eq(ObjectUtil.isNotNull(category), CustomerAccount::getCategory, category);
-    CustomerAccount customerAccount = customerAccountMapper.selectOne(warapper);
+    LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
+    warapper.eq(Account::getTenantId, tenantId);
+    warapper.eq(Account::getCustomerNo, customerNo);
+    warapper.eq(Account::getCcy, ccy);
+    warapper.eq(ObjectUtil.isNotNull(category), Account::getCategory, category);
+    Account customerAccount = customerAccountMapper.selectOne(warapper);
     DecimalFormat decimalFormat = new DecimalFormat("#.00");
     MD5 md5 = null;
-    CustomerAccountJournal accountJournal = new CustomerAccountJournal();
+    AccountJournal accountJournal = new AccountJournal();
     if (amount.compareTo(BigDecimal.ZERO) < 1) {
       throw new BusinessException(ResponseCode.AMOUNT_MUST_GREATER_THAN_ZERO);
     }
     if (customerAccount == null) {
-      customerAccount = new CustomerAccount();
+      customerAccount = new Account();
       customerAccount.setCustomerNo(customerNo);
       customerAccount.setTenantId(tenantId);
       customerAccount.setCcy(ccy);
@@ -168,13 +166,13 @@ public class CustomerAccountBiz {
     return customerAccount;
   }
 
-  public CustomerAccount getAccountDetail(
+  public Account getAccountDetail(
       String merchantNo, String customerNo, String ccy, String category) {
-    LambdaQueryWrapper<CustomerAccount> warapper = new LambdaQueryWrapper<>();
-    warapper.eq(CustomerAccount::getCustomerNo, customerNo);
-    warapper.eq(CustomerAccount::getCcy, ccy);
-    warapper.eq(CustomerAccount::getCategory, category);
-    CustomerAccount customerAccount = customerAccountMapper.selectOne(warapper);
+    LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
+    warapper.eq(Account::getCustomerNo, customerNo);
+    warapper.eq(Account::getCcy, ccy);
+    warapper.eq(Account::getCategory, category);
+    Account customerAccount = customerAccountMapper.selectOne(warapper);
     return customerAccount;
   }
 
