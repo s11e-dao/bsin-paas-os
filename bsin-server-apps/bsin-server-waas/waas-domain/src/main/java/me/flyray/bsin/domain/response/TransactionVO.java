@@ -1,7 +1,7 @@
 package me.flyray.bsin.domain.response;
 
 import lombok.Data;
-import me.flyray.bsin.domain.domain.Transaction;
+import me.flyray.bsin.domain.entity.Transaction;
 
 @Data
 public class TransactionVO extends Transaction {

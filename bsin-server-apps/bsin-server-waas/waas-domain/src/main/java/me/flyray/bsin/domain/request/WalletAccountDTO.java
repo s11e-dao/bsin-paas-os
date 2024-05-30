@@ -1,7 +1,7 @@
 package me.flyray.bsin.domain.request;
 
 import lombok.Data;
-import me.flyray.bsin.domain.domain.WalletAccount;
+import me.flyray.bsin.domain.entity.WalletAccount;
 
 @Data
 public class WalletAccountDTO extends WalletAccount {

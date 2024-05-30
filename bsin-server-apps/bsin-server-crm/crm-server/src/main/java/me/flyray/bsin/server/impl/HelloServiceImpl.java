@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.domain.Hello;
+import me.flyray.bsin.domain.entity.Hello;
 import me.flyray.bsin.facade.service.HelloService;
 import me.flyray.bsin.infrastructure.mapper.HelloMapper;
 import me.flyray.bsin.server.utils.RespBodyHandler;

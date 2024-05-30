@@ -1,7 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import me.flyray.bsin.domain.domain.Wallet;
+import me.flyray.bsin.domain.entity.Wallet;
 import me.flyray.bsin.domain.request.WalletDTO;
 import me.flyray.bsin.domain.response.WalletVO;
 

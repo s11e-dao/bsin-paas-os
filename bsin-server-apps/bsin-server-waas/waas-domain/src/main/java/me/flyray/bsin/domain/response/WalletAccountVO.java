@@ -1,7 +1,7 @@
 package me.flyray.bsin.domain.response;
 
 import lombok.Data;
-import me.flyray.bsin.domain.domain.WalletAccount;
+import me.flyray.bsin.domain.entity.WalletAccount;
 
 
 @Data

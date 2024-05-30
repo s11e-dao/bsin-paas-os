@@ -4,7 +4,7 @@ package me.flyray.bsin.server.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.domain.ChainCoin;
+import me.flyray.bsin.domain.entity.ChainCoin;
 import me.flyray.bsin.domain.request.ChainCoinDTO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.ChainCoinService;
@@ -36,10 +36,11 @@ import java.util.List;
 @ApiModule(value = "chainCoin")
 @ShenyuDubboService("/chainCoin")
 public class ChainCoinServiceImpl implements ChainCoinService {
+
     @Autowired
     private ChainCoinMapper chainCoinMapper;
     @Autowired
-    private ChainTransactionListen transactionBiz;
+    private ChainTransactionListen chainTransactionListen;
 
     @Override
     @ShenyuDubboClient("/save")
@@ -84,7 +85,7 @@ public class ChainCoinServiceImpl implements ChainCoinService {
 
             // TODO 监听智能合约上该货币的交易
             if(chainCoin.getStatus() == 1){
-                transactionBiz.customMonitor(chainCoin.getContractAddress());
+                chainTransactionListen.contractAddressMonitor(chainCoin.getContractAddress());
             }
         }catch (BusinessException be){
             throw be;
@@ -136,7 +137,7 @@ public class ChainCoinServiceImpl implements ChainCoinService {
             chainCoinMapper.updateById(chainCoin);
             // 币种状态改为上架或修改合约地址，则启动智能合约监听
             if(oldChainCoin.getStatus() == 0 && chainCoin.getStatus() == 1 || !oldChainCoin.getContractAddress().equals(chainCoin.getContractAddress()) ){
-                transactionBiz.customMonitor(chainCoin.getContractAddress());
+                chainTransactionListen.contractAddressMonitor(chainCoin.getContractAddress());
             }
         }catch (BusinessException be){
             throw be;

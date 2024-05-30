@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="me.flyray.bsin.infrastructure.mapper.OrderbookMatchJournalMapper">
 
-    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.OrderbookMatchJournal">
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.OrderbookMatchJournal">
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
             <result property="orderbookNo" column="orderbook_no" jdbcType="VARCHAR"/>
             <result property="status" column="status" jdbcType="INTEGER"/>

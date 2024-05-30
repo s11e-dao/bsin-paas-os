@@ -1,7 +1,7 @@
 package me.flyray.bsin.domain.response;
 
 import lombok.Data;
-import me.flyray.bsin.domain.domain.BlackWhiteListAddress;
+import me.flyray.bsin.domain.entity.BlackWhiteListAddress;
 
 @Data
 public class BlackWhiteListAddressVO extends BlackWhiteListAddress {

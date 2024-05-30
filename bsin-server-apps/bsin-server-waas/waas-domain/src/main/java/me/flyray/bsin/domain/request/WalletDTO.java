@@ -2,7 +2,7 @@ package me.flyray.bsin.domain.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import me.flyray.bsin.domain.domain.Wallet;
+import me.flyray.bsin.domain.entity.Wallet;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Data

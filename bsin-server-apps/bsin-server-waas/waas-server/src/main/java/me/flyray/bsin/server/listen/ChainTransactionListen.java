@@ -2,10 +2,10 @@ package me.flyray.bsin.server.listen;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import me.flyray.bsin.domain.domain.ChainCoin;
-import me.flyray.bsin.domain.domain.DictContractMethod;
-import me.flyray.bsin.domain.domain.Wallet;
-import me.flyray.bsin.domain.domain.WalletAccount;
+import me.flyray.bsin.domain.entity.ChainCoin;
+import me.flyray.bsin.domain.entity.DictContractMethod;
+import me.flyray.bsin.domain.entity.Wallet;
+import me.flyray.bsin.domain.entity.WalletAccount;
 import me.flyray.bsin.domain.request.TransactionDTO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.infrastructure.biz.TransferBiz;
@@ -137,9 +137,9 @@ public class ChainTransactionListen {
                 taskExecutor.shutdown();
             }
             String txHash = ethLog.getTransactionHash();         // 交易hash
-            QueryWrapper<me.flyray.bsin.domain.domain.Transaction> query = Wrappers.query();
+            QueryWrapper<me.flyray.bsin.domain.entity.Transaction> query = Wrappers.query();
             query.eq("tx_hash",txHash);
-            List<me.flyray.bsin.domain.domain.Transaction> transactionList = transactionMapper.selectList(query);
+            List<me.flyray.bsin.domain.entity.Transaction> transactionList = transactionMapper.selectList(query);
             if(!transactionList.isEmpty()){
                 return;
             }

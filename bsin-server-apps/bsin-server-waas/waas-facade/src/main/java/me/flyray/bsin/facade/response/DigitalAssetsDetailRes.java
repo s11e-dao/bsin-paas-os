@@ -3,9 +3,8 @@ package me.flyray.bsin.facade.response;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Builder;
 import lombok.Data;
-import me.flyray.bsin.domain.domain.DigitalAssetsItem;
+import me.flyray.bsin.domain.entity.DigitalAssetsItem;
 
 /**
  * @author bolei

@@ -3,9 +3,9 @@ package me.flyray.bsin.server.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.domain.ChainCoin;
-import me.flyray.bsin.domain.domain.Wallet;
-import me.flyray.bsin.domain.domain.WalletAccount;
+import me.flyray.bsin.domain.entity.ChainCoin;
+import me.flyray.bsin.domain.entity.Wallet;
+import me.flyray.bsin.domain.entity.WalletAccount;
 import me.flyray.bsin.domain.request.WalletAccountDTO;
 import me.flyray.bsin.domain.response.WalletAccountVO;
 import me.flyray.bsin.exception.BusinessException;

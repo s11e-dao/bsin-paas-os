@@ -3,6 +3,9 @@ package me.flyray.bsin.server.impl;
 import static me.flyray.bsin.constants.ResponseCode.USER_NOT_EXIST;
 
 import me.flyray.bsin.domain.domain.*;
+import me.flyray.bsin.domain.entity.ContractProtocol;
+import me.flyray.bsin.domain.entity.DigitalAssetsCollection;
+import me.flyray.bsin.domain.entity.DigitalAssetsItem;
 import me.flyray.bsin.facade.service.MerchantService;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;

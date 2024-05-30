@@ -3,7 +3,7 @@ package me.flyray.bsin.server.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.domain.CustomerChainCoin;
+import me.flyray.bsin.domain.entity.CustomerChainCoin;
 import me.flyray.bsin.domain.request.CustomerChainCoinDTO;
 import me.flyray.bsin.domain.response.CustomerChainCoinVO;
 import me.flyray.bsin.exception.BusinessException;

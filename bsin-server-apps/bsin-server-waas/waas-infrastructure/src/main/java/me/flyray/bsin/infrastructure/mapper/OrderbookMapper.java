@@ -2,14 +2,13 @@ package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
-import me.flyray.bsin.domain.domain.Orderbook;
+import me.flyray.bsin.domain.entity.Orderbook;
 
 /**
 * @author bolei

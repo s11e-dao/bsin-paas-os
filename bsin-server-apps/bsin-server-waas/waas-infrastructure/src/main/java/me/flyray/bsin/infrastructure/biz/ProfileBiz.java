@@ -3,7 +3,7 @@ package me.flyray.bsin.infrastructure.biz;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.blockchain.service.BsinBlockChainEngineFactory;
-import me.flyray.bsin.domain.domain.*;
+import me.flyray.bsin.domain.entity.CustomerProfile;
 import me.flyray.bsin.infrastructure.mapper.ContractMapper;
 import me.flyray.bsin.infrastructure.mapper.MetadataFileMapper;
 import me.flyray.bsin.infrastructure.mapper.MetadataTemplateMapper;

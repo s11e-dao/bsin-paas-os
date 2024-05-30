@@ -2,7 +2,7 @@ package me.flyray.bsin.server.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.domain.BlackWhiteListAddress;
+import me.flyray.bsin.domain.entity.BlackWhiteListAddress;
 import me.flyray.bsin.domain.request.BlackWhiteListAddressDTO;
 import me.flyray.bsin.domain.response.BlackWhiteListAddressVO;
 import me.flyray.bsin.exception.BusinessException;

@@ -8,6 +8,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import me.flyray.bsin.domain.domain.*;
+import me.flyray.bsin.domain.entity.ContractProtocol;
+import me.flyray.bsin.domain.entity.DigitalAssetsCollection;
+import me.flyray.bsin.domain.entity.DigitalAssetsItem;
+import me.flyray.bsin.domain.entity.DigitalAssetsItemObtainCode;
 import me.flyray.bsin.facade.service.*;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;

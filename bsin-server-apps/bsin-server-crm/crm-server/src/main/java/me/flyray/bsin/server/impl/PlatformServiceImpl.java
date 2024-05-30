@@ -6,9 +6,9 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-import me.flyray.bsin.domain.domain.ChainCoin;
+import me.flyray.bsin.domain.entity.ChainCoin;
 import me.flyray.bsin.domain.domain.Platform;
-import me.flyray.bsin.domain.domain.Wallet;
+import me.flyray.bsin.domain.entity.Wallet;
 import me.flyray.bsin.domain.request.PlatformDTO;
 import me.flyray.bsin.infrastructure.mapper.PlatformMapper;
 import me.flyray.bsin.security.domain.LoginUser;

@@ -5,9 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-import me.flyray.bsin.domain.domain.ContractProtocol;
+import me.flyray.bsin.domain.entity.ContractProtocol;
 
 /**
  * mapper

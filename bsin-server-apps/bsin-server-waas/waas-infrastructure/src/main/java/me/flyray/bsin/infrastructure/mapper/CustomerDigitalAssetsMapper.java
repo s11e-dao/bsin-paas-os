@@ -1,6 +1,6 @@
 package me.flyray.bsin.infrastructure.mapper;
 
-import me.flyray.bsin.domain.domain.CustomerDigitalAssets;
+import me.flyray.bsin.domain.entity.CustomerDigitalAssets;
 import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

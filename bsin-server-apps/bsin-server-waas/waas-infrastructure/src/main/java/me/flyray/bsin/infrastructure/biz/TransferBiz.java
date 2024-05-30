@@ -2,7 +2,7 @@ package me.flyray.bsin.infrastructure.biz;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import me.flyray.bsin.domain.domain.WalletAccount;
+import me.flyray.bsin.domain.entity.WalletAccount;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.infrastructure.mapper.WalletAccountMapper;
 import me.flyray.bsin.infrastructure.utils.OkHttpUtils;

@@ -16,7 +16,7 @@ import java.util.Map;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.MetadataTemplate;
+import me.flyray.bsin.domain.entity.MetadataTemplate;
 import me.flyray.bsin.facade.service.MetadataTemplateService;
 import me.flyray.bsin.infrastructure.mapper.MetadataTemplateMapper;
 import me.flyray.bsin.mybatis.utils.Pagination;

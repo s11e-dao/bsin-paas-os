@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
-import me.flyray.bsin.domain.domain.DigitalAssetsItem;
+import me.flyray.bsin.domain.entity.DigitalAssetsItem;
 
 /**
  * @author bolei

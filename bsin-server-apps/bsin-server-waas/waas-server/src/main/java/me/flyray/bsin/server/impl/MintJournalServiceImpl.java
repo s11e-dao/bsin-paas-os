@@ -15,7 +15,7 @@ import java.util.Map;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.MintJournal;
+import me.flyray.bsin.domain.entity.MintJournal;
 import me.flyray.bsin.facade.service.MintJournalService;
 import me.flyray.bsin.infrastructure.mapper.MintJournalMapper;
 import me.flyray.bsin.mybatis.utils.Pagination;

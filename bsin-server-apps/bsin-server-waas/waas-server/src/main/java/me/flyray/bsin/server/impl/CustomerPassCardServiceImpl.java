@@ -22,7 +22,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.domain.CustomerBase;
-import me.flyray.bsin.domain.domain.CustomerPassCard;
+import me.flyray.bsin.domain.entity.CustomerPassCard;
 import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
 import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
 import me.flyray.bsin.infrastructure.mapper.CustomerPassCardMapper;

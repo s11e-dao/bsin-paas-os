@@ -1,6 +1,6 @@
 package me.flyray.bsin.infrastructure.mapper;
 
-import me.flyray.bsin.domain.domain.Hello;
+import me.flyray.bsin.domain.entity.Hello;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;

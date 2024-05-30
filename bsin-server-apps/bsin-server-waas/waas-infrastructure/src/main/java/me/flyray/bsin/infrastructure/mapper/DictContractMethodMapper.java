@@ -1,7 +1,7 @@
 package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import me.flyray.bsin.domain.domain.DictContractMethod;
+import me.flyray.bsin.domain.entity.DictContractMethod;
 
 /**
 * @author Admin

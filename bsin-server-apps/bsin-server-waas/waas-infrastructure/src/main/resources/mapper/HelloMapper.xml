@@ -3,12 +3,12 @@
 
 <mapper namespace="me.flyray.bsin.infrastructure.mapper.HelloMapper">
 
-  <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.Hello">
+  <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.Hello">
     <result column="name" property="name" jdbcType="VARCHAR"/>
     <result column="desc" property="desc" jdbcType="VARCHAR"/>
   </resultMap>
 
-  <insert id="insert" parameterType="me.flyray.bsin.domain.domain.Hello">
+  <insert id="insert" parameterType="me.flyray.bsin.domain.entity.Hello">
         insert into hello (id, name, `desc`)
         values (#{id,jdbcType=VARCHAR},
                 #{name,jdbcType=VARCHAR},

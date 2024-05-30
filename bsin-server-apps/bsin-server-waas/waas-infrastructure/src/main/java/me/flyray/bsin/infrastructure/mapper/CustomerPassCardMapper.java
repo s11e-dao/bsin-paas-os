@@ -1,7 +1,7 @@
 package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import me.flyray.bsin.domain.domain.CustomerPassCard;
+import me.flyray.bsin.domain.entity.CustomerPassCard;
 import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import me.flyray.bsin.domain.domain.MetadataFile;
+import me.flyray.bsin.domain.entity.MetadataFile;
 
 import java.math.BigInteger;
 

@@ -1,16 +1,15 @@
 package me.flyray.bsin.server.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import me.flyray.bsin.domain.domain.ChainCoin;
-import me.flyray.bsin.domain.domain.CustomerChainCoin;
-import me.flyray.bsin.domain.domain.Wallet;
+import me.flyray.bsin.domain.entity.ChainCoin;
+import me.flyray.bsin.domain.entity.CustomerChainCoin;
+import me.flyray.bsin.domain.entity.Wallet;
 import me.flyray.bsin.domain.request.WalletDTO;
 import me.flyray.bsin.domain.response.WalletVO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.infrastructure.biz.WalletAccountBiz;
 import me.flyray.bsin.infrastructure.mapper.CustomerChainCoinMapper;
 import me.flyray.bsin.infrastructure.mapper.WalletMapper;
-import me.flyray.bsin.mq.producer.RocketMQProducer;
 import me.flyray.bsin.utils.BsinSnowflake;
 import me.flyray.bsin.utils.I18eCode;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -20,7 +19,6 @@ import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
