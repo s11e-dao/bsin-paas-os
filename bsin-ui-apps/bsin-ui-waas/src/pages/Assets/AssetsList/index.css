@@ -1,0 +1,107 @@
+
+.frame{
+    width:349px;
+    margin: 0 auto;
+    border: 1px solid black;
+    position: relative;
+  }
+  .frame .header{
+    width: 349px;
+    height: 339px;
+    background: #000000;
+    position: relative;
+    top: 0px;
+    left: -1px;
+  }
+  .frame .content{
+    height: 318px;
+    background: #050416;
+  }
+  .frame .header .strip{
+    background: white;
+    width: 449px;
+    height: 7px;
+  }
+  
+  .frame .header .nftImg {
+    width:240px ;
+    height: 240px;
+    border-radius: 50%;
+    box-shadow: 0px 0px 55px #7d659f;
+    position: absolute;
+    top: 57px;
+    left: 52px;
+  }
+  
+  .frame .content .middle{
+    position: absolute;
+    top: 424px;
+    left: 27px;
+    color: white;
+  }
+  .frame .content .content_top{
+    color: white;
+    font-size: 20px;
+    display: block;
+    padding-top: 22px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .frame .content .content_left{
+    float: left;
+    /*width: 295px;*/
+    color: white;
+    margin-left: 10px;
+    margin-top: 30px;
+    
+  }
+  .frame .content .content_left .first_section{
+    display: block;
+    margin-top: 8px;
+    width: 180px;
+    height: 105px;
+    margin-left: 5px;
+    /*background: rgb(179,161,191,47%);*/
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    /*text-indent: 2em;*/
+    border-radius: 10px;
+  }
+  .frame .content .content_rigth{
+    float: left;
+    margin-top: 30px;
+    margin-left: 10px;
+    width: 130px;
+    color: white;
+    font-size: 14px;
+  }
+  .frame .content .content_rigth canvas{
+    width: 110px !important;
+    height: 110px !important;
+    margin-top: 0px !important;
+  }
+  .frame .content .content_rigth span{
+    display: block;
+    text-align: center;
+    width: 120px;
+    margin-top: 5px;
+  }
+  .logo{
+    height: 45px;
+    margin-top: 20px;
+  }
+
+  .obtainCode{
+
+  }
+
+  .qrcode{
+    padding: 10px;
+    background-color: #fff;
+  }

@@ -50,7 +50,7 @@ let columnsData: ColumnsType<AppColumnsItem> = [
   {
     title: '菜单图标',
     dataIndex: 'icon',
-    width: 90,
+    width: 180,
   },
   {
     title: '应用ID',

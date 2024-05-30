@@ -143,8 +143,8 @@ export default () => {
   // confirmEmpower
   const confirmEmpower = async () => {
     const { tenantId } = isRecord;
-    let { code } = await empowerApp({ tenantId, appIds: targetKeys });
-    code === '000000' ? message.success('授权应用成功') : '';
+    let res = await empowerApp({ tenantId, appIds: targetKeys });
+    res ? message.success('授权应用成功') : '';
     setIsEmpowerModal(false);
   };
 
