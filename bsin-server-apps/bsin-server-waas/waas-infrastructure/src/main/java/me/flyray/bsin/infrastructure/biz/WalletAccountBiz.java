@@ -63,15 +63,15 @@ public class WalletAccountBiz {
             mpcClients.add(0);
             mpcClients.add(1);
             jsonObject.put("mpcClients", mpcClients);
-            jsonObject.put("sync", true);
+            jsonObject.put("sync", false);
             jsonObject.put("timeout", 1000);
             JSONObject data = OkHttpUtils.httpPost(url, jsonObject);
             String pubKey = (String) data.get("pubkey");
             String address = (String)data.get("address");
+            String walletAccountId = (String)data.get("address");
 
             // 2、创建钱包账户
             WalletAccount walletAccount = new WalletAccount();
-            String walletAccountId = BsinSnowflake.getId();
             walletAccount.setSerialNo(walletAccountId);
             walletAccount.setAddress(address);
             walletAccount.setPubKey(pubKey);

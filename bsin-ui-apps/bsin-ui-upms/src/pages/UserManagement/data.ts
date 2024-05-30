@@ -39,6 +39,24 @@ let columnsData: ProColumns<TableListItem>[] = [
     dataIndex: 'username',
   },
   {
+    title: '所属机构id',
+    hideInSearch: true,
+    width: 200,
+    dataIndex: 'orgId',
+  },
+  {
+    title: '昵称',
+    hideInSearch: true,
+    width: 90,
+    dataIndex: 'nickname',
+  },
+  {
+    title: '用户类型',
+    hideInSearch: true,
+    width: 120,
+    dataIndex: 'type',
+  },
+  {
     title: '状态',
     hideInSearch: true,
     width: 90,
@@ -47,24 +65,6 @@ let columnsData: ProColumns<TableListItem>[] = [
       0: { text: '在岗', status: 'Processing' },
       1: { text: '离职', status: 'Error' },
     },
-  },
-  {
-    title: '所属机构id',
-    hideInSearch: true,
-    width: 200,
-    dataIndex: 'orgId',
-  },
-  {
-    title: '所属租户id',
-    hideInSearch: true,
-    width: 200,
-    dataIndex: 'tenantId',
-  },
-  {
-    title: '昵称',
-    hideInSearch: true,
-    width: 90,
-    dataIndex: 'nickname',
   },
   {
     title: '电话号码',
@@ -79,10 +79,10 @@ let columnsData: ProColumns<TableListItem>[] = [
     dataIndex: 'email',
   },
   {
-    title: '用户类型',
+    title: '所属租户id',
     hideInSearch: true,
-    width: 120,
-    dataIndex: 'type',
+    width: 200,
+    dataIndex: 'tenantId',
   },
   {
     title: '操作',

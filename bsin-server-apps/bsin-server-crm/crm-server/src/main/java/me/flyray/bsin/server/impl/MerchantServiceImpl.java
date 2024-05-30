@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import me.flyray.bsin.domain.domain.*;
 import me.flyray.bsin.domain.request.MerchantRegisterRequest;
+import me.flyray.bsin.domain.request.WalletDTO;
+import me.flyray.bsin.facade.service.WalletService;
 import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
 import me.flyray.bsin.redis.manager.BsinCacheProvider;
 import me.flyray.bsin.utils.AESUtils;
@@ -73,97 +75,22 @@ public class MerchantServiceImpl implements MerchantService {
     public MerchantSubscribeJournalMapper merchantSubscribeJournalMapper;
     @Autowired private BsinCacheProvider bsinCacheProvider;
 
-    @DubboReference(version = "dev")
+    @DubboReference(version = "${dubbo.provider.version}")
     private CustomerService customerService;
-    @DubboReference(version = "dev")
+    @DubboReference(version = "${dubbo.provider.version}")
     private UserService userService;
-
-    @ApiDoc(desc = "register")
-    @ShenyuDubboClient("/register")
-    @Override
-    public BsinResultEntity register(MerchantRegisterRequest merchantRegisterRequest) {
-        log.debug("请求MemberService.register,参数:{}", merchantRegisterRequest);
-        LoginUser user = LoginInfoContextHelper.getLoginUser();
-        try{
-            QueryWrapper queryWrapper = new QueryWrapper();
-            queryWrapper.eq("tenant_Id", merchantRegisterRequest.getTenantId());
-            queryWrapper.eq("username", merchantRegisterRequest.getUsername());
-            queryWrapper.eq("auth_method", merchantRegisterRequest.getAuthMethod());
-            CustomerBase oldCustomerBase = customerBaseMapper.selectOne(queryWrapper);
-            if(oldCustomerBase != null) {
-                throw new BusinessException(ResponseCode.USER_EXIST);
-            }
-
-            // 1、保存客户基础信息
-            CustomerBase customerBase = new CustomerBase();
-            String customerId = BsinSnowflake.getId();
-            // TODO 一期验证方法默认为 0、手机号
-            customerBase.setAuthMethod(merchantRegisterRequest.getAuthMethod());
-            customerBase.setUsername(merchantRegisterRequest.getUsername());
-            customerBase.setPassword(merchantRegisterRequest.getPassword());
-            // TODO 一期客户类型默认为 3、顶级平台商家客户
-            customerBase.setType(merchantRegisterRequest.getCustomerType());
-            customerBase.setTxPasswordStatus("0"); //支付密码未设置
-            customerBase.setCertificationStatus(false); //未实名认证
-            customerBase.setCreateTime(new Date());
-            customerBase.setTenantId(merchantRegisterRequest.getTenantId());
-            // 生成谷歌验证器token
-            String googleToken = AESUtils.AESEnCode(GoogleAuthenticator.getSecretKey());
-            customerBaseMapper.insert(customerBase);
-
-            // 2、保存商户信息
-            Merchant merchant = new Merchant();
-            BeanUtils.copyProperties(merchantRegisterRequest, merchant);
-            String serialNo = BsinSnowflake.getId();
-            merchant.setSerialNo(serialNo);
-            merchant.setStatus("1"); // 正常
-            merchant.setCreateTime(new Date());
-//            merchant.setStep(0); // 初始步骤
-//            merchant.setAuditStatus(0); // 资料待完善
-//            // TODO 一期默认审核通过
-//            merchant.setAuditStatus(2);
-            merchantMapper.insert(merchant);
-
-            // 4、创建默认钱包
-            Wallet wallet = new Wallet();
-            String walletId = BsinSnowflake.getId();
-            wallet.setSerialNo(walletId);
-            wallet.setWalletName("wallet");     // 钱包的默认名称
-            wallet.setBizRoleType(2);   // 客户类型：2、商户
-            wallet.setType(1);  // 1、默认钱包
-            wallet.setWalletTag("NONE");
-            wallet.setStatus(1);    // 正常
-            wallet.setCategory(1);  // 钱包分类 1、MVP 2、多签
-            wallet.setEnv("EVM");
-            wallet.setBizRoleTypeNo(serialNo);
-            wallet.setCreateBy(user.getUserId());
-            wallet.setCreateTime(new Date());
-            // walletMapper.insert(wallet);
-
-            // 5、创建钱包账户（以平台上架币种为准）
-            QueryWrapper<ChainCoin> queryCoin = new QueryWrapper();
-            queryCoin.eq("status", 1);      // 上架
-            queryCoin.eq("type", 1);        // 平台默认
-            queryCoin.eq("tenantId", merchantRegisterRequest.getTenantId());
-//            List<ChainCoin> chainCoinList = chainCoinMapper.selectList(queryCoin);
-//            for(ChainCoin chainCoin : chainCoinList) {
-//                // walletAccountBiz.createWalletAccount(wallet,chainCoin.getSerialNo());
-//            }
-        }catch (BusinessException e){
-            throw e;
-        } catch (Exception e){
-            e.printStackTrace();
-            log.debug("请求MemberService.register错误:{}", e.getMessage());
-            throw new BusinessException("MERCHANT_REGISTER_FAIL");
-        }
-        return BsinResultEntity.ok();
-    }
+    @DubboReference(version = "${dubbo.provider.version}")
+    private WalletService walletService;
 
     /**
      * 在租户下注册商户信息
+     * 1、添加商户信息
+     * 2、开通商户钱包（开通钱包标识）
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "register")
+    @ShenyuDubboClient("/register")
     @Override
     @Transactional
     public Map<String, Object> register(Map<String, Object> requestMap) {
@@ -213,6 +140,11 @@ public class MerchantServiceImpl implements MerchantService {
             merchant.setStatus("0");
         }
         merchantMapper.insert(merchant);
+
+        //TODO RPC调用创建钱包
+        WalletDTO walletDTO = new WalletDTO();
+        walletService.createMPCWallet(walletDTO);
+
         return RespBodyHandler.RespBodyDto();
     }
 

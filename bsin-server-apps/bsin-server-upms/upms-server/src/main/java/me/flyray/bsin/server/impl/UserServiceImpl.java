@@ -437,8 +437,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public IPage<SysUser> getPageList(SysUserDTO sysUserDTO) throws Exception {
         sysUserDTO.setTenantId(LoginInfoContextHelper.getTenantId());
-        log.info("storeId:{}", LoginInfoContextHelper.getStoreNo());
-        log.info("storeId:{}", LoginInfoContextHelper.getLoginUser().getStoreNo());
         Page<SysUser> page = sysUserDTO.getPagination().build();
         if (sysUserDTO.getSelectAll()) {
             userMapper.selectPageAllList(page, sysUserDTO);

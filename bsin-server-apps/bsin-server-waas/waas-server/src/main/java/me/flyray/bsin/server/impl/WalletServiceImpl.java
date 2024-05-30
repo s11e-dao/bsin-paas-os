@@ -60,13 +60,16 @@ public class WalletServiceImpl implements WalletService {
   private CustomerService customerService;
 
   /**
-   * 1、生成普通账户 2、生成6551智能合约钱包账户
+   * 1、生成普通账户
+   * 2、生成6551智能合约钱包账户
    *
    * @param requestMap
    * @return
    * @throws Exception
    */
   @Override
+  @ApiDoc(desc = "createWallet")
+  @ShenyuDubboClient("/createWallet")
   public Map<String, Object> createWallet(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     ChainWalletDto chainWalletDto =
@@ -84,60 +87,54 @@ public class WalletServiceImpl implements WalletService {
   }
 
   @Override
-  @ApiDoc(desc = "create")
-  @ShenyuDubboClient("/create")
+  @ApiDoc(desc = "createMPCWallet")
+  @ShenyuDubboClient("/createMPCWallet")
   @Transactional(rollbackFor = Exception.class)
-  public void createWallet(WalletDTO walletDTO) {
+  public void createMPCWallet(WalletDTO walletDTO) {
     log.debug("请求WalletService.createWallet,参数:{}", walletDTO);
     LoginUser user = LoginInfoContextHelper.getLoginUser();
-    try{
-      Wallet wallet = new Wallet();
-      BeanUtils.copyProperties(walletDTO,wallet);
+    Wallet wallet = new Wallet();
+    BeanUtils.copyProperties(walletDTO,wallet);
 
-      // 2、创建钱包
-      String serialNo = BsinSnowflake.getId();
-      wallet.setSerialNo(serialNo);
-      wallet.setStatus(1);    // 正常
-      wallet.setWalletTag("DEPOSIT");
-      wallet.setCreateBy(user.getUserId());
-      wallet.setCreateTime(new Date());
-      wallet.setTenantId(user.getTenantId());
-      wallet.setBizRoleTypeNo(user.getBizRoleTypeNo());
-      wallet.setBizRoleType(user.getBizRoleType());
-      walletMapper.insert(wallet);
+    // 2、创建钱包
+    String serialNo = BsinSnowflake.getId();
+    wallet.setSerialNo(serialNo);
+    wallet.setStatus(1);    // 正常
+    wallet.setWalletTag("DEPOSIT");
+    wallet.setCreateBy(user.getUserId());
+    wallet.setCreateTime(new Date());
+    wallet.setTenantId(user.getTenantId());
+    wallet.setBizRoleTypeNo(user.getBizRoleTypeNo());
+    wallet.setBizRoleType(user.getBizRoleType());
+    walletMapper.insert(wallet);
 
-      List<ChainCoin> chainCoinList = new ArrayList<>();
-      // 默认钱包
-      if(wallet.getType() == 1){
-        CustomerChainCoin customerChainCoin = new CustomerChainCoin();
-        customerChainCoin.setTenantId(wallet.getTenantId());
-        customerChainCoin.setBizRoleType(wallet.getBizRoleType());
-        customerChainCoin.setBizRoleTypeNo(wallet.getBizRoleTypeNo());
-        if(wallet.getBizRoleType() != 4){
-          customerChainCoin.setCreateRoleAccountFlag(1);
-        }else {
-          customerChainCoin.setCreateUserAccountFlag(0);
-        }
-        chainCoinList = customerChainCoinMapper.selectChainCoinList(customerChainCoin);
-      }else{
-        // 自定义钱包
-        if(wallet.getEnv().equals("EVM")){
-          // TODO EVM 对应的本币
-        }
+    List<ChainCoin> chainCoinList = new ArrayList<>();
+    // 默认钱包
+    if(wallet.getType() == 1){
+      CustomerChainCoin customerChainCoin = new CustomerChainCoin();
+      customerChainCoin.setTenantId(wallet.getTenantId());
+      customerChainCoin.setBizRoleType(wallet.getBizRoleType());
+      customerChainCoin.setBizRoleTypeNo(wallet.getBizRoleTypeNo());
+      if(wallet.getBizRoleType() != 4){
+        customerChainCoin.setCreateRoleAccountFlag(1);
+      }else {
+        customerChainCoin.setCreateUserAccountFlag(0);
       }
-
-      // 3、创建钱包地址，并创建钱包账户
-      if(chainCoinList != null && !chainCoinList.isEmpty()){
-        for(ChainCoin chainCoin : chainCoinList){
-          walletAccountBiz.createWalletAccount(wallet,chainCoin.getSerialNo());
-        }
+      chainCoinList = customerChainCoinMapper.selectChainCoinList(customerChainCoin);
+    }else{
+      // 自定义钱包
+      if(wallet.getEnv().equals("EVM")){
+        // TODO EVM 对应的本币
       }
-    }catch (BusinessException be){
-      throw be;
-    }catch (Exception e){
-      e.printStackTrace();
-      throw new BusinessException("SYSTEM ERROR");
     }
+
+    // 3、创建钱包地址，并创建钱包账户
+    if(chainCoinList != null && !chainCoinList.isEmpty()){
+      for(ChainCoin chainCoin : chainCoinList){
+        walletAccountBiz.createWalletAccount(wallet,chainCoin.getSerialNo());
+      }
+    }
+
   }
 
   @Override

@@ -28,7 +28,7 @@ public interface WalletService {
      * 4、创建链上地址，创建钱包账户
      * @return
      */
-    public void createWallet(WalletDTO walletDTO);
+    public void createMPCWallet(WalletDTO walletDTO);
 
     /**
      * (对外)创建钱包

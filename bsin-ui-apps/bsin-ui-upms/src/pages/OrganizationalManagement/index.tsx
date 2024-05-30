@@ -175,13 +175,13 @@ export default () => {
   const orgTypeRender = (text: any, record: any, index: number) => (
     <div key={record.type}>
       {record.type === 1 ? (
-        <Tag color="#f50">公司</Tag>
+        <Tag color="blue">公司</Tag>
       ) : record.type === 2 ? (
-        <Tag color="#2db7f5">部门</Tag>
+        <Tag color="cyan">部门</Tag>
       ) : record.type === 3 ? (
-        <Tag color="#87d068">小组</Tag>
+        <Tag color="geekblue">小组</Tag>
       ) : (
-        <Tag color="#108ee9">其他</Tag>
+        <Tag color="gold">其他</Tag>
       )}
     </div>
   );

@@ -187,9 +187,9 @@ export default () => {
   const orgTypeRender = (text: any, record: any, index: number) => (
     <div key={record.type}>
       {record.type === 0 ? (
-        <Tag color="#f50">超级租户</Tag>
+        <Tag color="blue">超级租户</Tag>
       ) : (
-        <Tag color="#2db7f5">普通租户</Tag>
+        <Tag color="cyan">普通租户</Tag>
       )}
     </div>
   );
@@ -245,7 +245,7 @@ export default () => {
       <Modal
         title={isOption.option === 'add' ? '新增租户' : '编辑租户'}
         centered
-        visible={isFormModal}
+        open={isFormModal}
         onOk={confirmTenantInfo}
         onCancel={cancelTenantInfo}
       >

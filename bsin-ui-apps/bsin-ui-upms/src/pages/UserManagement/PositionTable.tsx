@@ -141,9 +141,9 @@ export default ({ orgId }) => {
   const typeRender = (text: any, record: any, index: number) => [
     <div key={record.userId}>
       {record.type === 0 ? (
-        <Tag color="#108ee9">普通用户</Tag>
+        <Tag color="blue">普通用户</Tag>
       ) : (
-        <Tag color="#f50">超级管理员</Tag>
+        <Tag color="cyan">超级管理员</Tag>
       )}
     </div>,
   ];

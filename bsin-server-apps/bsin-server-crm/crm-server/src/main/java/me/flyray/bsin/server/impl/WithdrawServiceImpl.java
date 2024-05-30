@@ -45,13 +45,13 @@ import java.util.Objects;
 @Service
 public class WithdrawServiceImpl implements WithdrawService {
 
-    @Value("${pay.aproveOper.privateKey}")
+    @Value("${bsin.pay.approveOper.privateKey}")
     private String privateKey;
 
-    @Value("${pay.chainEnv}")
+    @Value("${bsin.pay.chainEnv}")
     private String chainEnv;
 
-    @Value("${pay.contractAddress}")
+    @Value("${bsin.pay.contractAddress}")
     private String contractAddress;
 
     @Autowired
@@ -137,7 +137,7 @@ public class WithdrawServiceImpl implements WithdrawService {
                 .addValue("uint256", List.of(String.valueOf(Convert.toWei(new BigDecimal(amount),Convert.Unit.ETHER)))).addParameter()
                 .build();
 
-        Map<String, Object> map = bsinBlockChainEngine.contractWrite(chainEnv,privateKey, null , null
+        Map<String, Object> map = bsinBlockChainEngine.contractWrite(chainEnv, privateKey, null , null
                 ,"0",contractAddress,"aproveTransfer"
         ,null, functionParms01,60000);
         System.out.println(map);

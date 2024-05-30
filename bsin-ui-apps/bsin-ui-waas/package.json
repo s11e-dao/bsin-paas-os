@@ -1,5 +1,5 @@
 {
-  "name": "bsin-ui-upms",
+  "name": "bsin-ui-waas",
   "private": true,
   "scripts": {
     "dev": "cross-env PORT=5555 max dev",
@@ -18,16 +18,14 @@
     "build": "max build"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.3.7",
     "@umijs/max": "^4.1.10",
-    "antd": "^5.4.7",
-    "core-js": "^3.37.1",
+    "@umijs/plugins": "^4.1.10",
     "react": "18.1.0",
-    "react-custom-scrollbars": "^4.2.1",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "antd": "^5.4.7",
+    "react-custom-scrollbars": "^4.2.1"
   },
   "devDependencies": {
-    "@types/react-dom": "^18.3.0",
     "@umijs/plugin-qiankun": "^2.44.1",
     "cross-env": "^7.0.3",
     "cypress": "^12.0.0",
