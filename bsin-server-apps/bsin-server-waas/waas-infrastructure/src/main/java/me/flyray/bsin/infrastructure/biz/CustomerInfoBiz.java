@@ -1,4 +1,4 @@
-package me.flyray.bsin.server.biz;
+package me.flyray.bsin.infrastructure.biz;
 
 import me.flyray.bsin.facade.service.AccountService;
 import me.flyray.bsin.facade.service.MerchantService;

@@ -33,7 +33,7 @@ import me.flyray.bsin.infrastructure.mapper.DigitalAssetsItemMapper;
 import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.biz.DigitalAssetsItemBiz;
+import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
 import me.flyray.bsin.server.utils.RespBodyHandler;
 
 /**

@@ -1,4 +1,4 @@
-package me.flyray.bsin.server.biz;
+package me.flyray.bsin.infrastructure.biz;
 
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package me.flyray.bsin.server.biz;
+package me.flyray.bsin.infrastructure.biz;
 
 import org.springframework.stereotype.Component;
 

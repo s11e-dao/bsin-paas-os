@@ -8,7 +8,7 @@ import me.flyray.bsin.domain.domain.ChainCoin;
 import me.flyray.bsin.domain.request.ChainCoinDTO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.ChainCoinService;
-import me.flyray.bsin.infrastructure.biz.TransactionBiz;
+import me.flyray.bsin.server.listen.ChainTransactionListen;
 import me.flyray.bsin.infrastructure.mapper.ChainCoinMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
@@ -39,7 +39,7 @@ public class ChainCoinServiceImpl implements ChainCoinService {
     @Autowired
     private ChainCoinMapper chainCoinMapper;
     @Autowired
-    private TransactionBiz transactionBiz;
+    private ChainTransactionListen transactionBiz;
 
     @Override
     @ShenyuDubboClient("/save")

@@ -10,6 +10,7 @@ import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.infrastructure.biz.WalletAccountBiz;
 import me.flyray.bsin.infrastructure.mapper.CustomerChainCoinMapper;
 import me.flyray.bsin.infrastructure.mapper.WalletMapper;
+import me.flyray.bsin.mq.producer.RocketMQProducer;
 import me.flyray.bsin.utils.BsinSnowflake;
 import me.flyray.bsin.utils.I18eCode;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -19,6 +20,7 @@ import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -91,7 +93,7 @@ public class WalletServiceImpl implements WalletService {
   @ShenyuDubboClient("/createMPCWallet")
   @Transactional(rollbackFor = Exception.class)
   public void createMPCWallet(WalletDTO walletDTO) {
-    log.debug("请求WalletService.createWallet,参数:{}", walletDTO);
+    log.info("请求WalletService.createMPCWallet,参数:{}", walletDTO);
     LoginUser user = LoginInfoContextHelper.getLoginUser();
     Wallet wallet = new Wallet();
     BeanUtils.copyProperties(walletDTO,wallet);
@@ -109,7 +111,7 @@ public class WalletServiceImpl implements WalletService {
     walletMapper.insert(wallet);
 
     List<ChainCoin> chainCoinList = new ArrayList<>();
-    // 默认钱包
+    // 默认EVM钱包
     if(wallet.getType() == 1){
       CustomerChainCoin customerChainCoin = new CustomerChainCoin();
       customerChainCoin.setTenantId(wallet.getTenantId());
@@ -128,7 +130,7 @@ public class WalletServiceImpl implements WalletService {
       }
     }
 
-    // 3、创建钱包地址，并创建钱包账户
+    // 3、 根据支持的币种创建钱包地址，并创建钱包账户
     if(chainCoinList != null && !chainCoinList.isEmpty()){
       for(ChainCoin chainCoin : chainCoinList){
         walletAccountBiz.createWalletAccount(wallet,chainCoin.getSerialNo());

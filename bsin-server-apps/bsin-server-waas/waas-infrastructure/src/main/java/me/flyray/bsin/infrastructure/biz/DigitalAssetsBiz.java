@@ -1,4 +1,4 @@
-package me.flyray.bsin.server.biz;
+package me.flyray.bsin.infrastructure.biz;
 
 import static me.flyray.bsin.constants.ResponseCode.GENERATE_MATADATA_FILE_FAILED;
 

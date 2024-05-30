@@ -11,10 +11,16 @@ import me.flyray.bsin.infrastructure.mapper.ChainCoinMapper;
 import me.flyray.bsin.infrastructure.mapper.WalletAccountMapper;
 import me.flyray.bsin.infrastructure.mapper.WalletMapper;
 import me.flyray.bsin.infrastructure.utils.OkHttpUtils;
+import me.flyray.bsin.mq.producer.RocketMQProducer;
 import me.flyray.bsin.utils.BsinSnowflake;
+import org.apache.rocketmq.client.producer.SendCallback;
+import org.apache.rocketmq.client.producer.SendResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +39,10 @@ public class WalletAccountBiz {
     private ChainCoinMapper chainCoinMapper;
     @Autowired
     private WalletMapper walletMapper;
+    @Autowired
+    private RocketMQProducer rocketMQProducer;
+    @Value("${rocketmq.consumer.topic}")
+    private String topic;
 
     /**
      * 创建钱包账户
@@ -50,7 +60,6 @@ public class WalletAccountBiz {
             if(chainCoin == null || chainCoin.getStatus() == 0){
                 throw new BusinessException("chain coin not exist or off shelves");
             }
-
             // 1、创建链上钱包
             String url = "http://192.168.1.118:8125/api/v1/mpc/keygen";
             JSONObject jsonObject = new JSONObject();
@@ -69,6 +78,21 @@ public class WalletAccountBiz {
             String pubKey = (String) data.get("pubkey");
             String address = (String)data.get("address");
             String walletAccountId = (String)data.get("address");
+
+            // TODO 请求消息队列，添加一条延时队列
+            Message<String> msg = MessageBuilder.withPayload("Hello,RocketMQ").build();
+            // 延时消息等级分为18个：1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
+            SendCallback callback = new SendCallback() {
+                @Override
+                public void onSuccess(SendResult sendResult) {
+                    System.out.println("123");
+                }
+                @Override
+                public void onException(Throwable throwable) {
+                    System.out.println("456");
+                }
+            };
+            rocketMQProducer.sendDelay(topic,"张三", callback,7);
 
             // 2、创建钱包账户
             WalletAccount walletAccount = new WalletAccount();

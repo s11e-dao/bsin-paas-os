@@ -1,4 +1,4 @@
-package me.flyray.bsin.infrastructure.biz;
+package me.flyray.bsin.server.listen;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -8,6 +8,8 @@ import me.flyray.bsin.domain.domain.Wallet;
 import me.flyray.bsin.domain.domain.WalletAccount;
 import me.flyray.bsin.domain.request.TransactionDTO;
 import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.infrastructure.biz.TransferBiz;
+import me.flyray.bsin.infrastructure.biz.WalletAccountBiz;
 import me.flyray.bsin.infrastructure.mapper.*;
 import me.flyray.bsin.redis.manager.BsinCacheProvider;
 import me.flyray.bsin.utils.BsinSnowflake;
@@ -35,11 +37,15 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * 链上数据监听
+ */
 @Service
-public class TransactionBiz {
+public class ChainTransactionListen {
+
     private static final String WS_URL = "wss://go.getblock.io/9953f84cc65c47a38ea3a501d9ec86f3";
     private static final String HTTP_URL = "https://go.getblock.io/dc197e59d9b34e0c9428f2f13df66d6e";
-    private static final Logger log = LoggerFactory.getLogger(TransactionBiz.class);
+    private static final Logger log = LoggerFactory.getLogger(ChainTransactionListen.class);
 
     @Resource
     ThreadPoolTaskExecutor taskExecutor;
@@ -61,7 +67,7 @@ public class TransactionBiz {
     private BsinCacheProvider bsinCacheProvider;
 
     @Autowired
-    public TransactionBiz(ThreadPoolTaskExecutor taskExecutor) {
+    public ChainTransactionListen(ThreadPoolTaskExecutor taskExecutor) {
         this.taskExecutor = taskExecutor;
     }
 
@@ -75,7 +81,7 @@ public class TransactionBiz {
         List<ChainCoin> chainCoins = chainCoinMapper.selectList(queryWrapper);
         chainCoins.forEach(m -> {
             try {
-                customMonitor(m.getContractAddress());
+                contractAddressMonitor(m.getContractAddress());
             } catch (Exception e) {
                 e.printStackTrace();
                 log.info("智能合约监听失败，智能合约：{}", m.getContractAddress());
@@ -84,9 +90,11 @@ public class TransactionBiz {
         });
     }
 
-    //支持单个和多个事件，同时可以根据事件的indexed参数进行过滤
+    /**
+     * 支持单个和多个事件，同时可以根据事件的indexed参数进行过滤
+     */
     @Async("taskExecutor")
-    public void customMonitor(String contractAddress) throws Exception {
+    public void contractAddressMonitor(String contractAddress) throws Exception {
         log.info("开始监听智能合约：{}", contractAddress);
         WebSocketService ws = new WebSocketService(WS_URL, true);
         ws.connect();

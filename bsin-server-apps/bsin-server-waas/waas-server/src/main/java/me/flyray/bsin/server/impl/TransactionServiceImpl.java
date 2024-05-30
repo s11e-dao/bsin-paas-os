@@ -12,7 +12,7 @@ import me.flyray.bsin.domain.request.TransactionRequest;
 import me.flyray.bsin.domain.response.TransactionVO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.TransactionService;
-import me.flyray.bsin.infrastructure.biz.TransactionBiz;
+import me.flyray.bsin.server.listen.ChainTransactionListen;
 import me.flyray.bsin.infrastructure.biz.TransferBiz;
 import me.flyray.bsin.infrastructure.mapper.ChainCoinMapper;
 import me.flyray.bsin.infrastructure.mapper.TransactionAuditMapper;
@@ -54,7 +54,7 @@ public class TransactionServiceImpl  implements TransactionService {
     @Autowired
     private WalletAccountMapper walletAccountMapper;
     @Autowired
-    private TransactionBiz transactionBiz;
+    private ChainTransactionListen transactionBiz;
     @Autowired
     private TransferBiz transferBiz;
 

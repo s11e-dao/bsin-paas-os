@@ -31,7 +31,7 @@ public class Wallet extends BaseEntity implements Serializable {
      */
     private Integer status;
     /**
-     * 分类 1、MVP 2、多签
+     * 分类 1、MPC 2、多签
      */
     @NotBlank(message = "钱包分类不能为空！", groups = AddGroup.class)
     private Integer category;

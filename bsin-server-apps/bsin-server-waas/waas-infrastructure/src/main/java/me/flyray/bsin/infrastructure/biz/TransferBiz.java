@@ -37,6 +37,7 @@ import java.util.List;
 
 @Service
 public class TransferBiz {
+
     private static final Logger log = LoggerFactory.getLogger(TransferBiz.class);
     @Autowired
     private WalletAccountMapper walletAccountMapper;

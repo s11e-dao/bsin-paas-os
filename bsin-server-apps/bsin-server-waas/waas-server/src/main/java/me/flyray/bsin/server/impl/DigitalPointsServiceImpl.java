@@ -32,9 +32,9 @@ import me.flyray.bsin.infrastructure.mapper.DigitalAssetsCollectionMapper;
 import me.flyray.bsin.infrastructure.mapper.TokenParamMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.biz.CustomerInfoBiz;
-import me.flyray.bsin.server.biz.DigitalAssetsBiz;
-import me.flyray.bsin.server.biz.DigitalAssetsItemBiz;
+import me.flyray.bsin.infrastructure.biz.CustomerInfoBiz;
+import me.flyray.bsin.infrastructure.biz.DigitalAssetsBiz;
+import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
 import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.utils.BsinSnowflake;
 
