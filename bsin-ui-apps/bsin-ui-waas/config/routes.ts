@@ -204,7 +204,7 @@ const routes = [
       },
       // **************************交易*************************
       {
-        path: '/transaction/transaction-list',
+        path: '/transaction',
         component: '@/pages/Transaction/index',
       },
     ]
