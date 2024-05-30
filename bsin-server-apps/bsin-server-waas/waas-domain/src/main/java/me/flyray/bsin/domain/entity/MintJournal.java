@@ -15,7 +15,7 @@ import me.flyray.bsin.domain.enums.FileType;
  *
  * @TableName da_mint_journal
  */
-@TableName(value ="da_mint_journal")
+@TableName(value ="waas_mint_journal")
 @Data
 public class MintJournal implements Serializable {
     /**

@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
  */
 
 @Data
-@TableName(value ="da_customer_profile")
+@TableName(value ="waas_customer_profile")
 public class CustomerProfile implements Serializable {
     /**
      * 序列号

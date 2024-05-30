@@ -28,7 +28,7 @@
     </resultMap>
 
         <update id="updateDelFlag">
-                update crm_chain_coin set del_flag = '1' ,update_by = #{params.updateBy} ,update_time = #{params.updateTime}
+                update waas_chain_coin set del_flag = '1' ,update_by = #{params.updateBy} ,update_time = #{params.updateTime}
                 where serial_no = #{params.serialNo}
         </update>
 

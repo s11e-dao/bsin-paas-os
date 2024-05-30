@@ -14,7 +14,7 @@ import me.flyray.bsin.domain.enums.FileType;
  * 
  * @TableName da_metadata_file
  */
-@TableName(value ="da_metadata_file")
+@TableName(value ="waas_metadata_file")
 @Data
 public class MetadataFile implements Serializable {
     /**

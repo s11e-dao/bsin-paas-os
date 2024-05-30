@@ -35,8 +35,8 @@
         cbwla.create_time,
         cbwla.update_by,
         cbwla.update_time
-        from crm_black_white_list_address as cbwla
-        left join crm_chain_coin as c3
+        from waas_black_white_list_address as cbwla
+        left join waas_chain_coin as c3
         on cbwla.chain_coin_no = c3.serial_no and c3.del_flag = 0 and c3.status = 1
         left join crm_platform as cp
         on cbwla.tenant_id = cp.tenant_id and cp.del_flag = 0

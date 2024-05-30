@@ -14,7 +14,7 @@ import lombok.Data;
  * 
  * @TableName da_transfer_journal
  */
-@TableName(value ="da_transfer_journal")
+@TableName(value ="waas_transfer_journal")
 @Data
 public class TransferJournal implements Serializable {
     /**

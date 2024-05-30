@@ -17,7 +17,7 @@ import lombok.Data;
  */
 
 @Data
-@TableName(value ="da_token_release_journal")
+@TableName(value ="waas_token_release_journal")
 public class TokenReleaseJournal implements Serializable {
     /**
      * 

@@ -14,7 +14,7 @@ import lombok.Data;
  * 
  * @TableName da_contract
  */
-@TableName(value ="da_contract")
+@TableName(value ="waas_contract")
 @Data
 public class Contract implements Serializable {
     /**

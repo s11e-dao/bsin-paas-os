@@ -13,7 +13,7 @@ import lombok.Data;
  * 
  * @TableName da_digital_assets_item_obtain_code
  */
-@TableName(value ="da_digital_assets_item_obtain_code")
+@TableName(value ="waas_digital_assets_item_obtain_code")
 @Data
 public class DigitalAssetsItemObtainCode implements Serializable {
     /**

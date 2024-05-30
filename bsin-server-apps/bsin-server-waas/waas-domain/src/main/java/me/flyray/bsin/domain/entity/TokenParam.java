@@ -16,7 +16,7 @@ import lombok.Data;
  */
 
 @Data
-@TableName(value ="da_token_param")
+@TableName(value ="waas_token_param")
 public class TokenParam implements Serializable {
 
     /**

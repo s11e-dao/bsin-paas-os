@@ -12,7 +12,7 @@ import lombok.Data;
  * 
  * @TableName da_orderbook_match_serial
  */
-@TableName(value ="da_orderbook_match_journal")
+@TableName(value ="waas_orderbook_match_journal")
 @Data
 public class OrderbookMatchJournal implements Serializable {
     /**

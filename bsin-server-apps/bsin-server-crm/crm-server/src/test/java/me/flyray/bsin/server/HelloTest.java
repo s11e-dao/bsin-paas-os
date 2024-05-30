@@ -1,6 +1,5 @@
 package me.flyray.bsin.server;
 
-import me.flyray.bsin.facade.service.HelloService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

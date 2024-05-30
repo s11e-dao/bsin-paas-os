@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 
 @Data
-@TableName(value ="crm_customer_chain_coin")
+@TableName(value ="waas_customer_chain_coin")
 public class CustomerChainCoin extends  BaseEntity implements Serializable {
     /**
      * 链币种序号

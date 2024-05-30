@@ -26,7 +26,7 @@ import me.flyray.bsin.validate.QueryGroup;
  */
 
 @Data
-@TableName(value ="da_digital_assets_item")
+@TableName(value ="waas_digital_assets_item")
 public class DigitalAssetsItem implements Serializable {
 
     @TableId//(type = IdType.ASSIGN_ID)

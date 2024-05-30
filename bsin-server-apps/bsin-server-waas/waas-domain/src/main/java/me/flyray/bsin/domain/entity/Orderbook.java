@@ -15,7 +15,7 @@ import lombok.Data;
  * 
  * @TableName da_orderbook
  */
-@TableName(value ="da_orderbook")
+@TableName(value ="waas_orderbook")
 @Data
 public class Orderbook implements Serializable {
     /**

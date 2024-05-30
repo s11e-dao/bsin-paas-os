@@ -48,8 +48,8 @@
                cp.create_time,
                cp.del_flag,
                cp.chain_type
-        from da_contract c
-                 join da_contract_protocol cp
+        from waas_contract c
+                 join waas_contract_protocol cp
         on c.contract_protocol_no = cp.serial_no
         where c.contract = #{contract}
     </select>

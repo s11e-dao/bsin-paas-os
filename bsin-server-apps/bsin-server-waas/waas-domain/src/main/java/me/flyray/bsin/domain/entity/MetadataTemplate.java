@@ -13,7 +13,7 @@ import lombok.Data;
  */
 
 @Data
-@TableName(value ="da_metadata_template")
+@TableName(value ="waas_metadata_template")
 public class MetadataTemplate implements Serializable {
     /**
      * 模板编号

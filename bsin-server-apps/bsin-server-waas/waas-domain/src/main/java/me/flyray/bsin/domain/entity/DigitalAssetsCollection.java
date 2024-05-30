@@ -17,7 +17,7 @@ import lombok.Data;
  * 
  * @TableName da_digital assets
  */
-@TableName(value ="da_digital_assets_collection")
+@TableName(value ="waas_digital_assets_collection")
 @Data
 public class DigitalAssetsCollection implements Serializable {
 

@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.domain.domain.Hello;
-import me.flyray.bsin.facade.service.HelloService;
 import me.flyray.bsin.infrastructure.mapper.HelloMapper;
 import me.flyray.bsin.server.utils.RespBodyHandler;
 

@@ -12,7 +12,7 @@ import lombok.Data;
  * 会员通行证表
  * @TableName da_customer_pass_card
  */
-@TableName(value ="da_customer_pass_card")
+@TableName(value ="waas_customer_pass_card")
 @Data
 public class CustomerPassCard implements Serializable {
     /**
