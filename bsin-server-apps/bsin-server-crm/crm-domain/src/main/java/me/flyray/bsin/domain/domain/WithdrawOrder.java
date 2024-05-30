@@ -15,7 +15,7 @@ import lombok.Data;
  */
 
 @Data
-@TableName(value ="market_withdraw_order")
+@TableName(value ="crm_withdraw_order")
 public class WithdrawOrder implements Serializable {
     /**
      * 提现记录编号

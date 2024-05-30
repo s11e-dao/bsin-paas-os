@@ -60,22 +60,22 @@ wx:
 
 --- # redis 单机配置(单机与集群只能开启一个另一个需要注释掉)
 spring:
-redis:
-  # 地址
-  host: 192.168.198.198
-  # host: 192.168.198.198
-  # 端口，默认为6379
-  port: 6379
-  # 数据库索引
-  database: 10
-  # 密码(如没有密码请注释掉)
-  # password: hongrenwang123
-  password: hongrenwang123
-  # password: hongrenwang123
-  # 连接超时时间
-  timeout: 10s
-  # 是否开启ssl
-  ssl: false
+  redis:
+    # 地址
+    host: 127.0.0.1
+    # host: 192.168.198.198
+    # 端口，默认为6379
+    port: 6379
+    # 数据库索引
+    database: 10
+    # 密码(如没有密码请注释掉)
+    # password: hongrenwang123
+    password: 123456
+    # password: hongrenwang123
+    # 连接超时时间
+    timeout: 10s
+    # 是否开启ssl
+    ssl: false
 
 redisson:
   # redis key前缀
@@ -86,16 +86,48 @@ redisson:
   nettyThreads: 8
   # 单节点配置
   singleServerConfig:
-  # 客户端名称
-  clientName: name
-  # 最小空闲连接数
-  connectionMinimumIdleSize: 8
-  # 连接池大小
-  connectionPoolSize: 32
-  # 连接空闲超时，单位：毫秒
-  idleConnectionTimeout: 10000
-  # 命令等待超时，单位：毫秒
-  timeout: 3000
-  # 发布和订阅连接池大小
-  subscriptionConnectionPoolSize: 50
+    # 客户端名称
+    clientName: name
+    # 最小空闲连接数
+    connectionMinimumIdleSize: 8
+    # 连接池大小
+    connectionPoolSize: 32
+    # 连接空闲超时，单位：毫秒
+    idleConnectionTimeout: 10000
+    # 命令等待超时，单位：毫秒
+    timeout: 3000
+    # 发布和订阅连接池大小
+    subscriptionConnectionPoolSize: 50
 
+sms:
+  # 标注从yml读取配置
+  config-type: yaml
+  blends:
+    # 自定义的标识，也就是configId这里可以是任意值（最好不要是中文）
+    tx1:
+      #厂商标识，标定此配置是哪个厂商，详细请看厂商标识介绍部分
+      supplier: tencent
+      #您的accessKey
+      access-key-id: 您的accessKey
+      #您的accessKeySecret
+      access-key-secret: 您的accessKeySecret
+      #您的短信签名
+      signature: 您的短信签名
+      #模板ID 非必须配置，如果使用sendMessage的快速发送需此配置
+      template-id: xxxxxxxx
+      #您的sdkAppId
+      sdk-app-id: 您的sdkAppId
+      # 自定义的标识，也就是configId这里可以是任意值（最好不要是中文）
+    tx2:
+      #厂商标识，标定此配置是哪个厂商，详细请看厂商标识介绍部分
+      supplier: tencent
+      #您的accessKey
+      access-key-id: 您的accessKey
+      #您的accessKeySecret
+      access-key-secret: 您的accessKeySecret
+      #您的短信签名
+      signature: 您的短信签名
+      #模板ID 非必须配置，如果使用sendMessage的快速发送需此配置
+      template-id: xxxxxxxx
+      #您的sdkAppId
+      sdk-app-id: 您的sdkAppId

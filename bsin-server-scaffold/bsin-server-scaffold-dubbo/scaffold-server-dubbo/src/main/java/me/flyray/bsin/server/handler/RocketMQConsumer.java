@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @desc
  */
 @Component
-@RocketMQMessageListener(consumerGroup = "consumer_group",topic = "paytend-test")
+@RocketMQMessageListener(consumerGroup = "consumer_group",topic = "waas-test")
 public class RocketMQConsumer implements RocketMQListener<String> {
     @Override
     public void onMessage(String message) {

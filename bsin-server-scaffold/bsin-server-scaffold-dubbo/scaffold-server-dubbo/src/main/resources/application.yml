@@ -46,8 +46,8 @@ rocketmq:
     group: consumer_group
     # 一次拉取消息最大值，注意是拉取消息的最大值而非消费最大值
     pull-batch-size: 10
-    topic: paytend-test
-  name-server: 192.168.1.201:9876
+    topic: waas-test
+  name-server: 127.0.0.1:9876
   producer:
     access-key: rocketmq2
     secret-key: 12345678
