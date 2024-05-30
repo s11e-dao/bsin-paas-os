@@ -474,6 +474,7 @@ export default () => {
             ]}
             //   {...defaultProps}
             //   菜单路由，从后端获取数组组装
+            siderMenuType="group"
             menu={{
               // 图标加文字组合
               type: 'group',
@@ -495,7 +496,6 @@ export default () => {
             location={{
               pathname,
             }}
-            siderMenuType="group"
             avatarProps={{
               src:
                 getLocalStorageInfo('customerInfo')?.avatar == null

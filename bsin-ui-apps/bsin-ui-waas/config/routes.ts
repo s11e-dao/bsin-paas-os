@@ -142,8 +142,8 @@ const routes = [
         path: '/wallet/wallet-list',
         component: '@/pages/Wallet/index',
       },
-       // **************************资产*************************
-       {
+      // **************************资产*************************
+      {
         path: '/assets',
         redirect: '/assets/assets-collection',
       },
@@ -201,6 +201,11 @@ const routes = [
       {
         path: '/assets/contract-list',
         component: '@/pages/Assets/Contract/index',
+      },
+      // **************************交易*************************
+      {
+        path: '/transaction/transaction-list',
+        component: '@/pages/Transaction/index',
       },
     ]
   }
