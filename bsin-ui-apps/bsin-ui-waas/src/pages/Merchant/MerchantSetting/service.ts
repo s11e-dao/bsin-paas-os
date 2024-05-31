@@ -1,5 +1,5 @@
 import { request } from '@umijs/max'
-
+let crmPath = process.env.contextPath_crm;
 
 export const merchantAuth = (params) => {
   return request('/list', {

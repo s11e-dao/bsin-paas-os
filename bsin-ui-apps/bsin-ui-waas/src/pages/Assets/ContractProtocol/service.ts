@@ -1,4 +1,5 @@
 import { request } from '@umijs/max'
+let waasPath = process.env.contextPath_waas;
 
 //查询所有合约协议
 export const getContractProtocolList = (params) => {

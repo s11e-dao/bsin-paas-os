@@ -60,12 +60,12 @@ const routes = [
         component: '@/pages/Merchant/MerchantAccount/index',
       },
       {
-        path: '/merchant/merchant-product',
-        component: '@/pages/Merchant/MerchantProduct/index',
+        path: '/merchant/merchant-app',
+        component: '@/pages/Merchant/MerchantApp/index',
       },
       // api费用配置（应用审核）
       {
-        path: '/merchant/product-audit',
+        path: '/merchant/app-audit',
         component: '@/pages/Merchant/ApiTxFeeConfig/index',
       },
       // 商户认证信息审核

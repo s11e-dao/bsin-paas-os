@@ -1,4 +1,5 @@
 import { request } from '@umijs/max'
+let crmPath = process.env.contextPath_crm;
 
 // 分页查询客户等级
 export const getGradePageList = (params) => {

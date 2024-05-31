@@ -1,4 +1,5 @@
 import { request } from '@umijs/max'
+let waasPath = process.env.contextPath_waas;
 
 // 列表数据请求
 export const getMetadataTemplatePageList = (params) => {

@@ -1,4 +1,5 @@
 import { request } from '@umijs/max'
+let crmPath = process.env.contextPath_crm;
 
 // 分页查询合约配置
 export const getEquityPageList = (params) => {

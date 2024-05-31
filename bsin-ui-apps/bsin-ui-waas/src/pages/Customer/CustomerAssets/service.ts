@@ -1,4 +1,5 @@
 import { request } from '@umijs/max'
+let crmPath = process.env.contextPath_crm;
 
 // 分页查询客户配置
 export const getMemberAssetsPageList = (params) => {

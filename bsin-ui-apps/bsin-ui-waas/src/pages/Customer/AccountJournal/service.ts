@@ -1,4 +1,5 @@
 import { request } from '@umijs/max'
+let crmPath = process.env.contextPath_crm;
 
 // 分页查询账号流水配置
 export const getAccountJournalPageList = (params) => {

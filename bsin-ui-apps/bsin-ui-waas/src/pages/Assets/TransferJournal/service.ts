@@ -1,4 +1,5 @@
 import { request } from '@umijs/max'
+let waasPath = process.env.contextPath_waas;
 
 // 分页查询合约配置
 export const getTransferJournalPageList = (params) => {

@@ -1,5 +1,5 @@
-// import React, { useState } from 'react';
 import { request } from '@umijs/max'
+let waasPath = process.env.contextPath_waas;
 
 // const [tradingMode, setTradingMode] = useState('');
 

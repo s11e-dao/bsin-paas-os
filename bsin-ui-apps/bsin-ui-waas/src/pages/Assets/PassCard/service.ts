@@ -1,4 +1,5 @@
 import { request } from '@umijs/max'
+let waasPath = process.env.contextPath_waas;
 
 // 发行会员卡
 export const collectPassCard = (params) => {
