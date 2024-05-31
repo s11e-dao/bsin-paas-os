@@ -9,7 +9,7 @@ import {
   Space,
   Upload,
   Select,
-  Popconfirm,
+  Card,
   Descriptions,
   Tabs,
 } from 'antd';
@@ -20,7 +20,6 @@ import {
   EllipsisOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import { Avatar, Card } from 'antd';
 
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -132,14 +131,15 @@ export default ({ contactProtocolRouter, addCurrentRecord }) => {
   };
 
   return (
-    <PageContainer>
-      <Descriptions title="我的合约协议库"></Descriptions>
-
-      <Tabs defaultActiveKey="1">
-        {contractCategoryList.map((category) => (
-          <Tabs.TabPane tab={category.name} key={category.id}>
-            {/* <div className={styles.cardList}> */}
-            <Space
+    <Card title="我的合约协议库" bordered={false}>
+      <Tabs
+        defaultActiveKey="1"
+        centered
+        items={contractCategoryList.map((category) => {
+          return {
+            label: category.name,
+            key: category.id,
+            children: <Space
               size="middle"
               direction={'vertical'}
               style={{ display: 'flex', flexWrap: 'wrap' }}
@@ -242,11 +242,10 @@ export default ({ contactProtocolRouter, addCurrentRecord }) => {
                   }
                 }}
               />
-            </Space>
-            {/* </div> */}
-          </Tabs.TabPane>
-        ))}
-      </Tabs>
-    </PageContainer>
+            </Space>,
+          };
+        })}
+      />
+    </Card>
   );
 };

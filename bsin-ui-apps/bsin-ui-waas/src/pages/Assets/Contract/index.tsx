@@ -297,7 +297,7 @@ export default () => {
 
   const protocolCodeChange = (value) => {
     console.log(value);
-    contractProtocolList.map((contractProtocol) => {
+    contractProtocolList?.map((contractProtocol) => {
       if (contractProtocol?.protocolCode == value) {
         setContractProtocolChoosed(contractProtocol);
         FormRef.setFieldValue('contractProtocolNo', contractProtocol.serialNo);
@@ -385,7 +385,7 @@ export default () => {
               }}
             >
               <Option value="1">请选择合约协议</Option>
-              {contractProtocolList.map((contractProtocol) => {
+              {contractProtocolList?.map((contractProtocol) => {
                 console.log(contractProtocol?.protocolStandards);
                 return (
                   <Option value={contractProtocol?.protocolCode}>
@@ -496,7 +496,7 @@ export default () => {
               }}
             >
               <Option value="1">请选择合约协议</Option>
-              {contractProtocolList.map((contractProtocol) => {
+              {contractProtocolList?.map((contractProtocol) => {
                 console.log(contractProtocol?.protocolStandards);
                 return (
                   <Option value={contractProtocol?.serialNo}>
