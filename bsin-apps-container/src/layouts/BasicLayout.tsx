@@ -320,6 +320,19 @@ export default () => {
     return menuIon
   }
 
+  const getAppSubMenus = (subMenus: any) => {
+    console.log(subMenus)
+    let appSubMenus = subMenus.map((item: any) => {
+      return {
+        name: item.menuName,
+        path: item.path,
+        icon: getTopMenuIon(item.icon),
+        description: item.remark,
+      }
+    })
+    return appSubMenus;
+  }
+
   // 根据布局生成最左侧子应用数据
   const getLayoutMenus = async () => {
     let layoutMenudata: any[] = []
@@ -356,10 +369,10 @@ export default () => {
               path: item.path,
               icon: getTopMenuIon(item.icon),
               description: item.remark,
+              routes: getAppSubMenus(item?.children)
             }
           })
         }
-
         // 如果是side布局 返回应用列表，side布局(top和mix)返回选中应用菜单列表
         console.log(settings?.layout == 'side')
         if (settings?.layout == 'side') {
@@ -369,7 +382,6 @@ export default () => {
         }
       }
     }
-
     return layoutMenudata
   }
 
