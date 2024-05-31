@@ -227,12 +227,16 @@ public class PlatformServiceImpl implements PlatformService {
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "edit")
+    @ShenyuDubboClient("/edit")
     @Override
     public Map<String, Object> edit(Map<String, Object> requestMap) {
 
         return null;
     }
 
+    @ApiDoc(desc = "getDetail")
+    @ShenyuDubboClient("/getDetail")
     @Override
     public Map<String, Object> getDetail(Map<String, Object> requestMap) {
         String customerNo = MapUtils.getString(requestMap, "customerNo");
@@ -244,6 +248,8 @@ public class PlatformServiceImpl implements PlatformService {
         return RespBodyHandler.setRespBodyDto(customerInfo);
     }
 
+    @ApiDoc(desc = "getPageList")
+    @ShenyuDubboClient("/getPageList")
     @Override
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);

@@ -1,40 +1,29 @@
-import { useModel } from 'umi';
 import type { RequestConfig } from 'umi';
 import { notification } from 'antd';
 import { getSessionStorageInfo, getLocalStorageInfo } from '@/utils/localStorageInfo';
-// 判断子应用运行环境
-import "./public-path.js";
 
 // src/app.ts
 export const qiankun = {
-  // 应用加载之前
-  async bootstrap(props) {
-    console.log('upms bootstrap', props);
-  },
-  // 应用 render 之前触发
-  async mount(props) {
-    console.log('upms mount', props);
-    props.onGlobalStateChange((state, prev) => {
-      // state: 变更后的状态; prev 变更前的状态
-      console.log(state, prev);
-    });
-
-  },
-  // 应用卸载之后触发
-  async unmount(props) {
-    console.log('upms unmount', props);
-  },
-};
-
-// 向子应用传递参数
-export const useQiankunStateForSlave = () => {
-  let data = useModel('@@qiankunStateFromMaster');
-  let appId = data?.appId;
-  return {
-    appId,
+    // 应用加载之前
+    async bootstrap(props) {
+      console.log('upms bootstrap', props);
+    },
+    // 应用 render 之前触发
+    async mount(props) {
+      console.log('upms mount', props);
+      props.onGlobalStateChange((state, prev) => {
+        // state: 变更后的状态; prev 变更前的状态
+        console.log(state, prev);
+      });
+      
+    },
+    // 应用卸载之后触发
+    async unmount(props) {
+      console.log('upms unmount', props);
+    },
   };
-};
 
+  
 // 错误处理方案： 错误类型
 enum ErrorShowType {
   SILENT = 0,
@@ -124,7 +113,7 @@ export const request: RequestConfig = {
   // 请求拦截器
   requestInterceptors: [
 
-    (config: any) => {
+    (config:any) => {
       // 请求方法统一为 POST
       config.method = 'POST';
       // 获取userInfo和token
@@ -149,6 +138,7 @@ export const request: RequestConfig = {
         'Content-Type': 'application/json',
         Accept: 'application/json',
         Authorization: token || "",
+        version: "1.0.0",
       };
 
       let pagination;
@@ -157,49 +147,45 @@ export const request: RequestConfig = {
           pageSize: config?.bizParams?.pageSize,
           pageNum: config?.bizParams?.current,
         };
-        delete config?.bizParams.pageSize;
-        delete config?.bizParams.current;
+        delete config?.bizParams?.pageSize;
+        delete config?.bizParams?.current;
       }
       // 组装报文
       let data = {}
       if (config?.version) {
-        data = {
-          serviceName: config?.serviceName,
-          methodName: config?.methodName,
-          bizParams: config?.bizParams,
-          version: config?.version,
-        };
-      } else {
-        data = {
-          serviceName: config?.serviceName,
-          methodName: config?.methodName,
-          bizParams: config?.bizParams,
-        };
+        headers.version = config?.version;
       }
 
       if (pagination) {
         data = {
-          ...data,
+          ...config.bizParams,
           pagination,
+        };
+      }else{
+        data = {
+          ...config.bizParams
         };
       }
       config.headers = {
         ...headers,
       };
       // 拦截请求配置，进行个性化处理。
-      const url = gatewayUrl;
+      console.log("config")
+      console.log(config)
+      const url = gatewayUrl + config.url;
       return { ...config, data, url };
     }
   ],
 
   // 响应拦截器
   responseInterceptors: [
-    (response: any) => {
+    (response : any) => {
       // 拦截响应数据，进行个性化处理
       const { data } = response;
-      if (data?.code !== '000000') {
+      console.log(response)
+      if (data?.code !== 0) {
         notification.error({
-          message: '',
+          message: data?.message,
           description: data?.message,
         });
         return false;

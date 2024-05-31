@@ -186,6 +186,8 @@ public class MerchantServiceImpl implements MerchantService {
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "authentication")
+    @ShenyuDubboClient("/authentication")
     @Override
     public Map<String, Object> authentication(Map<String, Object> requestMap) {
         String merchantNo = LoginInfoContextHelper.getMerchantNo();
@@ -202,6 +204,8 @@ public class MerchantServiceImpl implements MerchantService {
         return RespBodyHandler.RespBodyDto();
     }
 
+    @ApiDoc(desc = "audit")
+    @ShenyuDubboClient("/audit")
     @Override
     @Transactional
     public Map<String, Object> audit(Map<String, Object> requestMap) {
@@ -234,6 +238,8 @@ public class MerchantServiceImpl implements MerchantService {
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "subscribeFunction")
+    @ShenyuDubboClient("/subscribeFunction")
     @Override
     public Map<String, Object> subscribeFunction(Map<String, Object> requestMap) {
         String appId = (String) requestMap.get("appId");
@@ -253,6 +259,8 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
 
+    @ApiDoc(desc = "delete")
+    @ShenyuDubboClient("/delete")
     @Override
     public Map<String, Object> delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -260,6 +268,8 @@ public class MerchantServiceImpl implements MerchantService {
         return RespBodyHandler.RespBodyDto();
     }
 
+    @ApiDoc(desc = "edit")
+    @ShenyuDubboClient("/edit")
     @Override
     public Map<String, Object> edit(Map<String, Object> requestMap) {
         return null;
@@ -271,6 +281,8 @@ public class MerchantServiceImpl implements MerchantService {
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "getPageList")
+    @ShenyuDubboClient("/getPageList")
     @Override
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         Merchant merchant = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
@@ -291,6 +303,8 @@ public class MerchantServiceImpl implements MerchantService {
         return RespBodyHandler.setRespPageInfoBodyDto(pageList);
     }
 
+    @ApiDoc(desc = "getDetail")
+    @ShenyuDubboClient("/getDetail")
     @Override
     public Map<String, Object> getDetail(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -298,6 +312,8 @@ public class MerchantServiceImpl implements MerchantService {
         return RespBodyHandler.setRespBodyDto(merchant);
     }
 
+    @ApiDoc(desc = "getListByMerchantNos")
+    @ShenyuDubboClient("/getListByMerchantNos")
     @Override
     public Map<String, Object> getListByMerchantNos(Map<String, Object> requestMap) {
         List<String> merchantNos = (List<String>) requestMap.get("merchantNos");

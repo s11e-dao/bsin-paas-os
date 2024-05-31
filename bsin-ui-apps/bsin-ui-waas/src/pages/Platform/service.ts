@@ -3,7 +3,7 @@ let crmPath = process.env.contextPath_crm;
 
 // 分页查询
 export const getPlatformPageList = (params) => {
-  return request('/list', {
+  return request(crmPath + '/platform/getPageList', {
     serviceName: 'PlatformService',
     methodName: 'getPageList',
     version: '1.0',
@@ -15,7 +15,7 @@ export const getPlatformPageList = (params) => {
 
 // 添加平台
 export const addPlatform = (params) => {
-  return request('/add', {
+  return request(crmPath + '/platform/openTenant', {
     serviceName: 'PlatformService',
     methodName: 'openTenant',
     version: '1.0',
@@ -27,7 +27,7 @@ export const addPlatform = (params) => {
 
 // 删除
 export const deletePlatform = (params) => {
-  return request('/del', {
+  return request(crmPath + '/platform/delete', {
     serviceName: 'PlatformService',
     methodName: 'delete',
     version: '1.0',
@@ -40,7 +40,7 @@ export const deletePlatform = (params) => {
 // 查询详情
 export const getPlatformDetail = (params) => {
   console.log('params', params);
-  return request('/view', {
+  return request(crmPath + '/platform/getDetail', {
     serviceName: 'PlatformService',
     methodName: 'getDetail',
     version: '1.0',
@@ -52,7 +52,7 @@ export const getPlatformDetail = (params) => {
 
 // 查询产品列表
 export const getProductList = (params) => {
-  return request('/getList', {
+  return request(crmPath + '/product//getList', {
     serviceName: 'ProductService',
     methodName: 'getList',
     bizParams: {

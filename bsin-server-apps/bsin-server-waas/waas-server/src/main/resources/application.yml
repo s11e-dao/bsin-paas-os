@@ -17,8 +17,8 @@ shenyu:
   client:
     dubbo:
       props:
-        contextPath: /dam
-        appName: dam
+        contextPath: /waas
+        appName: waas
 
 dubbo:
   application:
