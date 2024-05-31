@@ -474,10 +474,12 @@ export default () => {
             ]}
             //   {...defaultProps}
             //   菜单路由，从后端获取数组组装
-            siderMenuType="group"
+            // siderMenuType="group"
             menu={{
               // 图标加文字组合
-              type: 'group',
+              collapsedShowGroupTitle: true,
+              // type: 'group',
+              type: 'sub', // mix左侧菜单分类变为收缩
               onLoadingChange: (loading) => {
                 console.log(loading)
                 setShowSideMenu(false)

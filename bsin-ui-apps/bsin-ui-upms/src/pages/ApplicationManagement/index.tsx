@@ -1,158 +1,127 @@
-import React from 'react';
+import {
+  DownOutlined,
+  PlusOutlined,
+  UserOutlined,
+  AreaChartOutlined,
+  NodeExpandOutlined,
+  DotChartOutlined,
+  UserSwitchOutlined,
+  SubnodeOutlined,
+  ShareAltOutlined,
+  ScheduleOutlined,
+  PrinterOutlined,
+  IdcardOutlined,
+  DollarOutlined,
+  BgColorsOutlined,
+} from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import TableTitle from '@/components/TableTitle';
+import { useRequest } from '@umijs/max';
 import {
+  message,
   Button,
   Popconfirm,
-  message,
-  Modal,
-  Form,
-  Input,
-  Radio,
-  Divider,
-  Row,
+  Card,
   Col,
-  Tag,
+  Dropdown,
+  Input,
+  List,
+  Divider,
+  Form,
+  Modal,
   Select,
+  Radio,
+  Row,
 } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
+import type { FC } from 'react';
+import React, { useState } from 'react';
+import type { BasicListItemDataType } from './data.d';
 
-import { getAppList, delAppInfo, addAppList, editAppList,
+import {
+  getAppList, delAppInfo, addAppList, editAppList,
   getAppFunctionPageList,
   addAppFunction, editAppFunction, delAppFunction
- } from './service';
-import columnsData, { AppColumnsItem } from './data';
+} from './service';
+
+import styles from './index.css';
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
+const { Search } = Input;
+
 import functionColumnsData, { FunctionColumnsItem } from './functionData';
 
-export default () => {
-  const { TextArea } = Input;
-  const { Option } = Select;
-  // 控制表单模态框
-  const [isAppFormModal, setIsAppFormModal] = React.useState(false);
-  // Table action 的引用，便于自定义触发 用于更改数据之后的表单刷新
-  const actionRef = React.useRef<ActionType>();
-  // 获取编辑表单信息
-  const [formRef] = Form.useForm();
-  // 控制当前操作
-  const [isOption, setIsOption] = React.useState<object>({});
-  // 存储当前行数据，用于编辑操作
-  const [isRecord, setIsRecord] = React.useState({});
-  // 表头赋值
-  const columns: ProColumns<AppColumnsItem>[] = columnsData;
-
-  // 表头赋值
-  const functionColumns: ProColumns<AppColumnsItem>[] = functionColumnsData;
-  const [functionListMoalVisible, setFunctionListMoalVisible] = React.useState(false);
-  // 控制查看中新增、编辑模态框title
-  const [functionAddModalTitle, setFunctionAddModalTitle] = React.useState('');
-  // 控制查看中新增、编辑模态框
-  const [functionAddModalVisible, setFunctionAddModalVisible] = React.useState(false);
-  // 功能项表 Table action 的引用，便于自定义触发
-  const functionRef = React.useRef<ActionType>();
-  // 功能新增、编辑表单
-  const [functionForm] = Form.useForm();
-
-  // 操作列渲染
-  const optionRender = (text: any, record: any, index: number) => [
-    <div key={record.appId}>
-      <a onClick={() => handleEditAppFormModal(record)}>编辑</a>
-      <Divider type="vertical" />
-      <a onClick={() => handleFunctionListModal(record)}>应用功能</a>
-      <Divider type="vertical" />
-      <Popconfirm
-        title="是否确认删除？"
-        okText="是"
-        cancelText="否"
-        onConfirm={() => confirmDel(record.appId)}
-        onCancel={() => {
-          message.warning('取消删除！');
-        }}
-      >
-        <a>删除</a>
-      </Popconfirm>
-    </div>,
-  ];
-
-  // 操作列渲染
-  const functionOptionRender = (text: any, record: any, index: number) => [
-    <div key={record.appId}>
-      <a onClick={() => handleEditAppFunctionFormModal(record)}>编辑</a>
-      <Divider type="vertical" />
-      <Popconfirm
-        title="是否确认删除？"
-        okText="是"
-        cancelText="否"
-        onConfirm={() => confirmDelFunction(record.appFunctionId)}
-        onCancel={() => {
-          message.warning('取消删除！');
-        }}
-      >
-        <a>删除</a>
-      </Popconfirm>
-    </div>,
-  ];
-
-  // 应用名称渲染
-  const appLanguageRender = (text: any, record: any, index: number) => (
-    <div key={record.type}>
-      {record.appLanguage === 1 ? (
-        <Tag color="#2db7f5">React</Tag>
-      ) : record.appLanguage === 0 ? (
-        <Tag color="#87d068">vue</Tag>
-      ) : (
-        <Tag color="#108ee9">其他</Tag>
-      )}
+const ListContent = ({
+  data: { appId, createTime, appCode, url },
+}: {
+  data: BasicListItemDataType;
+}) => {
+  return (
+    <div style={{ width: "580px" }}>
+      <div className={styles.listContentItem}>
+        <span>应用ID</span>
+        <p>{appId}</p>
+      </div>
+      <div className={styles.listContentItem}>
+        <span>应用编号</span>
+        <p>{appCode}</p>
+      </div>
+      <div className={styles.listContentItem}>
+        <span>应用路径</span>
+        <p>{url}</p>
+      </div>
     </div>
   );
+};
 
-  // 自定义表格头部渲染
-  columns.forEach((item: any) => {
-    item.dataIndex === 'option' ? (item.render = optionRender) : undefined;
-    item.dataIndex === 'appLanguage'
-      ? (item.render = appLanguageRender)
-      : undefined;
+export const BasicList: FC = () => {
+
+  const { TextArea } = Input;
+  const { Option } = Select;
+
+  const [done, setDone] = useState<boolean>(false);
+  const [open, setVisible] = useState<boolean>(false);
+  const [current, setCurrent] = useState<Partial<BasicListItemDataType> | undefined>(undefined);
+
+  // Table action 的引用，便于自定义触发 用于更改数据之后的表单刷新
+  const actionRef = React.useRef<ActionType>();
+  
+  const {
+    data: listData,
+    loading,
+    mutate,
+  } = useRequest(() => {
+    return getAppList({
+      pageNum: 1,
+      pageSize: 10
+    });
   });
 
-  // 渲染操作按钮
-  functionColumns.forEach((item: any) => {
-    item.dataIndex === 'option' ? (item.render = functionOptionRender) : undefined;
-  });
+  const { run: postRun } = useRequest(
+    (method, params) => {
+      if (method === 'remove') {
+        return getAppList(params);
+      }
+      if (method === 'update') {
+        return getAppList(params);
+      }
+      return getAppList(params);
+    },
+    {
+      manual: true,
+      onSuccess: (result) => {
+        mutate(result);
+      },
+    },
+  );
 
-  // add模态框控制
-  const handleAddAppFormModal = () => {
-    setIsOption({ option: 'add' });
-    setIsAppFormModal(true);
-  };
-
-  // edit模态框控制
-  const handleEditAppFormModal = (record: object) => {
-    setIsRecord(record);
-    setIsOption({ option: 'edit' });
-    setIsAppFormModal(true);
-    // 进行数据的回显
-    formRef.setFieldsValue(record);
-  };
-
-  const handleEditAppFunctionFormModal = (record: object) => {
-    setIsRecord(record);
-    setIsOption({ option: 'edit' });
-    setFunctionAddModalTitle("编辑功能")
-    setFunctionAddModalVisible(true);
-    // 进行数据的回显
-    functionForm.setFieldsValue(record);
-  };
-
-  const handleFunctionListModal = (record: object) => {
-    setIsRecord(record);
-    setFunctionListMoalVisible(true);
-    // 根据应用ID查询功能列表
-
-  };
-
-  const handleFunctionModalCancel = () => {
-    setFunctionListMoalVisible(false);
-  };
+  // 控制当前操作
+  const [isOption, setIsOption] = React.useState<object>({});
+  // 控制表单模态框
+  const [isAppFormModal, setIsAppFormModal] = React.useState(false);
+  // 获取编辑表单信息
+  const [formRef] = Form.useForm();
 
   // 确定提交
   const appFormModalOk = () => {
@@ -175,7 +144,7 @@ export default () => {
         formRef.resetFields();
         setIsAppFormModal(false);
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   // 取消关闭
@@ -185,8 +154,39 @@ export default () => {
     setIsAppFormModal(false);
   };
 
-  // 点击删除
-  const confirmDel = async (appId: string) => {
+  // add模态框控制
+  const handleAddAppFormModal = () => {
+    setIsOption({ option: 'add' });
+    setIsAppFormModal(true);
+  };
+
+  // 存储当前行数据，用于编辑操作
+  const [isRecord, setIsRecord] = React.useState({});
+
+  // 表头赋值
+  const functionColumns: ProColumns<AppColumnsItem>[] = functionColumnsData;
+
+  const [functionListMoalVisible, setFunctionListMoalVisible] = React.useState(false);
+  // 控制查看中新增、编辑模态框title
+  const [functionAddModalTitle, setFunctionAddModalTitle] = React.useState('');
+  // 控制查看中新增、编辑模态框
+  const [functionAddModalVisible, setFunctionAddModalVisible] = React.useState(false);
+  // 功能项表 Table action 的引用，便于自定义触发
+  const functionRef = React.useRef<ActionType>();
+  // 功能新增、编辑表单
+  const [functionForm] = Form.useForm();
+
+  const handleEditAppFunctionFormModal = (record: object) => {
+    setIsRecord(record);
+    setIsOption({ option: 'edit' });
+    setFunctionAddModalTitle("编辑功能")
+    setFunctionAddModalVisible(true);
+    // 进行数据的回显
+    functionForm.setFieldsValue(record);
+  };
+
+   // 点击删除
+   const confirmDel = async (appId: string) => {
     let res = await delAppInfo({ appId });
     res ? message.success('删除成功') : message.error('删除失败！');
     // 刷新表格
@@ -200,6 +200,17 @@ export default () => {
     // 重置表单Form
     functionForm.resetFields();
     setFunctionAddModalVisible(true);
+  };
+
+  const handleFunctionListModal = (record: object) => {
+    setIsRecord(record);
+    setFunctionListMoalVisible(true);
+    // 根据应用ID查询功能列表
+
+  };
+
+  const handleFunctionModalCancel = () => {
+    setFunctionListMoalVisible(false);
   };
 
   const handlefunctionAddModalOk = () => {
@@ -238,50 +249,193 @@ export default () => {
     functionForm.current?.reload();
   };
 
+  const list = listData?.data || [];
+  const paginationProps = {
+    showSizeChanger: true,
+    showQuickJumper: true,
+    pageSize: 5,
+    total: list.length,
+  };
+  const showEditModal = (item: BasicListItemDataType) => {
+    setVisible(true);
+    setCurrent(item);
+  };
+  const deleteItem = (id: string) => {
+    postRun('remove', {
+      id,
+    });
+  };
+  const editAndDelete = (key: string | number, currentItem: BasicListItemDataType) => {
+    console.log(key)
+    if (key === 'appFunction') handleFunctionListModal(currentItem);
+    else if (key === 'delete') {
+      Modal.confirm({
+        title: '删除任务',
+        content: '确定删除该任务吗？',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => deleteItem(currentItem.id),
+      });
+    }
+  };
+  const extraContent = (
+    <div>
+      <Button
+        key="button"
+        icon={<PlusOutlined />}
+        type="primary"
+        onClick={() => {
+          handleAddAppFormModal();
+        }}
+        style={{ marginRight: "16px" }}
+      >
+        新建
+      </Button>,
+      <RadioGroup defaultValue="all">
+        <RadioButton value="all">全部</RadioButton>
+        <RadioButton value="waiting">已上线</RadioButton>
+      </RadioGroup>
+      <Search className={styles.extraContentSearch} placeholder="请输入" onSearch={() => ({})} />
+    </div>
+  );
+  const MoreBtn: React.FC<{
+    item: BasicListItemDataType;
+  }> = ({ item }) => (
+    <Dropdown
+      menu={{
+        onClick: ({ key }) => editAndDelete(key, item),
+        items: [
+          {
+            key: 'appFunction',
+            label: '应用功能',
+          },
+          {
+            key: 'delete',
+            label: '删除',
+          },
+        ],
+      }}
+    >
+      <a>
+        更多 <DownOutlined />
+      </a>
+    </Dropdown>
+  );
+  const handleDone = () => {
+    setDone(false);
+    setVisible(false);
+    setCurrent({});
+  };
+  const handleSubmit = (values: BasicListItemDataType) => {
+    setDone(true);
+    const method = values?.id ? 'update' : 'add';
+    postRun(method, values);
+  };
+
+  const getMenuIon = (icon: any) => {
+    let menuIon = <UserOutlined className={styles.appIcon} />;
+    // console.log(icon == null);
+    if (icon == 'UserOutlined') {
+      menuIon = <UserOutlined className={styles.appIcon} />;
+    } else if (icon == 'AreaChartOutlined') {
+      menuIon = <AreaChartOutlined className={styles.appIcon} />;
+    } else if (icon == 'NodeExpandOutlined') {
+      menuIon = <NodeExpandOutlined className={styles.appIcon} />;
+    } else if (icon == 'DotChartOutlined') {
+      menuIon = <DotChartOutlined className={styles.appIcon} />;
+    } else if (icon == 'UserSwitchOutlined') {
+      menuIon = <UserSwitchOutlined className={styles.appIcon} />;
+    } else if (icon == 'ScheduleOutlined') {
+      menuIon = <ScheduleOutlined className={styles.appIcon} />;
+    } else if (icon == 'ShareAltOutlined') {
+      menuIon = <ShareAltOutlined className={styles.appIcon} />;
+    } else if (icon == 'PrinterOutlined') {
+      menuIon = <PrinterOutlined className={styles.appIcon} />;
+    } else if (icon == 'IdcardOutlined') {
+      menuIon = <IdcardOutlined className={styles.appIcon} />;
+    } else if (icon == 'DollarOutlined') {
+      menuIon = <DollarOutlined className={styles.appIcon} />;
+    } else if (icon == 'BgColorsOutlined') {
+      menuIon = <BgColorsOutlined className={styles.appIcon} />;
+    }
+    // else {
+    //   menuIon = <span className={` ${icon} iconfont `} style={{ marginRight: '0.5rem' }}></span>;
+    // }
+    return menuIon;
+  };
+
+  // 操作列渲染
+  const functionOptionRender = (text: any, record: any, index: number) => [
+    <div key={record.appId}>
+      <a onClick={() => handleEditAppFunctionFormModal(record)}>编辑</a>
+      <Divider type="vertical" />
+      <Popconfirm
+        title="是否确认删除？"
+        okText="是"
+        cancelText="否"
+        onConfirm={() => confirmDelFunction(record.appFunctionId)}
+        onCancel={() => {
+          message.warning('取消删除！');
+        }}
+      >
+        <a>删除</a>
+      </Popconfirm>
+    </div>,
+  ];
+
+  // 渲染操作按钮
+  functionColumns.forEach((item: any) => {
+    item.dataIndex === 'option' ? (item.render = functionOptionRender) : undefined;
+  });
+
   return (
     <div>
-      {/* 表格 */}
-      <ProTable<AppColumnsItem>
-        actionRef={actionRef}
-        scroll={{ x: 900 }}
-        bordered
-        headerTitle={<TableTitle title="应用管理" />}
-        columns={columns}
-        // 请求数据
-        request={async (params) => {
-          let res = await getAppList({ ...params });
-          console.log('🎉', res);
-          const result = {
-            data: res.data,
-            total: res.pagination.totalSize,
-          };
-          return result;
-        }}
-        toolBarRender={() => [
-          <Button
-            key="button"
-            icon={<PlusOutlined />}
-            type="primary"
-            onClick={() => {
-              handleAddAppFormModal();
-            }}
-          >
-            新建
-          </Button>,
-        ]}
-        // 每行表格的key
-        rowKey="appId"
-        // 搜索表单布局配置
-        search={{
-          labelWidth: 'auto',
-        }}
-        // 分页相关配置
-        pagination={{
-          // 初始页面数据条数
-          pageSize: 10,
-        }}
-        dateFormatter="string"
-      />
+      <div className={styles.standardList}>
+        <Card
+          className={styles.listCard}
+          bordered={false}
+          title="应用列表"
+          style={{
+            marginTop: 0,
+          }}
+          bodyStyle={{
+            padding: '0 32px 40px 32px',
+          }}
+          extra={extraContent}
+        >
+          <List
+            size="large"
+            rowKey="id"
+            loading={loading}
+            pagination={paginationProps}
+            dataSource={list}
+            renderItem={(item) => (
+              <List.Item
+                actions={[
+                  <a
+                    key="edit"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      showEditModal(item);
+                    }}
+                  >
+                    编辑
+                  </a>,
+                  <MoreBtn key="more" item={item} />,
+                ]}
+              >
+                <List.Item.Meta
+                  avatar={getMenuIon(item?.logo)}
+                  title={<a href={item.appCode}>{item.appName}</a>}
+                  description={item.remark}
+                />
+                <ListContent data={item} />
+              </List.Item>
+            )}
+          />
+        </Card>
+      </div>
+
       {/* 添加编辑 */}
       <Modal
         title="添加应用"
@@ -467,3 +621,4 @@ export default () => {
     </div>
   );
 };
+export default BasicList;

@@ -22,7 +22,10 @@
     "src/**/*",
     "config/**/*",
     ".umirc.ts",
-    "typings.d.ts"
+    "typings.d.ts",
+    "./**/*.d.ts", 
+    "./**/*.ts", 
+    "./**/*.tsx"
 , "public", "plungin.js"  ],
   "exclude": [
     "node_modules",
