@@ -19,33 +19,33 @@ public interface CustomerChainCoinService {
      * @param customerChainCoinDTO
      * @return
      */
-    void saveCustomerChainCoin(CustomerChainCoinDTO customerChainCoinDTO);
+    void add(CustomerChainCoinDTO customerChainCoinDTO);
 
     /**
      * 编辑商户链上货币
      * @param customerChainCoinDTO
      * @return
      */
-    void updateCustomerChainCoin(CustomerChainCoinDTO customerChainCoinDTO);
+    void edit(CustomerChainCoinDTO customerChainCoinDTO);
 
     /**
      * 删除商户链上货币
      * @param customerChainCoinDTO
      * @return
      */
-    void deleteCustomerChainCoin(CustomerChainCoinDTO customerChainCoinDTO);
+    void delete(CustomerChainCoinDTO customerChainCoinDTO);
 
     /**
      * 查询商户链上货币列表
      * @param customerChainCoinDTO
      * @return
      */
-    List<CustomerChainCoin> getCustomerChainCoinList(CustomerChainCoinDTO customerChainCoinDTO);
+    List<CustomerChainCoin> getList(CustomerChainCoinDTO customerChainCoinDTO);
 
     /**
      * 分页查询商户链上货币列表
      * @param customerChainCoinDTO
      * @return
      */
-    Page<CustomerChainCoinVO> pageList(CustomerChainCoinDTO customerChainCoinDTO);
+    Page<CustomerChainCoinVO> getPageList(CustomerChainCoinDTO customerChainCoinDTO);
 }

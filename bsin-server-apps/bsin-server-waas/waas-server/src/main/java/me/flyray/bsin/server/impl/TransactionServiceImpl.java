@@ -62,7 +62,7 @@ public class TransactionServiceImpl  implements TransactionService {
     @Override
     @ShenyuDubboClient("/create")
     @ApiDoc(desc = "create")
-    public void createTransaction(TransactionRequest transactionRequest) {
+    public void create(TransactionRequest transactionRequest) {
         log.debug("请求TransactionService.createTransaction,参数:{}", transactionRequest);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
         try{
@@ -130,7 +130,6 @@ public class TransactionServiceImpl  implements TransactionService {
      * toAddress
      * txAmount
      * chainCoinNo
-     *
      */
     @Override
     @ShenyuDubboClient("/transferOut")
@@ -165,9 +164,9 @@ public class TransactionServiceImpl  implements TransactionService {
     }
 
     @Override
-    @ShenyuDubboClient("/pageList")
-    @ApiDoc(desc = "pageList")
-    public Page<TransactionVO> pageList(TransactionDTO transactionDTO) {
+    @ShenyuDubboClient("/getPageList")
+    @ApiDoc(desc = "getPageList")
+    public Page<TransactionVO> getPageList(TransactionDTO transactionDTO) {
         log.debug("请求TransactionService.pageList,参数:{}", transactionDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
         Integer current = transactionDTO.getCurrent() == null?1:transactionDTO.getCurrent();
@@ -175,7 +174,6 @@ public class TransactionServiceImpl  implements TransactionService {
         transactionDTO.setTenantId(user.getTenantId());
         return transactionMapper.pageList(new Page<>(current, size),transactionDTO );
     }
-
 
 
 }

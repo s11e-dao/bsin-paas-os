@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -58,6 +60,8 @@ public class ContractServiceImpl implements ContractService {
   @Autowired private BsinBlockChainEngineFactory bsinBlockChainEngineFactory;
   @Autowired private CustomerInfoBiz customerInfoBiz;
 
+  @ShenyuDubboClient("/deploy")
+  @ApiDoc(desc = "deploy")
   @Override
   public Map<String, Object> deploy(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -229,6 +233,8 @@ public class ContractServiceImpl implements ContractService {
     return RespBodyHandler.setRespBodyDto(contract);
   }
 
+  @ShenyuDubboClient("/add")
+  @ApiDoc(desc = "add")
   @Override
   public Map<String, Object> add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -238,6 +244,8 @@ public class ContractServiceImpl implements ContractService {
     return RespBodyHandler.setRespBodyDto(contract);
   }
 
+  @ShenyuDubboClient("/delete")
+  @ApiDoc(desc = "delete")
   @Override
   public Map<String, Object> delete(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -245,6 +253,8 @@ public class ContractServiceImpl implements ContractService {
     return RespBodyHandler.RespBodyDto();
   }
 
+  @ShenyuDubboClient("/edit")
+  @ApiDoc(desc = "edit")
   @Override
   public Map<String, Object> edit(Map<String, Object> requestMap) {
     Contract contract = BsinServiceContext.getReqBodyDto(Contract.class, requestMap);
@@ -252,6 +262,8 @@ public class ContractServiceImpl implements ContractService {
     return RespBodyHandler.RespBodyDto();
   }
 
+  @ShenyuDubboClient("/getPageList")
+  @ApiDoc(desc = "getPageList")
   @Override
   public Map<String, Object> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -285,6 +297,8 @@ public class ContractServiceImpl implements ContractService {
     return RespBodyHandler.setRespPageInfoBodyDto(pageList);
   }
 
+  @ShenyuDubboClient("/getList")
+  @ApiDoc(desc = "getList")
   @Override
   public Map<String, Object> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -316,6 +330,8 @@ public class ContractServiceImpl implements ContractService {
     return RespBodyHandler.setRespBodyListDto(contractProtocolList);
   }
 
+  @ShenyuDubboClient("/getDetail")
+  @ApiDoc(desc = "getDetail")
   @Override
   public Map<String, Object> getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");

@@ -10,7 +10,9 @@ import me.flyray.bsin.facade.service.*;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +65,11 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
   @DubboReference(version = "${dubbo.provider.version}")
   private CustomerProfileService customerProfileService;
 
-  // 统一走 DigitalAssetsCollectionService 的 issue
+  /**
+   * 统一走 DigitalAssetsCollectionService 的 issue
+    */
+  @ShenyuDubboClient("/issue")
+  @ApiDoc(desc = "issue")
   @Override
   public Map<String, Object> issue(Map<String, Object> requestMap) throws Exception {
     // TODO: issue 抽离biz
@@ -76,6 +82,8 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
    * @param requestMap
    * @return
    */
+  @ShenyuDubboClient("/claim")
+  @ApiDoc(desc = "claim")
   @Override
   public Map<String, Object> claim(Map<String, Object> requestMap) throws Exception {
     requestMap.put("amount", "1");
@@ -91,6 +99,8 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
    * @param requestMap
    * @return
    */
+  @ShenyuDubboClient("/getList")
+  @ApiDoc(desc = "getList")
   @Override
   public Map<String, Object> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -142,6 +152,8 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
     return RespBodyHandler.setRespBodyListDto(customerPassCardList);
   }
 
+  @ShenyuDubboClient("/getMemberList")
+  @ApiDoc(desc = "getMemberList")
   @Override
   public Map<String, Object> getMemberList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -167,6 +179,8 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
     return RespBodyHandler.setRespBodyListDto(customerList);
   }
 
+  @ShenyuDubboClient("/getPageList")
+  @ApiDoc(desc = "getPageList")
   @Override
   public Map<String, Object> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -204,6 +218,8 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
    * @param requestMap
    * @return
    */
+  @ShenyuDubboClient("/getDetail")
+  @ApiDoc(desc = "getDetail")
   @Override
   public Map<String, Object> getDetail(Map<String, Object> requestMap) {
     String tenantId = LoginInfoContextHelper.getTenantId();
@@ -226,4 +242,5 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
     // TODO 成交记录数据
     return RespBodyHandler.setRespBodyDto(digitalAssetsDetailRes);
   }
+
 }

@@ -19,7 +19,7 @@ public interface WalletAccountService  {
      * @param walletAccountDTO
      * @return
      */
-    void addWalletAccount(WalletAccountDTO walletAccountDTO);
+    void add(WalletAccountDTO walletAccountDTO);
 
     /**
      * 修改账户状态（冻结/解冻）
@@ -31,7 +31,7 @@ public interface WalletAccountService  {
     /**
      * 分页查询钱包账户
      */
-    Page<WalletAccountVO> pageList(WalletAccountDTO walletAccountDTO);
+    Page<WalletAccountVO> getPageList(WalletAccountDTO walletAccountDTO);
 
     /**
      * 获取钱包账户的地址二维码

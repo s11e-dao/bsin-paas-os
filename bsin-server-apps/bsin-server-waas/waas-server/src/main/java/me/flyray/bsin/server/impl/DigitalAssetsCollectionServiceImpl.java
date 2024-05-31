@@ -15,7 +15,9 @@ import me.flyray.bsin.redis.manager.BsinCacheProvider;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,6 +100,8 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
    * @return
    * @throws Exception
    */
+  @ShenyuDubboClient("/issue")
+  @ApiDoc(desc = "issue")
   @Override
   @Transactional
   public Map<String, Object> issue(Map<String, Object> requestMap) throws Exception {
@@ -203,6 +207,8 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
     return RespBodyHandler.setRespBodyDto(contractTransactionResp);
   }
 
+  @ShenyuDubboClient("/mint")
+  @ApiDoc(desc = "mint")
   @Override
   public Map<String, Object> mint(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -291,8 +297,10 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
     return RespBodyHandler.setRespBodyDto(respMap);
   }
 
+  @ShenyuDubboClient("/transfer")
+  @ApiDoc(desc = "transfer")
   @Override
-  public Map<String, Object> trasaction(Map<String, Object> requestMap) throws Exception {
+  public Map<String, Object> transfer(Map<String, Object> requestMap) throws Exception {
     log.info("AdminBlockChainService transferNft 请求参数:{}", JSON.toJSONString(requestMap));
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     TransferJournal transferJournal =
@@ -366,46 +374,64 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
     return RespBodyHandler.setRespBodyDto(contractTransactionResp);
   }
 
+  @ShenyuDubboClient("/airdrop")
+  @ApiDoc(desc = "airdrop")
   @Override
   public Map<String, Object> airdrop(Map<String, Object> requestMap) throws Exception {
     return null;
   }
 
+  @ShenyuDubboClient("/batchTransfer")
+  @ApiDoc(desc = "batchTransfer")
   @Override
-  public Map<String, Object> batchTrasaction(Map<String, Object> requestMap) throws Exception {
+  public Map<String, Object> batchTransfer(Map<String, Object> requestMap) throws Exception {
     return null;
   }
 
+  @ShenyuDubboClient("/getSponsor")
+  @ApiDoc(desc = "getSponsor")
   @Override
   public Map<String, Object> getSponsor(Map<String, Object> requestMap) throws Exception {
     return null;
   }
 
+  @ShenyuDubboClient("/setSponsor")
+  @ApiDoc(desc = "setSponsor")
   @Override
   public Map<String, Object> setSponsor(Map<String, Object> requestMap) throws Exception {
     return null;
   }
 
+  @ShenyuDubboClient("/isWhitelisted")
+  @ApiDoc(desc = "isWhitelisted")
   @Override
   public Map<String, Object> isWhitelisted(Map<String, Object> requestMap) throws Exception {
     return null;
   }
 
+  @ShenyuDubboClient("/addWhiteList")
+  @ApiDoc(desc = "addWhiteList")
   @Override
   public Map<String, Object> addWhiteList(Map<String, Object> requestMap) throws Exception {
     return null;
   }
 
+  @ShenyuDubboClient("/removeWhiteList")
+  @ApiDoc(desc = "removeWhiteList")
   @Override
   public Map<String, Object> removeWhiteList(Map<String, Object> requestMap) throws Exception {
     return null;
   }
 
+  @ShenyuDubboClient("/burn")
+  @ApiDoc(desc = "burn")
   @Override
   public Map<String, Object> burn(Map<String, Object> requestMap) throws Exception {
     return null;
   }
 
+  @ShenyuDubboClient("/getPageList")
+  @ApiDoc(desc = "getPageList")
   @Override
   public Map<String, Object> getPageList(Map<String, Object> requestMap) {
     // 发行的商户
@@ -451,6 +477,8 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
     return RespBodyHandler.setRespPageInfoBodyDto(pageList);
   }
 
+  @ShenyuDubboClient("/getList")
+  @ApiDoc(desc = "getList")
   @Override
   public Map<String, Object> getList(Map<String, Object> requestMap) {
     // 发行的商户
@@ -484,6 +512,8 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
     return RespBodyHandler.setRespBodyListDto(contractProtocolList);
   }
 
+  @ShenyuDubboClient("/getDetail")
+  @ApiDoc(desc = "getDetail")
   @Override
   public Map<String, Object> getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -498,6 +528,8 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
    * @param requestMap
    * @return
    */
+  @ShenyuDubboClient("/putOnShelves")
+  @ApiDoc(desc = "putOnShelves")
   @Override
   @Transactional
   public Map<String, Object> putOnShelves(Map<String, Object> requestMap) {
@@ -820,12 +852,16 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
     return digitalAssetsItem;
   }
 
+  @ShenyuDubboClient("/pullOffShelves")
+  @ApiDoc(desc = "pullOffShelves")
   @Override
   public Map<String, Object> pullOffShelves(Map<String, Object> requestMap) {
 
     return null;
   }
 
+  @ShenyuDubboClient("/getDigitalAssetsMetadataImageInfo")
+  @ApiDoc(desc = "getDigitalAssetsMetadataImageInfo")
   @Override
   public Map<String, Object> getDigitalAssetsMetadataImageInfo(Map<String, Object> requestMap) {
     String serialNo = (String) requestMap.get("serialNo");
@@ -843,4 +879,5 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
     }
     return RespBodyHandler.setRespBodyDto(metadataFile);
   }
+
 }

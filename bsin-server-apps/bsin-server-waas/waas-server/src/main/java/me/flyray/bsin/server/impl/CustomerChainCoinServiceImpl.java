@@ -37,9 +37,9 @@ public class CustomerChainCoinServiceImpl implements CustomerChainCoinService {
     private CustomerChainCoinMapper customerChainCoinMapper;
 
     @Override
-    @ShenyuDubboClient("/save")
-    @ApiDoc(desc = "save")
-    public void saveCustomerChainCoin(CustomerChainCoinDTO customerChainCoinDTO) {
+    @ShenyuDubboClient("/add")
+    @ApiDoc(desc = "add")
+    public void add(CustomerChainCoinDTO customerChainCoinDTO) {
         log.debug("请求CustomerChainCoinService.saveCustomerChainCoin,参数:{}", customerChainCoinDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
         try{
@@ -63,7 +63,7 @@ public class CustomerChainCoinServiceImpl implements CustomerChainCoinService {
     @Override
     @ShenyuDubboClient("/edit")
     @ApiDoc(desc = "edit")
-    public void updateCustomerChainCoin(CustomerChainCoinDTO customerChainCoinDTO) {
+    public void edit(CustomerChainCoinDTO customerChainCoinDTO) {
         log.debug("请求CustomerChainCoinService.updateCustomerChainCoin,参数:{}", customerChainCoinDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
         try{
@@ -84,7 +84,7 @@ public class CustomerChainCoinServiceImpl implements CustomerChainCoinService {
     @Override
     @ShenyuDubboClient("/delete")
     @ApiDoc(desc = "delete")
-    public void deleteCustomerChainCoin(CustomerChainCoinDTO customerChainCoinDTO) {
+    public void delete(CustomerChainCoinDTO customerChainCoinDTO) {
         log.debug("请求CustomerChainCoinService.deleteCustomerChainCoin,参数:{}", customerChainCoinDTO);
         try{
             CustomerChainCoin customerChainCoin = new CustomerChainCoin();
@@ -105,7 +105,7 @@ public class CustomerChainCoinServiceImpl implements CustomerChainCoinService {
     @Override
     @ShenyuDubboClient("/getList")
     @ApiDoc(desc = "getList")
-    public  List<CustomerChainCoin> getCustomerChainCoinList(CustomerChainCoinDTO customerChainCoinDTO) {
+    public  List<CustomerChainCoin> getList(CustomerChainCoinDTO customerChainCoinDTO) {
         log.debug("请求CustomerChainCoinService.getCustomerChainCoinList,参数:{}", customerChainCoinDTO);
         try{
             LoginUser user = LoginInfoContextHelper.getLoginUser();
@@ -124,9 +124,9 @@ public class CustomerChainCoinServiceImpl implements CustomerChainCoinService {
     }
 
     @Override
-    @ShenyuDubboClient("/pageList")
-    @ApiDoc(desc = "pageList")
-    public Page<CustomerChainCoinVO> pageList(CustomerChainCoinDTO customerChainCoinDTO) {
+    @ShenyuDubboClient("/getPageList")
+    @ApiDoc(desc = "getPageList")
+    public Page<CustomerChainCoinVO> getPageList(CustomerChainCoinDTO customerChainCoinDTO) {
         log.debug("请求CustomerChainCoinService.pageListByCustomerId,参数:{}", customerChainCoinDTO);
         try{
             LoginUser user = LoginInfoContextHelper.getLoginUser();
@@ -143,6 +143,7 @@ public class CustomerChainCoinServiceImpl implements CustomerChainCoinService {
             throw new BusinessException("SYSTEM_ERROR");
         }
     }
+
 }
 
 

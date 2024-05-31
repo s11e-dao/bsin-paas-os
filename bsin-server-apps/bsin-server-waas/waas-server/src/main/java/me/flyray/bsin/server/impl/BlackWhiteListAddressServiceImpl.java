@@ -38,10 +38,10 @@ public class BlackWhiteListAddressServiceImpl implements BlackWhiteListAddressSe
     private BlackWhiteListAddressMapper blackWhiteListAddressMapper;
 
     @Override
-    @ShenyuDubboClient("/save")
-    @ApiDoc(desc = "save")
+    @ShenyuDubboClient("/add")
+    @ApiDoc(desc = "add")
     @Transactional(rollbackFor = Exception.class)
-    public void save(BlackWhiteListAddressDTO blackWhiteListAddressDTO) {
+    public void add(BlackWhiteListAddressDTO blackWhiteListAddressDTO) {
         log.debug("请求BlackWhiteListAddressService.save,参数:{}", blackWhiteListAddressDTO);
         try{
             LoginUser user = LoginInfoContextHelper.getLoginUser();
@@ -122,9 +122,9 @@ public class BlackWhiteListAddressServiceImpl implements BlackWhiteListAddressSe
     }
 
     @Override
-    @ShenyuDubboClient("/pageList")
-    @ApiDoc(desc = "pageList")
-    public Page<BlackWhiteListAddressVO> pageList(BlackWhiteListAddressDTO address) {
+    @ShenyuDubboClient("/getPageList")
+    @ApiDoc(desc = "getPageList")
+    public Page<BlackWhiteListAddressVO> getPageList(BlackWhiteListAddressDTO address) {
         log.debug("请求BlackWhiteListAddressService.pageList,参数:{}", address);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
         if(address.getCurrent() == null){

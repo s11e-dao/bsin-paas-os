@@ -21,28 +21,28 @@ public interface ChainCoinService {
      * @param chainCoinDTO
      * @return
      */
-    void saveChainCoin(ChainCoinDTO chainCoinDTO);
+    void add(ChainCoinDTO chainCoinDTO);
 
     /**
      * 编辑币种信息
      * @param chainCoinDTO
      * @return
      */
-    void editChainCoin(ChainCoinDTO chainCoinDTO);
+    void edit(ChainCoinDTO chainCoinDTO);
 
     /**
      * 删除币种
      * @param chainCoinDTO
      * @return
      */
-    void deleteChainCoin(ChainCoinDTO chainCoinDTO);
+    void delete(ChainCoinDTO chainCoinDTO);
 
     /**
      * 分页查询币种列表
      * @param coinDTO
      * @return
      */
-    Page<ChainCoin> pageList(ChainCoinDTO coinDTO);
+    Page<ChainCoin> getPageList(ChainCoinDTO coinDTO);
 
     /**
      * 查询币种列表

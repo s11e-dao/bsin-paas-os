@@ -10,7 +10,9 @@ import me.flyray.bsin.redis.manager.BsinCacheProvider;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,6 +65,8 @@ public class TokenParamServiceImpl implements TokenParamService {
   @DubboReference(version = "${dubbo.provider.version}")
   private AccountService accountService;
 
+  @ShenyuDubboClient("/edit")
+  @ApiDoc(desc = "edit")
   @CaptureCustomerBehavior(behaviorCode = BehaviorCode.ISSUE, customerType = CustomerType.MEMBER)
   @Override
   public Map<String, Object> edit(Map<String, Object> requestMap) {
@@ -82,6 +86,8 @@ public class TokenParamServiceImpl implements TokenParamService {
     return RespBodyHandler.setRespBodyDto(tokenParam);
   }
 
+  @ShenyuDubboClient("/getPageList")
+  @ApiDoc(desc = "getPageList")
   @Override
   public Map<String, Object> getPageList(Map<String, Object> requestMap) {
     TokenParam tokenReleaseParam = BsinServiceContext.getReqBodyDto(TokenParam.class, requestMap);
@@ -97,6 +103,8 @@ public class TokenParamServiceImpl implements TokenParamService {
     return RespBodyHandler.setRespPageInfoBodyDto(pageList);
   }
 
+  @ShenyuDubboClient("/getDetailByMerchantNo")
+  @ApiDoc(desc = "getDetailByMerchantNo")
   @Override
   public Map<String, Object> getDetailByMerchantNo(Map<String, Object> requestMap) {
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
@@ -106,6 +114,8 @@ public class TokenParamServiceImpl implements TokenParamService {
     return RespBodyHandler.setRespBodyDto(tokenParam);
   }
 
+  @ShenyuDubboClient("/getDetail")
+  @ApiDoc(desc = "getDetail")
   @Override
   public Map<String, Object> getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -159,6 +169,8 @@ public class TokenParamServiceImpl implements TokenParamService {
    * @param requestMap
    * @return
    */
+  @ShenyuDubboClient("/release")
+  @ApiDoc(desc = "release")
   @Override
   public Map<String, Object> release(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -365,6 +377,8 @@ public class TokenParamServiceImpl implements TokenParamService {
    * @param requestMap
    * @return
    */
+  @ShenyuDubboClient("/releaseBcPointToVirtualAccount")
+  @ApiDoc(desc = "releaseBcPointToVirtualAccount")
   @Override
   public Map<String, Object> releaseBcPointToVirtualAccount(Map<String, Object> requestMap)
       throws Exception {
@@ -485,4 +499,5 @@ public class TokenParamServiceImpl implements TokenParamService {
     response.put("releaseAmount", releaseAmount);
     return RespBodyHandler.setRespBodyDto(response);
   }
+
 }

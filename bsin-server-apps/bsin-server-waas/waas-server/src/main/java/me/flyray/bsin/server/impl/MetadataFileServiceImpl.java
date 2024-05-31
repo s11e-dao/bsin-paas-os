@@ -8,7 +8,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +48,8 @@ public class MetadataFileServiceImpl implements MetadataFileService {
     @Autowired
     private MetadataFileMapper metadataFileMapper;
 
+    @ShenyuDubboClient("/makeDirectory")
+    @ApiDoc(desc = "makeDirectory")
     @Override
     public Map<String, Object> makeDirectory(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -66,6 +70,8 @@ public class MetadataFileServiceImpl implements MetadataFileService {
         return RespBodyHandler.setRespBodyDto(metadataFile);
     }
 
+    @ShenyuDubboClient("/uploadFile")
+    @ApiDoc(desc = "uploadFile")
     @Override
     public Map<String, Object> uploadFile(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -102,6 +108,8 @@ public class MetadataFileServiceImpl implements MetadataFileService {
     }
 
 
+    @ShenyuDubboClient("/delete")
+    @ApiDoc(desc = "delete")
     @Override
     public Map<String, Object> delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -109,6 +117,8 @@ public class MetadataFileServiceImpl implements MetadataFileService {
         return RespBodyHandler.RespBodyDto();
     }
 
+    @ShenyuDubboClient("/edit")
+    @ApiDoc(desc = "edit")
     @Override
     public Map<String, Object> edit(Map<String, Object> requestMap) {
         MetadataFile metadataFile = BsinServiceContext.getReqBodyDto(MetadataFile.class, requestMap);
@@ -116,6 +126,8 @@ public class MetadataFileServiceImpl implements MetadataFileService {
         return RespBodyHandler.RespBodyDto();
     }
 
+    @ShenyuDubboClient("/getFileList")
+    @ApiDoc(desc = "getFileList")
     @Override
     public Map<String, Object> getFileList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -134,7 +146,8 @@ public class MetadataFileServiceImpl implements MetadataFileService {
         return RespBodyHandler.setRespBodyListDto(metadataFiles);
     }
 
-
+    @ShenyuDubboClient("/getList")
+    @ApiDoc(desc = "getList")
     @Override
     public Map<String, Object> getList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -146,6 +159,8 @@ public class MetadataFileServiceImpl implements MetadataFileService {
         return RespBodyHandler.setRespBodyListDto(metadataFileList);
     }
 
+    @ShenyuDubboClient("/getPageList")
+    @ApiDoc(desc = "getPageList")
     @Override
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -160,6 +175,8 @@ public class MetadataFileServiceImpl implements MetadataFileService {
         return RespBodyHandler.setRespPageInfoBodyDto(pageList);
     }
 
+    @ShenyuDubboClient("/getDetail")
+    @ApiDoc(desc = "getDetail")
     @Override
     public Map<String, Object> getDetail(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");

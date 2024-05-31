@@ -16,7 +16,9 @@ import me.flyray.bsin.facade.service.*;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,7 +83,11 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
   @DubboReference(version = "${dubbo.provider.version}")
   private MemberService memberService;
 
-  /** 领取逻辑： */
+  /**
+   * 领取逻辑：
+   * */
+  @ShenyuDubboClient("/claim")
+  @ApiDoc(desc = "claim")
   @Override
   @Transactional
   public Map<String, Object> claim(Map<String, Object> requestMap) throws Exception {
@@ -211,16 +217,22 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
     return RespBodyHandler.RespBodyDto();
   }
 
+  @ShenyuDubboClient("/buy")
+  @ApiDoc(desc = "buy")
   @Override
   public Map<String, Object> buy(Map<String, Object> requestMap) throws IOException {
     return null;
   }
 
+  @ShenyuDubboClient("/openBlindBox")
+  @ApiDoc(desc = "openBlindBox")
   @Override
   public Map<String, Object> openBlindBox(Map<String, Object> requestMap) throws IOException {
     return null;
   }
 
+  @ShenyuDubboClient("/obtainNftPasswordCheck")
+  @ApiDoc(desc = "obtainNftPasswordCheck")
   @Override
   public Map<String, Object> obtainNftPasswordCheck(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -253,6 +265,8 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
    * @param requestMap
    * @return
    */
+  @ShenyuDubboClient("/getList")
+  @ApiDoc(desc = "getList")
   @Override
   public Map<String, Object> getList(Map<String, Object> requestMap) {
     String tenantId = LoginInfoContextHelper.getTenantId();
@@ -291,6 +305,8 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
     return RespBodyHandler.setRespBodyListDto(digitalAssetsItemListRes);
   }
 
+  @ShenyuDubboClient("/getPageList")
+  @ApiDoc(desc = "getPageList")
   @Override
   public Map<String, Object> getPageList(Map<String, Object> requestMap) {
     DigitalAssetsItem digitalAssetsItemReq =
@@ -345,6 +361,8 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
    * @param requestMap
    * @return
    */
+  @ShenyuDubboClient("/getDetail")
+  @ApiDoc(desc = "getDetail")
   @Override
   public Map<String, Object> getDetail(Map<String, Object> requestMap) {
     // 客户资产编号
@@ -369,6 +387,8 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
    * @param requestMap
    * @return
    */
+  @ShenyuDubboClient("/getPassCard")
+  @ApiDoc(desc = "getPassCard")
   @Override
   public Map<String, Object> getPassCard(Map<String, Object> requestMap) {
     String tenantId = LoginInfoContextHelper.getTenantId();
@@ -407,6 +427,8 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
     return RespBodyHandler.setRespBodyListDto(digitalAssetsItemListRes);
   }
 
+  @ShenyuDubboClient("/getObtainCodePageList")
+  @ApiDoc(desc = "getObtainCodePageList")
   @Override
   public Map<String, Object> getObtainCodePageList(Map<String, Object> requestMap) {
     String assetsNo = MapUtils.getString(requestMap, "assetsNo");
@@ -421,6 +443,8 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
     return RespBodyHandler.setRespPageInfoBodyDto(pageList);
   }
 
+  @ShenyuDubboClient("/equityConfig")
+  @ApiDoc(desc = "equityConfig")
   @Override
   public Map<String, Object> equityConfig(Map<String, Object> requestMap) {
     // TODO 参数校验待处理

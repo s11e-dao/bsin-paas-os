@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,8 @@ public class MetadataTemplateServiceImpl implements MetadataTemplateService {
     @Autowired
     private MetadataTemplateMapper metadataTemplateMapper;
 
+    @ShenyuDubboClient("/add")
+    @ApiDoc(desc = "add")
     @Override
     public Map<String, Object> add(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -51,6 +55,8 @@ public class MetadataTemplateServiceImpl implements MetadataTemplateService {
         return RespBodyHandler.setRespBodyDto(metadataTemplate);
     }
 
+    @ShenyuDubboClient("/delete")
+    @ApiDoc(desc = "delete")
     @Override
     public Map<String, Object> delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -58,6 +64,8 @@ public class MetadataTemplateServiceImpl implements MetadataTemplateService {
         return RespBodyHandler.RespBodyDto();
     }
 
+    @ShenyuDubboClient("/edit")
+    @ApiDoc(desc = "edit")
     @Override
     public Map<String, Object> edit(Map<String, Object> requestMap) {
         MetadataTemplate metadataTemplate = BsinServiceContext.getReqBodyDto(MetadataTemplate.class, requestMap);
@@ -65,6 +73,8 @@ public class MetadataTemplateServiceImpl implements MetadataTemplateService {
         return RespBodyHandler.RespBodyDto();
     }
 
+    @ShenyuDubboClient("/getList")
+    @ApiDoc(desc = "getList")
     @Override
     public Map<String, Object> getList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -76,6 +86,8 @@ public class MetadataTemplateServiceImpl implements MetadataTemplateService {
         return RespBodyHandler.setRespBodyListDto(metadataTemplateList);
     }
 
+    @ShenyuDubboClient("/getPageList")
+    @ApiDoc(desc = "getPageList")
     @Override
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -90,6 +102,8 @@ public class MetadataTemplateServiceImpl implements MetadataTemplateService {
         return RespBodyHandler.setRespPageInfoBodyDto(pageList);
     }
 
+    @ShenyuDubboClient("/getDetail")
+    @ApiDoc(desc = "getDetail")
     @Override
     public Map<String, Object> getDetail(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");

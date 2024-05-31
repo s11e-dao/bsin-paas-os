@@ -138,54 +138,9 @@ public class WalletServiceImpl implements WalletService {
   }
 
   @Override
-  @ApiDoc(desc = "outCreateWallet")
-  @ShenyuDubboClient("/outCreateWallet")
-  @Transactional(rollbackFor = Exception.class)
-  public void outCreateWallet(Wallet wallet) {
-    log.debug("请求WalletService.outCreateWallet,参数:{}", wallet);
-    try{
-      // 1、创建钱包
-      wallet.setSerialNo(BsinSnowflake.getId());
-      if(wallet.getWalletName()==null){
-        wallet.setWalletName(wallet.getSerialNo());
-      }
-      wallet.setStatus(1);    // 状态：1、正常
-      wallet.setType(1);  // 钱包类型：1、默认
-      wallet.setCategory(1); // 钱包种类：1、MPC
-      wallet.setEnv("EVM");  // 钱包环境：EVM
-      wallet.setWalletTag("DEPOSIT");  // 钱包标识：DEPOSIT 寄存
-      wallet.setCreateTime(new Date());
-      walletMapper.insert(wallet);
-
-      // 2、查询用户所属的平台的关联币种
-      CustomerChainCoin customerChainCoin = new CustomerChainCoin();
-      customerChainCoin.setTenantId(wallet.getTenantId());
-      customerChainCoin.setBizRoleType(1);
-      // TODO 二期 根据用户所属的商户、代理商确定关联币种
-      if(wallet.getBizRoleType() != 4){
-        customerChainCoin.setCreateRoleAccountFlag(1);
-      }else {
-        customerChainCoin.setCreateUserAccountFlag(1);
-      }
-      List<ChainCoin>  chainCoinList = customerChainCoinMapper.selectChainCoinList(customerChainCoin);
-      // 3、创建钱包地址，并创建钱包账户
-      if(chainCoinList != null && !chainCoinList.isEmpty()){
-        for(ChainCoin chainCoin : chainCoinList){
-          walletAccountBiz.createWalletAccount(wallet, chainCoin.getSerialNo());
-        }
-      }
-    }catch (BusinessException be){
-      throw be;
-    }catch (Exception e){
-      e.printStackTrace();
-      throw new BusinessException(new I18eCode("SYSTEM_ERROR"));
-    }
-  }
-
-  @Override
-  @ApiDoc(desc = "pageList")
-  @ShenyuDubboClient("/pageList")
-  public Page<WalletVO> pageList(WalletDTO walletDTO) {
+  @ApiDoc(desc = "getPageList")
+  @ShenyuDubboClient("/getPageList")
+  public Page<WalletVO> getPageList(WalletDTO walletDTO) {
     log.debug("请求WalletService.pageList,参数:{}", walletDTO);
     try{
       LoginUser user = LoginInfoContextHelper.getLoginUser();
@@ -209,7 +164,7 @@ public class WalletServiceImpl implements WalletService {
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Transactional(rollbackFor = Exception.class)
-  public void editWallet(WalletDTO walletDTO) {
+  public void edit(WalletDTO walletDTO) {
     log.debug("请求WalletService.editWallet,参数:{}", walletDTO);
     LoginUser user = LoginInfoContextHelper.getLoginUser();
     Wallet updateWallet = new Wallet();
@@ -235,7 +190,7 @@ public class WalletServiceImpl implements WalletService {
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Transactional(rollbackFor = Exception.class)
-  public void delWallet(WalletDTO walletDTO) {
+  public void delete(WalletDTO walletDTO) {
     log.debug("请求WalletService.delWallet,参数:{}", walletDTO);
     LoginUser user = LoginInfoContextHelper.getLoginUser();
     try{

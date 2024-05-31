@@ -21,7 +21,7 @@ public interface TransactionService  {
      * @param transactionRequest
      * @return
      */
-    void createTransaction(TransactionRequest transactionRequest);
+    void create(TransactionRequest transactionRequest);
 
 
     /**
@@ -37,7 +37,7 @@ public interface TransactionService  {
      * @param transactionDTO
      * @return
      */
-    Page<TransactionVO> pageList(TransactionDTO transactionDTO);
+    Page<TransactionVO> getPageList(TransactionDTO transactionDTO);
 
 //    /**
 //     * 转入通知
@@ -52,4 +52,5 @@ public interface TransactionService  {
 //     * @return
 //     */
 //    public BsinResultEntity transferOutNotification(TransactionRequest transactionRequest);
+
 }

@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,8 @@ public class ContractProtocolServiceImpl implements ContractProtocolService {
     @Autowired
     private ContractProtocolMapper contractProtocolMapper;
 
+    @ShenyuDubboClient("/add")
+    @ApiDoc(desc = "add")
     @Override
     public Map<String, Object> add(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -55,6 +59,8 @@ public class ContractProtocolServiceImpl implements ContractProtocolService {
         return RespBodyHandler.setRespBodyDto(contractProtocol);
     }
 
+    @ShenyuDubboClient("/add")
+    @ApiDoc(desc = "add")
     @Override
     public Map<String, Object> delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -62,6 +68,8 @@ public class ContractProtocolServiceImpl implements ContractProtocolService {
         return RespBodyHandler.RespBodyDto();
     }
 
+    @ShenyuDubboClient("/edit")
+    @ApiDoc(desc = "edit")
     @Override
     public Map<String, Object> edit(Map<String, Object> requestMap) {
         ContractProtocol contractProtocol = BsinServiceContext.getReqBodyDto(ContractProtocol.class, requestMap);
@@ -69,6 +77,8 @@ public class ContractProtocolServiceImpl implements ContractProtocolService {
         return RespBodyHandler.RespBodyDto();
     }
 
+    @ShenyuDubboClient("/getPageList")
+    @ApiDoc(desc = "getPageList")
     @Override
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         ContractProtocol contractProtocol = BsinServiceContext.getReqBodyDto(ContractProtocol.class, requestMap);
@@ -87,6 +97,8 @@ public class ContractProtocolServiceImpl implements ContractProtocolService {
         return RespBodyHandler.setRespPageInfoBodyDto(pageList);
     }
 
+    @ShenyuDubboClient("/getList")
+    @ApiDoc(desc = "getList")
     @Override
     public Map<String, Object> getList(Map<String, Object> requestMap) {
         ContractProtocol contractProtocol = BsinServiceContext.getReqBodyDto(ContractProtocol.class, requestMap);
@@ -101,6 +113,8 @@ public class ContractProtocolServiceImpl implements ContractProtocolService {
         return RespBodyHandler.setRespBodyListDto(contractProtocolList);
     }
 
+    @ShenyuDubboClient("/getDetail")
+    @ApiDoc(desc = "getDetail")
     @Override
     public Map<String, Object> getDetail(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");

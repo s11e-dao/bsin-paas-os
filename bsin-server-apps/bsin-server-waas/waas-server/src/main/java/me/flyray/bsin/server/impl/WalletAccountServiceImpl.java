@@ -50,7 +50,7 @@ public class WalletAccountServiceImpl implements WalletAccountService {
     @ShenyuDubboClient("/add")
     @ApiDoc(desc = "add")
     @Transactional(rollbackFor = Exception.class)
-    public void addWalletAccount(WalletAccountDTO walletAccountDTO) {
+    public void add(WalletAccountDTO walletAccountDTO) {
         log.debug("请求WalletAccountService.addWalletAccount,参数:{}", walletAccountDTO);
         try{
             String chainCoinId = walletAccountDTO.getChainCoinNo();
@@ -92,9 +92,9 @@ public class WalletAccountServiceImpl implements WalletAccountService {
     }
 
     @Override
-    @ShenyuDubboClient("/pageList")
-    @ApiDoc(desc = "pageList")
-    public Page<WalletAccountVO> pageList(WalletAccountDTO walletAccountDTO) {
+    @ShenyuDubboClient("/getPageList")
+    @ApiDoc(desc = "getPageList")
+    public Page<WalletAccountVO> getPageList(WalletAccountDTO walletAccountDTO) {
         log.debug("请求WalletAccountService.pageList,参数:{}", walletAccountDTO);
         int current = walletAccountDTO.getCurrent() == null?1:walletAccountDTO.getCurrent();
         int size = walletAccountDTO.getSize() == null?10:walletAccountDTO.getSize();
@@ -123,6 +123,7 @@ public class WalletAccountServiceImpl implements WalletAccountService {
             throw new BusinessException("SYSTEM_ERROR");
         }
     }
+
 }
 
 

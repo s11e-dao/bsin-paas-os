@@ -31,21 +31,11 @@ public interface WalletService {
     public void createMPCWallet(WalletDTO walletDTO);
 
     /**
-     * (对外)创建钱包
-     * @param Wallet
-     * walletName 钱包名称
-     * businessRoleType 角色类型(必填);1、平台 2、商户 3、代理商 4、C端用户
-     * businessRoleNo   角色序号（必填、唯一）
-     * tenantId 租户ID（必填）
-     */
-    public void outCreateWallet(Wallet Wallet);
-
-    /**
      * 分页查询钱包列表
      * @param walletDTO
      * @return
      */
-    public Page<WalletVO> pageList(WalletDTO walletDTO);
+    public Page<WalletVO> getPageList(WalletDTO walletDTO);
 
     /**
      * 编辑用户钱包
@@ -53,12 +43,12 @@ public interface WalletService {
      * @param walletDTO
      * @return
      */
-    public void editWallet(WalletDTO walletDTO);
+    public void edit(WalletDTO walletDTO);
 
     /**
      * 删除钱包
      * @param walletDTO
      */
-    public void delWallet(WalletDTO walletDTO);
+    public void delete(WalletDTO walletDTO);
 
 }

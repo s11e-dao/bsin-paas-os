@@ -18,7 +18,7 @@ public interface BlackWhiteListAddressService {
      * @param blackWhiteListAddressDTO
      * @return
      */
-    void save(BlackWhiteListAddressDTO blackWhiteListAddressDTO);
+    void add(BlackWhiteListAddressDTO blackWhiteListAddressDTO);
 
     /**
      * 编辑黑白名单地址
@@ -46,5 +46,5 @@ public interface BlackWhiteListAddressService {
      * @param address
      * @return
      */
-     Page<BlackWhiteListAddressVO> pageList(BlackWhiteListAddressDTO address);
+     Page<BlackWhiteListAddressVO> getPageList(BlackWhiteListAddressDTO address);
 }

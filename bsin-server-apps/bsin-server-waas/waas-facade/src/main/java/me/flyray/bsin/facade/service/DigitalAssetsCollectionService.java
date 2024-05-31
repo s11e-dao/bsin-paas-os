@@ -31,7 +31,7 @@ public interface DigitalAssetsCollectionService {
    * @param requestMap 请求参数
    * @return 转赠结果
    */
-  Map<String, Object> trasaction(Map<String, Object> requestMap) throws Exception;
+  Map<String, Object> transfer(Map<String, Object> requestMap) throws Exception;
 
   /**
    * 空投
@@ -48,7 +48,7 @@ public interface DigitalAssetsCollectionService {
    * @param requestMap 请求参数
    * @return 转赠结果
    */
-  Map<String, Object> batchTrasaction(Map<String, Object> requestMap) throws Exception;
+  Map<String, Object> batchTransfer(Map<String, Object> requestMap) throws Exception;
 
   /**
    * settingSponsor 设置代付

@@ -8,7 +8,9 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -77,6 +79,8 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
   @DubboReference(version = "${dubbo.provider.version}")
   private CustomerService customerService;
 
+  @ShenyuDubboClient("/create")
+  @ApiDoc(desc = "create")
   @Override
   @Transactional
   public Map<String, Object> create(Map<String, Object> requestMap) throws Exception {
@@ -292,6 +296,8 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
     return RespBodyHandler.setRespBodyDto(customerProfile);
   }
 
+  @ShenyuDubboClient("/update")
+  @ApiDoc(desc = "update")
   @Override
   public Map<String, Object> update(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -433,6 +439,8 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
     return RespBodyHandler.setRespBodyDto(customerProfile);
   }
 
+  @ShenyuDubboClient("/collect")
+  @ApiDoc(desc = "collect")
   @Override
   public Map<String, Object> collect(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -634,6 +642,8 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
     return RespBodyHandler.setRespBodyDto(digitalAssetsColletion);
   }
 
+  @ShenyuDubboClient("/follow")
+  @ApiDoc(desc = "follow")
   @Override
   public Map<String, Object> follow(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -711,6 +721,8 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
     return RespBodyHandler.setRespBodyDto(contractRWRet);
   }
 
+  @ShenyuDubboClient("/burn")
+  @ApiDoc(desc = "burn")
   @Override
   public Map<String, Object> burn(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -718,6 +730,8 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
     return RespBodyHandler.RespBodyDto();
   }
 
+  @ShenyuDubboClient("/edit")
+  @ApiDoc(desc = "edit")
   @Override
   public Map<String, Object> edit(Map<String, Object> requestMap) {
     CustomerProfile customerProfile =
@@ -726,6 +740,8 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
     return RespBodyHandler.RespBodyDto();
   }
 
+  @ShenyuDubboClient("/getDetail")
+  @ApiDoc(desc = "getDetail")
   @Override
   public Map<String, Object> getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -733,6 +749,8 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
     return RespBodyHandler.setRespBodyDto(customerProfile);
   }
 
+  @ShenyuDubboClient("/getPageList")
+  @ApiDoc(desc = "getPageList")
   @Override
   public Map<String, Object> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -751,4 +769,5 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
     IPage<CustomerProfile> pageList = customerProfileMapper.selectPage(page, warapper);
     return RespBodyHandler.setRespPageInfoBodyDto(pageList);
   }
+
 }

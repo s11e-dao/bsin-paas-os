@@ -43,10 +43,10 @@ public class ChainCoinServiceImpl implements ChainCoinService {
     private ChainTransactionListen chainTransactionListen;
 
     @Override
-    @ShenyuDubboClient("/save")
-    @ApiDoc(desc = "save")
+    @ShenyuDubboClient("/add")
+    @ApiDoc(desc = "add")
     @Transactional(rollbackFor = BusinessException.class)
-    public void saveChainCoin(ChainCoinDTO chainCoinDTO) {
+    public void add(ChainCoinDTO chainCoinDTO) {
         log.debug("请求ChainCoinService.saveChainCoin,参数:{}", chainCoinDTO);
         try{
             LoginUser user = LoginInfoContextHelper.getLoginUser();
@@ -101,7 +101,7 @@ public class ChainCoinServiceImpl implements ChainCoinService {
     @ShenyuDubboClient("/edit")
     @ApiDoc(desc = "edit")
     @Transactional(rollbackFor = Exception.class)
-    public void editChainCoin(ChainCoinDTO chainCoinDTO) {
+    public void edit(ChainCoinDTO chainCoinDTO) {
         log.debug("请求ChainCoinService.editChainCoin,参数:{}", chainCoinDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
         try{
@@ -150,7 +150,7 @@ public class ChainCoinServiceImpl implements ChainCoinService {
     @Override
     @ShenyuDubboClient("/delete")
     @ApiDoc(desc = "delete")
-    public void deleteChainCoin(ChainCoinDTO chainCoinDTO) {
+    public void delete(ChainCoinDTO chainCoinDTO) {
         log.debug("请求ChainCoinService.deleteChainCoin,参数:{}", chainCoinDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
         try{
@@ -171,9 +171,9 @@ public class ChainCoinServiceImpl implements ChainCoinService {
     }
 
     @Override
-    @ShenyuDubboClient("/pageList")
-    @ApiDoc(desc = "pageList")
-    public Page<ChainCoin> pageList(ChainCoinDTO coinDTO) {
+    @ShenyuDubboClient("/getPageList")
+    @ApiDoc(desc = "getPageList")
+    public Page<ChainCoin> getPageList(ChainCoinDTO coinDTO) {
         log.debug("请求ChainCoinService.pageList,参数:{}", coinDTO);
         Integer current = coinDTO.getCurrent() == null?1:coinDTO.getCurrent();
         Integer size = coinDTO.getSize() == null?10:coinDTO.getSize();

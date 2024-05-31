@@ -10,7 +10,9 @@ import me.flyray.bsin.facade.service.MerchantService;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,6 +74,8 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
    * @param requestMap
    * @return
    */
+  @ShenyuDubboClient("/getList")
+  @ApiDoc(desc = "getList")
   @Override
   public Map<String, Object> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -124,6 +128,8 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
     return RespBodyHandler.setRespBodyListDto(digitalAssetsItemResList);
   }
 
+  @ShenyuDubboClient("/getPageList")
+  @ApiDoc(desc = "getPageList")
   @Override
   public Map<String, Object> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -177,6 +183,8 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
     return RespBodyHandler.setRespBodyListDto(digitalAssetsItemList);
   }
 
+  @ShenyuDubboClient("/getDetail")
+  @ApiDoc(desc = "getDetail")
   @Override
   public Map<String, Object> getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -190,6 +198,8 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
     return RespBodyHandler.setRespBodyDto(digitalAssetsDetailRes);
   }
 
+  @ShenyuDubboClient("/verifyAssetsOnChain")
+  @ApiDoc(desc = "verifyAssetsOnChain")
   @Override
   public Map<String, Object> verifyAssetsOnChain(Map<String, Object> requestMap) {
     BigDecimal conditionAmount = (BigDecimal) requestMap.get("conditionAmount");
@@ -252,4 +262,5 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
     ret.put("balance", balance);
     return RespBodyHandler.setRespBodyDto(ret);
   }
+
 }

@@ -55,7 +55,6 @@ public class GoogleAuthenticatorServiceImpl implements GoogleAuthenticatorServic
     @Autowired
     private BsinCacheProvider bsinCacheProvider;
 
-
     @Override
     @ShenyuDubboClient("/getGoogleAuthToken")
     @ApiDoc(desc = "getGoogleAuthToken")

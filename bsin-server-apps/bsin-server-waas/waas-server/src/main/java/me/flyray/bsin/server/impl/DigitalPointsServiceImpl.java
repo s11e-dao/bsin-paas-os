@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -68,6 +70,8 @@ public class DigitalPointsServiceImpl implements DigitalPointsService {
    * @return
    * @throws Exception
    */
+  @ShenyuDubboClient("/issue")
+  @ApiDoc(desc = "issue")
   @Override
   @Transactional
   public Map<String, Object> issue(Map<String, Object> requestMap) throws Exception {
@@ -175,6 +179,8 @@ public class DigitalPointsServiceImpl implements DigitalPointsService {
     return RespBodyHandler.setRespBodyDto(contractTransactionResp);
   }
 
+  @ShenyuDubboClient("/getDetailByMerchantNo")
+  @ApiDoc(desc = "getDetailByMerchantNo")
   @Override
   public Map<String, Object> getDetailByMerchantNo(Map<String, Object> requestMap) {
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
@@ -188,8 +194,11 @@ public class DigitalPointsServiceImpl implements DigitalPointsService {
     return RespBodyHandler.setRespBodyDto(digitalAssetsCollection);
   }
 
+  @ShenyuDubboClient("/mint")
+  @ApiDoc(desc = "mint")
   @Override
   public Map<String, Object> mint(Map<String, Object> requestMap) throws Exception {
     return RespBodyHandler.setRespBodyDto(digitalAssetsCollectionService.mint(requestMap));
   }
+
 }
