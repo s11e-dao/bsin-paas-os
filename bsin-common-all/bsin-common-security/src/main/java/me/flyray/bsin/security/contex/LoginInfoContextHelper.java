@@ -50,7 +50,6 @@ public class LoginInfoContextHelper {
     }
 
     public static String getMerchantNo() {
-        Assert.notNull(getLoginUser().getMerchantNo(), "merchantNo is null");
         return getLoginUser().getMerchantNo();
     }
 

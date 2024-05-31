@@ -1,5 +1,7 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.domain.Merchant;
 import me.flyray.bsin.domain.request.MerchantRegisterRequest;
 import me.flyray.bsin.utils.BsinResultEntity;
 
@@ -60,7 +62,7 @@ public interface MerchantService {
     /**
      * 分页查询商户
      */
-    public Map<String, Object> getPageList(Map<String, Object> requestMap);
+    public IPage<Merchant> getPageList(Map<String, Object> requestMap);
 
     /**
      * 查询商户详情

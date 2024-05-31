@@ -284,14 +284,16 @@ public class MerchantServiceImpl implements MerchantService {
     @ApiDoc(desc = "getPageList")
     @ShenyuDubboClient("/getPageList")
     @Override
-    public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+    public IPage<Merchant> getPageList(Map<String, Object> requestMap) {
         Merchant merchant = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
         String tenantId = LoginInfoContextHelper.getTenantId();
         String merchantNo = LoginInfoContextHelper.getMerchantNo();
         if(merchant.getTenantId() != null){
             tenantId = merchant.getTenantId();
         }
-        Pagination pagination = (Pagination) requestMap.get("pagination");
+        Object paginationObj =  requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj,pagination);
         Page<Merchant> page = new Page<>(pagination.getPageNum(),pagination.getPageSize());
         LambdaUpdateWrapper<Merchant> warapper = new LambdaUpdateWrapper<>();
         warapper.orderByDesc(Merchant::getCreateTime);
@@ -300,7 +302,7 @@ public class MerchantServiceImpl implements MerchantService {
         warapper.eq(StringUtils.isNotEmpty(merchant.getStatus()),Merchant::getStatus, merchant.getStatus());
         warapper.eq(StringUtils.isNotEmpty(merchantNo),Merchant::getSerialNo, merchantNo);
         IPage<Merchant> pageList = merchantMapper.selectPage(page,warapper);
-        return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+        return pageList;
     }
 
     @ApiDoc(desc = "getDetail")

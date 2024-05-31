@@ -251,15 +251,17 @@ public class PlatformServiceImpl implements PlatformService {
     @ApiDoc(desc = "getPageList")
     @ShenyuDubboClient("/getPageList")
     @Override
-    public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+    public IPage<CustomerBase> getPageList(Map<String, Object> requestMap) {
         CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
-        Pagination pagination = (Pagination) requestMap.get("pagination");
+        Object paginationObj =  requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj,pagination);
         Page<CustomerBase> page = new Page<>(pagination.getPageNum(),pagination.getPageSize());
         LambdaUpdateWrapper<CustomerBase> warapper = new LambdaUpdateWrapper<>();
         warapper.orderByDesc(CustomerBase::getCreateTime);
         warapper.eq(CustomerBase::getType, CustomerType.TENANT.getCode());
         IPage<CustomerBase> pageList = customerBaseMapper.selectPage(page,warapper);
-        return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+        return pageList;
     }
 
 }

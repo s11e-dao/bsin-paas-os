@@ -1,5 +1,7 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.domain.CustomerBase;
 import me.flyray.bsin.domain.request.PlatformDTO;
 
 import java.util.Map;
@@ -48,6 +50,6 @@ public interface PlatformService {
      * 查询系统租户平台
      * 场景：查询各业态场景的平台账户
      */
-    public Map<String, Object> getPageList(Map<String, Object> requestMap);
+    public IPage<CustomerBase> getPageList(Map<String, Object> requestMap);
 
 }
