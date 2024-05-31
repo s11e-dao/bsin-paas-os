@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +16,9 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.MerchantProduct;
-import me.flyray.bsin.facade.service.MerchantProductService;
-import me.flyray.bsin.infrastructure.mapper.MerchantProductMapper;
+import me.flyray.bsin.domain.domain.MerchantApp;
+import me.flyray.bsin.facade.service.MerchantAppService;
+import me.flyray.bsin.infrastructure.mapper.MerchantAppMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.server.utils.RespBodyHandler;
@@ -25,31 +27,33 @@ import me.flyray.bsin.utils.BsinSnowflake;
 
 
 @Slf4j
-@ShenyuDubboService(path = "/merchantApp", timeout = 6000)
-@ApiModule(value = "merchantApp")
+@ShenyuDubboService(path = "/merchantProduct", timeout = 6000)
+@ApiModule(value = "merchantProduct")
 @Service
-public class MerchantProductServiceImpl implements MerchantProductService {
+public class MerchantAppServiceImpl implements MerchantAppService {
 
     @Autowired
-    private MerchantProductMapper merchantProductMapper;
+    private MerchantAppMapper merchantAppMapper;
 
     /**
      * 添加
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "getList")
+    @ShenyuDubboClient("/getList")
     @Override
     public Map<String, Object> add(Map<String, Object> requestMap) {
         String tenantId = LoginInfoContextHelper.getTenantId();
         String merchantNo = LoginInfoContextHelper.getMerchantNo();
-        MerchantProduct merchantProduct = BsinServiceContext.getReqBodyDto(MerchantProduct.class, requestMap);
-        merchantProduct.setSerialNo(BsinSnowflake.getId());
+        MerchantApp merchantApp = BsinServiceContext.getReqBodyDto(MerchantApp.class, requestMap);
+        merchantApp.setSerialNo(BsinSnowflake.getId());
         String productId = BsinSnowflake.getId();
-        merchantProduct.setTenantId(tenantId);
-        merchantProduct.setMerchantNo(merchantNo);
-        merchantProduct.setProductId(productId);
-        merchantProduct.setProductSecret(BsinSnowflake.getId());
-        merchantProductMapper.insert(merchantProduct);
+        merchantApp.setTenantId(tenantId);
+        merchantApp.setMerchantNo(merchantNo);
+        merchantApp.setProductId(productId);
+        merchantApp.setProductSecret(BsinSnowflake.getId());
+        merchantAppMapper.insert(merchantApp);
 //        MerchantApiFeeConfig tenantApiFeeConfig = new MerchantApiFeeConfig();
 //        tenantApiFeeConfig.setTenantId(tenantId);
 //        tenantApiFeeConfig.setProductId(productId);
@@ -67,10 +71,12 @@ public class MerchantProductServiceImpl implements MerchantProductService {
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "delete")
+    @ShenyuDubboClient("/delete")
     @Override
     public Map<String, Object> delete(Map<String, Object> requestMap) {
-        MerchantProduct merchantProduct = BsinServiceContext.bisId(MerchantProduct.class, requestMap);
-        merchantProductMapper.deleteById(merchantProduct.getSerialNo());
+        MerchantApp merchantApp = BsinServiceContext.bisId(MerchantApp.class, requestMap);
+        merchantAppMapper.deleteById(merchantApp.getSerialNo());
         return RespBodyHandler.RespBodyDto();
     }
 
@@ -79,12 +85,14 @@ public class MerchantProductServiceImpl implements MerchantProductService {
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "edit")
+    @ShenyuDubboClient("/edit")
     @Override
     public Map<String, Object> edit(Map<String, Object> requestMap) {
-        MerchantProduct merchantProduct = BsinServiceContext.bisId(MerchantProduct.class, requestMap);
+        MerchantApp merchantApp = BsinServiceContext.bisId(MerchantApp.class, requestMap);
         String serialNo = (String) requestMap.get("serialNo");
-        merchantProduct.setProductId(serialNo);
-        merchantProductMapper.updateById(merchantProduct);
+        merchantApp.setProductId(serialNo);
+        merchantAppMapper.updateById(merchantApp);
         return RespBodyHandler.RespBodyDto();
     }
 
@@ -93,15 +101,17 @@ public class MerchantProductServiceImpl implements MerchantProductService {
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "getDetail")
+    @ShenyuDubboClient("/getDetail")
     @Override
     public Map<String, Object> getDetail(Map<String, Object> requestMap) {
         String tenantId = LoginInfoContextHelper.getTenantId();
         // 从当前token中获取appId
         String serialNo = (String) requestMap.get("serialNo");
-        MerchantProduct merchantProduct = new MerchantProduct();
-        merchantProduct.setTenantId(tenantId);
-        merchantProduct.setProductId(serialNo);
-        MerchantProduct tenantAppResult = merchantProductMapper.getProductInfo(merchantProduct);
+        MerchantApp merchantApp = new MerchantApp();
+        merchantApp.setTenantId(tenantId);
+        merchantApp.setProductId(serialNo);
+        MerchantApp tenantAppResult = merchantAppMapper.getProductInfo(merchantApp);
         return RespBodyHandler.setRespBodyDto(tenantAppResult);
     }
 
@@ -110,19 +120,22 @@ public class MerchantProductServiceImpl implements MerchantProductService {
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "getPageList")
+    @ShenyuDubboClient("/getPageList")
     @Override
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         String tenantId = LoginInfoContextHelper.getTenantId();
         String merchantNo = LoginInfoContextHelper.getMerchantNo();
         String productName = (String) requestMap.get("productName");
         Pagination pagination = (Pagination) requestMap.get("pagination");
-        Page<MerchantProduct> page = new Page<>(pagination.getPageNum(),pagination.getPageSize());
-        LambdaUpdateWrapper<MerchantProduct> warapper = new LambdaUpdateWrapper<>();
-        warapper.orderByDesc(MerchantProduct::getCreateTime);
-        warapper.eq(MerchantProduct::getTenantId, tenantId);
-        warapper.eq(MerchantProduct::getMerchantNo, merchantNo);
-        warapper.eq(StringUtils.isNotEmpty(productName), MerchantProduct::getProductName, productName);
-        IPage<MerchantProduct> pageList = merchantProductMapper.selectPage(page,warapper);
+        Page<MerchantApp> page = new Page<>(pagination.getPageNum(),pagination.getPageSize());
+        LambdaUpdateWrapper<MerchantApp> warapper = new LambdaUpdateWrapper<>();
+        warapper.orderByDesc(MerchantApp::getCreateTime);
+        warapper.eq(MerchantApp::getTenantId, tenantId);
+        warapper.eq(MerchantApp::getMerchantNo, merchantNo);
+        warapper.eq(StringUtils.isNotEmpty(productName), MerchantApp::getProductName, productName);
+        IPage<MerchantApp> pageList = merchantAppMapper.selectPage(page,warapper);
         return RespBodyHandler.setRespPageInfoBodyDto(pageList);
     }
+
 }

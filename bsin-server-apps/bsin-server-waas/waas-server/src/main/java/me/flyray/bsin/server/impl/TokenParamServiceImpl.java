@@ -60,7 +60,7 @@ public class TokenParamServiceImpl implements TokenParamService {
   @Autowired private DigitalPointsService digitalPointsService;
   @Autowired private BsinCacheProvider bsinCacheProvider;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private AccountService accountService;
 
   @CaptureCustomerBehavior(behaviorCode = BehaviorCode.ISSUE, customerType = CustomerType.MEMBER)

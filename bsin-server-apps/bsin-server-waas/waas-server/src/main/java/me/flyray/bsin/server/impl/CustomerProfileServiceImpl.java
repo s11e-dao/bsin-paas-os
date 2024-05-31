@@ -71,10 +71,10 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
   @Autowired private DigitalAssetsCollectionMapper digitalAssetsCollectionMapper;
   @Autowired private ContractProtocolMapper contractProtocolMapper;
 
-//  @DubboReference(version = "dev")
+//  @DubboReference(version = "${dubbo.provider.version}")
 //  private CopilotService copilotService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private CustomerService customerService;
 
   @Override

@@ -8,7 +8,9 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,12 +46,14 @@ public class EquityServiceImpl implements EquityService {
 
   @Autowired private EquityMapper equityMapper;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private DigitalAssetsItemService digitalAssetsItemService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private BondingCurveTokenService bondingCurveTokenService;
 
+  @ApiDoc(desc = "add")
+  @ShenyuDubboClient("/add")
   @Override
   public Map<String, Object> add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -62,6 +66,8 @@ public class EquityServiceImpl implements EquityService {
     return RespBodyHandler.setRespBodyDto(equity);
   }
 
+  @ApiDoc(desc = "delete")
+  @ShenyuDubboClient("/delete")
   @Override
   public Map<String, Object> delete(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -69,6 +75,8 @@ public class EquityServiceImpl implements EquityService {
     return RespBodyHandler.RespBodyDto();
   }
 
+  @ApiDoc(desc = "edit")
+  @ShenyuDubboClient("/edit")
   @Override
   public Map<String, Object> edit(Map<String, Object> requestMap) {
     Equity equity = BsinServiceContext.getReqBodyDto(Equity.class, requestMap);
@@ -76,6 +84,8 @@ public class EquityServiceImpl implements EquityService {
     return RespBodyHandler.RespBodyDto();
   }
 
+  @ApiDoc(desc = "getDetail")
+  @ShenyuDubboClient("/getDetail")
   @Override
   public Map<String, Object> getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -83,6 +93,8 @@ public class EquityServiceImpl implements EquityService {
     return RespBodyHandler.setRespBodyDto(equity);
   }
 
+  @ApiDoc(desc = "getPageList")
+  @ShenyuDubboClient("/getPageList")
   @Override
   public Map<String, Object> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -98,6 +110,8 @@ public class EquityServiceImpl implements EquityService {
     return RespBodyHandler.setRespPageInfoBodyDto(pageList);
   }
 
+  @ApiDoc(desc = "grant")
+  @ShenyuDubboClient("/grant")
   public Map<String, Object> grant(Map<String, Object> requestMap)
       throws UnsupportedEncodingException {
 
@@ -130,4 +144,5 @@ public class EquityServiceImpl implements EquityService {
     }
     return requestMap;
   }
+
 }

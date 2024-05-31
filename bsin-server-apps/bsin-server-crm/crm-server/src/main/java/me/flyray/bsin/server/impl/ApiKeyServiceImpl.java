@@ -64,9 +64,9 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     }
 
     @Override
-    @ShenyuDubboClient("/save")
-    @ApiDoc(desc = "save")
-    public void saveCustomerApiKey(ApiKeyDTO apiKeyDTO) {
+    @ShenyuDubboClient("/add")
+    @ApiDoc(desc = "add")
+    public void add(ApiKeyDTO apiKeyDTO) {
         log.debug("请求ApiKeyService.apiKeyDTO,参数：{}" , apiKeyDTO);
         try{
             LoginUser user = LoginInfoContextHelper.getLoginUser();  // 用户信息
@@ -93,7 +93,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     @ShenyuDubboClient("/edit")
     @ApiDoc(desc = "edit")
     @Override
-    public void editCustomerApiKey(ApiKeyDTO apiKeyDTO) {
+    public void edit(ApiKeyDTO apiKeyDTO) {
         log.debug("请求ApiKeyService.apiKeyDTO,参数：{} " , apiKeyDTO);
         try{
             // 短信验证
@@ -115,7 +115,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     @ShenyuDubboClient("/delete")
     @ApiDoc(desc = "delete")
     @Override
-    public void deleteCustomerApiKey(ApiKeyDTO apiKeyDTO) {
+    public void delete(ApiKeyDTO apiKeyDTO) {
         log.debug("请求 CustomerApiKeyService.deleteCustomerApiKey,参数：{}",apiKeyDTO);
         try{
             // 短信验证
@@ -134,10 +134,10 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         }
     }
 
-    @ShenyuDubboClient("/pageList")
-    @ApiDoc(desc = "pageList")
+    @ShenyuDubboClient("/getPageList")
+    @ApiDoc(desc = "getPageList")
     @Override
-    public Page<ApiKey> pageList(ApiKeyDTO apiKeyDTO) {
+    public Page<ApiKey> getPageList(ApiKeyDTO apiKeyDTO) {
         log.debug("CustomerApiKeyService.pageList: " + apiKeyDTO);
         try{
             LoginUser user = LoginInfoContextHelper.getLoginUser();  // 用户信息

@@ -11,7 +11,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -88,22 +90,22 @@ public class CustomerServiceImpl implements CustomerService {
   @Autowired private BondingCurveTokenParamMapper bondingCurveTokenParamMapper;
   @Autowired private SignUtils signUtils;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private TenantService tenantService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private UserService userService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private WalletService walletService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private DigitalPointsService digitalPointsService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private TokenParamService tokenParamService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private CustomerPassCardService customerPassCardService;
 
   /**
@@ -112,6 +114,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "login")
+  @ShenyuDubboClient("/login")
   @Override
   public Map<String, Object> login(Map<String, Object> requestMap) {
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
@@ -132,6 +136,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "register")
+  @ShenyuDubboClient("/register")
   @Transactional
   @Override
   public Map<String, Object> register(Map<String, Object> requestMap)
@@ -147,6 +153,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "getLoginVerifycode")
+  @ShenyuDubboClient("/getLoginVerifycode")
   @Override
   public Map<String, Object> getLoginVerifycode(Map<String, Object> requestMap) {
     String phone = (String) requestMap.get("phone");
@@ -163,6 +171,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "registerOrLogin")
+  @ShenyuDubboClient("/registerOrLogin")
   @Override
   public Map<String, Object> registerOrLogin(Map<String, Object> requestMap)
       throws UnsupportedEncodingException {
@@ -194,6 +204,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "web3Login")
+  @ShenyuDubboClient("/web3Login")
   @Override
   public Map<String, Object> web3Login(Map<String, Object> requestMap)
       throws SignatureException, UnsupportedEncodingException {
@@ -234,6 +246,8 @@ public class CustomerServiceImpl implements CustomerService {
     return RespBodyHandler.setRespBodyDto(data);
   }
 
+  @ApiDoc(desc = "identityVerification")
+  @ShenyuDubboClient("/identityVerification")
   /** 身份认证 */
   @Override
   public Map<String, Object> identityVerification(Map<String, Object> requestMap) {
@@ -248,6 +262,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "merchantLogin")
+  @ShenyuDubboClient("/merchantLogin")
   @Transactional
   @Override
   public Map<String, Object> merchantLogin(Map<String, Object> requestMap) {
@@ -279,6 +295,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "getMerchantCustomerInfoByUsername")
+  @ShenyuDubboClient("/getMerchantCustomerInfoByUsername")
   @Transactional
   @Override
   public Map<String, Object> getMerchantCustomerInfoByUsername(Map<String, Object> requestMap) {
@@ -300,6 +318,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "merchantRegister")
+  @ShenyuDubboClient("/merchantRegister")
   @Transactional
   @Override
   public Map<String, Object> merchantRegister(Map<String, Object> requestMap) {
@@ -320,6 +340,8 @@ public class CustomerServiceImpl implements CustomerService {
     return RespBodyHandler.setRespBodyDto(customerInfo);
   }
 
+  @ApiDoc(desc = "getPageList")
+  @ShenyuDubboClient("/getPageList")
   @Override
   public Map<String, Object> getPageList(Map<String, Object> requestMap) {
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
@@ -343,6 +365,8 @@ public class CustomerServiceImpl implements CustomerService {
     return RespBodyHandler.setRespPageInfoBodyDto(pageList);
   }
 
+  @ApiDoc(desc = "getMerchantPageList")
+  @ShenyuDubboClient("/getMerchantPageList")
   @Override
   public Map<String, Object> getMerchantPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -363,6 +387,8 @@ public class CustomerServiceImpl implements CustomerService {
     return RespBodyHandler.setRespPageInfoBodyDto(pageList);
   }
 
+  @ApiDoc(desc = "getDetail")
+  @ShenyuDubboClient("/getDetail")
   @Override
   public Map<String, Object> getDetail(Map<String, Object> requestMap) {
     String customerNo = MapUtils.getString(requestMap, "customerNo");
@@ -374,6 +400,8 @@ public class CustomerServiceImpl implements CustomerService {
     return RespBodyHandler.setRespBodyDto(customerInfo);
   }
 
+  @ApiDoc(desc = "edit")
+  @ShenyuDubboClient("/edit")
   @Override
   public Map<String, Object> edit(Map<String, Object> requestMap) {
     String customerNo = MapUtils.getString(requestMap, "customerNo");
@@ -395,11 +423,15 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "incentiveDistribution")
+  @ShenyuDubboClient("/incentiveDistribution")
   @Override
   public Map<String, Object> incentiveDistribution(Map<String, Object> requestMap) {
     return null;
   }
 
+  @ApiDoc(desc = "getListByCustomerNos")
+  @ShenyuDubboClient("/getListByCustomerNos")
   @Override
   public Map<String, Object> getListByCustomerNos(Map<String, Object> requestMap) {
     //        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -412,6 +444,8 @@ public class CustomerServiceImpl implements CustomerService {
     return RespBodyHandler.setRespBodyListDto(customerBaseList);
   }
 
+  @ApiDoc(desc = "certification")
+  @ShenyuDubboClient("/certification")
   @Override
   public Map<String, Object> certification(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -437,6 +471,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "settingWallet")
+  @ShenyuDubboClient("/settingWallet")
   @Override
   public Map<String, Object> settingWallet(Map<String, Object> requestMap) {
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
@@ -458,6 +494,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "settingProfile")
+  @ShenyuDubboClient("/settingProfile")
   @Override
   public Map<String, Object> settingProfile(Map<String, Object> requestMap) {
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
@@ -477,6 +515,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "getWalletInfo")
+  @ShenyuDubboClient("/getWalletInfo")
   @Override
   public Map<String, Object> getWalletInfo(Map<String, Object> requestMap) {
     String customerNo = LoginInfoContextHelper.getCustomerNo();
@@ -630,6 +670,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "getContinuousSignCount")
+  @ShenyuDubboClient("/getContinuousSignCount")
   @Override
   public Map<String, Object> getContinuousSignCount(Map<String, Object> requestMap)
       throws ParseException {
@@ -652,6 +694,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "getSumSignCount")
+  @ShenyuDubboClient("/getSumSignCount")
   @Override
   public Map<String, Object> getSumSignCount(Map<String, Object> requestMap) throws ParseException {
     String customerNo = (String) requestMap.get("customerNo");
@@ -672,6 +716,8 @@ public class CustomerServiceImpl implements CustomerService {
    *
    * @return
    */
+  @ApiDoc(desc = "sign")
+  @ShenyuDubboClient("/sign")
   @Override
   public Map<String, Object> sign(Map<String, Object> requestMap) throws ParseException {
     String customerNo = (String) requestMap.get("customerNo");
@@ -694,6 +740,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "getSignResult")
+  @ShenyuDubboClient("/getSignResult")
   @Override
   public Map<String, Object> getSignResult(Map<String, Object> requestMap) throws ParseException {
     String customerNo = (String) requestMap.get("customerNo");
@@ -716,6 +764,8 @@ public class CustomerServiceImpl implements CustomerService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "getSignInfo")
+  @ShenyuDubboClient("/getSignInfo")
   @Override
   public Map<String, Object> getSignInfo(Map<String, Object> requestMap) throws ParseException {
 
@@ -733,6 +783,8 @@ public class CustomerServiceImpl implements CustomerService {
     return RespBodyHandler.setRespBodyDto(signUtils.getSignInfo(customerNo, date));
   }
 
+  @ApiDoc(desc = "getInviteeList")
+  @ShenyuDubboClient("/getInviteeList")
   @Override
   public Map<String, Object> getInviteeList(Map<String, Object> requestMap) {
     String customerNo = LoginInfoContextHelper.getCustomerNo();

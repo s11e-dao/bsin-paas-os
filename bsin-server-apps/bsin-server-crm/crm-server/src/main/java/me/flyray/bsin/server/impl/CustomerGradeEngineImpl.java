@@ -2,7 +2,9 @@ package me.flyray.bsin.server.impl;
 
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,17 +31,21 @@ import me.flyray.bsin.facade.service.MemberService;
 @Service
 public class CustomerGradeEngineImpl implements CustomerGradeEngine {
 
-    @DubboReference(version = "dev")
+    @DubboReference(version = "${dubbo.provider.version}")
     private MemberService memberService;
 
-    @DubboReference(version = "dev")
+    @DubboReference(version = "${dubbo.provider.version}")
     private GradeService gradeService;
+
+    @ApiDoc(desc = "execute")
+    @ShenyuDubboClient("/execute")
     @Override
     public Map<String, Object> execute(Map<String, Object> requestMap) {
         return null;
     }
 
-
+    @ApiDoc(desc = "verifyGrade")
+    @ShenyuDubboClient("/verifyGrade")
     public Map<String, Object>  verifyGrade(Map<String, Object> requestMap) {
         Map resMap = memberService.getMemberGradeDetail(requestMap);
         String customerGradeNum = new String("");

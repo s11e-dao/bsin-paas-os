@@ -32,6 +32,7 @@ import java.util.List;
 @ApiModule(value = "customerChainCoin")
 @ShenyuDubboService("/customerChainCoin")
 public class CustomerChainCoinServiceImpl implements CustomerChainCoinService {
+
     @Autowired
     private CustomerChainCoinMapper customerChainCoinMapper;
 

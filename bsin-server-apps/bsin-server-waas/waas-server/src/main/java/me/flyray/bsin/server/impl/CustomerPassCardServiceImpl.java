@@ -48,19 +48,19 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
 
   @Autowired private DigitalAssetsItemBiz digitalAssetsItemBiz;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private CustomerService customerService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private MerchantService merchantService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private DigitalAssetsCollectionService digitalAssetsCollectionService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private DigitalAssetsItemService digitalAssetsItemService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private CustomerProfileService customerProfileService;
 
   // 统一走 DigitalAssetsCollectionService 的 issue

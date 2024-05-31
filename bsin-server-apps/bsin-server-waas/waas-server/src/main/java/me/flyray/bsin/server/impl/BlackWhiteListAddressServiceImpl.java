@@ -33,6 +33,7 @@ import java.util.List;
 @ApiModule(value = "blackWhiteListAddress")
 @ShenyuDubboService("/blackWhiteListAddress")
 public class BlackWhiteListAddressServiceImpl implements BlackWhiteListAddressService {
+
     @Autowired
     private BlackWhiteListAddressMapper blackWhiteListAddressMapper;
 

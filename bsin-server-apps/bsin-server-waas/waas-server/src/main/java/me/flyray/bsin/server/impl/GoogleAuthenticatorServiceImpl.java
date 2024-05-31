@@ -37,7 +37,8 @@ import java.util.Map;
 @ApiModule(value = "googleAuthenticator")
 @ShenyuDubboService("/googleAuthenticator")
 public class GoogleAuthenticatorServiceImpl implements GoogleAuthenticatorService {
-    @DubboReference(version = "dev")
+
+    @DubboReference(version = "${dubbo.provider.version}")
     private UserService userService;
 
     @Value("${shenyu.security.authentication-secretKey}")
@@ -49,7 +50,7 @@ public class GoogleAuthenticatorServiceImpl implements GoogleAuthenticatorServic
      */
     private static final String CRYPTO = "HmacSHA1";
 
-    @DubboReference(version = "dev")
+    @DubboReference(version = "${dubbo.provider.version}")
     private TenantService tenantService;
     @Autowired
     private BsinCacheProvider bsinCacheProvider;

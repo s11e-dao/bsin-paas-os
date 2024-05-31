@@ -6,7 +6,7 @@ import java.util.Map;
  * 商户添加访问服务的应用，该应用用于签名校验和计费服务
  */
 
-public interface MerchantProductService {
+public interface MerchantAppService {
 
     /**
      * 添加

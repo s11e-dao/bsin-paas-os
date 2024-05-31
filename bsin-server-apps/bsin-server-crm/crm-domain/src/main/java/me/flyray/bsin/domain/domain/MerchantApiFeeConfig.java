@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@TableName(value ="market_merchant_product_api_fee")
+@TableName(value ="crm_merchant_app_api_fee")
 public class MerchantApiFeeConfig implements Serializable {
 
     /**

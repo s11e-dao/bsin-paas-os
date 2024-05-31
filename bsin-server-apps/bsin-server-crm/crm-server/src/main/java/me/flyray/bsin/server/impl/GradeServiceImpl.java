@@ -11,7 +11,9 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,9 +71,11 @@ public class GradeServiceImpl implements GradeService {
     private ConditionMapper conditionMapper;
     @Autowired private CustomerAccountBiz customerAccountBiz;
 
-    @DubboReference(version = "dev")
+    @DubboReference(version = "${dubbo.provider.version}")
     private TokenParamService tokenParamService;
 
+    @ApiDoc(desc = "add")
+    @ShenyuDubboClient("/add")
     @Override
     public Map<String, Object> add(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -83,6 +87,8 @@ public class GradeServiceImpl implements GradeService {
         return RespBodyHandler.setRespBodyDto(grade);
     }
 
+    @ApiDoc(desc = "delete")
+    @ShenyuDubboClient("/delete")
     @Override
     public Map<String, Object> delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -90,16 +96,20 @@ public class GradeServiceImpl implements GradeService {
         return RespBodyHandler.RespBodyDto();
     }
 
-  @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
-    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-    Grade grade = BsinServiceContext.getReqBodyDto(Grade.class, requestMap);
-    grade.setTenantId(loginUser.getTenantId());
-    grade.setMerchantNo(loginUser.getMerchantNo());
-    gradeMapper.updateById(grade);
-    return RespBodyHandler.setRespBodyDto(grade);
-  }
+    @ApiDoc(desc = "edit")
+    @ShenyuDubboClient("/edit")
+    @Override
+    public Map<String, Object> edit(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        Grade grade = BsinServiceContext.getReqBodyDto(Grade.class, requestMap);
+        grade.setTenantId(loginUser.getTenantId());
+        grade.setMerchantNo(loginUser.getMerchantNo());
+        gradeMapper.updateById(grade);
+        return RespBodyHandler.setRespBodyDto(grade);
+    }
 
+    @ApiDoc(desc = "getList")
+    @ShenyuDubboClient("/getList")
     @Override
     public Map<String, Object> getList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -112,6 +122,8 @@ public class GradeServiceImpl implements GradeService {
         return RespBodyHandler.setRespBodyListDto(gradeList);
     }
 
+    @ApiDoc(desc = "getPageList")
+    @ShenyuDubboClient("/getPageList")
     @Override
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -142,6 +154,8 @@ public class GradeServiceImpl implements GradeService {
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "getDetail")
+    @ShenyuDubboClient("/getDetail")
     @Override
     public Map<String, Object> getDetail(Map<String, Object> requestMap){
         String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -167,6 +181,8 @@ public class GradeServiceImpl implements GradeService {
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "getGradeDetail")
+    @ShenyuDubboClient("/getGradeDetail")
     @Override
     public Map<String, Object> getGradeDetail(Map<String, Object> requestMap){
         String gradeNo = MapUtils.getString(requestMap, "gradeNo");
@@ -186,6 +202,8 @@ public class GradeServiceImpl implements GradeService {
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "getGradeAndMemberList")
+    @ShenyuDubboClient("/getGradeAndMemberList")
     @Override
     public Map<String, Object> getGradeAndMemberList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();

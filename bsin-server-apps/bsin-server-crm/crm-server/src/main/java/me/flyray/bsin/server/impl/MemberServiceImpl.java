@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,9 +46,12 @@ public class MemberServiceImpl implements MemberService {
   @Autowired private MemberGradeMapper memberGradeMapper;
 
   @Autowired private MemberMapper memberMapper;
-  @DubboReference(version = "dev")
+
+  @DubboReference(version = "${dubbo.provider.version}")
   private TokenParamService tokenParamService;
 
+  @ApiDoc(desc = "openMember")
+  @ShenyuDubboClient("/openMember")
   @Override
   public Map<String, Object> openMember(Map<String, Object> requestMap) {
     Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
@@ -61,6 +66,8 @@ public class MemberServiceImpl implements MemberService {
     return RespBodyHandler.RespBodyDto();
   }
 
+  @ApiDoc(desc = "getPageList")
+  @ShenyuDubboClient("/getPageList")
   @Override
   public Map<String, Object> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -81,6 +88,8 @@ public class MemberServiceImpl implements MemberService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "getGradeMemberList")
+  @ShenyuDubboClient("/getGradeMemberList")
   @Override
   public Map<String, Object> getGradeMemberList(Map<String, Object> requestMap) {
     String gradeNo = MapUtils.getString(requestMap, "gradeNo");
@@ -102,6 +111,8 @@ public class MemberServiceImpl implements MemberService {
     return RespBodyHandler.setRespBodyListDto(memberList);
   }
 
+  @ApiDoc(desc = "getGradeMemberPageList")
+  @ShenyuDubboClient("/getGradeMemberPageList")
   @Override
   public Map<String, Object> getGradeMemberPageList(Map<String, Object> requestMap) {
     Pagination pagination = (Pagination) requestMap.get("pagination");
@@ -111,6 +122,8 @@ public class MemberServiceImpl implements MemberService {
     return RespBodyHandler.setRespPageInfoBodyDto(memberList);
   }
 
+  @ApiDoc(desc = "getDetail")
+  @ShenyuDubboClient("/getDetail")
   @Override
   public Map<String, Object> getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -124,6 +137,8 @@ public class MemberServiceImpl implements MemberService {
    * @param requestMap
    * @return
    */
+  @ApiDoc(desc = "getMemberGradeDetail")
+  @ShenyuDubboClient("/getMemberGradeDetail")
   @Override
   public Map<String, Object> getMemberGradeDetail(Map<String, Object> requestMap) {
     String customerNo = MapUtils.getString(requestMap, "customerNo");
@@ -133,4 +148,5 @@ public class MemberServiceImpl implements MemberService {
     Grade memberGrade = memberGradeMapper.selectMemberGrade(customerNo);
     return RespBodyHandler.setRespBodyDto(memberGrade);
   }
+
 }

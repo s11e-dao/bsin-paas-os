@@ -73,7 +73,8 @@ public class OrderbookServiceImpl implements OrderbookService {
     private DigitalAssetsCollectionMapper digitalAssetsMapper;
     @Autowired
     private DigitalAssetsItemBiz digitalAssetsItemBiz;
-    @DubboReference(version = "dev")
+
+    @DubboReference(version = "${dubbo.provider.version}")
     private CustomerService customerService;
 
 

@@ -12,8 +12,8 @@ import javax.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-@TableName(value ="crm_merchant_product")
-public class MerchantProduct implements Serializable {
+@TableName(value ="crm_merchant_app")
+public class MerchantApp implements Serializable {
 
     /**
      * 序号

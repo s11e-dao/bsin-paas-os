@@ -31,8 +31,8 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
     private SettlementAccountMapper settlementAccountMapper;
 
     @Override
-    @ShenyuDubboClient("/save")
-    @ApiDoc(desc = "save")
+    @ShenyuDubboClient("/saveSettlementAccount")
+    @ApiDoc(desc = "saveSettlementAccount")
     public void saveSettlementAccount(SettlementAccountDTO settlementAccountDTO) {
         log.debug("请求MerchantService.saveSettlementAccount,参数:{} ",settlementAccountDTO);
         try{

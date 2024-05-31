@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,8 @@ public class ConditionServiceImpl implements ConditionService {
     @Autowired
     private ConditionMapper conditionMapper;
 
+    @ApiDoc(desc = "add")
+    @ShenyuDubboClient("/add")
     @Override
     public Map<String, Object> add(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -49,6 +53,8 @@ public class ConditionServiceImpl implements ConditionService {
         return RespBodyHandler.setRespBodyDto(condition);
     }
 
+    @ApiDoc(desc = "delete")
+    @ShenyuDubboClient("/delete")
     @Override
     public Map<String, Object> delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -56,6 +62,8 @@ public class ConditionServiceImpl implements ConditionService {
         return RespBodyHandler.RespBodyDto();
     }
 
+    @ApiDoc(desc = "edit")
+    @ShenyuDubboClient("/edit")
     @Override
     public Map<String, Object> edit(Map<String, Object> requestMap) {
         Condition condition = BsinServiceContext.getReqBodyDto(Condition.class, requestMap);
@@ -63,6 +71,8 @@ public class ConditionServiceImpl implements ConditionService {
         return RespBodyHandler.RespBodyDto();
     }
 
+    @ApiDoc(desc = "getDetail")
+    @ShenyuDubboClient("/getDetail")
     @Override
     public Map<String, Object> getDetail(Map<String, Object> requestMap){
         String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -70,6 +80,9 @@ public class ConditionServiceImpl implements ConditionService {
                 conditionMapper.selectById(serialNo);
         return RespBodyHandler.setRespBodyDto(condition);
     }
+
+    @ApiDoc(desc = "getPageList")
+    @ShenyuDubboClient("/getPageList")
     @Override
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();

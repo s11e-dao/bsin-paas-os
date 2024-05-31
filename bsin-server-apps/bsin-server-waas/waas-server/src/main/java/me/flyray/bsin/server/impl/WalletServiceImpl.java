@@ -56,7 +56,7 @@ public class WalletServiceImpl implements WalletService {
   @Autowired
   private CustomerChainCoinMapper customerChainCoinMapper;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private CustomerService customerService;
 
   /**

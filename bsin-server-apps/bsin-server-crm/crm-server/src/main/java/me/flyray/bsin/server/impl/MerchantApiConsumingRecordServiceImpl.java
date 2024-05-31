@@ -16,7 +16,9 @@ import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +45,8 @@ public class MerchantApiConsumingRecordServiceImpl implements MerchantApiConsumi
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "apiConsuming")
+    @ShenyuDubboClient("/apiConsuming")
     @Override
     public Map<String, Object> apiConsuming(Map<String, Object> requestMap) {
         // 添加消费记录
@@ -76,6 +80,8 @@ public class MerchantApiConsumingRecordServiceImpl implements MerchantApiConsumi
      * @param requestMap
      * @return
      */
+    @ApiDoc(desc = "getPageList")
+    @ShenyuDubboClient("/getPageList")
     @Override
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         Map<String, Object> pagination = (Map<String, Object>) requestMap.get("pagination");
@@ -90,4 +96,5 @@ public class MerchantApiConsumingRecordServiceImpl implements MerchantApiConsumi
                 PageInfo<>(pageList);
         return RespBodyHandler.setRespPageInfoBodyDto(pageInfo);
     }
+
 }

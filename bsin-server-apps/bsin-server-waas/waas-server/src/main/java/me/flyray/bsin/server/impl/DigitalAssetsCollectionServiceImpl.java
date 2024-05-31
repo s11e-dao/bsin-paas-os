@@ -87,7 +87,7 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
   @Autowired private DigitalAssetsItemBiz digitalAssetsItemBiz;
   @Autowired private CustomerInfoBiz customerInfoBiz;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private AccountService accountService;
 
   /**

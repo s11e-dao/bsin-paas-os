@@ -1,7 +1,9 @@
 package me.flyray.bsin.server.impl;
 
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -23,26 +25,36 @@ import me.flyray.bsin.facade.service.CustomerEventService;
 public class CustomerEventServiceImpl implements CustomerEventService {
 
 
+    @ApiDoc(desc = "add")
+    @ShenyuDubboClient("/add")
     @Override
     public Map<String, Object> add(Map<String, Object> requestMap) {
         return null;
     }
 
+    @ApiDoc(desc = "delete")
+    @ShenyuDubboClient("/delete")
     @Override
     public Map<String, Object> delete(Map<String, Object> requestMap) {
         return null;
     }
 
+    @ApiDoc(desc = "getList")
+    @ShenyuDubboClient("/getList")
     @Override
     public Map<String, Object> getList(Map<String, Object> requestMap) {
         return null;
     }
 
+    @ApiDoc(desc = "getPageList")
+    @ShenyuDubboClient("/getPageList")
     @Override
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         return null;
     }
 
+    @ApiDoc(desc = "getDetail")
+    @ShenyuDubboClient("/getDetail")
     @Override
     public Map<String, Object> getDetail(Map<String, Object> requestMap) {
         return null;

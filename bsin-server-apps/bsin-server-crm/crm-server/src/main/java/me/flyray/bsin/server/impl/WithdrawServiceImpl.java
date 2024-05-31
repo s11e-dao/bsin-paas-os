@@ -21,7 +21,9 @@ import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.server.utils.RespBodyHandler;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -65,6 +67,8 @@ public class WithdrawServiceImpl implements WithdrawService {
     @Autowired
     private CustomerService customerService;
 
+    @ShenyuDubboClient("/getPageList")
+    @ApiDoc(desc = "getPageList")
     @Override
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -90,6 +94,8 @@ public class WithdrawServiceImpl implements WithdrawService {
      * @param requestMap
      * @return
      */
+    @ShenyuDubboClient("/withdraw")
+    @ApiDoc(desc = "withdraw")
     @Override
     public Map<String, Object> withdraw(Map<String, Object> requestMap) throws Exception {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -150,6 +156,8 @@ public class WithdrawServiceImpl implements WithdrawService {
         return RespBodyHandler.setRespBodyDto(withdrawJournal);
     }
 
+    @ShenyuDubboClient("/withdrawApply")
+    @ApiDoc(desc = "withdrawApply")
     @Override
     public Map<String, Object> withdrawApply(Map<String, Object> requestMap) {
         WithdrawOrder withdrawJournal = BsinServiceContext.getReqBodyDto(WithdrawOrder.class, requestMap);
@@ -158,13 +166,16 @@ public class WithdrawServiceImpl implements WithdrawService {
         return RespBodyHandler.setRespBodyDto(withdrawJournal);
     }
 
+    @ShenyuDubboClient("/audit")
+    @ApiDoc(desc = "audit")
     @Override
     public Map<String, Object> audit(Map<String, Object> requestMap) {
 
         return null;
     }
 
-
+    @ShenyuDubboClient("/getDetail")
+    @ApiDoc(desc = "getDetail")
     @Override
     public Map<String, Object> getDetail(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");

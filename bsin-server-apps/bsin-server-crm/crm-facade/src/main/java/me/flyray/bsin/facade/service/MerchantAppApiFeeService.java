@@ -2,7 +2,7 @@ package me.flyray.bsin.facade.service;
 
 import java.util.Map;
 
-public interface MerchantProductApiFeeService {
+public interface MerchantAppApiFeeService {
 
     /**
      * 查询费用配置

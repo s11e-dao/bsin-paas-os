@@ -69,16 +69,16 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
   @Autowired private DigitalAssetsItemBiz digitalAssetsItemBiz;
   @Autowired private CustomerInfoBiz customerInfoBiz;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private CustomerService customerService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private MerchantService merchantService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private EquityService equityService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private MemberService memberService;
 
   /** 领取逻辑： */

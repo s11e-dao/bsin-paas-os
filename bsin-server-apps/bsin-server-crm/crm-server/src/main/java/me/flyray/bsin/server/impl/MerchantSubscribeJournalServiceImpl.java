@@ -1,7 +1,9 @@
 package me.flyray.bsin.server.impl;
 
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -21,6 +23,8 @@ import me.flyray.bsin.facade.service.MerchantSubscribeJournalService;
 @Service
 public class MerchantSubscribeJournalServiceImpl implements MerchantSubscribeJournalService {
 
+    @ApiDoc(desc = "getPageList")
+    @ShenyuDubboClient("/getPageList")
     @Override
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         return null;

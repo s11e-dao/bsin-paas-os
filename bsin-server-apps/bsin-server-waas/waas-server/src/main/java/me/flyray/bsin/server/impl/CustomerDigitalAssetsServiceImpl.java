@@ -57,13 +57,13 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
 
   @Autowired private BsinBlockChainEngineFactory bsinBlockChainEngineFactory;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private CustomerService customerService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private MerchantService merchantService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private DigitalAssetsItemService digitalAssetsItemService;
 
   /**

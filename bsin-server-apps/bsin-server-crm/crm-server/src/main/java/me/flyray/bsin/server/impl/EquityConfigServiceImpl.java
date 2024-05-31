@@ -2,7 +2,9 @@ package me.flyray.bsin.server.impl;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,13 +38,17 @@ public class EquityConfigServiceImpl implements EquityConfigService {
     @Autowired
     private EquityMapper equityMapper;
 
+    @ApiDoc(desc = "add")
+    @ShenyuDubboClient("/add")
     @Override
-    public Map<String, Object> config(Map<String, Object> requestMap) {
+    public Map<String, Object> add(Map<String, Object> requestMap) {
         EquityRelation equityRelationship = BsinServiceContext.getReqBodyDto(EquityRelation.class, requestMap);
         equityRelationshipMapper.insert(equityRelationship);
         return RespBodyHandler.setRespBodyDto(equityRelationship);
     }
 
+    @ApiDoc(desc = "delete")
+    @ShenyuDubboClient("/delete")
     @Override
     public Map<String, Object> delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -50,6 +56,8 @@ public class EquityConfigServiceImpl implements EquityConfigService {
         return RespBodyHandler.RespBodyDto();
     }
 
+    @ApiDoc(desc = "getListByCategoryNo")
+    @ShenyuDubboClient("/getListByCategoryNo")
     @Override
     public Map<String, Object> getListByCategoryNo(Map<String, Object> requestMap) {
         // 权益分类编号：关联等级 任务 活动的编号

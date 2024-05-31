@@ -35,7 +35,7 @@ public interface ApiKeyService {
      * @return
      * @
      */
-    void saveCustomerApiKey(ApiKeyDTO customerApiKeyDTO) ;
+    void add(ApiKeyDTO customerApiKeyDTO) ;
 
     /**
      * 编辑商户api秘钥以及设置ip白名单
@@ -44,7 +44,7 @@ public interface ApiKeyService {
      * @return
      * @
      */
-    void editCustomerApiKey(ApiKeyDTO customerApiKeyDTO) ;
+    void edit(ApiKeyDTO customerApiKeyDTO) ;
 
     /**
      * 删除商户api秘钥
@@ -52,7 +52,7 @@ public interface ApiKeyService {
      * @return
      * @
      */
-    void deleteCustomerApiKey(ApiKeyDTO customerApiKeyDTO) ;
+    void delete(ApiKeyDTO customerApiKeyDTO) ;
 
     /**
      * 分页商户api秘钥以及设置ip白名单
@@ -60,5 +60,5 @@ public interface ApiKeyService {
      * @return
      * @
      */
-    Page<ApiKey> pageList(ApiKeyDTO customerApiKeyDTO);
+    Page<ApiKey> getPageList(ApiKeyDTO customerApiKeyDTO);
 }

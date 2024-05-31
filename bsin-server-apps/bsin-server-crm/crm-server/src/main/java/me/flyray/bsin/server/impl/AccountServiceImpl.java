@@ -12,7 +12,9 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,8 +55,8 @@ import me.flyray.bsin.utils.BsinSnowflake;
  */
 
 @Slf4j
-@ShenyuDubboService(path = "/customerAccount", timeout = 6000)
-@ApiModule(value = "customerAccount")
+@ShenyuDubboService(path = "/account", timeout = 6000)
+@ApiModule(value = "account")
 @Service
 public class AccountServiceImpl implements AccountService {
 
@@ -63,9 +65,11 @@ public class AccountServiceImpl implements AccountService {
   @Autowired private CustomerAccountBiz customerAccountBiz;
   @Autowired private AccountFreezeJournalMapper accountFreezeJournalMapper;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private TokenParamService tokenParamService;
 
+  @ShenyuDubboClient("/openAccount")
+  @ApiDoc(desc = "openAccount")
   @Override
   public Map<String, Object> openAccount(Map<String, Object> requestMap) {
     Account customerAccount =
@@ -74,6 +78,8 @@ public class AccountServiceImpl implements AccountService {
     return RespBodyHandler.RespBodyDto();
   }
 
+  @ShenyuDubboClient("/inAccount")
+  @ApiDoc(desc = "inAccount")
   @Override
   public Map<String, Object> inAccount(Map<String, Object> requestMap)
       throws UnsupportedEncodingException {
@@ -99,6 +105,8 @@ public class AccountServiceImpl implements AccountService {
     return RespBodyHandler.RespBodyDto();
   }
 
+  @ShenyuDubboClient("/outAccount")
+  @ApiDoc(desc = "outAccount")
   @Override
   public Map<String, Object> outAccount(Map<String, Object> requestMap)
       throws UnsupportedEncodingException {
@@ -125,6 +133,8 @@ public class AccountServiceImpl implements AccountService {
     return RespBodyHandler.RespBodyDto();
   }
 
+  @ShenyuDubboClient("/freeze")
+  @ApiDoc(desc = "freeze")
   @Override
   public Map<String, Object> freeze(Map<String, Object> requestMap) {
     Account customerAccount =
@@ -158,6 +168,8 @@ public class AccountServiceImpl implements AccountService {
     return RespBodyHandler.setRespBodyDto(i);
   }
 
+  @ShenyuDubboClient("/unfreeze")
+  @ApiDoc(desc = "unfreeze")
   @Override
   public Map<String, Object> unfreeze(Map<String, Object> requestMap) {
     Account customerAccount =
@@ -187,11 +199,15 @@ public class AccountServiceImpl implements AccountService {
     return RespBodyHandler.setRespBodyDto(customerNoList);
   }
 
+  @ShenyuDubboClient("/unfreezeAndOutAccount")
+  @ApiDoc(desc = "unfreezeAndOutAccount")
   @Override
   public Map<String, Object> unfreezeAndOutAccount(Map<String, Object> requestMap) {
     return null;
   }
 
+  @ShenyuDubboClient("/transfer")
+  @ApiDoc(desc = "transfer")
   @Override
   public Map<String, Object> transfer(Map<String, Object> requestMap) {
     return null;
@@ -203,6 +219,8 @@ public class AccountServiceImpl implements AccountService {
    * @param requestMap
    * @return
    */
+  @ShenyuDubboClient("/getDetail")
+  @ApiDoc(desc = "getDetail")
   @Override
   public Map<String, Object> getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -259,6 +277,8 @@ public class AccountServiceImpl implements AccountService {
     }
   }
 
+  @ShenyuDubboClient("/verifyAccountBalance")
+  @ApiDoc(desc = "verifyAccountBalance")
   public Map<String, Object> verifyAccountBalance(Map<String, Object> requestMap) {
     //    Map reqMap = new HashMap<>();
     //    reqMap.put("tenantId", loginUser.getTenantId());
@@ -277,6 +297,8 @@ public class AccountServiceImpl implements AccountService {
     return null;
   }
 
+  @ShenyuDubboClient("/getPageList")
+  @ApiDoc(desc = "getPageList")
   @Override
   public Map<String, Object> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -316,6 +338,8 @@ public class AccountServiceImpl implements AccountService {
    * @param requestMap
    * @return
    */
+  @ShenyuDubboClient("/getList")
+  @ApiDoc(desc = "getList")
   @Override
   public Map<String, Object> getList(Map<String, Object> requestMap) {
     Account customerAccount =
@@ -332,6 +356,8 @@ public class AccountServiceImpl implements AccountService {
     return RespBodyHandler.setRespBodyListDto(accounts);
   }
 
+  @ShenyuDubboClient("/getAccountJournalPageList")
+  @ApiDoc(desc = "getAccountJournalPageList")
   @Override
   public Map<String, Object> getAccountJournalPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -358,6 +384,8 @@ public class AccountServiceImpl implements AccountService {
     return RespBodyHandler.setRespPageInfoBodyDto(pageList);
   }
 
+  @ShenyuDubboClient("/getAccountJournalDetail")
+  @ApiDoc(desc = "getAccountJournalDetail")
   @Override
   public Map<String, Object> getAccountJournalDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -365,6 +393,8 @@ public class AccountServiceImpl implements AccountService {
     return RespBodyHandler.setRespBodyDto(accountJournal);
   }
 
+  @ShenyuDubboClient("/getAccountFreezeJournalPageList")
+  @ApiDoc(desc = "getAccountFreezeJournalPageList")
   @Override
   public Map<String, Object> getAccountFreezeJournalPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -398,6 +428,8 @@ public class AccountServiceImpl implements AccountService {
     return RespBodyHandler.setRespPageInfoBodyDto(pageList);
   }
 
+  @ShenyuDubboClient("/getAccountFreezeJournalDetail")
+  @ApiDoc(desc = "getAccountFreezeJournalDetail")
   @Override
   public Map<String, Object> getAccountFreezeJournalDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -405,6 +437,8 @@ public class AccountServiceImpl implements AccountService {
     return RespBodyHandler.setRespBodyDto(accountFreezeJournal);
   }
 
+  @ShenyuDubboClient("/getCommunityLedgerInfo")
+  @ApiDoc(desc = "getCommunityLedgerInfo")
   @Override
   public Map<String, Object> getCommunityLedgerInfo(Map<String, Object> requestMap) {
     // 查询社区账本账户的余额信息
@@ -420,6 +454,8 @@ public class AccountServiceImpl implements AccountService {
    * @param requestMap
    * @return
    */
+  @ShenyuDubboClient("/getPayAccounts")
+  @ApiDoc(desc = "getPayAccounts")
   @Override
   public Map<String, Object> getPayAccounts(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();

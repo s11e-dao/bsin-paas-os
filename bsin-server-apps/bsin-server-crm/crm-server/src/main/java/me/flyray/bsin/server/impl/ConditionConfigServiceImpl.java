@@ -35,15 +35,17 @@ public class ConditionConfigServiceImpl implements ConditionConfigService {
     @Autowired
     private ConditionMapper conditionMapper;
 
-    @ApiDoc(desc = "config")
-    @ShenyuDubboClient("/config")
+    @ApiDoc(desc = "add")
+    @ShenyuDubboClient("/add")
     @Override
-    public Map<String, Object> config(Map<String, Object> requestMap) {
+    public Map<String, Object> add(Map<String, Object> requestMap) {
         ConditionRelation conditionRelationship = BsinServiceContext.getReqBodyDto(ConditionRelation.class, requestMap);
         conditionRelationshipMapper.insert(conditionRelationship);
         return RespBodyHandler.setRespBodyDto(conditionRelationship);
     }
 
+    @ApiDoc(desc = "delete")
+    @ShenyuDubboClient("/delete")
     @Override
     public Map<String, Object> delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -51,6 +53,8 @@ public class ConditionConfigServiceImpl implements ConditionConfigService {
         return RespBodyHandler.RespBodyDto();
     }
 
+    @ApiDoc(desc = "getListByCategoryNo")
+    @ShenyuDubboClient("/getListByCategoryNo")
     @Override
     public Map<String, Object> getListByCategoryNo(Map<String, Object> requestMap) {
         // 权益分类编号：关联等级 任务 活动的编号
