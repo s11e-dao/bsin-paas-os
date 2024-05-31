@@ -17,6 +17,7 @@ export default {
     'process.env.biganH5Url': 'http://localhost:8080/', // biganH5 url local test
     'process.env.tenantAppType': 'ai', //
     'process.env.webScoketUrl': 'ws://192.168.1.6:8126/websocket',
+    'process.env.contextPath_upms': '/upms',  // upms应用
     'process.env.contextPath_crm': '/crm',  // crm应用
     'process.env.contextPath_waas': '/waas',  // 钱包应用
   },

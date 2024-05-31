@@ -362,7 +362,7 @@ export default () => {
           >
             <Select style={{ width: '100%' }}>
               <Option value="1">请选择商户业态</Option>
-              {businessTypeDicList.map((businessTypeDic) => {
+              {businessTypeDicList?.map((businessTypeDic) => {
                 return (
                   <Option value={businessTypeDic?.itemValue}>
                     {businessTypeDic?.label}

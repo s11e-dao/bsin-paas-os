@@ -84,7 +84,7 @@ export default () => {
   // 新增模板
   const increaseTemplate = () => {
     setIsTemplateModal(true);
-    getProductList({}).then((res) => {
+    getProductList({productName: ""}).then((res) => {
       setProductList(res?.data);
     });
   };
@@ -243,7 +243,7 @@ export default () => {
           >
             <Select style={{ width: '100%' }}>
               <Option value="0">请选择节点产品</Option>
-              {productList.map((product) => {
+              {productList?.map((product) => {
                 return (
                   <Option value={product?.productCode}>
                     {product?.productName}

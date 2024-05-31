@@ -1,5 +1,6 @@
 import { request } from '@umijs/max'
 let crmPath = process.env.contextPath_crm;
+let upmsPath = process.env.contextPath_upms;
 
 // 分页查询
 export const getMerchantPageList = (params) => {
@@ -53,7 +54,7 @@ export const getMerchantDetail = (params) => {
 
 export const getPostListByTenantId = (params) => {
   console.log('params', params);
-  return request(crmPath + '/merchant/getPostListByTenantId', {
+  return request(upmsPath + '/post/getPostListByTenantId', {
     serviceName: 'PostService',
     methodName: 'getPostListByTenantId',
     bizParams: {
@@ -64,7 +65,7 @@ export const getPostListByTenantId = (params) => {
 
 // 字典项查询
 export const getDictItemPageList = (params: any) => {
-  return request(crmPath + '/merchant/getDictItemPageList', {
+  return request(upmsPath + '/dict/getDictItemPageList', {
     serviceName: 'DictService',
     methodName: 'getDictItemPageList',
     bizParams: {

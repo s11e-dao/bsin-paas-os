@@ -1,5 +1,6 @@
 import { request } from '@umijs/max'
 let crmPath = process.env.contextPath_crm;
+let upmsPath = process.env.contextPath_upms;
 
 // 分页查询
 export const getPlatformPageList = (params) => {
@@ -52,7 +53,7 @@ export const getPlatformDetail = (params) => {
 
 // 查询产品列表
 export const getProductList = (params) => {
-  return request(crmPath + '/product//getList', {
+  return request(upmsPath + '/product/getList', {
     serviceName: 'ProductService',
     methodName: 'getList',
     bizParams: {
