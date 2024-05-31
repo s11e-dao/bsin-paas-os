@@ -19,7 +19,7 @@ import {
 
 import { history } from 'umi'
 
-export default ({ userApps }) => {
+export default ({ userApps, getAppMenu }) => {
 
   const [hovered, setHovered] = useState(false);
 
@@ -33,6 +33,7 @@ export default ({ userApps }) => {
     history.push("/" + app.path)
     setHovered(false);
     setAppName(app.name)
+    getAppMenu()
   };
 
   const handleHoverChange = (open: boolean) => {

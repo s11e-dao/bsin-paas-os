@@ -92,6 +92,7 @@ export type AppMenu = {
 }[]
 
 export default () => {
+
   let defaultMerchantNo = process.env.defaultMerchantNo
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -116,6 +117,7 @@ export default () => {
     history.push('/home')
     setLocale(params.key);
   }
+
 
   const [settings, setSetting] = useState<Partial<ProSettings> | undefined>({
     fixSiderbar: true,
@@ -150,10 +152,22 @@ export default () => {
   // 刷新的时候获取url的路径
   const location = useLocation()
 
+  //top mix点击自定义菜单应用DO
+  //状态判断是否从top mix过来DO
+  const [specialMenustatus, setspecialMenustatus] = useState(false)
+  const getAppMenu = () => {
+    setspecialMenustatus(true)
+  }
+  //DO监听改变pathname 判断是否是从top mix点击自定义菜单过来需要刷新（不在getAppMenu刷新：刷新之前此方法pathname还是之前的路径，所以不能立即获取改变后的pathname）
+  useEffect(() => {
+    if (specialMenustatus) {
+      actionRef.current?.reload()
+    }
+  }, [location.pathname.split('/')[1]])
+
   window.addEventListener('load', function () {
     console.log('页面可能被刷新了');
   });
-
 
   let chatData = {
     chats: {
@@ -573,7 +587,7 @@ export default () => {
                 ) : undefined,
                 // <QuestionCircleFilled key="QuestionCircleFilled" />,
                 // 国际化支持
-                <SelectLang onItemClick= {(params) => {
+                <SelectLang onItemClick={(params) => {
                   HandleLocale(params)
                 }} />,
                 <GithubFilled
@@ -603,7 +617,7 @@ export default () => {
               return (
                 <>
                   {defaultDom}
-                  <AppCenter userApps={userApps} />
+                  <AppCenter userApps={userApps} getAppMenu= {getAppMenu} />
                 </>
               )
             }}
