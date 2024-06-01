@@ -35,7 +35,7 @@ public class DubboLoginInfoFilter implements Filter {
             for (Field field : loginUser.getClass().getDeclaredFields()) {
                 field.setAccessible(true);
                 String fieldName = field.getName();
-                if (attachments.containsKey(fieldName) && attachments.get(fieldName) != null) {
+                if (attachments.containsKey(fieldName) && !"null".equals(attachments.get(fieldName))) {
                     LoginInfoContextHelper.set(fieldName, attachments.get(fieldName));
                 }
             }
