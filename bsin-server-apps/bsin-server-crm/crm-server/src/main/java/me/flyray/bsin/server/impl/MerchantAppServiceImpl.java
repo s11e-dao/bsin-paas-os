@@ -28,8 +28,8 @@ import me.flyray.bsin.utils.BsinSnowflake;
 
 
 @Slf4j
-@ShenyuDubboService(path = "/merchantProduct", timeout = 6000)
-@ApiModule(value = "merchantProduct")
+@ShenyuDubboService(path = "/merchantApp", timeout = 6000)
+@ApiModule(value = "merchantApp")
 @Service
 public class MerchantAppServiceImpl implements MerchantAppService {
 
