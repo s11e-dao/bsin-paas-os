@@ -3,7 +3,7 @@ let crmPath = process.env.contextPath_crm;
 
 // 分页查询合约实例
 export const getCustomerEnterprisePageList = (params) => {
-  return request('/list', {
+  return request(crmPath + '/merchant/getPageList', {
     serviceName: 'MerchantService',
     methodName: 'getPageList',
     version: '1.0',
@@ -15,7 +15,7 @@ export const getCustomerEnterprisePageList = (params) => {
 
 // 点击查询企业认证详情
 export const getCustomerEnterpriseInfo = (params) => {
-  return request('/getCustomerEnterpriseInfo', {
+  return request(crmPath + '/merchant/getDetail', {
     serviceName: 'MerchantService',
     methodName: 'getDetail',
     version: '1.0',
@@ -27,7 +27,7 @@ export const getCustomerEnterpriseInfo = (params) => {
 
 // 审核
 export const auditCustomerEnterprise = (params) => {
-  return request('/audit', {
+  return request(crmPath + '/merchant/audit', {
     serviceName: 'MerchantService',
     methodName: 'audit',
     version: '1.0',

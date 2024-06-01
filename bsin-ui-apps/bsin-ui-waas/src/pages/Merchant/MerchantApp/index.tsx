@@ -3,6 +3,7 @@ import {
   Form,
   Input,
   Modal,
+  Divider,
   message,
   Button,
   Select,
@@ -64,41 +65,29 @@ export default () => {
 
   // 操作行数据 自定义操作行
   const actionRender: any = (text: any, record: any, index: number) => (
-    <ul className="ant-list-item-action" style={{ margin: 0 }}>
-      <li>
-        <a
-          onClick={() => {
-            toViewContractTemplate(record);
-          }}
-        >
-          查看
-        </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-      <li>
-        <a
-          onClick={() => {
-            handleEditModel(record);
-          }}
-        >
-          编辑
-        </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-      <li>
-        <Popconfirm
-          title="确定删除此条模板？"
-          okText="是"
-          cancelText="否"
-          onConfirm={() => {
-            toDelContractTemplate(record);
-          }}
-          // onCancel={cancel}
-        >
-          <a>删除</a>
-        </Popconfirm>
-      </li>
-    </ul>
+    <div key={record.dictType}>
+      <a onClick={() => toViewContractTemplate(record)}>查看</a>
+      <Divider type="vertical" />
+      <a
+        onClick={() => {
+          handleEditModel(record);
+        }}
+      >
+        编辑
+      </a>
+      <Divider type="vertical" />
+      <Popconfirm
+        title="确定删除此条数据？?"
+        onConfirm={() => toDelContractTemplate(record.id)}
+        onCancel={() => {
+          message.warning(`取消删除`);
+        }}
+        okText="是"
+        cancelText="否"
+      >
+        <a>删除</a>
+      </Popconfirm>
+    </div>
   );
 
   // 自定义数据的表格头部数据
@@ -165,7 +154,7 @@ export default () => {
           });
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   /**
@@ -268,7 +257,7 @@ export default () => {
     onDrop(e) {
       console.log('Dropped files', e.dataTransfer.files);
     },
-    onRemove(e) {},
+    onRemove(e) { },
   };
 
   return (

@@ -3,8 +3,8 @@ let crmPath = process.env.contextPath_crm;
 
 // 分页查询
 export const getApiFeeConfigPageList = (params) => {
-  return request('/getPageList', {
-    serviceName: 'MerchantProductApiFeeService',
+  return request(crmPath + '/merchantAppApiFee/getPageList', {
+    serviceName: 'MerchantAppApiFeeService',
     methodName: 'getPageList',
     version: '1.0',
     bizParams: {
@@ -15,8 +15,8 @@ export const getApiFeeConfigPageList = (params) => {
 
 // 创建
 export const addApiFeeConfig = (params) => {
-  return request('/add', {
-    serviceName: 'MerchantProductApiFeeService',
+  return request(crmPath + '/merchantAppApiFee/add', {
+    serviceName: 'MerchantAppApiFeeService',
     methodName: 'add',
     version: '1.0',
     bizParams: {
@@ -27,8 +27,8 @@ export const addApiFeeConfig = (params) => {
 
 // 删除
 export const deleteApiFeeConfig = (params) => {
-  return request('/del', {
-    serviceName: 'MerchantProductApiFeeService',
+  return request(crmPath + '/merchantAppApiFee/delete', {
+    serviceName: 'MerchantAppApiFeeService',
     methodName: 'delete',
     version: '1.0',
     bizParams: {
@@ -40,8 +40,8 @@ export const deleteApiFeeConfig = (params) => {
 // 详情
 export const getApiFeeConfigDetails = (params) => {
   console.log('params', params);
-  return request('/view', {
-    serviceName: 'MerchantProductApiFeeService',
+  return request(crmPath + '/merchantAppApiFee/getApiFeeConfigInfo', {
+    serviceName: 'MerchantAppApiFeeService',
     methodName: 'getApiFeeConfigInfo',
     version: '1.0',
     bizParams: {
@@ -53,8 +53,8 @@ export const getApiFeeConfigDetails = (params) => {
 // 详情
 export const editApiFeeConfig = (params) => {
   console.log('params', params);
-  return request('/edit', {
-    serviceName: 'MerchantProductApiFeeService',
+  return request(crmPath + '/merchantAppApiFee/edit', {
+    serviceName: 'MerchantAppApiFeeService',
     methodName: 'edit',
     version: '1.0',
     bizParams: {

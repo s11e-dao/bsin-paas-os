@@ -75,15 +75,22 @@ export default () => {
             // 更新商户缓存信息
             let merchantInfo = getLocalStorageInfo('merchantInfo');
             merchantInfo.status = 2
-            setLocalStorageInfo("merchantInfo",merchantInfo);
+            setLocalStorageInfo("merchantInfo", merchantInfo);
             console.log(res)
         })
     };
 
     return (
         <>
-            <Card title="主体认证">
-            <StepsForm<{
+            <Card title="主体认证" extra={<Button
+                type="primary"
+                onClick={() => {
+                    
+                }}
+            >
+                返回
+            </Button>}>
+                <StepsForm<{
                     name: string;
                 }>
                     onFinish={async (values) => {

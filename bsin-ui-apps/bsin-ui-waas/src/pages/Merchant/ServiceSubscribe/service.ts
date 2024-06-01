@@ -1,11 +1,12 @@
 import { request } from '@umijs/max'
+let upmsPath = process.env.contextPath_upms;
 let crmPath = process.env.contextPath_crm;
 
 // 分页查询
 export const getMerchantAppList = (params) => {
-  return request('/list', {
+  return request(upmsPath + '/org/getAppListByOrgId', {
     serviceName: 'OrgService',
-    methodName: 'getAppListByOrgCode',
+    methodName: 'getAppListByOrgId',
     bizParams: {
       ...params,
     },
@@ -13,7 +14,7 @@ export const getMerchantAppList = (params) => {
 };
 
 export const getMerchantAuthorizableAppList = (params) => {
-  return request('/list', {
+  return request(upmsPath + '/org/getAuthorizableAppListByOrgCode', {
     serviceName: 'OrgService',
     methodName: 'getAuthorizableAppListByOrgCode',
     bizParams: {
@@ -24,7 +25,7 @@ export const getMerchantAuthorizableAppList = (params) => {
 
 // 商户订阅服务
 export const subscribeApps = (params) => {
-  return request('/list', {
+  return request(upmsPath + '/org/authorizeMercahntOrgApps', {
     serviceName: 'OrgService',
     methodName: 'authorizeMercahntOrgApps',
     bizParams: {

@@ -52,7 +52,7 @@ const routes = [
       // 商户认证
       {
         path: '/merchant/merchant-auth',
-        component: '@/pages/Merchant/MerchantSetting/index',
+        component: '@/pages/Merchant/MerchantAuth/index',
       },
       // 商户账户
       {
@@ -71,7 +71,7 @@ const routes = [
       // 商户认证信息审核
       {
         path: '/merchant/merchant-audit',
-        component: '@/pages/Merchant/EnterpriseInfo/index',
+        component: '@/pages/Merchant/MerchantAudit/index',
       },
       // 商户服务订阅
       {

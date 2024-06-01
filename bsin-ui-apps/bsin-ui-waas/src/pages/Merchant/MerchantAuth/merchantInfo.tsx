@@ -3,9 +3,11 @@ import {
   Row,
   Col,
   Avatar,
+  message,
   List,
   Descriptions,
-  Table
+  Table,
+  Divider
 } from 'antd';
 import React from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -93,31 +95,21 @@ export default ({ setIsLoadAuthentication }) => {
 
   // 操作行数据 自定义操作行
   const actionRender: any = (text: any, record: any, index: number) => (
-    <ul className="ant-list-item-action" style={{ margin: 0 }}>
-      <li>
-        <a
-          onClick={() => {
-            // 调用方法
-          }}
-        >
-          查看
-        </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-      <li>
-        <Popconfirm
-          title="确定撤销此处认证？"
-          okText="是"
-          cancelText="否"
-          onConfirm={() => {
-            // 调用方法
-          }}
-        // onCancel={cancel}
-        >
-          <a>撤销</a>
-        </Popconfirm>
-      </li>
-    </ul>
+    <div key={record.dictType}>
+      <a onClick={() => toViewContractTemplate(record)}>查看</a>
+      <Divider type="vertical" />
+      <Popconfirm
+        title="确定撤销此处认证？?"
+        onConfirm={() => toDelContractTemplate(record.id)}
+        onCancel={() => {
+          message.warning(`取消认证`);
+        }}
+        okText="是"
+        cancelText="否"
+      >
+        <a>撤销</a>
+      </Popconfirm>
+    </div>
   );
 
   // 自定义数据的表格头部数据

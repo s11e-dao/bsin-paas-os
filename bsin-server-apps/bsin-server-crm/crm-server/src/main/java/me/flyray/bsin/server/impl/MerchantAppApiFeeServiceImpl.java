@@ -26,8 +26,8 @@ import java.util.Map;
 
 
 @Slf4j
-@ShenyuDubboService(path = "/merchantApiFeeConfig", timeout = 6000)
-@ApiModule(value = "merchantApiFeeConfig")
+@ShenyuDubboService(path = "/merchantAppApiFee", timeout = 6000)
+@ApiModule(value = "merchantAppApiFee")
 @Service
 public class MerchantAppApiFeeServiceImpl implements MerchantAppApiFeeService {
 

@@ -4,7 +4,7 @@ import {
   Input,
   Modal,
   message,
-  Button,
+  Divider,
   Select,
   Popconfirm,
   Descriptions,
@@ -39,63 +39,52 @@ export default () => {
 
   // 操作行数据 自定义操作行
   const actionRender: any = (text: any, record: any, index: number) => (
-    <ul className="ant-list-item-action" style={{ margin: 0 }}>
+    <div key={record.dictType}>
       {record.authenticationStatus == '1' ? (
         <>
-          <li>
-            <Popconfirm
-              title="确认此账号通过审核 ？"
-              onConfirm={async () => {
-                let res = await auditCustomerEnterprise({
-                  merchantNo: record.serialNo,
-                  auditFlag: '1',
-                });
-                if (res.code === '000000') {
-                  message.success('已通过审核');
-                }
-                // 表格重新渲染
-                actionRef.current?.reload();
-              }}
-              okText="确认"
-              cancelText="取消"
-            >
-              <a>通过</a>
-            </Popconfirm>
-            <em className="ant-list-item-action-split"></em>
-          </li>
-          <li>
-            <Popconfirm
-              title="确认拒绝开通DAO ？"
-              onConfirm={async () => {
-                let res = await auditCustomerEnterprise({
-                  customerNo: record.customerNo,
-                  auditFlag: '2',
-                });
-                if (res.code === '000000') {
-                  message.success('已拒绝');
-                }
-                // 表格重新渲染
-                actionRef.current?.reload();
-              }}
-              okText="确认"
-              cancelText="取消"
-            >
-              <a>拒绝</a>
-            </Popconfirm>
-            <em className="ant-list-item-action-split"></em>
-          </li>
+          <Popconfirm
+            title="确认此账号通过审核 ？"
+            onConfirm={async () => {
+              let res = await auditCustomerEnterprise({
+                merchantNo: record.serialNo,
+                auditFlag: '1',
+              });
+              if (res.code === '000000') {
+                message.success('已通过审核');
+              }
+              // 表格重新渲染
+              actionRef.current?.reload();
+            }}
+            okText="确认"
+            cancelText="取消"
+          >
+            <a>通过</a>
+          </Popconfirm>
+          <Divider type="vertical" />
+          <Popconfirm
+            title="确认拒绝开通DAO ？"
+            onConfirm={async () => {
+              let res = await auditCustomerEnterprise({
+                customerNo: record.customerNo,
+                auditFlag: '2',
+              });
+              if (res.code === '000000') {
+                message.success('已拒绝');
+              }
+              // 表格重新渲染
+              actionRef.current?.reload();
+            }}
+            okText="确认"
+            cancelText="取消"
+          >
+            <a>拒绝</a>
+          </Popconfirm>
         </>
       ) : null}
-      <li>
-        <a
-          onClick={() => {
-            toEditCustomerEnterpriseInfo(record);
-          }}
-        >
-          查看
-        </a>
-      </li>
-    </ul>
+      <Divider type="vertical" />
+      <a onClick={() => toEditCustomerEnterpriseInfo(record)}>查看</a>
+      <Divider type="vertical" />
+    </div>
   );
 
   // 自定义数据的表格头部数据
@@ -130,7 +119,7 @@ export default () => {
           }
         });
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   /**
@@ -206,19 +195,19 @@ export default () => {
             {isViewRecord.status == '0'
               ? '正常'
               : isViewRecord.status == '1'
-              ? '冻结'
-              : '暂无'}
+                ? '冻结'
+                : '暂无'}
           </Descriptions.Item>
           <Descriptions.Item label="认证状态">
             {isViewRecord.authenticationStatus == '0'
               ? '未认证'
               : isViewRecord.authenticationStatus == '1'
-              ? '待审核'
-              : isViewRecord.authenticationStatus == '2'
-              ? '认证成功'
-              : isViewRecord.authenticationStatus == '3'
-              ? '认证失败'
-              : '暂无'}
+                ? '待审核'
+                : isViewRecord.authenticationStatus == '2'
+                  ? '认证成功'
+                  : isViewRecord.authenticationStatus == '3'
+                    ? '认证失败'
+                    : '暂无'}
           </Descriptions.Item>
           <Descriptions.Item label="企业名称">
             {isViewRecord?.enterpriseName}
