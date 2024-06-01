@@ -20,8 +20,6 @@ import java.util.Map;
  */
 public class AuthenticationProvider {
 
-
-
     /**
      * 生成token
      *
@@ -31,8 +29,6 @@ public class AuthenticationProvider {
     public static String createToken(LoginUser loginUser, String secreteKey, int minutes) {
         return createToken(BeanUtil.beanToMap(loginUser), secreteKey, Duration.ofMinutes(minutes));
     }
-
-
 
     /**
      * 生成token
@@ -44,14 +40,9 @@ public class AuthenticationProvider {
         return createToken(BeanUtil.beanToMap(loginUser), secreteKey, duration);
     }
 
-
-
-
     public static String createToken(Map<String, Object> payload, String secreteKey, int minutes) {
         return createToken(payload, secreteKey, Duration.ofMinutes(minutes));
     }
-
-
 
     public static String createToken(Map<String, Object> payload, String secreteKey, Duration duration) {
         long now = System.currentTimeMillis();
@@ -64,6 +55,5 @@ public class AuthenticationProvider {
                 .signWith(Keys.hmacShaKeyFor(secreteKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
     }
-
 
 }

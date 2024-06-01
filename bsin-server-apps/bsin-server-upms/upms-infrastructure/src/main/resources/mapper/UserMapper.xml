@@ -16,6 +16,7 @@
         <result column="create_time" property="createTime"/>
         <result column="update_by" property="updateBy"/>
         <result column="update_time" property="updateTime"/>
+        <result column="biz_role_type" property="bizRoleType"/>
         <result column="type" property="type"/>
     </resultMap>
 
@@ -54,6 +55,7 @@
         <result column="create_time" property="createTime"/>
         <result column="update_by" property="updateBy"/>
         <result column="update_time" property="updateTime"/>
+        <result column="biz_role_type" property="bizRoleType"/>
         <result column="type" property="type"/>
         <association property="org" javaType="me.flyray.bsin.domain.entity.SysOrg"
                      column="user_id" select="me.flyray.bsin.infrastructure.mapper.OrgMapper.selectInfoById"/>
@@ -111,6 +113,7 @@
                create_time,
                update_by,
                update_time,
+               biz_role_type,
                type
         from sys_user
         where tenant_id = #{tenantId}
@@ -136,6 +139,7 @@
                create_time,
                update_by,
                update_time,
+               biz_role_type,
                type,
         from sys_user
         where user_id = #{userId}
@@ -298,6 +302,7 @@
                create_time,
                update_by,
                update_time,
+               biz_role_type,
                type
         from sys_user
         where email = #{email}
@@ -323,6 +328,7 @@
                create_time,
                update_by,
                update_time,
+               biz_role_type,
                type
         from sys_user
         where username = #{username}
@@ -442,9 +448,7 @@
         SELECT org_id, org_name, parent_id
         FROM sys_org
         WHERE org_id = #{query.orgId}
-
         UNION ALL
-
         SELECT o.org_id, o.org_name, o.parent_id
         FROM sys_org o
         INNER JOIN org_hierarchy oh ON o.parent_id = oh.org_id

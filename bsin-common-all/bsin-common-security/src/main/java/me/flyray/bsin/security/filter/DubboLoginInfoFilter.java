@@ -28,6 +28,7 @@ public class DubboLoginInfoFilter implements Filter {
         LoginInfoContextHelper.remove();
         // rpc上下文内容
         Map<String, Object> attachments = RpcContext.getServiceContext().getObjectAttachments();
+        log.info("dubbo-获取当前登录信息attachments :{}", attachments);
         // 国际化支持
         LoginInfoContextHelper.set("locale", attachments.get("locale"));
         if (attachments.size() > 0) {
@@ -40,6 +41,7 @@ public class DubboLoginInfoFilter implements Filter {
                 }
             }
         }
+        log.info("dubbo-获取当前登录信息:{}", LoginInfoContextHelper.getJsonString());
         return invoker.invoke(invocation);
     }
 }
