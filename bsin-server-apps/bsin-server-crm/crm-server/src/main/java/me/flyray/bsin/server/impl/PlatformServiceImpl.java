@@ -12,6 +12,7 @@ import me.flyray.bsin.domain.entity.Wallet;
 import me.flyray.bsin.domain.request.PlatformDTO;
 import me.flyray.bsin.infrastructure.mapper.PlatformMapper;
 import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -214,6 +215,7 @@ public class PlatformServiceImpl implements PlatformService {
         // userService
         SysUser sysUser = new SysUser();
         BeanUtil.copyProperties(requestMap,sysUser);
+        sysUser.setBizRoleType(BizRoleType.TENANT.getCode());
         SysUserVO sysUserVO = userService.login(sysUser);
         BeanUtil.beanToMap(sysUserVO);
         res.putAll(BeanUtil.beanToMap(sysUserVO));

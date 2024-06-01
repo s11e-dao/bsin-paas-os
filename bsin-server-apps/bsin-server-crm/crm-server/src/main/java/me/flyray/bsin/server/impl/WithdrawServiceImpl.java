@@ -127,7 +127,6 @@ public class WithdrawServiceImpl implements WithdrawService {
 
         //        // 1.获取客户信息
         Map<String, Object> reqCustomerBase = new HashMap();
-        reqCustomerBase.put("customerNo", merchant.getCustomerNo());
         Map<String, Object> customerData = customerService.getDetail(reqCustomerBase);
         Map customerBase = (Map) customerData.get("data");
 

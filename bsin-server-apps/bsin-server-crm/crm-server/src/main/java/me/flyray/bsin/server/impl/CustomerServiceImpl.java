@@ -256,90 +256,6 @@ public class CustomerServiceImpl implements CustomerService {
     return RespBodyHandler.RespBodyDto();
   }
 
-  /**
-   * 不对外暴露接口调用，作为rpc服务对内提供
-   *
-   * @param requestMap
-   * @return
-   */
-  @ApiDoc(desc = "merchantLogin")
-  @ShenyuDubboClient("/merchantLogin")
-  @Transactional
-  @Override
-  public Map<String, Object> merchantLogin(Map<String, Object> requestMap) {
-    CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
-    // 客户用户名唯一，查询客户信息
-    LambdaQueryWrapper<CustomerBase> warapper = new LambdaQueryWrapper<>();
-    warapper.eq(CustomerBase::getTenantId, customerBase.getTenantId());
-    warapper.eq(CustomerBase::getUsername, customerBase.getUsername());
-    warapper.eq(CustomerBase::getPassword, customerBase.getPassword());
-    CustomerBase customerInfo = customerBaseMapper.selectOne(warapper);
-    if (customerInfo == null) {
-      throw new BusinessException(ResponseCode.USER_PASSWORD_IS_FALSE);
-    }
-    Map res = new HashMap<>();
-    // userService
-    SysUser sysUser = new SysUser();
-    BeanUtil.copyProperties(requestMap,sysUser);
-    UserResp userResp = userService.getUserInfo(sysUser);
-    Map data = new HashMap();
-    BeanUtil.copyProperties(userResp,data);
-    res.putAll(data);
-    res.put("customerInfo", BeanUtil.beanToMap(customerInfo));
-    return RespBodyHandler.setRespBodyDto(res);
-  }
-
-  /**
-   * 不对外暴露接口调用，作为rpc服务对内提供
-   *
-   * @param requestMap
-   * @return
-   */
-  @ApiDoc(desc = "getMerchantCustomerInfoByUsername")
-  @ShenyuDubboClient("/getMerchantCustomerInfoByUsername")
-  @Transactional
-  @Override
-  public Map<String, Object> getMerchantCustomerInfoByUsername(Map<String, Object> requestMap) {
-    CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
-    // 客户用户名唯一，查询客户信息
-    LambdaQueryWrapper<CustomerBase> warapper = new LambdaQueryWrapper<>();
-    warapper.eq(CustomerBase::getTenantId, customerBase.getTenantId());
-    warapper.eq(CustomerBase::getUsername, customerBase.getUsername());
-    CustomerBase customerInfo = customerBaseMapper.selectOne(warapper);
-    if (customerInfo == null) {
-      throw new BusinessException(ResponseCode.USER_PASSWORD_IS_FALSE);
-    }
-    return RespBodyHandler.setRespBodyDto(customerInfo);
-  }
-
-  /**
-   * 不对外暴露接口调用，作为rpc服务对内提供
-   *
-   * @param requestMap
-   * @return
-   */
-  @ApiDoc(desc = "merchantRegister")
-  @ShenyuDubboClient("/merchantRegister")
-  @Transactional
-  @Override
-  public Map<String, Object> merchantRegister(Map<String, Object> requestMap) {
-    CustomerBase customerBase =
-        BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap, AddGroup.class);
-    // 客户用户名唯一，查询客户信息
-    LambdaQueryWrapper<CustomerBase> warapper = new LambdaQueryWrapper<>();
-    warapper.eq(CustomerBase::getTenantId, customerBase.getTenantId());
-    warapper.eq(CustomerBase::getUsername, customerBase.getUsername());
-    CustomerBase customerInfo = customerBaseMapper.selectOne(warapper);
-    if (customerInfo != null) {
-      throw new BusinessException(ResponseCode.CUSTOMER_USERNAME_IS_EXISTS);
-    }
-    customerInfo = new CustomerBase();
-    BeanUtil.copyProperties(customerBase, customerInfo);
-    customerInfo.setType(CustomerType.MERCHANT.getCode());
-    customerBaseMapper.insert(customerInfo);
-    return RespBodyHandler.setRespBodyDto(customerInfo);
-  }
-
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
@@ -359,30 +275,6 @@ public class CustomerServiceImpl implements CustomerService {
         ObjectUtil.isNotNull(customerBase.getCustomerNo()),
         CustomerBase::getCustomerNo,
         customerBase.getCustomerNo());
-    warapper.eq(
-        ObjectUtil.isNotNull(customerBase.getType()),
-        CustomerBase::getType,
-        customerBase.getType());
-    IPage<CustomerBase> pageList = customerBaseMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
-  }
-
-  @ApiDoc(desc = "getMerchantPageList")
-  @ShenyuDubboClient("/getMerchantPageList")
-  @Override
-  public Map<String, Object> getMerchantPageList(Map<String, Object> requestMap) {
-    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-    String tenantId = loginUser.getTenantId();
-    String merchantNo = loginUser.getMerchantNo();
-    CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
-    Object paginationObj =  requestMap.get("pagination");
-    Pagination pagination = new Pagination();
-    BeanUtil.copyProperties(paginationObj,pagination);
-    Page<CustomerBase> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-    LambdaUpdateWrapper<CustomerBase> warapper = new LambdaUpdateWrapper<>();
-    warapper.orderByDesc(CustomerBase::getCreateTime);
-    warapper.eq(CustomerBase::getTenantId, tenantId);
-    //        warapper.eq(CustomerBase::getCustomerNo, merchantNo);
     warapper.eq(
         ObjectUtil.isNotNull(customerBase.getType()),
         CustomerBase::getType,

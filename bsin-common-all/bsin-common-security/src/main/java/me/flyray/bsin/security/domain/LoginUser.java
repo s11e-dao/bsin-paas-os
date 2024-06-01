@@ -110,7 +110,7 @@ public class LoginUser implements Serializable {
     /**
      * 用户业务角色类型
      */
-    private Integer bizRoleType;
+    private String bizRoleType;
 
     /**
      * 用户业务角色类型编号

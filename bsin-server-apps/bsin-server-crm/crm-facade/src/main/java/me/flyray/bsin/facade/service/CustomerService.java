@@ -30,21 +30,8 @@ public interface CustomerService {
   /** 身份认证 */
   public Map<String, Object> identityVerification(Map<String, Object> requestMap);
 
-  /** 商户客户登录 */
-  public Map<String, Object> merchantLogin(Map<String, Object> requestMap);
-
-  /** 商户客户信息查询 */
-  public Map<String, Object> getMerchantCustomerInfoByUsername(Map<String, Object> requestMap);
-
-
-  /** 商户客户注册 */
-  public Map<String, Object> merchantRegister(Map<String, Object> requestMap);
-
   /** 分页查询客户信息 */
   public Map<String, Object> getPageList(Map<String, Object> requestMap);
-
-  /** 分页查询租户平台客户信息 */
-  public Map<String, Object> getMerchantPageList(Map<String, Object> requestMap);
 
   /** 查询客户信息 1、基础信息 2、等级信息 */
   public Map<String, Object> getDetail(Map<String, Object> requestMap);

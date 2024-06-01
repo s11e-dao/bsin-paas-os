@@ -12,6 +12,7 @@ import me.flyray.bsin.domain.domain.MerchantSubscribeJournal;
 import me.flyray.bsin.domain.entity.SysUser;
 import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.domain.request.WalletDTO;
+import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.CustomerService;
 import me.flyray.bsin.facade.service.MerchantService;
@@ -24,6 +25,7 @@ import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.utils.BsinSnowflake;
@@ -87,15 +89,11 @@ public class MerchantServiceImpl implements MerchantService {
     @Transactional
     public Map<String, Object> register(Map<String, Object> requestMap) {
         Merchant merchant = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
-        requestMap.put("realName",MapUtils.getString(requestMap, "merchantName"));
         String mpVerifyCode = MapUtils.getString(requestMap, "verifyCode");
         String username = MapUtils.getString(requestMap, "username");
-        Map<String, Object> resMap = customerService.merchantRegister(requestMap);
-        Map<String, Object> data = (Map<String, Object>) resMap.get("data");
-        String customerNo = (String) data.get("customerNo");
-        merchant.setCustomerNo(customerNo);
-        String registerMethod = MapUtils.getString(requestMap, "registerMethod");
 
+        String registerMethod = MapUtils.getString(requestMap, "registerMethod");
+        String merchantNo = BsinSnowflake.getId();
         if(!"operatorRegister".equals(registerMethod)){
             //BsinCopilot验证码注册逻辑
             String openIdWithMpVerifyCode =
@@ -104,11 +102,10 @@ public class MerchantServiceImpl implements MerchantService {
                 throw new BusinessException("100000", "验证码错误");
             }
             BsinCacheProvider.put("crm",
-                    "bsinCopilotCustomerNoWithOpenId:" + openIdWithMpVerifyCode, customerNo);
+                    "bsinCopilotCustomerNoWithOpenId:" + openIdWithMpVerifyCode, merchantNo);
             BsinCacheProvider.put("crm",
                     "bsinCopilotUsernameWithOpenId:" + openIdWithMpVerifyCode, username);
         }
-
         // 商户名称和登录名称分开
         merchant.setMerchantName(MapUtils.getString(requestMap, "merchantName"));
         // 针对copilot微信分身产品，用户注册无需审核，可直接使用基础产品， 若前端注册消息中带 无需审核字段为 true，注册时直接审核
@@ -143,25 +140,39 @@ public class MerchantServiceImpl implements MerchantService {
         return RespBodyHandler.RespBodyDto();
     }
 
+    /**
+     * 1、查询商户信息
+     * 2、查询upms用户
+     * @param requestMap
+     * @return
+     */
     @ApiDoc(desc = "login")
     @ShenyuDubboClient("/login")
     @Override
     public Map<String, Object> login(Map<String, Object> requestMap) {
-
-        Map<String, Object> resMap = customerService.merchantLogin(requestMap);
-        Map<String, Object> data = (Map<String, Object>) resMap.get("data");
-        Map customerInfo = (Map) data.get("customerInfo");
-        SysUser sysUser = (SysUser) data.get("sysUser");
+        String username = MapUtils.getString(requestMap, "username");
+        // 查询商户信息
         LambdaUpdateWrapper<Merchant> warapper = new LambdaUpdateWrapper<>();
-        warapper.eq(Merchant::getCustomerNo, customerInfo.get("customerNo"));
+        warapper.eq(Merchant::getUsername, username);
         Merchant merchant = merchantMapper.selectOne(warapper);
+
+        // TODO 判断是否是商户员工
         if(merchant == null){
             throw new BusinessException(ResponseCode.MERCHANT_NOT_EXISTS);
         }
-        Map res = new HashMap<>();
-        res.putAll(data);
         LoginUser loginUser = new LoginUser();
         BeanUtil.copyProperties(merchant, loginUser);
+
+        // 查询upms用户
+        Map res = new HashMap<>();
+        // userService
+        SysUser sysUser = new SysUser();
+        BeanUtil.copyProperties(requestMap,sysUser);
+        UserResp userResp = userService.getUserInfo(sysUser);
+        Map data = new HashMap();
+        BeanUtil.copyProperties(userResp,data);
+        res.putAll(data);
+
         // 商户认证之后不为空
         if(sysUser != null){
             loginUser.setUserId((String) sysUser.getUserId());
@@ -170,6 +181,7 @@ public class MerchantServiceImpl implements MerchantService {
         loginUser.setUsername(merchant.getUsername());
         loginUser.setPhone(merchant.getPhone());
         loginUser.setMerchantNo(merchant.getSerialNo());
+        loginUser.setBizRoleType(BizRoleType.MERCHANT.getCode());
         String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
         res.put("merchantInfo",merchant);
         res.put("token",token);
@@ -196,7 +208,6 @@ public class MerchantServiceImpl implements MerchantService {
         merchantReq.setDelFlag("0");
         merchantReq.setCreateTime(new Date());
         merchantReq.setStatus("2");
-        merchantReq.setCustomerNo(merchantReq.getCustomerNo());
         merchantReq.setSerialNo(merchant.getSerialNo());
         merchantMapper.updateById(merchantReq);
         return RespBodyHandler.RespBodyDto();

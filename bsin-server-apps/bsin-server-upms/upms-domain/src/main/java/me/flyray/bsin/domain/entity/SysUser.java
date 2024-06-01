@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.experimental.SuperBuilder;
+import me.flyray.bsin.security.enums.BizRoleType;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -177,6 +178,12 @@ public class SysUser implements Serializable {
     private Integer rankNum;
 
     /**
+     * 排行序号
+     * @see BizRoleType
+     */
+    private String bizRoleType;
+
+    /**
      * 多因子
      */
     private String googleSecretKey;
@@ -184,7 +191,7 @@ public class SysUser implements Serializable {
     /**
      * 第一次登录标识
      */
-    private Boolean firstLoginFlag;
+    private Boolean loginedFlag;
 
 
     public SysUser(String userId, String username, String password, String orgId, String tenantId) {

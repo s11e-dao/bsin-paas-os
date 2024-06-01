@@ -30,11 +30,6 @@ public class Merchant implements Serializable {
     private String tenantId;
 
     /**
-     * 客户号
-     */
-    private String customerNo;
-
-    /**
      * 企业名称
      */
     private String merchantName;
@@ -134,7 +129,6 @@ public class Merchant implements Serializable {
     @TableField(exist = false)
     private String password;
 
-    @TableField(exist = false)
     private String username;
 
 }

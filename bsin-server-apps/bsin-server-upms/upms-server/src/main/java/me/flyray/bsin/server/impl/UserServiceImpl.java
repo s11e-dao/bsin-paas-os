@@ -810,6 +810,7 @@ public class UserServiceImpl implements UserService {
         loginUser.setMerchantNo(sysUser.getOrgId());
         loginUser.setUsername(sysUser.getUsername());
         loginUser.setPhone(sysUser.getPhone());
+        loginUser.setBizRoleType(sysUser.getBizRoleType());
         String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
         // 组装返回报文
         SysUserVO sysUserVO = new SysUserVO();
