@@ -1,5 +1,6 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -87,7 +88,9 @@ public class ConditionServiceImpl implements ConditionService {
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Condition condition = BsinServiceContext.getReqBodyDto(Condition.class, requestMap);
-        Pagination pagination = (Pagination) requestMap.get("pagination");
+        Object paginationObj =  requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj,pagination);
         Page<Condition> page = new Page<>(pagination.getPageNum(),pagination.getPageSize());
         LambdaUpdateWrapper<Condition> warapper = new LambdaUpdateWrapper<>();
         warapper.orderByDesc(Condition::getCreateTime);

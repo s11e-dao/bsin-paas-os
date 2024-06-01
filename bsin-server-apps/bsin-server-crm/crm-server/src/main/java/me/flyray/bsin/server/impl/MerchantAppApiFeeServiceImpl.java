@@ -1,5 +1,6 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -49,14 +50,14 @@ public class MerchantAppApiFeeServiceImpl implements MerchantAppApiFeeService {
     public Map<String, Object> edit(Map<String, Object> requestMap) {
         MerchantApiFeeConfig merchantApiFeeConfig = BsinServiceContext.bisId(MerchantApiFeeConfig.class, requestMap);
         MerchantApp dampTenantApp = new MerchantApp();
-        dampTenantApp.setProductId(merchantApiFeeConfig.getProductId());
+        dampTenantApp.setAppId(merchantApiFeeConfig.getAppId());
         dampTenantApp.setStatus(merchantApiFeeConfig.getStatus());
         tenantAppMapper.updateById(dampTenantApp);
         // 更新应用调用费用配置
         tenantApiFeeConfigMapper.updateById(merchantApiFeeConfig);
         // 更新商户产品状态
         MerchantApp merchantApp = merchantAppMapper.selectOne(new LambdaQueryWrapper<MerchantApp>()
-                .eq(MerchantApp::getProductId,merchantApiFeeConfig.getProductId()));
+                .eq(MerchantApp::getAppId,merchantApiFeeConfig.getAppId()));
         merchantApp.setStatus("1");
         merchantAppMapper.updateById(merchantApp);
         return RespBodyHandler.RespBodyDto();
@@ -68,7 +69,9 @@ public class MerchantAppApiFeeServiceImpl implements MerchantAppApiFeeService {
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         String tenantId = (String) requestMap.get("tenantId");
         String productId = (String) requestMap.get("productId");
-        Pagination pagination = (Pagination) requestMap.get("pagination");
+        Object paginationObj =  requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj,pagination);
         Page<MerchantApiFeeConfig> page = new Page<>(pagination.getPageNum(),pagination.getPageSize());
         LambdaUpdateWrapper<MerchantApiFeeConfig> warapper = new LambdaUpdateWrapper<>();
         warapper.orderByDesc(MerchantApiFeeConfig::getCreateTime);

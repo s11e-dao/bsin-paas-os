@@ -45,5 +45,5 @@ public class MerchantApiFeeConfig implements Serializable {
     /**
      * 应用ID
      */
-    private String productId;
+    private String appId;
 }

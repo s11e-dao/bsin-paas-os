@@ -345,7 +345,9 @@ public class CustomerServiceImpl implements CustomerService {
   @Override
   public Map<String, Object> getPageList(Map<String, Object> requestMap) {
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
     Page<CustomerBase> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<CustomerBase> warapper = new LambdaUpdateWrapper<>();
     warapper.orderByDesc(CustomerBase::getCreateTime);
@@ -373,7 +375,9 @@ public class CustomerServiceImpl implements CustomerService {
     String tenantId = loginUser.getTenantId();
     String merchantNo = loginUser.getMerchantNo();
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
     Page<CustomerBase> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<CustomerBase> warapper = new LambdaUpdateWrapper<>();
     warapper.orderByDesc(CustomerBase::getCreateTime);

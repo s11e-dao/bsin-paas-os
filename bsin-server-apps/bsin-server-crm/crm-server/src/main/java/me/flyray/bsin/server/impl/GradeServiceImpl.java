@@ -3,6 +3,7 @@ package me.flyray.bsin.server.impl;
 import static me.flyray.bsin.constants.ResponseCode.MERCHANT_NO_IS_NULL;
 import static me.flyray.bsin.constants.ResponseCode.TENANT_ID_NOT_ISNULL;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -127,11 +128,10 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-
-        Pagination pagination = (Pagination) requestMap.get("pagination");
-        Page<Grade> page =
-                new Page<>(pagination.getPageNum(), pagination.getPageSize());
-
+        Object paginationObj =  requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj,pagination);
+        Page<Grade> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
         Grade grade = BsinServiceContext.getReqBodyDto(Grade.class, requestMap);
         LambdaQueryWrapper<Grade> warapper = new LambdaQueryWrapper<>();
         warapper.orderByDesc(Grade::getCreateTime);

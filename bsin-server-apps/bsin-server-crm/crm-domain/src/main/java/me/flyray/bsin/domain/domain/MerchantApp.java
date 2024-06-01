@@ -34,23 +34,23 @@ public class MerchantApp implements Serializable {
     /**
      * 应用名称
      */
-    @NotBlank(message = "产品名称不能为空！")
-    private String productName;
+    @NotBlank(message = "app名称不能为空！")
+    private String appName;
 
     /**
      * 应用ID：自动生成
      */
-    private String productId;
+    private String appId;
 
     /**
      * 1: 应用 2：接口
      */
-    private String productType;
+    private String appType;
 
     /**
      * 应用密钥：自动生成
      */
-    private String productSecret;
+    private String appSecret;
 
     /**
      * 通知地址
@@ -66,7 +66,7 @@ public class MerchantApp implements Serializable {
      * 应用描述
      */
     @NotBlank
-    private String productDescription;
+    private String appDescription;
 
     /**
      * 创建时间
