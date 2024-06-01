@@ -88,5 +88,6 @@ public class ChainCoin extends BaseEntity implements Serializable {
      * 业务角色序号
      */
     @NotBlank(message = "业务角色序号不能为空！", groups = AddGroup.class)
-    private String bizRoleNo;
+    private String bizRoleTypeNo;
+
 }

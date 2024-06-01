@@ -5,16 +5,18 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import me.flyray.bsin.domain.entity.BlackWhiteListAddress;
 import me.flyray.bsin.domain.request.BlackWhiteListAddressDTO;
 import me.flyray.bsin.domain.response.BlackWhiteListAddressVO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
  * @author Admin
- * @description 针对表【crm_address_black_white_list(地址黑白名单;)】的数据库操作Mapper
- * @createDate 2024-04-24 20:37:18
- * @Entity xxxxx.domain.CrmAddressBlackWhiteList
  */
+
+@Repository
+@Mapper
 public interface BlackWhiteListAddressMapper extends BaseMapper<BlackWhiteListAddress> {
 
     List<BlackWhiteListAddressVO> selectList(@Param("dto") BlackWhiteListAddressDTO blackWhiteListAddressDTO);

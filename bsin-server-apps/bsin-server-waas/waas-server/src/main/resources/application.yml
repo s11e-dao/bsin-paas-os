@@ -84,3 +84,9 @@ rocketmq:
     compressMessageBodyThreshold: 4096
     # 是否在内部发送失败时重试另一个broker，默认false
     retryNextServer: false
+
+bsin:
+  security:
+    authentication-secretKey: shenyu-test-shenyu-test-shenyu-test
+    # 过期时间，单位分钟
+    authentication-expiration: 60

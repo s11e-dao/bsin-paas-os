@@ -2,16 +2,19 @@ package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import me.flyray.bsin.domain.entity.ChainCoin;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
 * @author Admin
-* @description 针对表【crm_coin(币;)】的数据库操作Mapper
-* @createDate 2024-04-24 20:36:46
 * @Entity
 */
+
+@Repository
+@Mapper
 public interface ChainCoinMapper extends BaseMapper<ChainCoin> {
 
     int updateDelFlag(@Param("params") ChainCoin chainCoin);

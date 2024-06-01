@@ -41,10 +41,10 @@ public class GoogleAuthenticatorServiceImpl implements GoogleAuthenticatorServic
     @DubboReference(version = "${dubbo.provider.version}")
     private UserService userService;
 
-    @Value("${shenyu.security.authentication-secretKey}")
+    @Value("${bsin.security.authentication-secretKey}")
     private String authSecretKey;
-
-    private int authExpiration = 3000;
+    @Value("${bsin.security.authentication-expiration}")
+    private int authExpiration;
     /**
      * 加密方式，HmacSHA1、HmacSHA256、HmacSHA512
      */

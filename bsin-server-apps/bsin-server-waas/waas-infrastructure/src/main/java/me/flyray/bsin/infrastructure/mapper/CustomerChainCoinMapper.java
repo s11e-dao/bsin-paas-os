@@ -6,16 +6,19 @@ import me.flyray.bsin.domain.entity.ChainCoin;
 import me.flyray.bsin.domain.entity.CustomerChainCoin;
 import me.flyray.bsin.domain.request.CustomerChainCoinDTO;
 import me.flyray.bsin.domain.response.CustomerChainCoinVO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
 * @author Admin
 * @description 针对表【merchant_chain_coin(商户链上货币;)】的数据库操作Mapper
-* @createDate 2024-04-29 15:44:26
-* @Entity me.flyray.bsin.domain.entity.MerchantChainCoin
 */
+
+@Repository
+@Mapper
 public interface CustomerChainCoinMapper extends BaseMapper<CustomerChainCoin> {
 
     List<ChainCoin> selectChainCoinList(@Param("params") CustomerChainCoin customerChainCoin);

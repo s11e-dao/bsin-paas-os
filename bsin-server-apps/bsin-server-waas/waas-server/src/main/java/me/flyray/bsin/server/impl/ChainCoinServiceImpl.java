@@ -77,7 +77,7 @@ public class ChainCoinServiceImpl implements ChainCoinService {
             chainCoin.setSerialNo(BsinSnowflake.getId());
             chainCoin.setStatus(chainCoin.getStatus() == null ? 0 : chainCoin.getStatus());  // 默认为下架状态
             chainCoin.setType(chainCoin.getType() == null ? 1 : chainCoin.getType());  //默认类型 1、默认 2、自定义
-            chainCoin.setBizRoleNo(user.getBizRoleTypeNo());
+            chainCoin.setBizRoleTypeNo(user.getBizRoleTypeNo());
             chainCoin.setBizRoleType(user.getBizRoleType());
             chainCoin.setCreateBy(user.getUserId());
             chainCoin.setCreateTime(new Date());

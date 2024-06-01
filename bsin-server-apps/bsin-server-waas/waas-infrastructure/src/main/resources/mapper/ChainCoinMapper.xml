@@ -33,10 +33,10 @@
         </update>
 
         <select id="coinDropDown" resultType="java.lang.String">
-                select coin from crm_chain_coin group by coin
+                select coin from waas_chain_coin group by coin
         </select>
 
         <select id="chainDropDown" resultType="java.lang.String">
-                select chain_name from crm_chain_coin group by chain_name
+                select chain_name from waas_chain_coin group by chain_name
         </select>
 </mapper>

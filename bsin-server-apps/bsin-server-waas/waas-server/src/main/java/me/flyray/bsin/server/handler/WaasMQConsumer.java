@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
  */
 
 @Slf4j
-@Component
-@RocketMQMessageListener(consumerGroup = "consumer_group",topic = "waas-test")
+//@Component
+//@RocketMQMessageListener(consumerGroup = "consumer_group",topic = "waas-test")
 public class WaasMQConsumer implements RocketMQListener<String> {
 
     /**

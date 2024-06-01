@@ -5,14 +5,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import me.flyray.bsin.domain.entity.Wallet;
 import me.flyray.bsin.domain.request.WalletDTO;
 import me.flyray.bsin.domain.response.WalletVO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author Admin
 * @description 针对表【crm_wallet(钱包;)】的数据库操作Mapper
-* @createDate 2024-04-24 20:22:04
-* @Entity .domain.me.flyray.bsin.domain.entity.CrmWallet
 */
+
+@Repository
+@Mapper
 public interface WalletMapper extends BaseMapper<Wallet> {
 
     Page<WalletVO> pageList(Page<Wallet> page, @Param("wallet") WalletDTO wallet);
