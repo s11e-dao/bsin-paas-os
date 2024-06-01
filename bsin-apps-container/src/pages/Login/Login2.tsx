@@ -146,14 +146,13 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
       tenantId: tenantId,
       password: hex_md5(loginState.password),
     });
-    if (res && res.code == "000000") {
+    if (res && res.code == 0) {
       if (!res.data?.sysUser) {
-        setLocalStorageInfo('userInformation', res.data?.customerInfo);
+        setLocalStorageInfo('userInformation', res.data?.merchantInfo);
       } else {
         setLocalStorageInfo('userInformation', res.data?.sysUser);
       }
       setLocalStorageInfo('merchantInfo', res.data?.merchantInfo);
-      setLocalStorageInfo('customerInfo', res.data?.customerInfo);
       setSessionStorageInfo('token', { token: res.data?.token });
       
       message.success('登录成功！');

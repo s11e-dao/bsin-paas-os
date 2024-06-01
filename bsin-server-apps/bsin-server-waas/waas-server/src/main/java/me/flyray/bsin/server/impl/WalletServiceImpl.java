@@ -10,6 +10,7 @@ import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.infrastructure.biz.WalletAccountBiz;
 import me.flyray.bsin.infrastructure.mapper.CustomerChainCoinMapper;
 import me.flyray.bsin.infrastructure.mapper.WalletMapper;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.utils.BsinSnowflake;
 import me.flyray.bsin.utils.I18eCode;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -115,7 +116,7 @@ public class WalletServiceImpl implements WalletService {
       customerChainCoin.setTenantId(wallet.getTenantId());
       customerChainCoin.setBizRoleType(wallet.getBizRoleType());
       customerChainCoin.setBizRoleTypeNo(wallet.getBizRoleTypeNo());
-      if(wallet.getBizRoleType() != 4){
+      if(!BizRoleType.MERCHANT.getCode().equals(wallet.getBizRoleType())){
         customerChainCoin.setCreateRoleAccountFlag(1);
       }else {
         customerChainCoin.setCreateUserAccountFlag(0);

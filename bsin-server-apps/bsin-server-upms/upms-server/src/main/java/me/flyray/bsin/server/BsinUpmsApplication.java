@@ -34,7 +34,7 @@ import me.flyray.bsin.infrastructure.config.TenantConfig;
 @EnableDubbo
 @MapperScan("me.flyray.bsin.infrastructure.mapper")
 @EnableConfigurationProperties({TenantConfig.class, DefaultMenuConfig.class})
-public class UpmsDubboApplication {
+public class BsinUpmsApplication {
     
     /**
      * Main Entrance.
@@ -42,6 +42,6 @@ public class UpmsDubboApplication {
      * @param args startup arguments
      */
     public static void main(final String[] args) {
-        SpringApplication.run(UpmsDubboApplication.class, args);
+        SpringApplication.run(BsinUpmsApplication.class, args);
     }
 }

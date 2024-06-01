@@ -48,6 +48,11 @@ public class LoginInfoContextHelper {
         return getLoginUser().getTenantId();
     }
 
+    public static String getBizRoleType() {
+        Assert.notNull(getLoginUser().getBizRoleType(), "bizRoleType is null");
+        return getLoginUser().getBizRoleType();
+    }
+
     public static String getMerchantNo() {
         return getLoginUser().getMerchantNo();
     }

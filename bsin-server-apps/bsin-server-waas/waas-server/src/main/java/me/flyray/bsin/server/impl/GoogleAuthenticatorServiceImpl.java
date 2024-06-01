@@ -17,6 +17,7 @@ import me.flyray.bsin.infrastructure.utils.QrCodeUtils;
 import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.utils.AESUtils;
 import me.flyray.bsin.utils.GoogleAuthenticator;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -92,8 +93,6 @@ public class GoogleAuthenticatorServiceImpl implements GoogleAuthenticatorServic
         }
 
         // 查询平台
-        Integer bizRoleType;
-        String bizRoleNo=null;
         SysUser sysUser = sysUserVO.getSysUser();
         SysTenant tenant = tenantService.getDetail(sysUser.getTenantId());
         if(tenant == null){
@@ -120,8 +119,7 @@ public class GoogleAuthenticatorServiceImpl implements GoogleAuthenticatorServic
         if(platform==null){
             throw  new BusinessException("PLATFORM_NOT_EXIST");
         }
-        bizRoleType = 1;
-        bizRoleNo = platform.getSerialNo();
+        String bizRoleNo = platform.getSerialNo();
 
         // 生成token
         LoginUser loginUser = new LoginUser();
@@ -130,7 +128,7 @@ public class GoogleAuthenticatorServiceImpl implements GoogleAuthenticatorServic
         loginUser.setUsername(sysUser.getUsername());
         loginUser.setPhone(sysUser.getPhone());
         loginUser.setOrgId(sysUser.getOrgId());
-        loginUser.setBizRoleType(bizRoleType);
+        loginUser.setBizRoleType(BizRoleType.TENANT.getCode());
         loginUser.setBizRoleTypeNo(bizRoleNo);
         String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
         loginUser.setToken(token);

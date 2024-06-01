@@ -9,6 +9,7 @@
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
             <result property="merchantName" column="merchant_name" jdbcType="VARCHAR"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="logoUrl" column="logo_url" jdbcType="VARCHAR"/>
             <result property="businessNo" column="business_no" jdbcType="VARCHAR"/>
             <result property="legalPersonName" column="legal_person_name" jdbcType="VARCHAR"/>
@@ -29,7 +30,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        serial_no,tenant_id,customer_no,
+        serial_no,tenant_id,customer_no,username,
         merchant_name,logo_url,business_no,legal_person_name,
         legal_person_cred_type,legal_person_cred_no,business_licence_img,
         phone,net_address,merchant_address,

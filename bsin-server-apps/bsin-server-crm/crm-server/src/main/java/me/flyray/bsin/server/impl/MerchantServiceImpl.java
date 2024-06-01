@@ -1,6 +1,7 @@
 package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -152,7 +153,7 @@ public class MerchantServiceImpl implements MerchantService {
     public Map<String, Object> login(Map<String, Object> requestMap) {
         String username = MapUtils.getString(requestMap, "username");
         // 查询商户信息
-        LambdaUpdateWrapper<Merchant> warapper = new LambdaUpdateWrapper<>();
+        LambdaQueryWrapper<Merchant> warapper = new LambdaQueryWrapper<>();
         warapper.eq(Merchant::getUsername, username);
         Merchant merchant = merchantMapper.selectOne(warapper);
 

@@ -45,10 +45,15 @@
 
     <select id="selectTenantBaseApp" parameterType="java.lang.String" resultMap="BaseResultMap">
         select ta.app_id, ta.tenant_id, a.app_id, a.app_code, a.url, a.logo, a.app_name,
-               pa.app_id, pa.product_id, pa.base_flag
+               pa.app_id, pa.product_id, pa.base_flag, pa.biz_role_type
         from sys_tenant_app as ta left join sys_product_app as pa on ta.app_id = pa.app_id
                                   left join sys_app as a on ta.app_id = a.app_id
-        where ta.tenant_id = #{tenantId} and pa.product_id = #{productId} and  pa.base_flag = '1'
+        <where>
+            ta.tenant_id = #{tenantId} and pa.product_id = #{productId} and  pa.base_flag = '1'
+            <if test="bizRoleType != null and bizRoleType != ''">
+                and pa.biz_role_type = #{bizRoleType}
+            </if>
+        </where>
     </select>
 
 </mapper>

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import me.flyray.bsin.security.enums.BizRoleType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -266,7 +267,11 @@ public class UserServiceImpl implements UserService {
         // 查询商户对应租户代理的产品的基础应用 一个租户对应一个产品
         SysTenant sysTenant = tenantMapper.selectTenantInfoByTenantId(tenantId);
         SysProduct sysProduct = productMapper.selectByProductCode(sysTenant.getProductCode());
-        SysApp baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId());
+        SysApp baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), BizRoleType.MERCHANT.getCode());
+        // 根据业务角色查询默认应用，商户角色默认应用不存在是跟租户相同
+        if(baseApp == null){
+            baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), null);
+        }
         // 给商户部门分配可以访问的应用
         orgAppMapper.authorizeApp(orgId, baseApp.getAppId(), TenantOrgAppType.AUTH.getCode());
 
@@ -544,49 +549,20 @@ public class UserServiceImpl implements UserService {
      * 2、但是用户进入应用具有的菜单权限根据用户分配的岗位及岗位对应的角色决定
      * userId 为空时是商户登录未认证
      */
-    @ApiDoc(desc = "getAppByUserId")
-    @ShenyuDubboClient("/getAppByUserId")
-    @Override
-    public IPage<?> getAppByUserId(SysUserDTO sysUserDTO) {
-        Pagination pagination = sysUserDTO.getPagination();
-        String userId = LoginInfoContextHelper.getAdminUserId();
-        String tenantId = LoginInfoContextHelper.getTenantId();
-        IPage<SysApp> sysApps = null;
-        if (StringUtils.isBlank(userId)) {
-            List<SysApp> sysAppList = new ArrayList<>();
-            SysTenant sysTenant = tenantMapper.selectTenantInfoByTenantId(tenantId);
-            SysProduct sysProduct = productMapper.selectByProductCode(sysTenant.getProductCode());
-            SysApp baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId());
-            sysAppList.add(baseApp);
-            sysApps = new Page(10L, 1L);
-            sysApps.setRecords(sysAppList);
-        } else {
-            SysUser sysUser = userMapper.selectById(userId);
-            Page<SysApp> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-            sysApps = appMapper.selectPageListByOrgId(page, sysUser.getOrgId());
-        }
-        return sysApps;
-    }
-
-    /**
-     * 根据用户id查询用户能看到的应用
-     * 1、用户所在部门能访问的应用，部门下的用户则能查看
-     * 2、但是用户进入应用具有的菜单权限根据用户分配的岗位及岗位对应的角色决定
-     * userId 为空时是商户登录未认证
-     */
     @ApiDoc(desc = "getAppListByUserId")
     @ShenyuDubboClient("/getAppListByUserId")
     @Override
     public AppListResp getAppListByUserId(SysUserDTO sysUserDTO) {
         String userId = LoginInfoContextHelper.getAdminUserId();
         String tenantId = LoginInfoContextHelper.getTenantId();
+        String bizRoleType = LoginInfoContextHelper.getBizRoleType();
         List<SysApp> sysApps = null;
         SysTenant sysTenant = tenantMapper.selectTenantInfoByTenantId(tenantId);
         SysProduct sysProduct = productMapper.selectByProductCode(sysTenant.getProductCode());
-        SysApp baseApp = null;
-        //产品不为空则是平台
-        if (sysProduct != null) {
-            baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId());
+        // 根据业务角色查询默认应用，商户角色默认应用不存在是跟租户相同
+        SysApp baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), bizRoleType);
+        if(baseApp == null){
+            baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), null);
         }
         if (StringUtils.isEmpty(userId)) {
             sysApps = new ArrayList<>();

@@ -281,7 +281,7 @@ export const request: RequestConfig = {
           message: data?.message,
           description: data?.message,
         });
-        return false;
+        return response;
       }
       return response;
     },

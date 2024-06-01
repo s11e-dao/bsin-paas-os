@@ -28,6 +28,6 @@ public interface TenantAppMapper {
 
     String selectTenantAppType(@Param("tenantId") String tenantId , @Param("appId") String appId);
 
-    SysApp selectTenantBaseApp(@Param("tenantId") String tenantId, @Param("productId") String productId);
+    SysApp selectTenantBaseApp(@Param("tenantId") String tenantId, @Param("productId") String productId, @Param("bizRoleType") String bizRoleType);
 
 }

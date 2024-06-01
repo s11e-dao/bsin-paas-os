@@ -133,14 +133,6 @@ public interface UserService {
      *
      * @return
      */
-    @Validated(QueryGroup.class)
-    public IPage<?> getAppByUserId(SysUserDTO sysUserDTO);
-
-    /**
-     * 根据userId查询该用户所拥有权限的应用
-     *
-     * @return
-     */
     public AppListResp getAppListByUserId(SysUserDTO sysUserDTO);
 
     /**

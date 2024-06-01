@@ -115,7 +115,7 @@ public class PlatformServiceImpl implements PlatformService {
             Wallet wallet = new Wallet();
             wallet.setSerialNo(walletNo);
             wallet.setWalletName(platformDTO.getPlatformName());  // 默认钱包名称
-            wallet.setBizRoleType(1);   // 客户类型：1、平台
+            wallet.setBizRoleType(BizRoleType.TENANT.getCode());   // 客户类型：1、平台
             wallet.setBizRoleTypeNo(platformNo);
             wallet.setType(1);  // 1、默认钱包
             wallet.setWalletTag("GATHER");

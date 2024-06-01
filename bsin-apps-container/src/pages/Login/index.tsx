@@ -89,7 +89,6 @@ export default function () {
       tenantId,
     });
     if (res) {
-      setLocalStorageInfo('customerInfo', res.data?.customerInfo);
       setLocalStorageInfo('userInformation', res.data?.sysUser);
       setSessionStorageInfo('token', { token: res.data?.token });
       message.success('登录成功！');

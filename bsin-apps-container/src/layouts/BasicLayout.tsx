@@ -354,7 +354,6 @@ export default () => {
     if (token) {
       const appRes = await getAppListByUserId({})
       if (appRes.code === 0) {
-        console.log(appRes.data)
         let apps = appRes.data?.apps.map((item: any) => {
           return {
             name: item.appName,
@@ -372,6 +371,7 @@ export default () => {
         setDefaultApp(appRes.data?.defaultApp)
         // 根据默认应用查询应用菜单及默认选中home导航
         const menuRes = await getUserMenuTreeByAppCode({ appCode: appCode })
+        console.log(menuRes)
         if (menuRes.code === 0) {
           // 跳转默认子应用
           // setPathname('/' + appCode)

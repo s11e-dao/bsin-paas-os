@@ -25,7 +25,6 @@
         <include refid="Base_Column_List"/>
         from sys_tenant
         <where>
-            1=1
             <if test="tenantCode != null and tenantCode != ''">
                 and tenant_code = #{tenantCode,jdbcType=VARCHAR} or tenant_name = #{tenantName,jdbcType=VARCHAR}
             </if>

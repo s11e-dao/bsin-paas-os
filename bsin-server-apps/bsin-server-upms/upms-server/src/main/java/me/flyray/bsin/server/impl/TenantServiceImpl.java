@@ -399,10 +399,11 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public SysApp getTenantBaseApp() {
         String tenantId = LoginInfoContextHelper.getTenantId();
+        String bizRoleType = LoginInfoContextHelper.getBizRoleType();
         // 查询商户对应租户代理的产品的基础应用 一个租户对应一个产品
         SysTenant sysTenant = tenantMapper.selectTenantInfoByTenantId(tenantId);
         SysProduct sysProduct = productMapper.selectByProductCode(sysTenant.getProductCode());
-        SysApp baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId());
+        SysApp baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), bizRoleType);
         return baseApp;
     }
 

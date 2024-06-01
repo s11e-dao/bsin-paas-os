@@ -32,12 +32,6 @@ const columnsData: ProColumns<columnsDataType>[] = [
 
   // table里面的内容
   {
-    title: '客户号',
-    width: 170,
-    dataIndex: 'customerNo',
-    hideInSearch: true,
-  },
-  {
     title: '商户ID',
     width: 190,
     dataIndex: 'serialNo',
@@ -48,6 +42,12 @@ const columnsData: ProColumns<columnsDataType>[] = [
     title: '商户名称',
     width: 160,
     dataIndex: 'merchantName',
+    hideInSearch: true,
+  },
+  {
+    title: '登录名',
+    width: 170,
+    dataIndex: 'username',
     hideInSearch: true,
   },
   {
