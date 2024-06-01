@@ -1,17 +1,39 @@
 package me.flyray.bsin.server.impl;
 
-import static me.flyray.bsin.constants.ResponseCode.MERCHANT_NO_IS_NULL;
-import static me.flyray.bsin.constants.ResponseCode.TENANT_ID_NOT_ISNULL;
-
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.blockchain.dto.ContractTransactionResp;
+import me.flyray.bsin.blockchain.enums.ContractProtocolStandards;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.enums.AccountCategory;
+import me.flyray.bsin.domain.enums.AssetsCollectionType;
+import me.flyray.bsin.domain.enums.ObtainMethod;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.request.DigitalAssetsIssueReqDTO;
+import me.flyray.bsin.facade.request.DigitalAssetsPutShelvesDTO;
 import me.flyray.bsin.facade.service.AccountService;
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
+import me.flyray.bsin.facade.service.DigitalAssetsCollectionService;
+import me.flyray.bsin.infrastructure.biz.CustomerInfoBiz;
+import me.flyray.bsin.infrastructure.biz.DigitalAssetsBiz;
+import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
+import me.flyray.bsin.infrastructure.mapper.*;
+import me.flyray.bsin.mybatis.utils.Pagination;
+import me.flyray.bsin.redis.provider.BsinCacheProvider;
+import me.flyray.bsin.redis.provider.BsinRedisProvider;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.utils.InvertCodeGenerator;
+import me.flyray.bsin.server.utils.RespBodyHandler;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -24,46 +46,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.ObjectUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.blockchain.dto.ContractTransactionResp;
-import me.flyray.bsin.blockchain.enums.ContractProtocolStandards;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.ContractProtocol;
-import me.flyray.bsin.domain.entity.DigitalAssetsCollection;
-import me.flyray.bsin.domain.entity.DigitalAssetsItem;
-import me.flyray.bsin.domain.entity.DigitalAssetsItemObtainCode;
-import me.flyray.bsin.domain.entity.MetadataFile;
-import me.flyray.bsin.domain.entity.MintJournal;
-import me.flyray.bsin.domain.entity.TransferJournal;
-import me.flyray.bsin.domain.enums.AccountCategory;
-import me.flyray.bsin.domain.enums.AssetsCollectionType;
-import me.flyray.bsin.domain.enums.ObtainMethod;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.request.DigitalAssetsIssueReqDTO;
-import me.flyray.bsin.facade.request.DigitalAssetsPutShelvesDTO;
-import me.flyray.bsin.facade.service.DigitalAssetsCollectionService;
-import me.flyray.bsin.infrastructure.mapper.ContractProtocolMapper;
-import me.flyray.bsin.infrastructure.mapper.DigitalAssetsCollectionMapper;
-import me.flyray.bsin.infrastructure.mapper.DigitalAssetsItemMapper;
-import me.flyray.bsin.infrastructure.mapper.DigitalAssetsItemObtainCodeMapper;
-import me.flyray.bsin.infrastructure.mapper.MetadataFileMapper;
-import me.flyray.bsin.infrastructure.mapper.MintJournalMapper;
-import me.flyray.bsin.infrastructure.mapper.TransferJournalMapper;
-import me.flyray.bsin.mybatis.utils.Pagination;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.infrastructure.biz.CustomerInfoBiz;
-import me.flyray.bsin.infrastructure.biz.DigitalAssetsBiz;
-import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
-import me.flyray.bsin.server.utils.InvertCodeGenerator;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
+import static me.flyray.bsin.constants.ResponseCode.MERCHANT_NO_IS_NULL;
+import static me.flyray.bsin.constants.ResponseCode.TENANT_ID_NOT_ISNULL;
 
 /**
  * @author bolei
@@ -84,7 +72,6 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
   @Autowired private MintJournalMapper mintJournalMapper;
   @Autowired private TransferJournalMapper transferJournalMapper;
   @Autowired private DigitalAssetsBiz digitalAssetsBiz;
-  @Autowired private BsinCacheProvider bsinCacheProvider;
   @Autowired private MetadataFileMapper metadataFileMapper;
   @Autowired private DigitalAssetsItemBiz digitalAssetsItemBiz;
   @Autowired private CustomerInfoBiz customerInfoBiz;
@@ -345,13 +332,13 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
 
     // 4.領取接口才限制
     if (isObtain != null && isObtain == true) {
-      bsinCacheProvider.setEx(
+      BsinRedisProvider.setCacheObject(
           transferJournal.getDigitalAssetsCollectionNo()
               + ":"
               + transferJournal.getToAddress()
               + "isObtained",
           "true",
-          Long.valueOf(120));
+              Duration.ofSeconds(120));
     }
 
     // 5.转账
@@ -677,9 +664,9 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
         digitalAssetsItem, customerNo, digitalAssetsPutShelvesDTO.getPutOnQuantity(), 1);
 
     // 9.更新库存
-    bsinCacheProvider.set(
-        "inventory:" + digitalAssetsColletion.getSerialNo(),
-        digitalAssetsColletion.getInventory().toString());
+    BsinCacheProvider.put("waas",
+            "inventory:" + digitalAssetsColletion.getSerialNo(),
+            digitalAssetsColletion.getInventory().toString());
 
     return RespBodyHandler.RespBodyDto();
   }

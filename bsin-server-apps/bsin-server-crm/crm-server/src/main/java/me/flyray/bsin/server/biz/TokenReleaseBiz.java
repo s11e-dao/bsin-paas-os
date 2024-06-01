@@ -1,6 +1,6 @@
 package me.flyray.bsin.server.biz;
 
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
+import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,8 +29,6 @@ public class TokenReleaseBiz {
 
   @Autowired private CustomerAccountBiz customerAccountBiz;
 
-  @Autowired private BsinCacheProvider bsinCacheProvider;
-
   /**
    * 根据tokenParam参数进行数字积分链上铸造
    *
@@ -51,7 +49,7 @@ public class TokenReleaseBiz {
             amount);
 
     // 失效时间???
-    bsinCacheProvider.set(
+    BsinCacheProvider.put("crm",
         "customerAccount:"
             + customerAccount.getTenantId()
             + customerAccount.getCustomerNo()

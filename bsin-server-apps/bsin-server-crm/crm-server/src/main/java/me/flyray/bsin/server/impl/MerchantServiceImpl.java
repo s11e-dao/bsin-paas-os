@@ -1,19 +1,32 @@
 package me.flyray.bsin.server.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import me.flyray.bsin.domain.domain.*;
-import me.flyray.bsin.domain.request.MerchantRegisterRequest;
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.domain.Merchant;
+import me.flyray.bsin.domain.domain.MerchantSubscribeJournal;
+import me.flyray.bsin.domain.entity.SysUser;
+import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.domain.request.WalletDTO;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.service.CustomerService;
+import me.flyray.bsin.facade.service.MerchantService;
+import me.flyray.bsin.facade.service.UserService;
 import me.flyray.bsin.facade.service.WalletService;
 import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
-import me.flyray.bsin.utils.AESUtils;
-import me.flyray.bsin.utils.BsinResultEntity;
-import me.flyray.bsin.utils.GoogleAuthenticator;
+import me.flyray.bsin.infrastructure.mapper.MerchantMapper;
+import me.flyray.bsin.infrastructure.mapper.MerchantSubscribeJournalMapper;
+import me.flyray.bsin.redis.provider.BsinCacheProvider;
+import me.flyray.bsin.security.authentication.AuthenticationProvider;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.server.utils.RespBodyHandler;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -21,7 +34,6 @@ import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,25 +43,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import cn.hutool.core.bean.BeanUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.SysUser;
-import me.flyray.bsin.domain.request.SysUserDTO;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.CustomerService;
-import me.flyray.bsin.facade.service.MerchantService;
-import me.flyray.bsin.facade.service.UserService;
-import me.flyray.bsin.infrastructure.mapper.MerchantMapper;
-import me.flyray.bsin.infrastructure.mapper.MerchantSubscribeJournalMapper;
-import me.flyray.bsin.security.authentication.AuthenticationProvider;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
 
 /**
  * @author bolei
@@ -73,7 +66,6 @@ public class MerchantServiceImpl implements MerchantService {
     public MerchantMapper merchantMapper;
     @Autowired
     public MerchantSubscribeJournalMapper merchantSubscribeJournalMapper;
-    @Autowired private BsinCacheProvider bsinCacheProvider;
 
     @DubboReference(version = "${dubbo.provider.version}")
     private CustomerService customerService;
@@ -102,17 +94,20 @@ public class MerchantServiceImpl implements MerchantService {
         Map<String, Object> data = (Map<String, Object>) resMap.get("data");
         String customerNo = (String) data.get("customerNo");
         merchant.setCustomerNo(customerNo);
+        String registerMethod = MapUtils.getString(requestMap, "registerMethod");
 
-        //BsinCopilot验证码注册逻辑
-        String openIdWithMpVerifyCode =
-            bsinCacheProvider.get("openIdWithMpVerifyCode:" + mpVerifyCode);
-        if (openIdWithMpVerifyCode == null) {
-          throw new BusinessException("100000", "验证码错误");
+        if(!"operatorRegister".equals(registerMethod)){
+            //BsinCopilot验证码注册逻辑
+            String openIdWithMpVerifyCode =
+                    BsinCacheProvider.get("crm","openIdWithMpVerifyCode:" + mpVerifyCode);
+            if (openIdWithMpVerifyCode == null) {
+                throw new BusinessException("100000", "验证码错误");
+            }
+            BsinCacheProvider.put("crm",
+                    "bsinCopilotCustomerNoWithOpenId:" + openIdWithMpVerifyCode, customerNo);
+            BsinCacheProvider.put("crm",
+                    "bsinCopilotUsernameWithOpenId:" + openIdWithMpVerifyCode, username);
         }
-        bsinCacheProvider.set(
-            "bsinCopilotCustomerNoWithOpenId:" + openIdWithMpVerifyCode, customerNo);
-        bsinCacheProvider.set(
-                "bsinCopilotUsernameWithOpenId:" + openIdWithMpVerifyCode, username);
 
         // 商户名称和登录名称分开
         merchant.setMerchantName(MapUtils.getString(requestMap, "merchantName"));
@@ -143,7 +138,7 @@ public class MerchantServiceImpl implements MerchantService {
 
         //TODO RPC调用创建钱包
         WalletDTO walletDTO = new WalletDTO();
-        walletService.createMPCWallet(walletDTO);
+        // walletService.createMPCWallet(walletDTO);
 
         return RespBodyHandler.RespBodyDto();
     }
@@ -157,7 +152,6 @@ public class MerchantServiceImpl implements MerchantService {
         Map<String, Object> data = (Map<String, Object>) resMap.get("data");
         Map customerInfo = (Map) data.get("customerInfo");
         SysUser sysUser = (SysUser) data.get("sysUser");
-
         LambdaUpdateWrapper<Merchant> warapper = new LambdaUpdateWrapper<>();
         warapper.eq(Merchant::getCustomerNo, customerInfo.get("customerNo"));
         Merchant merchant = merchantMapper.selectOne(warapper);
@@ -168,7 +162,11 @@ public class MerchantServiceImpl implements MerchantService {
         res.putAll(data);
         LoginUser loginUser = new LoginUser();
         BeanUtil.copyProperties(merchant, loginUser);
-        loginUser.setUserId((String) sysUser.getUserId());
+        // 商户认证之后不为空
+        if(sysUser != null){
+            loginUser.setUserId((String) sysUser.getUserId());
+        }
+
         loginUser.setUsername(merchant.getUsername());
         loginUser.setPhone(merchant.getPhone());
         loginUser.setMerchantNo(merchant.getSerialNo());

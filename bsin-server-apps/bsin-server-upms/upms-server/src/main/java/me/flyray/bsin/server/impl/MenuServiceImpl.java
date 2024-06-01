@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 
 
 @Transactional(rollbackFor = Exception.class)
-@ShenyuDubboService(path ="/menu",timeout = 10000)
+@ShenyuDubboService(path ="/menu",timeout = 15000)
 @ApiModule(value = "menu")
 @Service
 public class MenuServiceImpl implements MenuService {

@@ -2,27 +2,18 @@ package me.flyray.bsin.infrastructure.biz;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import me.flyray.bsin.redis.provider.BsinCacheProvider;
+import okhttp3.*;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 @Component
 public class AnywebBiz {
 
-    @Autowired
-    private BsinCacheProvider bsinCacheProvider;
 
     public Map<String,String> getAnywebAccessToken(String code) throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
@@ -54,7 +45,7 @@ public class AnywebBiz {
         String unionid = (String) accessTokenMap.get("unionid");
         String accessToken = (String) accessTokenMap.get("accessToken");
 
-        String userInfo = bsinCacheProvider.get("anyweb:unionid:"+unionid);
+        String userInfo = BsinCacheProvider.get("waas","anyweb:unionid:"+unionid);
         if (StringUtils.isNotBlank(userInfo)){
             JSONObject userInfoObj = (JSONObject) JSON.parse(userInfo);
             Map<String,String> resultMap = new HashMap();
@@ -83,7 +74,7 @@ public class AnywebBiz {
 
         JSONObject data = (JSONObject) jsonObj.get("data");
         // 将unionid与用户信息进行缓存 anyweb:unionid:XXX:
-        bsinCacheProvider.set("anyweb:unionid:"+unionid,data.toJSONString());
+        BsinCacheProvider.put("waas","anyweb:unionid:"+unionid,data.toJSONString());
         Map<String,String> resultMap = new HashMap();
         resultMap.put("phone", (String) data.get("phone"));
         resultMap.put("name",(String) data.get("name"));

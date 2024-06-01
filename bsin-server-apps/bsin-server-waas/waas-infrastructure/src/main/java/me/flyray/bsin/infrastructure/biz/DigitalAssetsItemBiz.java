@@ -1,13 +1,25 @@
 package me.flyray.bsin.infrastructure.biz;
 
-import static me.flyray.bsin.constants.ResponseCode.INSUFFUCIENT_ASSETS_BALANCE;
-
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.blockchain.dto.ContractTransactionResp;
+import me.flyray.bsin.blockchain.enums.ContractProtocolStandards;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.enums.ObtainMethod;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.request.DigitalAssetsIssueReqDTO;
+import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
 import me.flyray.bsin.facade.service.AccountService;
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
+import me.flyray.bsin.facade.service.EquityConfigService;
+import me.flyray.bsin.infrastructure.mapper.*;
+import me.flyray.bsin.redis.provider.BsinCacheProvider;
+import me.flyray.bsin.redis.provider.BsinRedisProvider;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,38 +28,12 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.ObjectUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.blockchain.dto.ContractTransactionResp;
-import me.flyray.bsin.blockchain.enums.ContractProtocolStandards;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.domain.entity.ContractProtocol;
-import me.flyray.bsin.domain.entity.CustomerDigitalAssets;
-import me.flyray.bsin.domain.entity.CustomerPassCard;
-import me.flyray.bsin.domain.entity.DigitalAssetsCollection;
-import me.flyray.bsin.domain.entity.DigitalAssetsItem;
-import me.flyray.bsin.domain.entity.DigitalAssetsItemObtainCode;
-import me.flyray.bsin.domain.entity.MintJournal;
-import me.flyray.bsin.domain.entity.TransferJournal;
-import me.flyray.bsin.domain.enums.ObtainMethod;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.request.DigitalAssetsIssueReqDTO;
-import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
-import me.flyray.bsin.facade.service.EquityConfigService;
-import me.flyray.bsin.infrastructure.mapper.ContractProtocolMapper;
-import me.flyray.bsin.infrastructure.mapper.CustomerDigitalAssetsMapper;
-import me.flyray.bsin.infrastructure.mapper.CustomerPassCardMapper;
-import me.flyray.bsin.infrastructure.mapper.DigitalAssetsCollectionMapper;
-import me.flyray.bsin.infrastructure.mapper.DigitalAssetsItemMapper;
-import me.flyray.bsin.infrastructure.mapper.DigitalAssetsItemObtainCodeMapper;
-import me.flyray.bsin.infrastructure.mapper.MintJournalMapper;
-import me.flyray.bsin.infrastructure.mapper.TransferJournalMapper;
-import me.flyray.bsin.utils.BsinSnowflake;
+import static me.flyray.bsin.constants.ResponseCode.INSUFFUCIENT_ASSETS_BALANCE;
 
 /**
  * @author bolei
@@ -91,8 +77,6 @@ public class DigitalAssetsItemBiz {
 
   @DubboReference(version = "dev")
   private AccountService accountService;
-
-  @Autowired private BsinCacheProvider bsinCacheProvider;
 
   public DigitalAssetsDetailRes getDetail(
       String digitalAssetsCollectionNo, String itemSerialNo, BigInteger tokenId) {
@@ -140,7 +124,7 @@ public class DigitalAssetsItemBiz {
 
   /** 校验库存 */
   public boolean verifyInventory(DigitalAssetsItem digitalAssetsItem, String amount) {
-    String inventoryStr = bsinCacheProvider.get("inventory:" + digitalAssetsItem.getSerialNo());
+    String inventoryStr = BsinCacheProvider.get("waas","inventory:" + digitalAssetsItem.getSerialNo());
     // 1.如果为空则说明没有设置缓存，跳过
     BigDecimal inventory = digitalAssetsItem.getInventory();
     BigDecimal afterInventory = inventory.subtract(new BigDecimal(amount));
@@ -150,8 +134,8 @@ public class DigitalAssetsItemBiz {
       throw new BusinessException(ResponseCode.NFT_INVERTORY_NOT_ENOUGH);
     }
     // 2.先锁住库存：600S
-    bsinCacheProvider.setEx(
-        "inventory:" + digitalAssetsItem.getSerialNo(), String.valueOf(afterInventory), 600L);
+    BsinRedisProvider.setCacheObject(
+        "inventory:" + digitalAssetsItem.getSerialNo(), String.valueOf(afterInventory), Duration.ofSeconds(60));
     return true;
   }
 
@@ -163,18 +147,18 @@ public class DigitalAssetsItemBiz {
     digitalAssetsItem.setInventory(inventory);
     digitalAssetsItemMapper.updateById(digitalAssetsItem);
     // 2.设置库存缓存
-    bsinCacheProvider.set(
+    BsinCacheProvider.put("waas",
         "inventory:" + digitalAssetsItem.getSerialNo(), String.valueOf(inventory));
 
     // 3.更新tokenId 缓存和数据库
     if (protocolStandards.equals(ContractProtocolStandards.ERC721.getCode())) {
       digitalAssetsItem.setCurrentMintTokenId(
           digitalAssetsItem.getCurrentMintTokenId().add(new BigInteger(amount)));
-      bsinCacheProvider.set(
+      BsinCacheProvider.put("waas",
           "tokenId:" + digitalAssetsItem.getSerialNo(),
           String.valueOf(digitalAssetsItem.getCurrentMintTokenId()));
     } else {
-      bsinCacheProvider.set(
+      BsinCacheProvider.put("waas",
           "tokenId:" + digitalAssetsItem.getSerialNo(),
           String.valueOf(digitalAssetsItem.getTokenId()));
     }
@@ -443,7 +427,7 @@ public class DigitalAssetsItemBiz {
       // 2.2 ERC721 领取
       if (tokenIdStr == null) {
         // 从缓存中获取
-        tokenIdStr = bsinCacheProvider.get("tokenId:" + digitalAssetsItem.getSerialNo());
+        tokenIdStr = BsinCacheProvider.get("waas","tokenId:" + digitalAssetsItem.getSerialNo());
         if (tokenIdStr == null || new Integer(tokenIdStr).longValue() < 1) {
           // 设置当前铸造tokenId:
           tokenIdStr = String.valueOf(digitalAssetsItem.getCurrentMintTokenId());

@@ -56,7 +56,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @Slf4j
-@ShenyuDubboService(path = "/platform", timeout = 6000)
+@ShenyuDubboService(path = "/platform",timeout = 15000)
 @ApiModule(value = "platform")
 @Service
 public class PlatformServiceImpl implements PlatformService {

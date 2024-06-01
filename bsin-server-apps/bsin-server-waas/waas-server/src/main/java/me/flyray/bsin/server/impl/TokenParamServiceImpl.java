@@ -1,12 +1,34 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.annotations.CaptureCustomerBehavior;
+import me.flyray.bsin.domain.domain.Account;
+import me.flyray.bsin.domain.entity.DigitalAssetsCollection;
+import me.flyray.bsin.domain.entity.TokenParam;
+import me.flyray.bsin.domain.entity.TokenReleaseJournal;
+import me.flyray.bsin.domain.enums.AccountCategory;
+import me.flyray.bsin.domain.enums.BehaviorCode;
+import me.flyray.bsin.enums.CustomerType;
 import me.flyray.bsin.facade.service.AccountService;
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
+import me.flyray.bsin.facade.service.DigitalPointsService;
+import me.flyray.bsin.facade.service.TokenParamService;
+import me.flyray.bsin.infrastructure.mapper.CustomerPassCardMapper;
+import me.flyray.bsin.infrastructure.mapper.DigitalAssetsCollectionMapper;
+import me.flyray.bsin.infrastructure.mapper.TokenParamMapper;
+import me.flyray.bsin.infrastructure.mapper.TokenReleaseJournalMapper;
+import me.flyray.bsin.mybatis.utils.Pagination;
+import me.flyray.bsin.redis.provider.BsinCacheProvider;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.utils.RespBodyHandler;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -19,30 +41,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.ObjectUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.annotations.CaptureCustomerBehavior;
-import me.flyray.bsin.domain.domain.Account;
-import me.flyray.bsin.domain.entity.DigitalAssetsCollection;
-import me.flyray.bsin.domain.entity.TokenParam;
-import me.flyray.bsin.domain.entity.TokenReleaseJournal;
-import me.flyray.bsin.domain.enums.AccountCategory;
-import me.flyray.bsin.domain.enums.BehaviorCode;
-import me.flyray.bsin.enums.CustomerType;
-import me.flyray.bsin.facade.service.DigitalPointsService;
-import me.flyray.bsin.facade.service.TokenParamService;
-import me.flyray.bsin.infrastructure.mapper.CustomerPassCardMapper;
-import me.flyray.bsin.infrastructure.mapper.DigitalAssetsCollectionMapper;
-import me.flyray.bsin.infrastructure.mapper.TokenParamMapper;
-import me.flyray.bsin.infrastructure.mapper.TokenReleaseJournalMapper;
-import me.flyray.bsin.mybatis.utils.Pagination;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
 
 /**
  * @author bolei
@@ -60,7 +58,6 @@ public class TokenParamServiceImpl implements TokenParamService {
   @Autowired private DigitalAssetsCollectionMapper digitalAssetsCollectionMapper;
   @Autowired private CustomerPassCardMapper customerPassCardMapper;
   @Autowired private DigitalPointsService digitalPointsService;
-  @Autowired private BsinCacheProvider bsinCacheProvider;
 
   @DubboReference(version = "${dubbo.provider.version}")
   private AccountService accountService;
@@ -239,8 +236,8 @@ public class TokenParamServiceImpl implements TokenParamService {
     reqMap.put("customerNo", customerNo);
     // 优先从缓存中获取
     Account customerAccount =
-        bsinCacheProvider.get(
-            "customerAccount:" + tenantId + merchantNo + customerNo + ccy, Account.class);
+        BsinCacheProvider.get("waas",
+            "customerAccount:" + tenantId + merchantNo + customerNo + ccy);
     if (customerAccount == null) {
       if (customerAccountNo == null) {
         // 币种：用币种英文代替

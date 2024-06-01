@@ -1,4 +1,4 @@
-package me.flyray.bsin.redis.utils;
+package me.flyray.bsin.redis.provider;
 
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.AccessLevel;
@@ -21,7 +21,7 @@ import java.util.stream.StreamSupport;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @SuppressWarnings(value = {"unchecked", "rawtypes"})
-public class RedisUtils {
+public class BsinRedisProvider {
 
     private static final RedissonClient CLIENT = SpringUtil.getBean(RedissonClient.class);
 

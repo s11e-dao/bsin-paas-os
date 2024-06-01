@@ -1,10 +1,6 @@
 package me.flyray.bsin.server.utils;
 
 import cn.hutool.core.date.DateUtil;
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.BitFieldSubCommands;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -17,7 +13,6 @@ import java.util.Map;
 @Component
 public class SignUtils {
 
-  @Autowired private BsinCacheProvider bsinCacheProvider;
 
   /**
    * 签到
@@ -29,7 +24,7 @@ public class SignUtils {
   public String sign(String customerNo, Date date) {
     String key = buildSignKey(customerNo, date);
     int dayOfMonth = DateUtil.dayOfMonth(date);
-    bsinCacheProvider.setBit(key, dayOfMonth - 1, true);
+//    BsinCacheProvider.setBit(key, dayOfMonth - 1, true);
     return "签到成功";
   }
 
@@ -44,12 +39,12 @@ public class SignUtils {
     String key = buildSignKey(customerNo, date);
     int dayOfMonth = DateUtil.dayOfMonth(date);
     // 获取用户从当前日期开始到1号的签到状态
-    List<Long> list =
-        bsinCacheProvider.bitField(
-            key,
-            BitFieldSubCommands.create()
-                .get(BitFieldSubCommands.BitFieldType.unsigned(dayOfMonth))
-                .valueAt(0));
+    List<Long> list = null;
+//            BsinCacheProvider.bitField(
+//            key,
+//            BitFieldSubCommands.create()
+//                .get(BitFieldSubCommands.BitFieldType.unsigned(dayOfMonth))
+//                .valueAt(0));
     if (list == null || list.isEmpty()) {
       return 0;
     }
@@ -81,8 +76,8 @@ public class SignUtils {
   public long getSumSignCount(String customerNo, Date date) {
     String key = buildSignKey(customerNo, date);
     int dayOfMonth = DateUtil.dayOfMonth(date);
-    return bsinCacheProvider.execute(
-        (RedisCallback<Long>) connection -> connection.bitCount(key.getBytes()));
+    return 0 ;// bsinCacheProvider.execute(
+        //(RedisCallback<Long>) connection -> connection.bitCount(key.getBytes()));
   }
 
   /**
@@ -95,7 +90,7 @@ public class SignUtils {
   public boolean checkSign(String customerNo, Date date) {
     String key = buildSignKey(customerNo, date);
     int dayOfMonth = DateUtil.dayOfMonth(date);
-    return bsinCacheProvider.getBit(key, dayOfMonth - 1);
+    return false; //bsinCacheProvider.getBit(key, dayOfMonth - 1);
   }
 
   /**
@@ -110,16 +105,16 @@ public class SignUtils {
     int dayOfMonth = DateUtil.dayOfMonth(date);
     Map<String, String> signMap = new LinkedHashMap<>(dayOfMonth);
     // 获取BitMap中的bit数组，并以十进制返回
-    List<Long> bitFieldList =
-        (List<Long>)
-            bsinCacheProvider.execute(
-                (RedisCallback<List<Long>>)
-                    cbk ->
-                        cbk.bitField(
-                            key.getBytes(),
-                            BitFieldSubCommands.create()
-                                .get(BitFieldSubCommands.BitFieldType.unsigned(dayOfMonth))
-                                .valueAt(0)));
+    List<Long> bitFieldList = null;
+//        (List<Long>)
+//            bsinCacheProvider.execute(
+//                (RedisCallback<List<Long>>)
+//                    cbk ->
+//                        cbk.bitField(
+//                            key.getBytes(),
+//                            BitFieldSubCommands.create()
+//                                .get(BitFieldSubCommands.BitFieldType.unsigned(dayOfMonth))
+//                                .valueAt(0)));
     if (bitFieldList != null && bitFieldList.size() > 0) {
       Long valueDec = bitFieldList.get(0) != null ? bitFieldList.get(0) : 0;
       // 使用i--,从最低位开始处理

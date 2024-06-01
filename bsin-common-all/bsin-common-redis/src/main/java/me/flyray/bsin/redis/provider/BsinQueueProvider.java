@@ -1,4 +1,4 @@
-package me.flyray.bsin.redis.utils;
+package me.flyray.bsin.redis.provider;
 
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.AccessLevel;
@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class QueueUtils {
+public class BsinQueueProvider {
 
     private static final RedissonClient CLIENT = SpringUtil.getBean(RedissonClient.class);
 

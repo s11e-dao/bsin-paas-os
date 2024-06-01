@@ -82,7 +82,7 @@ import me.flyray.bsin.utils.EmptyChecker;
  * @desc
  */
 
-@ShenyuDubboService(path = "/user", timeout = 6000)
+@ShenyuDubboService(path = "/user" ,timeout = 15000)
 @ApiModule(value = "user")
 @Service
 @Slf4j
@@ -588,7 +588,7 @@ public class UserServiceImpl implements UserService {
         if (sysProduct != null) {
             baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId());
         }
-        if (StringUtils.isBlank(userId)) {
+        if (StringUtils.isEmpty(userId)) {
             sysApps = new ArrayList<>();
             sysApps.add(baseApp);
         } else {

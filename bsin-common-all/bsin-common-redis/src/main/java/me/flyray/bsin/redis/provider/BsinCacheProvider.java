@@ -1,4 +1,4 @@
-package me.flyray.bsin.redis.utils;
+package me.flyray.bsin.redis.provider;
 
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.AccessLevel;
@@ -17,7 +17,7 @@ import java.util.Set;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @SuppressWarnings(value = {"unchecked"})
-public class CacheUtils {
+public class BsinCacheProvider {
 
     private static final CacheManager CACHE_MANAGER = SpringUtil.getBean(CacheManager.class);
 
@@ -51,6 +51,17 @@ public class CacheUtils {
      */
     public static void put(String cacheNames, Object key, Object value) {
         CACHE_MANAGER.getCache(cacheNames).put(key, value);
+    }
+
+    /**
+     * 保持有自动过期时间的值
+     * @param cacheNames
+     * @param key
+     * @param value
+     * @param expireTime
+     */
+    public void putEx(String cacheNames,String key, String value, Long expireTime) {
+
     }
 
     /**

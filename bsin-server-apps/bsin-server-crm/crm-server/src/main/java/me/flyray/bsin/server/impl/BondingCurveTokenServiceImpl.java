@@ -1,18 +1,29 @@
 package me.flyray.bsin.server.impl;
 
-import static java.math.BigDecimal.ROUND_HALF_UP;
-import static me.flyray.bsin.constants.ResponseCode.BC_POINTS_EXISTS;
-import static me.flyray.bsin.constants.ResponseCode.CCY_NOT_ISNULL;
-import static me.flyray.bsin.constants.ResponseCode.DESIRED_MINT_FAILED;
-import static me.flyray.bsin.constants.ResponseCode.MERCHANT_NO_IS_NULL;
-import static me.flyray.bsin.constants.ResponseCode.TRANSACTION_ON_PAUSE;
-
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.domain.Account;
+import me.flyray.bsin.domain.domain.BondingCurveTokenJournal;
+import me.flyray.bsin.domain.domain.BondingCurveTokenParam;
+import me.flyray.bsin.domain.enums.AccountCategory;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.service.BondingCurveTokenService;
+import me.flyray.bsin.infrastructure.mapper.BondingCurveTokenJournalMapper;
+import me.flyray.bsin.infrastructure.mapper.BondingCurveTokenParamMapper;
+import me.flyray.bsin.redis.provider.BsinCacheProvider;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.biz.CustomerAccountBiz;
+import me.flyray.bsin.server.biz.TokenReleaseBiz;
+import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.server.utils.RespBodyHandler;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -25,31 +36,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import cn.hutool.core.util.ObjectUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.BondingCurveTokenJournal;
-import me.flyray.bsin.domain.domain.BondingCurveTokenParam;
-import me.flyray.bsin.domain.domain.Account;
-import me.flyray.bsin.domain.enums.AccountCategory;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.BondingCurveTokenService;
-import me.flyray.bsin.infrastructure.mapper.BondingCurveTokenJournalMapper;
-import me.flyray.bsin.infrastructure.mapper.BondingCurveTokenParamMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.biz.CustomerAccountBiz;
-import me.flyray.bsin.server.biz.TokenReleaseBiz;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
+import static java.math.BigDecimal.ROUND_HALF_UP;
+import static me.flyray.bsin.constants.ResponseCode.*;
 
 /**
  * @author bolei
@@ -63,7 +53,6 @@ import me.flyray.bsin.utils.BsinSnowflake;
 @Slf4j
 public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
 
-  @Autowired private BsinCacheProvider bsinCacheProvider;
   @Autowired private BondingCurveTokenJournalMapper bondingCurveTokenJournalMapper;
   @Autowired private BondingCurveTokenParamMapper bondingCurveTokenParamMapper;
   @Autowired private CustomerAccountBiz customerAccountBiz;
@@ -310,7 +299,7 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
 
     // 3.获取联合曲线配置参数：名称|符号|小数点|flexible|...
     BondingCurveTokenParam bondingCurveTokenParam =
-        bsinCacheProvider.get(
+            BsinCacheProvider.get(
             "BondingCurveParam：" + tenantId + "-" + merchantNo, BondingCurveTokenParam.class);
     if (bcCurveNo == null) {
       LambdaQueryWrapper<BondingCurveTokenParam> warapper = new LambdaQueryWrapper<>();
@@ -321,7 +310,7 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
     } else {
       bondingCurveTokenParam = bondingCurveTokenParamMapper.selectById(bcCurveNo);
     }
-    bsinCacheProvider.set(
+    BsinCacheProvider.put("crm",
         "BondingCurveParam：" + tenantId + "-" + merchantNo, bondingCurveTokenParam);
 
     if (!bondingCurveTokenParam.getStatus().equals("1")) {
@@ -426,16 +415,15 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
     String description = MapUtils.getString(requestMap, "description");
 
     // 获取曲线参数
-    BondingCurveTokenParam bondingCurveTokenParam =
-        bsinCacheProvider.get(
-            "BondingCurveParam：" + tenantId + "-" + merchantNo, BondingCurveTokenParam.class);
+    BondingCurveTokenParam bondingCurveTokenParam = BsinCacheProvider.get("crm",
+            "BondingCurveParam：" + tenantId + "-" + merchantNo);
     {
       LambdaQueryWrapper<BondingCurveTokenParam> warapper = new LambdaQueryWrapper<>();
       warapper.eq(BondingCurveTokenParam::getTenantId, tenantId);
       warapper.eq(BondingCurveTokenParam::getMerchantNo, merchantNo);
       bondingCurveTokenParam = bondingCurveTokenParamMapper.selectOne(warapper);
 
-      bsinCacheProvider.set(
+      BsinCacheProvider.put("crm",
           "BondingCurveParam：" + tenantId + "-" + merchantNo, bondingCurveTokenParam);
     }
     if (!bondingCurveTokenParam.getStatus().equals("1")) {
@@ -443,7 +431,7 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
     }
     BondingCurveTokenJournal lastBondingCurveTokenJournal =
         bondingCurveTokenJournalMapper.selectLastOne(tenantId, merchantNo);
-    bsinCacheProvider.set(
+    BsinCacheProvider.put("crm",
         "BondingCurveParam：" + tenantId + "-" + merchantNo, lastBondingCurveTokenJournal);
     log.debug("bondingCurve parameter:", lastBondingCurveTokenJournal.toString());
 

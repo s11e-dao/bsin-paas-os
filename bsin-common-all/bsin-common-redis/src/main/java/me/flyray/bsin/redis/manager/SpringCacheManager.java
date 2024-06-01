@@ -15,7 +15,7 @@
  */
 package me.flyray.bsin.redis.manager;
 
-import me.flyray.bsin.redis.utils.RedisUtils;
+import me.flyray.bsin.redis.provider.BsinRedisProvider;
 import org.redisson.api.RMap;
 import org.redisson.api.RMapCache;
 import org.redisson.spring.cache.CacheConfig;
@@ -154,7 +154,7 @@ public class SpringCacheManager implements CacheManager {
     }
 
     private Cache createMap(String name, CacheConfig config) {
-        RMap<Object, Object> map = RedisUtils.getClient().getMap(name);
+        RMap<Object, Object> map = BsinRedisProvider.getClient().getMap(name);
 
         Cache cache = new RedissonCache(map, allowNullValues);
         if (transactionAware) {
@@ -168,7 +168,7 @@ public class SpringCacheManager implements CacheManager {
     }
 
     private Cache createMapCache(String name, CacheConfig config) {
-        RMapCache<Object, Object> map = RedisUtils.getClient().getMapCache(name);
+        RMapCache<Object, Object> map = BsinRedisProvider.getClient().getMapCache(name);
 
         Cache cache = new RedissonCache(map, config, allowNullValues);
         if (transactionAware) {

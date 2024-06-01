@@ -40,7 +40,6 @@ public class LoginInfoContextHelper {
 
 
     public static String getAdminUserId() {
-        Assert.notNull(getLoginUser().getUserId(), "adminUserId is null");
         return getLoginUser().getUserId();
     }
 
@@ -54,7 +53,6 @@ public class LoginInfoContextHelper {
     }
 
     public static String getCustomerNo() {
-        Assert.notNull(getLoginUser().getCustomerNo(), "customerNo is null");
         return getLoginUser().getCustomerNo();
     }
 

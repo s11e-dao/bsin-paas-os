@@ -110,7 +110,7 @@ export default () => {
   };
 
   /**
-   * 确认添加模板
+   * 确认添加
    */
   const confirmRegisterMerchant = () => {
     // 获取输入的表单值
@@ -125,13 +125,14 @@ export default () => {
           password: hex_md5(response.password),
           tenantAppType: tenantAppType,
           logoUrl: logoUrl,
+          registerMethod: "operatorRegister"
         };
         console.log(getLocalStorageInfo('userInformation'));
         console.log(reqParam);
         console.log(logoUrl);
         registerMerchant(reqParam).then((res) => {
           console.log('add', res);
-          if (res.code === '000000') {
+          if (res.code === 0) {
             message.success('添加成功');
             // 重置输入的表单
             FormRef.resetFields();

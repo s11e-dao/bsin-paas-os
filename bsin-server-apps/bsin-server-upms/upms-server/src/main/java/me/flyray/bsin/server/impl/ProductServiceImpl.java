@@ -32,7 +32,7 @@ import me.flyray.bsin.utils.BsinSnowflake;
  * @desc
  */
 
-@ShenyuDubboService(path = "/product")
+@ShenyuDubboService(path = "/product",timeout = 15000)
 @ApiModule(value = "product")
 @Service
 public class ProductServiceImpl implements ProductService {

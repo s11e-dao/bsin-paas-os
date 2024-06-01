@@ -11,7 +11,7 @@ import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.infrastructure.biz.TransferBiz;
 import me.flyray.bsin.infrastructure.biz.WalletAccountBiz;
 import me.flyray.bsin.infrastructure.mapper.*;
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
+import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,8 +63,6 @@ public class ChainTransactionListen {
     private TransferBiz transferBiz;
     @Autowired
     private WalletAccountBiz walletAccountBiz;
-    @Autowired
-    private BsinCacheProvider bsinCacheProvider;
 
     @Autowired
     public ChainTransactionListen(ThreadPoolTaskExecutor taskExecutor) {
@@ -145,11 +143,11 @@ public class ChainTransactionListen {
             }
 
             // 对交易进行加锁
-            String value = bsinCacheProvider.get(txHash);
+            String value = BsinCacheProvider.get("waas",txHash);
             if (value != null) {
                 return;
             }
-            bsinCacheProvider.set(txHash, String.valueOf(ethLog.getBlockNumber()));
+            BsinCacheProvider.put("waas",txHash, String.valueOf(ethLog.getBlockNumber()));
             try{
                 // 1、通过hash获取交易 包含logs
                 EthGetTransactionReceipt ethGetTransactionReceipt = web3j.ethGetTransactionReceipt(txHash).sendAsync().get();
@@ -303,7 +301,7 @@ public class ChainTransactionListen {
                 // TODO 处理失败的hash进行记录
             }finally {
                 // 对交易解锁
-                bsinCacheProvider.del(txHash);
+                BsinCacheProvider.evict("waas",txHash);
             }
         });
     }
