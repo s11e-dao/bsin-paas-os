@@ -3,7 +3,7 @@ let crmPath = process.env.contextPath_crm;
 
 // 分页查询
 export const getCustomerPageList = (params) => {
-  return request('/list', {
+  return request(crmPath + '/customer/getPageList', {
     serviceName: 'CustomerService',
     methodName: 'getPageList',
     version: '1.0',
@@ -15,7 +15,7 @@ export const getCustomerPageList = (params) => {
 
 // 创建
 export const addCustomer = (params) => {
-  return request('/add', {
+  return request(crmPath + '/customer/add', {
     serviceName: 'CustomerService',
     methodName: 'add',
     version: '1.0',
@@ -27,7 +27,7 @@ export const addCustomer = (params) => {
 
 // 删除
 export const deleteCustomer = (params) => {
-  return request('/del', {
+  return request(crmPath + '/customer/delete', {
     serviceName: 'CustomerService',
     methodName: 'delete',
     version: '1.0',
@@ -40,7 +40,7 @@ export const deleteCustomer = (params) => {
 // 查询详情
 export const getCustomerDetail = (params) => {
   console.log('params', params);
-  return request('/view', {
+  return request(crmPath + '/customer/getDetail', {
     serviceName: 'CustomerService',
     methodName: 'getDetail',
     version: '1.0',
@@ -52,7 +52,7 @@ export const getCustomerDetail = (params) => {
 
 export const getCustomerAddressDetail = (params) => {
   console.log('params', params);
-  return request('/view', {
+  return request(crmPath + '/customer/getList', {
     serviceName: 'DeliveryAddressService',
     methodName: 'getList',
     version: '1.0',

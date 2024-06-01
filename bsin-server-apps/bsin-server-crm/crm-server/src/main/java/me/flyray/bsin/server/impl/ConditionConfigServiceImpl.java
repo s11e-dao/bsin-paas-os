@@ -35,10 +35,10 @@ public class ConditionConfigServiceImpl implements ConditionConfigService {
     @Autowired
     private ConditionMapper conditionMapper;
 
-    @ApiDoc(desc = "add")
-    @ShenyuDubboClient("/add")
+    @ApiDoc(desc = "config")
+    @ShenyuDubboClient("/config")
     @Override
-    public Map<String, Object> add(Map<String, Object> requestMap) {
+    public Map<String, Object> config(Map<String, Object> requestMap) {
         ConditionRelation conditionRelationship = BsinServiceContext.getReqBodyDto(ConditionRelation.class, requestMap);
         conditionRelationshipMapper.insert(conditionRelationship);
         return RespBodyHandler.setRespBodyDto(conditionRelationship);

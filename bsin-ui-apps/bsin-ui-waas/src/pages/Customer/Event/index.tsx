@@ -6,7 +6,7 @@ import {
   message,
   Button,
   Select,
-  Popconfirm,
+  Divider,
   Descriptions,
 } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -40,38 +40,25 @@ export default () => {
 
   // 操作行数据 自定义操作行
   const actionRender: any = (text: any, record: any, index: number) => (
-    <ul className="ant-list-item-action" style={{ margin: 0 }}>
-      <li>
-        <a
-          onClick={() => {
-            toViewMember(record);
-          }}
-        >
-          查看
-        </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-      <li>
-        <a
-          onClick={() => {
-            toViewMember(record);
-          }}
-        >
-          条件配置
-        </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-      <li>
-        <a
-          onClick={() => {
-            toViewMember(record);
-          }}
-        >
-          权益配置
-        </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-    </ul>
+    <div key={record.dictType}>
+      <a onClick={() => toViewMember(record)}>查看</a>
+      <Divider type="vertical" />
+      <a
+        onClick={() => {
+          toViewMember(record);
+        }}
+      >
+        条件配置
+      </a>
+      <Divider type="vertical" />
+      <a
+        onClick={() => {
+          toViewMember(record);
+        }}
+      >
+        权益配置
+      </a>
+    </div>
   );
 
   // 自定义数据的表格头部数据

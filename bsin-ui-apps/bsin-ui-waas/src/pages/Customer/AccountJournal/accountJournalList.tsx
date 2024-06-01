@@ -39,18 +39,9 @@ export default () => {
 
   // 操作行数据 自定义操作行
   const actionRender: any = (text: any, record: any, index: number) => (
-    <ul className="ant-list-item-action" style={{ margin: 0 }}>
-      <li>
-        <a
-          onClick={() => {
-            toViewAccountJournal(record);
-          }}
-        >
-          查看
-        </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-    </ul>
+    <div key={record.dictType}>
+      <a onClick={() => toViewAccountJournal(record)}>查看</a>
+    </div>
   );
 
   // 自定义数据的表格头部数据

@@ -3,7 +3,7 @@ let crmPath = process.env.contextPath_crm;
 
 // 分页查询客户等级
 export const getGradePageList = (params) => {
-  return request('/getPageList', {
+  return request(crmPath + '/grade/getPageList', {
     serviceName: 'GradeService',
     methodName: 'getPageList',
     version: '1.0',
@@ -15,7 +15,7 @@ export const getGradePageList = (params) => {
 
 // 查询客户等级
 export const getGradeList = (params) => {
-  return request('/getList', {
+  return request(crmPath + '/grade/getList', {
     serviceName: 'GradeService',
     methodName: 'getList',
     version: '1.0',
@@ -27,7 +27,7 @@ export const getGradeList = (params) => {
 
 // 查询等级下所有会员
 export const getGradeMemberList = (params) => {
-  return request('/getGradeMemberList', {
+  return request(crmPath + '/member/getGradeMemberList', {
     serviceName: 'MemberService',
     methodName: 'getGradeMemberList',
     version: '1.0',
@@ -39,7 +39,7 @@ export const getGradeMemberList = (params) => {
 
 // 分页查询等级下所有会员
 export const getGradeMemberPageList = (params) => {
-  return request('/getGradeMemberPageList', {
+  return request(crmPath + '/member/getGradeMemberPageList', {
     serviceName: 'MemberService',
     methodName: 'getGradeMemberPageList',
     version: '1.0',
@@ -51,7 +51,7 @@ export const getGradeMemberPageList = (params) => {
 
 // 查询等级下的会员列表
 export const getGradeAndMemberList = (params) => {
-  return request('/getGradeAndMemberList', {
+  return request(crmPath + '/grade/getGradeAndMemberList', {
     serviceName: 'GradeService',
     methodName: 'getGradeAndMemberList',
     version: '1.0',
@@ -63,7 +63,7 @@ export const getGradeAndMemberList = (params) => {
 
 // 查询等级下所有会员
 export const addGradeMember = (params) => {
-  return request('/addGradeMember', {
+  return request(crmPath + '/member/addGradeMember', {
     serviceName: 'MemberService',
     methodName: 'getGradeMemberList',
     version: '1.0',
@@ -75,7 +75,7 @@ export const addGradeMember = (params) => {
 
 // 查询会员详情
 export const getGradeMemberDetail = (params) => {
-  return request('/getGradeMemberDetail', {
+  return request(crmPath + '/member/getDetail', {
     serviceName: 'MemberService',
     methodName: 'getDetail',
     version: '1.0',
@@ -87,7 +87,7 @@ export const getGradeMemberDetail = (params) => {
 
 // 创建会员等级配置
 export const addGrade = (params) => {
-  return request('/add', {
+  return request(crmPath + '/grade/add', {
     serviceName: 'GradeService',
     methodName: 'add',
     version: '1.0',
@@ -99,7 +99,7 @@ export const addGrade = (params) => {
 
 // 创建会员等级配置
 export const editGrade = (params) => {
-  return request('/edit', {
+  return request(crmPath + '/grade/edit', {
     serviceName: 'GradeService',
     methodName: 'edit',
     version: '1.0',
@@ -111,7 +111,7 @@ export const editGrade = (params) => {
 
 // 删除会员等级配置
 export const deleteGrade = (params) => {
-  return request('/del', {
+  return request(crmPath + '/grade/delete', {
     serviceName: 'GradeService',
     methodName: 'delete',
     version: '1.0',
@@ -124,7 +124,7 @@ export const deleteGrade = (params) => {
 // 查询会员等级配置详情
 export const getGradeDetail = (params) => {
   console.log('params', params);
-  return request('/view', {
+  return request(crmPath + '/grade/getDetail', {
     serviceName: 'GradeService',
     methodName: 'getDetail',
     version: '1.0',

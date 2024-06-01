@@ -3,7 +3,7 @@ let crmPath = process.env.contextPath_crm;
 
 // 分页查询客户配置
 export const getMemberAssetsPageList = (params) => {
-  return request('/getPageList  ', {
+  return request(crmPath + '/customerDigitalAssets/getPageList  ', {
     serviceName: 'CustomerDigitalAssetsService',
     methodName: 'getPageList',
     version: '1.0',
@@ -14,7 +14,7 @@ export const getMemberAssetsPageList = (params) => {
 };
 
 export const getMemberAssetsDetail = (params) => {
-  return request('/getDetail', {
+  return request(crmPath + '/customerDigitalAssets/getDetail', {
     serviceName: 'CustomerDigitalAssetsService',
     methodName: 'getDetail',
     version: '1.0',

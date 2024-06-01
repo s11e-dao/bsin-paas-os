@@ -41,7 +41,7 @@ public class EquityConfigServiceImpl implements EquityConfigService {
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
     @Override
-    public Map<String, Object> add(Map<String, Object> requestMap) {
+    public Map<String, Object> config(Map<String, Object> requestMap) {
         EquityRelation equityRelationship = BsinServiceContext.getReqBodyDto(EquityRelation.class, requestMap);
         equityRelationshipMapper.insert(equityRelationship);
         return RespBodyHandler.setRespBodyDto(equityRelationship);

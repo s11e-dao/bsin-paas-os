@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.facade.service.CustomerEventService;
+import me.flyray.bsin.facade.service.EventRuleService;
 
 /**
  * @author bolei
@@ -22,7 +22,7 @@ import me.flyray.bsin.facade.service.CustomerEventService;
 @ShenyuDubboService(path = "/eventRule", timeout = 6000)
 @ApiModule(value = "eventRule")
 @Service
-public class CustomerEventServiceImpl implements CustomerEventService {
+public class EventRuleServiceImpl implements EventRuleService {
 
 
     @ApiDoc(desc = "add")

@@ -8,7 +8,7 @@ import java.util.Map;
 * @createDate 2023-07-26 16:04:14
 */
 
-public interface CustomerEventService {
+public interface EventRuleService {
 
     /**
      * 添加

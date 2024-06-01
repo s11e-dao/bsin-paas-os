@@ -13,7 +13,7 @@ public interface EquityConfigService {
     /**
      * 配置
      */
-    public Map<String, Object> add(Map<String, Object> requestMap);
+    public Map<String, Object> config(Map<String, Object> requestMap);
 
     /**
      * 删除

@@ -1,9 +1,9 @@
 import { request } from '@umijs/max'
 let crmPath = process.env.contextPath_crm;
 
-// 分页查询合约配置
+// 分页查询
 export const getConditionPageList = (params) => {
-  return request('/list', {
+  return request(crmPath + '/condition/getPageList', {
     serviceName: 'ConditionService',
     methodName: 'getPageList',
     version: '1.0',
@@ -15,7 +15,7 @@ export const getConditionPageList = (params) => {
 
 // 分页配置
 export const getConditionListByCategoryNo = (params) => {
-  return request('/list', {
+  return request(crmPath + '/conditionConfig/getListByCategoryNo', {
     serviceName: 'ConditionConfigService',
     methodName: 'getListByCategoryNo',
     version: '1.0',
@@ -27,7 +27,7 @@ export const getConditionListByCategoryNo = (params) => {
 
 // 添加条件
 export const addCondition = (params) => {
-  return request('/add', {
+  return request(crmPath + '/condition/add', {
     serviceName: 'ConditionService',
     methodName: 'add',
     version: '1.0',
@@ -39,7 +39,7 @@ export const addCondition = (params) => {
 
 // 删除条件
 export const deleteCondition = (params) => {
-  return request('/del', {
+  return request(crmPath + '/condition/delete', {
     serviceName: 'ConditionService',
     methodName: 'delete',
     version: '1.0',
@@ -52,7 +52,7 @@ export const deleteCondition = (params) => {
 // 编辑
 export const EditCondition = (params) => {
   console.log('params', params);
-  return request('/edit', {
+  return request(crmPath + '/condition/edit', {
     serviceName: 'ConditionService',
     methodName: 'edit',
     version: '1.0',
@@ -65,7 +65,7 @@ export const EditCondition = (params) => {
 // 查询条件配置详情
 export const getConditionDetail = (params) => {
   console.log('params', params);
-  return request('/view', {
+  return request(crmPath + '/condition/getDetail', {
     serviceName: 'ConditionService',
     methodName: 'getDetail',
     version: '1.0',
@@ -79,7 +79,7 @@ export const getConditionDetail = (params) => {
 
 export const configCondition = (params) => {
   console.log('params', params);
-  return request('/configCondition', {
+  return request(crmPath + '/conditionConfig/config', {
     serviceName: 'ConditionConfigService',
     methodName: 'config',
     version: '1.0',
@@ -91,7 +91,7 @@ export const configCondition = (params) => {
 
 export const deleteConditionConfig = (params) => {
   console.log('params', params);
-  return request('/deleteCondition', {
+  return request(crmPath + '/conditionConfig/delete', {
     serviceName: 'ConditionConfigService',
     methodName: 'delete',
     version: '1.0',
