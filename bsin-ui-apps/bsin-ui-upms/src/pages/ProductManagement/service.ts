@@ -79,7 +79,7 @@ export const editDictItemPageList = (params: any) => {
 };
 
 // 字典项删除
-export const deleteDictItemPageList = (params: any) => {
+export const deleteProductApp = (params: any) => {
   return request(upmsPath + '/product/deleteProductApp', {
     serviceName: 'ProductService',
     methodName: 'deleteProductApp',

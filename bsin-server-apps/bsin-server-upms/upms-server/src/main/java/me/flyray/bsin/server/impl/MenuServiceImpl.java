@@ -219,8 +219,10 @@ public class MenuServiceImpl implements MenuService {
                 }
             }
         }
+        List<MenuTree> menuTreeList = new ArrayList<>();
         if (roleIds.size() < 1) {
-            throw new BusinessException(ResponseCode.USER_NOT_APP_ROLE);
+            // 正常返回
+            return menuTreeList;
         }
 
         List<String> menuIdList = roleMenuMapper.selectUserMenuIds(roleIds);
@@ -243,7 +245,6 @@ public class MenuServiceImpl implements MenuService {
             }
         }
         List<String> menuIds = menuIdList.stream().distinct().collect(Collectors.toList());
-        List<MenuTree> menuTreeList = new ArrayList<>();
         // 如果用户在当前应用下没有权限
         if (menuIds.size() > 0) {
             List<SysMenu> sysMenus = menuMapper.selectListByMenuIds(menuIds);

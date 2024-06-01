@@ -25,7 +25,7 @@ import {
   getProductAppPageList,
   addDictItemPageList,
   editDictItemPageList,
-  deleteDictItemPageList,
+  deleteProductApp,
   getAppList
 } from './service';
 
@@ -224,7 +224,7 @@ const DictManagement = () => {
   const CheckConfirmDel = async (productApp: any) => {
     console.log('CheckConfirmDel');
     console.log(productApp);
-    let res = await deleteDictItemPageList({ productId: showDictItem?.productId, appId: productApp.appId });
+    let res = await deleteProductApp({ productId: showDictItem?.productId, appId: productApp.appId });
     console.log(res);
     // 刷新
     DictItemRef?.current?.reload();
@@ -234,8 +234,6 @@ const DictManagement = () => {
   const CheckColumnsOptionRender = (text: any, record: DictItemColumnsItem) => {
     return [
       <div key={record.id}>
-        <a onClick={() => handleCheckEditModel(record)}>编辑</a>
-        <Divider type="vertical" />
         <Popconfirm
           title="是否删除此条数据?"
           onConfirm={() => CheckConfirmDel(record)}
@@ -420,7 +418,7 @@ const DictManagement = () => {
           form={checkForm}
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 20 }}
-          initialValues={{ baseFlag: "0", appId: "0" }}
+          initialValues={{ baseFlag: 0, appId: "0" }}
           autoComplete="off"
         >
           <Form.Item
@@ -445,8 +443,8 @@ const DictManagement = () => {
             rules={[{ required: true, message: '请选择是否是基础应用!' }]}
           >
             <Select style={{ width: '100%' }} allowClear onChange={changeBaseAppFlag}>
-              <Option value="0">否</Option>
-              <Option value="1">是</Option>
+              <Option value={0}>否</Option>
+              <Option value={1}>是</Option>
             </Select>
           </Form.Item>
           {/* {如果是基础应用选择基础应用对应的业务角色} */}
