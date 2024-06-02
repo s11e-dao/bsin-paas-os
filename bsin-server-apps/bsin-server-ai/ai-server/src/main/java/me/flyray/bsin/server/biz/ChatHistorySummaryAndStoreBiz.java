@@ -9,7 +9,7 @@ import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.embedding.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.embedding.BgeSmallZhEmbeddingModel;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.domain.EmbeddingModel;
+import me.flyray.bsin.domain.entity.EmbeddingModel;
 import me.flyray.bsin.domain.enums.EmbeddingModeType;
 import me.flyray.bsin.domain.enums.VectorStoreType;
 import me.flyray.bsin.server.memory.chat.SummaryEmbeddingVectorStoreMemory;

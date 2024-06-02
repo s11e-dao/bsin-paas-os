@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="me.flyray.bsin.infrastructure.mapper.WxPlatformUserMapper">
 
-    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.WxPlatformUser">
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.WxPlatformUser">
         <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
         <result property="openId" column="open_id" jdbcType="VARCHAR"/>
         <result property="appId" column="app_id" jdbcType="VARCHAR"/>

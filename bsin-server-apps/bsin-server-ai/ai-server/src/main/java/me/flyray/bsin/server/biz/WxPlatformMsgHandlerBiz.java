@@ -1,14 +1,12 @@
 package me.flyray.bsin.server.biz;
 
-import lombok.AllArgsConstructor;
-import me.flyray.bsin.domain.domain.*;
+import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.facade.response.AiChatDTO;
 import me.flyray.bsin.facade.response.QuestionPreProcessDTO;
 import me.flyray.bsin.infrastructure.mapper.CopilotMapper;
 import me.flyray.bsin.infrastructure.mapper.WxPlatformMapper;
 import me.flyray.bsin.infrastructure.mapper.WxPlatformUserMapper;
 import me.flyray.bsin.redis.manager.BsinCacheProvider;
-import me.flyray.bsin.server.document.split.SplitterProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

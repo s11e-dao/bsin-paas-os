@@ -1,6 +1,5 @@
-package me.flyray.bsin.domain.domain;
+package me.flyray.bsin.domain.entity;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
@@ -12,7 +11,6 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import lombok.NonNull;
 import me.flyray.bsin.utils.BsinSnowflake;
 
 /**

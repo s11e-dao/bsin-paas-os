@@ -1,8 +1,7 @@
 package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import me.flyray.bsin.domain.domain.ChatMemory;
-import me.flyray.bsin.domain.domain.PromptTemplateParam;
+import me.flyray.bsin.domain.entity.ChatMemory;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

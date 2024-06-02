@@ -24,7 +24,7 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
-import me.flyray.bsin.domain.domain.WxPlatform;
+import me.flyray.bsin.domain.entity.WxPlatform;
 import me.flyray.bsin.facade.response.QuestionPreProcessDTO;
 import me.flyray.bsin.facade.service.CustomerService;
 import me.flyray.bsin.facade.service.WxPlatformService;

@@ -1,38 +1,44 @@
-package me.flyray.bsin.domain.domain;
-
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
+package me.flyray.bsin.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.io.Serializable;
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
- * @TableName ai_knowledge_base
+ * @TableName ai_knowledge_base_file
  */
 @Data
-@TableName(value = "ai_knowledge_base")
-public class KnowledgeBase implements Serializable {
+@TableName(value = "ai_knowledge_base_file")
+public class KnowledgeBaseFile implements Serializable {
 
   @TableId private String serialNo;
 
-  /** 租户id */
-  private String tenantId;
-
-  /** 商户号 */
-  private String merchantNo;
-
-  /** 客户编号 */
-  private String customerNo;
-
-  /** 知识库名称 */
+  /** 文件名称 */
   private String name;
 
-  /** 知识库类型：1、通用知识库(文件导入) 2、web站点 3、公众号 */
+  /** 类型：1、url 2、filePath(FileSystemDocumentLoader) */
   private String type;
+
+  /** 关联的知识库ID */
+  private String knowledgeBaseNo;
+
+  /** 文件类型：1、pdf 2、markdown 3、doc */
+  private String fileType;
+
+  /** 数据总量: 分段后的数量 */
+  private Integer chunkNum;
+
+  /** 知识库文件地址: url or path */
+  private String fileUri;
+
+  /** 知识库文件地址: 本地存储路径 */
+  private String localPath;
 
   /** 知识库封面图片 */
   private String coverImage;
@@ -42,21 +48,6 @@ public class KnowledgeBase implements Serializable {
 
   /** 访问权限： 1-private 2-public */
   private String accessAuthority;
-
-  /** 是否为默认商户或者用户copilot */
-  private Boolean defaultFlag;
-
-  /** 单条数据上限 */
-  private Integer tokenLimit;
-
-  /** 索引模型ID： */
-  private String embeddingModelNo;
-
-  /** 提示词模版ID： */
-  private String promptTemplateNo;
-
-  /** 大语言模型ID： */
-  private String llmNo;
 
   /** 逻辑删除 0、未删除 1、已删除 */
   @TableLogic(value = "0", delval = "1")

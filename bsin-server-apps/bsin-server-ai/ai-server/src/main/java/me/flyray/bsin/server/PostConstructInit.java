@@ -1,6 +1,6 @@
 package me.flyray.bsin.server;
 
-import me.flyray.bsin.domain.domain.SensitiveWords;
+import me.flyray.bsin.domain.entity.SensitiveWords;
 import me.flyray.bsin.infrastructure.mapper.SensitiveWordsMapper;
 import me.flyray.bsin.wordFilter.SensitiveWordFilter;
 import org.springframework.beans.factory.annotation.Autowired;

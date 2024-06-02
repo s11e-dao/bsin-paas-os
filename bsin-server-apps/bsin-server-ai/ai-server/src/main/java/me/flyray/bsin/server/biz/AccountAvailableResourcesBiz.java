@@ -3,7 +3,7 @@ package me.flyray.bsin.server.biz;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import me.flyray.bsin.domain.domain.AiCustomerFunction;
+import me.flyray.bsin.domain.entity.AiCustomerFunction;
 import me.flyray.bsin.domain.enums.FunctionSubscribeStatus;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.infrastructure.mapper.AiCustomerFunctionMapper;

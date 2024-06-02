@@ -1,10 +1,9 @@
-package me.flyray.bsin.domain.domain;
+package me.flyray.bsin.domain.entity;
 
 import static dev.langchain4j.internal.Utils.getOrDefault;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
-import java.util.Date;
+
 import lombok.Data;
 
 /**

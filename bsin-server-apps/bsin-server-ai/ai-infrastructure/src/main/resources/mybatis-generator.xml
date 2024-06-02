@@ -31,7 +31,7 @@
         <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
         <!-- 生成模型的包名和位置 -->
-        <javaModelGenerator targetPackage="me.flyray.bsin.domain.domain" targetProject="src\main\java">
+        <javaModelGenerator targetPackage="me.flyray.bsin.domain.entity" targetProject="src\main\java">
             <!--<property name="constructorBased" value="true" />
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>-->

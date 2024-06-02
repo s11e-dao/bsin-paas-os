@@ -1,8 +1,7 @@
 package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import me.flyray.bsin.domain.domain.WxPlatform;
-import me.flyray.bsin.domain.domain.WxPlatformMenu;
+import me.flyray.bsin.domain.entity.WxPlatformMenu;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

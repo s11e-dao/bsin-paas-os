@@ -1,4 +1,4 @@
-package me.flyray.bsin.domain.domain;
+package me.flyray.bsin.domain.entity;
 
 import static dev.langchain4j.internal.Utils.getOrDefault;
 

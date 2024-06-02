@@ -1,4 +1,4 @@
-package me.flyray.bsin.domain.domain;
+package me.flyray.bsin.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 
@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import dev.langchain4j.internal.Utils;
 import lombok.Data;
 import me.flyray.bsin.utils.BsinSnowflake;
 

@@ -1,4 +1,4 @@
-package me.flyray.bsin.domain.domain;
+package me.flyray.bsin.domain.entity;
 
 import static dev.langchain4j.internal.Utils.getOrDefault;
 
@@ -10,11 +10,11 @@ import lombok.Data;
 import me.flyray.bsin.utils.BsinSnowflake;
 
 /**
- * @TableName ai_tool
+ * @TableName ai_sensitive_words
  */
 @Data
-@TableName(value = "ai_tool")
-public class ToolInfo implements Serializable {
+@TableName(value = "ai_sensitive_words")
+public class SensitiveWords implements Serializable {
 
   @TableId(value = "serial_no", type = IdType.ASSIGN_ID)
   private String serialNo;
@@ -28,20 +28,14 @@ public class ToolInfo implements Serializable {
   /** 客户编号 */
   private String customerNo;
 
-  /** 提示词模版名称 */
+  /** 名称 */
   private String name;
 
-  /** 模型类型：1、 */
+  /** 类型： */
   private String type;
 
-  /** api请求地址 */
-  private String apiBaseUrl;
-
-  /** api秘钥 */
-  private String apiKey;
-
-  /** 模型封面图片 */
-  private String coverImage;
+  /** 内容 */
+  private String content;
 
   /** 状态： 0：禁用 1:启用 */
   private String status;
@@ -52,6 +46,9 @@ public class ToolInfo implements Serializable {
   /** 逻辑删除 0、未删除 1、已删除 */
   @TableLogic(value = "0", delval = "1")
   private Integer delFlag;
+
+  /** 是否为默认商户或者用户copilot */
+  private Boolean defaultFlag;
 
   /** 是否可编辑|删除 */
   private Boolean editable;
@@ -70,17 +67,16 @@ public class ToolInfo implements Serializable {
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private Date updateTime;
 
-  public ToolInfo() {}
+  public SensitiveWords() {}
 
-  public ToolInfo(
+  public SensitiveWords(
       String serialNo,
       String tenantId,
       String merchantNo,
       String customerNo,
       String name,
       String type,
-      String apiBaseUrl,
-      String apiKey,
+      String fileUrl,
       String description) {
     Builder builder =
         newBuilder()
@@ -88,10 +84,9 @@ public class ToolInfo implements Serializable {
             .withTenantId(getOrDefault(tenantId, "tenantId"))
             .withMerchantNo(getOrDefault(merchantNo, "merchantNo"))
             .withCustomerNo(getOrDefault(customerNo, "customerNo"))
-            .withName(getOrDefault(name, "OpenAI-Turbo-3.5"))
-            .withType(getOrDefault(type, "GPT-3.5-Turbo"))
-            .withApiBaseUrl(getOrDefault(apiBaseUrl, "https://api.openai.com/v1/chat/completions"))
-            .withApiKey(getOrDefault(apiKey, "demo"))
+            .withName(getOrDefault(name, "敏感词1"))
+            .withType(getOrDefault(type, "1"))
+            .withContent(getOrDefault(fileUrl, "敏感词"))
             .withDescription(getOrDefault(description, "description"));
     this.serialNo = builder.getSerialNo();
     this.tenantId = builder.getTenantId();
@@ -99,8 +94,7 @@ public class ToolInfo implements Serializable {
     this.customerNo = builder.getCustomerNo();
     this.name = builder.getName();
     this.type = builder.getType();
-    this.apiKey = builder.getApiKey();
-    this.apiBaseUrl = builder.getApiBaseUrl();
+    this.content = builder.getContent();
     this.description = builder.getDescription();
   }
 
@@ -117,8 +111,7 @@ public class ToolInfo implements Serializable {
     private String name;
     private String type;
     private String description;
-    private String apiBaseUrl;
-    private String apiKey;
+    private String content;
 
     protected Builder() {}
 
@@ -147,13 +140,8 @@ public class ToolInfo implements Serializable {
       return this;
     }
 
-    public Builder withApiBaseUrl(String apiBaseUrl) {
-      this.apiBaseUrl = apiBaseUrl;
-      return this;
-    }
-
-    public Builder withApiKey(String apiKey) {
-      this.apiKey = apiKey;
+    public Builder withContent(String content) {
+      this.content = content;
       return this;
     }
 
@@ -167,9 +155,9 @@ public class ToolInfo implements Serializable {
       return this;
     }
 
-    public ToolInfo build() {
-      return new ToolInfo(
-          serialNo, tenantId, merchantNo, customerNo, name, type, apiBaseUrl, apiKey, description);
+    public SensitiveWords build() {
+      return new SensitiveWords(
+          serialNo, tenantId, merchantNo, customerNo, name, type, content, description);
     }
   }
 }

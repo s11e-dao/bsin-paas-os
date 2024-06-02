@@ -19,7 +19,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.OutputParsers;
+import me.flyray.bsin.domain.entity.OutputParsers;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.OutputParsersService;
 import me.flyray.bsin.infrastructure.mapper.OutputParsersMapper;

@@ -2,7 +2,7 @@ package  me.flyray.bsin.infrastructure.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import me.flyray.bsin.domain.domain.WxPlatformUserTag;
+import me.flyray.bsin.domain.entity.WxPlatformUserTag;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 import java.util.List;

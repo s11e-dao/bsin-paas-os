@@ -3,7 +3,7 @@
 
 <mapper namespace="me.flyray.bsin.infrastructure.mapper.HelloMapper">
 
-  <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.Hello">
+  <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.Hello">
     <result column="name" property="name" jdbcType="VARCHAR"/>
     <result column="desc" property="desc" jdbcType="VARCHAR"/>
   </resultMap>

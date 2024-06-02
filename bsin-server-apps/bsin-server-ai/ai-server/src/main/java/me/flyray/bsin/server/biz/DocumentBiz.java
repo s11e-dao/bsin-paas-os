@@ -5,14 +5,12 @@ import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
 import dev.langchain4j.data.document.loader.UrlDocumentLoader;
 import dev.langchain4j.data.document.parser.TextDocumentParser;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.domain.KnowledgeBaseFile;
+import me.flyray.bsin.domain.entity.KnowledgeBaseFile;
 import me.flyray.bsin.domain.enums.FileLoadType;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.server.document.parser.DocumentParserFactory;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**

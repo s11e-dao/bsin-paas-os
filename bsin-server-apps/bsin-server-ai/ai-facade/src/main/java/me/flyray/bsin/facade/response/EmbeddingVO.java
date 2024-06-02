@@ -5,7 +5,7 @@ import java.io.Serializable;
 import dev.langchain4j.data.document.Metadata;
 
 import lombok.Data;
-import me.flyray.bsin.domain.domain.EmbeddingModel;
+import me.flyray.bsin.domain.entity.EmbeddingModel;
 
 @Data
 public class EmbeddingVO implements Serializable {

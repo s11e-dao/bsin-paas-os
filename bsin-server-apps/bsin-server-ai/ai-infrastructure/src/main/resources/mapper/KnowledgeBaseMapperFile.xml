@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="me.flyray.bsin.infrastructure.mapper.KnowledgeBaseFileMapper">
 
-    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.KnowledgeBaseFile">
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.KnowledgeBaseFile">
         <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="type" column="type" jdbcType="VARCHAR"/>

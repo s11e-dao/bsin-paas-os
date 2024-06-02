@@ -1,8 +1,7 @@
-package me.flyray.bsin.domain.domain;
+package me.flyray.bsin.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import me.flyray.bsin.utils.BsinSnowflake;
 
 import java.io.Serializable;
 import java.util.Date;

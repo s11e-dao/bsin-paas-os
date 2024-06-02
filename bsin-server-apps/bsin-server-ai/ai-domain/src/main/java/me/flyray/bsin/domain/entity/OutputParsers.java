@@ -1,20 +1,22 @@
-package me.flyray.bsin.domain.domain;
+package me.flyray.bsin.domain.entity;
 
 import static dev.langchain4j.internal.Utils.getOrDefault;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 import me.flyray.bsin.utils.BsinSnowflake;
 
 /**
- * @TableName ai_sensitive_words
+ * @TableName ai_output_parsers
  */
 @Data
-@TableName(value = "ai_sensitive_words")
-public class SensitiveWords implements Serializable {
+@TableName(value = "ai_output_parsers")
+public class OutputParsers {
 
   @TableId(value = "serial_no", type = IdType.ASSIGN_ID)
   private String serialNo;
@@ -28,14 +30,17 @@ public class SensitiveWords implements Serializable {
   /** 客户编号 */
   private String customerNo;
 
-  /** 名称 */
+  /** 提示词模版名称 */
   private String name;
 
-  /** 类型： */
+  /** 解析模型类型：1、json 2、StructuredOutputParser */
   private String type;
 
-  /** 内容 */
-  private String content;
+  /** 解析的字段列表 */
+  private String responseSchema;
+
+  /** 知识库封面图片 */
+  private String coverImage;
 
   /** 状态： 0：禁用 1:启用 */
   private String status;
@@ -47,16 +52,13 @@ public class SensitiveWords implements Serializable {
   @TableLogic(value = "0", delval = "1")
   private Integer delFlag;
 
-  /** 是否为默认商户或者用户copilot */
-  private Boolean defaultFlag;
-
   /** 是否可编辑|删除 */
   private Boolean editable;
 
   /** 创建人 */
   private String createBy;
 
-  /** 模型描述 */
+  /** 描述 */
   private String description;
 
   /** 创建时间 */
@@ -67,26 +69,24 @@ public class SensitiveWords implements Serializable {
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private Date updateTime;
 
-  public SensitiveWords() {}
-
-  public SensitiveWords(
+  public OutputParsers(
       String serialNo,
       String tenantId,
       String merchantNo,
       String customerNo,
       String name,
       String type,
-      String fileUrl,
+      String responseSchema,
       String description) {
-    Builder builder =
+    OutputParsers.Builder builder =
         newBuilder()
             .withSerialNo(getOrDefault(serialNo, BsinSnowflake.getId()))
             .withTenantId(getOrDefault(tenantId, "tenantId"))
             .withMerchantNo(getOrDefault(merchantNo, "merchantNo"))
             .withCustomerNo(getOrDefault(customerNo, "customerNo"))
-            .withName(getOrDefault(name, "敏感词1"))
+            .withName(getOrDefault(name, "结构化输出解释器"))
             .withType(getOrDefault(type, "1"))
-            .withContent(getOrDefault(fileUrl, "敏感词"))
+            .withResponseSchema(getOrDefault(responseSchema, ""))
             .withDescription(getOrDefault(description, "description"));
     this.serialNo = builder.getSerialNo();
     this.tenantId = builder.getTenantId();
@@ -94,12 +94,12 @@ public class SensitiveWords implements Serializable {
     this.customerNo = builder.getCustomerNo();
     this.name = builder.getName();
     this.type = builder.getType();
-    this.content = builder.getContent();
+    this.responseSchema = builder.getResponseSchema();
     this.description = builder.getDescription();
   }
 
-  public static Builder newBuilder() {
-    return new Builder();
+  public static OutputParsers.Builder newBuilder() {
+    return new OutputParsers.Builder();
   }
 
   @Data
@@ -110,54 +110,54 @@ public class SensitiveWords implements Serializable {
     private String customerNo;
     private String name;
     private String type;
+    private String responseSchema;
     private String description;
-    private String content;
 
     protected Builder() {}
 
-    public Builder withSerialNo(String serialNo) {
+    public OutputParsers.Builder withSerialNo(String serialNo) {
       this.serialNo = serialNo;
       return this;
     }
 
-    public Builder withMerchantNo(String merchantNo) {
+    public OutputParsers.Builder withMerchantNo(String merchantNo) {
       this.merchantNo = merchantNo;
       return this;
     }
 
-    public Builder withTenantId(String tenantId) {
+    public OutputParsers.Builder withTenantId(String tenantId) {
       this.tenantId = tenantId;
       return this;
     }
 
-    public Builder withCustomerNo(String customerNo) {
+    public OutputParsers.Builder withCustomerNo(String customerNo) {
       this.customerNo = customerNo;
       return this;
     }
 
-    public Builder withName(String name) {
+    public OutputParsers.Builder withName(String name) {
       this.name = name;
       return this;
     }
 
-    public Builder withContent(String content) {
-      this.content = content;
-      return this;
-    }
-
-    public Builder withType(String type) {
+    public OutputParsers.Builder withType(String type) {
       this.type = type;
       return this;
     }
 
-    public Builder withDescription(String description) {
+    public OutputParsers.Builder withDescription(String description) {
       this.description = description;
       return this;
     }
 
-    public SensitiveWords build() {
-      return new SensitiveWords(
-          serialNo, tenantId, merchantNo, customerNo, name, type, content, description);
+    public OutputParsers.Builder withResponseSchema(String responseSchema) {
+      this.responseSchema = responseSchema;
+      return this;
+    }
+
+    public OutputParsers build() {
+      return new OutputParsers(
+          serialNo, tenantId, merchantNo, customerNo, name, type, responseSchema, description);
     }
   }
 }

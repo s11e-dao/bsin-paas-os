@@ -13,7 +13,7 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.WxPlatformUserTag;
+import me.flyray.bsin.domain.entity.WxPlatformUserTag;
 import me.flyray.bsin.facade.service.WxPlatformUserTagService;
 import me.flyray.bsin.infrastructure.mapper.WxPlatformUserTagMapper;
 import me.flyray.bsin.server.utils.RespBodyHandler;

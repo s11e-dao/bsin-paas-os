@@ -1,7 +1,7 @@
 package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import me.flyray.bsin.domain.domain.OutputParsers;
+import me.flyray.bsin.domain.entity.OutputParsers;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

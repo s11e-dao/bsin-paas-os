@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="me.flyray.bsin.infrastructure.mapper.LLMMapper">
 
-    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.LLMParam">
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.LLMParam">
         <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
         <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
         <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>

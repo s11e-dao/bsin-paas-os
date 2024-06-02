@@ -1,17 +1,22 @@
-package me.flyray.bsin.facade.response;
+package me.flyray.bsin.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-import me.flyray.bsin.domain.entity.EmbeddingModel;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+/**
+ * @TableName ai_knowledge_base
+ */
 @Data
-public class KnowledgeBaseVO implements Serializable {
+@TableName(value = "ai_knowledge_base")
+public class KnowledgeBase implements Serializable {
 
-  String serialNo;
+  @TableId private String serialNo;
 
   /** 租户id */
   private String tenantId;
@@ -37,11 +42,27 @@ public class KnowledgeBaseVO implements Serializable {
   /** 访问权限： 1-private 2-public */
   private String accessAuthority;
 
+  /** 是否为默认商户或者用户copilot */
+  private Boolean defaultFlag;
+
+  /** 单条数据上限 */
+  private Integer tokenLimit;
+
   /** 索引模型ID： */
   private String embeddingModelNo;
 
+  /** 提示词模版ID： */
+  private String promptTemplateNo;
+
+  /** 大语言模型ID： */
+  private String llmNo;
+
   /** 逻辑删除 0、未删除 1、已删除 */
+  @TableLogic(value = "0", delval = "1")
   private Integer delFlag;
+
+  /** 是否可编辑|删除 */
+  private Boolean editable;
 
   /** 创建人 */
   private String createBy;
@@ -56,9 +77,4 @@ public class KnowledgeBaseVO implements Serializable {
   /** 更新时间 */
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private Date updateTime;
-
-  private EmbeddingModel embeddingModel;
-
-  /** 知识库文件 */
-  private List<KnowledgeBaseFileVO> knowledgeBaseFiles;
 }

@@ -1,22 +1,20 @@
-package me.flyray.bsin.domain.domain;
+package me.flyray.bsin.domain.entity;
 
 import static dev.langchain4j.internal.Utils.getOrDefault;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 import me.flyray.bsin.utils.BsinSnowflake;
 
 /**
- * @TableName ai_output_parsers
+ * @TableName ai_tool
  */
 @Data
-@TableName(value = "ai_output_parsers")
-public class OutputParsers {
+@TableName(value = "ai_tool")
+public class ToolInfo implements Serializable {
 
   @TableId(value = "serial_no", type = IdType.ASSIGN_ID)
   private String serialNo;
@@ -33,13 +31,16 @@ public class OutputParsers {
   /** 提示词模版名称 */
   private String name;
 
-  /** 解析模型类型：1、json 2、StructuredOutputParser */
+  /** 模型类型：1、 */
   private String type;
 
-  /** 解析的字段列表 */
-  private String responseSchema;
+  /** api请求地址 */
+  private String apiBaseUrl;
 
-  /** 知识库封面图片 */
+  /** api秘钥 */
+  private String apiKey;
+
+  /** 模型封面图片 */
   private String coverImage;
 
   /** 状态： 0：禁用 1:启用 */
@@ -58,7 +59,7 @@ public class OutputParsers {
   /** 创建人 */
   private String createBy;
 
-  /** 描述 */
+  /** 模型描述 */
   private String description;
 
   /** 创建时间 */
@@ -69,24 +70,28 @@ public class OutputParsers {
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private Date updateTime;
 
-  public OutputParsers(
+  public ToolInfo() {}
+
+  public ToolInfo(
       String serialNo,
       String tenantId,
       String merchantNo,
       String customerNo,
       String name,
       String type,
-      String responseSchema,
+      String apiBaseUrl,
+      String apiKey,
       String description) {
-    OutputParsers.Builder builder =
+    Builder builder =
         newBuilder()
             .withSerialNo(getOrDefault(serialNo, BsinSnowflake.getId()))
             .withTenantId(getOrDefault(tenantId, "tenantId"))
             .withMerchantNo(getOrDefault(merchantNo, "merchantNo"))
             .withCustomerNo(getOrDefault(customerNo, "customerNo"))
-            .withName(getOrDefault(name, "结构化输出解释器"))
-            .withType(getOrDefault(type, "1"))
-            .withResponseSchema(getOrDefault(responseSchema, ""))
+            .withName(getOrDefault(name, "OpenAI-Turbo-3.5"))
+            .withType(getOrDefault(type, "GPT-3.5-Turbo"))
+            .withApiBaseUrl(getOrDefault(apiBaseUrl, "https://api.openai.com/v1/chat/completions"))
+            .withApiKey(getOrDefault(apiKey, "demo"))
             .withDescription(getOrDefault(description, "description"));
     this.serialNo = builder.getSerialNo();
     this.tenantId = builder.getTenantId();
@@ -94,12 +99,13 @@ public class OutputParsers {
     this.customerNo = builder.getCustomerNo();
     this.name = builder.getName();
     this.type = builder.getType();
-    this.responseSchema = builder.getResponseSchema();
+    this.apiKey = builder.getApiKey();
+    this.apiBaseUrl = builder.getApiBaseUrl();
     this.description = builder.getDescription();
   }
 
-  public static OutputParsers.Builder newBuilder() {
-    return new OutputParsers.Builder();
+  public static Builder newBuilder() {
+    return new Builder();
   }
 
   @Data
@@ -110,54 +116,60 @@ public class OutputParsers {
     private String customerNo;
     private String name;
     private String type;
-    private String responseSchema;
     private String description;
+    private String apiBaseUrl;
+    private String apiKey;
 
     protected Builder() {}
 
-    public OutputParsers.Builder withSerialNo(String serialNo) {
+    public Builder withSerialNo(String serialNo) {
       this.serialNo = serialNo;
       return this;
     }
 
-    public OutputParsers.Builder withMerchantNo(String merchantNo) {
+    public Builder withMerchantNo(String merchantNo) {
       this.merchantNo = merchantNo;
       return this;
     }
 
-    public OutputParsers.Builder withTenantId(String tenantId) {
+    public Builder withTenantId(String tenantId) {
       this.tenantId = tenantId;
       return this;
     }
 
-    public OutputParsers.Builder withCustomerNo(String customerNo) {
+    public Builder withCustomerNo(String customerNo) {
       this.customerNo = customerNo;
       return this;
     }
 
-    public OutputParsers.Builder withName(String name) {
+    public Builder withName(String name) {
       this.name = name;
       return this;
     }
 
-    public OutputParsers.Builder withType(String type) {
+    public Builder withApiBaseUrl(String apiBaseUrl) {
+      this.apiBaseUrl = apiBaseUrl;
+      return this;
+    }
+
+    public Builder withApiKey(String apiKey) {
+      this.apiKey = apiKey;
+      return this;
+    }
+
+    public Builder withType(String type) {
       this.type = type;
       return this;
     }
 
-    public OutputParsers.Builder withDescription(String description) {
+    public Builder withDescription(String description) {
       this.description = description;
       return this;
     }
 
-    public OutputParsers.Builder withResponseSchema(String responseSchema) {
-      this.responseSchema = responseSchema;
-      return this;
-    }
-
-    public OutputParsers build() {
-      return new OutputParsers(
-          serialNo, tenantId, merchantNo, customerNo, name, type, responseSchema, description);
+    public ToolInfo build() {
+      return new ToolInfo(
+          serialNo, tenantId, merchantNo, customerNo, name, type, apiBaseUrl, apiKey, description);
     }
   }
 }

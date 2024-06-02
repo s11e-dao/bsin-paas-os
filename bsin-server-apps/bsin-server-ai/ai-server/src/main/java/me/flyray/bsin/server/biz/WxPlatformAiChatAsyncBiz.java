@@ -3,7 +3,7 @@ package me.flyray.bsin.server.biz;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
-import me.flyray.bsin.domain.domain.WxPlatform;
+import me.flyray.bsin.domain.entity.WxPlatform;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.response.AiChatDTO;
 

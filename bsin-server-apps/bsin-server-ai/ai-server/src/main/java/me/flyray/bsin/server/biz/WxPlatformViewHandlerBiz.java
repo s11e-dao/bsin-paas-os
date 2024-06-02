@@ -11,7 +11,7 @@ import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
-import me.flyray.bsin.domain.domain.WxPlatform;
+import me.flyray.bsin.domain.entity.WxPlatform;
 import me.flyray.bsin.infrastructure.mapper.WxPlatformMapper;
 import me.flyray.bsin.redis.manager.BsinCacheProvider;
 import me.flyray.bsin.thirdauth.wx.builder.TextBuilder;

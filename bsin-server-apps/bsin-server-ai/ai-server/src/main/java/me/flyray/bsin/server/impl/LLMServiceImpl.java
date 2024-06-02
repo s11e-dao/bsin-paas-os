@@ -23,7 +23,7 @@ import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.LLMParam;
+import me.flyray.bsin.domain.entity.LLMParam;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.LLMService;
 import me.flyray.bsin.infrastructure.mapper.LLMMapper;
