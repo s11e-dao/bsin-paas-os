@@ -335,7 +335,6 @@ export default () => {
   }
 
   const getAppSubMenus = (subMenus: any) => {
-    console.log(subMenus)
     let appSubMenus = subMenus.map((item: any) => {
       return {
         name: item.menuName,

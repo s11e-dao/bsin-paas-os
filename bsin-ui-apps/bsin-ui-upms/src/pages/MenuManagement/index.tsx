@@ -26,12 +26,19 @@ import columnsData from './data';
 import TableTitle from '@/components/TableTitle';
 import IconModel from './icon/icon';
 import { getMenuList, addMenu, delMenu, editMenu, getAppFunctionList } from './service';
-import { useModel } from 'umi';
+import { useModel, useLocation } from 'umi';
 
 const MenuManagement = () => {
+
   const { TextArea } = Input;
   const { Option } = Select;
   const { appId } = useModel('@@qiankunStateFromMaster');
+  if(!appId){
+    // 根据路径appCode获取appId
+    const location = useLocation()
+    let appCode = location.pathname.split('/')[1]
+    console.log(appCode)
+  }
   // 配置提示信息
   const menuSortText = (
     <>
@@ -60,10 +67,10 @@ const MenuManagement = () => {
 
   // 页面开始请求接口
   useEffect(() => { 
-    menuList();
+    doGetMenuList();
   }, []);
 
-  const menuList = async () => {
+  const doGetMenuList = async () => {
     let { data } = await getMenuList({ appId });
     setIsMenuList(data[0]);
   };
@@ -269,7 +276,7 @@ const MenuManagement = () => {
         <Table
           bordered
           columns={columnsData}
-          dataSource={isMenuList.children}
+          dataSource={isMenuList?.children}
           rowKey={(record) => record.menuCode}
           scroll={{ x: 900 }}
           pagination={false}

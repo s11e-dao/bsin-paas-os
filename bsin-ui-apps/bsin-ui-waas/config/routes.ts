@@ -136,11 +136,32 @@ const routes = [
       // **************************钱包**************************
       {
         path: '/wallet',
-        redirect: '/wallet/wallet-list',
+        redirect: '/wallet/platfor-wallet',
       },
+      // 系统钱包
       {
-        path: '/wallet/wallet-list',
+        path: '/wallet/sys-wallet',
         component: '@/pages/Wallet/index',
+      },
+      // 平台钱包
+      {
+        path: '/wallet/platfor-wallet',
+        component: '@/pages/Wallet/PlatforWallet/index',
+      },
+      // 商户钱包
+      {
+        path: '/wallet/merchant-wallet',
+        component: '@/pages/Wallet/MerchantWallet/index',
+      },
+      // 客户钱包
+      {
+        path: '/wallet/customer-wallet',
+        component: '@/pages/Wallet/CustomerWallet/index',
+      },
+      // 代理商钱包
+      {
+        path: '/wallet/sys-agent-wallet',
+        component: '@/pages/Wallet/SysAgentWallet/index',
       },
       // **************************资产*************************
       {

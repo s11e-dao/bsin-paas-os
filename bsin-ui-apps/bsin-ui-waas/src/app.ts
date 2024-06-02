@@ -6,11 +6,11 @@ import { getSessionStorageInfo, getLocalStorageInfo } from '@/utils/localStorage
 export const qiankun = {
     // 应用加载之前
     async bootstrap(props) {
-      console.log('upms bootstrap', props);
+      console.log('waas bootstrap', props);
     },
     // 应用 render 之前触发
     async mount(props) {
-      console.log('upms mount', props);
+      console.log('waas mount', props);
       props.onGlobalStateChange((state, prev) => {
         // state: 变更后的状态; prev 变更前的状态
         console.log(state, prev);
@@ -19,7 +19,7 @@ export const qiankun = {
     },
     // 应用卸载之后触发
     async unmount(props) {
-      console.log('upms unmount', props);
+      console.log('waas unmount', props);
     },
   };
 
