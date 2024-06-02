@@ -13,8 +13,8 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.Equity;
-import me.flyray.bsin.domain.domain.EquityRelation;
+import me.flyray.bsin.domain.entity.Equity;
+import me.flyray.bsin.domain.entity.EquityRelation;
 import me.flyray.bsin.facade.service.EquityConfigService;
 import me.flyray.bsin.infrastructure.mapper.EquityMapper;
 import me.flyray.bsin.infrastructure.mapper.EquityRelationMapper;

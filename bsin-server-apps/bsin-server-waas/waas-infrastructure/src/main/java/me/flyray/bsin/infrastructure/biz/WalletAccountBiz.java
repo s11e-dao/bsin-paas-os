@@ -3,7 +3,7 @@ package me.flyray.bsin.infrastructure.biz;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import me.flyray.bsin.domain.entity.ChainCoin;
-import me.flyray.bsin.domain.domain.Platform;
+import me.flyray.bsin.domain.entity.Platform;
 import me.flyray.bsin.domain.entity.Wallet;
 import me.flyray.bsin.domain.entity.WalletAccount;
 import me.flyray.bsin.exception.BusinessException;

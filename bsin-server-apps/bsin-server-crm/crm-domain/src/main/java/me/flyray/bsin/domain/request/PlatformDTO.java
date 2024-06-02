@@ -2,7 +2,7 @@ package me.flyray.bsin.domain.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import me.flyray.bsin.domain.domain.Platform;
+import me.flyray.bsin.domain.entity.Platform;
 import me.flyray.bsin.validate.AddGroup;
 import org.springframework.format.annotation.DateTimeFormat;
 

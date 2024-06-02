@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import me.flyray.bsin.domain.domain.Merchant;
+import me.flyray.bsin.domain.entity.Merchant;
 
 /**
 * @author bolei

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="me.flyray.bsin.infrastructure.mapper.MerchantApiConsumingRecordMapper">
-  <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.MerchantApiConsumingRecord">
+  <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.MerchantApiConsumingRecord">
     <result column="serial_no" jdbcType="VARCHAR" property="serialNo" />
     <result column="tenant_id" jdbcType="VARCHAR" property="tenantId" />
     <result column="product_id" jdbcType="VARCHAR" property="productId" />
@@ -11,7 +11,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
 
-  <insert id="insert" parameterType="me.flyray.bsin.domain.domain.MerchantApiConsumingRecord">
+  <insert id="insert" parameterType="me.flyray.bsin.domain.entity.MerchantApiConsumingRecord">
     insert into market_merchant_api_consuming_journal (serial_no, tenant_id, product_id,
       api_name,fee,customer_no)
     values (#{serialNo,jdbcType=VARCHAR}, #{tenantId,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR},

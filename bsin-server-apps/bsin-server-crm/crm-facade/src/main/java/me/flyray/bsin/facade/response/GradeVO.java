@@ -1,10 +1,13 @@
 package me.flyray.bsin.facade.response;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Data;
 import me.flyray.bsin.domain.domain.*;
+import me.flyray.bsin.domain.entity.Condition;
+import me.flyray.bsin.domain.entity.CustomerBase;
+import me.flyray.bsin.domain.entity.Equity;
+import me.flyray.bsin.domain.entity.Grade;
 
 /**
  * @author bolei

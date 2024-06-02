@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.Condition;
-import me.flyray.bsin.domain.domain.ConditionRelation;
+import me.flyray.bsin.domain.entity.Condition;
+import me.flyray.bsin.domain.entity.ConditionRelation;
 import me.flyray.bsin.facade.service.ConditionConfigService;
 import me.flyray.bsin.infrastructure.mapper.ConditionMapper;
 import me.flyray.bsin.infrastructure.mapper.ConditionRelationMapper;

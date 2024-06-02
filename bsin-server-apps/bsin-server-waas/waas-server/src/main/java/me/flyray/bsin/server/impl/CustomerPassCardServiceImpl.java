@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-import me.flyray.bsin.domain.domain.Merchant;
+import me.flyray.bsin.domain.entity.Merchant;
 import me.flyray.bsin.facade.service.*;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -23,7 +23,7 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.CustomerBase;
+import me.flyray.bsin.domain.entity.CustomerBase;
 import me.flyray.bsin.domain.entity.CustomerPassCard;
 import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
 import me.flyray.bsin.facade.response.DigitalAssetsItemRes;

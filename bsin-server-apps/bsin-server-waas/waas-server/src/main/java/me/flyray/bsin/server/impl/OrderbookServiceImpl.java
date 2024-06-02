@@ -25,7 +25,7 @@ import cn.hutool.core.bean.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.ContractProtocol;
-import me.flyray.bsin.domain.domain.CustomerBase;
+import me.flyray.bsin.domain.entity.CustomerBase;
 import me.flyray.bsin.domain.entity.CustomerDigitalAssets;
 import me.flyray.bsin.domain.entity.DigitalAssetsCollection;
 import me.flyray.bsin.domain.entity.Orderbook;

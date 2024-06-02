@@ -1,7 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import me.flyray.bsin.domain.domain.ApiKey;
+import me.flyray.bsin.domain.entity.ApiKey;
 import me.flyray.bsin.domain.request.ApiKeyDTO;
 
 import java.util.Map;

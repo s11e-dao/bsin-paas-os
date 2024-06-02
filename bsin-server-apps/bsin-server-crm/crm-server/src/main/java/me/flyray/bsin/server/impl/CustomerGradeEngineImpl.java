@@ -12,7 +12,7 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.domain.domain.Grade;
+import me.flyray.bsin.domain.entity.Grade;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.CustomerGradeEngine;
 import me.flyray.bsin.facade.service.GradeService;

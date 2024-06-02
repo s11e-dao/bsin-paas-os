@@ -1,6 +1,6 @@
 package me.flyray.bsin.infrastructure.mapper;
 
-import me.flyray.bsin.domain.domain.BondingCurveTokenJournal;
+import me.flyray.bsin.domain.entity.BondingCurveTokenJournal;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import org.apache.ibatis.annotations.Mapper;

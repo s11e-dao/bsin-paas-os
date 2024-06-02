@@ -1,19 +1,23 @@
-package me.flyray.bsin.domain.domain;
+package me.flyray.bsin.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
- * 客户等级事件规则表
- * @TableName crm_event_rule
+ * 客户等级划分配置
+ * @TableName crm_grade
  */
-@TableName(value ="crm_event_rule")
+
 @Data
-public class EventRule implements Serializable {
+@TableName(value ="crm_grade")
+public class Grade implements Serializable {
     /**
      * 序列号
      */
@@ -50,44 +54,34 @@ public class EventRule implements Serializable {
     private Integer delFlag;
 
     /**
-     * 事件名称
-     */
-    private String name;
-
-    /**
-     * 资产类型（ 1：虚拟账户 2：数字资产）
-     */
-    private Integer assetType;
-
-    /**
-     * 数量
-     */
-    private BigDecimal amount;
-
-    /**
-     * 备注
-     */
-    private String remark;
-
-    /**
-     * 商户编码
-     */
-    private String merchantNo;
-
-    /**
-     * 租户id
+     * 租户
      */
     private String tenantId;
 
     /**
-     * 资产类型编号
+     * 商户编号
      */
-    private Integer assetTypeNo;
+    private String merchantNo;
 
     /**
-     * 事件编码
+     * 等级名称
      */
-    private String eventCode;
+    private String name;
+
+    /**
+     * 等级描述
+     */
+    private String description;
+
+    /**
+     * 等级级数
+     */
+    private String gradeNum;
+
+    /**
+     * 等级图标
+     */
+    private String gradeImage;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

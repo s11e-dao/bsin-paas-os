@@ -20,9 +20,9 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.CustomerBase;
-import me.flyray.bsin.domain.domain.Grade;
-import me.flyray.bsin.domain.domain.Member;
+import me.flyray.bsin.domain.entity.CustomerBase;
+import me.flyray.bsin.domain.entity.Grade;
+import me.flyray.bsin.domain.entity.Member;
 import me.flyray.bsin.facade.service.MemberService;
 import me.flyray.bsin.facade.service.TokenParamService;
 import me.flyray.bsin.infrastructure.mapper.MemberGradeMapper;

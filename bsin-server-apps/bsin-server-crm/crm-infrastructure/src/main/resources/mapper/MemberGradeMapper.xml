@@ -4,13 +4,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="me.flyray.bsin.infrastructure.mapper.MemberGradeMapper">
 
-    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.MemberGrade">
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.MemberGrade">
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
             <result property="customerNo" column="customer_no" jdbcType="BIGINT"/>
             <result property="gradeNo" column="grade_no" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <resultMap id="MemberVO" type="me.flyray.bsin.domain.domain.CustomerBase">
+    <resultMap id="MemberVO" type="me.flyray.bsin.domain.entity.CustomerBase">
         <id property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
         <id property="username" column="username" jdbcType="VARCHAR"/>
         <result property="authMethod" column="auth_method" jdbcType="VARCHAR"/>
@@ -48,7 +48,7 @@
         serial_no,customer_no,grade_no
     </sql>
 
-    <resultMap id="BaseGradeResultMap" type="me.flyray.bsin.domain.domain.Grade">
+    <resultMap id="BaseGradeResultMap" type="me.flyray.bsin.domain.entity.Grade">
         <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
         <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>

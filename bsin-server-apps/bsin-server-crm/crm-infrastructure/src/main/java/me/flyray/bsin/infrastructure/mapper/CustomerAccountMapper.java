@@ -1,6 +1,6 @@
 package me.flyray.bsin.infrastructure.mapper;
 
-import me.flyray.bsin.domain.domain.Account;
+import me.flyray.bsin.domain.entity.Account;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import org.apache.ibatis.annotations.Mapper;

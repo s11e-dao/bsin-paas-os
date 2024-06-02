@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import me.flyray.bsin.domain.entity.ChainCoin;
-import me.flyray.bsin.domain.domain.Platform;
+import me.flyray.bsin.domain.entity.Platform;
 import me.flyray.bsin.domain.entity.Wallet;
 import me.flyray.bsin.domain.request.PlatformDTO;
 import me.flyray.bsin.infrastructure.mapper.PlatformMapper;
@@ -34,7 +34,7 @@ import cn.hutool.core.bean.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.CustomerBase;
+import me.flyray.bsin.domain.entity.CustomerBase;
 import me.flyray.bsin.domain.entity.SysTenant;
 import me.flyray.bsin.domain.entity.SysUser;
 import me.flyray.bsin.domain.request.SysTenantDTO;

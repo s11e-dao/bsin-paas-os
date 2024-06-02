@@ -2,7 +2,7 @@ package me.flyray.bsin.facade.service;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import me.flyray.bsin.domain.domain.SettlementAccount;
+import me.flyray.bsin.domain.entity.SettlementAccount;
 import me.flyray.bsin.domain.request.SettlementAccountDTO;
 
 public interface SettlementAccountService {

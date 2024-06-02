@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import me.flyray.bsin.domain.domain.Equity;
+import me.flyray.bsin.domain.entity.Equity;
 
 /**
 * @author bolei

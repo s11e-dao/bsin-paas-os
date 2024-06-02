@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.flyray.bsin.domain.domain.Account;
+import me.flyray.bsin.domain.entity.Account;
 import me.flyray.bsin.domain.enums.AccountCategory;
 import me.flyray.bsin.facade.service.TokenParamService;
 import me.flyray.bsin.infrastructure.mapper.CustomerAccountMapper;

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import me.flyray.bsin.domain.domain.MerchantApp;
+import me.flyray.bsin.domain.entity.MerchantApp;
 
 @Mapper
 @Repository

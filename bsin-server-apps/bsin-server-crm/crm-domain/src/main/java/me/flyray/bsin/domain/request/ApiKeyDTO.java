@@ -1,7 +1,7 @@
 package me.flyray.bsin.domain.request;
 
 import lombok.Data;
-import me.flyray.bsin.domain.domain.ApiKey;
+import me.flyray.bsin.domain.entity.ApiKey;
 
 @Data
 public class ApiKeyDTO extends ApiKey {

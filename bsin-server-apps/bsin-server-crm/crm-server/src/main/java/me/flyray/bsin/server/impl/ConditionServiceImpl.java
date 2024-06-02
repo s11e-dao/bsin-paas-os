@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.Condition;
+import me.flyray.bsin.domain.entity.Condition;
 import me.flyray.bsin.facade.service.ConditionService;
 import me.flyray.bsin.infrastructure.mapper.ConditionMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;

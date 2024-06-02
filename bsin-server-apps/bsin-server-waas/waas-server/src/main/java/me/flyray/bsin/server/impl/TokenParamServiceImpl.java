@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.annotations.CaptureCustomerBehavior;
-import me.flyray.bsin.domain.domain.Account;
+import me.flyray.bsin.domain.entity.Account;
 import me.flyray.bsin.domain.entity.DigitalAssetsCollection;
 import me.flyray.bsin.domain.entity.TokenParam;
 import me.flyray.bsin.domain.entity.TokenReleaseJournal;

@@ -1,7 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import me.flyray.bsin.domain.domain.CustomerBase;
+import me.flyray.bsin.domain.entity.CustomerBase;
 import me.flyray.bsin.domain.request.PlatformDTO;
 
 import java.util.Map;

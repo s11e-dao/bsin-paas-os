@@ -1,9 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import me.flyray.bsin.domain.domain.Merchant;
-import me.flyray.bsin.domain.request.MerchantRegisterRequest;
-import me.flyray.bsin.utils.BsinResultEntity;
+import me.flyray.bsin.domain.entity.Merchant;
 
 import java.util.Map;
 

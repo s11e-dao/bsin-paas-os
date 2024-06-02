@@ -17,7 +17,7 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.domain.MerchantApp;
+import me.flyray.bsin.domain.entity.MerchantApp;
 import me.flyray.bsin.facade.service.MerchantAppService;
 import me.flyray.bsin.infrastructure.mapper.MerchantAppMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;

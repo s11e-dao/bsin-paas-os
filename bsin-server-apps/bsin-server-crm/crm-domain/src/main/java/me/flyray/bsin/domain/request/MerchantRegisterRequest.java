@@ -1,7 +1,7 @@
 package me.flyray.bsin.domain.request;
 
 import lombok.Data;
-import me.flyray.bsin.domain.domain.Merchant;
+import me.flyray.bsin.domain.entity.Merchant;
 import me.flyray.bsin.validate.AddGroup;
 
 import javax.validation.constraints.NotBlank;

@@ -8,8 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import me.flyray.bsin.domain.domain.MerchantApiConsumingRecord;
-import me.flyray.bsin.domain.domain.MerchantApiFeeConfig;
+import me.flyray.bsin.domain.entity.MerchantApiConsumingRecord;
 
 
 @Mapper

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="me.flyray.bsin.infrastructure.mapper.MerchantApiFeeConfigMapper">
-    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.domain.MerchantApiFeeConfig">
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.MerchantApiFeeConfig">
         <result column="serial_no" jdbcType="VARCHAR" property="serialNo"/>
         <result column="tenant_id" jdbcType="VARCHAR" property="tenantId"/>
         <result column="fee" jdbcType="VARCHAR" property="fee"/>
@@ -15,7 +15,7 @@
         serial_no, tenant_id, fee, free_times, create_time, status, product_id
     </sql>
 
-    <insert id="insert" parameterType="me.flyray.bsin.domain.domain.MerchantApiFeeConfig">
+    <insert id="insert" parameterType="me.flyray.bsin.domain.entity.MerchantApiFeeConfig">
         insert into market_merchant_product_api_fee (serial_no, tenant_id, fee,
                                                 free_times, create_time, status,
                                                     product_id)
@@ -29,7 +29,7 @@
         where serial_no = #{serialNo}
     </update>
 
-    <update id="update" parameterType="me.flyray.bsin.domain.domain.MerchantApiFeeConfig">
+    <update id="update" parameterType="me.flyray.bsin.domain.entity.MerchantApiFeeConfig">
         update market_merchant_product_api_fee
         <set>
             <if test="fee != null and fee !='' ">

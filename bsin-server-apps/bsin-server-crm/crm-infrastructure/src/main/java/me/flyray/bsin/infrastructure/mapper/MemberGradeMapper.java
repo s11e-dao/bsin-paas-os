@@ -1,10 +1,9 @@
 package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import me.flyray.bsin.domain.domain.CustomerBase;
-import me.flyray.bsin.domain.domain.Grade;
-import me.flyray.bsin.domain.domain.Member;
-import me.flyray.bsin.domain.domain.MemberGrade;
+import me.flyray.bsin.domain.entity.CustomerBase;
+import me.flyray.bsin.domain.entity.Grade;
+import me.flyray.bsin.domain.entity.MemberGrade;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import org.apache.ibatis.annotations.Mapper;

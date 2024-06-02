@@ -14,9 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.domain.domain.CustomerBase;
-import me.flyray.bsin.domain.domain.CustomerInviteRelation;
-import me.flyray.bsin.domain.domain.Equity;
+import me.flyray.bsin.domain.entity.CustomerBase;
+import me.flyray.bsin.domain.entity.CustomerInviteRelation;
 import me.flyray.bsin.enums.CustomerType;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.EquityService;
