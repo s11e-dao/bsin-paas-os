@@ -49,7 +49,7 @@
         cw.create_by as createBy,
         cw.update_time as updateTime,
         cw.update_by as updateBy
-        from crm_wallet as cw
+        from waas_wallet as cw
         left join crm_platform as cp
         on cw.tenant_id = cp.tenant_id and cp.del_flag = '0'
         left join (

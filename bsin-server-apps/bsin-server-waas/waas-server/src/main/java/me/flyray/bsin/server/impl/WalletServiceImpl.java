@@ -143,22 +143,15 @@ public class WalletServiceImpl implements WalletService {
   @ShenyuDubboClient("/getPageList")
   public Page<WalletVO> getPageList(WalletDTO walletDTO) {
     log.debug("请求WalletService.pageList,参数:{}", walletDTO);
-    try{
-      LoginUser user = LoginInfoContextHelper.getLoginUser();
-      if(walletDTO.getCurrent() == null){
-        walletDTO.setCurrent(1);
-      }
-      if(walletDTO.getSize() == null){
-        walletDTO.setSize(10);
-      }
-      walletDTO.setTenantId(user.getTenantId());
-      return walletMapper.pageList(new Page<>(walletDTO.getCurrent(),walletDTO.getSize()),walletDTO);
-    }catch (BusinessException be){
-      throw be;
-    }catch (Exception e){
-      e.printStackTrace();
-      throw new BusinessException("SYSTEM ERROR");
+    LoginUser user = LoginInfoContextHelper.getLoginUser();
+    if(walletDTO.getCurrent() == null){
+      walletDTO.setCurrent(1);
     }
+    if(walletDTO.getSize() == null){
+      walletDTO.setSize(10);
+    }
+    walletDTO.setTenantId(user.getTenantId());
+    return walletMapper.pageList(new Page<>(walletDTO.getCurrent(),walletDTO.getSize()),walletDTO);
   }
 
   @Override

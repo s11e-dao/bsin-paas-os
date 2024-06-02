@@ -1,10 +1,10 @@
 import { request } from '@umijs/max'
 let waasPath = process.env.contextPath_waas;
 
-// 分页查询合约配置
+// 分页查询
 export const getAdsPageList = (params) => {
-  return request('/list', {
-    serviceName: 'AdsService',
+  return request(waasPath + '/wallet/getPageList', {
+    serviceName: 'WalletService',
     methodName: 'getPageList',
     version: '1.0',
     bizParams: {
@@ -13,11 +13,11 @@ export const getAdsPageList = (params) => {
   });
 };
 
-// 创建合约配置
+// 创建
 export const addAds = (params) => {
-  return request('/add', {
-    serviceName: 'AdsService',
-    methodName: 'add',
+  return request(waasPath + '/wallet/createMPCWallet', {
+    serviceName: 'WalletService',
+    methodName: 'createMPCWallet',
     version: '1.0',
     bizParams: {
       ...params,
@@ -25,10 +25,10 @@ export const addAds = (params) => {
   });
 };
 
-// 删除合约配置
+// 删除
 export const deleteAds = (params) => {
-  return request('/del', {
-    serviceName: 'AdsService',
+  return request(waasPath + '/wallet/delete', {
+    serviceName: 'WalletService',
     methodName: 'delete',
     version: '1.0',
     bizParams: {
@@ -37,11 +37,11 @@ export const deleteAds = (params) => {
   });
 };
 
-// 查询合约配置详情
+// 查询详情
 export const getAdsDetail = (params) => {
   console.log('params', params);
-  return request('/view', {
-    serviceName: 'AdsService',
+  return request(waasPath + '/wallet/getDetail', {
+    serviceName: 'WalletService',
     methodName: 'getDetail',
     version: '1.0',
     bizParams: {
