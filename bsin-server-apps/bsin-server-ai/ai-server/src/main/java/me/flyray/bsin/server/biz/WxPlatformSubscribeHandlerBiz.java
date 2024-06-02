@@ -3,7 +3,7 @@ package me.flyray.bsin.server.biz;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
+import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import me.flyray.bsin.thirdauth.wx.builder.TextBuilder;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import me.flyray.bsin.domain.entity.WxPlatform;
@@ -37,7 +37,6 @@ public class WxPlatformSubscribeHandlerBiz extends AbstractHandler {
   @Autowired private WxPlatformMapper wxPlatformMapper;
   @Autowired private WxPlatformUserMapper wxPlatformUserMapper;
   @Autowired BsinWxMpServiceUtil bsinWxMpServiceUtil;
-  @Autowired private BsinCacheProvider bsinCacheProvider;
   @Autowired private CopilotMapper copilotMapper;
 
   @Value("${bsin.ai.aesKey}")
@@ -70,7 +69,7 @@ public class WxPlatformSubscribeHandlerBiz extends AbstractHandler {
       throws WxErrorException {
 
     this.logger.info("新关注用户 OPENID: " + wxMessage.getFromUser());
-    String appId = bsinCacheProvider.get(wxMessage.getFromUser());
+    String appId = BsinCacheProvider.get("ai",wxMessage.getFromUser());
     String openId = wxMessage.getFromUser();
     WxPlatform wxPlatform = wxPlatformMapper.selectByAppId(appId);
 

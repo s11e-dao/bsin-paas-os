@@ -14,14 +14,13 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.flyray.bsin.domain.entity.WxPlatform;
 import me.flyray.bsin.enums.WxPlatformType;
 import me.flyray.bsin.infrastructure.mapper.WxPlatformMapper;
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
+import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import me.flyray.bsin.server.biz.WxPlatformClickHandlerBiz;
-import me.flyray.bsin.server.biz.WxPlatformViewHandlerBiz;
 import me.flyray.bsin.server.biz.WxPlatformMsgHandlerBiz;
 import me.flyray.bsin.server.biz.WxPlatformSubscribeHandlerBiz;
+import me.flyray.bsin.server.biz.WxPlatformViewHandlerBiz;
 import me.flyray.bsin.thirdauth.wx.utils.BsinWxCpServiceUtil;
 import me.flyray.bsin.thirdauth.wx.utils.BsinWxMpServiceUtil;
-
 import me.flyray.bsin.thirdauth.wx.utils.WxCpProperties;
 import me.flyray.bsin.thirdauth.wx.utils.WxMpProperties;
 import me.flyray.bsin.utils.JsonUtils;
@@ -31,7 +30,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import static me.chanjar.weixin.common.api.WxConsts.EventType.*;
-import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType.*;
+import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType.EVENT;
+import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType.TEXT;
 
 /**
  * @author <a href="https://github.com/binarywang">Binary Wang</a>
@@ -49,7 +49,6 @@ public class WxPortalController {
 
   @Autowired BsinWxMpServiceUtil bsinWxMpServiceUtil;
   @Autowired BsinWxCpServiceUtil bsinWxCpServiceUtil;
-  @Autowired private BsinCacheProvider bsinCacheProvider;
   @Autowired private WxPlatformMapper wxPlatformMapper;
 
   @Value("${bsin.ai.aesKey}")
@@ -186,7 +185,7 @@ public class WxPortalController {
       WxMpXmlMessage inMessage = WxMpXmlMessage.fromXml(requestBody);
       inMessage.getFromUser();
       // 设置用户的 公众号 appId
-      bsinCacheProvider.set(inMessage.getFromUser(), appid);
+      BsinCacheProvider.put("ai",inMessage.getFromUser(), appid);
       outMessage = this.route(inMessage, wxService);
       if (outMessage == null) {
         return "";
@@ -199,7 +198,7 @@ public class WxPortalController {
               requestBody, wxService.getWxMpConfigStorage(), timestamp, nonce, msgSignature);
       log.debug("\n消息解密后内容为：\n{} ", inMessage.toString());
       // 设置用户的 公众号 appId
-      bsinCacheProvider.set(inMessage.getFromUser(), appid);
+      BsinCacheProvider.put("ai",inMessage.getFromUser(), appid);
       outMessage = this.route(inMessage, wxService);
       if (outMessage == null) {
         return "";

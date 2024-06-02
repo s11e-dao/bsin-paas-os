@@ -1,11 +1,8 @@
 package me.flyray.bsin.server.biz;
 
-import static me.chanjar.weixin.common.api.WxConsts.EventType.*;
-
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
-import java.util.Map;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -13,7 +10,7 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.flyray.bsin.domain.entity.WxPlatform;
 import me.flyray.bsin.infrastructure.mapper.WxPlatformMapper;
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
+import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import me.flyray.bsin.thirdauth.wx.builder.TextBuilder;
 import me.flyray.bsin.thirdauth.wx.handler.AbstractHandler;
 import me.flyray.bsin.thirdauth.wx.utils.BsinWxMpServiceUtil;
@@ -21,6 +18,10 @@ import me.flyray.bsin.thirdauth.wx.utils.WxMpProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+import static me.chanjar.weixin.common.api.WxConsts.EventType.VIEW;
 
 /**
  * @author <a href="https://github.com/binarywang">Binary Wang</a>
@@ -30,7 +31,6 @@ public class WxPlatformViewHandlerBiz extends AbstractHandler {
 
   @Autowired private WxPlatformMapper wxPlatformMapper;
   @Autowired BsinWxMpServiceUtil bsinWxMpServiceUtil;
-  @Autowired private BsinCacheProvider bsinCacheProvider;
 
   @Value("${bsin.ai.aesKey}")
   private String aesKey;
@@ -62,7 +62,7 @@ public class WxPlatformViewHandlerBiz extends AbstractHandler {
       throws WxErrorException {
 
     this.logger.info("OPENID: " + wxMessage.getFromUser());
-    String appId = bsinCacheProvider.get(wxMessage.getFromUser());
+    String appId = BsinCacheProvider.get("ai",wxMessage.getFromUser());
     String openId = wxMessage.getFromUser();
     WxPlatform wxPlatform = wxPlatformMapper.selectByAppId(appId);
 

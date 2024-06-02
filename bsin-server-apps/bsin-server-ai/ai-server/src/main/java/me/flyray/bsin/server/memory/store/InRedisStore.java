@@ -3,7 +3,7 @@ package me.flyray.bsin.server.memory.store;
 import java.util.List;
 
 import me.flyray.bsin.domain.entity.RedisChatMessage;
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
+import me.flyray.bsin.redis.provider.BsinRedisProvider;
 import me.flyray.bsin.server.utils.BsinMD5;
 import me.flyray.bsin.server.utils.ObjectToOther;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class InRedisStore {
 
-  @Autowired private BsinCacheProvider bsinCacheProvider;
-
   public List<RedisChatMessage> getMessages(String prefix, String sender, String receiver) {
     String key = prefix;
     if (sender.compareTo(receiver) < 0) {
@@ -30,7 +28,7 @@ public class InRedisStore {
       key += BsinMD5.getMD5Hex(receiver + sender);
     }
     // 获取list中的数据
-    Object resultObj = bsinCacheProvider.listRange(key, 0, bsinCacheProvider.listLen(key));
+    Object resultObj = null; //BsinRedisProvider.listRange(key, 0, bsinCacheProvider.listLen(key));
     // 将Object安全的转为List
     return ObjectToOther.castList(resultObj, RedisChatMessage.class);
   }
@@ -44,7 +42,7 @@ public class InRedisStore {
       key += BsinMD5.getMD5Hex(receiver + sender);
     }
     // 获取list中的数据
-    Object resultObj = bsinCacheProvider.listRange(key, start, end);
+    Object resultObj = null; //BsinRedisProvider.listRange(key, start, end);
     // 将Object安全的转为List
     List<RedisChatMessage> resultList = ObjectToOther.castList(resultObj, RedisChatMessage.class);
     // 遍历获取到的结果
@@ -68,7 +66,7 @@ public class InRedisStore {
     } else {
       key += BsinMD5.getMD5Hex(redisChatMessage.getReceiver() + redisChatMessage.getSender());
     }
-    bsinCacheProvider.listRightPush(key, redisChatMessage);
+    // BsinRedisProvider.listRightPush(key, redisChatMessage);
   }
   //  e98ab190f60d410a02b353a4fed38825
   /**
@@ -88,8 +86,8 @@ public class InRedisStore {
           BsinMD5.getMD5Hex(
               redisChatMessages.get(0).getReceiver() + redisChatMessages.get(0).getSender());
     }
-    bsinCacheProvider.listRightPushAll(
-        key, ObjectToOther.castList(redisChatMessages, Object.class));
+//    BsinRedisProvider.listRightPushAll(
+//        key, ObjectToOther.castList(redisChatMessages, Object.class));
   }
 
   /**
@@ -104,7 +102,7 @@ public class InRedisStore {
     } else {
       key += BsinMD5.getMD5Hex(redisChatMessage.getReceiver() + redisChatMessage.getSender());
     }
-    bsinCacheProvider.listLeftPush(key, redisChatMessage);
+    // BsinRedisProvider.listLeftPush(key, redisChatMessage);
   }
 
   /**
@@ -124,7 +122,7 @@ public class InRedisStore {
           BsinMD5.getMD5Hex(
               redisChatMessages.get(0).getReceiver() + redisChatMessages.get(0).getSender());
     }
-    bsinCacheProvider.listLeftPushAll(key, ObjectToOther.castList(redisChatMessages, Object.class));
+    // BsinRedisProvider.listLeftPushAll(key, ObjectToOther.castList(redisChatMessages, Object.class));
   }
 
   /**
@@ -139,7 +137,7 @@ public class InRedisStore {
     } else {
       key += BsinMD5.getMD5Hex(redisChatMessage.getReceiver() + redisChatMessage.getSender());
     }
-    bsinCacheProvider.listPopLeftKey(key);
+    // BsinRedisProvider.listPopLeftKey(key);
   }
   /**
    * 删除队列尾巴一条记录
@@ -153,7 +151,7 @@ public class InRedisStore {
     } else {
       key += BsinMD5.getMD5Hex(redisChatMessage.getReceiver() + redisChatMessage.getSender());
     }
-    bsinCacheProvider.listPopRightKey(key);
+    // BsinRedisProvider.listPopRightKey(key);
   }
 
   public void updateMessage(String prefix, List<RedisChatMessage> messages) {}

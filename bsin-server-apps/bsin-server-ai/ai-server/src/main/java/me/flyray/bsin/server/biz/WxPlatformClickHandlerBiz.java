@@ -3,7 +3,7 @@ package me.flyray.bsin.server.biz;
 import static me.chanjar.weixin.common.api.WxConsts.EventType.CLICK;
 
 
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
+import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -43,7 +43,6 @@ public class WxPlatformClickHandlerBiz extends AbstractHandler {
 
   @Autowired private WxPlatformMapper wxPlatformMapper;
   @Autowired BsinWxMpServiceUtil bsinWxMpServiceUtil;
-  @Autowired private BsinCacheProvider bsinCacheProvider;
 
   private static long lastTime = 0;
   private static long currentTime = 0;
@@ -92,7 +91,7 @@ public class WxPlatformClickHandlerBiz extends AbstractHandler {
       throws WxErrorException {
 
     this.logger.info("OPENID: " + wxMessage.getFromUser());
-    String appId = bsinCacheProvider.get(wxMessage.getFromUser());
+    String appId = BsinCacheProvider.get("ai",wxMessage.getFromUser());
     String openId = wxMessage.getFromUser();
     WxPlatform wxPlatform = wxPlatformMapper.selectByAppId(appId);
 
@@ -182,8 +181,8 @@ public class WxPlatformClickHandlerBiz extends AbstractHandler {
             String mpVerifyCode = VerficationCodeUtil.getVerficationCode(6);
             // 2.火源社区微信openId和bsin-copilot商户登录名绑定，注册时，若能根据验证码找到 openId,
             // 即验证码有效，同时完成商户ID(或者商户登录名)和openId的绑定
-            bsinCacheProvider.set(
-                "openIdWithMpVerifyCode:" + mpVerifyCode, wxMessage.getFromUser(), 90);
+//            BsinCacheProvider.set(
+//                "openIdWithMpVerifyCode:" + mpVerifyCode, wxMessage.getFromUser(), 90);
 
             //            String openIdWithMpVerifyCode =
             //                bsinCacheProvider.get("openIdWithMpVerifyCode:" + mpVerifyCode);
@@ -242,10 +241,10 @@ public class WxPlatformClickHandlerBiz extends AbstractHandler {
           else if (questionPreProcessDTO.isGetWechatLoginQqCode()) {
             // 1.根据火源社区微信openId获取bsin-copilot商户登录名
             String bsinCopilotUsername =
-                bsinCacheProvider.get("bsinCopilotUsernameWithOpenId:" + wxMessage.getFromUser());
+                BsinCacheProvider.get("ai","bsinCopilotUsernameWithOpenId:" + wxMessage.getFromUser());
             // 1.根据火源社区微信openId获取bsin-copilot商户客户号？？？？？？？？？？？？？？
             String bsinCopilotCustomerNoWithOpenId =
-                bsinCacheProvider.get("bsinCopilotCustomerNoWithOpenId:" + wxMessage.getFromUser());
+                    BsinCacheProvider.get("ai","bsinCopilotCustomerNoWithOpenId:" + wxMessage.getFromUser());
             if (bsinCopilotUsername == null) {
               return new TextBuilder()
                   .build(

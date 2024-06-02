@@ -1,24 +1,5 @@
 package me.flyray.bsin.server.biz;
 
-import me.flyray.bsin.domain.entity.*;
-import me.flyray.bsin.facade.response.AiChatDTO;
-import me.flyray.bsin.facade.response.QuestionPreProcessDTO;
-import me.flyray.bsin.infrastructure.mapper.CopilotMapper;
-import me.flyray.bsin.infrastructure.mapper.WxPlatformMapper;
-import me.flyray.bsin.infrastructure.mapper.WxPlatformUserMapper;
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
-import me.flyray.bsin.thirdauth.wx.builder.TextBuilder;
-
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
@@ -26,10 +7,30 @@ import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import me.flyray.bsin.domain.entity.CopilotInfo;
+import me.flyray.bsin.domain.entity.WxPlatform;
+import me.flyray.bsin.domain.entity.WxPlatformUser;
+import me.flyray.bsin.facade.response.AiChatDTO;
+import me.flyray.bsin.facade.response.QuestionPreProcessDTO;
+import me.flyray.bsin.infrastructure.mapper.CopilotMapper;
+import me.flyray.bsin.infrastructure.mapper.WxPlatformMapper;
+import me.flyray.bsin.infrastructure.mapper.WxPlatformUserMapper;
+import me.flyray.bsin.redis.provider.BsinCacheProvider;
+import me.flyray.bsin.thirdauth.wx.builder.TextBuilder;
 import me.flyray.bsin.thirdauth.wx.handler.AbstractHandler;
 import me.flyray.bsin.thirdauth.wx.utils.BsinWxMpServiceUtil;
 import me.flyray.bsin.thirdauth.wx.utils.WxMpProperties;
 import me.flyray.bsin.utils.BsinSnowflake;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author <a href="https://github.com/binarywang">Binary Wang</a>
@@ -47,7 +48,6 @@ public class WxPlatformMsgHandlerBiz extends AbstractHandler {
   private static long currentTime = 0;
   private final Environment environment;
   @Autowired BsinWxMpServiceUtil bsinWxMpServiceUtil;
-  @Autowired private BsinCacheProvider bsinCacheProvider;
 
   @Value("${bsin.ai.aesKey}")
   private String aesKey;
@@ -78,7 +78,7 @@ public class WxPlatformMsgHandlerBiz extends AbstractHandler {
       WxSessionManager sessionManager) {
 
     // 根据用户的openid从缓存里面获取对应的appId
-    String appId = bsinCacheProvider.get(wxMessage.getFromUser());
+    String appId = BsinCacheProvider.get("ai",wxMessage.getFromUser());
     String openId = wxMessage.getFromUser();
     WxPlatform wxPlatform = wxPlatformMapper.selectByAppId(appId);
     WxMpProperties.MpConfig config = new WxMpProperties.MpConfig();

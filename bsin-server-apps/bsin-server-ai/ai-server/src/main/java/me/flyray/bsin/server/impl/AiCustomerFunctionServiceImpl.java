@@ -1,25 +1,9 @@
 package me.flyray.bsin.server.impl;
 
-import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_NO_NOT_ISNULL;
-
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import me.flyray.bsin.redis.manager.BsinCacheProvider;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
-import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
-import org.apache.shenyu.client.apidocs.annotations.ApiModule;
-import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
@@ -28,12 +12,28 @@ import me.flyray.bsin.domain.enums.FunctionSubscribeStatus;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.AiCustomerFunctionService;
 import me.flyray.bsin.infrastructure.mapper.AiCustomerFunctionMapper;
+import me.flyray.bsin.redis.provider.BsinCacheProvider;
+import me.flyray.bsin.redis.provider.BsinRedisProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.server.utils.VerficationCodeUtil;
 import me.flyray.bsin.utils.BsinSnowflake;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
+import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_NO_NOT_ISNULL;
 
 /**
  * @author leoanrd
@@ -47,7 +47,6 @@ import me.flyray.bsin.utils.BsinSnowflake;
 public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService {
 
   @Autowired private AiCustomerFunctionMapper aiCustomerFunctionMapper;
-  @Autowired private BsinCacheProvider bsinCacheProvider;
 
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
@@ -336,7 +335,7 @@ public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService 
     // 2.调用公众号推送模版 TODO:
 
     // 3.将验证码存在缓存里面 mpVerifyCode:customerNo verifycode
-    bsinCacheProvider.set("mpVerifyCodeWithCustomerNo:" + customerNo, mpVerifyCode, 120);
+    BsinRedisProvider.setCacheObject("mpVerifyCodeWithCustomerNo:" + customerNo, mpVerifyCode, Duration.ofSeconds(120));
     // 测试用
     requestMap.put("mpVerifyCode", mpVerifyCode);
     return RespBodyHandler.setRespBodyDto(requestMap);
@@ -360,7 +359,7 @@ public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService 
     if (mpVerifyCode.isEmpty()) {
       throw new BusinessException("100000", "验证码为空！！！");
     }
-    if (!bsinCacheProvider.get("mpVerifyCodeWithCustomerNo:" + customerNo).equals(mpVerifyCode)) {
+    if (!BsinCacheProvider.get("ai","mpVerifyCodeWithCustomerNo:" + customerNo).equals(mpVerifyCode)) {
       throw new BusinessException("100000", "验证码错误");
     }
     return RespBodyHandler.RespBodyDto();
