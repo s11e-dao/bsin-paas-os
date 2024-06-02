@@ -17,8 +17,8 @@ shenyu:
   client:
     dubbo:
       props:
-        contextPath: /agent
-        appName: agent
+        contextPath: /aiAgent
+        appName: aiAgent
 
 dubbo:
   application:
