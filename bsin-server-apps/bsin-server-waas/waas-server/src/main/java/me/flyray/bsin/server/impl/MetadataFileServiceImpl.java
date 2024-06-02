@@ -129,7 +129,7 @@ public class MetadataFileServiceImpl implements MetadataFileService {
     @ShenyuDubboClient("/getFileList")
     @ApiDoc(desc = "getFileList")
     @Override
-    public Map<String, Object> getFileList(Map<String, Object> requestMap) {
+    public List<MetadataFile> getFileList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         String tenantId = loginUser.getTenantId();
         String merchantNo = loginUser.getMerchantNo();
@@ -143,7 +143,7 @@ public class MetadataFileServiceImpl implements MetadataFileService {
         warapper.eq(ObjectUtil.isNotNull(merchantNo),MetadataFile::getMerchantNo, merchantNo);
         warapper.eq(MetadataFile::getParentNo, parentNo);
         List<MetadataFile> metadataFiles = metadataFileMapper.selectList(warapper);
-        return RespBodyHandler.setRespBodyListDto(metadataFiles);
+        return metadataFiles;
     }
 
     @ShenyuDubboClient("/getList")

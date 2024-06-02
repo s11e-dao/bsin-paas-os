@@ -26,12 +26,12 @@ import me.flyray.bsin.infrastructure.biz.CustomerInfoBiz;
 import me.flyray.bsin.infrastructure.biz.DigitalAssetsBiz;
 import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
 import me.flyray.bsin.infrastructure.mapper.*;
-import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import me.flyray.bsin.redis.provider.BsinRedisProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.InvertCodeGenerator;
+import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
@@ -427,7 +427,9 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
     String tenantId = loginUser.getTenantId();
     DigitalAssetsCollection digitalAssetsColletion =
         BsinServiceContext.getReqBodyDto(DigitalAssetsCollection.class, requestMap);
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Object paginationObj =  requestMap.get("pagination");
+    me.flyray.bsin.server.utils.Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
     Page<DigitalAssetsCollection> page =
         new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<DigitalAssetsCollection> warapper = new LambdaUpdateWrapper<>();

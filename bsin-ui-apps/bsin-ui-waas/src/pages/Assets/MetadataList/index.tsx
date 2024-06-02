@@ -69,7 +69,7 @@ export default () => {
   }, []);
 
   // 点击放大图片预览
-  function InitImageViwer(
+  function initImageViwer(
     box = 'img-list', // 注意class不要忘记了
     option = {},
     callBack: (arg0: any[]) => any,
@@ -170,7 +170,7 @@ export default () => {
                 style={{ width: '100%' }}
                 src={fileUrl}
                 onClick={() => {
-                  InitImageViwer(); // 点击放大图片
+                  initImageViwer(); // 点击放大图片
                 }}
               />
             </div>

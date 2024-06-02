@@ -1,6 +1,9 @@
 package me.flyray.bsin.facade.service;
 
 
+import me.flyray.bsin.domain.entity.MetadataFile;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +31,7 @@ public interface MetadataFileService {
      * 查询文件
      * 传了id则查询子文件
      */
-    public Map<String, Object> getFileList(Map<String, Object> requestMap);
+    public List<MetadataFile> getFileList(Map<String, Object> requestMap);
 
 
     /**
