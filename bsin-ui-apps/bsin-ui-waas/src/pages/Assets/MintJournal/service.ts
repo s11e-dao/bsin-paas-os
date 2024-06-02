@@ -3,7 +3,7 @@ let waasPath = process.env.contextPath_waas;
 
 // 列表查询
 export const getDigitalAssetsCollectionList = (params) => {
-  return request('/list', {
+  return request(waasPath + '/digitalAssetsCollection/list', {
     serviceName: 'DigitalAssetsCollectionService',
     methodName: 'getList',
     version: '1.0',
@@ -15,7 +15,7 @@ export const getDigitalAssetsCollectionList = (params) => {
 
 // 列表查询
 export const getDigitalAssetsItemList = (params) => {
-  return request('/list', {
+  return request(waasPath + '/digitalAssetsCollection/getList', {
     serviceName: 'DigitalAssetsItemService',
     methodName: 'getList',
     version: '1.0',
@@ -27,7 +27,7 @@ export const getDigitalAssetsItemList = (params) => {
 
 // 分页查询铸造记录
 export const getMintJournalPageList = (params) => {
-  return request('/list', {
+  return request(waasPath + '/mintJournal/getPageList', {
     serviceName: 'MintJournalService',
     methodName: 'getPageList',
     version: '1.0',
@@ -39,7 +39,7 @@ export const getMintJournalPageList = (params) => {
 
 // 创建铸造记录
 export const addMintJournal = (params) => {
-  return request('/add', {
+  return request(waasPath + '/mintJournal/add', {
     serviceName: 'MintJournalService',
     methodName: 'add',
     version: '1.0',
@@ -51,7 +51,7 @@ export const addMintJournal = (params) => {
 
 // 删除铸造记录
 export const deleteMintJournal = (params) => {
-  return request('/del', {
+  return request(waasPath + '/mintJournal/delete', {
     serviceName: 'MintJournalService',
     methodName: 'delete',
     version: '1.0',
@@ -64,7 +64,7 @@ export const deleteMintJournal = (params) => {
 // 查询铸造记录详情
 export const getMintJournalDetail = (params) => {
   console.log('params', params);
-  return request('/view', {
+  return request(waasPath + '/mintJournal/getDetail', {
     serviceName: 'MintJournalService',
     methodName: 'getDetail',
     version: '1.0',

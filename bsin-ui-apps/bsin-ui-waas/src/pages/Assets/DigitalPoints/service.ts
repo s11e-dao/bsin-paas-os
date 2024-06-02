@@ -1,11 +1,10 @@
 import { request } from '@umijs/max'
 let waasPath = process.env.contextPath_waas;
-
 // const [tradingMode, setTradingMode] = useState('');
 
 // 发行
 export const issueDigitalPoints = (params) => {
-  return request('/add', {
+  return request(waasPath + '/digitalPoints/issue', {
     serviceName: 'DigitalPointsService',
     methodName: 'issue',
     version: '1.0',
@@ -18,7 +17,7 @@ export const issueDigitalPoints = (params) => {
 // 查询详情
 export const getDigitalPointsDetail = (params) => {
   console.log('params', params);
-  return request('/view', {
+  return request(waasPath + '/digitalPoints/getDetail', {
     serviceName: 'DigitalAssetsCollectionService',
     methodName: 'getDetail',
     version: '1.0',
@@ -31,7 +30,7 @@ export const getDigitalPointsDetail = (params) => {
 // 获取数字积分参数
 export const getTokenParam = (params) => {
   console.log('params', params);
-  return request('/get', {
+  return request(waasPath + '/tokenParam/getDetail', {
     serviceName: 'TokenParamService',
     methodName: 'getDetail',
     version: '1.0',
@@ -44,7 +43,7 @@ export const getTokenParam = (params) => {
 // 设置数字积分参数
 export const editTokenParam = (params) => {
   console.log('params', params);
-  return request('/set', {
+  return request(waasPath + '/tokenParam/edit', {
     serviceName: 'TokenParamService',
     methodName: 'edit',
     version: '1.0',
@@ -64,7 +63,7 @@ export const getDigitalPointsTradingPageList = (params) => {
     params.tradingMode == '2' ||
     params.tradingMode == '4'
   ) {
-    return request('/getDigitalPointsTrandingPageList', {
+    return request(waasPath + '/mintJournal/getPageList', {
       serviceName: 'MintJournalService',
       methodName: 'getPageList',
       version: '1.0',
@@ -73,7 +72,7 @@ export const getDigitalPointsTradingPageList = (params) => {
       },
     });
   } else {
-    return request('/getDigitalPointsTrandingPageList', {
+    return request(waasPath + '/transferJournal/getPageList', {
       serviceName: 'TransferJournalService',
       methodName: 'getPageList',
       version: '1.0',
@@ -94,7 +93,7 @@ export const getDigitalPointsReleasePageList = (params) => {
     params.tradingMode == '2' ||
     params.tradingMode == '4'
   ) {
-    return request('/getDigitalPointsTrandingPageList', {
+    return request(waasPath + '/mintJournal/getPageList', {
       serviceName: 'MintJournalService',
       methodName: 'getPageList',
       version: '1.0',
@@ -103,7 +102,7 @@ export const getDigitalPointsReleasePageList = (params) => {
       },
     });
   } else {
-    return request('/getDigitalPointsTrandingPageList', {
+    return request(waasPath + '/transferJournal/getPageList', {
       serviceName: 'TransferJournalService',
       methodName: 'getPageList',
       version: '1.0',
@@ -124,7 +123,7 @@ export const getDigitalPointsTradingDetail = (params) => {
     params.tradingMode == '2' ||
     params.tradingMode == '3'
   ) {
-    return request('/getDigitalPointsTradingDetail', {
+    return request(waasPath + '/mintJournal/getDetail', {
       serviceName: 'MintJournalService',
       methodName: 'getDetail',
       version: '1.0',
@@ -133,7 +132,7 @@ export const getDigitalPointsTradingDetail = (params) => {
       },
     });
   } else {
-    return request('/getDigitalPointsTradingDetail', {
+    return request(waasPath + '/transferJournal/getDetail', {
       serviceName: 'TransferJournalService',
       methodName: 'getDetail',
       version: '1.0',
@@ -154,7 +153,7 @@ export const getDigitalPointsReleaseDetail = (params) => {
     params.tradingMode == '2' ||
     params.tradingMode == '3'
   ) {
-    return request('/getDigitalPointsTradingDetail', {
+    return request(waasPath + '/mintJournal/getDetail', {
       serviceName: 'MintJournalService',
       methodName: 'getDetail',
       version: '1.0',
@@ -163,7 +162,7 @@ export const getDigitalPointsReleaseDetail = (params) => {
       },
     });
   } else {
-    return request('/getDigitalPointsTradingDetail', {
+    return request(waasPath + '/transferJournal/getDetail', {
       serviceName: 'TransferJournalService',
       methodName: 'getDetail',
       version: '1.0',

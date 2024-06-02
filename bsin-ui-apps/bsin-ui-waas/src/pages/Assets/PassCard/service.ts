@@ -4,7 +4,7 @@ let waasPath = process.env.contextPath_waas;
 // 发行会员卡
 export const collectPassCard = (params) => {
   console.log('params', params);
-  return request('/collectPassCard', {
+  return request(waasPath + '/customerProfile/collect', {
     serviceName: 'CustomerProfileService',
     methodName: 'collect',
     version: '1.0',
@@ -17,7 +17,7 @@ export const collectPassCard = (params) => {
 // 开卡
 export const openPassCard = (params) => {
   console.log('params', params);
-  return request('/openPassCard', {
+  return request(waasPath + '/customerProfile/claim', {
     serviceName: 'CustomerPassCardService',
     methodName: 'claim',
     version: '1.0',
@@ -30,7 +30,7 @@ export const openPassCard = (params) => {
 // 添加follow 记录
 export const openPassCardByProfileFollow = (params) => {
   console.log('params', params);
-  return request('/openPassCard', {
+  return request(waasPath + '/customerProfile/follow', {
     serviceName: 'CustomerProfileService',
     methodName: 'follow',
     version: '1.0',
@@ -43,7 +43,7 @@ export const openPassCardByProfileFollow = (params) => {
 // 查询详情
 export const getDigitalPassCardDetail = (params) => {
   console.log('params', params);
-  return request('/view', {
+  return request(waasPath + '/digitalAssetsCollection/getDetail', {
     serviceName: 'DigitalAssetsCollectionService',
     methodName: 'getDetail',
     version: '1.0',
@@ -55,7 +55,7 @@ export const getDigitalPassCardDetail = (params) => {
 
 // 查询数字会员卡开卡记录pageList
 export const getDigitalPassCardOpenPageList = (params) => {
-  return request('/getDigitalPassCardTrandingPageList', {
+  return request(waasPath + '/mintJournal/getPageList', {
     serviceName: 'MintJournalService',
     methodName: 'getPageList',
     version: '1.0',
@@ -67,7 +67,7 @@ export const getDigitalPassCardOpenPageList = (params) => {
 
 // 查询数字会员卡开卡detail
 export const getDigitalPassCardOpenDetail = (params) => {
-  return request('/getDigitalPassCardTrandingPageList', {
+  return request(waasPath + '/mintJournal/getDetail', {
     serviceName: 'MintJournalService',
     methodName: 'getDetail',
     version: '1.0',
@@ -79,7 +79,7 @@ export const getDigitalPassCardOpenDetail = (params) => {
 
 // 查询数字会员卡流转pageList
 export const getDigitalPassCardTransferPageList = (params) => {
-  return request('/getDigitalPassCardTrandingPageList', {
+  return request(waasPath + '/transferJournal/getPageList', {
     serviceName: 'TransferJournalService',
     methodName: 'getPageList',
     version: '1.0',
@@ -91,7 +91,7 @@ export const getDigitalPassCardTransferPageList = (params) => {
 
 // 查询数字会员卡流转记录detail
 export const getDigitalPassCardTransferDetail = (params) => {
-  return request('/getDigitalPassCardTrandingPageList', {
+  return request(waasPath + '/mintJournal/getDetail', {
     serviceName: 'MintJournalService',
     methodName: 'getDetail',
     version: '1.0',
