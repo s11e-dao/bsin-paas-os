@@ -26,7 +26,7 @@ export async function getRoutes() {
 '16': React.lazy(() => import(/* webpackChunkName: "p__Setting__index" */'@/pages/Setting/index.tsx')),
 '17': React.lazy(() => import(/* webpackChunkName: "p__AdminMonitor__index" */'@/pages/AdminMonitor/index.tsx')),
 '18': React.lazy(() => import(/* webpackChunkName: "p__Setting__index" */'@/pages/Setting/index.tsx')),
-'@@/global-layout': React.lazy(() => import(/* webpackChunkName: "layouts__index" */'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/src/layouts/index.tsx')),
+'@@/global-layout': React.lazy(() => import(/* webpackChunkName: "layouts__index" */'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/src/layouts/index.tsx')),
 },
   };
 }

@@ -5,17 +5,17 @@
 export { defineApp } from './core/defineApp'
 export type { RuntimeConfig } from './core/defineApp'
 // plugins
-export { Provider, useModel } from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/src/.umi/plugin-model';
-export { MicroApp, MicroAppWithMemoHistory } from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/src/.umi/plugin-qiankun-master';
-export { connectMaster, MicroAppLink } from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/src/.umi/plugin-qiankun-slave';
-export { useRequest, UseRequestProvider, request, getRequestInstance } from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/src/.umi/plugin-request';
+export { Provider, useModel } from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/src/.umi/plugin-model';
+export { MicroApp, MicroAppWithMemoHistory } from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/src/.umi/plugin-qiankun-master';
+export { connectMaster, MicroAppLink } from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/src/.umi/plugin-qiankun-slave';
+export { useRequest, UseRequestProvider, request, getRequestInstance } from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/src/.umi/plugin-request';
 // plugins types.d.ts
-export * from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/src/.umi/plugin-request/types.d';
+export * from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/src/.umi/plugin-request/types.d';
 // @umijs/renderer-*
-export { createBrowserHistory, createHashHistory, createMemoryHistory, Helmet, HelmetProvider, createSearchParams, generatePath, matchPath, matchRoutes, Navigate, NavLink, Outlet, resolvePath, useLocation, useMatch, useNavigate, useOutlet, useOutletContext, useParams, useResolvedPath, useRoutes, useSearchParams, useAppData, useClientLoaderData, useRouteProps, useSelectedRoutes, useServerLoaderData, renderClient, __getRoot, Link, useRouteData, __useFetcher, withRouter } from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/node_modules/@umijs/renderer-react';
-export type { History } from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/node_modules/@umijs/renderer-react'
+export { createBrowserHistory, createHashHistory, createMemoryHistory, Helmet, HelmetProvider, createSearchParams, generatePath, matchPath, matchRoutes, Navigate, NavLink, Outlet, resolvePath, useLocation, useMatch, useNavigate, useOutlet, useOutletContext, useParams, useResolvedPath, useRoutes, useSearchParams, useAppData, useClientLoaderData, useRouteProps, useSelectedRoutes, useServerLoaderData, renderClient, __getRoot, Link, useRouteData, __useFetcher, withRouter } from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/node_modules/@umijs/renderer-react';
+export type { History } from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/node_modules/@umijs/renderer-react'
 // umi/client/client/plugin
-export { ApplyPluginsType, PluginManager } from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/node_modules/umi/client/client/plugin.js';
+export { ApplyPluginsType, PluginManager } from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/node_modules/umi/client/client/plugin.js';
 export { history, createHistory } from './core/history';
 export { terminal } from './core/terminal';
 // react ssr

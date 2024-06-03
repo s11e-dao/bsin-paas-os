@@ -4,16 +4,16 @@
 // @ts-nocheck
 /* eslint-disable */
 import { useModel } from '@@/plugin-model';
-import concat from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/node_modules/lodash/concat';
-import isEqual from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/node_modules/lodash/isEqual';
-import mergeWith from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/node_modules/lodash/mergeWith';
-import noop from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/node_modules/lodash/noop';
+import concat from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/node_modules/lodash/concat';
+import isEqual from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/node_modules/lodash/isEqual';
+import mergeWith from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/node_modules/lodash/mergeWith';
+import noop from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/node_modules/lodash/noop';
 import {
   FrameworkConfiguration,
   loadMicroApp,
   MicroApp as MicroAppTypeDefinition,
   prefetchApps,
-} from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/node_modules/qiankun';
+} from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/node_modules/qiankun';
 import React, {
   forwardRef,
   Ref,

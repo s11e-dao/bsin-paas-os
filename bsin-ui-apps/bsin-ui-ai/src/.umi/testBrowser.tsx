@@ -3,7 +3,7 @@
 // DO NOT CHANGE IT MANUALLY!
 import React, { useEffect, useState } from 'react';
 import { ApplyPluginsType } from 'umi';
-import { renderClient, RenderClientOpts } from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/node_modules/@umijs/renderer-react';
+import { renderClient, RenderClientOpts } from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/node_modules/@umijs/renderer-react';
 import { createHistory } from './core/history';
 import { createPluginManager } from './core/plugin';
 import { getRoutes } from './core/route';

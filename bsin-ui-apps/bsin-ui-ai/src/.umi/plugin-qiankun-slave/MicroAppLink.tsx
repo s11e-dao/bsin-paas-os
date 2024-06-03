@@ -13,8 +13,8 @@ import React, {
   HTMLAttributes,
   useCallback,
 } from 'react';
-import noop from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/node_modules/lodash/noop';
-import find from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/node_modules/lodash/find';
+import noop from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/node_modules/lodash/noop';
+import find from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/node_modules/lodash/find';
 import {
   qiankunStateFromMasterModelNamespace,
   defaultHistoryType,

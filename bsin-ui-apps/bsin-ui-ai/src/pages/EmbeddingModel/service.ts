@@ -1,9 +1,9 @@
 import { request } from '@umijs/max'
-let aiPath = process.env.contextPath_ai;
+let aiAgent = process.env.contextPath_aiAgent;
 
 // 列表数据请求
 export const getEmbeddingModelList = (params) => {
-  return request(aiPath + '/getList', {
+  return request(aiAgent + '/getList', {
     serviceName: 'EmbeddingModelService',
     methodName: 'getList',
     version: '1.0',
@@ -15,7 +15,7 @@ export const getEmbeddingModelList = (params) => {
 
 // 列表数据请求
 export const getEmbeddingModelPageList = (params) => {
-  return request(aiPath + '/getPageList', {
+  return request(aiAgent + '/getPageList', {
     serviceName: 'EmbeddingModelService',
     methodName: 'getPageList',
     version: '1.0',
@@ -27,7 +27,7 @@ export const getEmbeddingModelPageList = (params) => {
 
 // 删除操作
 export const delEmbeddingModel = (params) => {
-  return request(aiPath + '/delete', {
+  return request(aiAgent + '/delete', {
     serviceName: 'EmbeddingModelService',
     methodName: 'delete',
     version: '1.0',
@@ -39,7 +39,7 @@ export const delEmbeddingModel = (params) => {
 
 //添加操作
 export const addEmbeddingModel = (params) => {
-  return request(aiPath + '/add', {
+  return request(aiAgent + '/add', {
     serviceName: 'EmbeddingModelService',
     methodName: 'add',
     version: '1.0',
@@ -51,7 +51,7 @@ export const addEmbeddingModel = (params) => {
 
 //详情
 export const getEmbeddingModelDetail = (params) => {
-  return request(aiPath + '/getDetail', {
+  return request(aiAgent + '/getDetail', {
     serviceName: 'EmbeddingModelService',
     methodName: 'getDetail',
     version: '1.0',
@@ -63,7 +63,7 @@ export const getEmbeddingModelDetail = (params) => {
 
 //编辑操作
 export const editEmbeddingModel = (params) => {
-  return request(aiPath + '/edit', {
+  return request(aiAgent + '/edit', {
     serviceName: 'EmbeddingModelService',
     methodName: 'edit',
     version: '1.0',

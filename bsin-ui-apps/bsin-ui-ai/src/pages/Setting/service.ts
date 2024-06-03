@@ -1,5 +1,5 @@
 import { request } from 'umi'
-let aiPath = process.env.contextPath_ai;
+let aiAgent = process.env.contextPath_aiAgent;
 
 import type { CurrentUser, GeographicItemType } from './data'
 
@@ -23,7 +23,7 @@ export async function query() {
 
 // 查询客户信息
 export const getCustomerDetail = (params) => {
-  return request(aiPath + '/getDetail', {
+  return request(aiAgent + '/getDetail', {
     serviceName: 'CustomerService',
     methodName: 'getDetail',
     version: '1.0',
@@ -35,7 +35,7 @@ export const getCustomerDetail = (params) => {
 
 // 获取公众号验证码
 export const getMpVerifyCode = (params) => {
-  return request(aiPath + '/getMpVerifyCode', {
+  return request(aiAgent + '/getMpVerifyCode', {
     serviceName: 'AiCustomerFunctionService',
     methodName: 'getMpVerifyCode',
     version: '1.0',
@@ -47,7 +47,7 @@ export const getMpVerifyCode = (params) => {
 
 // 验证公众号验证码
 export const verifyMpCode = (params) => {
-  return request(aiPath + '/verifyMpCode', {
+  return request(aiAgent + '/verifyMpCode', {
     serviceName: 'AiCustomerFunctionService',
     methodName: 'verifyMpCode',
     version: '1.0',
@@ -59,7 +59,7 @@ export const verifyMpCode = (params) => {
 
 // 设置钱包信息
 export const settingWallet = (params) => {
-  return request(aiPath + '/settingWallet', {
+  return request(aiAgent + '/settingWallet', {
     serviceName: 'CustomerService',
     methodName: 'settingWallet',
     version: '1.0',
@@ -71,7 +71,7 @@ export const settingWallet = (params) => {
 
 // 设置手机
 export const settingPhone = (params) => {
-  return request(aiPath + '/settingPhone', {
+  return request(aiAgent + '/settingPhone', {
     serviceName: 'CustomerService',
     methodName: 'settingPhone',
     version: '1.0',
@@ -83,7 +83,7 @@ export const settingPhone = (params) => {
 
 // 设置手机
 export const settingEmail = (params) => {
-  return request(aiPath + '/settingEmail', {
+  return request(aiAgent + '/settingEmail', {
     serviceName: 'CustomerService',
     methodName: 'settingEmail',
     version: '1.0',
@@ -95,7 +95,7 @@ export const settingEmail = (params) => {
 
 // 用户信息更新
 export const eidtCustomerService = (params) => {
-  return request(aiPath + '/edit', {
+  return request(aiAgent + '/edit', {
     serviceName: 'CustomerService',
     methodName: 'edit',
     version: '1.0',

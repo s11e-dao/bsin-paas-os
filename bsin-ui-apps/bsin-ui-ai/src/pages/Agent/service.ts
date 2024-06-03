@@ -1,9 +1,9 @@
 import { request } from '@umijs/max'
-let aiPath = process.env.contextPath_ai;
+let aiAgent = process.env.contextPath_aiAgent;
 
 // 列表数据请求
 export const getKnowledgeBaseList = (params) => {
-  return request(aiPath + '/getList', {
+  return request(aiAgent + '/getList', {
     serviceName: 'KnowledgeBaseService',
     methodName: 'getList',
     bizParams: {
@@ -14,7 +14,7 @@ export const getKnowledgeBaseList = (params) => {
 
 // 列表数据请求
 export const getKnowledgeBasePageList = (params) => {
-  return request(aiPath + '/getPageList', {
+  return request(aiAgent + '/getPageList', {
     serviceName: 'KnowledgeBaseService',
     methodName: 'getPageList',
     bizParams: {
@@ -25,7 +25,7 @@ export const getKnowledgeBasePageList = (params) => {
 
 // 删除知识库操作
 export const delKnowledgeBase = (params) => {
-  return request(aiPath + '/delete', {
+  return request(aiAgent + '/delete', {
     serviceName: 'KnowledgeBaseService',
     methodName: 'delete',
     bizParams: {
@@ -36,7 +36,7 @@ export const delKnowledgeBase = (params) => {
 
 //添加知识库操作
 export const addKnowledgeBase = (params) => {
-  return request(aiPath + '/add', {
+  return request(aiAgent + '/add', {
     serviceName: 'KnowledgeBaseService',
     methodName: 'add',
     bizParams: {

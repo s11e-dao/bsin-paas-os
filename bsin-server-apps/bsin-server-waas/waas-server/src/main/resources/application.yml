@@ -4,9 +4,6 @@ logging:
     com.github.binarywang.demo.wx.mp: DEBUG
     me.chanjar.weixin: DEBUG
 
-chatGPT:
-  templateEnable: false #是否启用模板推送消息
-
 shenyu:
   register:
     registerType: http #zookeeper #etcd #nacos #consul

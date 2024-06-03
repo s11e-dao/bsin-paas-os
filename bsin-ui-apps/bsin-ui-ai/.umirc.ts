@@ -7,9 +7,8 @@ export default {
   },
   define: {
     // 后台访问地址
-    'process.env.baseUrl': 'http://copilotapi.s11edao.com/gateway',
-    // 'process.env.baseUrl': 'http://127.0.0.1:8097/gateway',
-    //'process.env.baseUrl': 'http://api.s11edao.com/gateway',
+    'process.env.baseUrl': 'http://127.0.0.1:9195',
+    //'process.env.baseUrl': 'http://api.s11edao.com',
     'process.env.ipfsApiUrl': 'https://ipfsadmin.s11edao.com/api/v0', // ipfs API
     'process.env.ipfsGatewauUrl': 'https://ipfs.s11edao.com/ipfs/', // ipfs Gateway
     'process.env.fileUrl': 'http://file.s11edao.com/jiujiu/', // 本地服务器文件前缀地址
@@ -21,7 +20,7 @@ export default {
     'process.env.tenantAppType': 'ai', //
     'process.env.webScoketUrl': 'ws://43.200.152.71:8126/websocket',
     // 'process.env.webScoketUrl': 'ws://127.0.0.1:8126/websocket',
-    'process.env.contextPath_ai': '/ai',  // upms应用
+    'process.env.contextPath_aiAgent': '/aiAgent',  // aiAgent应用
   },
   antd: false,
   lessLoader: {

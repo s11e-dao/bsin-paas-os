@@ -3,7 +3,7 @@
 // DO NOT CHANGE IT MANUALLY!
 // @ts-nocheck
 /* eslint-disable */
-import { FrameworkConfiguration, FrameworkLifeCycles } from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/node_modules/qiankun';
+import { FrameworkConfiguration, FrameworkLifeCycles } from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/node_modules/qiankun';
 import type { MicroAppRouteMode } from './constants';
 
 type BaseIConfig = any;

@@ -5,7 +5,7 @@
 /* eslint-disable */
 
 import { getPluginManager } from '@@/core/plugin';
-import { prefetchApps } from 'E:/bsin-paas-worspace-futrue/bsin-paas-all-in-one/bsin-ui-apps/bsin-ui-ai/node_modules/qiankun';
+import { prefetchApps } from 'D:/bolei-workspace/bsin-paas-os/bsin-ui-apps/bsin-ui-ai/node_modules/qiankun';
 import { ApplyPluginsType } from 'umi';
 import { insertRoute, noop, patchMicroAppRoute } from './common';
 import { getMasterOptions, setMasterOptions } from './masterOptions';

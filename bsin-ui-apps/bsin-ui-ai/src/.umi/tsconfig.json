@@ -27,7 +27,7 @@
         "src/.umi/*"
       ],
       "@umijs/max": [
-        "E:\\bsin-paas-worspace-futrue\\bsin-paas-all-in-one\\bsin-ui-apps\\bsin-ui-ai\\node_modules\\umi"
+        "D:\\bolei-workspace\\bsin-paas-os\\bsin-ui-apps\\bsin-ui-ai\\node_modules\\umi"
       ],
       "@umijs/max/typings": [
         "src/.umi/typings"

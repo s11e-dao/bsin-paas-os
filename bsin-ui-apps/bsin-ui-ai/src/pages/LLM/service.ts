@@ -1,9 +1,9 @@
 import { request } from '@umijs/max';
-let aiPath = process.env.contextPath_ai;
+let aiAgent = process.env.contextPath_aiAgent;
 
 // 列表数据请求
 export const getLLMPageList = (params) => {
-  return request(aiPath + '/getPageList', {
+  return request(aiAgent + '/getPageList', {
     serviceName: 'LLMService',
     methodName: 'getPageList',
     version: '1.0',
@@ -15,7 +15,7 @@ export const getLLMPageList = (params) => {
 
 // 列表数据请求
 export const getLLMList = (params) => {
-  return request(aiPath + '/getList', {
+  return request(aiAgent + '/getList', {
     serviceName: 'LLMService',
     methodName: 'getList',
     version: '1.0',
@@ -27,7 +27,7 @@ export const getLLMList = (params) => {
 
 // 删除
 export const delLLMInfo = (params) => {
-  return request(aiPath + '/delete', {
+  return request(aiAgent + '/delete', {
     serviceName: 'LLMService',
     methodName: 'delete',
     version: '1.0',
@@ -39,7 +39,7 @@ export const delLLMInfo = (params) => {
 
 //添加
 export const addLLMInfo = (params) => {
-  return request(aiPath + '/add', {
+  return request(aiAgent + '/add', {
     serviceName: 'LLMService',
     methodName: 'add',
     version: '1.0',
@@ -51,7 +51,7 @@ export const addLLMInfo = (params) => {
 
 //编辑
 export const editLLMInfo = (params) => {
-  return request(aiPath + '/edit', {
+  return request(aiAgent + '/edit', {
     serviceName: 'LLMService',
     methodName: 'edit',
     version: '1.0',
@@ -63,7 +63,7 @@ export const editLLMInfo = (params) => {
 
 // 详情
 export const getLLMDetail = (params) => {
-  return request(aiPath + '/getDetail', {
+  return request(aiAgent + '/getDetail', {
     serviceName: 'LLMService',
     methodName: 'getDetail',
     version: '1.0',

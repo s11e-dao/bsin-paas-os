@@ -1,9 +1,9 @@
 import { request } from '@umijs/max';
-let aiPath = process.env.contextPath_ai;
+let aiAgent = process.env.contextPath_aiAgent;
 
 // 列表数据请求
 export const getRoleList = (params) => {
-  return request(aiPath + '/getPageList', {
+  return request(aiAgent + '/getPageList', {
     serviceName: 'RoleService',
     methodName: 'getPageList',
     version: '1.0',
@@ -15,7 +15,7 @@ export const getRoleList = (params) => {
 
 // 删除角色操作
 export const delRoleInfo = (params) => {
-  return request(aiPath + '/delete', {
+  return request(aiAgent + '/delete', {
     serviceName: 'RoleService',
     methodName: 'delete',
     version: '1.0',
@@ -27,7 +27,7 @@ export const delRoleInfo = (params) => {
 
 //添加角色操作
 export const addRoleInfo = (params) => {
-  return request(aiPath + '/add', {
+  return request(aiAgent + '/add', {
     serviceName: 'RoleService',
     methodName: 'add',
     version: '1.0',
@@ -39,7 +39,7 @@ export const addRoleInfo = (params) => {
 
 //编辑角色操作
 export const editRoleInfo = (params) => {
-  return request(aiPath + '/edit', {
+  return request(aiAgent + '/edit', {
     serviceName: 'RoleService',
     methodName: 'edit',
     version: '1.0',
@@ -51,7 +51,7 @@ export const editRoleInfo = (params) => {
 
 // 菜单数据请求
 export const getMenuList = (params) => {
-  return request(aiPath + '/findMenuTree', {
+  return request(aiAgent + '/findMenuTree', {
     serviceName: 'MenuService',
     methodName: 'findMenuTree',
     version: '1.0',
@@ -63,7 +63,7 @@ export const getMenuList = (params) => {
 
 // 已有菜单数据请求
 export const getMenusByAppIdAndRoleId = (params) => {
-  return request(aiPath + '/getMenusByAppIdAndRoleId', {
+  return request(aiAgent + '/getMenusByAppIdAndRoleId', {
     serviceName: 'MenuService',
     methodName: 'getMenusByAppIdAndRoleId',
     version: '1.0',
@@ -75,7 +75,7 @@ export const getMenusByAppIdAndRoleId = (params) => {
 
 // 授权
 export const empowerMenu = (params) => {
-  return request(aiPath + '/authorizeMenus', {
+  return request(aiAgent + '/authorizeMenus', {
     serviceName: 'RoleService',
     methodName: 'authorizeMenus',
     version: '1.0',
