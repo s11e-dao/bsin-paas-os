@@ -105,8 +105,8 @@ const routes = [
       },
       // 等级管理
       {
-        path: '/customer/member-grade',
-        component: '@/pages/Customer/MemberGrade/index',
+        path: '/customer/grade-list',
+        component: '@/pages/Customer/Grade/index',
       },
       // 客户账户
       {

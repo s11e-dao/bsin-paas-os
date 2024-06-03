@@ -112,7 +112,7 @@ public class GradeServiceImpl implements GradeService {
     @ApiDoc(desc = "getList")
     @ShenyuDubboClient("/getList")
     @Override
-    public Map<String, Object> getList(Map<String, Object> requestMap) {
+    public List<Grade> getList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Grade grade = BsinServiceContext.getReqBodyDto(Grade.class, requestMap);
         LambdaQueryWrapper<Grade> warapper = new LambdaQueryWrapper<>();
@@ -120,7 +120,7 @@ public class GradeServiceImpl implements GradeService {
         warapper.eq(Grade::getTenantId, loginUser.getTenantId());
         warapper.eq(Grade::getMerchantNo, loginUser.getMerchantNo());
         List<Grade> gradeList = gradeMapper.selectList(warapper);
-        return RespBodyHandler.setRespBodyListDto(gradeList);
+        return gradeList;
     }
 
     @ApiDoc(desc = "getPageList")

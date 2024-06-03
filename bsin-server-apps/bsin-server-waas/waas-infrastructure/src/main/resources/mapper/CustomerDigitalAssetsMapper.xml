@@ -54,8 +54,8 @@
         dai.cover_image,
         dai.assets_name,
         dai.assets_type
-        from da_customer_digital_assets cda
-        left join da_digital_assets_item dai on cda.digital_assets_item_no = dai.serial_no
+        from waas_customer_digital_assets cda
+        left join waas_digital_assets_item dai on cda.digital_assets_item_no = dai.serial_no
         <where>
             <if test="tenantId != null and tenantId != ''">
                 and dai.tenant_id = #{tenantId}
@@ -95,9 +95,9 @@
         dmj.metadata_image,
         dmj.metadata_url,
         dmj.item_name as name
-        from da_customer_digital_assets cda
-        left join da_digital_assets_item dai on cda.digital_assets_item_no = dai.serial_no
-        left join da_mint_journal dmj on dai.serial_no = dmj.digital_assets_item_no and dmj.token_id = cda.token_id
+        from waas_customer_digital_assets cda
+        left join waas_digital_assets_item dai on cda.digital_assets_item_no = dai.serial_no
+        left join waas_mint_journal dmj on dai.serial_no = dmj.digital_assets_item_no and dmj.token_id = cda.token_id
         <where>
             <if test="serialNo != null and serialNo != ''">
                 and cda.serial_no = #{serialNo}

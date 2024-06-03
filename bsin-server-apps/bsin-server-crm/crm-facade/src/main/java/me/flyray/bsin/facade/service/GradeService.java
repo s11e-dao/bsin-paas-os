@@ -1,5 +1,8 @@
 package me.flyray.bsin.facade.service;
 
+import me.flyray.bsin.domain.entity.Grade;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,7 +33,7 @@ public interface GradeService {
     /**
      * 商户下所有
      */
-    public Map<String, Object> getList(Map<String, Object> requestMap);
+    public List<Grade> getList(Map<String, Object> requestMap);
 
     /**
      * 商户下分页所有

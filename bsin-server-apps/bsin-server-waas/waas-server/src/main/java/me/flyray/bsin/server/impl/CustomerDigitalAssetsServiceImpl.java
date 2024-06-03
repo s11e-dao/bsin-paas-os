@@ -128,7 +128,7 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
   @ShenyuDubboClient("/getPageList")
   @ApiDoc(desc = "getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public List<DigitalAssetsItemRes> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
 
     String customerNo = (String) requestMap.get("customerNo");
@@ -147,7 +147,6 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
     if (tenantId == null) {
       tenantId = loginUser.getTenantId();
     }
-    Pagination pagination = (Pagination) requestMap.get("pagination");
     String assetsType = MapUtils.getString(requestMap, "assetsType");
     String tokenId = MapUtils.getString(requestMap, "tokenId");
     List<DigitalAssetsItemRes> customerDigitalAssetsList =
@@ -177,7 +176,7 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
       }
     }
 
-    return RespBodyHandler.setRespBodyListDto(digitalAssetsItemList);
+    return digitalAssetsItemList;
   }
 
   @ShenyuDubboClient("/getDetail")

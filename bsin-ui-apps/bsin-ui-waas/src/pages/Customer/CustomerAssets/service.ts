@@ -1,9 +1,9 @@
 import { request } from '@umijs/max'
-let crmPath = process.env.contextPath_crm;
+let waasPath = process.env.contextPath_waas;
 
 // 分页查询客户配置
 export const getMemberAssetsPageList = (params) => {
-  return request(crmPath + '/customerDigitalAssets/getPageList  ', {
+  return request(waasPath + '/customerDigitalAssets/getPageList  ', {
     serviceName: 'CustomerDigitalAssetsService',
     methodName: 'getPageList',
     version: '1.0',
@@ -14,7 +14,7 @@ export const getMemberAssetsPageList = (params) => {
 };
 
 export const getMemberAssetsDetail = (params) => {
-  return request(crmPath + '/customerDigitalAssets/getDetail', {
+  return request(waasPath + '/customerDigitalAssets/getDetail', {
     serviceName: 'CustomerDigitalAssetsService',
     methodName: 'getDetail',
     version: '1.0',

@@ -1,5 +1,8 @@
 package me.flyray.bsin.facade.service;
 
+import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,7 +22,7 @@ public interface CustomerDigitalAssetsService {
     /**
      * 分页查询数字资产
      */
-    public Map<String, Object> getPageList(Map<String, Object> requestMap);
+    public List<DigitalAssetsItemRes> getPageList(Map<String, Object> requestMap);
 
 
     /**
