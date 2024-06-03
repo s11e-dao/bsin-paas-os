@@ -8,6 +8,7 @@ import me.flyray.bsin.domain.entity.ChainCoin;
 import me.flyray.bsin.domain.request.ChainCoinDTO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.ChainCoinService;
+import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.server.listen.ChainTransactionListen;
 import me.flyray.bsin.infrastructure.mapper.ChainCoinMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
@@ -175,8 +176,7 @@ public class ChainCoinServiceImpl implements ChainCoinService {
     @ApiDoc(desc = "getPageList")
     public Page<ChainCoin> getPageList(ChainCoinDTO coinDTO) {
         log.debug("请求ChainCoinService.pageList,参数:{}", coinDTO);
-        Integer current = coinDTO.getCurrent() == null?1:coinDTO.getCurrent();
-        Integer size = coinDTO.getSize() == null?10:coinDTO.getSize();
+        Pagination pagination = coinDTO.getPagination();
         QueryWrapper<ChainCoin>  queryWrapper = new QueryWrapper();
         if(coinDTO.getCoin() != null) {
             queryWrapper.eq("coin", coinDTO.getCoin());
@@ -196,7 +196,7 @@ public class ChainCoinServiceImpl implements ChainCoinService {
         if(coinDTO.getEndTime()!=null){
             queryWrapper.le("create_time", coinDTO.getEndTime());
         }
-        return chainCoinMapper.selectPage(new Page<>(current,size),queryWrapper);
+        return chainCoinMapper.selectPage(new Page<>(pagination.getPageNum(),pagination.getPageSize()),queryWrapper);
     }
 
     @Override

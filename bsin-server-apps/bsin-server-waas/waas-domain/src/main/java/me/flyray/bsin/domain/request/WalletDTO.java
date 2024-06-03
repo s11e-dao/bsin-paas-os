@@ -3,7 +3,10 @@ package me.flyray.bsin.domain.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import me.flyray.bsin.domain.entity.Wallet;
+import me.flyray.bsin.mybatis.utils.Pagination;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 public class WalletDTO extends Wallet {
@@ -12,9 +15,8 @@ public class WalletDTO extends Wallet {
 
     public String validateCode;     // 验证码
 
-    public Integer current;
-
-    public Integer size;
+    @NotNull(message = "分页不能为空！")
+    private Pagination pagination;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

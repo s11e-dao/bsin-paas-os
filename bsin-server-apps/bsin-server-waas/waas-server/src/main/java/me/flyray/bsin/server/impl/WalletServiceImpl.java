@@ -10,6 +10,7 @@ import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.infrastructure.biz.WalletAccountBiz;
 import me.flyray.bsin.infrastructure.mapper.CustomerChainCoinMapper;
 import me.flyray.bsin.infrastructure.mapper.WalletMapper;
+import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.utils.BsinSnowflake;
 import me.flyray.bsin.utils.I18eCode;
@@ -144,14 +145,9 @@ public class WalletServiceImpl implements WalletService {
   public Page<WalletVO> getPageList(WalletDTO walletDTO) {
     log.debug("请求WalletService.pageList,参数:{}", walletDTO);
     LoginUser user = LoginInfoContextHelper.getLoginUser();
-    if(walletDTO.getCurrent() == null){
-      walletDTO.setCurrent(1);
-    }
-    if(walletDTO.getSize() == null){
-      walletDTO.setSize(10);
-    }
+    Pagination pagination = walletDTO.getPagination();
     walletDTO.setTenantId(user.getTenantId());
-    return walletMapper.pageList(new Page<>(walletDTO.getCurrent(),walletDTO.getSize()),walletDTO);
+    return walletMapper.pageList(new Page<>(pagination.getPageNum(),pagination.getPageSize()),walletDTO);
   }
 
   @Override

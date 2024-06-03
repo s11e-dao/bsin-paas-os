@@ -8,6 +8,7 @@ import me.flyray.bsin.domain.response.BlackWhiteListAddressVO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.BlackWhiteListAddressService;
 import me.flyray.bsin.infrastructure.mapper.BlackWhiteListAddressMapper;
+import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.utils.BsinSnowflake;
@@ -124,18 +125,13 @@ public class BlackWhiteListAddressServiceImpl implements BlackWhiteListAddressSe
     @Override
     @ShenyuDubboClient("/getPageList")
     @ApiDoc(desc = "getPageList")
-    public Page<BlackWhiteListAddressVO> getPageList(BlackWhiteListAddressDTO address) {
-        log.debug("请求BlackWhiteListAddressService.pageList,参数:{}", address);
+    public Page<BlackWhiteListAddressVO> getPageList(BlackWhiteListAddressDTO blackWhiteListAddressDTO) {
+        log.debug("请求BlackWhiteListAddressService.pageList,参数:{}", blackWhiteListAddressDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
-        if(address.getCurrent() == null){
-            address.setCurrent(1);
-        }
-        if(address.getSize() == null){
-            address.setSize(10);
-        }
-        address.setBizRoleNo(user.getBizRoleTypeNo());
-        address.setBizRoleType(user.getBizRoleType());
-        return blackWhiteListAddressMapper.pageList(new Page(address.getCurrent(),address.getSize()),address);
+        Pagination pagination = blackWhiteListAddressDTO.getPagination();
+        blackWhiteListAddressDTO.setBizRoleNo(user.getBizRoleTypeNo());
+        blackWhiteListAddressDTO.setBizRoleType(user.getBizRoleType());
+        return blackWhiteListAddressMapper.pageList(new Page(pagination.getPageNum(),pagination.getPageSize()),blackWhiteListAddressDTO);
     }
 }
 

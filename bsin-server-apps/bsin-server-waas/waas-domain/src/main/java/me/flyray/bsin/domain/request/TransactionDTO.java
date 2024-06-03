@@ -4,13 +4,16 @@ package me.flyray.bsin.domain.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import me.flyray.bsin.domain.entity.Transaction;
+import me.flyray.bsin.mybatis.utils.Pagination;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 public class TransactionDTO extends Transaction {
-    public Integer current;
 
-    public Integer size;
+    @NotNull(message = "分页不能为空！")
+    private Pagination pagination;
 
     /**
      * 发送/接受地址

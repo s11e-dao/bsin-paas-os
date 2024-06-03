@@ -9,6 +9,7 @@ import me.flyray.bsin.domain.response.CustomerChainCoinVO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.CustomerChainCoinService;
 import me.flyray.bsin.infrastructure.mapper.CustomerChainCoinMapper;
+import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -130,12 +131,11 @@ public class CustomerChainCoinServiceImpl implements CustomerChainCoinService {
         log.debug("请求CustomerChainCoinService.pageListByCustomerId,参数:{}", customerChainCoinDTO);
         try{
             LoginUser user = LoginInfoContextHelper.getLoginUser();
-            int current = customerChainCoinDTO.getCurrent() == null ? 1 : customerChainCoinDTO.getCurrent();
-            int size = customerChainCoinDTO.getSize() == null ? 10 : customerChainCoinDTO.getSize();
+            Pagination pagination = customerChainCoinDTO.getPagination();
             customerChainCoinDTO.setTenantId(user.getTenantId());
             customerChainCoinDTO.setBizRoleTypeNo(user.getBizRoleTypeNo());
             customerChainCoinDTO.setBizRoleType(user.getBizRoleType());
-            return customerChainCoinMapper.pageList(new Page<>(current, size), customerChainCoinDTO);
+            return customerChainCoinMapper.pageList(new Page<>(pagination.getPageNum(), pagination.getPageSize()), customerChainCoinDTO);
         }catch (BusinessException be){
             throw be;
         }catch (Exception e){

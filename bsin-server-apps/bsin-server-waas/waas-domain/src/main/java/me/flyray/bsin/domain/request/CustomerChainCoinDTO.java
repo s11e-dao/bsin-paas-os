@@ -3,7 +3,10 @@ package me.flyray.bsin.domain.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import me.flyray.bsin.domain.entity.CustomerChainCoin;
+import me.flyray.bsin.mybatis.utils.Pagination;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 public class CustomerChainCoinDTO extends CustomerChainCoin {
@@ -11,9 +14,8 @@ public class CustomerChainCoinDTO extends CustomerChainCoin {
 
     public String validateCode;     // 验证码
 
-    public Integer current;
-
-    public Integer size;
+    @NotNull(message = "分页不能为空！")
+    private Pagination pagination;
 
     public String coin;
 

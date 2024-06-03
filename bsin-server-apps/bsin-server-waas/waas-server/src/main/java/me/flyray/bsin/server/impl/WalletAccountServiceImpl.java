@@ -15,6 +15,7 @@ import me.flyray.bsin.infrastructure.mapper.ChainCoinMapper;
 import me.flyray.bsin.infrastructure.mapper.WalletAccountMapper;
 import me.flyray.bsin.infrastructure.mapper.WalletMapper;
 import me.flyray.bsin.infrastructure.utils.QrCodeUtils;
+import me.flyray.bsin.mybatis.utils.Pagination;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -96,9 +97,8 @@ public class WalletAccountServiceImpl implements WalletAccountService {
     @ApiDoc(desc = "getPageList")
     public Page<WalletAccountVO> getPageList(WalletAccountDTO walletAccountDTO) {
         log.debug("请求WalletAccountService.pageList,参数:{}", walletAccountDTO);
-        int current = walletAccountDTO.getCurrent() == null?1:walletAccountDTO.getCurrent();
-        int size = walletAccountDTO.getSize() == null?10:walletAccountDTO.getSize();
-        return walletAccountMapper.pageList(new Page<>(current,size),walletAccountDTO);
+        Pagination pagination = walletAccountDTO.getPagination();
+        return walletAccountMapper.pageList(new Page<>(pagination.getPageNum(),pagination.getPageSize()),walletAccountDTO);
     }
 
 

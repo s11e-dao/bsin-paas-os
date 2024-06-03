@@ -12,6 +12,7 @@ import me.flyray.bsin.domain.request.TransactionRequest;
 import me.flyray.bsin.domain.response.TransactionVO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.TransactionService;
+import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.server.listen.ChainTransactionListen;
 import me.flyray.bsin.infrastructure.biz.TransferBiz;
 import me.flyray.bsin.infrastructure.mapper.ChainCoinMapper;
@@ -169,10 +170,9 @@ public class TransactionServiceImpl  implements TransactionService {
     public Page<TransactionVO> getPageList(TransactionDTO transactionDTO) {
         log.debug("请求TransactionService.pageList,参数:{}", transactionDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();
-        Integer current = transactionDTO.getCurrent() == null?1:transactionDTO.getCurrent();
-        Integer size = transactionDTO.getSize() == null?10:transactionDTO.getSize();
+        Pagination pagination = transactionDTO.getPagination();
         transactionDTO.setTenantId(user.getTenantId());
-        return transactionMapper.pageList(new Page<>(current, size),transactionDTO );
+        return transactionMapper.pageList(new Page<>(pagination.getPageNum(), pagination.getPageSize()),transactionDTO );
     }
 
 
