@@ -80,10 +80,6 @@ export const BasicList: FC = () => {
   const { TextArea } = Input;
   const { Option } = Select;
 
-  const [done, setDone] = useState<boolean>(false);
-  const [open, setVisible] = useState<boolean>(false);
-  const [current, setCurrent] = useState<Partial<BasicListItemDataType> | undefined>(undefined);
-
   // Table action 的引用，便于自定义触发 用于更改数据之后的表单刷新
   const actionRef = React.useRef<ActionType>();
   
@@ -94,16 +90,13 @@ export const BasicList: FC = () => {
   } = useRequest(() => {
     return getAppList({
       pageNum: 1,
-      pageSize: 10
+      pageSize: 99
     });
   });
 
   const { run: postRun } = useRequest(
     (method, params) => {
-      if (method === 'remove') {
-        return getAppList(params);
-      }
-      if (method === 'update') {
+      if (method === 'delete') {
         return getAppList(params);
       }
       return getAppList(params);
@@ -117,16 +110,22 @@ export const BasicList: FC = () => {
   );
 
   // 控制当前操作
-  const [isOption, setIsOption] = React.useState<object>({});
+  const [currentOption, setCurrentOption] = React.useState<object>({});
+  // 存储当前行数据，用于编辑操作
+  const [currentRecord, setCurrentRecord] = React.useState({});
   // 控制表单模态框
-  const [isAppFormModal, setIsAppFormModal] = React.useState(false);
+  const [appFormModal, setAppFormModal] = React.useState(false);
+  
+  // 控制查看中新增、编辑模态框title
+  const [appModalTitle, setAppModalTitle] = React.useState('');
+
   // 获取编辑表单信息
   const [formRef] = Form.useForm();
 
   // 确定提交
   const appFormModalOk = () => {
-    const { option } = isOption;
-    const { appId } = isRecord;
+    const { option } = currentOption;
+    const { appId } = currentRecord;
     formRef
       .validateFields()
       .then(async () => {
@@ -142,26 +141,34 @@ export const BasicList: FC = () => {
         actionRef.current?.reload();
         // 重置表单Form
         formRef.resetFields();
-        setIsAppFormModal(false);
+        setAppFormModal(false);
       })
       .catch(() => { });
+  };
+
+  // edit模态框控制
+  const handleEditAppFormModal = (record: object) => {
+    setCurrentRecord(record);
+    setCurrentOption({ option: 'edit' });
+    setAppModalTitle("编辑应用")
+    setAppFormModal(true);
+    // 进行数据的回显
+    formRef.setFieldsValue(record);
   };
 
   // 取消关闭
   const appFormModalCancel = () => {
     // 重置表单Form
     formRef.resetFields();
-    setIsAppFormModal(false);
+    setAppFormModal(false);
   };
 
   // add模态框控制
   const handleAddAppFormModal = () => {
-    setIsOption({ option: 'add' });
-    setIsAppFormModal(true);
+    setCurrentOption({ option: 'add' });
+    setAppModalTitle("添加应用")
+    setAppFormModal(true);
   };
-
-  // 存储当前行数据，用于编辑操作
-  const [isRecord, setIsRecord] = React.useState({});
 
   // 表头赋值
   const functionColumns: ProColumns<AppColumnsItem>[] = functionColumnsData;
@@ -177,8 +184,8 @@ export const BasicList: FC = () => {
   const [functionForm] = Form.useForm();
 
   const handleEditAppFunctionFormModal = (record: object) => {
-    setIsRecord(record);
-    setIsOption({ option: 'edit' });
+    setCurrentRecord(record);
+    setCurrentOption({ option: 'edit' });
     setFunctionAddModalTitle("编辑功能")
     setFunctionAddModalVisible(true);
     // 进行数据的回显
@@ -195,7 +202,7 @@ export const BasicList: FC = () => {
 
   // add模态框控制
   const functionAdd = () => {
-    setIsOption({ option: 'add' });
+    setCurrentOption({ option: 'add' });
     setFunctionAddModalTitle("添加功能")
     // 重置表单Form
     functionForm.resetFields();
@@ -203,7 +210,7 @@ export const BasicList: FC = () => {
   };
 
   const handleFunctionListModal = (record: object) => {
-    setIsRecord(record);
+    setCurrentRecord(record);
     setFunctionListMoalVisible(true);
     // 根据应用ID查询功能列表
 
@@ -215,8 +222,8 @@ export const BasicList: FC = () => {
 
   const handlefunctionAddModalOk = () => {
     // 调用功能添加
-    const { option } = isOption;
-    const { appId } = isRecord;
+    const { option } = setCurrentOption;
+    const { appId } = currentRecord;
     functionForm
       .validateFields()
       .then(async () => {
@@ -249,22 +256,21 @@ export const BasicList: FC = () => {
     functionForm.current?.reload();
   };
 
-  const list = listData?.data || [];
+  const appList = listData?.data || [];
   const paginationProps = {
     showSizeChanger: true,
     showQuickJumper: true,
     pageSize: 5,
-    total: list.length,
+    total: appList.length,
   };
-  const showEditModal = (item: BasicListItemDataType) => {
-    setVisible(true);
-    setCurrent(item);
-  };
+  
   const deleteItem = (id: string) => {
-    postRun('remove', {
-      id,
+    postRun('delete', {
+      pageNum: 1,
+      pageSize: 99
     });
   };
+
   const editAndDelete = (key: string | number, currentItem: BasicListItemDataType) => {
     console.log(key)
     if (key === 'appFunction') handleFunctionListModal(currentItem);
@@ -321,13 +327,8 @@ export const BasicList: FC = () => {
       </a>
     </Dropdown>
   );
-  const handleDone = () => {
-    setDone(false);
-    setVisible(false);
-    setCurrent({});
-  };
+ 
   const handleSubmit = (values: BasicListItemDataType) => {
-    setDone(true);
     const method = values?.id ? 'update' : 'add';
     postRun(method, values);
   };
@@ -408,7 +409,7 @@ export const BasicList: FC = () => {
             rowKey="id"
             loading={loading}
             pagination={paginationProps}
-            dataSource={list}
+            dataSource={appList}
             renderItem={(item) => (
               <List.Item
                 actions={[
@@ -416,7 +417,7 @@ export const BasicList: FC = () => {
                     key="edit"
                     onClick={(e) => {
                       e.preventDefault();
-                      showEditModal(item);
+                      handleEditAppFormModal(item);
                     }}
                   >
                     编辑
@@ -438,8 +439,8 @@ export const BasicList: FC = () => {
 
       {/* 添加编辑 */}
       <Modal
-        title="添加应用"
-        open={isAppFormModal}
+        title={appModalTitle}
+        open={appFormModal}
         onOk={() => appFormModalOk()}
         onCancel={() => appFormModalCancel()}
         centered
@@ -537,7 +538,7 @@ export const BasicList: FC = () => {
           actionRef={functionRef}
           scroll={{ x: 900 }}
           columns={functionColumns}
-          params={{ appId: isRecord?.appId }}
+          params={{ appId: currentRecord?.appId }}
           // 请求的数据
           request={async (params) => {
             console.log(params);
