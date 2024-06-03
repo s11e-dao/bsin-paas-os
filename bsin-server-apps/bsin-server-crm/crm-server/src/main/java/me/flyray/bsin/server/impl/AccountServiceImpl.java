@@ -3,6 +3,7 @@ package me.flyray.bsin.server.impl;
 import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_ACCOUNT_IS_NULL;
 import static me.flyray.bsin.constants.ResponseCode.TASK_NON_CLAIM_CONDITION;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -307,7 +308,9 @@ public class AccountServiceImpl implements AccountService {
 
     Account customerAccount =
         BsinServiceContext.getReqBodyDto(Account.class, requestMap);
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
     Page<Account> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<Account> warapper = new LambdaUpdateWrapper<>();
     warapper.orderByDesc(Account::getCreateTime);
@@ -365,7 +368,9 @@ public class AccountServiceImpl implements AccountService {
     String merchantNo = loginUser.getMerchantNo();
     Account customerAccount =
         BsinServiceContext.getReqBodyDto(Account.class, requestMap);
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
     Page<AccountJournal> page =
         new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<AccountJournal> warapper = new LambdaUpdateWrapper<>();
@@ -402,7 +407,9 @@ public class AccountServiceImpl implements AccountService {
     String merchantNo = loginUser.getMerchantNo();
     AccountFreezeJournal customerAccountFreeze =
         BsinServiceContext.getReqBodyDto(AccountFreezeJournal.class, requestMap);
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
     Page<AccountFreezeJournal> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<AccountFreezeJournal> warapper = new LambdaUpdateWrapper<>();
     warapper.orderByDesc(AccountFreezeJournal::getCreateTime);
