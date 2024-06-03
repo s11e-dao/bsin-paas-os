@@ -251,7 +251,6 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
               <form className={styles['form']} >
                 <Select
                   bordered={false}
-                  className={styles['form-control']}
                   style={{
                     // marginTop: 20,
                     backgroundColor: '#eee',
@@ -260,7 +259,9 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
                     margin: '14px 0',
                     width: '100%',
                     textAlign: 'left',
+                    padding: '3px 10px'
                   }}
+                  className={styles['form-control']}
                   showSearch
                   placeholder="请选择节点"
                   optionFilterProp="children"
@@ -356,6 +357,7 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
                     margin: '14px 0',
                     width: '100%',
                     textAlign: 'left',
+                    padding: '3px 10px'
                   }}
                   showSearch
                   placeholder="请选择节点"

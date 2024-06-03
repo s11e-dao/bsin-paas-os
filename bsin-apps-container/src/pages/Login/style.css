@@ -177,15 +177,15 @@ body {
 }
 
 .sign_btn {
-    height: 2.5rem;
-    width: 100%;
-    background-color: #151111;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-size: 15px;
-    cursor: pointer;
-    transition: 0.3s;
+    height: 2.5rem !important;
+    width: 100% !important;
+    background-color: #151111 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-size: 15px !important;
+    cursor: pointer !important;
+    transition: 0.3s !important;
 }
 
 .sign_btn:hover {
