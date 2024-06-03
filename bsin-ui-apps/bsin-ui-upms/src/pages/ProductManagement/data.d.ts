@@ -11,8 +11,8 @@ export type DictColumnsItem = {
 // 产品项查看表格数据
 export type DictItemColumnsItem = {
   id: string | number;
-  appId: string;
-  appName: string;
+  baseFlag: string | number;
+  bizRoleType: string | number;
   appCode: string;
   url: string;
   appLanguage: string;
