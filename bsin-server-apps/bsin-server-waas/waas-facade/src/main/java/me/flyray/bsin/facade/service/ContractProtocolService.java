@@ -1,5 +1,9 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.ContractProtocol;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,12 +32,12 @@ public interface ContractProtocolService {
     /**
      * 租户下所有合约协议
      */
-    public Map<String, Object> getList(Map<String, Object> requestMap);
+    public List<ContractProtocol> getList(Map<String, Object> requestMap);
 
     /**
      * 分页查询合约协议
      */
-    public Map<String, Object> getPageList(Map<String, Object> requestMap);
+    public IPage<ContractProtocol> getPageList(Map<String, Object> requestMap);
 
     /**
      * 查询合约协议详情

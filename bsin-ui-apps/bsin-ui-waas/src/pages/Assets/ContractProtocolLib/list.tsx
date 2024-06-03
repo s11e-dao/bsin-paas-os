@@ -59,7 +59,7 @@ export default ({ contactProtocolRouter, addCurrentRecord }) => {
       pageSize: '99',
     };
     getContractProtocolList(params).then((res) => {
-      if (res?.code == '000000') {
+      if (res?.code == 0) {
         setContractProtocolList(res?.data);
         setLoading(false);
 
@@ -80,7 +80,7 @@ export default ({ contactProtocolRouter, addCurrentRecord }) => {
           | any[]
           | ((prevState: never[]) => never[]) = [];
 
-        res?.data.map((contract) => {
+        res?.data?.map((contract) => {
           if (contract.category == '1') {
             coreContractListTmp.push(contract);
           } else if (contract.category == '2') {

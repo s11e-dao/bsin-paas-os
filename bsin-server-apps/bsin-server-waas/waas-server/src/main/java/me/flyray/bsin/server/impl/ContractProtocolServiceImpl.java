@@ -81,7 +81,7 @@ public class ContractProtocolServiceImpl implements ContractProtocolService {
     @ShenyuDubboClient("/getPageList")
     @ApiDoc(desc = "getPageList")
     @Override
-    public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+    public IPage<ContractProtocol> getPageList(Map<String, Object> requestMap) {
         ContractProtocol contractProtocol = BsinServiceContext.getReqBodyDto(ContractProtocol.class, requestMap);
         Object paginationObj =  requestMap.get("pagination");
         me.flyray.bsin.server.utils.Pagination pagination = new Pagination();
@@ -97,13 +97,13 @@ public class ContractProtocolServiceImpl implements ContractProtocolService {
         warapper.eq(ObjectUtil.isNotNull(contractProtocol.getProtocolCode()), ContractProtocol::getProtocolCode, contractProtocol.getProtocolCode());
         warapper.eq(ObjectUtil.isNotNull(contractProtocol.getChainType()), ContractProtocol::getChainType, contractProtocol.getChainType());
         IPage<ContractProtocol> pageList = contractProtocolMapper.selectPage(page,warapper);
-        return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+        return pageList;
     }
 
     @ShenyuDubboClient("/getList")
     @ApiDoc(desc = "getList")
     @Override
-    public Map<String, Object> getList(Map<String, Object> requestMap) {
+    public List<ContractProtocol> getList(Map<String, Object> requestMap) {
         ContractProtocol contractProtocol = BsinServiceContext.getReqBodyDto(ContractProtocol.class, requestMap);
         LambdaQueryWrapper<ContractProtocol> warapper = new LambdaQueryWrapper<>();
         warapper.orderByDesc(ContractProtocol::getCreateTime);
@@ -113,7 +113,7 @@ public class ContractProtocolServiceImpl implements ContractProtocolService {
         warapper.eq(ObjectUtil.isNotNull(contractProtocol.getCategory()), ContractProtocol::getCategory, contractProtocol.getCategory());
         warapper.eq(ObjectUtil.isNotNull(contractProtocol.getProtocolCode()), ContractProtocol::getProtocolCode, contractProtocol.getProtocolCode());
         List<ContractProtocol> contractProtocolList = contractProtocolMapper.selectList(warapper);
-        return RespBodyHandler.setRespBodyListDto(contractProtocolList);
+        return contractProtocolList;
     }
 
     @ShenyuDubboClient("/getDetail")
