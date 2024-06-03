@@ -20,7 +20,7 @@ import java.util.Date;
  * @author makejava
  */
 
-@TableName(value ="da_contract_protocol")
+@TableName(value ="waas_contract_protocol")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class ContractProtocol implements Serializable {
