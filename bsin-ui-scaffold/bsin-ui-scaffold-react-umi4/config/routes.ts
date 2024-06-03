@@ -17,6 +17,14 @@ const routes = [
         ],
       },
       {
+        name: '全局参数',
+        path: '/params',
+        component: '@/pages/Params/index',
+        wrappers: [
+          '@/wrappers/auth',
+        ],
+      },
+      {
         name: '用户中心',
         path: '/userCenter',
         component: '@/pages/UserCenter/index',
