@@ -1,5 +1,6 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -92,7 +93,9 @@ public class MetadataTemplateServiceImpl implements MetadataTemplateService {
     public Map<String, Object> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         MetadataTemplate metadataTemplate = BsinServiceContext.getReqBodyDto(MetadataTemplate.class, requestMap);
-        Pagination pagination = (Pagination) requestMap.get("pagination");
+        Object paginationObj =  requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj,pagination);
         Page<MetadataTemplate> page = new Page<>(pagination.getPageNum(),pagination.getPageSize());
         LambdaUpdateWrapper<MetadataTemplate> warapper = new LambdaUpdateWrapper<>();
         warapper.orderByDesc(MetadataTemplate::getCreateTime);

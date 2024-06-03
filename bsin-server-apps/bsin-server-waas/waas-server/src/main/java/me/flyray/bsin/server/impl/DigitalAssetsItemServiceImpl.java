@@ -2,6 +2,7 @@ package me.flyray.bsin.server.impl;
 
 import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -312,7 +313,6 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
     if (digitalAssetsItemReq.getMerchantNo() != null) {
       merchantNo = digitalAssetsItemReq.getMerchantNo();
     }
-
     List<String> assetsTypes = (List<String>) requestMap.get("assetsTypes");
     String assetsType = (String) requestMap.get("assetsType");
     String obtainMethod = (String) requestMap.get("obtainMethod");
@@ -320,7 +320,9 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
     if (digitalAssetsItemNo == null) {
       digitalAssetsItemNo = (String) requestMap.get("serialNo");
     }
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
     Page<DigitalAssetsItem> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
 
     IPage<DigitalAssetsItem> digitalAssetsItemPageList =

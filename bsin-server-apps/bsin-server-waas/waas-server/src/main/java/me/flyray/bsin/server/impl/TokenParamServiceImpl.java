@@ -88,7 +88,9 @@ public class TokenParamServiceImpl implements TokenParamService {
   @Override
   public Map<String, Object> getPageList(Map<String, Object> requestMap) {
     TokenParam tokenReleaseParam = BsinServiceContext.getReqBodyDto(TokenParam.class, requestMap);
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
     Page<TokenParam> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<TokenParam> warapper = new LambdaUpdateWrapper<>();
     // warapper.eq(TokenReleaseParam::getTenantId, contractProtocol.getTenantId());

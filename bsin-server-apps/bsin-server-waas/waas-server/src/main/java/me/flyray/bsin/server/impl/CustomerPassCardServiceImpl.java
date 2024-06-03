@@ -1,5 +1,6 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -7,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import me.flyray.bsin.domain.entity.Merchant;
 import me.flyray.bsin.facade.service.*;
+import me.flyray.bsin.server.utils.Pagination;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -28,7 +30,6 @@ import me.flyray.bsin.domain.entity.CustomerPassCard;
 import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
 import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
 import me.flyray.bsin.infrastructure.mapper.CustomerPassCardMapper;
-import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
@@ -201,8 +202,9 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
     if (tenantId == null) {
       tenantId = loginUser.getTenantId();
     }
-
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Object paginationObj =  requestMap.get("pagination");
+    me.flyray.bsin.server.utils.Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
     Page<CustomerPassCard> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<CustomerPassCard> warapper = new LambdaUpdateWrapper<>();
     warapper.orderByDesc(CustomerPassCard::getCreateTime);

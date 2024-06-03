@@ -230,7 +230,9 @@ public class OrderbookServiceImpl implements OrderbookService {
     @Override
     public Map<String, Object> getPageList(Map<String, Object> requestMap){
         Orderbook orderbook = BsinServiceContext.getReqBodyDto(Orderbook.class, requestMap);
-        Pagination pagination = (Pagination) requestMap.get("pagination");
+        Object paginationObj =  requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj,pagination);
         Page<Orderbook> page = new Page<>(pagination.getPageNum(),pagination.getPageSize());
         IPage<DigitalAssetsItemRes> orderbookPageList = orderbookMapper.selectOrderbookPage(page,orderbook);
         List<String> customerNos = new ArrayList<>();
