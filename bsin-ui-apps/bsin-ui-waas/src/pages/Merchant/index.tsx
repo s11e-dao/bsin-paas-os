@@ -95,7 +95,7 @@ export default () => {
   // 新增模板
   const openRegisterMerchantModal = () => {
     let params = {
-      tenantId: getLocalStorageInfo('userInformation')?.tenantId,
+      tenantId: getLocalStorageInfo('userInfo')?.tenantId,
       dictType: 'businessType',
       pageNum: 1,
       pageSize: 100,
@@ -121,13 +121,13 @@ export default () => {
         console.log(response);
         let reqParam = {
           ...response,
-          tenantId: getLocalStorageInfo('userInformation')?.tenantId,
+          tenantId: getLocalStorageInfo('userInfo')?.tenantId,
           password: hex_md5(response.password),
           tenantAppType: tenantAppType,
           logoUrl: logoUrl,
           registerMethod: "operatorRegister"
         };
-        console.log(getLocalStorageInfo('userInformation'));
+        console.log(getLocalStorageInfo('userInfo'));
         console.log(reqParam);
         console.log(logoUrl);
         registerMerchant(reqParam).then((res) => {

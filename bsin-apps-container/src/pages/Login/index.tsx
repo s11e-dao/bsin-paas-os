@@ -6,7 +6,7 @@ import logo from '@/assets/logo.png';
 import loginBg from '@/assets/image/logo.png';
 import loginbg1 from '@/assets/image/login-bg1.png';
 import "./index.css"
-import Login2 from './Login2';
+import MerchantLogin from './MerchantLogin';
 import styles from "./style.css"
 import { hex_md5 } from '../../utils/md5';
 import {
@@ -68,7 +68,7 @@ export default function () {
     console.log("-------------")
     console.log(res)
     if (res) {
-      setLocalStorageInfo('userInformation', res.data?.sysUser);
+      setLocalStorageInfo('userInfo', res.data?.sysUser);
       setSessionStorageInfo('token', { token: res.data?.token });
       message.success('登录成功！');
     }
@@ -89,7 +89,7 @@ export default function () {
       tenantId,
     });
     if (res) {
-      setLocalStorageInfo('userInformation', res.data?.sysUser);
+      setLocalStorageInfo('userInfo', res.data?.sysUser);
       setSessionStorageInfo('token', { token: res.data?.token });
       message.success('登录成功！');
     }
@@ -285,7 +285,7 @@ export default function () {
           </div>
         </main>
       ) : (
-        <Login2 />
+        <MerchantLogin />
       )}
     </>
   );

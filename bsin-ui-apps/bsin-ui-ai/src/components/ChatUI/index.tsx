@@ -220,7 +220,7 @@ export default ({ props }) => {
 
   useEffect(() => {
     console.log(props)
-    const userInformationTmp = getLocalStorageInfo('userInformation')
+    const userInformationTmp = getLocalStorageInfo('userInfo')
     setUserInformation(userInformationTmp)
     console.log('userInformation')
     console.log(userInformationTmp)

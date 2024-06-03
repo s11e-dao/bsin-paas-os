@@ -120,7 +120,7 @@ export const request: RequestConfig = {
       config.method = 'POST';
       console.log(config)
       // 获取userInfo和token
-      let userInfo = getLocalStorageInfo('userInformation');
+      let userInfo = getLocalStorageInfo('userInfo');
       let token = getSessionStorageInfo('token')?.token;
 
       // 判断token和用户信息是否存在

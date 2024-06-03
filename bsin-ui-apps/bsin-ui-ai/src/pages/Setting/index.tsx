@@ -72,7 +72,7 @@ const Settings: React.FC = () => {
 
   const renderChildren = () => {
     const { selectKey } = initConfig
-    var userInformation = getLocalStorageInfo('userInformation')
+    var userInformation = getLocalStorageInfo('userInfo')
     console.log(userInformation)
     var merchantInfo = getLocalStorageInfo('merchantInfo')
     console.log(merchantInfo)

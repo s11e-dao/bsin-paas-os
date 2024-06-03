@@ -147,10 +147,9 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
       password: hex_md5(loginState.password),
     });
     if (res && res.code == 0) {
-      if (!res.data?.sysUser) {
-        setLocalStorageInfo('userInformation', res.data?.merchantInfo);
-      } else {
-        setLocalStorageInfo('userInformation', res.data?.sysUser);
+      // 商户未认证，不存在用户信息
+      if (res.data?.sysUser) {
+        setLocalStorageInfo('userInfo', res.data?.sysUser);
       }
       setLocalStorageInfo('merchantInfo', res.data?.merchantInfo);
       setSessionStorageInfo('token', { token: res.data?.token });

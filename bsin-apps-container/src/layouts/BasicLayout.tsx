@@ -529,7 +529,7 @@ export default () => {
                   ? 'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg'
                   : getLocalStorageInfo('customerInfo')?.avatar,
               size: 'small',
-              title: getLocalStorageInfo('userInformation')?.username,
+              title: getLocalStorageInfo('userInfo')?.username || getLocalStorageInfo('merchantInfo')?.usernam,
               render: (props, dom) => {
                 return (
                   <Dropdown

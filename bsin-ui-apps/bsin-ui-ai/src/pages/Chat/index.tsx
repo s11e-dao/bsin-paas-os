@@ -30,7 +30,7 @@ export default () => {
   const [chatUIProps, setChatUIprops] = useState({})
 
   useEffect(() => {
-    const userInformationTmp = getLocalStorageInfo('userInformation')
+    const userInformationTmp = getLocalStorageInfo('userInfo')
     setUserInformation(userInformationTmp)
     console.log('userInformation')
     console.log(userInformationTmp)

@@ -117,7 +117,7 @@ export const request: RequestConfig = {
       // 请求方法统一为 POST
       config.method = 'POST';
       // 获取userInfo和token
-      let userInfo = getLocalStorageInfo('userInformation');
+      let userInfo = getLocalStorageInfo('userInfo');
       let token = getSessionStorageInfo('token')?.token;
 
       // 判断token和用户信息是否存在

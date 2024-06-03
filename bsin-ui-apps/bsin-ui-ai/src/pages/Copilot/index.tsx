@@ -17,7 +17,7 @@ export default () => {
   const addCurrentRecord = (record) => {
     setIsLoadCopilotDetail(true)
     setCurrentRecord(record)
-    const userInformationTmp = getLocalStorageInfo('userInformation')
+    const userInformationTmp = getLocalStorageInfo('userInfo')
     console.log('userInformation')
     console.log(userInformationTmp)
     const merchantInfoTmp = getLocalStorageInfo('merchantInfo')

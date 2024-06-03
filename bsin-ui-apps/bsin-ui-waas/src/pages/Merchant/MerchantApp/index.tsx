@@ -120,7 +120,7 @@ export default () => {
         let reqParam = {
           ...response,
         };
-        console.log(getLocalStorageInfo('userInformation'));
+        console.log(getLocalStorageInfo('userInfo'));
         console.log(reqParam);
 
         if (addModalTitle === '新增') {

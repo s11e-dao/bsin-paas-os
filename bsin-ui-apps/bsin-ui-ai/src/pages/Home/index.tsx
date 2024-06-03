@@ -18,9 +18,9 @@ export default function Home() {
 
   useEffect(() => {
     setMerchantInfo(getLocalStorageInfo('merchantInfo'))
-    setUserInfo(getLocalStorageInfo('userInformation'))
+    setUserInfo(getLocalStorageInfo('userInfo'))
     console.log(getLocalStorageInfo('merchantInfo')?.authenticationStatus)
-    console.log(getLocalStorageInfo('userInformation')?.type)
+    console.log(getLocalStorageInfo('userInfo')?.type)
   }, [])
 
   const cardStyle = {
@@ -33,8 +33,7 @@ export default function Home() {
   return (
     <>
       {/* 判断用户是否已经认证 */}
-      {merchantInfo?.authenticationStatus != 2 &&
-      (userInfo?.type == 2 || userInfo?.type == 3) ? (
+      {merchantInfo?.authenticationStatus != 2 || userInfo ? (
         <Authentication />
       ) : (
         <Card>
