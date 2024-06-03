@@ -3,8 +3,8 @@ let waasPath = process.env.contextPath_waas;
 
 // 分页查询
 export const getPlatformPageList = (params) => {
-  return request('/list', {
-    serviceName: 'PlatformService',
+  return request(waasPath + '/transaction/getPageList', {
+    serviceName: 'TransactionService',
     methodName: 'getPageList',
     version: '1.0',
     bizParams: {
@@ -15,8 +15,8 @@ export const getPlatformPageList = (params) => {
 
 // 添加平台
 export const addPlatform = (params) => {
-  return request('/add', {
-    serviceName: 'PlatformService',
+  return request(waasPath + '/transaction/openTenant', {
+    serviceName: 'TransactionService',
     methodName: 'openTenant',
     version: '1.0',
     bizParams: {
@@ -27,8 +27,8 @@ export const addPlatform = (params) => {
 
 // 删除
 export const deletePlatform = (params) => {
-  return request('/del', {
-    serviceName: 'PlatformService',
+  return request(waasPath + '/transaction/delete', {
+    serviceName: 'TransactionService',
     methodName: 'delete',
     version: '1.0',
     bizParams: {
@@ -40,8 +40,8 @@ export const deletePlatform = (params) => {
 // 查询详情
 export const getPlatformDetail = (params) => {
   console.log('params', params);
-  return request('/view', {
-    serviceName: 'PlatformService',
+  return request(waasPath + '/transaction/getDetail', {
+    serviceName: 'TransactionService',
     methodName: 'getDetail',
     version: '1.0',
     bizParams: {
@@ -52,8 +52,8 @@ export const getPlatformDetail = (params) => {
 
 // 查询产品列表
 export const getProductList = (params) => {
-  return request('/getList', {
-    serviceName: 'ProductService',
+  return request(waasPath + '/transaction/getList', {
+    serviceName: 'TransactionService',
     methodName: 'getList',
     bizParams: {
       ...params,
