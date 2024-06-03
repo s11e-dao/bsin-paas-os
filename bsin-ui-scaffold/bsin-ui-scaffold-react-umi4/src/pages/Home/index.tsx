@@ -34,7 +34,7 @@ export default () => {
   return (
       <>
         {/* 判断用户是否已经认证 */}
-        {merchantInfo?.authenticationStatus != 2 || userInfo ? (
+        {!userInfo && merchantInfo?.authenticationStatus != 2 ? (
             <Authentication />
         ) : (
             <Card>
