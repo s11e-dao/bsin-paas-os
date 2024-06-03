@@ -51,8 +51,8 @@
             cwa.create_by,
             cwa.update_time,
             cwa.update_by
-        from crm_wallet_account as cwa
-        left join crm_chain_coin as c3
+        from waas_wallet_account as cwa
+        left join waas_chain_coin as c3
         on cwa.chain_coin_no = c3.serial_no and c3.del_flag = 0
         where cwa.del_flag = 0
         and c3.status = 1
@@ -77,8 +77,8 @@
             cwa.create_by as createBy,
             cwa.update_time as updateTime,
             cwa.update_by as updateBy
-        from crm_wallet_account as cwa
-        left join crm_wallet as cw
+        from waas_wallet_account as cwa
+        left join waas_wallet as cw
         on cwa.wallet_no = cw.serial_no and cw.del_flag = 0
         left join crm_chain_coin as c3
         on cwa.chain_coin_no = c3.serial_no and c3.del_flag = 0

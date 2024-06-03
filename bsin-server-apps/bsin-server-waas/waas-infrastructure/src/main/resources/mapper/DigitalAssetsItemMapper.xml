@@ -72,8 +72,8 @@
         dac.symbol,
         dac.name,
         dac.create_time
-        from da_digital_assets_collection dac
-        left join da_digital_assets_item dai on dai.digital_assets_collection_no = dac.serial_no
+        from waas_digital_assets_collection dac
+        left join waas_digital_assets_item dai on dai.digital_assets_collection_no = dac.serial_no
         <where>
             <if test="tenantId != null">
                 and dai.tenant_id = #{tenantId}
@@ -118,8 +118,8 @@
         dac.symbol,
         dac.name,
         dac.create_time
-        from da_digital_assets_item dai
-        left join da_digital_assets_collection dac on dai.digital_assets_collection_no = dac.serial_no
+        from waas_digital_assets_item dai
+        left join waas_digital_assets_collection dac on dai.digital_assets_collection_no = dac.serial_no
         <where>
             <if test="tenantId != null">
                 and dai.tenant_id = #{tenantId}
@@ -145,4 +145,5 @@
         </where>
         order by dai.create_time desc
     </select>
+
 </mapper>

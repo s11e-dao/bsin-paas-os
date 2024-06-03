@@ -34,7 +34,7 @@
     <select id="getByFolderNoAndTokenId" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from da_metadata_file
+        from waas_metadata_file
         where file_type in (1,2,3,4)
         AND token_id = #{tokenId} AND parent_no = #{parentNo}
         limit 1

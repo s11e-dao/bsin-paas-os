@@ -19,4 +19,5 @@
         amount,to_customer_no,to_customer_type,
         create_time
     </sql>
+
 </mapper>
