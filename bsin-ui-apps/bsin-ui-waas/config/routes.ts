@@ -100,7 +100,7 @@ const routes = [
       },
       // 会员卡列表
       {
-        path: '/customer/pass-cards',
+        path: '/customer/pass-card',
         component: '@/pages/Customer/PassCard/index',
       },
       // 等级管理
@@ -185,7 +185,7 @@ const routes = [
       },
       // pass card
       {
-        path: '/assets/pass-card',
+        path: '/assets/pass-cards',
         component: '@/pages/Assets/PassCard/index',
       },
       // 资产元数据
