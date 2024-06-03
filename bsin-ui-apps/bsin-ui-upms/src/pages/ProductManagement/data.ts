@@ -93,27 +93,16 @@ export const productAppColumnsData: ProColumns<DictItemColumnsItem>[] = [
     dataIndex: 'appName',
   },
   {
-    title: '应用类型',
-    width: 90,
-    hideInSearch: true,
-    dataIndex: 'baseFlag',
-    valueEnum: {
-      1: { text: '基础应用' },
-      0: { text: '普通应用' },
-    },
-  },
-  {
     title: '业务角色类型',
     width: 90,
     hideInSearch: true,
-    dataIndex: 'bizRoleType',
-    valueEnum: {
-      1: { text: '运营平台' },
-      2: { text: '租户平台' },
-      3: { text: '商户' },
-      4: { text: '客户' },
-      99: { text: '无' },
-    },
+    dataIndex: 'bizRoleType'
+  },
+  {
+    title: '应用类型',
+    width: 90,
+    hideInSearch: true,
+    dataIndex: 'baseFlag'
   },
   {
     title: '应用状态',

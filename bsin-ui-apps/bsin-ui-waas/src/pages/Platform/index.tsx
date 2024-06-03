@@ -165,7 +165,7 @@ export default () => {
     <div>
       {/* Pro表格 */}
       <ProTable<columnsDataType>
-        headerTitle={<TableTitle title="节点列表" />}
+        headerTitle={<TableTitle title="平台节点列表" />}
         scroll={{ x: 900 }}
         bordered
         // 表头

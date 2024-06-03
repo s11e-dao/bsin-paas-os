@@ -1,11 +1,11 @@
 import React from 'react';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, SyncOutlined } from '@ant-design/icons';
 import {
   Descriptions,
   Modal,
-  InputNumber,
+  Tag,
   Button,
   Divider,
   Popconfirm,
@@ -249,12 +249,54 @@ const DictManagement = () => {
     ];
   };
 
+  // 定义字典项查看操作单元格
+  const columnsBaseFlagRender = (text: any, record: DictItemColumnsItem) => {
+    return [
+      <div>
+        {record?.baseFlag === 0 ? (
+          <Tag color="blue" >普通应用</Tag>
+        ) : record?.baseFlag === 1 ? (
+          <Tag icon={<SyncOutlined spin />} color="purple" >基础应用</Tag>
+        ) : (
+          ''
+        )}
+      </div>
+    ];
+  };
+
+  // 定义字典项查看操作单元格
+  const columnsBizRoleTypeRender = (text: any, record: DictItemColumnsItem) => {
+    return [
+      <div>
+        {record.bizRoleType === "1" ? (
+          <Tag color="volcano" >运营平台</Tag>
+        ) : record.bizRoleType === "2" ? (
+          <Tag color="green" >租户平台</Tag>
+        ) : record.bizRoleType === "3" ? (
+          <Tag color="success" >商户</Tag>
+        ) : record.bizRoleType === "4" ? (
+          <Tag color="geekblue" >客户</Tag>
+        ) : record.bizRoleType === "99" ? (
+          <Tag color="cyan" >无</Tag>
+        ) : (
+          ''
+        )}
+      </div>
+    ];
+  };
+
   // 查看字典项表格操作行渲染
   productAppColumnsData.forEach((item) => {
-    item.valueType === 'option'
-      ? (item.render = CheckColumnsOptionRender)
-      : undefined;
+    console.log(item)
+    if (item.valueType === 'option')
+      item.render = CheckColumnsOptionRender
+    if (item.dataIndex === 'baseFlag')
+      item.render = columnsBaseFlagRender;
+    if (item.dataIndex === 'bizRoleType')
+      item.render = columnsBizRoleTypeRender;
   });
+
+  
 
   // 字典表 Table action 的引用，便于自定义触发
   const DictRef = React.useRef<ActionType>();

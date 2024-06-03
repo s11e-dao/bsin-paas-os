@@ -16,7 +16,7 @@ export type columnsDataType = {
 const columnsData: ProColumns<columnsDataType>[] = [
   // 配置搜索框
   {
-    title: '节点名称',
+    title: '平台名称',
     dataIndex: 'username',
     hideInTable: true,
     fieldProps: {
@@ -24,7 +24,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     },
   },
   {
-    title: '节点号',
+    title: '平台号',
     dataIndex: 'tenantId',
     hideInTable: true,
     fieldProps: {
@@ -40,7 +40,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
   },
   {
-    title: '节点名称',
+    title: '平台节点名称',
     width: 160,
     dataIndex: 'username',
     hideInSearch: true,
