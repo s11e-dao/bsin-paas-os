@@ -898,7 +898,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
                 }}
               >
                 <Option value="1">请选择profile编号</Option>
-                {customerProfileList.map((customerProfile) => {
+                {customerProfileList?.map((customerProfile) => {
                   return (
                     <Option value={customerProfile?.serialNo}>
                       {(customerProfile?.serialNo).slice(-4) +

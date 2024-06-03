@@ -752,7 +752,7 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
   @ShenyuDubboClient("/getPageList")
   @ApiDoc(desc = "getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<CustomerProfile> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     CustomerProfile customerProfile =
         BsinServiceContext.getReqBodyDto(CustomerProfile.class, requestMap);
@@ -769,7 +769,7 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
         CustomerProfile::getType,
         customerProfile.getType());
     IPage<CustomerProfile> pageList = customerProfileMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
 }

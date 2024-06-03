@@ -1,5 +1,8 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.CustomerProfile;
+
 import java.util.Map;
 
 /**
@@ -54,6 +57,6 @@ public interface CustomerProfileService {
     /**
      * 租户下所有
      */
-    public Map<String, Object> getPageList(Map<String, Object> requestMap);
+    public IPage<CustomerProfile> getPageList(Map<String, Object> requestMap);
 
 }

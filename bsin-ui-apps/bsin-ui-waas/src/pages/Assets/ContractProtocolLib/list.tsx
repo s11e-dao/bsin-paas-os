@@ -135,7 +135,7 @@ export default ({ contactProtocolRouter, addCurrentRecord }) => {
       <Tabs
         defaultActiveKey="1"
         centered
-        items={contractCategoryList.map((category) => {
+        items={contractCategoryList?.map((category) => {
           return {
             label: category.name,
             key: category.id,
@@ -147,15 +147,7 @@ export default ({ contactProtocolRouter, addCurrentRecord }) => {
               <List
                 loading={loading}
                 rowKey="id"
-                grid={{
-                  gutter: 16,
-                  xs: 1,
-                  sm: 2,
-                  md: 2,
-                  lg: 3,
-                  xl: 4,
-                  xxl: 5,
-                }}
+                grid={{ gutter: 16, column: 4 }}
                 dataSource={category.contractList}
                 renderItem={(item) => {
                   if (item && item.serialNo) {
@@ -163,11 +155,10 @@ export default ({ contactProtocolRouter, addCurrentRecord }) => {
                       <List.Item key={item.serialNo}>
                         <Card
                           hoverable
-                          style={{ width: 300 }}
                           className={styles.card}
                           cover={
                             <img
-                              style={{ width: '100%', height: '260px' }}
+                              style={{ width: '100%', height: '180px' }}
                               alt="example"
                               src={item.coverImage}
                             />
