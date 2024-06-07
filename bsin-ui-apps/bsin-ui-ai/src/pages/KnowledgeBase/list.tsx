@@ -347,25 +347,16 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
         <List
           loading={loading}
           rowKey="id"
-          grid={{
-            gutter: 16,
-            xs: 1,
-            sm: 2,
-            md: 2,
-            lg: 3,
-            xl: 4,
-            xxl: 5,
-          }}
+          grid={{ gutter: 16, column: 4 }}
           dataSource={knowledgeBaseList}
           renderItem={(item) => {
             if (item && item.serialNo) {
               return (
                 <List.Item key={item.serialNo}>
                   <Card
-                    style={{ width: 300 }}
                     cover={
                       <img
-                        style={{ width: '100%', height: '260px' }}
+                        style={{ width: '100%', height: '220px' }}
                         alt="example"
                         src={item.coverImage}
                       />
