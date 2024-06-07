@@ -1,5 +1,8 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.MetadataTemplate;
+
 import java.util.Map;
 
 /**
@@ -33,7 +36,7 @@ public interface MetadataTemplateService {
     /**
      * 分页查询
      */
-    public Map<String, Object> getPageList(Map<String, Object> requestMap);
+    public IPage<MetadataTemplate> getPageList(Map<String, Object> requestMap);
 
     /**
      * 查询详情

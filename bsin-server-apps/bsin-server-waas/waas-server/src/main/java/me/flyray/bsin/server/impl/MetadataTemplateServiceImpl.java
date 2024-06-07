@@ -90,7 +90,7 @@ public class MetadataTemplateServiceImpl implements MetadataTemplateService {
     @ShenyuDubboClient("/getPageList")
     @ApiDoc(desc = "getPageList")
     @Override
-    public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+    public IPage<MetadataTemplate> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         MetadataTemplate metadataTemplate = BsinServiceContext.getReqBodyDto(MetadataTemplate.class, requestMap);
         Object paginationObj =  requestMap.get("pagination");
@@ -102,7 +102,7 @@ public class MetadataTemplateServiceImpl implements MetadataTemplateService {
         warapper.eq(ObjectUtil.isNotNull(loginUser.getTenantId()),MetadataTemplate::getTenantId, loginUser.getTenantId());
         warapper.eq(ObjectUtil.isNotNull(loginUser.getMerchantNo()),MetadataTemplate::getMerchantNo, loginUser.getMerchantNo());
         IPage<MetadataTemplate> pageList = metadataTemplateMapper.selectPage(page,warapper);
-        return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+        return pageList;
     }
 
     @ShenyuDubboClient("/getDetail")

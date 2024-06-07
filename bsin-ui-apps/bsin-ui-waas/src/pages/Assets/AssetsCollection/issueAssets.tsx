@@ -240,7 +240,7 @@ export default ({ setCurrentContent }) => {
             >
               <Select style={{ width: '100%' }}>
                 <Option value="1">请选择元数据模板</Option>
-                {metadataTemplateList.map((metadataTemplate) => {
+                {metadataTemplateList?.map((metadataTemplate) => {
                   return (
                     <Option value={metadataTemplate?.serialNo}>
                       {metadataTemplate?.templateName}
