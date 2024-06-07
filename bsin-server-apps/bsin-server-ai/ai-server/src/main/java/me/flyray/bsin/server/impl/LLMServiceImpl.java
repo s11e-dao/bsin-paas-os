@@ -39,8 +39,8 @@ import me.flyray.bsin.utils.BsinSnowflake;
  * @createDate 2023-12-09 01:50:35
  */
 
-@ShenyuDubboService(path = "/lLLM", timeout = 6000)
-@ApiModule(value = "lLLM")
+@ShenyuDubboService(path = "/lLM", timeout = 6000)
+@ApiModule(value = "lLM")
 @Service
 @Slf4j
 public class LLMServiceImpl implements LLMService {
@@ -124,7 +124,7 @@ public class LLMServiceImpl implements LLMService {
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<LLMParam> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -160,7 +160,7 @@ public class LLMServiceImpl implements LLMService {
     // 匹配系统资源
     wrapper.or().eq(LLMParam::getEditable, false);
     IPage<LLMParam> pageList = llmMapper.selectPage(page, wrapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getList")

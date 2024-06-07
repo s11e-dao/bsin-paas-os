@@ -3,7 +3,7 @@ let aiPath = process.env.contextPath_ai;
 
 // 列表数据请求
 export const getToolPageList = (params) => {
-  return request(aiPath + '/getPageList', {
+  return request(aiPath + '/tool/getPageList', {
     serviceName: 'ToolService',
     methodName: 'getPageList',
     version: '1.0',
@@ -13,7 +13,7 @@ export const getToolPageList = (params) => {
   })
 }
 export const getToolList = (params) => {
-  return request(aiPath + '/getList', {
+  return request(aiPath + '/tool/getList', {
     serviceName: 'ToolService',
     methodName: 'getList',
     version: '1.0',
@@ -25,7 +25,7 @@ export const getToolList = (params) => {
 
 // 删除
 export const delTool = (params) => {
-  return request(aiPath + '/delete', {
+  return request(aiPath + '/tool/delete', {
     serviceName: 'ToolService',
     methodName: 'delete',
     version: '1.0',
@@ -37,7 +37,7 @@ export const delTool = (params) => {
 
 //添加
 export const addTool = (params) => {
-  return request(aiPath + '/add', {
+  return request(aiPath + '/tool/add', {
     serviceName: 'ToolService',
     methodName: 'add',
     version: '1.0',
@@ -49,7 +49,7 @@ export const addTool = (params) => {
 
 //编辑
 export const editTool = (params) => {
-  return request(aiPath + '/edit', {
+  return request(aiPath + '/tool/edit', {
     serviceName: 'ToolService',
     methodName: 'edit',
     version: '1.0',
@@ -61,7 +61,7 @@ export const editTool = (params) => {
 
 // 详情
 export const getToolDetail = (params) => {
-  return request(aiPath + '/getDetail', {
+  return request(aiPath + '/tool/getDetail', {
     serviceName: 'ToolService',
     methodName: 'getDetail',
     version: '1.0',
@@ -73,7 +73,7 @@ export const getToolDetail = (params) => {
 
 // 列表数据请求
 export const getWxPlatformMenuPageList = (params) => {
-  return request(aiPath + '/getPageList', {
+  return request(aiPath + '/wxPlatformMenu/getPageList', {
     serviceName: 'WxPlatformMenuService',
     methodName: 'getPageList',
     version: '1.0',
@@ -83,7 +83,7 @@ export const getWxPlatformMenuPageList = (params) => {
   })
 }
 export const getWxPlatformMenuList = (params) => {
-  return request(aiPath + '/getList', {
+  return request(aiPath + '/wxPlatformMenu/getList', {
     serviceName: 'WxPlatformMenuService',
     methodName: 'getList',
     version: '1.0',
@@ -94,7 +94,7 @@ export const getWxPlatformMenuList = (params) => {
 }
 
 export const getWxPlatformMenuTemplateMenuTreeList = (params) => {
-  return request(aiPath + '/getMenuTemplateMenuTreeList', {
+  return request(aiPath + '/wxPlatformMenu/getMenuTemplateMenuTreeList', {
     serviceName: 'WxPlatformMenuService',
     methodName: 'getMenuTemplateMenuTreeList',
     version: '1.0',
@@ -105,7 +105,7 @@ export const getWxPlatformMenuTemplateMenuTreeList = (params) => {
 }
 
 export const getWxPlatformMenuTemplate = (params) => {
-  return request(aiPath + '/getMenuTemplateMenuTree', {
+  return request(aiPath + '/wxPlatformMenu/getMenuTemplateMenuTree', {
     serviceName: 'WxPlatformMenuService',
     methodName: 'getMenuTemplateMenuTree',
     version: '1.0',
@@ -117,7 +117,7 @@ export const getWxPlatformMenuTemplate = (params) => {
 
 // 删除
 export const delWxPlatformMenu = (params) => {
-  return request(aiPath + '/delete', {
+  return request(aiPath + '/wxPlatformMenu/delete', {
     serviceName: 'WxPlatformMenuService',
     methodName: 'delete',
     version: '1.0',
@@ -129,7 +129,7 @@ export const delWxPlatformMenu = (params) => {
 
 //添加
 export const addWxPlatformMenu = (params) => {
-  return request(aiPath + '/add', {
+  return request(aiPath + '/wxPlatformMenu/add', {
     serviceName: 'WxPlatformMenuService',
     methodName: 'add',
     version: '1.0',
@@ -141,7 +141,7 @@ export const addWxPlatformMenu = (params) => {
 
 //编辑
 export const editWxPlatformMenu = (params) => {
-  return request(aiPath + '/edit', {
+  return request(aiPath + '/wxPlatformMenu/edit', {
     serviceName: 'WxPlatformMenuService',
     methodName: 'edit',
     version: '1.0',
@@ -153,7 +153,7 @@ export const editWxPlatformMenu = (params) => {
 
 // 详情
 export const getWxPlatformMenuDetail = (params) => {
-  return request(aiPath + '/getDetail', {
+  return request(aiPath + '/wxPlatformMenu/getDetail', {
     serviceName: 'WxPlatformMenuService',
     methodName: 'getDetail',
     version: '1.0',
@@ -165,7 +165,7 @@ export const getWxPlatformMenuDetail = (params) => {
 
 // 列表数据请求
 export const getWxPlatformPageList = (params) => {
-  return request(aiPath + '/getPageList', {
+  return request(aiPath + '/wxPlatform/getPageList', {
     serviceName: 'WxPlatformService',
     methodName: 'getPageList',
     version: '1.0',
@@ -175,7 +175,7 @@ export const getWxPlatformPageList = (params) => {
   })
 }
 export const getWxPlatformList = (params) => {
-  return request(aiPath + '/getList', {
+  return request(aiPath + '/wxPlatform/getList', {
     serviceName: 'WxPlatformService',
     methodName: 'getList',
     version: '1.0',
@@ -187,7 +187,7 @@ export const getWxPlatformList = (params) => {
 
 // 删除
 export const delWxPlatform = (params) => {
-  return request(aiPath + '/delete', {
+  return request(aiPath + '/wxPlatform/delete', {
     serviceName: 'WxPlatformService',
     methodName: 'delete',
     version: '1.0',
@@ -199,7 +199,7 @@ export const delWxPlatform = (params) => {
 
 //添加
 export const addWxPlatform = (params) => {
-  return request(aiPath + '/add', {
+  return request(aiPath + '/wxPlatform/add', {
     serviceName: 'WxPlatformService',
     methodName: 'add',
     version: '1.0',
@@ -211,7 +211,7 @@ export const addWxPlatform = (params) => {
 
 //编辑
 export const editWxPlatform = (params) => {
-  return request(aiPath + '/edit', {
+  return request(aiPath + '/wxPlatform/edit', {
     serviceName: 'WxPlatformService',
     methodName: 'edit',
     version: '1.0',
@@ -223,7 +223,7 @@ export const editWxPlatform = (params) => {
 
 // 详情
 export const getWxPlatformDetail = (params) => {
-  return request(aiPath + '/getDetail', {
+  return request(aiPath + '/wxPlatform/getDetail', {
     serviceName: 'WxPlatformService',
     methodName: 'getDetail',
     version: '1.0',
@@ -235,7 +235,7 @@ export const getWxPlatformDetail = (params) => {
 
 // 详情
 export const startPlatform = (params) => {
-  return request(aiPath + '/loginIn', {
+  return request(aiPath + '/wxPlatform/loginIn', {
     serviceName: 'WxPlatformService',
     methodName: 'loginIn',
     version: '1.0',
@@ -247,7 +247,7 @@ export const startPlatform = (params) => {
 
 // 同步公众号菜单
 export const syncMpMenu = (params) => {
-  return request(aiPath + '/syncMpMenu', {
+  return request(aiPath + '/wxPlatformMenu/syncMpMenu', {
     serviceName: 'WxPlatformMenuService',
     methodName: 'syncMpMenu',
     version: '1.0',
@@ -259,7 +259,7 @@ export const syncMpMenu = (params) => {
 
 // 移除公众号菜单
 export const removeMpMenu = (params) => {
-  return request(aiPath + '/removeMpMenu', {
+  return request(aiPath + '/wxPlatformMenu/removeMpMenu', {
     serviceName: 'WxPlatformMenuService',
     methodName: 'removeMpMenu',
     version: '1.0',
