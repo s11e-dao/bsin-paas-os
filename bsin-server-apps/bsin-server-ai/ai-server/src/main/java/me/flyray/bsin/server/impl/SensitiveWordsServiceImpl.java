@@ -1,9 +1,11 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import me.flyray.bsin.domain.entity.CopilotInfo;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -129,15 +131,10 @@ public class SensitiveWordsServiceImpl implements SensitiveWordsService {
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<SensitiveWords> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-      if (merchantNo == null) {
-        throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-      }
-    }
+
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     if (customerNo == null) {
       customerNo = loginUser.getCustomerNo();
@@ -155,34 +152,40 @@ public class SensitiveWordsServiceImpl implements SensitiveWordsService {
 
     String type = MapUtils.getString(requestMap, "type");
     String status = MapUtils.getString(requestMap, "status");
+    // 分页处理
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
 
-    Pagination pagination = (Pagination) requestMap.get("pagination");
     Page<SensitiveWords> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<SensitiveWords> wrapper = new LambdaUpdateWrapper<>();
     wrapper.orderByDesc(SensitiveWords::getCreateTime);
     wrapper.eq(SensitiveWords::getTenantId, tenantId);
-    wrapper.eq(SensitiveWords::getMerchantNo, merchantNo);
+    // 区分租户平台和商户登录情况判断
+    if (merchantNo == null) {
+      merchantNo = loginUser.getMerchantNo();
+      if (merchantNo == null) {
+        // 查询平台租户的数据
+        wrapper.isNull(SensitiveWords::getMerchantNo);
+      }else {
+        wrapper.eq(SensitiveWords::getMerchantNo, merchantNo);
+      }
+    }
     wrapper.eq(StringUtils.isNotBlank(customerNo), SensitiveWords::getCustomerNo, customerNo);
     wrapper.eq(StringUtils.isNotBlank(type), SensitiveWords::getType, type);
     wrapper.eq(StringUtils.isNotBlank(status), SensitiveWords::getStatus, status);
     //    // 匹配系统资源
     //    wrapper.or().eq(SensitiveWords::getEditable, false);
     IPage<SensitiveWords> pageList = sensitiveWordsMapper.selectPage(page, wrapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getList")
   @ShenyuDubboClient("/getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<SensitiveWords> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-      if (merchantNo == null) {
-        throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-      }
-    }
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     if (customerNo == null) {
       customerNo = loginUser.getCustomerNo();
@@ -204,14 +207,22 @@ public class SensitiveWordsServiceImpl implements SensitiveWordsService {
     LambdaUpdateWrapper<SensitiveWords> wrapper = new LambdaUpdateWrapper<>();
     wrapper.orderByDesc(SensitiveWords::getCreateTime);
     wrapper.eq(SensitiveWords::getTenantId, tenantId);
-    wrapper.eq(SensitiveWords::getMerchantNo, merchantNo);
+    if (merchantNo == null) {
+      merchantNo = loginUser.getMerchantNo();
+      if (merchantNo == null) {
+        // 查询平台租户的数据
+        wrapper.isNull(SensitiveWords::getMerchantNo);
+      }else {
+        wrapper.eq(SensitiveWords::getMerchantNo, merchantNo);
+      }
+    }
     wrapper.eq(StringUtils.isNotBlank(customerNo), SensitiveWords::getCustomerNo, customerNo);
     wrapper.eq(StringUtils.isNotBlank(type), SensitiveWords::getType, type);
     wrapper.eq(StringUtils.isNotBlank(status), SensitiveWords::getStatus, status);
     //    // 匹配系统资源
     //    wrapper.or().eq(SensitiveWords::getEditable, false);
     List<SensitiveWords> sensitiveWordsList = sensitiveWordsMapper.selectList(wrapper);
-    return RespBodyHandler.setRespBodyListDto(sensitiveWordsList);
+    return sensitiveWordsList;
   }
 
 }

@@ -3,11 +3,13 @@ package me.flyray.bsin.server.impl;
 import static java.util.stream.Collectors.joining;
 import static me.flyray.bsin.constants.ResponseCode.MERCHANT_NO_IS_NULL;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import me.flyray.bsin.domain.entity.*;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -35,12 +37,6 @@ import dev.langchain4j.model.output.TokenUsage;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.AiCustomerFunction;
-import me.flyray.bsin.domain.entity.CopilotInfo;
-import me.flyray.bsin.domain.entity.LLMParam;
-import me.flyray.bsin.domain.entity.PromptTemplateParam;
-import me.flyray.bsin.domain.entity.QuickReplyMessage;
-import me.flyray.bsin.domain.entity.RedisChatMessage;
 import me.flyray.bsin.domain.enums.CopilotType;
 import me.flyray.bsin.domain.enums.VectorStoreType;
 import me.flyray.bsin.exception.BusinessException;
@@ -329,15 +325,9 @@ public class CopilotServiceImpl implements CopilotService {
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<CopilotInfo> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-      if (merchantNo == null) {
-        throw new BusinessException(MERCHANT_NO_IS_NULL);
-      }
-    }
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     if (customerNo == null) {
       customerNo = loginUser.getCustomerNo();
@@ -345,12 +335,25 @@ public class CopilotServiceImpl implements CopilotService {
     String tenantId = loginUser.getTenantId();
 
     CopilotInfo copilotInfo = BsinServiceContext.getReqBodyDto(CopilotInfo.class, requestMap);
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    // 分页处理
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
+
     Page<CopilotInfo> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<CopilotInfo> wrapper = new LambdaUpdateWrapper<>();
     wrapper.orderByDesc(CopilotInfo::getCreateTime);
     wrapper.eq(CopilotInfo::getTenantId, tenantId);
-    wrapper.eq(StringUtils.isNotBlank(merchantNo), CopilotInfo::getMerchantNo, merchantNo);
+    // 区分租户平台和商户登录情况判断
+    if (merchantNo == null) {
+      merchantNo = loginUser.getMerchantNo();
+      if (merchantNo == null) {
+        // 查询平台租户的数据
+        wrapper.isNull(CopilotInfo::getMerchantNo);
+      }else {
+        wrapper.eq(CopilotInfo::getMerchantNo, merchantNo);
+      }
+    }
     wrapper.eq(StringUtils.isNotBlank(customerNo), CopilotInfo::getCustomerNo, customerNo);
     wrapper.eq(
             StringUtils.isNotBlank(copilotInfo.getSerialNo()),
@@ -365,21 +368,16 @@ public class CopilotServiceImpl implements CopilotService {
     // 匹配系统资源
     wrapper.or().eq(CopilotInfo::getEditable, false);
     IPage<CopilotInfo> pageList = copilotMapper.selectPage(page, wrapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getList")
   @ShenyuDubboClient("/getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<CopilotInfo> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-      if (merchantNo == null) {
-        throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-      }
-    }
+
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     if (customerNo == null) {
       customerNo = loginUser.getCustomerNo();
@@ -392,7 +390,16 @@ public class CopilotServiceImpl implements CopilotService {
     LambdaUpdateWrapper<CopilotInfo> wrapper = new LambdaUpdateWrapper<>();
     wrapper.orderByDesc(CopilotInfo::getCreateTime);
     wrapper.eq(CopilotInfo::getTenantId, tenantId);
-    wrapper.eq(CopilotInfo::getMerchantNo, merchantNo);
+    // 区分租户平台和商户登录情况判断
+    if (merchantNo == null) {
+      merchantNo = loginUser.getMerchantNo();
+      if (merchantNo == null) {
+        // 查询平台租户的数据
+        wrapper.isNull(CopilotInfo::getMerchantNo);
+      }else {
+        wrapper.eq(CopilotInfo::getMerchantNo, merchantNo);
+      }
+    }
     wrapper.eq(ObjectUtil.isNotNull(isDefault), CopilotInfo::getDefaultFlag, isDefault);
     wrapper.eq(StringUtils.isNotBlank(customerNo), CopilotInfo::getCustomerNo, customerNo);
     wrapper.eq(
@@ -407,8 +414,8 @@ public class CopilotServiceImpl implements CopilotService {
         copilotInfo.getStatus());
     // 匹配系统资源
     wrapper.or().eq(CopilotInfo::getEditable, false);
-    List<CopilotInfo> embeddingModelList = copilotMapper.selectList(wrapper);
-    return RespBodyHandler.setRespBodyListDto(embeddingModelList);
+    List<CopilotInfo> copilotInfos = copilotMapper.selectList(wrapper);
+    return copilotInfos;
   }
 
   @ApiDoc(desc = "getMerchantDefault")

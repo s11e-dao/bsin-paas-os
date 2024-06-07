@@ -1,5 +1,9 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.SensitiveWords;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,8 +26,8 @@ public interface SensitiveWordsService {
   Map<String, Object> getDetail(Map<String, Object> requestMap);
 
   /** 分页查询 */
-  Map<String, Object> getPageList(Map<String, Object> requestMap);
+  IPage<SensitiveWords> getPageList(Map<String, Object> requestMap);
 
   /** 查询 */
-  Map<String, Object> getList(Map<String, Object> requestMap);
+  List<SensitiveWords> getList(Map<String, Object> requestMap);
 }

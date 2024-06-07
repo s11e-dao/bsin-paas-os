@@ -1,5 +1,6 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -127,12 +128,7 @@ public class LLMServiceImpl implements LLMService {
   public IPage<LLMParam> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-      if (merchantNo == null) {
-        throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-      }
-    }
+
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     if (customerNo == null) {
       customerNo = loginUser.getCustomerNo();
@@ -148,12 +144,24 @@ public class LLMServiceImpl implements LLMService {
     String type = MapUtils.getString(requestMap, "type");
     String status = MapUtils.getString(requestMap, "status");
 
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
+
     Page<LLMParam> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-    LambdaUpdateWrapper<LLMParam> wrapper = new LambdaUpdateWrapper<>();
+    LambdaQueryWrapper<LLMParam> wrapper = new LambdaQueryWrapper<>();
     wrapper.orderByDesc(LLMParam::getCreateTime);
     wrapper.eq(LLMParam::getTenantId, tenantId);
-    wrapper.eq(LLMParam::getMerchantNo, merchantNo);
+    // 区分租户平台和商户登录情况判断
+    if (merchantNo == null) {
+      merchantNo = loginUser.getMerchantNo();
+      if (merchantNo == null) {
+        // 查询平台租户的数据
+        wrapper.isNull(LLMParam::getMerchantNo);
+      }else {
+        wrapper.eq(LLMParam::getMerchantNo, merchantNo);
+      }
+    }
     wrapper.eq(StringUtils.isNotBlank(customerNo), LLMParam::getCustomerNo, customerNo);
     wrapper.eq(StringUtils.isNotBlank(type), LLMParam::getType, type);
     wrapper.eq(StringUtils.isNotBlank(status), LLMParam::getStatus, status);

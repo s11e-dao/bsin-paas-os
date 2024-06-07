@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import me.flyray.bsin.domain.entity.*;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -24,13 +25,6 @@ import cn.hutool.core.bean.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.AiCustomerFunction;
-import me.flyray.bsin.domain.entity.EmbeddingModel;
-import me.flyray.bsin.domain.entity.KnowledgeBase;
-import me.flyray.bsin.domain.entity.KnowledgeBaseFile;
-import me.flyray.bsin.domain.entity.LLMParam;
-import me.flyray.bsin.domain.entity.PromptTemplateParam;
-import me.flyray.bsin.domain.entity.QuickReplyMessage;
 import me.flyray.bsin.domain.enums.RetrievalScope;
 import me.flyray.bsin.domain.enums.VectorStoreType;
 import me.flyray.bsin.exception.BusinessException;
@@ -304,15 +298,9 @@ public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<KnowledgeBase> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-      if (merchantNo == null) {
-        throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-      }
-    }
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     if (customerNo == null) {
       customerNo = loginUser.getCustomerNo();
@@ -320,12 +308,25 @@ public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
     String tenantId = loginUser.getTenantId();
 
     KnowledgeBase knowledgeBase = BsinServiceContext.getReqBodyDto(KnowledgeBase.class, requestMap);
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    // 分页处理
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
+
     Page<KnowledgeBase> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<KnowledgeBase> wrapper = new LambdaUpdateWrapper<>();
     wrapper.orderByDesc(KnowledgeBase::getCreateTime);
     wrapper.eq(KnowledgeBase::getTenantId, tenantId);
-    wrapper.eq(KnowledgeBase::getMerchantNo, merchantNo);
+    // 区分租户平台和商户登录情况判断
+    if (merchantNo == null) {
+      merchantNo = loginUser.getMerchantNo();
+      if (merchantNo == null) {
+        // 查询平台租户的数据
+        wrapper.isNull(KnowledgeBase::getMerchantNo);
+      }else {
+        wrapper.eq(KnowledgeBase::getMerchantNo, merchantNo);
+      }
+    }
     wrapper.eq(StringUtils.isNotBlank(customerNo), KnowledgeBase::getCustomerNo, customerNo);
     wrapper.eq(
             StringUtils.isNotBlank(knowledgeBase.getSerialNo()),
@@ -342,7 +343,7 @@ public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
     // 匹配系统资源
     wrapper.or().eq(KnowledgeBase::getEditable, false);
     IPage<KnowledgeBase> pageList = knowledgeBaseMapper.selectPage(page, wrapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getList")

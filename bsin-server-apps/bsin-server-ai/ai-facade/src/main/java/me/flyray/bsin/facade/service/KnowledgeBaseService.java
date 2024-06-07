@@ -1,5 +1,8 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.KnowledgeBase;
+
 import java.util.Map;
 
 /**
@@ -26,7 +29,7 @@ public interface KnowledgeBaseService {
   Map<String, Object> getDetail(Map<String, Object> requestMap) throws Exception;
 
   /** 分页查询 */
-  Map<String, Object> getPageList(Map<String, Object> requestMap);
+  IPage<KnowledgeBase> getPageList(Map<String, Object> requestMap);
 
   /** 查询 */
   Map<String, Object> getList(Map<String, Object> requestMap);

@@ -1,10 +1,12 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import me.flyray.bsin.domain.entity.LLMParam;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -126,15 +128,10 @@ public class EmbeddingModelServiceImpl implements EmbeddingModelService {
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<EmbeddingModel> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-      if (merchantNo == null) {
-        throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-      }
-    }
+
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     if (customerNo == null) {
       customerNo = loginUser.getCustomerNo();
@@ -143,12 +140,25 @@ public class EmbeddingModelServiceImpl implements EmbeddingModelService {
 
     EmbeddingModel embeddingModel =
         BsinServiceContext.getReqBodyDto(EmbeddingModel.class, requestMap);
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    // 分页处理
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
+
     Page<EmbeddingModel> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<EmbeddingModel> wrapper = new LambdaUpdateWrapper<>();
     wrapper.orderByDesc(EmbeddingModel::getCreateTime);
     wrapper.eq(EmbeddingModel::getTenantId, tenantId);
-    wrapper.eq(EmbeddingModel::getMerchantNo, merchantNo);
+    // 区分租户平台和商户登录情况判断
+    if (merchantNo == null) {
+      merchantNo = loginUser.getMerchantNo();
+      if (merchantNo == null) {
+        // 查询平台租户的数据
+        wrapper.isNull(EmbeddingModel::getMerchantNo);
+      }else {
+        wrapper.eq(EmbeddingModel::getMerchantNo, merchantNo);
+      }
+    }
     wrapper.eq(StringUtils.isNotBlank(customerNo), EmbeddingModel::getCustomerNo, customerNo);
     wrapper.eq(
             StringUtils.isNotBlank(embeddingModel.getSerialNo()),
@@ -165,7 +175,7 @@ public class EmbeddingModelServiceImpl implements EmbeddingModelService {
     // 匹配系统资源
     wrapper.or().eq(EmbeddingModel::getEditable, false);
     IPage<EmbeddingModel> pageList = embeddingModelMapper.selectPage(page, wrapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getList")

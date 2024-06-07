@@ -1,5 +1,9 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.CopilotInfo;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,12 +29,12 @@ public interface CopilotService {
   Map<String, Object> createDigitalAvatarOrBrandOfficer(Map<String, Object> requestMap);
 
   /** 分页查询 */
-  Map<String, Object> getPageList(Map<String, Object> requestMap);
+  IPage<CopilotInfo> getPageList(Map<String, Object> requestMap);
 
   Map<String, Object> getPageListByTenant(Map<String, Object> requestMap);
 
   /** 查询 */
-  Map<String, Object> getList(Map<String, Object> requestMap);
+  List<CopilotInfo> getList(Map<String, Object> requestMap);
 
   public Map<String, Object> getAppAgent(Map<String, Object> requestMap);
 

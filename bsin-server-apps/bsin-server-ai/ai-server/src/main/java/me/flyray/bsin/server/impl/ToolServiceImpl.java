@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import me.flyray.bsin.domain.entity.CopilotInfo;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -153,12 +154,7 @@ public class ToolServiceImpl implements ToolService {
   public Map<String, Object> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-      if (merchantNo == null) {
-        throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-      }
-    }
+
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     if (customerNo == null) {
       customerNo = loginUser.getCustomerNo();
@@ -177,7 +173,16 @@ public class ToolServiceImpl implements ToolService {
     LambdaUpdateWrapper<ToolInfo> wrapper = new LambdaUpdateWrapper<>();
     wrapper.orderByDesc(ToolInfo::getCreateTime);
     wrapper.eq(ToolInfo::getTenantId, tenantId);
-    wrapper.eq(ToolInfo::getMerchantNo, merchantNo);
+    // 区分租户平台和商户登录情况判断
+    if (merchantNo == null) {
+      merchantNo = loginUser.getMerchantNo();
+      if (merchantNo == null) {
+        // 查询平台租户的数据
+        wrapper.isNull(ToolInfo::getMerchantNo);
+      }else {
+        wrapper.eq(ToolInfo::getMerchantNo, merchantNo);
+      }
+    }
     wrapper.eq(StringUtils.isNotBlank(customerNo), ToolInfo::getCustomerNo, customerNo);
     wrapper.eq(StringUtils.isNotBlank(type), ToolInfo::getType, type);
     wrapper.eq(StringUtils.isNotBlank(status), ToolInfo::getStatus, status);
