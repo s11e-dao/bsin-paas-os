@@ -96,7 +96,7 @@ export default () => {
         };
         addPlatform(reqParam).then((res) => {
           console.log('add', res);
-          if (res.code === '000000') {
+          if (res.code === 0) {
             message.success('添加成功');
             // 重置输入的表单
             FormRef.resetFields();
@@ -138,7 +138,7 @@ export default () => {
    */
   const toViewContractTemplate = async (record) => {
     console.log(record);
-    let { customerNo } = record;
+    let { serialNo } = record;
     let viewRes = await getPlatformDetail({ customerNo });
     setIsViewTemplateModal(true);
     console.log('viewRes', viewRes);
@@ -245,15 +245,15 @@ export default () => {
           </Form.Item>
           <Form.Item
             label="节点名称"
-            name="tenantName"
+            name="platformName"
             rules={[{ required: true, message: '请输入节点名称!' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="节点编号"
-            name="tenantCode"
-            rules={[{ required: true, message: '请输入节点编号!' }]}
+            label="登录名称"
+            name="username"
+            rules={[{ required: true, message: '请输入节点名称!' }]}
           >
             <Input />
           </Form.Item>
@@ -287,7 +287,7 @@ export default () => {
             {isViewRecord?.tenantId}
           </Descriptions.Item>
           <Descriptions.Item label="节点名称">
-            {isViewRecord?.tenantName}
+            {isViewRecord?.PlatformName}
           </Descriptions.Item>
           <Descriptions.Item label="节点类型">
             {handleViewRecordOfType()}

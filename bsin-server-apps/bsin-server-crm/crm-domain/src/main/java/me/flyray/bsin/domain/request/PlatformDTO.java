@@ -10,11 +10,9 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class PlatformDTO extends Platform {
-    /**
-     * 租户Code
-     */
-    @NotBlank(message = "租户编码不能为空" ,groups = AddGroup.class)
-    public String tenantCode;
+
+    @NotBlank(message = "产品编码不能为空" ,groups = AddGroup.class)
+    public String productCode;
 
     /**
      * 用户名
@@ -26,11 +24,6 @@ public class PlatformDTO extends Platform {
     @NotBlank(message = "登录密码" ,groups = AddGroup.class)
     public String password;
 
-
-    public Integer current;
-
-    public Integer size;
-
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public String startTime;
@@ -38,4 +31,5 @@ public class PlatformDTO extends Platform {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public String  endTime;
+
 }

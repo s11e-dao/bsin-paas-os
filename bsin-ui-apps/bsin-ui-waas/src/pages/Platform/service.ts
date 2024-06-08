@@ -16,9 +16,9 @@ export const getPlatformPageList = (params) => {
 
 // 添加平台
 export const addPlatform = (params) => {
-  return request(crmPath + '/platform/openTenant', {
+  return request(crmPath + '/platform/create', {
     serviceName: 'PlatformService',
-    methodName: 'openTenant',
+    methodName: 'create',
     version: '1.0',
     bizParams: {
       ...params,

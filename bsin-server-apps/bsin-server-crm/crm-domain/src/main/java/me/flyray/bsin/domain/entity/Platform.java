@@ -24,6 +24,12 @@ public class Platform extends BaseEntity implements Serializable {
     private String platformName;
 
     /**
+     * 平台登录名称
+     */
+    @NotBlank(message = "登录名称不能为空" ,groups = AddGroup.class)
+    private String username;
+
+    /**
      * 类型;1、内部 2、外部
      */
     private Integer type;
@@ -47,27 +53,12 @@ public class Platform extends BaseEntity implements Serializable {
     /**
      * 备注
      */
-    private String comment;
-
-    /**
-     * 公司注册全称
-     */
-    private String registrationName;
-
-    /**
-     * 公司注册国家代码
-     */
-    private String registrationCntrCode;
+    private String description;
 
     /**
      * 公司工商注册号
      */
-    private String registrationNumber;
-
-    /**
-     * 公司类型;公司类型；1、有限责任公司 2、股份有限公司 3、合伙企业 4、个体工商户 5、个人独资企业
-     */
-    private Integer companyType;
+    private String businessNo;
 
     /**
      * 公司法人名称
@@ -77,12 +68,12 @@ public class Platform extends BaseEntity implements Serializable {
     /**
      * 公司法人证件类型;1、身份证
      */
-    private Integer legalPersonIdType;
+    private Integer legalPersonCredType;
 
     /**
      * 公司法人证件号
      */
-    private String legalPersonIdno;
+    private String legalPersonCredNo;
 
     /**
      * 公司营业执照
@@ -90,19 +81,9 @@ public class Platform extends BaseEntity implements Serializable {
     private String businessLicenceImg;
 
     /**
-     * 注册日期
-     */
-    private String registrationDate;
-
-    /**
-     * 有效期
-     */
-    private String validityRegistrationDate;
-
-    /**
      * 公司地址详细信息
      */
-    private String addressLine;
+    private String platformAddress;
 
     /**
      * 公司网址
@@ -110,23 +91,14 @@ public class Platform extends BaseEntity implements Serializable {
     private String netAddress;
 
     /**
-     * 公司地址邮政编码
-     */
-    private String addressIndex;
-
-    /**
      * 企业经营范围
      */
     private String businessScope;
-
-    /**
-     * 企业邮箱
-     */
-    private String corpEmail;
 
     /**
      * 租户ID
      */
     @NotBlank(message = "租户ID不能为空！", groups = AddGroup.class)
     private String tenantId;
+
 }

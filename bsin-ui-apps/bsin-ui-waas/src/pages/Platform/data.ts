@@ -42,6 +42,12 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '平台节点名称',
     width: 160,
+    dataIndex: 'platformName',
+    hideInSearch: true,
+  },
+  {
+    title: '登录名称',
+    width: 160,
     dataIndex: 'username',
     hideInSearch: true,
   },
