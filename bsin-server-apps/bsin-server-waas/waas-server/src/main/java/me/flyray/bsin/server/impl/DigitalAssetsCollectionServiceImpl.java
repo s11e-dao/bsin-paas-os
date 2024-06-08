@@ -197,7 +197,7 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
   @ShenyuDubboClient("/mint")
   @ApiDoc(desc = "mint")
   @Override
-  public Map<String, Object> mint(Map<String, Object> requestMap) throws Exception {
+  public void mint(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -279,9 +279,8 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
     requestMap.put("ccy", digitalAssetsCollection.getSymbol());
     requestMap.put("category", AccountCategory.BALANCE.getCode());
     requestMap.put("name", AccountCategory.BALANCE.getDesc());
-    Map respMap = accountService.inAccount(requestMap);
+    accountService.inAccount(requestMap);
 
-    return RespBodyHandler.setRespBodyDto(respMap);
   }
 
   @ShenyuDubboClient("/transfer")

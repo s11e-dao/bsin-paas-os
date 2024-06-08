@@ -25,7 +25,7 @@ public interface DigitalAssetsCollectionService {
    * @param requestMap 请求参数
    * @return 铸造结果
    */
-  Map<String, Object> mint(Map<String, Object> requestMap) throws Exception;
+  void mint(Map<String, Object> requestMap) throws Exception;
 
   /**
    * trasaction 转让
