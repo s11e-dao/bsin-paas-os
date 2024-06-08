@@ -296,16 +296,16 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public IPage<Merchant> getPageList(Map<String, Object> requestMap) {
         Merchant merchant = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
-        String tenantId = LoginInfoContextHelper.getTenantId();
+        String tenantId = merchant.getTenantId();
         String merchantNo = LoginInfoContextHelper.getMerchantNo();
-        if(merchant.getTenantId() != null){
-            tenantId = merchant.getTenantId();
+        if(tenantId == null){
+            tenantId = LoginInfoContextHelper.getTenantId();
         }
         Object paginationObj =  requestMap.get("pagination");
         Pagination pagination = new Pagination();
         BeanUtil.copyProperties(paginationObj,pagination);
         Page<Merchant> page = new Page<>(pagination.getPageNum(),pagination.getPageSize());
-        LambdaUpdateWrapper<Merchant> warapper = new LambdaUpdateWrapper<>();
+        LambdaQueryWrapper<Merchant> warapper = new LambdaQueryWrapper<>();
         warapper.orderByDesc(Merchant::getCreateTime);
         warapper.eq(Merchant::getTenantId, tenantId);
         warapper.eq(StringUtils.isNotEmpty(merchant.getBusinessType()),Merchant::getBusinessType, merchant.getBusinessType());
@@ -318,10 +318,10 @@ public class MerchantServiceImpl implements MerchantService {
     @ApiDoc(desc = "getDetail")
     @ShenyuDubboClient("/getDetail")
     @Override
-    public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+    public Merchant getDetail(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         Merchant merchant = merchantMapper.selectById(serialNo);
-        return RespBodyHandler.setRespBodyDto(merchant);
+        return merchant;
     }
 
     @ApiDoc(desc = "getListByMerchantNos")

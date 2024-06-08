@@ -65,7 +65,7 @@ public interface MerchantService {
     /**
      * 查询商户详情
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public Merchant getDetail(Map<String, Object> requestMap);
 
     /**
      * 查询商户列表
