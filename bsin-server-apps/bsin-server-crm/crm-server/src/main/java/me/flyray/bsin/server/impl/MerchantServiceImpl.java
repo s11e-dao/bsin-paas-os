@@ -2,7 +2,6 @@ package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +27,6 @@ import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -88,7 +86,7 @@ public class MerchantServiceImpl implements MerchantService {
     @ShenyuDubboClient("/register")
     @Override
     @Transactional
-    public Map<String, Object> register(Map<String, Object> requestMap) {
+    public void register(Map<String, Object> requestMap) {
         Merchant merchant = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
         String mpVerifyCode = MapUtils.getString(requestMap, "verifyCode");
         String username = MapUtils.getString(requestMap, "username");
@@ -138,7 +136,6 @@ public class MerchantServiceImpl implements MerchantService {
         WalletDTO walletDTO = new WalletDTO();
         // walletService.createMPCWallet(walletDTO);
 
-        return RespBodyHandler.RespBodyDto();
     }
 
     /**
@@ -200,7 +197,7 @@ public class MerchantServiceImpl implements MerchantService {
     @ApiDoc(desc = "authentication")
     @ShenyuDubboClient("/authentication")
     @Override
-    public Map<String, Object> authentication(Map<String, Object> requestMap) {
+    public void authentication(Map<String, Object> requestMap) {
         String merchantNo = LoginInfoContextHelper.getMerchantNo();
         Merchant merchantReq = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
         Merchant merchant = merchantMapper.selectById(merchantNo);
@@ -211,14 +208,13 @@ public class MerchantServiceImpl implements MerchantService {
         merchantReq.setStatus("2");
         merchantReq.setSerialNo(merchant.getSerialNo());
         merchantMapper.updateById(merchantReq);
-        return RespBodyHandler.RespBodyDto();
     }
 
     @ApiDoc(desc = "audit")
     @ShenyuDubboClient("/audit")
     @Override
     @Transactional
-    public Map<String, Object> audit(Map<String, Object> requestMap) {
+    public void audit(Map<String, Object> requestMap) {
         String merchantNo = (String) requestMap.get("merchantNo");
         String auditFlag = (String) requestMap.get("auditFlag");
         Merchant merchant = merchantMapper.selectById(merchantNo);
@@ -240,7 +236,6 @@ public class MerchantServiceImpl implements MerchantService {
             merchant.setAuthenticationStatus("3");
         }
         merchantMapper.updateById(merchant);
-        return RespBodyHandler.RespBodyDto();
     }
 
     /**
@@ -251,7 +246,7 @@ public class MerchantServiceImpl implements MerchantService {
     @ApiDoc(desc = "subscribeFunction")
     @ShenyuDubboClient("/subscribeFunction")
     @Override
-    public Map<String, Object> subscribeFunction(Map<String, Object> requestMap) {
+    public void subscribeFunction(Map<String, Object> requestMap) {
         String appId = (String) requestMap.get("appId");
         List<String> appFunctionIds = (List<String>) requestMap.get("appFunctionIds");
         String merchantNo = LoginInfoContextHelper.getMerchantNo();
@@ -264,18 +259,15 @@ public class MerchantServiceImpl implements MerchantService {
             merchantSubscribeJournal.setAppFunctionId(appFunctionId);
             merchantSubscribeJournalMapper.insert(merchantSubscribeJournal);
         }
-
-        return RespBodyHandler.RespBodyDto();
     }
 
 
     @ApiDoc(desc = "delete")
     @ShenyuDubboClient("/delete")
     @Override
-    public Map<String, Object> delete(Map<String, Object> requestMap) {
+    public void delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         merchantMapper.deleteById(serialNo);
-        return RespBodyHandler.RespBodyDto();
     }
 
     @ApiDoc(desc = "edit")
@@ -327,13 +319,13 @@ public class MerchantServiceImpl implements MerchantService {
     @ApiDoc(desc = "getListByMerchantNos")
     @ShenyuDubboClient("/getListByMerchantNos")
     @Override
-    public Map<String, Object> getListByMerchantNos(Map<String, Object> requestMap) {
+    public List<?> getListByMerchantNos(Map<String, Object> requestMap) {
         List<String> merchantNos = (List<String>) requestMap.get("merchantNos");
         if(merchantNos.size() < 1){
             throw new BusinessException("200000","请求参数不能为空！");
         }
         List<Merchant> merchantList =  merchantMapper.selectBatchIds(merchantNos);
-        return RespBodyHandler.setRespBodyListDto(merchantList);
+        return merchantList;
     }
 
 }

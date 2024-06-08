@@ -1,15 +1,32 @@
 package me.flyray.bsin.server.impl;
 
-import static java.math.BigDecimal.ROUND_HALF_DOWN;
-
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.blockchain.enums.ContractProtocolStandards;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.enums.AssetsCollectionType;
+import me.flyray.bsin.domain.enums.ObtainMethod;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
+import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
 import me.flyray.bsin.facade.service.*;
+import me.flyray.bsin.infrastructure.biz.CustomerInfoBiz;
+import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
+import me.flyray.bsin.infrastructure.mapper.ContractProtocolMapper;
+import me.flyray.bsin.infrastructure.mapper.DigitalAssetsCollectionMapper;
+import me.flyray.bsin.infrastructure.mapper.DigitalAssetsItemMapper;
+import me.flyray.bsin.infrastructure.mapper.DigitalAssetsItemObtainCodeMapper;
+import me.flyray.bsin.mybatis.utils.Pagination;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.validate.QueryGroup;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -22,33 +39,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import cn.hutool.core.util.ObjectUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.blockchain.enums.ContractProtocolStandards;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.enums.AssetsCollectionType;
-import me.flyray.bsin.domain.enums.ObtainMethod;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
-import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
-import me.flyray.bsin.infrastructure.mapper.ContractProtocolMapper;
-import me.flyray.bsin.infrastructure.mapper.DigitalAssetsCollectionMapper;
-import me.flyray.bsin.infrastructure.mapper.DigitalAssetsItemMapper;
-import me.flyray.bsin.infrastructure.mapper.DigitalAssetsItemObtainCodeMapper;
-import me.flyray.bsin.mybatis.utils.Pagination;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.infrastructure.biz.CustomerInfoBiz;
-import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.validate.QueryGroup;
+import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
 /**
  * @author bolei
@@ -87,7 +80,7 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
   @ApiDoc(desc = "claim")
   @Override
   @Transactional
-  public Map<String, Object> claim(Map<String, Object> requestMap) throws Exception {
+  public void claim(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     log.info("DigitalAssetsItemService obtainNft请求参数:{}", JSON.toJSONString(requestMap));
 
@@ -211,7 +204,6 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
       requestMap.put("nickname", customerBase.get("nickname"));
       memberService.openMember(requestMap);
     }
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ShenyuDubboClient("/buy")
@@ -231,7 +223,7 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
   @ShenyuDubboClient("/obtainNftPasswordCheck")
   @ApiDoc(desc = "obtainNftPasswordCheck")
   @Override
-  public Map<String, Object> obtainNftPasswordCheck(Map<String, Object> requestMap) {
+  public void obtainNftPasswordCheck(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     String password = MapUtils.getString(requestMap, "password");
     DigitalAssetsItem digitalAssetsItem = digitalAssetsItemMapper.selectById(serialNo);
@@ -253,7 +245,6 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
         throw new BusinessException(ResponseCode.PASSWORD_ERROR);
       }
     }
-    return RespBodyHandler.RespBodyDto();
   }
 
   /**
@@ -265,7 +256,7 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
   @ShenyuDubboClient("/getList")
   @ApiDoc(desc = "getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<DigitalAssetsItemRes> getList(Map<String, Object> requestMap) {
     String tenantId = LoginInfoContextHelper.getTenantId();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     // 查询商户下的数字资产
@@ -287,8 +278,7 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
     if (customerNos.size() > 0) {
       Map crmReqMap = new HashMap();
       crmReqMap.put("customerNos", customerNos);
-      Map<String, Object> customerResult = customerService.getListByCustomerNos(crmReqMap);
-      List<Map> customerList = (List<Map>) customerResult.get("data");
+      List<Map> customerList = customerService.getListByCustomerNos(crmReqMap);
       for (DigitalAssetsItemRes digitalAssetsItem : digitalAssetsItemList) {
         // 找出客户信息
         for (Map customer : customerList) {
@@ -299,7 +289,7 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
         digitalAssetsItemListRes.add(digitalAssetsItem);
       }
     }
-    return RespBodyHandler.setRespBodyListDto(digitalAssetsItemListRes);
+    return digitalAssetsItemListRes;
   }
 
   @ShenyuDubboClient("/getPageList")
@@ -337,8 +327,7 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
     if (merchantNos.size() > 0) {
       Map crmReqMap = new HashMap();
       crmReqMap.put("merchantNos", merchantNos);
-      Map<String, Object> merchantResult = merchantService.getListByMerchantNos(crmReqMap);
-      List<Merchant> merchantList = (List<Merchant>) merchantResult.get("data");
+      List<Merchant> merchantList = merchantService.getListByMerchantNos(crmReqMap);
       List<DigitalAssetsItem> digitalAssetsItemList = new ArrayList<>();
       for (DigitalAssetsItem digitalAssetsItem : digitalAssetsItemPageList.getRecords()) {
         // 找出商户信息
@@ -362,7 +351,7 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
   @ShenyuDubboClient("/getDetail")
   @ApiDoc(desc = "getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public DigitalAssetsDetailRes getDetail(Map<String, Object> requestMap) {
     // 客户资产编号
     String digitalAssetsItemNo = MapUtils.getString(requestMap, "digitalAssetsItemNo");
     if (digitalAssetsItemNo == null) {
@@ -376,7 +365,7 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
             digitalAssetsItemNo,
             digitalAssetsItem.getTokenId());
     // TODO 成交记录数据
-    return RespBodyHandler.setRespBodyDto(digitalAssetsDetailRes);
+    return digitalAssetsDetailRes;
   }
 
   /**
@@ -388,7 +377,7 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
   @ShenyuDubboClient("/getPassCard")
   @ApiDoc(desc = "getPassCard")
   @Override
-  public Map<String, Object> getPassCard(Map<String, Object> requestMap) {
+  public List<DigitalAssetsItemRes> getPassCard(Map<String, Object> requestMap) {
     String tenantId = LoginInfoContextHelper.getTenantId();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     // 查询商户下的数字资产
@@ -410,8 +399,7 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
     if (customerNos.size() > 0) {
       Map crmReqMap = new HashMap();
       crmReqMap.put("customerNos", customerNos);
-      Map<String, Object> customerResult = customerService.getListByCustomerNos(crmReqMap);
-      List<Map> customerList = (List<Map>) customerResult.get("data");
+      List<Map> customerList = customerService.getListByCustomerNos(crmReqMap);
       for (DigitalAssetsItemRes digitalAssetsItem : digitalAssetsItemList) {
         // 找出客户信息
         for (Map customer : customerList) {
@@ -422,13 +410,13 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
         digitalAssetsItemListRes.add(digitalAssetsItem);
       }
     }
-    return RespBodyHandler.setRespBodyListDto(digitalAssetsItemListRes);
+    return digitalAssetsItemListRes;
   }
 
   @ShenyuDubboClient("/getObtainCodePageList")
   @ApiDoc(desc = "getObtainCodePageList")
   @Override
-  public Map<String, Object> getObtainCodePageList(Map<String, Object> requestMap) {
+  public IPage<DigitalAssetsItemObtainCode> getObtainCodePageList(Map<String, Object> requestMap) {
     String assetsNo = MapUtils.getString(requestMap, "assetsNo");
     Pagination pagination = (Pagination) requestMap.get("pagination");
     Page<DigitalAssetsItemObtainCode> page =
@@ -438,15 +426,15 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
     warapper.eq(ObjectUtil.isNotNull(assetsNo), DigitalAssetsItemObtainCode::getAssetsNo, assetsNo);
     IPage<DigitalAssetsItemObtainCode> pageList =
         digitalAssetsItemObtainCodeMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ShenyuDubboClient("/equityConfig")
   @ApiDoc(desc = "equityConfig")
   @Override
-  public Map<String, Object> equityConfig(Map<String, Object> requestMap) {
+  public void equityConfig(Map<String, Object> requestMap) {
     // TODO 参数校验待处理
     equityService.add(requestMap);
-    return RespBodyHandler.RespBodyDto();
   }
+
 }

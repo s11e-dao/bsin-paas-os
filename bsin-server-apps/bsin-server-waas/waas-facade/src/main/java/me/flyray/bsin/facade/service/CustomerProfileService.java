@@ -2,6 +2,7 @@ package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.CustomerProfile;
+import me.flyray.bsin.domain.entity.DigitalAssetsCollection;
 
 import java.util.Map;
 
@@ -16,19 +17,19 @@ public interface CustomerProfileService {
     /**
      * 创建Profile
      */
-    public Map<String, Object> create(Map<String, Object> requestMap) throws Exception;
+    public CustomerProfile create(Map<String, Object> requestMap) throws Exception;
 
 
     /**
      * 更新Profile basic information
      */
-    public Map<String, Object> update(Map<String, Object> requestMap) throws Exception;
+    public CustomerProfile update(Map<String, Object> requestMap) throws Exception;
 
 
     /**
      * collect 资产
      */
-    public Map<String, Object> collect(Map<String, Object> requestMap) throws Exception;
+    public DigitalAssetsCollection collect(Map<String, Object> requestMap) throws Exception;
 
 
 
@@ -40,18 +41,18 @@ public interface CustomerProfileService {
     /**
      * 删除
      */
-    public Map<String, Object> burn(Map<String, Object> requestMap);
+    public void burn(Map<String, Object> requestMap);
 
     /**
      * 编辑
      */
-    public Map<String, Object> edit(Map<String, Object> requestMap);
+    public void edit(Map<String, Object> requestMap);
 
 
     /**
      * 详情
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public CustomerProfile getDetail(Map<String, Object> requestMap);
 
 
     /**

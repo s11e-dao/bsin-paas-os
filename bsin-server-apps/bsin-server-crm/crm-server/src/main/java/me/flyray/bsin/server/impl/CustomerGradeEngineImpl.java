@@ -47,18 +47,16 @@ public class CustomerGradeEngineImpl implements CustomerGradeEngine {
     @ApiDoc(desc = "verifyGrade")
     @ShenyuDubboClient("/verifyGrade")
     public Map<String, Object>  verifyGrade(Map<String, Object> requestMap) {
-        Map resMap = memberService.getMemberGradeDetail(requestMap);
+        Grade grade = memberService.getMemberGradeDetail(requestMap);
         String customerGradeNum = new String("");
-        if (resMap.get("data") != null && !((String) (resMap.get("data"))).isEmpty()) {
-            Grade memberGrade = (Grade) resMap.get("data");
-            customerGradeNum = memberGrade.getGradeNum();
+        if (grade != null) {
+            customerGradeNum = grade.getGradeNum();
         }
         if (customerGradeNum.isEmpty()) {
             throw new BusinessException(ResponseCode.TASK_NON_CLAIM_CONDITION_GRADE);
         }
         // gradwNo
-        resMap = gradeService.getGradeDetail(requestMap);
-        Grade conditionGrade = (Grade) resMap.get("data");
+        Grade conditionGrade = gradeService.getGradeDetail(requestMap);
         if (new BigDecimal(conditionGrade.getGradeNum()).compareTo(new BigDecimal(customerGradeNum))
                     <= 0) {
                 throw new BusinessException(ResponseCode.TASK_NON_CLAIM_CONDITION_GRADE);

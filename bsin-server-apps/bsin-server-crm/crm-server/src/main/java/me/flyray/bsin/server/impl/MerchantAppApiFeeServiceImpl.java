@@ -13,7 +13,6 @@ import me.flyray.bsin.facade.service.MerchantAppApiFeeService;
 import me.flyray.bsin.infrastructure.mapper.MerchantApiFeeConfigMapper;
 import me.flyray.bsin.infrastructure.mapper.MerchantAppMapper;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -47,7 +46,7 @@ public class MerchantAppApiFeeServiceImpl implements MerchantAppApiFeeService {
     @ApiDoc(desc = "edit")
     @ShenyuDubboClient("/edit")
     @Override
-    public Map<String, Object> edit(Map<String, Object> requestMap) {
+    public void edit(Map<String, Object> requestMap) {
         MerchantApiFeeConfig merchantApiFeeConfig = BsinServiceContext.bisId(MerchantApiFeeConfig.class, requestMap);
         MerchantApp dampTenantApp = new MerchantApp();
         dampTenantApp.setAppId(merchantApiFeeConfig.getAppId());
@@ -60,7 +59,6 @@ public class MerchantAppApiFeeServiceImpl implements MerchantAppApiFeeService {
                 .eq(MerchantApp::getAppId,merchantApiFeeConfig.getAppId()));
         merchantApp.setStatus("1");
         merchantAppMapper.updateById(merchantApp);
-        return RespBodyHandler.RespBodyDto();
     }
 
     @ApiDoc(desc = "getPageList")
@@ -88,21 +86,21 @@ public class MerchantAppApiFeeServiceImpl implements MerchantAppApiFeeService {
     @ApiDoc(desc = "getApiFeeConfigInfo")
     @ShenyuDubboClient("/getApiFeeConfigInfo")
     @Override
-    public Map<String, Object> getApiFeeConfigInfo(Map<String, Object> requestMap) {
+    public MerchantApiFeeConfig getApiFeeConfigInfo(Map<String, Object> requestMap) {
         String serialNo = (String) requestMap.get("serialNo");
         MerchantApiFeeConfig tenantApiFeeConfig = tenantApiFeeConfigMapper.getTenantApiFeeConfigById(serialNo);
-        return RespBodyHandler.setRespBodyDto(tenantApiFeeConfig);
+        return tenantApiFeeConfig;
     }
 
     @ApiDoc(desc = "getList")
     @ShenyuDubboClient("/getList")
     @Override
-    public Map<String, Object> getList(Map<String, Object> requestMap) {
+    public List<?> getList(Map<String, Object> requestMap) {
         Map<String, Object> pagination = (Map<String, Object>) requestMap.get("pagination");
         String tenantId = (String) requestMap.get("bizTenantId");
         String appId = (String) requestMap.get("appId");
         List<MerchantApiFeeConfig> pageList = tenantApiFeeConfigMapper.getPageList(tenantId, appId);
-        return RespBodyHandler.setRespBodyListDto(pageList);
+        return pageList;
     }
 
 }

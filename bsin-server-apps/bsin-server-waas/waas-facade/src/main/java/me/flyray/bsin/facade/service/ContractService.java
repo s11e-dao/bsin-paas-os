@@ -1,7 +1,9 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.Contract;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,28 +18,28 @@ public interface ContractService {
      * 部署合约：
      * s11e protocol合约部署： Core|Extension|Wrapper|Factory。。。
      */
-    public Map<String, Object> deploy(Map<String, Object> requestMap) throws Exception;
+    public Contract deploy(Map<String, Object> requestMap) throws Exception;
 
 
     /**
      * 添加合约
      */
-    public Map<String, Object> add(Map<String, Object> requestMap);
+    public Contract add(Map<String, Object> requestMap);
 
     /**
      * 删除合约
      */
-    public Map<String, Object> delete(Map<String, Object> requestMap);
+    public void delete(Map<String, Object> requestMap);
 
     /**
      * 修改合约
      */
-    public Map<String, Object> edit(Map<String, Object> requestMap);
+    public void edit(Map<String, Object> requestMap);
 
     /**
      * 租户下所有合约
      */
-    public Map<String, Object> getList(Map<String, Object> requestMap);
+    public List<Contract> getList(Map<String, Object> requestMap);
 
     /**
      * 分页查询合约
@@ -47,6 +49,6 @@ public interface ContractService {
     /**
      * 查询合约详情
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public Contract getDetail(Map<String, Object> requestMap);
 
 }

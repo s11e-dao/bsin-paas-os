@@ -1,7 +1,10 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.DigitalAssetsCollection;
+import me.flyray.bsin.domain.entity.MetadataFile;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,7 +20,7 @@ public interface DigitalAssetsCollectionService {
    * @param requestMap 请求参数
    * @return 发行资产
    */
-  Map<String, Object> issue(Map<String, Object> requestMap) throws Exception;
+  void issue(Map<String, Object> requestMap) throws Exception;
 
   /**
    * mintNft 铸造数字资产
@@ -33,7 +36,7 @@ public interface DigitalAssetsCollectionService {
    * @param requestMap 请求参数
    * @return 转赠结果
    */
-  Map<String, Object> transfer(Map<String, Object> requestMap) throws Exception;
+  void transfer(Map<String, Object> requestMap) throws Exception;
 
   /**
    * 空投
@@ -102,7 +105,7 @@ public interface DigitalAssetsCollectionService {
   Map<String, Object> burn(Map<String, Object> requestMap) throws Exception;
 
   /** 租户下所有合约协议 */
-  public Map<String, Object> getList(Map<String, Object> requestMap);
+  public List<DigitalAssetsCollection> getList(Map<String, Object> requestMap);
 
   /**
    * 查询数字资产列表
@@ -114,16 +117,16 @@ public interface DigitalAssetsCollectionService {
   IPage<?> getPageList(Map<String, Object> requestMap) throws Exception;
 
   /** 查询合约协议详情 */
-  public Map<String, Object> getDetail(Map<String, Object> requestMap);
+  public DigitalAssetsCollection getDetail(Map<String, Object> requestMap);
 
   /** NFT上架到市场交易 成为数字商品交易 */
-  public Map<String, Object> putOnShelves(Map<String, Object> requestMap);
+  public void putOnShelves(Map<String, Object> requestMap);
 
 
   /** NFT下架 */
   public Map<String, Object> pullOffShelves(Map<String, Object> requestMap);
 
   /** 获取数字资产元数据图片信息 */
-  public Map<String, Object> getDigitalAssetsMetadataImageInfo(Map<String, Object> requestMap);
+  public MetadataFile getDigitalAssetsMetadataImageInfo(Map<String, Object> requestMap);
 
 }

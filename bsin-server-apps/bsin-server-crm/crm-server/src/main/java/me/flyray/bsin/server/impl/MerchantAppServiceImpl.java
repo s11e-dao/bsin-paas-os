@@ -4,7 +4,14 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.MerchantApp;
+import me.flyray.bsin.facade.service.MerchantAppService;
+import me.flyray.bsin.infrastructure.mapper.MerchantAppMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -14,16 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.MerchantApp;
-import me.flyray.bsin.facade.service.MerchantAppService;
-import me.flyray.bsin.infrastructure.mapper.MerchantAppMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
 
 
 
@@ -41,10 +38,10 @@ public class MerchantAppServiceImpl implements MerchantAppService {
      * @param requestMap
      * @return
      */
-    @ApiDoc(desc = "getList")
-    @ShenyuDubboClient("/getList")
+    @ApiDoc(desc = "add")
+    @ShenyuDubboClient("/add")
     @Override
-    public Map<String, Object> add(Map<String, Object> requestMap) {
+    public void add(Map<String, Object> requestMap) {
         String tenantId = LoginInfoContextHelper.getTenantId();
         String merchantNo = LoginInfoContextHelper.getMerchantNo();
         MerchantApp merchantApp = BsinServiceContext.getReqBodyDto(MerchantApp.class, requestMap);
@@ -64,7 +61,6 @@ public class MerchantAppServiceImpl implements MerchantAppService {
 //        // 添加一条app的调用费用配置信息
 //        merchantApiFeeConfigMapper.insert(tenantApiFeeConfig);
 
-        return RespBodyHandler.RespBodyDto();
     }
 
     /**
@@ -75,10 +71,9 @@ public class MerchantAppServiceImpl implements MerchantAppService {
     @ApiDoc(desc = "delete")
     @ShenyuDubboClient("/delete")
     @Override
-    public Map<String, Object> delete(Map<String, Object> requestMap) {
+    public void delete(Map<String, Object> requestMap) {
         MerchantApp merchantApp = BsinServiceContext.bisId(MerchantApp.class, requestMap);
         merchantAppMapper.deleteById(merchantApp.getSerialNo());
-        return RespBodyHandler.RespBodyDto();
     }
 
     /**
@@ -89,12 +84,11 @@ public class MerchantAppServiceImpl implements MerchantAppService {
     @ApiDoc(desc = "edit")
     @ShenyuDubboClient("/edit")
     @Override
-    public Map<String, Object> edit(Map<String, Object> requestMap) {
+    public void edit(Map<String, Object> requestMap) {
         MerchantApp merchantApp = BsinServiceContext.bisId(MerchantApp.class, requestMap);
         String serialNo = (String) requestMap.get("serialNo");
         merchantApp.setAppId(serialNo);
         merchantAppMapper.updateById(merchantApp);
-        return RespBodyHandler.RespBodyDto();
     }
 
     /**
@@ -105,7 +99,7 @@ public class MerchantAppServiceImpl implements MerchantAppService {
     @ApiDoc(desc = "getDetail")
     @ShenyuDubboClient("/getDetail")
     @Override
-    public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+    public MerchantApp getDetail(Map<String, Object> requestMap) {
         String tenantId = LoginInfoContextHelper.getTenantId();
         // 从当前token中获取appId
         String serialNo = (String) requestMap.get("serialNo");
@@ -113,7 +107,7 @@ public class MerchantAppServiceImpl implements MerchantAppService {
         merchantApp.setTenantId(tenantId);
         merchantApp.setAppId(serialNo);
         MerchantApp tenantAppResult = merchantAppMapper.getProductInfo(merchantApp);
-        return RespBodyHandler.setRespBodyDto(tenantAppResult);
+        return tenantAppResult;
     }
 
     /**

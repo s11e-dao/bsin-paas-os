@@ -9,6 +9,6 @@ import java.util.Map;
  */
 public interface CustomerBehaviorIncentiveEngine {
 
-    public Map<String, Object> excute(Map<String, Object> requestMap);
+    public void excute(Map<String, Object> requestMap);
 
 }

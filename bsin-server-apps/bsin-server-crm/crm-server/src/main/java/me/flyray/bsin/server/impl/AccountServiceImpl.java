@@ -1,14 +1,33 @@
 package me.flyray.bsin.server.impl;
 
-import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_ACCOUNT_IS_NULL;
-import static me.flyray.bsin.constants.ResponseCode.TASK_NON_CLAIM_CONDITION;
-
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.Account;
+import me.flyray.bsin.domain.entity.AccountFreezeJournal;
+import me.flyray.bsin.domain.entity.AccountJournal;
+import me.flyray.bsin.domain.entity.TokenParam;
+import me.flyray.bsin.domain.enums.AccountCategory;
+import me.flyray.bsin.domain.enums.CcyType;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.enums.FreezeStatus;
+import me.flyray.bsin.facade.response.CommunityLedgerVO;
+import me.flyray.bsin.facade.service.AccountService;
+import me.flyray.bsin.facade.service.TokenParamService;
+import me.flyray.bsin.infrastructure.mapper.AccountFreezeJournalMapper;
+import me.flyray.bsin.infrastructure.mapper.CustomerAccountJournalMapper;
+import me.flyray.bsin.infrastructure.mapper.CustomerAccountMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.biz.CustomerAccountBiz;
+import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -25,29 +44,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.hutool.core.util.ObjectUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.AccountFreezeJournal;
-import me.flyray.bsin.domain.entity.Account;
-import me.flyray.bsin.domain.entity.AccountJournal;
-import me.flyray.bsin.domain.enums.AccountCategory;
-import me.flyray.bsin.domain.enums.CcyType;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.enums.FreezeStatus;
-import me.flyray.bsin.facade.response.CommunityLedgerVO;
-import me.flyray.bsin.facade.service.AccountService;
-import me.flyray.bsin.facade.service.TokenParamService;
-import me.flyray.bsin.infrastructure.mapper.AccountFreezeJournalMapper;
-import me.flyray.bsin.infrastructure.mapper.CustomerAccountJournalMapper;
-import me.flyray.bsin.infrastructure.mapper.CustomerAccountMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.biz.CustomerAccountBiz;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
+import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_ACCOUNT_IS_NULL;
+import static me.flyray.bsin.constants.ResponseCode.TASK_NON_CLAIM_CONDITION;
 
 /**
  * @author bolei
@@ -134,7 +132,7 @@ public class AccountServiceImpl implements AccountService {
   @ShenyuDubboClient("/freeze")
   @ApiDoc(desc = "freeze")
   @Override
-  public Map<String, Object> freeze(Map<String, Object> requestMap) {
+  public AccountFreezeJournal freeze(Map<String, Object> requestMap) {
     Account customerAccount =
         BsinServiceContext.getReqBodyDto(Account.class, requestMap);
     // 1.冻结
@@ -163,13 +161,13 @@ public class AccountServiceImpl implements AccountService {
     accountFreezeJournal.setStatus(FreezeStatus.FREEZE.getCode());
 
     accountFreezeJournalMapper.insert(accountFreezeJournal);
-    return RespBodyHandler.setRespBodyDto(i);
+    return accountFreezeJournal;
   }
 
   @ShenyuDubboClient("/unfreeze")
   @ApiDoc(desc = "unfreeze")
   @Override
-  public Map<String, Object> unfreeze(Map<String, Object> requestMap) {
+  public void unfreeze(Map<String, Object> requestMap) {
     Account customerAccount =
         BsinServiceContext.getReqBodyDto(Account.class, requestMap);
 
@@ -194,7 +192,6 @@ public class AccountServiceImpl implements AccountService {
         accountFreezeJournalMapper.updateById(accountFreezeJournal);
       }
     }
-    return RespBodyHandler.setRespBodyDto(customerNoList);
   }
 
   @ShenyuDubboClient("/unfreezeAndOutAccount")
@@ -220,7 +217,7 @@ public class AccountServiceImpl implements AccountService {
   @ShenyuDubboClient("/getDetail")
   @ApiDoc(desc = "getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public Account getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
 
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -265,14 +262,7 @@ public class AccountServiceImpl implements AccountService {
       customerAccount.setBalance(BigDecimal.ZERO);
       accountDetail = customerAccount;
     }
-    if (accountDetail != null) {
-      return RespBodyHandler.setRespBodyDto(accountDetail);
-    } else {
-      Map response = new HashMap<>();
-      response.put("code", "100000");
-      response.put("data", "账户不存在！！");
-      return RespBodyHandler.setRespBodyDto(response);
-    }
+    return accountDetail;
   }
 
   @ShenyuDubboClient("/verifyAccountBalance")
@@ -286,10 +276,9 @@ public class AccountServiceImpl implements AccountService {
     //    // TODO: 账户类型 0、个人账户 1、企业账户 2 租户(dao)账户
     //    reqMap.put("type", '0');
     BigDecimal amount = (BigDecimal) requestMap.get("conditionAmount");
-    Map resMap = getDetail(requestMap);
-    Map customerAccount = (Map) resMap.get("data");
+    Account account = getDetail(requestMap);
     // TODO: validate on chain
-    if (((BigDecimal) customerAccount.get("balance")).compareTo(amount) == -1) {
+    if (((BigDecimal) account.getBalance()).compareTo(amount) == -1) {
       throw new BusinessException(TASK_NON_CLAIM_CONDITION);
     }
     return null;
@@ -341,7 +330,7 @@ public class AccountServiceImpl implements AccountService {
   @ShenyuDubboClient("/getList")
   @ApiDoc(desc = "getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<?> getList(Map<String, Object> requestMap) {
     Account customerAccount =
         BsinServiceContext.getReqBodyDto(Account.class, requestMap);
     String tenantId = (String) requestMap.get("tenantId");
@@ -353,7 +342,7 @@ public class AccountServiceImpl implements AccountService {
         Account::getCcy,
         customerAccount.getCcy());
     List<Account> accounts = customerAccountMapper.selectList(warapper);
-    return RespBodyHandler.setRespBodyListDto(accounts);
+    return accounts;
   }
 
   @ShenyuDubboClient("/getAccountJournalPageList")
@@ -389,10 +378,10 @@ public class AccountServiceImpl implements AccountService {
   @ShenyuDubboClient("/getAccountJournalDetail")
   @ApiDoc(desc = "getAccountJournalDetail")
   @Override
-  public Map<String, Object> getAccountJournalDetail(Map<String, Object> requestMap) {
+  public AccountJournal getAccountJournalDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     AccountJournal accountJournal = customerAccountJournalMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(accountJournal);
+    return accountJournal;
   }
 
   @ShenyuDubboClient("/getAccountFreezeJournalPageList")
@@ -435,20 +424,19 @@ public class AccountServiceImpl implements AccountService {
   @ShenyuDubboClient("/getAccountFreezeJournalDetail")
   @ApiDoc(desc = "getAccountFreezeJournalDetail")
   @Override
-  public Map<String, Object> getAccountFreezeJournalDetail(Map<String, Object> requestMap) {
+  public AccountFreezeJournal getAccountFreezeJournalDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     AccountFreezeJournal accountFreezeJournal = accountFreezeJournalMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(accountFreezeJournal);
+    return accountFreezeJournal;
   }
 
   @ShenyuDubboClient("/getCommunityLedgerInfo")
   @ApiDoc(desc = "getCommunityLedgerInfo")
   @Override
-  public Map<String, Object> getCommunityLedgerInfo(Map<String, Object> requestMap) {
+  public CommunityLedgerVO getCommunityLedgerInfo(Map<String, Object> requestMap) {
     // 查询社区账本账户的余额信息
     CommunityLedgerVO communityLedgerVO = new CommunityLedgerVO();
-
-    return RespBodyHandler.setRespBodyDto(communityLedgerVO);
+    return communityLedgerVO;
   }
 
   /**
@@ -473,12 +461,11 @@ public class AccountServiceImpl implements AccountService {
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     Map<String, Object> tokenReq = new HashMap();
     tokenReq.put("merchantNo", merchantNo);
-    Map<String, Object> tokenParamMap = tokenParamService.getDetailByMerchantNo(tokenReq);
+    TokenParam tokenParamMap = tokenParamService.getDetailByMerchantNo(tokenReq);
     Account accountDetail = null;
-    if(StringUtils.isNotEmpty(tokenParamMap.get("data").toString())){
-      Map tokenParam = (Map) tokenParamMap.get("data");
-      String ccy = (String) tokenParam.get("symbol");
-      BigDecimal anchoringValue = (BigDecimal) tokenParam.get("anchoringValue");
+    if(tokenParamMap != null){
+      String ccy = tokenParamMap.getSymbol();
+      BigDecimal anchoringValue = tokenParamMap.getAnchoringValue();
       // 查询用户在该币种下的余额
       LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
       warapper.eq(Account::getTenantId, tenantId);
@@ -501,7 +488,7 @@ public class AccountServiceImpl implements AccountService {
     payAccounts.put("brandsPoint",accountDetail);
     // * 1、火钻账户（fireDiamond）
     //   * 2、品牌积分账户(brandsPoint)
-    return RespBodyHandler.setRespBodyDto(payAccounts);
+    return payAccounts;
   }
 
 }

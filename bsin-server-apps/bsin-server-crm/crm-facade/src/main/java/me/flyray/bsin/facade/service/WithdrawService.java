@@ -1,6 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.WithdrawOrder;
 
 import java.util.Map;
 
@@ -22,12 +23,12 @@ public interface WithdrawService {
      * 提现
      * 用户向商户提现，无需审核
      */
-    public Map<String, Object> withdraw(Map<String, Object> requestMap) throws Exception;
+    public WithdrawOrder withdraw(Map<String, Object> requestMap) throws Exception;
 
     /**
      * 提现申请
      */
-    public Map<String, Object> withdrawApply(Map<String, Object> requestMap);
+    public WithdrawOrder withdrawApply(Map<String, Object> requestMap);
 
 
     /**
@@ -38,6 +39,6 @@ public interface WithdrawService {
     /**
      * 查询详情
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public WithdrawOrder getDetail(Map<String, Object> requestMap);
 
 }

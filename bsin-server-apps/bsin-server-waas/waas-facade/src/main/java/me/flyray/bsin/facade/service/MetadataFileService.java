@@ -21,12 +21,12 @@ public interface MetadataFileService {
     /**
      * 创建文件夹
      */
-    public Map<String, Object> makeDirectory(Map<String, Object> requestMap);
+    public MetadataFile makeDirectory(Map<String, Object> requestMap);
 
     /**
      * 上传文件
      */
-    public Map<String, Object> uploadFile(Map<String, Object> requestMap);
+    public MetadataFile uploadFile(Map<String, Object> requestMap);
 
     /**
      * 查询文件
@@ -38,18 +38,18 @@ public interface MetadataFileService {
     /**
      * 删除
      */
-    public Map<String, Object> delete(Map<String, Object> requestMap);
+    public void delete(Map<String, Object> requestMap);
 
     /**
      * 修改
      */
-    public Map<String, Object> edit(Map<String, Object> requestMap);
+    public void edit(Map<String, Object> requestMap);
 
 
     /**
      * 租户下所有
      */
-    public Map<String, Object> getList(Map<String, Object> requestMap);
+    public List<MetadataFile> getList(Map<String, Object> requestMap);
 
     /**
      * 分页查询
@@ -59,6 +59,6 @@ public interface MetadataFileService {
     /**
      * 查询详情
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public MetadataFile getDetail(Map<String, Object> requestMap);
 
 }

@@ -2,6 +2,7 @@ package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.Grade;
+import me.flyray.bsin.facade.response.GradeVO;
 
 import java.util.List;
 import java.util.Map;
@@ -17,18 +18,18 @@ public interface GradeService {
     /**
      * 添加
      */
-    public Map<String, Object> add(Map<String, Object> requestMap);
+    public Grade add(Map<String, Object> requestMap);
 
     /**
      * 删除
      */
-    public Map<String, Object> delete(Map<String, Object> requestMap);
+    public void delete(Map<String, Object> requestMap);
 
 
     /**
      * 编辑
      */
-    public Map<String, Object> edit(Map<String, Object> requestMap);
+    public Grade edit(Map<String, Object> requestMap);
 
 
     /**
@@ -44,14 +45,14 @@ public interface GradeService {
     /**
      * 查询等级、权益、条件详情
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public GradeVO getDetail(Map<String, Object> requestMap);
 
     /**
      * 查询等级详情
      */
-    public Map<String, Object> getGradeDetail(Map<String, Object> requestMap);
+    public Grade getGradeDetail(Map<String, Object> requestMap);
 
 
-    public Map<String, Object> getGradeAndMemberList(Map<String, Object> requestMap);
+    public List<?> getGradeAndMemberList(Map<String, Object> requestMap);
 
 }

@@ -1,5 +1,10 @@
 package me.flyray.bsin.server.biz;
 
+import me.flyray.bsin.domain.entity.Account;
+import me.flyray.bsin.domain.entity.TokenReleaseJournal;
+import me.flyray.bsin.domain.enums.AccountCategory;
+import me.flyray.bsin.facade.service.TokenParamService;
+import me.flyray.bsin.infrastructure.mapper.CustomerAccountMapper;
 import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +13,6 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-
-import me.flyray.bsin.domain.entity.Account;
-import me.flyray.bsin.domain.enums.AccountCategory;
-import me.flyray.bsin.facade.service.TokenParamService;
-import me.flyray.bsin.infrastructure.mapper.CustomerAccountMapper;
 
 /**
  * @author bolei
@@ -62,23 +62,21 @@ public class TokenReleaseBiz {
     requestMap.put("customerAccount", customerAccountRet);
 
     // 2.请求token释放分配
-    Map respMap = tokenReleaseParamService.releaseBcPointToVirtualAccount(requestMap);
-    Map respDataMap = (Map) respMap.get("data");
-    if (!((String) respDataMap.get("code")).equals("000000")) {
-      System.out.println(respMap.get("data").toString());
-    } else {
-      BigDecimal releaseAmount = (BigDecimal) respDataMap.get("releaseAmount");
-      // 3.用户BC积分释放账户出账
-      // TODO: 释放成功才出账
-      customerAccountRet =
-          customerAccountBiz.outAccount(
-              customerAccount.getTenantId(),
-              customerAccount.getCustomerNo(),
-              AccountCategory.BALANCE.getCode(),
-              AccountCategory.BALANCE.getDesc(),
-              customerAccount.getCcy(),
-              customerAccount.getDecimals(),
-              releaseAmount);
-    }
+    TokenReleaseJournal tokenReleaseJournal = tokenReleaseParamService.releaseBcPointToVirtualAccount(requestMap);
+
+    BigDecimal releaseAmount = tokenReleaseJournal.getAmout();
+
+    // 3.用户BC积分释放账户出账
+    // TODO: 释放成功才出账
+    customerAccountRet =
+            customerAccountBiz.outAccount(
+                    customerAccount.getTenantId(),
+                    customerAccount.getCustomerNo(),
+                    AccountCategory.BALANCE.getCode(),
+                    AccountCategory.BALANCE.getDesc(),
+                    customerAccount.getCcy(),
+                    customerAccount.getDecimals(),
+                    releaseAmount);
   }
+
 }

@@ -18,22 +18,4 @@
       #{apiName,jdbcType=VARCHAR},#{fee},#{customerNo})
   </insert>
 
-  <select id="getPageList" resultMap="BaseResultMap">
-    select serial_no, tenant_id, productId, api_name, create_time,fee,customer_no
-    from market_merchant_api_consuming_journal
-    where 1 = 1
-    <if test="apiName != null">
-      and api_name = #{apiName}
-    </if>
-    <if test="productId != null">
-      and productId = #{productId}
-    </if>
-    <if test="tenantId != null">
-      and tenant_id = #{tenantId}
-    </if>
-    <if test="customerNo != null">
-      and customer_no = #{customerNo}
-    </if>
-    order by create_time desc
-  </select>
 </mapper>

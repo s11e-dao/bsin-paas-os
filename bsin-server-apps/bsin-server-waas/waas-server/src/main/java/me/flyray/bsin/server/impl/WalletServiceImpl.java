@@ -1,19 +1,27 @@
 package me.flyray.bsin.server.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.blockchain.BsinBlockChainEngine;
+import me.flyray.bsin.blockchain.dto.ChainWalletDto;
+import me.flyray.bsin.blockchain.service.BsinBlockChainEngineFactory;
+import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.ChainCoin;
 import me.flyray.bsin.domain.entity.CustomerChainCoin;
 import me.flyray.bsin.domain.entity.Wallet;
 import me.flyray.bsin.domain.request.WalletDTO;
 import me.flyray.bsin.domain.response.WalletVO;
 import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.service.CustomerService;
+import me.flyray.bsin.facade.service.WalletService;
 import me.flyray.bsin.infrastructure.biz.WalletAccountBiz;
 import me.flyray.bsin.infrastructure.mapper.CustomerChainCoinMapper;
 import me.flyray.bsin.infrastructure.mapper.WalletMapper;
 import me.flyray.bsin.mybatis.utils.Pagination;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.utils.BsinSnowflake;
-import me.flyray.bsin.utils.I18eCode;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -22,20 +30,9 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.blockchain.BsinBlockChainEngine;
-import me.flyray.bsin.blockchain.dto.ChainWalletDto;
-import me.flyray.bsin.blockchain.service.BsinBlockChainEngineFactory;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.facade.service.CustomerService;
-import me.flyray.bsin.facade.service.WalletService;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author bolei
@@ -85,7 +82,7 @@ public class WalletServiceImpl implements WalletService {
     requestWalletMap.put("customerNo", loginUser.getCustomerNo());
     requestWalletMap.put("walletAddress", wallet.get("address"));
     requestWalletMap.put("walletPrivateKey", wallet.get("privateKey"));
-    return RespBodyHandler.setRespBodyDto(requestWalletMap);
+    return requestWalletMap;
   }
 
   @Override

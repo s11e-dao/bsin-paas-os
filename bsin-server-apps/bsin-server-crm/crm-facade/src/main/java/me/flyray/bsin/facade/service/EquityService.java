@@ -1,6 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.Equity;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
@@ -16,23 +17,23 @@ public interface EquityService{
     /**
      * 添加
      */
-    public Map<String, Object> add(Map<String, Object> requestMap);
+    public Equity add(Map<String, Object> requestMap);
 
     /**
      * 删除
      */
-    public Map<String, Object> delete(Map<String, Object> requestMap);
+    public void delete(Map<String, Object> requestMap);
 
     /**
      * 编辑
      */
-    public Map<String, Object> edit(Map<String, Object> requestMap);
+    public void edit(Map<String, Object> requestMap);
 
 
     /**
      * 详情
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public Equity getDetail(Map<String, Object> requestMap);
 
 
     /**

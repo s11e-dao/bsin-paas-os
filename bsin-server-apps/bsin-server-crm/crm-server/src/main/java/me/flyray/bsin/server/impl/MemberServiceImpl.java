@@ -5,7 +5,19 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.CustomerBase;
+import me.flyray.bsin.domain.entity.Grade;
+import me.flyray.bsin.domain.entity.Member;
+import me.flyray.bsin.domain.entity.TokenParam;
+import me.flyray.bsin.facade.service.MemberService;
+import me.flyray.bsin.facade.service.TokenParamService;
+import me.flyray.bsin.infrastructure.mapper.MemberGradeMapper;
+import me.flyray.bsin.infrastructure.mapper.MemberMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.utils.Pagination;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -18,20 +30,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.CustomerBase;
-import me.flyray.bsin.domain.entity.Grade;
-import me.flyray.bsin.domain.entity.Member;
-import me.flyray.bsin.facade.service.MemberService;
-import me.flyray.bsin.facade.service.TokenParamService;
-import me.flyray.bsin.infrastructure.mapper.MemberGradeMapper;
-import me.flyray.bsin.infrastructure.mapper.MemberMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 
 /**
  * @author bolei
@@ -55,7 +53,7 @@ public class MemberServiceImpl implements MemberService {
   @ApiDoc(desc = "openMember")
   @ShenyuDubboClient("/openMember")
   @Override
-  public Map<String, Object> openMember(Map<String, Object> requestMap) {
+  public void openMember(Map<String, Object> requestMap) {
     Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
     if (!memberMapper.exists(
         new LambdaUpdateWrapper<Member>()
@@ -65,7 +63,6 @@ public class MemberServiceImpl implements MemberService {
       memberMapper.insert(member);
     }
 
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "getPageList")
@@ -95,44 +92,40 @@ public class MemberServiceImpl implements MemberService {
   @ApiDoc(desc = "getGradeMemberList")
   @ShenyuDubboClient("/getGradeMemberList")
   @Override
-  public Map<String, Object> getGradeMemberList(Map<String, Object> requestMap) {
+  public List<?> getGradeMemberList(Map<String, Object> requestMap) {
     String gradeNo = MapUtils.getString(requestMap, "gradeNo");
     if ((String)requestMap.get("merchantNo") == null) {
       requestMap.put("merchantNo",LoginInfoContextHelper.getMerchantNo());
     }
     // 1.商户发行的数字积分(查询tokenParam)
-    Map<String, Object> tokenParamMap = tokenParamService.getDetailByMerchantNo(requestMap);
-    String ccy = null;
-    BigDecimal balance = new BigDecimal("0");
-    if (!"".equals(tokenParamMap.get("data"))) {
-      Map<String, Object> tokenParam = (Map<String, Object>) tokenParamMap.get("data");
-      ccy = MapUtils.getString(tokenParam, "symbol");
-    }
+    TokenParam tokenParamMap = tokenParamService.getDetailByMerchantNo(requestMap);
+    String ccy = tokenParamMap.getSymbol();
+
     List<CustomerBase> memberList = memberGradeMapper.selectMemberListByGrade(gradeNo,ccy);
     for (CustomerBase customer : memberList) {
 
     }
-    return RespBodyHandler.setRespBodyListDto(memberList);
+    return memberList;
   }
 
   @ApiDoc(desc = "getGradeMemberPageList")
   @ShenyuDubboClient("/getGradeMemberPageList")
   @Override
-  public Map<String, Object> getGradeMemberPageList(Map<String, Object> requestMap) {
+  public IPage<?> getGradeMemberPageList(Map<String, Object> requestMap) {
     Pagination pagination = (Pagination) requestMap.get("pagination");
     Page<CustomerBase> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     String gradeNo = MapUtils.getString(requestMap, "gradeNo");
     IPage<CustomerBase> memberList = memberGradeMapper.selectMemberPageListByGrade(page, gradeNo);
-    return RespBodyHandler.setRespPageInfoBodyDto(memberList);
+    return memberList;
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public Member getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     Member member = memberMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(member);
+    return member;
   }
 
   /**
@@ -144,13 +137,13 @@ public class MemberServiceImpl implements MemberService {
   @ApiDoc(desc = "getMemberGradeDetail")
   @ShenyuDubboClient("/getMemberGradeDetail")
   @Override
-  public Map<String, Object> getMemberGradeDetail(Map<String, Object> requestMap) {
+  public Grade getMemberGradeDetail(Map<String, Object> requestMap) {
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     if (customerNo == null) {
       customerNo = LoginInfoContextHelper.getCustomerNo();
     }
     Grade memberGrade = memberGradeMapper.selectMemberGrade(customerNo);
-    return RespBodyHandler.setRespBodyDto(memberGrade);
+    return memberGrade;
   }
 
 }

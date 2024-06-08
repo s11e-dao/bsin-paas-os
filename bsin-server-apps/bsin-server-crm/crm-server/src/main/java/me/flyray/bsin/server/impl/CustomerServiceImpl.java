@@ -1,13 +1,36 @@
 package me.flyray.bsin.server.impl;
 
-import static java.math.BigDecimal.ROUND_HALF_UP;
-import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_NO_NOT_ISNULL;
-
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
+import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.blockchain.utils.Web3WalletUtil;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.enums.AccountCategory;
+import me.flyray.bsin.domain.enums.LoginMethod;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.response.CustomerAccountVO;
+import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
+import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
+import me.flyray.bsin.facade.service.*;
+import me.flyray.bsin.infrastructure.mapper.BondingCurveTokenParamMapper;
+import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
+import me.flyray.bsin.infrastructure.mapper.MemberMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.biz.CustomerAccountBiz;
+import me.flyray.bsin.server.biz.CustomerBiz;
+import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.server.utils.SignUtils;
+import me.flyray.bsin.validate.AddGroup;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -29,42 +52,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
-import cn.hutool.crypto.symmetric.SymmetricCrypto;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.blockchain.utils.Web3WalletUtil;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.BondingCurveTokenParam;
-import me.flyray.bsin.domain.entity.Account;
-import me.flyray.bsin.domain.entity.CustomerBase;
-import me.flyray.bsin.domain.entity.Member;
-import me.flyray.bsin.domain.enums.AccountCategory;
-import me.flyray.bsin.domain.enums.LoginMethod;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.response.CustomerAccountVO;
-import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
-import me.flyray.bsin.facade.service.CustomerPassCardService;
-import me.flyray.bsin.facade.service.CustomerService;
-import me.flyray.bsin.facade.service.DigitalPointsService;
-import me.flyray.bsin.facade.service.TenantService;
-import me.flyray.bsin.facade.service.TokenParamService;
-import me.flyray.bsin.facade.service.UserService;
-import me.flyray.bsin.facade.service.WalletService;
-import me.flyray.bsin.infrastructure.mapper.BondingCurveTokenParamMapper;
-import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
-import me.flyray.bsin.infrastructure.mapper.MemberMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.biz.CustomerAccountBiz;
-import me.flyray.bsin.server.biz.CustomerBiz;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.server.utils.SignUtils;
-import me.flyray.bsin.validate.AddGroup;
+import static java.math.BigDecimal.ROUND_HALF_UP;
+import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_NO_NOT_ISNULL;
 
 /**
  * @author bolei
@@ -124,7 +113,7 @@ public class CustomerServiceImpl implements CustomerService {
     Map data = new HashMap<>();
     data.put("customerInfo", customerInfo);
     data.put("memberInfo", member);
-    return RespBodyHandler.setRespBodyDto(data);
+    return data;
   }
 
   /**
@@ -137,11 +126,11 @@ public class CustomerServiceImpl implements CustomerService {
   @ShenyuDubboClient("/register")
   @Transactional
   @Override
-  public Map<String, Object> register(Map<String, Object> requestMap)
+  public CustomerBase register(Map<String, Object> requestMap)
       throws UnsupportedEncodingException {
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
     customerBiz.register(customerBase);
-    return RespBodyHandler.setRespBodyDto(customerBase);
+    return customerBase;
   }
 
   /**
@@ -159,7 +148,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     // 将验证码存在缓存里面 phone:eventType verifycode
 
-    return RespBodyHandler.RespBodyDto();
+    return null;
   }
 
   /**
@@ -192,7 +181,7 @@ public class CustomerServiceImpl implements CustomerService {
     Map data = new HashMap<>();
     data.put("customerInfo", customerBaseRegister);
     data.put("memberInfo", member);
-    return RespBodyHandler.setRespBodyDto(data);
+    return data;
   }
 
   /**
@@ -240,17 +229,16 @@ public class CustomerServiceImpl implements CustomerService {
     data.put("customerInfo", customerBaseRegister);
     data.put("memberInfo", member);
 
-    return RespBodyHandler.setRespBodyDto(data);
+    return data;
   }
 
   @ApiDoc(desc = "identityVerification")
   @ShenyuDubboClient("/identityVerification")
   /** 身份认证 */
   @Override
-  public Map<String, Object> identityVerification(Map<String, Object> requestMap) {
+  public void identityVerification(Map<String, Object> requestMap) {
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
     customerBaseMapper.updateById(customerBase);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "getPageList")
@@ -283,20 +271,20 @@ public class CustomerServiceImpl implements CustomerService {
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public CustomerBase getDetail(Map<String, Object> requestMap) {
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     if (customerNo == null) {
       customerNo = LoginInfoContextHelper.getCustomerNo();
     }
     CustomerBase customerInfo = customerBaseMapper.selectById(customerNo);
     //        customerInfo.setWalletPrivateKey(null);
-    return RespBodyHandler.setRespBodyDto(customerInfo);
+    return customerInfo;
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public CustomerBase edit(Map<String, Object> requestMap) {
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
     if (customerNo == null) {
@@ -307,7 +295,7 @@ public class CustomerServiceImpl implements CustomerService {
       customerBase.setCustomerNo(customerNo);
     }
     customerBaseMapper.updateById(customerBase);
-    return RespBodyHandler.setRespBodyDto(customerBase);
+    return customerBase;
   }
 
   /**
@@ -326,7 +314,7 @@ public class CustomerServiceImpl implements CustomerService {
   @ApiDoc(desc = "getListByCustomerNos")
   @ShenyuDubboClient("/getListByCustomerNos")
   @Override
-  public Map<String, Object> getListByCustomerNos(Map<String, Object> requestMap) {
+  public List<?> getListByCustomerNos(Map<String, Object> requestMap) {
     //        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     //        log.info(loginUser.toString());
     List<String> customerNos = (List<String>) requestMap.get("customerNos");
@@ -334,13 +322,13 @@ public class CustomerServiceImpl implements CustomerService {
       throw new BusinessException("200000", "请求参数不能为空！");
     }
     List<CustomerBase> customerBaseList = customerBaseMapper.selectBatchIds(customerNos);
-    return RespBodyHandler.setRespBodyListDto(customerBaseList);
+    return customerBaseList;
   }
 
   @ApiDoc(desc = "certification")
   @ShenyuDubboClient("/certification")
   @Override
-  public Map<String, Object> certification(Map<String, Object> requestMap) throws Exception {
+  public CustomerBase certification(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
     Map<String, Object> walletData = walletService.createWallet(requestMap);
@@ -355,7 +343,7 @@ public class CustomerServiceImpl implements CustomerService {
     customerBase.setCertificationStatus(true);
     customerBase.setCustomerNo(loginUser.getCustomerNo());
     customerBaseMapper.updateById(customerBase);
-    return RespBodyHandler.setRespBodyDto(customerBase);
+    return customerBase;
   }
 
   /**
@@ -367,7 +355,7 @@ public class CustomerServiceImpl implements CustomerService {
   @ApiDoc(desc = "settingWallet")
   @ShenyuDubboClient("/settingWallet")
   @Override
-  public Map<String, Object> settingWallet(Map<String, Object> requestMap) {
+  public void settingWallet(Map<String, Object> requestMap) {
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
     customerBase.setCustomerNo(LoginInfoContextHelper.getCustomerNo());
     SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
@@ -378,7 +366,6 @@ public class CustomerServiceImpl implements CustomerService {
       customerBase.setEvmWalletPrivateKey(aes.encryptHex(customerBase.getEvmWalletPrivateKey()));
     }
     customerBaseMapper.updateById(customerBase);
-    return RespBodyHandler.RespBodyDto();
   }
 
   /**
@@ -390,7 +377,7 @@ public class CustomerServiceImpl implements CustomerService {
   @ApiDoc(desc = "settingProfile")
   @ShenyuDubboClient("/settingProfile")
   @Override
-  public Map<String, Object> settingProfile(Map<String, Object> requestMap) {
+  public void settingProfile(Map<String, Object> requestMap) {
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
     if (customerBase.getCustomerNo() == null) {
       customerBase.setCustomerNo(LoginInfoContextHelper.getCustomerNo());
@@ -399,7 +386,6 @@ public class CustomerServiceImpl implements CustomerService {
       }
     }
     customerBaseMapper.updateById(customerBase);
-    return RespBodyHandler.RespBodyDto();
   }
 
   /**
@@ -411,7 +397,7 @@ public class CustomerServiceImpl implements CustomerService {
   @ApiDoc(desc = "getWalletInfo")
   @ShenyuDubboClient("/getWalletInfo")
   @Override
-  public Map<String, Object> getWalletInfo(Map<String, Object> requestMap) {
+  public CustomerAccountVO getWalletInfo(Map<String, Object> requestMap) {
     String customerNo = LoginInfoContextHelper.getCustomerNo();
     // 1.获取商户号
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
@@ -419,12 +405,11 @@ public class CustomerServiceImpl implements CustomerService {
     CustomerAccountVO customerAccountVO = new CustomerAccountVO();
 
     // 2.商户发行的数字积分(查询tokenParam)
-    Map<String, Object> tokenParamMap = tokenParamService.getDetailByMerchantNo(requestMap);
+    TokenParam tokenParamMap = tokenParamService.getDetailByMerchantNo(requestMap);
     BigDecimal balance = new BigDecimal("0");
-    if (!"".equals(tokenParamMap.get("data"))) {
-      Map<String, Object> tokenParam = (Map<String, Object>) tokenParamMap.get("data");
-      String digitalPointsSymbol = MapUtils.getString(tokenParam, "symbol");
-      String digitalPointsName = MapUtils.getString(tokenParam, "name");
+    if (tokenParamMap != null) {
+      String digitalPointsSymbol = tokenParamMap.getSymbol();
+      String digitalPointsName = tokenParamMap.getName();
       Account digitalPointsAccount =
           customerAccountBiz.getAccountDetail(
               merchantNo, customerNo, digitalPointsSymbol, AccountCategory.BALANCE.getCode());
@@ -442,16 +427,16 @@ public class CustomerServiceImpl implements CustomerService {
       customerAccountVO.setDigitalPointsName(digitalPointsName);
       customerAccountVO.setDigitalPointsSymbol(digitalPointsSymbol);
       customerAccountVO.setDigitalPointsSupply(
-          ((BigDecimal) tokenParam.get("totalSupply"))
+          ((BigDecimal) tokenParamMap.getTotalSupply())
               .divide(
-                  BigDecimal.valueOf(Math.pow(10, ((Integer) tokenParam.get("decimals")))),
+                  BigDecimal.valueOf(Math.pow(10, (tokenParamMap.getDecimals()))),
                   2,
                   ROUND_HALF_UP));
       // 设置数字积分流通量
       customerAccountVO.setDigitalPointsCirculation(
-          ((BigDecimal) tokenParam.get("circulation"))
+          (tokenParamMap.getCirculation())
               .divide(
-                  BigDecimal.valueOf(Math.pow(10, ((Integer) tokenParam.get("decimals")))),
+                  BigDecimal.valueOf(Math.pow(10, (tokenParamMap.getDecimals()))),
                   2,
                   ROUND_HALF_UP));
       // TODO: 浮点数比较
@@ -546,15 +531,13 @@ public class CustomerServiceImpl implements CustomerService {
     customerAccountVO.setCnyBalance(balance);
 
     // 4. 商户PassCard的TBA账户地址
-    Map<String, Object> customerPassCardMap = customerPassCardService.getDetail(requestMap);
-    if (!"".equals(customerPassCardMap.get("data"))) {
-      DigitalAssetsItemRes customerPassCard =
-          (DigitalAssetsItemRes)
-              ((Map<String, Object>) customerPassCardMap.get("data")).get("customerPassCard");
+    DigitalAssetsDetailRes digitalAssetsDetailRes = customerPassCardService.getDetail(requestMap);
+    if (digitalAssetsDetailRes != null) {
+      DigitalAssetsItemRes customerPassCard = (DigitalAssetsItemRes)digitalAssetsDetailRes.getCustomerPassCard();
       customerAccountVO.setTbaAddress((String) customerPassCard.getTbaAddress());
     }
 
-    return RespBodyHandler.setRespBodyDto(customerAccountVO);
+    return customerAccountVO;
   }
 
   /**
@@ -578,7 +561,7 @@ public class CustomerServiceImpl implements CustomerService {
     Date date = sdf.parse((String) requestMap.get("date"));
     Map<String, Object> responseMap = new HashMap<String, Object>();
     responseMap.put("continuousSignCount", signUtils.getContinuousSignCount(customerNo, date));
-    return RespBodyHandler.setRespBodyDto(responseMap);
+    return responseMap;
   }
 
   /**
@@ -601,7 +584,7 @@ public class CustomerServiceImpl implements CustomerService {
     Date date = sdf.parse((String) requestMap.get("date"));
     Map<String, Object> responseMap = new HashMap<String, Object>();
     responseMap.put("continuousSignCount", signUtils.getSumSignCount(customerNo, date));
-    return RespBodyHandler.setRespBodyDto(responseMap);
+    return responseMap;
   }
 
   /**
@@ -612,7 +595,7 @@ public class CustomerServiceImpl implements CustomerService {
   @ApiDoc(desc = "sign")
   @ShenyuDubboClient("/sign")
   @Override
-  public Map<String, Object> sign(Map<String, Object> requestMap) throws ParseException {
+  public String sign(Map<String, Object> requestMap) throws ParseException {
     String customerNo = (String) requestMap.get("customerNo");
     if (customerNo == null) {
       customerNo = LoginInfoContextHelper.getCustomerNo();
@@ -624,7 +607,7 @@ public class CustomerServiceImpl implements CustomerService {
     if (date == null) {
       date = new DateTime();
     }
-    return RespBodyHandler.setRespBodyDto(signUtils.sign(customerNo, date));
+    return signUtils.sign(customerNo, date);
   }
 
   /**
@@ -636,7 +619,7 @@ public class CustomerServiceImpl implements CustomerService {
   @ApiDoc(desc = "getSignResult")
   @ShenyuDubboClient("/getSignResult")
   @Override
-  public Map<String, Object> getSignResult(Map<String, Object> requestMap) throws ParseException {
+  public boolean getSignResult(Map<String, Object> requestMap) throws ParseException {
     String customerNo = (String) requestMap.get("customerNo");
     if (customerNo == null) {
       customerNo = LoginInfoContextHelper.getCustomerNo();
@@ -648,7 +631,7 @@ public class CustomerServiceImpl implements CustomerService {
     if (date == null) {
       date = new DateTime();
     }
-    return RespBodyHandler.setRespBodyDto(signUtils.checkSign(customerNo, date));
+    return signUtils.checkSign(customerNo, date);
   }
 
   /**
@@ -660,7 +643,7 @@ public class CustomerServiceImpl implements CustomerService {
   @ApiDoc(desc = "getSignInfo")
   @ShenyuDubboClient("/getSignInfo")
   @Override
-  public Map<String, Object> getSignInfo(Map<String, Object> requestMap) throws ParseException {
+  public Map<String, String> getSignInfo(Map<String, Object> requestMap) throws ParseException {
 
     String customerNo = (String) requestMap.get("customerNo");
     if (customerNo == null) {
@@ -673,15 +656,15 @@ public class CustomerServiceImpl implements CustomerService {
     if (date == null) {
       date = new DateTime();
     }
-    return RespBodyHandler.setRespBodyDto(signUtils.getSignInfo(customerNo, date));
+    return signUtils.getSignInfo(customerNo, date);
   }
 
   @ApiDoc(desc = "getInviteeList")
   @ShenyuDubboClient("/getInviteeList")
   @Override
-  public Map<String, Object> getInviteeList(Map<String, Object> requestMap) {
+  public List<?> getInviteeList(Map<String, Object> requestMap) {
     String customerNo = LoginInfoContextHelper.getCustomerNo();
     List<CustomerBase> memberList = customerBaseMapper.selectInviteeList(customerNo);
-    return RespBodyHandler.setRespBodyListDto(memberList);
+    return memberList;
   }
 }

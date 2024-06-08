@@ -25,7 +25,7 @@ public class MerchantApiConsumingRecord implements Serializable {
     /**
      * productId
      */
-    private String productId;
+    private String appId;
 
     /**
      * 调用接口名称

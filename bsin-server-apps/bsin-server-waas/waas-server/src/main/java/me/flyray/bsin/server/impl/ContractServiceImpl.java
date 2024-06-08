@@ -1,11 +1,29 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.blockchain.BsinBlockChainEngine;
+import me.flyray.bsin.blockchain.service.BsinBlockChainEngineFactory;
+import me.flyray.bsin.blockchain.utils.Java2ContractTypeParameter;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.Contract;
+import me.flyray.bsin.domain.entity.ContractProtocol;
+import me.flyray.bsin.domain.enums.ProtocolName;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.service.ContractService;
+import me.flyray.bsin.infrastructure.biz.CustomerInfoBiz;
+import me.flyray.bsin.infrastructure.mapper.ContractMapper;
+import me.flyray.bsin.infrastructure.mapper.ContractProtocolMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -18,27 +36,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.ObjectUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.blockchain.BsinBlockChainEngine;
-import me.flyray.bsin.blockchain.service.BsinBlockChainEngineFactory;
-import me.flyray.bsin.blockchain.utils.Java2ContractTypeParameter;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.Contract;
-import me.flyray.bsin.domain.entity.ContractProtocol;
-import me.flyray.bsin.domain.enums.ProtocolName;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.ContractService;
-import me.flyray.bsin.infrastructure.mapper.ContractMapper;
-import me.flyray.bsin.infrastructure.mapper.ContractProtocolMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.infrastructure.biz.CustomerInfoBiz;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
 
 /**
  * @author leonard
@@ -63,7 +60,7 @@ public class ContractServiceImpl implements ContractService {
   @ShenyuDubboClient("/deploy")
   @ApiDoc(desc = "deploy")
   @Override
-  public Map<String, Object> deploy(Map<String, Object> requestMap) throws Exception {
+  public Contract deploy(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -230,36 +227,34 @@ public class ContractServiceImpl implements ContractService {
     contract.setContractProtocolNo(contractProtocolNo);
     contract.setTxHash(txHash);
     contractMapper.insert(contract);
-    return RespBodyHandler.setRespBodyDto(contract);
+    return contract;
   }
 
   @ShenyuDubboClient("/add")
   @ApiDoc(desc = "add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public Contract add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     log.info(loginUser.toString());
     Contract contract = BsinServiceContext.getReqBodyDto(Contract.class, requestMap);
     contractMapper.insert(contract);
-    return RespBodyHandler.setRespBodyDto(contract);
+    return contract;
   }
 
   @ShenyuDubboClient("/delete")
   @ApiDoc(desc = "delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     contractMapper.deleteById(serialNo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ShenyuDubboClient("/edit")
   @ApiDoc(desc = "edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public void edit(Map<String, Object> requestMap) {
     Contract contract = BsinServiceContext.getReqBodyDto(Contract.class, requestMap);
     contractMapper.updateById(contract);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ShenyuDubboClient("/getPageList")
@@ -301,7 +296,7 @@ public class ContractServiceImpl implements ContractService {
   @ShenyuDubboClient("/getList")
   @ApiDoc(desc = "getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<Contract> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = loginUser.getTenantId();
     String merchantNo = loginUser.getMerchantNo();
@@ -328,15 +323,15 @@ public class ContractServiceImpl implements ContractService {
         Contract::getChainType,
         contract.getChainType());
     List<Contract> contractProtocolList = contractMapper.selectList(warapper);
-    return RespBodyHandler.setRespBodyListDto(contractProtocolList);
+    return contractProtocolList;
   }
 
   @ShenyuDubboClient("/getDetail")
   @ApiDoc(desc = "getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public Contract getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     Contract contract = contractMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(contract);
+    return contract;
   }
 }

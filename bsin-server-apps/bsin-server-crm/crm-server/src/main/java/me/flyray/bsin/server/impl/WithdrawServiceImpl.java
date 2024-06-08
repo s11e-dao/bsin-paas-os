@@ -9,6 +9,7 @@ import me.flyray.bsin.blockchain.enums.ChainType;
 import me.flyray.bsin.blockchain.service.BsinBlockChainEngineFactory;
 import me.flyray.bsin.blockchain.utils.Java2ContractTypeParameter;
 import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.CustomerBase;
 import me.flyray.bsin.domain.entity.Merchant;
 import me.flyray.bsin.domain.entity.WithdrawOrder;
 import me.flyray.bsin.facade.service.CustomerService;
@@ -18,7 +19,6 @@ import me.flyray.bsin.infrastructure.mapper.WithdrawJournalMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -97,7 +97,7 @@ public class WithdrawServiceImpl implements WithdrawService {
     @ShenyuDubboClient("/withdraw")
     @ApiDoc(desc = "withdraw")
     @Override
-    public Map<String, Object> withdraw(Map<String, Object> requestMap) throws Exception {
+    public WithdrawOrder withdraw(Map<String, Object> requestMap) throws Exception {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         WithdrawOrder withdrawJournal = BsinServiceContext.getReqBodyDto(WithdrawOrder.class, requestMap);
         // 调用链上智能合约扣
@@ -127,10 +127,9 @@ public class WithdrawServiceImpl implements WithdrawService {
 
         //        // 1.获取客户信息
         Map<String, Object> reqCustomerBase = new HashMap();
-        Map<String, Object> customerData = customerService.getDetail(reqCustomerBase);
-        Map customerBase = (Map) customerData.get("data");
+        CustomerBase customerBase = customerService.getDetail(reqCustomerBase);
 
-        String fromAddress = (String) customerBase.get("evmWalletAddress");
+        String fromAddress = customerBase.getEvmWalletAddress();
         String toAddress = withdrawJournal.getPayeeAccount();
         String amount = String.valueOf(withdrawJournal.getAmount());
 
@@ -152,17 +151,17 @@ public class WithdrawServiceImpl implements WithdrawService {
         withdrawJournal.setMerchantNo(loginUser.getMerchantNo());
         withdrawJournal.setStatus("1");
         withdrawJournalMapper.insert(withdrawJournal);
-        return RespBodyHandler.setRespBodyDto(withdrawJournal);
+        return withdrawJournal;
     }
 
     @ShenyuDubboClient("/withdrawApply")
     @ApiDoc(desc = "withdrawApply")
     @Override
-    public Map<String, Object> withdrawApply(Map<String, Object> requestMap) {
+    public WithdrawOrder withdrawApply(Map<String, Object> requestMap) {
         WithdrawOrder withdrawJournal = BsinServiceContext.getReqBodyDto(WithdrawOrder.class, requestMap);
         withdrawJournal.setStatus("0");
         withdrawJournalMapper.insert(withdrawJournal);
-        return RespBodyHandler.setRespBodyDto(withdrawJournal);
+        return withdrawJournal;
     }
 
     @ShenyuDubboClient("/audit")
@@ -176,10 +175,10 @@ public class WithdrawServiceImpl implements WithdrawService {
     @ShenyuDubboClient("/getDetail")
     @ApiDoc(desc = "getDetail")
     @Override
-    public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+    public WithdrawOrder getDetail(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         WithdrawOrder withdrawJournal = withdrawJournalMapper.selectById(serialNo);
-        return RespBodyHandler.setRespBodyDto(withdrawJournal);
+        return withdrawJournal;
     }
 
 }

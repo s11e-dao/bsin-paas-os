@@ -1,24 +1,11 @@
 package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
-import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
-import org.apache.shenyu.client.apidocs.annotations.ApiModule;
-import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
-
-import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
@@ -30,8 +17,18 @@ import me.flyray.bsin.infrastructure.mapper.MetadataFileMapper;
 import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.utils.BsinSnowflake;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
+import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author bolei
@@ -52,7 +49,7 @@ public class MetadataFileServiceImpl implements MetadataFileService {
     @ShenyuDubboClient("/makeDirectory")
     @ApiDoc(desc = "makeDirectory")
     @Override
-    public Map<String, Object> makeDirectory(Map<String, Object> requestMap) {
+    public MetadataFile makeDirectory(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         String merchantNo = loginUser.getMerchantNo();
         MetadataFile metadataFile = BsinServiceContext.getReqBodyDto(MetadataFile.class, requestMap);
@@ -68,13 +65,13 @@ public class MetadataFileServiceImpl implements MetadataFileService {
         metadataFile.setMerchantNo(loginUser.getMerchantNo());
         metadataFile.setCreateBy(merchantNo);
         metadataFileMapper.insert(metadataFile);
-        return RespBodyHandler.setRespBodyDto(metadataFile);
+        return metadataFile;
     }
 
     @ShenyuDubboClient("/uploadFile")
     @ApiDoc(desc = "uploadFile")
     @Override
-    public Map<String, Object> uploadFile(Map<String, Object> requestMap) {
+    public MetadataFile uploadFile(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         String merchantNo = loginUser.getMerchantNo();
         MetadataFile metadataFile = BsinServiceContext.getReqBodyDto(MetadataFile.class, requestMap);
@@ -105,26 +102,24 @@ public class MetadataFileServiceImpl implements MetadataFileService {
 //        metadataFile.setFileType(FileType.FOLDER.getCode());
         metadataFile.setDirFlag("0");
         metadataFileMapper.insert(metadataFile);
-        return RespBodyHandler.setRespBodyDto(metadataFile);
+        return metadataFile;
     }
 
 
     @ShenyuDubboClient("/delete")
     @ApiDoc(desc = "delete")
     @Override
-    public Map<String, Object> delete(Map<String, Object> requestMap) {
+    public void delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         metadataFileMapper.deleteById(serialNo);
-        return RespBodyHandler.RespBodyDto();
     }
 
     @ShenyuDubboClient("/edit")
     @ApiDoc(desc = "edit")
     @Override
-    public Map<String, Object> edit(Map<String, Object> requestMap) {
+    public void edit(Map<String, Object> requestMap) {
         MetadataFile metadataFile = BsinServiceContext.getReqBodyDto(MetadataFile.class, requestMap);
         metadataFileMapper.updateById(metadataFile);
-        return RespBodyHandler.RespBodyDto();
     }
 
     @ShenyuDubboClient("/getFileList")
@@ -150,14 +145,14 @@ public class MetadataFileServiceImpl implements MetadataFileService {
     @ShenyuDubboClient("/getList")
     @ApiDoc(desc = "getList")
     @Override
-    public Map<String, Object> getList(Map<String, Object> requestMap) {
+    public List<MetadataFile> getList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         LambdaUpdateWrapper<MetadataFile> warapper = new LambdaUpdateWrapper<>();
         warapper.orderByDesc(MetadataFile::getCreateTime);
         warapper.eq(ObjectUtil.isNotNull(loginUser.getTenantId()),MetadataFile::getTenantId, loginUser.getTenantId());
         warapper.eq(ObjectUtil.isNotNull(loginUser.getMerchantNo()),MetadataFile::getMerchantNo, loginUser.getMerchantNo());
         List<MetadataFile> metadataFileList = metadataFileMapper.selectList(warapper);
-        return RespBodyHandler.setRespBodyListDto(metadataFileList);
+        return metadataFileList;
     }
 
     @ShenyuDubboClient("/getPageList")
@@ -181,10 +176,10 @@ public class MetadataFileServiceImpl implements MetadataFileService {
     @ShenyuDubboClient("/getDetail")
     @ApiDoc(desc = "getDetail")
     @Override
-    public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+    public MetadataFile getDetail(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         MetadataFile metadataFile = metadataFileMapper.selectById(serialNo);
-        return RespBodyHandler.setRespBodyDto(metadataFile);
+        return metadataFile;
     }
 
 }

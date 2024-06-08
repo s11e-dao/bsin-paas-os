@@ -1,11 +1,18 @@
 package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.ContractProtocol;
+import me.flyray.bsin.facade.service.ContractProtocolService;
+import me.flyray.bsin.infrastructure.mapper.ContractProtocolMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -17,16 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-
-import cn.hutool.core.util.ObjectUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.ContractProtocol;
-import me.flyray.bsin.facade.service.ContractProtocolService;
-import me.flyray.bsin.infrastructure.mapper.ContractProtocolMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 
 /**
  * @author bolei
@@ -46,7 +43,7 @@ public class ContractProtocolServiceImpl implements ContractProtocolService {
     @ShenyuDubboClient("/add")
     @ApiDoc(desc = "add")
     @Override
-    public Map<String, Object> add(Map<String, Object> requestMap) {
+    public void add(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         log.info(loginUser.toString());
         ContractProtocol contractProtocol = BsinServiceContext.getReqBodyDto(ContractProtocol.class, requestMap);
@@ -57,25 +54,22 @@ public class ContractProtocolServiceImpl implements ContractProtocolService {
             contractProtocol.setCreateBy(loginUser.getCustomerNo());
         }
         contractProtocolMapper.insert(contractProtocol);
-        return RespBodyHandler.setRespBodyDto(contractProtocol);
     }
 
     @ShenyuDubboClient("/add")
     @ApiDoc(desc = "add")
     @Override
-    public Map<String, Object> delete(Map<String, Object> requestMap) {
+    public void delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         contractProtocolMapper.deleteById(serialNo);
-        return RespBodyHandler.RespBodyDto();
     }
 
     @ShenyuDubboClient("/edit")
     @ApiDoc(desc = "edit")
     @Override
-    public Map<String, Object> edit(Map<String, Object> requestMap) {
+    public void edit(Map<String, Object> requestMap) {
         ContractProtocol contractProtocol = BsinServiceContext.getReqBodyDto(ContractProtocol.class, requestMap);
         contractProtocolMapper.updateById(contractProtocol);
-        return RespBodyHandler.RespBodyDto();
     }
 
     @ShenyuDubboClient("/getPageList")
@@ -119,10 +113,10 @@ public class ContractProtocolServiceImpl implements ContractProtocolService {
     @ShenyuDubboClient("/getDetail")
     @ApiDoc(desc = "getDetail")
     @Override
-    public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+    public ContractProtocol getDetail(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         ContractProtocol contractProtocol = contractProtocolMapper.selectById(serialNo);
-        return RespBodyHandler.setRespBodyDto(contractProtocol);
+        return contractProtocol;
     }
 
 }

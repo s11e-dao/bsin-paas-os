@@ -40,7 +40,7 @@ public interface PlatformService {
      * 根据tenantId获取租户详情
      * @return
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public Platform getDetail(Map<String, Object> requestMap);
 
     /**
      * 查询系统租户平台

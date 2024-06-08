@@ -44,25 +44,18 @@ public class BlackWhiteListAddressServiceImpl implements BlackWhiteListAddressSe
     @Transactional(rollbackFor = Exception.class)
     public void add(BlackWhiteListAddressDTO blackWhiteListAddressDTO) {
         log.debug("请求BlackWhiteListAddressService.save,参数:{}", blackWhiteListAddressDTO);
-        try{
-            LoginUser user = LoginInfoContextHelper.getLoginUser();
-            BlackWhiteListAddress blackWhiteListAddress = new BlackWhiteListAddress();
-            BeanUtils.copyProperties(blackWhiteListAddressDTO,blackWhiteListAddress);
+        LoginUser user = LoginInfoContextHelper.getLoginUser();
+        BlackWhiteListAddress blackWhiteListAddress = new BlackWhiteListAddress();
+        BeanUtils.copyProperties(blackWhiteListAddressDTO,blackWhiteListAddress);
 
-            String addressId = BsinSnowflake.getId();
-            blackWhiteListAddress.setStatus(1); // 启用
-            blackWhiteListAddress.setSerialNo(addressId);
-            blackWhiteListAddress.setCreateTime(new Date());
-            blackWhiteListAddress.setCreateBy(user.getUserId());
-            blackWhiteListAddress.setBizRoleNo(user.getBizRoleTypeNo());
-            blackWhiteListAddress.setBizRoleType(user.getBizRoleType());
-            blackWhiteListAddressMapper.insert(blackWhiteListAddress);
-        }catch (BusinessException be){
-            throw be;
-        }catch (Exception e){
-            e.printStackTrace();
-            throw new BusinessException("SYSTEM_ERROR");
-        }
+        String addressId = BsinSnowflake.getId();
+        blackWhiteListAddress.setStatus(1); // 启用
+        blackWhiteListAddress.setSerialNo(addressId);
+        blackWhiteListAddress.setCreateTime(new Date());
+        blackWhiteListAddress.setCreateBy(user.getUserId());
+        blackWhiteListAddress.setBizRoleNo(user.getBizRoleTypeNo());
+        blackWhiteListAddress.setBizRoleType(user.getBizRoleType());
+        blackWhiteListAddressMapper.insert(blackWhiteListAddress);
     }
 
     @Override

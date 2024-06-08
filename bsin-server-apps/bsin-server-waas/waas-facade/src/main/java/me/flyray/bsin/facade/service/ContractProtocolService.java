@@ -17,17 +17,17 @@ public interface ContractProtocolService {
     /**
      * 添加合约协议
      */
-    public Map<String, Object> add(Map<String, Object> requestMap);
+    public void add(Map<String, Object> requestMap);
 
     /**
      * 删除合约协议
      */
-    public Map<String, Object> delete(Map<String, Object> requestMap);
+    public void delete(Map<String, Object> requestMap);
 
     /**
      * 修改合约协议
      */
-    public Map<String, Object> edit(Map<String, Object> requestMap);
+    public void edit(Map<String, Object> requestMap);
 
     /**
      * 租户下所有合约协议
@@ -42,6 +42,6 @@ public interface ContractProtocolService {
     /**
      * 查询合约协议详情
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public ContractProtocol getDetail(Map<String, Object> requestMap);
 
 }

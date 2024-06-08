@@ -3,6 +3,7 @@ package me.flyray.bsin.facade.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.MetadataTemplate;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,22 +17,22 @@ public interface MetadataTemplateService {
     /**
      * 添加
      */
-    public Map<String, Object> add(Map<String, Object> requestMap);
+    public MetadataTemplate add(Map<String, Object> requestMap);
 
     /**
      * 删除
      */
-    public Map<String, Object> delete(Map<String, Object> requestMap);
+    public void delete(Map<String, Object> requestMap);
 
     /**
      * 修改
      */
-    public Map<String, Object> edit(Map<String, Object> requestMap);
+    public void edit(Map<String, Object> requestMap);
 
     /**
      * 租户下所有
      */
-    public Map<String, Object> getList(Map<String, Object> requestMap);
+    public List<MetadataTemplate> getList(Map<String, Object> requestMap);
 
     /**
      * 分页查询
@@ -41,6 +42,6 @@ public interface MetadataTemplateService {
     /**
      * 查询详情
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public MetadataTemplate getDetail(Map<String, Object> requestMap);
 
 }

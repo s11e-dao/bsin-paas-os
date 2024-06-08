@@ -1,13 +1,22 @@
 package me.flyray.bsin.server.impl;
 
-import static me.flyray.bsin.constants.ResponseCode.MERCHANT_NO_IS_NULL;
-import static me.flyray.bsin.constants.ResponseCode.TENANT_ID_NOT_ISNULL;
-
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.response.GradeVO;
+import me.flyray.bsin.facade.service.GradeService;
+import me.flyray.bsin.facade.service.TokenParamService;
+import me.flyray.bsin.infrastructure.mapper.*;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.biz.CustomerAccountBiz;
+import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -22,29 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import cn.hutool.core.util.ObjectUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.Condition;
-import me.flyray.bsin.domain.entity.CustomerBase;
-import me.flyray.bsin.domain.entity.Equity;
-import me.flyray.bsin.domain.entity.Grade;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.response.GradeVO;
-import me.flyray.bsin.facade.service.GradeService;
-import me.flyray.bsin.facade.service.TokenParamService;
-import me.flyray.bsin.infrastructure.mapper.ConditionMapper;
-import me.flyray.bsin.infrastructure.mapper.ConditionRelationMapper;
-import me.flyray.bsin.infrastructure.mapper.EquityMapper;
-import me.flyray.bsin.infrastructure.mapper.EquityRelationMapper;
-import me.flyray.bsin.infrastructure.mapper.GradeMapper;
-import me.flyray.bsin.infrastructure.mapper.MemberGradeMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.biz.CustomerAccountBiz;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
+import static me.flyray.bsin.constants.ResponseCode.MERCHANT_NO_IS_NULL;
+import static me.flyray.bsin.constants.ResponseCode.TENANT_ID_NOT_ISNULL;
 
 /**
 * @author bolei
@@ -78,35 +66,34 @@ public class GradeServiceImpl implements GradeService {
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
     @Override
-    public Map<String, Object> add(Map<String, Object> requestMap) {
+    public Grade add(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Grade grade = BsinServiceContext.getReqBodyDto(Grade.class, requestMap);
         grade.setTenantId(loginUser.getTenantId());
         grade.setMerchantNo(loginUser.getMerchantNo());
         grade.setSerialNo(BsinSnowflake.getId());
         gradeMapper.insert(grade);
-        return RespBodyHandler.setRespBodyDto(grade);
+        return grade;
     }
 
     @ApiDoc(desc = "delete")
     @ShenyuDubboClient("/delete")
     @Override
-    public Map<String, Object> delete(Map<String, Object> requestMap) {
+    public void delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         gradeMapper.deleteById(serialNo);
-        return RespBodyHandler.RespBodyDto();
     }
 
     @ApiDoc(desc = "edit")
     @ShenyuDubboClient("/edit")
     @Override
-    public Map<String, Object> edit(Map<String, Object> requestMap) {
+    public Grade edit(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Grade grade = BsinServiceContext.getReqBodyDto(Grade.class, requestMap);
         grade.setTenantId(loginUser.getTenantId());
         grade.setMerchantNo(loginUser.getMerchantNo());
         gradeMapper.updateById(grade);
-        return RespBodyHandler.setRespBodyDto(grade);
+        return grade;
     }
 
     @ApiDoc(desc = "getList")
@@ -138,13 +125,11 @@ public class GradeServiceImpl implements GradeService {
         warapper.eq(Grade::getTenantId, loginUser.getTenantId());
         warapper.eq(Grade::getMerchantNo, loginUser.getMerchantNo());
         warapper.eq(
-                ObjectUtil.isNotNull(grade.getGradeNum()),
+                StringUtils.isNotEmpty(grade.getGradeNum()),
                 Grade::getGradeNum,
                 grade.getGradeNum());
 
-        IPage<Grade> pageList =
-                gradeMapper.selectPage(page, warapper);
-
+        IPage<Grade> pageList = gradeMapper.selectPage(page, warapper);
         return pageList;
     }
 
@@ -157,7 +142,7 @@ public class GradeServiceImpl implements GradeService {
     @ApiDoc(desc = "getDetail")
     @ShenyuDubboClient("/getDetail")
     @Override
-    public Map<String, Object> getDetail(Map<String, Object> requestMap){
+    public GradeVO getDetail(Map<String, Object> requestMap){
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         Grade grade = gradeMapper.selectById(serialNo);
         // 查询等级条件和权益
@@ -173,7 +158,7 @@ public class GradeServiceImpl implements GradeService {
         gradeVO.setGrade(grade);
         gradeVO.setConditionList(conditionList);
         gradeVO.setEquityList(equityList);
-        return RespBodyHandler.setRespBodyDto(gradeVO);
+        return gradeVO;
     }
 
     /**
@@ -184,13 +169,13 @@ public class GradeServiceImpl implements GradeService {
     @ApiDoc(desc = "getGradeDetail")
     @ShenyuDubboClient("/getGradeDetail")
     @Override
-    public Map<String, Object> getGradeDetail(Map<String, Object> requestMap){
+    public Grade getGradeDetail(Map<String, Object> requestMap){
         String gradeNo = MapUtils.getString(requestMap, "gradeNo");
         if (gradeNo == null) {
             gradeNo = MapUtils.getString(requestMap, "serialNo");
         }
         Grade grade = gradeMapper.selectById(gradeNo);
-        return RespBodyHandler.setRespBodyDto(grade);
+        return grade;
     }
 
     /**
@@ -205,7 +190,7 @@ public class GradeServiceImpl implements GradeService {
     @ApiDoc(desc = "getGradeAndMemberList")
     @ShenyuDubboClient("/getGradeAndMemberList")
     @Override
-    public Map<String, Object> getGradeAndMemberList(Map<String, Object> requestMap) {
+    public List<?> getGradeAndMemberList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         String tenantId = MapUtils.getString(requestMap, "tenantId");
         if (tenantId==null) {
@@ -235,14 +220,10 @@ public class GradeServiceImpl implements GradeService {
         List<Grade> gradeList = gradeMapper.selectList(warapper);
 
         // 1.商户发行的数字积分(查询tokenParam)
-        Map<String, Object> tokenParamMap = tokenParamService.getDetailByMerchantNo(requestMap);
-        String ccy = null;
+        TokenParam tokenParamMap = tokenParamService.getDetailByMerchantNo(requestMap);
         Integer decimals =  Integer.valueOf(2);
-        if (!"".equals(tokenParamMap.get("data"))) {
-            Map<String, Object> tokenParam = (Map<String, Object>) tokenParamMap.get("data");
-            ccy = MapUtils.getString(tokenParam, "symbol");
-            decimals = (Integer) tokenParam.get("decimals");
-        }
+        String ccy = tokenParamMap.getSymbol();
+        decimals = tokenParamMap.getDecimals();
 
         for (Grade grade : gradeList) {
             GradeVO gradeVO = new GradeVO();
@@ -253,8 +234,7 @@ public class GradeServiceImpl implements GradeService {
             gradeVO.setMemberList(memberList);
             gradeVOS.add(gradeVO);
         }
-
-        return RespBodyHandler.setRespBodyListDto(gradeVOS);
+        return gradeVOS;
     }
 
 }

@@ -1,6 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.MerchantApp;
 
 import java.util.Map;
 
@@ -13,19 +14,19 @@ public interface MerchantAppService {
     /**
      * 添加
      */
-    public Map<String,Object> add(Map<String, Object> requestMap);
+    public void add(Map<String, Object> requestMap);
 
     /**
      * 删除
      */
-    public Map<String,Object> delete(Map<String, Object> requestMap);
+    public void delete(Map<String, Object> requestMap);
 
     /**
      * 修改
      */
-    public Map<String,Object> edit(Map<String, Object> requestMap);
+    public void edit(Map<String, Object> requestMap);
 
-    Map<String, Object> getDetail(Map<String, Object> requestMap);
+    MerchantApp getDetail(Map<String, Object> requestMap);
 
     /**
      * 分页查询

@@ -1,7 +1,11 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.CustomerBase;
+import me.flyray.bsin.domain.entity.Grade;
+import me.flyray.bsin.domain.entity.Member;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,7 +19,7 @@ public interface MemberService {
     /**
      * 开通会员
      */
-    public Map<String, Object> openMember(Map<String, Object> requestMap);
+    public void openMember(Map<String, Object> requestMap);
 
     /**
      * 租户下所有
@@ -25,22 +29,22 @@ public interface MemberService {
     /**
      * 等级下所有会员
      */
-    public Map<String, Object> getGradeMemberList(Map<String, Object> requestMap);
+    public List<?> getGradeMemberList(Map<String, Object> requestMap);
 
     /**
      * 分页查询等级下所有会员
      */
-    public Map<String, Object> getGradeMemberPageList(Map<String, Object> requestMap);
+    public IPage<?> getGradeMemberPageList(Map<String, Object> requestMap);
 
     /**
      * 详情
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public Member getDetail(Map<String, Object> requestMap);
 
     /**
      * 详情
      */
-    public Map<String, Object> getMemberGradeDetail(Map<String, Object> requestMap);
+    public Grade getMemberGradeDetail(Map<String, Object> requestMap);
 
 
 }

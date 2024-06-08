@@ -1,6 +1,17 @@
 package me.flyray.bsin.infrastructure.biz;
 
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
+import cn.hutool.crypto.symmetric.SymmetricCrypto;
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.blockchain.enums.ChainEnv;
+import me.flyray.bsin.blockchain.enums.ChainType;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.domain.entity.CustomerBase;
+import me.flyray.bsin.domain.entity.Merchant;
+import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.AccountService;
+import me.flyray.bsin.facade.service.CustomerService;
 import me.flyray.bsin.facade.service.MerchantService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -9,16 +20,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
-import cn.hutool.crypto.symmetric.SymmetricCrypto;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.blockchain.enums.ChainEnv;
-import me.flyray.bsin.blockchain.enums.ChainType;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.CustomerService;
 
 /**
  * @author bolei
@@ -32,21 +33,20 @@ public class CustomerInfoBiz {
   @Value("${bsin.jiujiu.aesKey}")
   private String aesKey;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private MerchantService merchantService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private CustomerService customerService;
 
-  @DubboReference(version = "dev")
+  @DubboReference(version = "${dubbo.provider.version}")
   private AccountService accountService;
 
-  public Map<String, Object> getMerchantBase(String merchantNo, String chainType) {
+  public Merchant getMerchantBase(String merchantNo, String chainType) {
     // 1.查找资产商户
     Map<String, Object> reqMerchant = new HashMap();
     reqMerchant.put("serialNo", merchantNo);
-    Map<String, Object> merchantData = merchantService.getDetail(reqMerchant);
-    Map merchant = (Map) merchantData.get("data");
+    Merchant merchant = merchantService.getDetail(reqMerchant);
     return merchant;
   }
 
@@ -59,17 +59,15 @@ public class CustomerInfoBiz {
     // 1.查找资产商户
     Map<String, Object> reqMerchant = new HashMap();
     reqMerchant.put("serialNo", merchantNo);
-    Map<String, Object> merchantData = merchantService.getDetail(reqMerchant);
-    Map merchant = (Map) merchantData.get("data");
+    Merchant merchant = merchantService.getDetail(reqMerchant);
 
     // 2.查找资产商户的管理员客户
     Map<String, Object> reqCustomerBase = new HashMap();
-    String merchantCustomerNo = (String) merchant.get("customerNo");
+    String merchantCustomerNo = merchant.getSerialNo();
     reqCustomerBase.put("customerNo", merchantCustomerNo);
-    Map<String, Object> merchantCustomerData = customerService.getDetail(reqCustomerBase);
-    merchantCustomerBase = (Map) merchantCustomerData.get("data");
+    CustomerBase customerBase = customerService.getDetail(reqCustomerBase);
 
-    if (merchantCustomerBase == null) {
+    if (customerBase == null) {
       throw new BusinessException(ResponseCode.CUSTOMER_ERROR);
     }
 
@@ -110,13 +108,10 @@ public class CustomerInfoBiz {
    * TODO: 返回 object 非 Map
    * */
   public Map<String, Object> getCustomerBase(String customerNo, String chainType) {
-    Map<String, Object> customerBase = null;
     // 1.查找客户信息
     Map<String, Object> reqCustomerBase = new HashMap();
     reqCustomerBase.put("serialNo", customerNo);
-    Map<String, Object> customerData = customerService.getDetail(reqCustomerBase);
-    customerBase = (Map) customerData.get("data");
-
+    CustomerBase customerBase = customerService.getDetail(reqCustomerBase);
     if (customerBase == null) {
       throw new BusinessException(ResponseCode.CUSTOMER_ERROR);
     }
@@ -126,31 +121,31 @@ public class CustomerInfoBiz {
     String privateKey = null;
     String walletAddress = null;
     if (chainType == null || ChainType.CONFLUX.getCode().equals(chainType)) {
-      if (StringUtils.isBlank((String) customerBase.get("walletPrivateKey"))) {
+      if (StringUtils.isBlank(customerBase.getWalletPrivateKey())) {
         throw new BusinessException(ResponseCode.CUSTOMER_WALLET_PRIVATEKEY_ERROR);
       }
       privateKey =
-          aes.decryptStr((String) customerBase.get("walletPrivateKey"), CharsetUtil.CHARSET_UTF_8);
+          aes.decryptStr(customerBase.getWalletPrivateKey(), CharsetUtil.CHARSET_UTF_8);
       if (privateKey.length() != 64) {
         throw new BusinessException(ResponseCode.CUSTOMER_WALLET_PRIVATEKEY_ERROR);
       }
-      walletAddress = (String) customerBase.get("walletAddress");
+      walletAddress = customerBase.getEvmWalletAddress();
     } else {
-      if (StringUtils.isBlank((String) customerBase.get("evmWalletPrivateKey"))) {
+      if (StringUtils.isBlank(customerBase.getWalletPrivateKey())) {
         throw new BusinessException(ResponseCode.CUSTOMER_WALLET_PRIVATEKEY_ERROR);
       }
       privateKey =
-          aes.decryptStr(
-              (String) customerBase.get("evmWalletPrivateKey"), CharsetUtil.CHARSET_UTF_8);
+          aes.decryptStr(customerBase.getWalletPrivateKey(), CharsetUtil.CHARSET_UTF_8);
       if (privateKey.length() != 64) {
         throw new BusinessException(ResponseCode.CUSTOMER_WALLET_PRIVATEKEY_ERROR);
       }
-      walletAddress = (String) customerBase.get("evmWalletAddress");
+      walletAddress = customerBase.getEvmWalletAddress();
     }
-    customerBase.put("privateKey", privateKey);
-    customerBase.put("walletAddress", walletAddress);
+    Map<String, Object> customerBaseMap = new HashMap<>();
+    customerBaseMap.put("privateKey", privateKey);
+    customerBaseMap.put("walletAddress", walletAddress);
 
-    return customerBase;
+    return customerBaseMap;
   }
 
   /**

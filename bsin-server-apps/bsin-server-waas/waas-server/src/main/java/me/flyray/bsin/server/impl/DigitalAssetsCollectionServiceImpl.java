@@ -32,7 +32,6 @@ import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.InvertCodeGenerator;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -91,7 +90,7 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
   @ApiDoc(desc = "issue")
   @Override
   @Transactional
-  public Map<String, Object> issue(Map<String, Object> requestMap) throws Exception {
+  public void issue(Map<String, Object> requestMap) throws Exception {
     log.info("DigitalAssetsService issue 请求参数:{}", JSON.toJSONString(requestMap));
     // 发行的商户
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -189,9 +188,7 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
     digitalAssetsColletion.setMetadataImageSameFlag(metadataImageSameFlag);
     digitalAssetsColletion.setCollectionType(digitalAssetsIssueReqDTO.getAssetsCollectionType());
     digitalAssetsCollectionMapper.insert(digitalAssetsColletion);
-
     log.info("DigitalAssetsService issue 相应结果:{}", JSON.toJSONString(contractTransactionResp));
-    return RespBodyHandler.setRespBodyDto(contractTransactionResp);
   }
 
   @ShenyuDubboClient("/mint")
@@ -286,7 +283,7 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
   @ShenyuDubboClient("/transfer")
   @ApiDoc(desc = "transfer")
   @Override
-  public Map<String, Object> transfer(Map<String, Object> requestMap) throws Exception {
+  public void transfer(Map<String, Object> requestMap) throws Exception {
     log.info("AdminBlockChainService transferNft 请求参数:{}", JSON.toJSONString(requestMap));
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     TransferJournal transferJournal =
@@ -357,7 +354,6 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
     transferJournal.setAssetsType(contractProtocol.getType());
     transferJournalMapper.insert(transferJournal);
     log.info("trasaction 相应结果:{}", JSON.toJSONString(contractTransactionResp));
-    return RespBodyHandler.setRespBodyDto(contractTransactionResp);
   }
 
   @ShenyuDubboClient("/airdrop")
@@ -468,7 +464,7 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
   @ShenyuDubboClient("/getList")
   @ApiDoc(desc = "getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<DigitalAssetsCollection> getList(Map<String, Object> requestMap) {
     // 发行的商户
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = loginUser.getMerchantNo();
@@ -497,17 +493,17 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
         digitalAssetsColletion.getCollectionType());
     List<DigitalAssetsCollection> contractProtocolList =
         digitalAssetsCollectionMapper.selectList(warapper);
-    return RespBodyHandler.setRespBodyListDto(contractProtocolList);
+    return contractProtocolList;
   }
 
   @ShenyuDubboClient("/getDetail")
   @ApiDoc(desc = "getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public DigitalAssetsCollection getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     DigitalAssetsCollection digitalAssetsColletion =
         digitalAssetsCollectionMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(digitalAssetsColletion);
+    return digitalAssetsColletion;
   }
 
   /**
@@ -520,7 +516,7 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
   @ApiDoc(desc = "putOnShelves")
   @Override
   @Transactional
-  public Map<String, Object> putOnShelves(Map<String, Object> requestMap) {
+  public void putOnShelves(Map<String, Object> requestMap) {
     log.info("NFT 上架 :{}", JSON.toJSONString(requestMap));
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
 
@@ -669,7 +665,6 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
             "inventory:" + digitalAssetsColletion.getSerialNo(),
             digitalAssetsColletion.getInventory().toString());
 
-    return RespBodyHandler.RespBodyDto();
   }
 
   private DigitalAssetsItem differentStandardsProtocolPutOnShelves(
@@ -851,7 +846,7 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
   @ShenyuDubboClient("/getDigitalAssetsMetadataImageInfo")
   @ApiDoc(desc = "getDigitalAssetsMetadataImageInfo")
   @Override
-  public Map<String, Object> getDigitalAssetsMetadataImageInfo(Map<String, Object> requestMap) {
+  public MetadataFile getDigitalAssetsMetadataImageInfo(Map<String, Object> requestMap) {
     String serialNo = (String) requestMap.get("serialNo");
     Integer tokenId = (Integer) requestMap.get("tokenId");
     String fileType = (String) requestMap.get("fileType");
@@ -865,7 +860,7 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
     if (metadataFile == null) {
       throw new BusinessException(ResponseCode.TOKEN_ID_METADATA_IMAGE_NOT_EXISTS);
     }
-    return RespBodyHandler.setRespBodyDto(metadataFile);
+    return metadataFile;
   }
 
 }

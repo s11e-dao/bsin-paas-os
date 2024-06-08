@@ -1,7 +1,9 @@
 package me.flyray.bsin.server.impl;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
@@ -12,7 +14,9 @@ import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MerchantApiConsumingRecordService;
 import me.flyray.bsin.infrastructure.mapper.MerchantApiConsumingRecordMapper;
 import me.flyray.bsin.infrastructure.mapper.MerchantApiFeeConfigMapper;
-import me.flyray.bsin.server.utils.RespBodyHandler;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -22,7 +26,6 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -48,12 +51,12 @@ public class MerchantApiConsumingRecordServiceImpl implements MerchantApiConsumi
     @ApiDoc(desc = "apiConsuming")
     @ShenyuDubboClient("/apiConsuming")
     @Override
-    public Map<String, Object> apiConsuming(Map<String, Object> requestMap) {
+    public void apiConsuming(Map<String, Object> requestMap) {
         // 添加消费记录
         MerchantApiConsumingRecord tenantApiConsumingRecord =
                 BsinServiceContext.getReqBodyDto(MerchantApiConsumingRecord.class, requestMap);
         MerchantApiFeeConfig tenantApiFeeConfig = tenantApiFeeConfigMapper.getTenantApiFeeConfig(tenantApiConsumingRecord
-                .getProductId(), tenantApiConsumingRecord.getTenantId());
+                .getAppId(), tenantApiConsumingRecord.getTenantId());
         if (tenantApiFeeConfig == null){
             throw new BusinessException(ResponseCode.APP_NOT_FEE_CONFIG);
         }
@@ -71,7 +74,6 @@ public class MerchantApiConsumingRecordServiceImpl implements MerchantApiConsumi
 //                null,100);
         tenantApiConsumingRecord.setSerialNo(BsinSnowflake.getId());
         tenantApiConsumingRecordMapper.insert(tenantApiConsumingRecord);
-        return RespBodyHandler.RespBodyDto();
     }
 
     /**
@@ -83,18 +85,27 @@ public class MerchantApiConsumingRecordServiceImpl implements MerchantApiConsumi
     @ApiDoc(desc = "getPageList")
     @ShenyuDubboClient("/getPageList")
     @Override
-    public Map<String, Object> getPageList(Map<String, Object> requestMap) {
-        Map<String, Object> pagination = (Map<String, Object>) requestMap.get("pagination");
+    public IPage<?> getPageList(Map<String, Object> requestMap) {
         String appId = (String) requestMap.get("appId");
         String tenantId = (String) requestMap.get("tenantId");
         String customerNo = (String) requestMap.get("customerNo");
         String apiName = (String) requestMap.get("apiName");
-        PageHelper.startPage((Integer) pagination.get("pageNum"), (Integer) pagination.get("pageSize"));
-        List<MerchantApiConsumingRecord> pageList =
-                tenantApiConsumingRecordMapper.getPageList(tenantId, appId, apiName, customerNo);
-        PageInfo<MerchantApiConsumingRecord> pageInfo = new
-                PageInfo<>(pageList);
-        return RespBodyHandler.setRespPageInfoBodyDto(pageInfo);
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        Object paginationObj =  requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj,pagination);
+        Page<MerchantApiConsumingRecord> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+        LambdaQueryWrapper<MerchantApiConsumingRecord> warapper = new LambdaQueryWrapper<>();
+        warapper.orderByDesc(MerchantApiConsumingRecord::getCreateTime);
+        warapper.eq(MerchantApiConsumingRecord::getTenantId, loginUser.getTenantId());
+        warapper.eq(StringUtils.isNotEmpty(appId),
+                MerchantApiConsumingRecord::getAppId, appId);
+        warapper.eq(StringUtils.isNotEmpty(apiName),
+                MerchantApiConsumingRecord::getApiName, apiName);
+        warapper.eq(StringUtils.isNotEmpty(customerNo),
+                MerchantApiConsumingRecord::getCustomerNo, customerNo);
+        IPage<MerchantApiConsumingRecord> pageList = tenantApiConsumingRecordMapper.selectPage(page, warapper);
+        return pageList;
     }
 
 }

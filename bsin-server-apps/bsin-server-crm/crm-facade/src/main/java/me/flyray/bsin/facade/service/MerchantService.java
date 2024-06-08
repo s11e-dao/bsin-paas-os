@@ -3,6 +3,7 @@ package me.flyray.bsin.facade.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.Merchant;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,7 +24,7 @@ public interface MerchantService {
      *      3）、创建钱包账户
      *  ）
      */
-    public Map<String, Object> register(Map<String, Object> requestMap);
+    public void register(Map<String, Object> requestMap);
 
     /**
      * 商户登录
@@ -33,23 +34,23 @@ public interface MerchantService {
     /**
      * 认证
      */
-    public Map<String, Object> authentication(Map<String, Object> requestMap);
+    public void authentication(Map<String, Object> requestMap);
 
     /**
      * 审核
      * 审核通过可以访问具体功能
      */
-    public Map<String, Object> audit(Map<String, Object> requestMap);
+    public void audit(Map<String, Object> requestMap);
 
     /**
      * 商户订阅功能
      */
-    public Map<String, Object> subscribeFunction(Map<String, Object> requestMap);
+    public void subscribeFunction(Map<String, Object> requestMap);
 
     /**
      * 删除商户
      */
-    public Map<String, Object> delete(Map<String, Object> requestMap);
+    public void delete(Map<String, Object> requestMap);
 
     /**
      * 修改商户
@@ -70,6 +71,6 @@ public interface MerchantService {
     /**
      * 查询商户列表
      */
-    Map<String, Object> getListByMerchantNos(Map<String, Object> requestMap);
+    List<?> getListByMerchantNos(Map<String, Object> requestMap);
 
 }

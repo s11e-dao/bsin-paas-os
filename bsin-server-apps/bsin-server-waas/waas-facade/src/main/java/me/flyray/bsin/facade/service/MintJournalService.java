@@ -1,6 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.MintJournal;
 
 import java.util.Map;
 
@@ -21,6 +22,6 @@ public interface MintJournalService {
     /**
      * 查询详情
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public MintJournal getDetail(Map<String, Object> requestMap);
     
 }

@@ -16,6 +16,7 @@ import me.flyray.bsin.domain.entity.TokenReleaseJournal;
 import me.flyray.bsin.domain.enums.AccountCategory;
 import me.flyray.bsin.domain.enums.BehaviorCode;
 import me.flyray.bsin.enums.CustomerType;
+import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.AccountService;
 import me.flyray.bsin.facade.service.DigitalPointsService;
 import me.flyray.bsin.facade.service.TokenParamService;
@@ -27,7 +28,6 @@ import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -66,7 +66,7 @@ public class TokenParamServiceImpl implements TokenParamService {
   @ApiDoc(desc = "edit")
   @CaptureCustomerBehavior(behaviorCode = BehaviorCode.ISSUE, customerType = CustomerType.MEMBER)
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public TokenParam edit(Map<String, Object> requestMap) {
     TokenParam tokenParam = BsinServiceContext.getReqBodyDto(TokenParam.class, requestMap);
     BigDecimal melo = new BigDecimal(Math.pow(10, tokenParam.getDecimals().doubleValue()));
     if (tokenParam.getUnitReleaseAmout() != null) {
@@ -80,7 +80,7 @@ public class TokenParamServiceImpl implements TokenParamService {
     }
 
     tokenParamMapper.updateById(tokenParam);
-    return RespBodyHandler.setRespBodyDto(tokenParam);
+    return tokenParam;
   }
 
   @ShenyuDubboClient("/getPageList")
@@ -105,18 +105,18 @@ public class TokenParamServiceImpl implements TokenParamService {
   @ShenyuDubboClient("/getDetailByMerchantNo")
   @ApiDoc(desc = "getDetailByMerchantNo")
   @Override
-  public Map<String, Object> getDetailByMerchantNo(Map<String, Object> requestMap) {
+  public TokenParam getDetailByMerchantNo(Map<String, Object> requestMap) {
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     TokenParam tokenParam =
         tokenParamMapper.selectOne(
             new LambdaQueryWrapper<TokenParam>().eq(TokenParam::getMerchantNo, merchantNo));
-    return RespBodyHandler.setRespBodyDto(tokenParam);
+    return tokenParam;
   }
 
   @ShenyuDubboClient("/getDetail")
   @ApiDoc(desc = "getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public TokenParam getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     String digitalAssetsCollectionNo = MapUtils.getString(requestMap, "digitalAssetsCollectionNo");
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
@@ -158,7 +158,7 @@ public class TokenParamServiceImpl implements TokenParamService {
             tokenParam.getReservedAmount().divide(melo, 2, BigDecimal.ROUND_HALF_UP));
       }
     }
-    return RespBodyHandler.setRespBodyDto(tokenParam);
+    return tokenParam;
   }
 
   /**
@@ -171,7 +171,7 @@ public class TokenParamServiceImpl implements TokenParamService {
   @ShenyuDubboClient("/release")
   @ApiDoc(desc = "release")
   @Override
-  public Map<String, Object> release(Map<String, Object> requestMap) throws Exception {
+  public void release(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = MapUtils.getString(requestMap, "tenantId");
     if (tenantId == null) {
@@ -189,9 +189,7 @@ public class TokenParamServiceImpl implements TokenParamService {
     Map response = new HashMap<>();
     String ccy = MapUtils.getString(requestMap, "ccy");
     if (ccy == null) {
-      response.put("code", "100000");
-      response.put("data", "缺少释放币种参数：ccy！！！");
-      return RespBodyHandler.setRespBodyDto(response);
+      throw new BusinessException("100000","缺少释放币种参数：ccy！！！");
       //      throw new BusinessException("100000", "商户未配置释放规则，不支持释放！！！");
     }
 
@@ -200,9 +198,7 @@ public class TokenParamServiceImpl implements TokenParamService {
         tokenParamMapper.selectOne(
             new LambdaQueryWrapper<TokenParam>().eq(TokenParam::getMerchantNo, merchantNo));
     if (tokenReleaseParam == null) {
-      response.put("code", "100000");
-      response.put("data", "商户未配置释放规则，不支持释放！！！");
-      return RespBodyHandler.setRespBodyDto(response);
+      throw new BusinessException("100000","商户未配置释放规则，不支持释放！！！");
       //      return RespBodyHandler.setRespBodyDto(new BusinessException("100000",
       // "商户未配置释放规则，不支持释放！！！"));
       //      throw new BusinessException("100000", "商户未配置释放规则，不支持释放！！！");
@@ -211,9 +207,7 @@ public class TokenParamServiceImpl implements TokenParamService {
     // 2.查询联合曲线绑定的数字积分资产集合
     String digitalAssetsCollectionNo = tokenReleaseParam.getDigitalAssetsCollectionNo();
     if (digitalAssetsCollectionNo == null) {
-      response.put("code", "100000");
-      response.put("data", "商户未配置要释放的数字积分资产编号，情先配置！！！");
-      return RespBodyHandler.setRespBodyDto(response);
+      throw new BusinessException("商户未配置要释放的数字积分资产编号，情先配置！！！");
       //      return RespBodyHandler.setRespBodyDto(
       //          new BusinessException("100000", "商户未配置要释放的数字积分资产编号，情先配置！！！"));
       //      throw new BusinessException("100000", "商户未配置要释放的数字积分资产编号，情先配置！！！");
@@ -255,9 +249,7 @@ public class TokenParamServiceImpl implements TokenParamService {
       Map respDataMap = (Map) resMap.get("data");
 
       if (respDataMap.get("code") != null) {
-        response.put("code", "100000");
-        response.put("data", "释放余额账户不存在，不满足释放条件！！！");
-        return RespBodyHandler.setRespBodyDto(response);
+        throw new BusinessException("释放余额账户不存在，不满足释放条件！！！");
       }
 
       Map customerAccountMap = (Map) resMap.get("data");
@@ -279,24 +271,18 @@ public class TokenParamServiceImpl implements TokenParamService {
             .subtract(releaseAmount)
             .compareTo(new BigDecimal(0))
         < 0) {
-      response.put("code", "100000");
-      response.put("data", "数字积分可流通量不足，无法释放，请联系社区管理员！！！");
-      return RespBodyHandler.setRespBodyDto(response);
+      throw new BusinessException("数字积分可流通量不足，无法释放，请联系社区管理员！！！");
     }
 
     // 3.3.检验释放条件
     int flag = tokenReleaseParam.getUnitReleaseTriggerValue().compareTo(releaseAmount);
     if (flag > 0) {
-      response.put("code", "100000");
-      response.put(
-          "data",
-          "不满足释放条件: 释放账户余额："
+      throw new BusinessException("不满足释放条件: 释放账户余额："
               + releaseAccountBalance
               + " < 触发余额："
               + tokenReleaseParam.getUnitReleaseTriggerValue().toString()
               + "+预留量："
               + tokenReleaseParam.getReservedAmount().toString());
-      return RespBodyHandler.setRespBodyDto(response);
       //      return RespBodyHandler.setRespBodyDto("不满足释放条件: 释放账户余额："
       //              + releaseAccountBalance
       //              + " < 触发余额："
@@ -363,10 +349,6 @@ public class TokenParamServiceImpl implements TokenParamService {
     tokenParamMapper.updateById(tokenReleaseParam);
 
     // 7.释放账户 出账操作 不方便 调用 crm 可以放在 调用次方法的biz中
-    response.put("code", "000000");
-    response.put("data", "release successful ");
-    response.put("releaseAmount", releaseAmount);
-    return RespBodyHandler.setRespBodyDto(response);
     //    return RespBodyHandler.setRespBodyDto(Boolean.TRUE);
   }
 
@@ -379,7 +361,7 @@ public class TokenParamServiceImpl implements TokenParamService {
   @ShenyuDubboClient("/releaseBcPointToVirtualAccount")
   @ApiDoc(desc = "releaseBcPointToVirtualAccount")
   @Override
-  public Map<String, Object> releaseBcPointToVirtualAccount(Map<String, Object> requestMap)
+  public TokenReleaseJournal releaseBcPointToVirtualAccount(Map<String, Object> requestMap)
       throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = MapUtils.getString(requestMap, "tenantId");
@@ -401,24 +383,18 @@ public class TokenParamServiceImpl implements TokenParamService {
         tokenParamMapper.selectOne(
             new LambdaQueryWrapper<TokenParam>().eq(TokenParam::getMerchantNo, merchantNo));
     if (tokenReleaseParam == null) {
-      response.put("code", "100000");
-      response.put("data", "商户未配置释放规则，不支持释放！！！");
-      return RespBodyHandler.setRespBodyDto(response);
+      throw new BusinessException("商户未配置释放规则，不支持释放！！！");
     }
 
     // 2.查询联合曲线绑定的数字积分资产集合
     String digitalAssetsCollectionNo = tokenReleaseParam.getDigitalAssetsCollectionNo();
     if (digitalAssetsCollectionNo == null) {
-      response.put("code", "100000");
-      response.put("data", "商户未配置要释放的数字积分资产编号，情先配置！！！");
-      return RespBodyHandler.setRespBodyDto(response);
+      throw new BusinessException("商户未配置要释放的数字积分资产编号，情先配置！！！");
     }
     DigitalAssetsCollection digitalAssetsCollection =
         digitalAssetsCollectionMapper.selectById(digitalAssetsCollectionNo);
     if (digitalAssetsCollection == null) {
-      response.put("code", "100000");
-      response.put("data", "未查询到商户数字积分资产，请先发行数字积分资产！！！");
-      return RespBodyHandler.setRespBodyDto(response);
+      throw new BusinessException("未查询到商户数字积分资产，请先发行数字积分资产！！！");
     }
     // 2.从请求参数中查询要释放的账户
     BigDecimal releaseAccountBalance = null;
@@ -437,24 +413,17 @@ public class TokenParamServiceImpl implements TokenParamService {
             .subtract(releaseAmount)
             .compareTo(new BigDecimal(0))
         < 0) {
-      response.put("code", "100000");
-      response.put("data", "数字积分可流通量不足，无法释放，请联系社区管理员！！！");
-      return RespBodyHandler.setRespBodyDto(response);
     }
 
     // 3.3.检验释放条件
     int flag = tokenReleaseParam.getUnitReleaseTriggerValue().compareTo(releaseAmount);
     if (flag > 0) {
-      response.put("code", "100000");
-      response.put(
-          "data",
-          "不满足释放条件: 释放账户余额："
+      throw new BusinessException("不满足释放条件: 释放账户余额："
               + releaseAccountBalance
               + " < 触发余额："
               + tokenReleaseParam.getUnitReleaseTriggerValue().toString()
               + "+预留量："
               + tokenReleaseParam.getReservedAmount().toString());
-      return RespBodyHandler.setRespBodyDto(response);
     }
 
     // 4.释放token，进行链上铸造: releaseAmount
@@ -493,10 +462,8 @@ public class TokenParamServiceImpl implements TokenParamService {
     tokenParamMapper.updateById(tokenReleaseParam);
 
     // 7.释放账户 出账操作 不方便 调用 crm 可以放在 调用次方法的biz中
-    response.put("code", "000000");
-    response.put("data", "release successful ");
-    response.put("releaseAmount", releaseAmount);
-    return RespBodyHandler.setRespBodyDto(response);
+
+    return tokenReleaseJournal;
   }
 
 }

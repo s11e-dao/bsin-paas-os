@@ -1,14 +1,12 @@
 package me.flyray.bsin.server.impl;
 
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.facade.engine.CustomerBehaviorIncentiveEngine;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.facade.engine.CustomerBehaviorIncentiveEngine;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 
 /**
  * @author bolei
@@ -35,12 +33,9 @@ public class CustomerBehaviorIncentiveEngineImpl implements CustomerBehaviorInce
      * 6、等级升级后的激励发放
      */
     @Override
-    public Map<String, Object> excute(Map<String, Object> requestMap) {
+    public void excute(Map<String, Object> requestMap) {
         System.out.println("===== 激励开始执行 =====");
-
-
         System.out.println("===== 激励执行结束 =====");
-        return RespBodyHandler.RespBodyDto();
     }
 
 }

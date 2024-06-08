@@ -22,7 +22,6 @@ import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.biz.CustomerAccountBiz;
 import me.flyray.bsin.server.biz.TokenReleaseBiz;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -66,7 +65,7 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> addCurve(Map<String, Object> requestMap) {
+  public BondingCurveTokenParam addCurve(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     BondingCurveTokenParam bondingCurveTokenParam =
         BsinServiceContext.getReqBodyDto(BondingCurveTokenParam.class, requestMap);
@@ -126,16 +125,15 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
     } catch (Exception e) {
       throw new BusinessException("100000", e.toString());
     }
-    return RespBodyHandler.setRespBodyDto(bondingCurveTokenParam);
+    return bondingCurveTokenParam;
   }
 
   @ApiDoc(desc = "deleteCurve")
   @ShenyuDubboClient("/deleteCurve")
   @Override
-  public Map<String, Object> deleteCurve(Map<String, Object> requestMap) {
+  public void deleteCurve(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     bondingCurveTokenParamMapper.deleteById(serialNo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "editCurve")
@@ -152,7 +150,7 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
   @ApiDoc(desc = "getCurvePageList")
   @ShenyuDubboClient("/getCurvePageList")
   @Override
-  public Map<String, Object> getCurvePageList(Map<String, Object> requestMap) {
+  public IPage<?> getCurvePageList(Map<String, Object> requestMap) {
 
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = loginUser.getTenantId();
@@ -180,23 +178,23 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
         bondingCurveTokenParam.getSerialNo());
     IPage<BondingCurveTokenParam> pageList =
         bondingCurveTokenParamMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getCurveDetail")
   @ShenyuDubboClient("/getCurveDetail")
   @Override
-  public Map<String, Object> getCurveDetail(Map<String, Object> requestMap) {
+  public BondingCurveTokenParam getCurveDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     BondingCurveTokenParam bondingCurveTokenParam =
         bondingCurveTokenParamMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(bondingCurveTokenParam);
+    return bondingCurveTokenParam;
   }
 
   @ApiDoc(desc = "getCurveList")
   @ShenyuDubboClient("/getCurveList")
   @Override
-  public Map<String, Object> getCurveList(Map<String, Object> requestMap) {
+  public List<?> getCurveList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     BondingCurveTokenParam bondingCurveTokenParam =
         BsinServiceContext.getReqBodyDto(BondingCurveTokenParam.class, requestMap);
@@ -226,13 +224,13 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
 
     List<BondingCurveTokenParam> bondingCurveTokenList =
         bondingCurveTokenParamMapper.selectList(warapper);
-    return RespBodyHandler.setRespBodyListDto(bondingCurveTokenList);
+    return bondingCurveTokenList;
   }
 
   @ApiDoc(desc = "getMerchantCurve")
   @ShenyuDubboClient("/getMerchantCurve")
   @Override
-  public Map<String, Object> getMerchantCurve(Map<String, Object> requestMap) {
+  public BondingCurveTokenParam getMerchantCurve(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
 
     BondingCurveTokenParam bondingCurveTokenParam =
@@ -264,7 +262,7 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
         BondingCurveTokenParam::getSerialNo,
         bondingCurveTokenParam.getSerialNo());
     BondingCurveTokenParam bondingCurveToken = bondingCurveTokenParamMapper.selectOne(warapper);
-    return RespBodyHandler.setRespBodyDto(bondingCurveToken);
+    return bondingCurveToken;
   }
 
   @ApiDoc(desc = "mint")
@@ -387,7 +385,7 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
     } catch (Exception e) {
       throw new BusinessException("100000", e.toString());
     }
-    return RespBodyHandler.setRespBodyDto(result);
+    return result;
   }
 
   @ApiDoc(desc = "redeem")
@@ -479,13 +477,13 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
         bondingCurveTokenParam.getDecimals(),
         new BigDecimal(amount));
 
-    return RespBodyHandler.setRespBodyDto(result);
+    return result;
   }
 
   @ApiDoc(desc = "getBondingCurveTokenJournalList")
   @ShenyuDubboClient("/getBondingCurveTokenJournalList")
   @Override
-  public Map<String, Object> getBondingCurveTokenJournalList(Map<String, Object> requestMap) {
+  public List<?> getBondingCurveTokenJournalList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = loginUser.getTenantId();
     String merchantNo = loginUser.getMerchantNo();
@@ -562,13 +560,13 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
                     ROUND_HALF_UP));
       }
     }
-    return RespBodyHandler.setRespBodyListDto(list);
+    return list;
   }
 
   @ApiDoc(desc = "getBondingCurveTokenTrendList")
   @ShenyuDubboClient("/getBondingCurveTokenTrendList")
   @Override
-  public Map<String, Object> getBondingCurveTokenTrendList(Map<String, Object> requestMap) {
+  public List<?> getBondingCurveTokenTrendList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = loginUser.getTenantId();
     String merchantNo = loginUser.getMerchantNo();
@@ -594,13 +592,13 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
         list.add(bondingCurveTokenJournal);
       }
     }
-    return RespBodyHandler.setRespBodyListDto(list);
+    return list;
   }
 
   @ApiDoc(desc = "getBondingCurveTokenJournalPageList")
   @ShenyuDubboClient("/getBondingCurveTokenJournalPageList")
   @Override
-  public Map<String, Object> getBondingCurveTokenJournalPageList(Map<String, Object> requestMap) {
+  public IPage<?> getBondingCurveTokenJournalPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     Pagination pagination = (Pagination) requestMap.get("pagination");
     Page<BondingCurveTokenJournal> page =
@@ -617,17 +615,17 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
         bondingCurveTokenJournal.getMethod());
     IPage<BondingCurveTokenJournal> pageList =
         bondingCurveTokenJournalMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getTransactionDetail")
   @ShenyuDubboClient("/getTransactionDetail")
   @Override
-  public Map<String, Object> getTransactionDetail(Map<String, Object> requestMap) {
+  public BondingCurveTokenJournal getTransactionDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     BondingCurveTokenJournal bondingCurveTokenJournal =
         bondingCurveTokenJournalMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(bondingCurveTokenJournal);
+    return bondingCurveTokenJournal;
   }
 
   /**

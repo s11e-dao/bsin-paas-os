@@ -1,9 +1,22 @@
 package me.flyray.bsin.server.impl;
 
-import static me.flyray.bsin.constants.ResponseCode.USER_NOT_EXIST;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.blockchain.BsinBlockChainEngine;
+import me.flyray.bsin.blockchain.service.BsinBlockChainEngineFactory;
+import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
+import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
+import me.flyray.bsin.facade.service.CustomerDigitalAssetsService;
+import me.flyray.bsin.facade.service.CustomerService;
+import me.flyray.bsin.facade.service.DigitalAssetsItemService;
 import me.flyray.bsin.facade.service.MerchantService;
+import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
+import me.flyray.bsin.infrastructure.mapper.CustomerDigitalAssetsMapper;
+import me.flyray.bsin.infrastructure.mapper.DigitalAssetsItemMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -18,25 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.blockchain.BsinBlockChainEngine;
-import me.flyray.bsin.blockchain.service.BsinBlockChainEngineFactory;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
-import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
-import me.flyray.bsin.facade.service.CustomerDigitalAssetsService;
-import me.flyray.bsin.facade.service.CustomerService;
-import me.flyray.bsin.facade.service.DigitalAssetsItemService;
-import me.flyray.bsin.infrastructure.mapper.CustomerDigitalAssetsMapper;
-import me.flyray.bsin.infrastructure.mapper.DigitalAssetsItemMapper;
-import me.flyray.bsin.mybatis.utils.Pagination;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 
 /**
  * @author bolei
@@ -74,7 +68,7 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
   @ShenyuDubboClient("/getList")
   @ApiDoc(desc = "getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<DigitalAssetsItemRes> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String customerNo;
     // 传值用户
@@ -109,8 +103,7 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
     if (customerNos.size() > 0) {
       Map crmReqMap = new HashMap();
       crmReqMap.put("customerNos", customerNos);
-      Map<String, Object> customerResult = customerService.getListByCustomerNos(crmReqMap);
-      List<Map> customerList = (List<Map>) customerResult.get("data");
+      List<Map> customerList = customerService.getListByCustomerNos(crmReqMap);
       for (DigitalAssetsItemRes digitalAssetsItemRes : digitalAssetsItemList) {
         // 找出客户信息
         for (Map customer : customerList) {
@@ -122,7 +115,7 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
         digitalAssetsItemResList.add(digitalAssetsItemRes);
       }
     }
-    return RespBodyHandler.setRespBodyListDto(digitalAssetsItemResList);
+    return digitalAssetsItemResList;
   }
 
   @ShenyuDubboClient("/getPageList")
@@ -162,8 +155,7 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
     if (merchantNos.size() > 0) {
       Map crmReqMap = new HashMap();
       crmReqMap.put("merchantNos", merchantNos);
-      Map<String, Object> merchantResult = merchantService.getListByMerchantNos(crmReqMap);
-      List<Merchant> merchantList = (List<Merchant>) merchantResult.get("data");
+      List<Merchant> merchantList = merchantService.getListByMerchantNos(crmReqMap);
       for (DigitalAssetsItemRes digitalAssetsItem : customerDigitalAssetsList) {
         // 找出商户信息
         for (Merchant merchant : merchantList) {
@@ -182,7 +174,7 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
   @ShenyuDubboClient("/getDetail")
   @ApiDoc(desc = "getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public DigitalAssetsDetailRes getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     DigitalAssetsItemRes digitalAssetsItem =
         customerDigitalAssetsMapper.selectCustomerDigitalAssetsDetail(serialNo);
@@ -191,7 +183,7 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
         digitalAssetsItemBiz.getDetail(
             digitalAssetsItem.getDigitalAssetsCollectionNo(), null, digitalAssetsItem.getTokenId());
 
-    return RespBodyHandler.setRespBodyDto(digitalAssetsDetailRes);
+    return digitalAssetsDetailRes;
   }
 
   @ShenyuDubboClient("/verifyAssetsOnChain")
@@ -200,34 +192,23 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
   public Map<String, Object> verifyAssetsOnChain(Map<String, Object> requestMap) {
     BigDecimal conditionAmount = (BigDecimal) requestMap.get("conditionAmount");
     Map reqMap = new HashMap<>();
-    Map resCustomerMap = customerService.getDetail(reqMap);
-    Map customerBaseMap = (Map) resCustomerMap.get("data");
-    if (customerBaseMap == null) {
-      throw new BusinessException(USER_NOT_EXIST);
-    }
-    CustomerBase customerBase =
-        BsinServiceContext.getReqBodyDto(CustomerBase.class, customerBaseMap);
+    CustomerBase customerBase = customerService.getDetail(reqMap);
+    DigitalAssetsDetailRes digitalAssetsDetailRes = digitalAssetsItemService.getDetail(requestMap);
 
-    Map digitalAssetsItemResMap = digitalAssetsItemService.getDetail(requestMap);
-    Map digitalAssetsItemMapData = (Map) digitalAssetsItemResMap.get("data");
-
-    if (digitalAssetsItemMapData == null) {
+    if (digitalAssetsDetailRes == null) {
       throw new BusinessException(ResponseCode.DIGITAL_ASSETS_ITEM_NOT_EXISTS);
     }
-    DigitalAssetsItem digitalAssetsItem =
-        (DigitalAssetsItem) digitalAssetsItemMapData.get("digitalAssetsItem");
+    DigitalAssetsItem digitalAssetsItem = digitalAssetsDetailRes.getDigitalAssetsItem();
     if (digitalAssetsItem == null) {
       throw new BusinessException(ResponseCode.DIGITAL_ASSETS_ITEM_NOT_EXISTS);
     }
 
-    DigitalAssetsCollection digitalAssetsCollection =
-        (DigitalAssetsCollection) digitalAssetsItemMapData.get("digitalAssetsCollection");
+    DigitalAssetsCollection digitalAssetsCollection = (DigitalAssetsCollection)digitalAssetsDetailRes.getDigitalAssetsCollection();
     if (digitalAssetsCollection == null) {
       throw new BusinessException(ResponseCode.DIGITAL_ASSETS_COLLECTION_NOT_EXISTS);
     }
 
-    ContractProtocol contractProtocol =
-        (ContractProtocol) digitalAssetsItemMapData.get("contractProtocol");
+    ContractProtocol contractProtocol = (ContractProtocol)digitalAssetsDetailRes.getContractProtocol();
 
     if (contractProtocol == null) {
       throw new BusinessException(ResponseCode.ILLEGAL_ASSETS_PROTOCOL);
@@ -256,7 +237,7 @@ public class CustomerDigitalAssetsServiceImpl implements CustomerDigitalAssetsSe
 
     Map<String, Object> ret = new HashMap<String, Object>();
     ret.put("balance", balance);
-    return RespBodyHandler.setRespBodyDto(ret);
+    return ret;
   }
 
 }

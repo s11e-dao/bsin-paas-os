@@ -2,9 +2,12 @@ package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.Account;
+import me.flyray.bsin.domain.entity.AccountFreezeJournal;
 import me.flyray.bsin.domain.entity.AccountJournal;
+import me.flyray.bsin.facade.response.CommunityLedgerVO;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,10 +27,10 @@ public interface AccountService {
   public void outAccount(Map<String, Object> requestMap) throws UnsupportedEncodingException;
 
   /** 冻结金额 */
-  public Map<String, Object> freeze(Map<String, Object> requestMap);
+  public AccountFreezeJournal freeze(Map<String, Object> requestMap);
 
   /** 解冻金额 */
-  public Map<String, Object> unfreeze(Map<String, Object> requestMap);
+  public void unfreeze(Map<String, Object> requestMap);
 
   /** 解冻并出账 */
   public Map<String, Object> unfreezeAndOutAccount(Map<String, Object> requestMap);
@@ -36,7 +39,7 @@ public interface AccountService {
   public Map<String, Object> transfer(Map<String, Object> requestMap);
 
   /** 查询账户详细 */
-  public Map<String, Object> getDetail(Map<String, Object> requestMap);
+  public Account getDetail(Map<String, Object> requestMap);
 
 
   /** 账户资产验证 */
@@ -46,18 +49,18 @@ public interface AccountService {
   public IPage<Account> getPageList(Map<String, Object> requestMap);
 
   /** 查询账户 1、品牌账户 2、品牌社区账户 3、品牌商户账户 4、客户账户 */
-  public Map<String, Object> getList(Map<String, Object> requestMap);
+  public List<?> getList(Map<String, Object> requestMap);
 
   /** 分页查询账户流水 */
   public IPage<AccountJournal> getAccountJournalPageList(Map<String, Object> requestMap);
 
-  public Map<String, Object> getAccountJournalDetail(Map<String, Object> requestMap);
+  public AccountJournal getAccountJournalDetail(Map<String, Object> requestMap);
 
 
   /** 分页查询账户冻结流水 */
   public IPage<?> getAccountFreezeJournalPageList(Map<String, Object> requestMap);
 
-  public Map<String, Object> getAccountFreezeJournalDetail(Map<String, Object> requestMap);
+  public AccountFreezeJournal getAccountFreezeJournalDetail(Map<String, Object> requestMap);
 
   /**
    * 查询社区账本
@@ -67,7 +70,7 @@ public interface AccountService {
    * @param requestMap
    * @return
    */
-  public Map<String, Object> getCommunityLedgerInfo(Map<String, Object> requestMap);
+  public CommunityLedgerVO getCommunityLedgerInfo(Map<String, Object> requestMap);
 
   /**
    * 根据商户号查询客户支付账户

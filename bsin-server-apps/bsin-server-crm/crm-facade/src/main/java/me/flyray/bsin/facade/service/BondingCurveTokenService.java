@@ -1,6 +1,11 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.BondingCurveTokenJournal;
+import me.flyray.bsin.domain.entity.BondingCurveTokenParam;
+
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,26 +16,26 @@ import java.util.Map;
 public interface BondingCurveTokenService {
 
   /** 新增 */
-  public Map<String, Object> addCurve(Map<String, Object> requestMap);
+  public BondingCurveTokenParam addCurve(Map<String, Object> requestMap);
 
   /** 删除 */
-  public Map<String, Object> deleteCurve(Map<String, Object> requestMap);
+  public void deleteCurve(Map<String, Object> requestMap);
 
   /** 修改 */
   public Map<String, Object> editCurve(Map<String, Object> requestMap);
 
   /** 查询曲线列表 */
-  public Map<String, Object> getCurveList(Map<String, Object> requestMap);
+  public List<?> getCurveList(Map<String, Object> requestMap);
 
 
   /** 查询商戶BC曲线---唯一的 */
-  public Map<String, Object> getMerchantCurve(Map<String, Object> requestMap);
+  public BondingCurveTokenParam getMerchantCurve(Map<String, Object> requestMap);
 
   /** 分页查询曲线详情 */
-  public Map<String, Object> getCurvePageList(Map<String, Object> requestMap);
+  public IPage<?> getCurvePageList(Map<String, Object> requestMap);
 
   /** 查询曲线详情 */
-  public Map<String, Object> getCurveDetail(Map<String, Object> requestMap);
+  public BondingCurveTokenParam getCurveDetail(Map<String, Object> requestMap);
 
   /**
    * 根据劳动价值铸造原力(成长值):
@@ -55,7 +60,7 @@ public interface BondingCurveTokenService {
    * @param:
    * @return:
    */
-  public Map<String, Object> getBondingCurveTokenJournalPageList(Map<String, Object> requestMap);
+  public IPage<?> getBondingCurveTokenJournalPageList(Map<String, Object> requestMap);
 
   /**
    * 获取联合曲线流水详情
@@ -63,7 +68,7 @@ public interface BondingCurveTokenService {
    * @param:
    * @return:
    */
-  public Map<String, Object> getTransactionDetail(Map<String, Object> requestMap);
+  public BondingCurveTokenJournal getTransactionDetail(Map<String, Object> requestMap);
 
 
   /**
@@ -72,7 +77,7 @@ public interface BondingCurveTokenService {
    * @param:
    * @return:
    */
-  public Map<String, Object> getBondingCurveTokenJournalList(Map<String, Object> requestMap);
+  public List<?> getBondingCurveTokenJournalList(Map<String, Object> requestMap);
 
   /**
    * 获取联合曲线未来数据--曲线展示
@@ -80,6 +85,6 @@ public interface BondingCurveTokenService {
    * @param:
    * @return:
    */
-  public Map<String, Object> getBondingCurveTokenTrendList(Map<String, Object> requestMap);
+  public List<?> getBondingCurveTokenTrendList(Map<String, Object> requestMap);
 
 }

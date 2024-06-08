@@ -1,10 +1,18 @@
 package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.MintJournal;
+import me.flyray.bsin.facade.service.MintJournalService;
+import me.flyray.bsin.infrastructure.mapper.MintJournalMapper;
+import me.flyray.bsin.mybatis.utils.Pagination;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -14,17 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-
-import cn.hutool.core.util.ObjectUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.MintJournal;
-import me.flyray.bsin.facade.service.MintJournalService;
-import me.flyray.bsin.infrastructure.mapper.MintJournalMapper;
-import me.flyray.bsin.mybatis.utils.Pagination;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 
 /**
  * @author bolei
@@ -79,10 +76,10 @@ public class MintJournalServiceImpl implements MintJournalService {
   @ShenyuDubboClient("/getDetail")
   @ApiDoc(desc = "getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public MintJournal getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     MintJournal mintJournal = mintJournalMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(mintJournal);
+    return mintJournal;
   }
 
 }

@@ -5,9 +5,18 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.CustomerBase;
+import me.flyray.bsin.domain.entity.CustomerPassCard;
 import me.flyray.bsin.domain.entity.Merchant;
+import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
+import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
 import me.flyray.bsin.facade.service.*;
+import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
+import me.flyray.bsin.infrastructure.mapper.CustomerPassCardMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -22,18 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.CustomerBase;
-import me.flyray.bsin.domain.entity.CustomerPassCard;
-import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
-import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
-import me.flyray.bsin.infrastructure.mapper.CustomerPassCardMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 
 /**
  * @author bolei
@@ -72,9 +69,9 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
   @ShenyuDubboClient("/issue")
   @ApiDoc(desc = "issue")
   @Override
-  public Map<String, Object> issue(Map<String, Object> requestMap) throws Exception {
+  public void issue(Map<String, Object> requestMap) throws Exception {
     // TODO: issue 抽离biz
-    return RespBodyHandler.setRespBodyDto(digitalAssetsCollectionService.issue(requestMap));
+    digitalAssetsCollectionService.issue(requestMap);
   }
 
   /**
@@ -86,12 +83,11 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
   @ShenyuDubboClient("/claim")
   @ApiDoc(desc = "claim")
   @Override
-  public Map<String, Object> claim(Map<String, Object> requestMap) throws Exception {
+  public void claim(Map<String, Object> requestMap) throws Exception {
     requestMap.put("amount", "1");
     requestMap.put("limitClaim", "false");
     digitalAssetsItemService.claim(requestMap);
-    Map<String, Object> ret = customerProfileService.follow(requestMap);
-    return RespBodyHandler.setRespBodyDto(ret);
+    customerProfileService.follow(requestMap);
   }
 
   /**
@@ -103,7 +99,7 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
   @ShenyuDubboClient("/getList")
   @ApiDoc(desc = "getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<CustomerPassCard> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String customerNo;
     // 传值用户
@@ -138,8 +134,7 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
     if (merchantNos.size() > 0) {
       Map marketReqMap = new HashMap();
       marketReqMap.put("merchantNos", merchantNos);
-      Map<String, Object> merchantResult = merchantService.getListByMerchantNos(marketReqMap);
-      List<Merchant> merchantList = (List<Merchant>) merchantResult.get("data");
+      List<Merchant> merchantList = merchantService.getListByMerchantNos(marketReqMap);
       for (CustomerPassCard customerPassCard : customerPassCardList) {
         // 找出客户信息
         for (Merchant merchant : merchantList) {
@@ -150,13 +145,13 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
         }
       }
     }
-    return RespBodyHandler.setRespBodyListDto(customerPassCardList);
+    return customerPassCardList;
   }
 
   @ShenyuDubboClient("/getMemberList")
   @ApiDoc(desc = "getMemberList")
   @Override
-  public Map<String, Object> getMemberList(Map<String, Object> requestMap) {
+  public List<CustomerBase> getMemberList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     CustomerPassCard customerPassCardReq =
         BsinServiceContext.getReqBodyDto(CustomerPassCard.class, requestMap);
@@ -174,10 +169,9 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
     if (customerNos.size() > 0) {
       Map marketReqMap = new HashMap();
       marketReqMap.put("customerNos", customerNos);
-      Map<String, Object> customerResult = customerService.getListByCustomerNos(marketReqMap);
-      customerList = (List<CustomerBase>) customerResult.get("data");
+      customerList = customerService.getListByCustomerNos(marketReqMap);
     }
-    return RespBodyHandler.setRespBodyListDto(customerList);
+    return customerList;
   }
 
   @ShenyuDubboClient("/getPageList")
@@ -223,7 +217,7 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
   @ShenyuDubboClient("/getDetail")
   @ApiDoc(desc = "getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public DigitalAssetsDetailRes getDetail(Map<String, Object> requestMap) {
     String tenantId = LoginInfoContextHelper.getTenantId();
     String customerNo = LoginInfoContextHelper.getCustomerNo();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
@@ -242,7 +236,7 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
       digitalAssetsDetailRes.setCustomerPassCard(digitalAssetsItemRes);
     }
     // TODO 成交记录数据
-    return RespBodyHandler.setRespBodyDto(digitalAssetsDetailRes);
+    return digitalAssetsDetailRes;
   }
 
 }

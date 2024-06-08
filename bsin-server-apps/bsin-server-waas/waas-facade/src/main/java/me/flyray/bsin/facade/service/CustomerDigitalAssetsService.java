@@ -1,5 +1,6 @@
 package me.flyray.bsin.facade.service;
 
+import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
 import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface CustomerDigitalAssetsService {
     /**
      * 客户数字资产列表
      */
-    public Map<String, Object> getList(Map<String, Object> requestMap);
+    public List<DigitalAssetsItemRes> getList(Map<String, Object> requestMap);
 
 
     /**
@@ -28,7 +29,7 @@ public interface CustomerDigitalAssetsService {
     /**
      * 查询数字资产详情
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public DigitalAssetsDetailRes getDetail(Map<String, Object> requestMap);
 
 
     /**

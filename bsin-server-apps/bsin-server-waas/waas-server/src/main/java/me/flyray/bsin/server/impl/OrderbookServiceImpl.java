@@ -1,10 +1,25 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.enums.OrderbookStatus;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
+import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
+import me.flyray.bsin.facade.service.CustomerService;
+import me.flyray.bsin.facade.service.OrderbookService;
+import me.flyray.bsin.infrastructure.biz.DigitalAssetsBiz;
+import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
+import me.flyray.bsin.infrastructure.mapper.*;
+import me.flyray.bsin.mybatis.utils.Pagination;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -20,34 +35,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import cn.hutool.core.bean.BeanUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.ContractProtocol;
-import me.flyray.bsin.domain.entity.CustomerBase;
-import me.flyray.bsin.domain.entity.CustomerDigitalAssets;
-import me.flyray.bsin.domain.entity.DigitalAssetsCollection;
-import me.flyray.bsin.domain.entity.Orderbook;
-import me.flyray.bsin.domain.entity.OrderbookMatchJournal;
-import me.flyray.bsin.domain.entity.TransferJournal;
-import me.flyray.bsin.domain.enums.OrderbookStatus;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
-import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
-import me.flyray.bsin.facade.service.CustomerService;
-import me.flyray.bsin.facade.service.OrderbookService;
-import me.flyray.bsin.infrastructure.mapper.ContractProtocolMapper;
-import me.flyray.bsin.infrastructure.mapper.CustomerDigitalAssetsMapper;
-import me.flyray.bsin.infrastructure.mapper.DigitalAssetsCollectionMapper;
-import me.flyray.bsin.infrastructure.mapper.OrderbookMapper;
-import me.flyray.bsin.infrastructure.mapper.OrderbookMatchJournalMapper;
-import me.flyray.bsin.mybatis.utils.Pagination;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.infrastructure.biz.DigitalAssetsBiz;
-import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 
 /**
  * @author bolei
@@ -88,7 +75,7 @@ public class OrderbookServiceImpl implements OrderbookService {
     @ShenyuDubboClient("/maker")
     @ApiDoc(desc = "maker")
     @Override
-    public Map<String, Object> maker(Map<String, Object> requestMap){
+    public Orderbook maker(Map<String, Object> requestMap){
         // 当前登录用户
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         String customerNo = loginUser.getCustomerNo();
@@ -113,7 +100,7 @@ public class OrderbookServiceImpl implements OrderbookService {
         }
         orderbook.setFromCustomerNo(customerNo);
         orderbookMapper.insert(orderbook);
-        return RespBodyHandler.setRespBodyDto(orderbook);
+        return orderbook;
     }
 
     /**
@@ -131,7 +118,7 @@ public class OrderbookServiceImpl implements OrderbookService {
     @ApiDoc(desc = "taker")
     @Override
     @Transactional
-    public Map<String, Object> taker(Map<String, Object> requestMap){
+    public Orderbook taker(Map<String, Object> requestMap){
         Orderbook orderbookReq = BsinServiceContext.getReqBodyDto(Orderbook.class, requestMap);
         // 买方客户号
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -203,20 +190,19 @@ public class OrderbookServiceImpl implements OrderbookService {
 //        Map<String, Object> inAccountReq = new HashMap<>();
 //        crmClientBiz.inAccount(inAccountReq);
 
-        return RespBodyHandler.setRespBodyDto(orderbook);
+        return orderbook;
     }
 
     @ShenyuDubboClient("/cancel")
     @ApiDoc(desc = "cancel")
     @Override
-    public Map<String, Object> cancel(Map<String, Object> requestMap){
+    public void cancel(Map<String, Object> requestMap){
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         Orderbook orderbook = new Orderbook();
         orderbook.setSerialNo(serialNo);
         orderbook.setStatus(OrderbookStatus.CANCED.getCode());
         // 修改挂单状态
         orderbookMapper.updateById(orderbook);
-        return RespBodyHandler.RespBodyDto();
     }
 
     /**
@@ -244,8 +230,7 @@ public class OrderbookServiceImpl implements OrderbookService {
         if (customerNos.size() > 0){
             Map crmReqMap = new HashMap();
             crmReqMap.put("customerNos",customerNos);
-            Map<String, Object> customerResult = customerService.getListByCustomerNos(crmReqMap);
-            List<CustomerBase> customerList = (List<CustomerBase>) customerResult.get("data");
+            List<CustomerBase> customerList = customerService.getListByCustomerNos(crmReqMap);
             List<DigitalAssetsItemRes> digitalAssetsItemResList = new ArrayList<>();
             for (DigitalAssetsItemRes digitalAssetsItemRes : orderbookPageList.getRecords()) {
                 // 找出客户信息
@@ -275,7 +260,7 @@ public class OrderbookServiceImpl implements OrderbookService {
     @ShenyuDubboClient("/getDetail")
     @ApiDoc(desc = "getDetail")
     @Override
-    public Map<String, Object> getDetail(Map<String, Object> requestMap){
+    public DigitalAssetsDetailRes getDetail(Map<String, Object> requestMap){
         // 挂单号
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         Orderbook orderbook = orderbookMapper.selectById(serialNo);
@@ -283,7 +268,7 @@ public class OrderbookServiceImpl implements OrderbookService {
         DigitalAssetsDetailRes digitalAssetsDetailRes = digitalAssetsItemBiz.getDetail(orderbook.getFromDigitalAssetsNo(),null, orderbook.getFromTokenId());
         digitalAssetsDetailRes.setOrderbook(orderbook);
         // TODO 成交记录数据
-        return RespBodyHandler.setRespBodyDto(digitalAssetsDetailRes);
+        return digitalAssetsDetailRes;
     }
 
 }

@@ -1,6 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.Condition;
 
 import java.util.Map;
 
@@ -15,23 +16,23 @@ public interface ConditionService {
     /**
      * 添加
      */
-    public Map<String, Object> add(Map<String, Object> requestMap);
+    public Condition add(Map<String, Object> requestMap);
 
     /**
      * 删除
      */
-    public Map<String, Object> delete(Map<String, Object> requestMap);
+    public void delete(Map<String, Object> requestMap);
 
     /**
      * 修改
      */
-    public Map<String, Object> edit(Map<String, Object> requestMap);
+    public void edit(Map<String, Object> requestMap);
 
 
     /**
      * 详情
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public Condition getDetail(Map<String, Object> requestMap);
 
 
     /**

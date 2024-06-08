@@ -1,21 +1,29 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import me.flyray.bsin.domain.entity.ChainCoin;
-import me.flyray.bsin.domain.entity.Platform;
-import me.flyray.bsin.domain.entity.Wallet;
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.request.PlatformDTO;
+import me.flyray.bsin.domain.request.SysTenantDTO;
+import me.flyray.bsin.domain.response.SysUserVO;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.service.PlatformService;
+import me.flyray.bsin.facade.service.TenantService;
+import me.flyray.bsin.facade.service.UserService;
+import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
 import me.flyray.bsin.infrastructure.mapper.PlatformMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.security.enums.BizRoleType;
+import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -24,31 +32,12 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import cn.hutool.core.bean.BeanUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.CustomerBase;
-import me.flyray.bsin.domain.entity.SysTenant;
-import me.flyray.bsin.domain.entity.SysUser;
-import me.flyray.bsin.domain.request.SysTenantDTO;
-import me.flyray.bsin.domain.response.SysUserVO;
-import me.flyray.bsin.enums.CustomerType;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.PlatformService;
-import me.flyray.bsin.facade.service.TenantService;
-import me.flyray.bsin.facade.service.UserService;
-import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author bolei
@@ -203,11 +192,11 @@ public class PlatformServiceImpl implements PlatformService {
     @ApiDoc(desc = "getDetail")
     @ShenyuDubboClient("/getDetail")
     @Override
-    public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+    public Platform getDetail(Map<String, Object> requestMap) {
         String platformNo = MapUtils.getString(requestMap, "serialNo");
         Platform platform = platformMapper.selectById(platformNo);
         //        customerInfo.setWalletPrivateKey(null);
-        return RespBodyHandler.setRespBodyDto(platform);
+        return platform;
     }
 
     @ApiDoc(desc = "getPageList")

@@ -1,22 +1,8 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-
-import org.apache.commons.collections4.MapUtils;
-import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
-import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
-import org.apache.shenyu.client.apidocs.annotations.ApiModule;
-import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.Map;
-
-import cn.hutool.core.bean.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.blockchain.dto.ContractTransactionResp;
 import me.flyray.bsin.constants.ResponseCode;
@@ -29,16 +15,27 @@ import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.request.DigitalAssetsIssueReqDTO;
 import me.flyray.bsin.facade.service.DigitalAssetsCollectionService;
 import me.flyray.bsin.facade.service.DigitalPointsService;
+import me.flyray.bsin.infrastructure.biz.CustomerInfoBiz;
+import me.flyray.bsin.infrastructure.biz.DigitalAssetsBiz;
+import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
 import me.flyray.bsin.infrastructure.mapper.ContractProtocolMapper;
 import me.flyray.bsin.infrastructure.mapper.DigitalAssetsCollectionMapper;
 import me.flyray.bsin.infrastructure.mapper.TokenParamMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.infrastructure.biz.CustomerInfoBiz;
-import me.flyray.bsin.infrastructure.biz.DigitalAssetsBiz;
-import me.flyray.bsin.infrastructure.biz.DigitalAssetsItemBiz;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.utils.BsinSnowflake;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
+import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * @author bolei
@@ -74,7 +71,7 @@ public class DigitalPointsServiceImpl implements DigitalPointsService {
   @ApiDoc(desc = "issue")
   @Override
   @Transactional
-  public Map<String, Object> issue(Map<String, Object> requestMap) throws Exception {
+  public void issue(Map<String, Object> requestMap) throws Exception {
     log.info("DigitalPointsService issue 请求参数:{}", JSON.toJSONString(requestMap));
     // 发行的商户
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
@@ -176,13 +173,12 @@ public class DigitalPointsServiceImpl implements DigitalPointsService {
     tokenParam.setName(digitalAssetsColletion.getName());
     tokenParam.setSymbol(digitalAssetsColletion.getSymbol());
     tokenParamMapper.insert(tokenParam);
-    return RespBodyHandler.setRespBodyDto(contractTransactionResp);
   }
 
   @ShenyuDubboClient("/getDetailByMerchantNo")
   @ApiDoc(desc = "getDetailByMerchantNo")
   @Override
-  public Map<String, Object> getDetailByMerchantNo(Map<String, Object> requestMap) {
+  public DigitalAssetsCollection getDetailByMerchantNo(Map<String, Object> requestMap) {
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     DigitalAssetsCollection digitalAssetsCollection =
         digitalAssetsCollectionMapper.selectOne(
@@ -191,14 +187,14 @@ public class DigitalPointsServiceImpl implements DigitalPointsService {
                 .eq(
                     DigitalAssetsCollection::getCollectionType,
                     AssetsCollectionType.DIGITAL_POINT.getCode()));
-    return RespBodyHandler.setRespBodyDto(digitalAssetsCollection);
+    return digitalAssetsCollection;
   }
 
   @ShenyuDubboClient("/mint")
   @ApiDoc(desc = "mint")
   @Override
-  public Map<String, Object> mint(Map<String, Object> requestMap) throws Exception {
-    return RespBodyHandler.setRespBodyDto(digitalAssetsCollectionService.mint(requestMap));
+  public void mint(Map<String, Object> requestMap) throws Exception {
+    digitalAssetsCollectionService.mint(requestMap);
   }
 
 }

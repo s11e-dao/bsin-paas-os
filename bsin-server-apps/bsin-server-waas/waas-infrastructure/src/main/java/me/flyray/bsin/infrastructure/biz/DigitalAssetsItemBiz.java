@@ -96,12 +96,12 @@ public class DigitalAssetsItemBiz {
     }
 
     // 查询发行商户
-    Map<String, Object> merchant =
+    Merchant merchant =
         customerInfoBiz.getMerchantBase(
             digitalAssetsItem.getMerchantNo(), digitalAssetsItem.getChainType());
 
-    digitalAssetsItem.setMerchantName((String) merchant.get("merchantName"));
-    digitalAssetsItem.setMerchantLogo((String) merchant.get("logoUrl"));
+    digitalAssetsItem.setMerchantName(merchant.getMerchantName());
+    digitalAssetsItem.setMerchantLogo(merchant.getLogoUrl());
     digitalAssetsDetailRes.setDigitalAssetsItem(digitalAssetsItem);
 
     // 数字资产Collection信息
@@ -116,8 +116,7 @@ public class DigitalAssetsItemBiz {
 
     Map requestMap = new HashMap();
     // 查询数字资产的权益和详情
-    Map<String, Object> equityResult = equityConfigService.getListByCategoryNo(requestMap);
-    List<Map> equityList = (List<Map>) equityResult.get("data");
+    List<Map> equityList = equityConfigService.getListByCategoryNo(requestMap);
     digitalAssetsDetailRes.setEquityList(equityList);
     return digitalAssetsDetailRes;
   }

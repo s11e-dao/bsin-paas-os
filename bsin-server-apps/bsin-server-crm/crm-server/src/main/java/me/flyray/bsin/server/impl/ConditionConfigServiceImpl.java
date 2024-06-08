@@ -1,5 +1,11 @@
 package me.flyray.bsin.server.impl;
 
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.Condition;
+import me.flyray.bsin.domain.entity.ConditionRelation;
+import me.flyray.bsin.facade.service.ConditionConfigService;
+import me.flyray.bsin.infrastructure.mapper.ConditionMapper;
+import me.flyray.bsin.infrastructure.mapper.ConditionRelationMapper;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -10,14 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.Condition;
-import me.flyray.bsin.domain.entity.ConditionRelation;
-import me.flyray.bsin.facade.service.ConditionConfigService;
-import me.flyray.bsin.infrastructure.mapper.ConditionMapper;
-import me.flyray.bsin.infrastructure.mapper.ConditionRelationMapper;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 
 /**
  * @author bolei
@@ -38,29 +36,28 @@ public class ConditionConfigServiceImpl implements ConditionConfigService {
     @ApiDoc(desc = "config")
     @ShenyuDubboClient("/config")
     @Override
-    public Map<String, Object> config(Map<String, Object> requestMap) {
-        ConditionRelation conditionRelationship = BsinServiceContext.getReqBodyDto(ConditionRelation.class, requestMap);
-        conditionRelationshipMapper.insert(conditionRelationship);
-        return RespBodyHandler.setRespBodyDto(conditionRelationship);
+    public ConditionRelation config(Map<String, Object> requestMap) {
+        ConditionRelation conditionRelation = BsinServiceContext.getReqBodyDto(ConditionRelation.class, requestMap);
+        conditionRelationshipMapper.insert(conditionRelation);
+        return conditionRelation;
     }
 
     @ApiDoc(desc = "delete")
     @ShenyuDubboClient("/delete")
     @Override
-    public Map<String, Object> delete(Map<String, Object> requestMap) {
+    public void delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         conditionRelationshipMapper.deleteById(serialNo);
-        return RespBodyHandler.RespBodyDto();
     }
 
     @ApiDoc(desc = "getListByCategoryNo")
     @ShenyuDubboClient("/getListByCategoryNo")
     @Override
-    public Map<String, Object> getListByCategoryNo(Map<String, Object> requestMap) {
+    public List<?> getListByCategoryNo(Map<String, Object> requestMap) {
         // 权益分类编号：关联等级 任务 活动的编号
         String categoryNo = MapUtils.getString(requestMap, "categoryNo");
         List<Condition> conditionList =  conditionMapper.getConditionList(categoryNo);
-        return RespBodyHandler.setRespBodyListDto(conditionList);
+        return conditionList;
     }
 
 }

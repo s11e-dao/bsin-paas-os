@@ -1,6 +1,8 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.TokenParam;
+import me.flyray.bsin.domain.entity.TokenReleaseJournal;
 
 import java.util.Map;
 
@@ -16,7 +18,7 @@ public interface TokenParamService {
      * 配置数字积分参数
      * 配置会产生一个提案信息
      */
-    public Map<String, Object> edit(Map<String, Object> requestMap);
+    public TokenParam edit(Map<String, Object> requestMap);
 
     /**
      * 分页查询合约协议
@@ -27,20 +29,20 @@ public interface TokenParamService {
     /**
      * 查询商户数字积分信息
      */
-    Map<String, Object> getDetailByMerchantNo(Map<String, Object> requestMap);
+    TokenParam getDetailByMerchantNo(Map<String, Object> requestMap);
 
 
     /**
      * 查询数字积分详情
      */
-    public Map<String, Object> getDetail(Map<String, Object> requestMap);
+    public TokenParam getDetail(Map<String, Object> requestMap);
 
   /**
    * token释放执行任务
    * 1、定时任务触发
    * 2、曲线积分铸造触发
    * */
-  public Map<String, Object> release(Map<String, Object> requestMap) throws Exception;
+  public void release(Map<String, Object> requestMap) throws Exception;
 
     /**
      * 商户捕获劳动价值联合曲线积分释放
@@ -50,6 +52,6 @@ public interface TokenParamService {
      * @param requestMap
      * @return
      */
-    public Map<String, Object> releaseBcPointToVirtualAccount(Map<String, Object> requestMap) throws Exception;
+    public TokenReleaseJournal releaseBcPointToVirtualAccount(Map<String, Object> requestMap) throws Exception;
 
 }

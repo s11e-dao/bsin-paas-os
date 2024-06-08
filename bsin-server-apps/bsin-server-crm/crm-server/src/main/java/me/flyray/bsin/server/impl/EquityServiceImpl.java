@@ -4,20 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
-import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
-import org.apache.shenyu.client.apidocs.annotations.ApiModule;
-import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
-
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
@@ -31,7 +17,18 @@ import me.flyray.bsin.infrastructure.mapper.EquityMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
+import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 /**
  * @author bolei
@@ -56,7 +53,7 @@ public class EquityServiceImpl implements EquityService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public Equity add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     Equity equity = BsinServiceContext.getReqBodyDto(Equity.class, requestMap);
     equity.setTenantId(loginUser.getTenantId());
@@ -64,34 +61,32 @@ public class EquityServiceImpl implements EquityService {
     // TODO 条件的币种账户根据需要商户发行的数字积分的符号来添加，不能直接写死币种
     // typeNo 是数字资产编号 ccyType 不同类型找商户发行的不同币种
     equityMapper.insert(equity);
-    return RespBodyHandler.setRespBodyDto(equity);
+    return equity;
   }
 
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     equityMapper.deleteById(serialNo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public void edit(Map<String, Object> requestMap) {
     Equity equity = BsinServiceContext.getReqBodyDto(Equity.class, requestMap);
     equityMapper.updateById(equity);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public Equity getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     Equity equity = equityMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(equity);
+    return equity;
   }
 
   @ApiDoc(desc = "getPageList")

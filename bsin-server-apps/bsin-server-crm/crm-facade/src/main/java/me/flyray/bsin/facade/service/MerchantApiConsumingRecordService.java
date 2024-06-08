@@ -1,5 +1,7 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import java.util.Map;
 
 public interface MerchantApiConsumingRecordService {
@@ -7,10 +9,10 @@ public interface MerchantApiConsumingRecordService {
     /**
      * api消费
      */
-    public Map<String,Object> apiConsuming(Map<String, Object> requestMap);
+    public void apiConsuming(Map<String, Object> requestMap);
 
     /**
      * 分页查询
      */
-    public Map<String,Object> getPageList(Map<String, Object> requestMap);
+    public IPage<?> getPageList(Map<String, Object> requestMap);
 }
