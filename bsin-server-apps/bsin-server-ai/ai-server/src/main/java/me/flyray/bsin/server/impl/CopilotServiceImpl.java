@@ -1,15 +1,36 @@
 package me.flyray.bsin.server.impl;
 
-import static java.util.stream.Collectors.joining;
-import static me.flyray.bsin.constants.ResponseCode.MERCHANT_NO_IS_NULL;
-
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.output.Response;
+import dev.langchain4j.model.output.TokenUsage;
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.enums.CopilotType;
+import me.flyray.bsin.domain.enums.VectorStoreType;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.response.EmbeddingVO;
+import me.flyray.bsin.facade.service.CopilotService;
+import me.flyray.bsin.infrastructure.mapper.*;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.biz.*;
+import me.flyray.bsin.server.memory.chat.SummaryEmbeddingVectorStoreMemory;
+import me.flyray.bsin.server.memory.store.InRamStore;
+import me.flyray.bsin.server.memory.store.InRedisStore;
+import me.flyray.bsin.server.memory.store.InVectorDataBaseEmbeddingStore;
+import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -27,41 +48,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import cn.hutool.core.util.ObjectUtil;
-import dev.langchain4j.data.message.AiMessage;
-import dev.langchain4j.data.message.ChatMessage;
-import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.model.output.Response;
-import dev.langchain4j.model.output.TokenUsage;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.enums.CopilotType;
-import me.flyray.bsin.domain.enums.VectorStoreType;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.response.EmbeddingVO;
-import me.flyray.bsin.facade.service.CopilotService;
-import me.flyray.bsin.infrastructure.mapper.CopilotMapper;
-import me.flyray.bsin.infrastructure.mapper.EmbeddingModelMapper;
-import me.flyray.bsin.infrastructure.mapper.KnowledgeBaseMapper;
-import me.flyray.bsin.infrastructure.mapper.LLMMapper;
-import me.flyray.bsin.infrastructure.mapper.PromptTemplateMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.biz.AccountAvailableResourcesBiz;
-import me.flyray.bsin.server.biz.ChatBiz;
-import me.flyray.bsin.server.biz.ChatHistorySummaryAndStoreBiz;
-import me.flyray.bsin.server.biz.ModelBiz;
-import me.flyray.bsin.server.biz.PromptEngineeringBiz;
-import me.flyray.bsin.server.biz.VectorRetrievalBiz;
-import me.flyray.bsin.server.memory.chat.SummaryEmbeddingVectorStoreMemory;
-import me.flyray.bsin.server.memory.store.InRamStore;
-import me.flyray.bsin.server.memory.store.InRedisStore;
-import me.flyray.bsin.server.memory.store.InVectorDataBaseEmbeddingStore;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
+import static java.util.stream.Collectors.joining;
 
 /**
  * @author leonard
@@ -111,7 +98,7 @@ public class CopilotServiceImpl implements CopilotService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public CopilotInfo add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -159,22 +146,21 @@ public class CopilotServiceImpl implements CopilotService {
           "100000", "可创建的智能体资源超过限制：" + copilotList.size() + ">=" + validFunction.getCopilotNum());
     }
     copilotMapper.insert(copilotInfo);
-    return RespBodyHandler.setRespBodyDto(copilotInfo);
+    return copilotInfo;
   }
 
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     copilotMapper.deleteById(serialNo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public void edit(Map<String, Object> requestMap) {
     CopilotInfo copilotInfo = BsinServiceContext.getReqBodyDto(CopilotInfo.class, requestMap);
     if (Boolean.TRUE.equals(copilotInfo.getDefaultFlag())) {
       setDefault(requestMap);
@@ -186,25 +172,24 @@ public class CopilotServiceImpl implements CopilotService {
       }
     }
     copilotMapper.updateById(copilotInfo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public CopilotInfo getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     if (serialNo == null) {
       serialNo = MapUtils.getString(requestMap, "copilotNo");
     }
     CopilotInfo copilotInfo = copilotMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(copilotInfo);
+    return copilotInfo;
   }
 
   @ApiDoc(desc = "createDigitalAvatarOrBrandOfficer")
   @ShenyuDubboClient("/createDigitalAvatarOrBrandOfficer")
   @Override
-  public Map<String, Object> createDigitalAvatarOrBrandOfficer(Map<String, Object> requestMap) {
+  public CopilotInfo createDigitalAvatarOrBrandOfficer(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -239,7 +224,7 @@ public class CopilotServiceImpl implements CopilotService {
     wrapper.eq(CopilotInfo::getType, type);
     CopilotInfo copilotInfo = copilotMapper.selectOne(wrapper);
     if (copilotInfo != null) {
-      return RespBodyHandler.setRespBodyDto(copilotInfo);
+      return copilotInfo;
     }
 
     // 1.从jiujiu租户复制一个数字分身|品牌官类型的Copilot
@@ -281,7 +266,7 @@ public class CopilotServiceImpl implements CopilotService {
     defaultCopilotInfo.setPromptTemplateNo(defaultPromptTemplateParam.getSerialNo());
     copilotMapper.insert(defaultCopilotInfo);
 
-    return RespBodyHandler.setRespBodyDto(defaultCopilotInfo);
+    return defaultCopilotInfo;
   }
 
   /**
@@ -293,7 +278,7 @@ public class CopilotServiceImpl implements CopilotService {
   @ApiDoc(desc = "getPageListByTenant")
   @ShenyuDubboClient("/getPageListByTenant")
   @Override
-  public Map<String, Object> getPageListByTenant(Map<String, Object> requestMap) {
+  public IPage<CopilotInfo> getPageListByTenant(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     String tenantId = loginUser.getTenantId();
@@ -319,7 +304,7 @@ public class CopilotServiceImpl implements CopilotService {
     // 匹配系统资源
     wrapper.or().eq(CopilotInfo::getEditable, false);
     IPage<CopilotInfo> pageList = copilotMapper.selectPage(page, wrapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getPageList")
@@ -421,7 +406,7 @@ public class CopilotServiceImpl implements CopilotService {
   @ApiDoc(desc = "getMerchantDefault")
   @ShenyuDubboClient("/getMerchantDefault")
   @Override
-  public Map<String, Object> getMerchantDefault(Map<String, Object> requestMap) {
+  public CopilotInfo getMerchantDefault(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -439,7 +424,7 @@ public class CopilotServiceImpl implements CopilotService {
     wrapper.eq(StringUtils.isNotBlank(type), CopilotInfo::getType, type);
     wrapper.eq(CopilotInfo::getDefaultFlag, true);
     CopilotInfo copilotInfo = copilotMapper.selectOne(wrapper);
-    return RespBodyHandler.setRespBodyDto(copilotInfo);
+    return copilotInfo;
   }
 
   /**
@@ -451,7 +436,7 @@ public class CopilotServiceImpl implements CopilotService {
   @ApiDoc(desc = "getAppAgent")
   @ShenyuDubboClient("/getAppAgent")
   @Override
-  public Map<String, Object> getAppAgent(Map<String, Object> requestMap) {
+  public CopilotInfo getAppAgent(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     LambdaQueryWrapper<CopilotInfo> wrapper = new LambdaQueryWrapper<>();
     wrapper.eq(CopilotInfo::getTenantId, loginUser.getTenantId());
@@ -467,13 +452,13 @@ public class CopilotServiceImpl implements CopilotService {
         copilotMapper.updateById(copilotInfo);
       }
     }
-    return RespBodyHandler.setRespBodyDto(copilotInfo);
+    return copilotInfo;
   }
 
   @ApiDoc(desc = "getCustomerDefault")
   @ShenyuDubboClient("/getCustomerDefault")
   @Override
-  public Map<String, Object> getCustomerDefault(Map<String, Object> requestMap) {
+  public CopilotInfo getCustomerDefault(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String type = MapUtils.getString(requestMap, "type");
     LambdaQueryWrapper<CopilotInfo> wrapper = new LambdaQueryWrapper<>();
@@ -492,13 +477,13 @@ public class CopilotServiceImpl implements CopilotService {
         copilotMapper.updateById(copilotInfo);
       }
     }
-    return RespBodyHandler.setRespBodyDto(copilotInfo);
+    return copilotInfo;
   }
 
   @ApiDoc(desc = "setDefault")
   @ShenyuDubboClient("/setDefault")
   @Override
-  public Map<String, Object> setDefault(Map<String, Object> requestMap) {
+  public void setDefault(Map<String, Object> requestMap) {
     CopilotInfo copilotInfo = BsinServiceContext.getReqBodyDto(CopilotInfo.class, requestMap);
     LambdaUpdateWrapper<CopilotInfo> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
     lambdaUpdateWrapper.set(CopilotInfo::getDefaultFlag, copilotInfo.getDefaultFlag());
@@ -518,7 +503,6 @@ public class CopilotServiceImpl implements CopilotService {
                   copilotInfo.getCustomerNo()));
     }
     copilotMapper.update(null, lambdaUpdateWrapper);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "chat")
@@ -731,7 +715,7 @@ public class CopilotServiceImpl implements CopilotService {
       }
       throw new BusinessException("100000", e.toString());
     }
-    return RespBodyHandler.setRespBodyDto(requestMap);
+    return requestMap;
   }
 
 }

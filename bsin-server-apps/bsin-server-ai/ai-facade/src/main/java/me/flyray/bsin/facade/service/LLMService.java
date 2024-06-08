@@ -3,6 +3,7 @@ package me.flyray.bsin.facade.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.LLMParam;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,28 +14,28 @@ import java.util.Map;
 public interface LLMService {
 
   /** 添加 */
-  Map<String, Object> add(Map<String, Object> requestMap);
+  LLMParam add(Map<String, Object> requestMap);
 
   /** 删除 */
-  Map<String, Object> delete(Map<String, Object> requestMap);
+  void delete(Map<String, Object> requestMap);
 
   /** 编辑 */
-  Map<String, Object> edit(Map<String, Object> requestMap);
+  void edit(Map<String, Object> requestMap);
 
   /** 详情 */
-  Map<String, Object> getDetail(Map<String, Object> requestMap);
+  LLMParam getDetail(Map<String, Object> requestMap);
 
   /** 分页查询 */
   IPage<LLMParam> getPageList(Map<String, Object> requestMap);
 
   /** 查询 */
-  Map<String, Object> getList(Map<String, Object> requestMap);
+  List<LLMParam> getList(Map<String, Object> requestMap);
 
   /** 获取默认  */
-  public Map<String, Object> getDefault(Map<String, Object> requestMap);
+  public LLMParam getDefault(Map<String, Object> requestMap);
 
 
   /** 设置为默认  */
-  public Map<String, Object> setDefault(Map<String, Object> requestMap);
+  public void setDefault(Map<String, Object> requestMap);
 
 }

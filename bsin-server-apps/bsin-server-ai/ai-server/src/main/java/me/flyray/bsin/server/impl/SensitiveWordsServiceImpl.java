@@ -4,20 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import me.flyray.bsin.domain.entity.CopilotInfo;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
-import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
-import org.apache.shenyu.client.apidocs.annotations.ApiModule;
-import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
-
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
@@ -30,8 +16,18 @@ import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.biz.AccountAvailableResourcesBiz;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.utils.BsinSnowflake;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
+import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author leonard
@@ -50,7 +46,7 @@ public class SensitiveWordsServiceImpl implements SensitiveWordsService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public SensitiveWords add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -97,35 +93,33 @@ public class SensitiveWordsServiceImpl implements SensitiveWordsService {
               + validFunction.getSensitiveWordsNum());
     }
     sensitiveWordsMapper.insert(sensitiveWords);
-    return RespBodyHandler.setRespBodyDto(sensitiveWords);
+    return sensitiveWords;
   }
 
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     sensitiveWordsMapper.deleteById(serialNo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public void edit(Map<String, Object> requestMap) {
     SensitiveWords sensitiveWords =
         BsinServiceContext.getReqBodyDto(SensitiveWords.class, requestMap);
     sensitiveWordsMapper.updateById(sensitiveWords);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public SensitiveWords getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     SensitiveWords sensitiveWords = sensitiveWordsMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(sensitiveWords);
+    return sensitiveWords;
   }
 
   @ApiDoc(desc = "getPageList")

@@ -3,18 +3,6 @@ package me.flyray.bsin.server.impl;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
-import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
-import org.apache.shenyu.client.apidocs.annotations.ApiModule;
-import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Map;
-
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
@@ -25,8 +13,17 @@ import me.flyray.bsin.infrastructure.mapper.WxPlatformUserMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.utils.BsinSnowflake;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
+import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * @author bolei
@@ -44,7 +41,7 @@ public class WxPlatformUserServiceImpl implements WxPlatformUserService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public WxPlatformUser add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -72,41 +69,39 @@ public class WxPlatformUserServiceImpl implements WxPlatformUserService {
     wxPlatformUser.setSerialNo(BsinSnowflake.getId());
     wxPlatformUser.setTenantId(tenantId);
     wxPlatformUserMapper.insert(wxPlatformUser);
-    return RespBodyHandler.setRespBodyDto(wxPlatformUser);
+    return wxPlatformUser;
   }
 
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     String serialNo = (String) requestMap.get("serialNo");
     wxPlatformUserMapper.deleteById(serialNo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public void edit(Map<String, Object> requestMap) {
     WxPlatformUser wxPlatformUser =
         BsinServiceContext.getReqBodyDto(WxPlatformUser.class, requestMap);
     wxPlatformUserMapper.updateById(wxPlatformUser);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public WxPlatformUser getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     WxPlatformUser wxPlatformUser = wxPlatformUserMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(wxPlatformUser);
+    return wxPlatformUser;
   }
 
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<WxPlatformUser> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -135,7 +130,7 @@ public class WxPlatformUserServiceImpl implements WxPlatformUserService {
         WxPlatformUser::getStatus,
         wxPlatformUser.getStatus());
     IPage<WxPlatformUser> pageList = wxPlatformUserMapper.selectPage(page, wrapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
 }

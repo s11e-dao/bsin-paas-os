@@ -1,11 +1,31 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.enums.RetrievalScope;
+import me.flyray.bsin.domain.enums.VectorStoreType;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.response.EmbeddingDTO;
+import me.flyray.bsin.facade.response.EmbeddingVO;
+import me.flyray.bsin.facade.response.KnowledgeBaseFileVO;
+import me.flyray.bsin.facade.response.KnowledgeBaseVO;
+import me.flyray.bsin.facade.service.KnowledgeBaseService;
+import me.flyray.bsin.infrastructure.mapper.*;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.biz.AccountAvailableResourcesBiz;
+import me.flyray.bsin.server.biz.ChatBiz;
+import me.flyray.bsin.server.biz.VectorRetrievalBiz;
+import me.flyray.bsin.server.milvus.BsinTextSegment;
+import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -20,33 +40,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import cn.hutool.core.bean.BeanUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.enums.RetrievalScope;
-import me.flyray.bsin.domain.enums.VectorStoreType;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.response.EmbeddingDTO;
-import me.flyray.bsin.facade.response.EmbeddingVO;
-import me.flyray.bsin.facade.response.KnowledgeBaseFileVO;
-import me.flyray.bsin.facade.response.KnowledgeBaseVO;
-import me.flyray.bsin.facade.service.KnowledgeBaseService;
-import me.flyray.bsin.infrastructure.mapper.EmbeddingModelMapper;
-import me.flyray.bsin.infrastructure.mapper.KnowledgeBaseFileMapper;
-import me.flyray.bsin.infrastructure.mapper.KnowledgeBaseMapper;
-import me.flyray.bsin.infrastructure.mapper.LLMMapper;
-import me.flyray.bsin.infrastructure.mapper.PromptTemplateMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.biz.AccountAvailableResourcesBiz;
-import me.flyray.bsin.server.biz.ChatBiz;
-import me.flyray.bsin.server.biz.VectorRetrievalBiz;
-import me.flyray.bsin.server.milvus.BsinTextSegment;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
 
 /**
  * @author leonard
@@ -78,7 +71,7 @@ public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public KnowledgeBase add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -207,34 +200,32 @@ public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
       knowledgeBase.setEmbeddingModelNo(embeddingModeNo);
     }
     knowledgeBaseMapper.insert(knowledgeBase);
-    return RespBodyHandler.setRespBodyDto(knowledgeBase);
+    return knowledgeBase;
   }
 
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     knowledgeBaseMapper.deleteById(serialNo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public void edit(Map<String, Object> requestMap) {
     KnowledgeBase knowledgeBase = BsinServiceContext.getReqBodyDto(KnowledgeBase.class, requestMap);
     if (Boolean.TRUE.equals(knowledgeBase.getDefaultFlag())) {
       setDefault(requestMap);
     }
     knowledgeBaseMapper.updateById(knowledgeBase);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) throws Exception {
+  public KnowledgeBaseVO getDetail(Map<String, Object> requestMap) throws Exception {
 
     String knowledgeBaseNo = MapUtils.getString(requestMap, "serialNo");
     if (knowledgeBaseNo == null) {
@@ -292,7 +283,7 @@ public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
       knowledgeBaseFileVOList.add(vo);
     }
     knowledgeBaseVO.setKnowledgeBaseFiles(knowledgeBaseFileVOList);
-    return RespBodyHandler.setRespBodyDto(knowledgeBaseVO);
+    return knowledgeBaseVO;
   }
 
   @ApiDoc(desc = "getPageList")
@@ -349,7 +340,7 @@ public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
   @ApiDoc(desc = "getList")
   @ShenyuDubboClient("/getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<KnowledgeBase> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -386,13 +377,13 @@ public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
     // 匹配系统资源
     wrapper.or().eq(KnowledgeBase::getEditable, false);
     List<KnowledgeBase> knowledgeBaseList = knowledgeBaseMapper.selectList(wrapper);
-    return RespBodyHandler.setRespBodyListDto(knowledgeBaseList);
+    return knowledgeBaseList;
   }
 
   @ApiDoc(desc = "getDefault")
   @ShenyuDubboClient("/getDefault")
   @Override
-  public Map<String, Object> getDefault(Map<String, Object> requestMap) {
+  public KnowledgeBase getDefault(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -414,13 +405,13 @@ public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
     wrapper.eq(StringUtils.isNotBlank(type), KnowledgeBase::getType, type);
     wrapper.eq(KnowledgeBase::getDefaultFlag, true);
     KnowledgeBase knowledgeBase = knowledgeBaseMapper.selectOne(wrapper);
-    return RespBodyHandler.setRespBodyDto(knowledgeBase);
+    return knowledgeBase;
   }
 
   @ApiDoc(desc = "setDefault")
   @ShenyuDubboClient("/setDefault")
   @Override
-  public Map<String, Object> setDefault(Map<String, Object> requestMap) {
+  public void setDefault(Map<String, Object> requestMap) {
     KnowledgeBase knowledgeBase = BsinServiceContext.getReqBodyDto(KnowledgeBase.class, requestMap);
     LambdaUpdateWrapper<KnowledgeBase> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
     lambdaUpdateWrapper.set(KnowledgeBase::getDefaultFlag, knowledgeBase.getDefaultFlag());
@@ -440,7 +431,6 @@ public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
                   knowledgeBase.getCustomerNo()));
     }
     knowledgeBaseMapper.update(null, lambdaUpdateWrapper);
-    return RespBodyHandler.RespBodyDto();
   }
   /*
    * Retrieval Augmented Generation (RAG) based on 知识库|知识库文件.
@@ -448,7 +438,7 @@ public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
   @ApiDoc(desc = "retrieval")
   @ShenyuDubboClient("/retrieval")
   @Override
-  public Map<String, Object> retrieval(Map<String, Object> requestMap) {
+  public List<EmbeddingVO> retrieval(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -511,7 +501,7 @@ public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
                 new ArrayList<String>(Arrays.asList(embeddingDTO.getText())), 3);
         requestMap.put("quickReplyMessages", quickReplyMessages);
       }
-      return RespBodyHandler.setRespBodyListDto(embeddingVOList);
+      return embeddingVOList;
     } catch (Exception e) {
       throw new BusinessException("100000", e.toString());
     }

@@ -2,7 +2,10 @@ package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.KnowledgeBase;
+import me.flyray.bsin.facade.response.EmbeddingVO;
+import me.flyray.bsin.facade.response.KnowledgeBaseVO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,32 +18,32 @@ public interface KnowledgeBaseService {
   /**
    * 创建知识库
    * */
-  Map<String, Object> add(Map<String, Object> requestMap);
+  KnowledgeBase add(Map<String, Object> requestMap);
 
   /**
    * 删除
    * */
-  Map<String, Object> delete(Map<String, Object> requestMap);
+  void delete(Map<String, Object> requestMap);
 
   /** 编辑 */
-  Map<String, Object> edit(Map<String, Object> requestMap);
+  void edit(Map<String, Object> requestMap);
 
   /** 详情 */
-  Map<String, Object> getDetail(Map<String, Object> requestMap) throws Exception;
+  KnowledgeBaseVO getDetail(Map<String, Object> requestMap) throws Exception;
 
   /** 分页查询 */
   IPage<KnowledgeBase> getPageList(Map<String, Object> requestMap);
 
   /** 查询 */
-  Map<String, Object> getList(Map<String, Object> requestMap);
+  List<KnowledgeBase> getList(Map<String, Object> requestMap);
 
   /** 获取默认copilot */
-  public Map<String, Object> getDefault(Map<String, Object> requestMap);
+  public KnowledgeBase getDefault(Map<String, Object> requestMap);
 
   /** 设置为默认copilot */
-  public Map<String, Object> setDefault(Map<String, Object> requestMap);
+  public void setDefault(Map<String, Object> requestMap);
 
   /** 检索 */
-  Map<String, Object> retrieval(Map<String, Object> requestMap);
+  List<EmbeddingVO> retrieval(Map<String, Object> requestMap);
 
 }

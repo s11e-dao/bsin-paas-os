@@ -259,9 +259,8 @@ public class WxPlatformClickHandlerBiz extends AbstractHandler {
 
             try {
               // 2.1 查询出该用户的bsinCopilot用户信息
-              Map<String, Object> resMap = null; //customerService.getMerchantCustomerInfoByUsername(requestMap);
-              Map<String, Object> data = (Map<String, Object>) resMap.get("data");
-              String customerNo = (String) data.get("customerNo");
+              WxPlatform wxPlatformRes = null; //customerService.getMerchantCustomerInfoByUsername(requestMap);
+              String customerNo = wxPlatformRes.getCustomerNo();
               if (customerNo.isEmpty()) {
                 return new TextBuilder()
                     .build(
@@ -275,21 +274,19 @@ public class WxPlatformClickHandlerBiz extends AbstractHandler {
               requestMap.put("customerNo", customerNo);
               // TODO: 无法获取merchantNo
               //              requestMap.put("merchantNo", defaultMerchantNo);
-              resMap = wxPlatformService.getDefault(requestMap);
+              wxPlatformRes = wxPlatformService.getDefault(requestMap);
 
-              if (resMap.get("data") == null || resMap.get("data") == "") {
+              if (wxPlatformRes == null) {
                 return new TextBuilder()
                     .build("未查询到s11e-copilot平台账户的微信机器人信息！", wxMessage, weixinService);
               }
-              data = (Map<String, Object>) resMap.get("data");
-              String wxPlatformNo = (String) data.get("serialNo");
+              String wxPlatformNo = wxPlatformRes.getSerialNo();
               requestMap.put("serialNo", wxPlatformNo);
               requestMap.put("operation", "loginWechat");
               String loginQrCodeUrl = "登录链接";
               try {
-                resMap = wxPlatformService.loginIn(requestMap);
-                data = (Map<String, Object>) resMap.get("data");
-                loginQrCodeUrl = (String) data.get("loginQrUrl");
+                wxPlatformRes = wxPlatformService.loginIn(requestMap);
+                loginQrCodeUrl = wxPlatformRes.getLoginQrUrl();
               } catch (Exception e) {
                 return new TextBuilder().build("wechatBot Service err!", wxMessage, weixinService);
                 //                return new TextBuilder().build(e.toString(), wxMessage,

@@ -3,30 +3,12 @@ package me.flyray.bsin.server.impl;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
-import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
-import org.apache.shenyu.client.apidocs.annotations.ApiModule;
-import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
-
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.AiCustomerFunction;
-import me.flyray.bsin.domain.entity.EmbeddingModel;
-import me.flyray.bsin.domain.entity.KnowledgeBase;
-import me.flyray.bsin.domain.entity.KnowledgeBaseFile;
-import me.flyray.bsin.domain.entity.KnowledgeBaseFileChunk;
+import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.VectorStoreType;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.KnowledgeBaseFileChunkService;
@@ -41,7 +23,18 @@ import me.flyray.bsin.server.biz.DocumentBiz;
 import me.flyray.bsin.server.biz.ModelBiz;
 import me.flyray.bsin.server.biz.VectorRetrievalBiz;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
+import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author leonard
@@ -74,7 +67,7 @@ public class KnowledgeBaseFileChunkServiceImpl implements KnowledgeBaseFileChunk
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public KnowledgeBaseFileChunk add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -177,13 +170,13 @@ public class KnowledgeBaseFileChunkServiceImpl implements KnowledgeBaseFileChunk
       throw new BusinessException("100000", e.toString());
     }
 
-    return RespBodyHandler.setRespBodyDto(knowledgeBaseFileChunk);
+    return knowledgeBaseFileChunk;
   }
 
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     String chunkNo = MapUtils.getString(requestMap, "chunkNo");
     if (chunkNo == null) {
       throw new BusinessException("100000", "知识库文件chunkNo为空!!!");
@@ -195,13 +188,12 @@ public class KnowledgeBaseFileChunkServiceImpl implements KnowledgeBaseFileChunk
     } catch (Exception e) {
       throw new BusinessException("100000", e.toString());
     }
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public void edit(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -253,42 +245,38 @@ public class KnowledgeBaseFileChunkServiceImpl implements KnowledgeBaseFileChunk
     if (knowledgeBase == null) {
       throw new BusinessException("100000", "未查询到关联的知识库: " + knowledgeBaseNo);
     }
-    try {
-      EmbeddingModel embeddingModel =
-          embeddingModelMapper.selectById(knowledgeBase.getEmbeddingModelNo());
-      if (embeddingModel == null) {
-        throw new BusinessException(
-            "100000", "未查询到关联知识库的索引模型: " + knowledgeBase.getEmbeddingModelNo());
-      }
-      // 选择embedding model 默认 AllMiniLmL6V2
-      dev.langchain4j.model.embedding.EmbeddingModel langchin4jEmbeddingModel =
-          modelBiz.getEmbeddingModel(embeddingModel);
-
-      // 向量化
-      Embedding embedding = langchin4jEmbeddingModel.embed(chunkText).content();
-      TextSegment segment = TextSegment.from(chunkText);
-      vectorRetrievalBiz.editDataFromVector(
-          embedding,
-          segment,
-          merchantNo,
-          VectorStoreType.KNOWLEDGE_BASE.getDesc(),
-          knowledgeBaseNo,
-          knowledgeBaseFileNo,
-          chunkNo,
-          merchantCollectionName,
-          partitionNameName,
-          embeddingModel.getDimension());
-      knowledgeBaseFileChunkMapper.updateById(knowledgeBaseFileChunk);
-    } catch (Exception e) {
-      throw new BusinessException("100000", e.toString());
+    EmbeddingModel embeddingModel =
+        embeddingModelMapper.selectById(knowledgeBase.getEmbeddingModelNo());
+    if (embeddingModel == null) {
+      throw new BusinessException(
+          "100000", "未查询到关联知识库的索引模型: " + knowledgeBase.getEmbeddingModelNo());
     }
-    return RespBodyHandler.RespBodyDto();
+    // 选择embedding model 默认 AllMiniLmL6V2
+    dev.langchain4j.model.embedding.EmbeddingModel langchin4jEmbeddingModel =
+        modelBiz.getEmbeddingModel(embeddingModel);
+
+    // 向量化
+    Embedding embedding = langchin4jEmbeddingModel.embed(chunkText).content();
+    TextSegment segment = TextSegment.from(chunkText);
+    vectorRetrievalBiz.editDataFromVector(
+        embedding,
+        segment,
+        merchantNo,
+        VectorStoreType.KNOWLEDGE_BASE.getDesc(),
+        knowledgeBaseNo,
+        knowledgeBaseFileNo,
+        chunkNo,
+        merchantCollectionName,
+        partitionNameName,
+        embeddingModel.getDimension());
+    knowledgeBaseFileChunkMapper.updateById(knowledgeBaseFileChunk);
+
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) throws Exception {
+  public KnowledgeBaseFileChunk getDetail(Map<String, Object> requestMap) throws Exception {
     String chunkNo = MapUtils.getString(requestMap, "chunkNo");
     if (chunkNo == null) {
       throw new BusinessException("100000", "知识库文件chunkNo为空!!!");
@@ -301,13 +289,13 @@ public class KnowledgeBaseFileChunkServiceImpl implements KnowledgeBaseFileChunk
     KnowledgeBaseFileChunk knowledgeBaseFileChunk =
         knowledgeBaseFileChunkMapper.selectById(chunkNo);
 
-    return RespBodyHandler.setRespBodyDto(knowledgeBaseFileChunk);
+    return knowledgeBaseFileChunk;
   }
 
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<KnowledgeBaseFileChunk> getPageList(Map<String, Object> requestMap) {
 
     KnowledgeBaseFileChunk knowledgeBaseFileChunk =
         BsinServiceContext.getReqBodyDto(KnowledgeBaseFileChunk.class, requestMap);
@@ -324,13 +312,13 @@ public class KnowledgeBaseFileChunkServiceImpl implements KnowledgeBaseFileChunk
         KnowledgeBaseFileChunk::getKnowledgeBaseFileNo,
         knowledgeBaseFileChunk.getKnowledgeBaseFileNo());
     IPage<KnowledgeBaseFileChunk> pageList = knowledgeBaseFileChunkMapper.selectPage(page, wrapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getList")
   @ShenyuDubboClient("/getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<KnowledgeBaseFileChunk> getList(Map<String, Object> requestMap) {
     KnowledgeBaseFileChunk knowledgeBaseFileChunk =
         BsinServiceContext.getReqBodyDto(KnowledgeBaseFileChunk.class, requestMap);
     LambdaUpdateWrapper<KnowledgeBaseFileChunk> wrapper = new LambdaUpdateWrapper<>();
@@ -344,7 +332,7 @@ public class KnowledgeBaseFileChunkServiceImpl implements KnowledgeBaseFileChunk
         knowledgeBaseFileChunk.getKnowledgeBaseFileNo());
     List<KnowledgeBaseFileChunk> knowledgeBaseChunkList =
         knowledgeBaseFileChunkMapper.selectList(wrapper);
-    return RespBodyHandler.setRespBodyListDto(knowledgeBaseChunkList);
+    return knowledgeBaseChunkList;
   }
 
 }

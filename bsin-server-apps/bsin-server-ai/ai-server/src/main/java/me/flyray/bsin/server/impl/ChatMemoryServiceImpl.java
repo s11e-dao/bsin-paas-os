@@ -3,7 +3,17 @@ package me.flyray.bsin.server.impl;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.ChatMemory;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.service.ChatMemoryService;
+import me.flyray.bsin.infrastructure.mapper.ChatMemoryMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -15,19 +25,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.ChatMemory;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.ChatMemoryService;
-import me.flyray.bsin.infrastructure.mapper.ChatMemoryMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
 
 /**
  * @author leonard
@@ -45,7 +42,7 @@ public class ChatMemoryServiceImpl implements ChatMemoryService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public ChatMemory add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -62,46 +59,44 @@ public class ChatMemoryServiceImpl implements ChatMemoryService {
     chatMemory.setMerchantNo(merchantNo);
     chatMemory.setCustomerNo(customerNo);
     chatMemoryMapper.insert(chatMemory);
-    return RespBodyHandler.setRespBodyDto(chatMemory);
+    return chatMemory;
   }
 
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     String chatMemoryNo = MapUtils.getString(requestMap, "serialNo");
     if (chatMemoryNo == null) {
       chatMemoryNo = MapUtils.getString(requestMap, "chatMemoryNo");
     }
     chatMemoryMapper.deleteById(chatMemoryNo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public void edit(Map<String, Object> requestMap) {
     ChatMemory ChatMemory = BsinServiceContext.getReqBodyDto(ChatMemory.class, requestMap);
     chatMemoryMapper.updateById(ChatMemory);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public ChatMemory getDetail(Map<String, Object> requestMap) {
     String chatMemoryNo = MapUtils.getString(requestMap, "serialNo");
     if (chatMemoryNo == null) {
       chatMemoryNo = MapUtils.getString(requestMap, "chatMemoryNo");
     }
     ChatMemory chatMemory = chatMemoryMapper.selectById(chatMemoryNo);
-    return RespBodyHandler.setRespBodyDto(chatMemory);
+    return chatMemory;
   }
 
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<ChatMemory> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -128,13 +123,13 @@ public class ChatMemoryServiceImpl implements ChatMemoryService {
         ChatMemory::getStatus,
         chatMemory.getStatus());
     IPage<ChatMemory> pageList = chatMemoryMapper.selectPage(page, wrapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getList")
   @ShenyuDubboClient("/getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<ChatMemory> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -160,7 +155,7 @@ public class ChatMemoryServiceImpl implements ChatMemoryService {
         ChatMemory::getStatus,
         chatMemory.getStatus());
     List<ChatMemory> embeddingModelList = chatMemoryMapper.selectList(wrapper);
-    return RespBodyHandler.setRespBodyListDto(embeddingModelList);
+    return embeddingModelList;
   }
 
 }

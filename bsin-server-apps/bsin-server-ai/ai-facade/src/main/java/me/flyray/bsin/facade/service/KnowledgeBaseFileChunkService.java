@@ -1,5 +1,9 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.KnowledgeBaseFileChunk;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,20 +14,21 @@ import java.util.Map;
 public interface KnowledgeBaseFileChunkService {
 
   /** 添加知识库文件片段 */
-  Map<String, Object> add(Map<String, Object> requestMap);
+  KnowledgeBaseFileChunk add(Map<String, Object> requestMap);
 
   /** 删除 */
-  Map<String, Object> delete(Map<String, Object> requestMap);
+  void delete(Map<String, Object> requestMap);
 
   /** 编辑 */
-  Map<String, Object> edit(Map<String, Object> requestMap);
+  void edit(Map<String, Object> requestMap) throws Exception;
 
   /** 详情 */
-  Map<String, Object> getDetail(Map<String, Object> requestMap) throws Exception;
+  KnowledgeBaseFileChunk getDetail(Map<String, Object> requestMap) throws Exception;
 
   /** 分页查询 */
-  Map<String, Object> getPageList(Map<String, Object> requestMap);
+  IPage<KnowledgeBaseFileChunk> getPageList(Map<String, Object> requestMap);
 
   /** 查询 */
-  Map<String, Object> getList(Map<String, Object> requestMap);
+  List<KnowledgeBaseFileChunk> getList(Map<String, Object> requestMap);
+
 }

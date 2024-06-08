@@ -3,7 +3,17 @@ package me.flyray.bsin.server.impl;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.OutputParsers;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.service.OutputParsersService;
+import me.flyray.bsin.infrastructure.mapper.OutputParsersMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -15,19 +25,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.OutputParsers;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.OutputParsersService;
-import me.flyray.bsin.infrastructure.mapper.OutputParsersMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
 
 /**
  * @author leonard
@@ -46,7 +43,7 @@ public class OutputParsersServiceImpl implements OutputParsersService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public OutputParsers add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -63,46 +60,44 @@ public class OutputParsersServiceImpl implements OutputParsersService {
     outputParsers.setMerchantNo(merchantNo);
     outputParsers.setCustomerNo(customerNo);
     outputParsersMapper.insert(outputParsers);
-    return RespBodyHandler.setRespBodyDto(outputParsers);
+    return outputParsers;
   }
 
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     String outputParsersNo = MapUtils.getString(requestMap, "serialNo");
     if (outputParsersNo == null) {
       outputParsersNo = MapUtils.getString(requestMap, "outputParsersNo");
     }
     outputParsersMapper.deleteById(outputParsersNo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public void edit(Map<String, Object> requestMap) {
     OutputParsers OutputParsers = BsinServiceContext.getReqBodyDto(OutputParsers.class, requestMap);
     outputParsersMapper.updateById(OutputParsers);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public OutputParsers getDetail(Map<String, Object> requestMap) {
     String outputParsersNo = MapUtils.getString(requestMap, "serialNo");
     if (outputParsersNo == null) {
       outputParsersNo = MapUtils.getString(requestMap, "outputParsersNo");
     }
     OutputParsers outputParsers = outputParsersMapper.selectById(outputParsersNo);
-    return RespBodyHandler.setRespBodyDto(outputParsers);
+    return outputParsers;
   }
 
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<OutputParsers> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -131,13 +126,13 @@ public class OutputParsersServiceImpl implements OutputParsersService {
         OutputParsers::getStatus,
         outputParsers.getStatus());
     IPage<OutputParsers> pageList = outputParsersMapper.selectPage(page, wrapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getList")
   @ShenyuDubboClient("/getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<OutputParsers> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -165,7 +160,7 @@ public class OutputParsersServiceImpl implements OutputParsersService {
         OutputParsers::getStatus,
         outputParsers.getStatus());
     List<OutputParsers> embeddingModelList = outputParsersMapper.selectList(wrapper);
-    return RespBodyHandler.setRespBodyListDto(embeddingModelList);
+    return embeddingModelList;
   }
 
 }

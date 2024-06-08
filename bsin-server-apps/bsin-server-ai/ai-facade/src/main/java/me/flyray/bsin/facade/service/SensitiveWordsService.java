@@ -14,16 +14,16 @@ import java.util.Map;
 public interface SensitiveWordsService {
 
   /** 添加 */
-  Map<String, Object> add(Map<String, Object> requestMap);
+  SensitiveWords add(Map<String, Object> requestMap);
 
   /** 删除 */
-  Map<String, Object> delete(Map<String, Object> requestMap);
+  void delete(Map<String, Object> requestMap);
 
   /** 编辑 */
-  Map<String, Object> edit(Map<String, Object> requestMap);
+  void edit(Map<String, Object> requestMap);
 
   /** 详情 */
-  Map<String, Object> getDetail(Map<String, Object> requestMap);
+  SensitiveWords getDetail(Map<String, Object> requestMap);
 
   /** 分页查询 */
   IPage<SensitiveWords> getPageList(Map<String, Object> requestMap);

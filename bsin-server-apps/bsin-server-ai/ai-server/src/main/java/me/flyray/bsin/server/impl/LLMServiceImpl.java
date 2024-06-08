@@ -1,11 +1,23 @@
 package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
+import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.LLMParam;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.service.LLMService;
+import me.flyray.bsin.infrastructure.mapper.LLMMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -18,21 +30,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-
-import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
-import cn.hutool.crypto.symmetric.SymmetricCrypto;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.LLMParam;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.LLMService;
-import me.flyray.bsin.infrastructure.mapper.LLMMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
 
 /**
  * @author leonard
@@ -54,7 +51,7 @@ public class LLMServiceImpl implements LLMService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public LLMParam add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -88,38 +85,36 @@ public class LLMServiceImpl implements LLMService {
       llmParam.setApiKey(aes.encryptHex(llmParam.getApiKey()));
     }
     llmMapper.insert(llmParam);
-    return RespBodyHandler.setRespBodyDto(llmParam);
+    return llmParam;
   }
 
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     llmMapper.deleteById(serialNo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public void edit(Map<String, Object> requestMap) {
     LLMParam llmParam = BsinServiceContext.getReqBodyDto(LLMParam.class, requestMap);
     if (llmParam.getApiKey() != null) {
       SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
       llmParam.setApiKey(aes.encryptHex(llmParam.getApiKey()));
     }
     llmMapper.updateById(llmParam);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public LLMParam getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     LLMParam llmParam = llmMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(llmParam);
+    return llmParam;
   }
 
   @ApiDoc(desc = "getPageList")
@@ -174,7 +169,7 @@ public class LLMServiceImpl implements LLMService {
   @ApiDoc(desc = "getList")
   @ShenyuDubboClient("/getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<LLMParam> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -208,13 +203,13 @@ public class LLMServiceImpl implements LLMService {
     // 匹配系统资源
     wrapper.or().eq(LLMParam::getEditable, false);
     List<LLMParam> embeddingModelList = llmMapper.selectList(wrapper);
-    return RespBodyHandler.setRespBodyListDto(embeddingModelList);
+    return embeddingModelList;
   }
 
   @ApiDoc(desc = "getDefault")
   @ShenyuDubboClient("/getDefault")
   @Override
-  public Map<String, Object> getDefault(Map<String, Object> requestMap) {
+  public LLMParam getDefault(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -234,13 +229,13 @@ public class LLMServiceImpl implements LLMService {
     wrapper.eq(StringUtils.isNotBlank(type), LLMParam::getType, type);
     wrapper.eq(LLMParam::getDefaultFlag, true);
     LLMParam llmParam = llmMapper.selectOne(wrapper);
-    return RespBodyHandler.setRespBodyDto(llmParam);
+    return llmParam;
   }
 
   @ApiDoc(desc = "setDefault")
   @ShenyuDubboClient("/setDefault")
   @Override
-  public Map<String, Object> setDefault(Map<String, Object> requestMap) {
+  public void setDefault(Map<String, Object> requestMap) {
     LLMParam llmParam = BsinServiceContext.getReqBodyDto(LLMParam.class, requestMap);
     LambdaUpdateWrapper<LLMParam> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
     lambdaUpdateWrapper.set(LLMParam::getDefaultFlag, llmParam.getDefaultFlag());
@@ -260,7 +255,6 @@ public class LLMServiceImpl implements LLMService {
                   llmParam.getCustomerNo()));
     }
     llmMapper.update(null, lambdaUpdateWrapper);
-    return RespBodyHandler.RespBodyDto();
   }
 
 }

@@ -1,5 +1,9 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.AiCustomerFunction;
+
+import java.util.List;
 import java.util.Map;
 
 
@@ -11,34 +15,34 @@ import java.util.Map;
 public interface AiCustomerFunctionService {
 
   /** 添加可订阅服务套餐 */
-  Map<String, Object> add(Map<String, Object> requestMap);
+  AiCustomerFunction add(Map<String, Object> requestMap);
 
   /** 删除 */
-  Map<String, Object> delete(Map<String, Object> requestMap);
+  void delete(Map<String, Object> requestMap);
 
   /** 编辑 */
-  public Map<String, Object> edit(Map<String, Object> requestMap);
+  public AiCustomerFunction edit(Map<String, Object> requestMap);
 
   /** 查询订阅服务功能信息 */
-  public Map<String, Object> getDetail(Map<String, Object> requestMap);
+  public AiCustomerFunction getDetail(Map<String, Object> requestMap);
 
   /** 创建功能服务订单 */
-  public Map<String, Object> createOrder(Map<String, Object> requestMap);
+  public AiCustomerFunction createOrder(Map<String, Object> requestMap);
 
   /** 审核订单 */
-  public Map<String, Object> auditOrder(Map<String, Object> requestMap);
+  public AiCustomerFunction auditOrder(Map<String, Object> requestMap);
 
   /** 可订阅的功能服务 */
-  public Map<String, Object> getSubscribableList(Map<String, Object> requestMap);
+  public List<AiCustomerFunction> getSubscribableList(Map<String, Object> requestMap);
 
   /** 所有订阅订单 */
-  public Map<String, Object> getAllFunctionSubscribeList(Map<String, Object> requestMap);
+  public List<AiCustomerFunction> getAllFunctionSubscribeList(Map<String, Object> requestMap);
 
   /** 分页查询客户信息 */
-  public Map<String, Object> getList(Map<String, Object> requestMap);
+  public List<AiCustomerFunction> getList(Map<String, Object> requestMap);
 
   /** 分页查询客户信息 */
-  public Map<String, Object> getPageList(Map<String, Object> requestMap);
+  public IPage<AiCustomerFunction> getPageList(Map<String, Object> requestMap);
 
   /** 获取登录验证码 */
   public Map<String, Object> getLoginVerifyCode(Map<String, Object> requestMap);

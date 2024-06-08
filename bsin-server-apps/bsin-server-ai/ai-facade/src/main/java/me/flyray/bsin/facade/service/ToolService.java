@@ -1,5 +1,9 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.ToolInfo;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,20 +14,20 @@ import java.util.Map;
 public interface ToolService {
 
   /** 添加 */
-  Map<String, Object> add(Map<String, Object> requestMap);
+  ToolInfo add(Map<String, Object> requestMap);
 
   /** 删除 */
-  Map<String, Object> delete(Map<String, Object> requestMap);
+  void delete(Map<String, Object> requestMap);
 
   /** 编辑 */
-  Map<String, Object> edit(Map<String, Object> requestMap);
+  void edit(Map<String, Object> requestMap);
 
   /** 详情 */
-  Map<String, Object> getDetail(Map<String, Object> requestMap);
+  ToolInfo getDetail(Map<String, Object> requestMap);
 
   /** 分页查询 */
-  Map<String, Object> getPageList(Map<String, Object> requestMap);
+  IPage<?> getPageList(Map<String, Object> requestMap);
 
   /** 查询 */
-  Map<String, Object> getList(Map<String, Object> requestMap);
+  List<ToolInfo> getList(Map<String, Object> requestMap);
 }

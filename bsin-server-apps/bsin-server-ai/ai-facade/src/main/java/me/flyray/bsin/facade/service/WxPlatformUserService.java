@@ -1,5 +1,8 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.WxPlatformUser;
+
 import java.util.Map;
 
 /**
@@ -10,17 +13,17 @@ import java.util.Map;
 public interface WxPlatformUserService {
 
   /** 添加 */
-  Map<String, Object> add(Map<String, Object> requestMap);
+  WxPlatformUser add(Map<String, Object> requestMap);
 
   /** 删除 */
-  Map<String, Object> delete(Map<String, Object> requestMap);
+  void delete(Map<String, Object> requestMap);
 
   /** 编辑 */
-  Map<String, Object> edit(Map<String, Object> requestMap);
+  void edit(Map<String, Object> requestMap);
 
   /** 详情 */
-  Map<String, Object> getDetail(Map<String, Object> requestMap);
+  WxPlatformUser getDetail(Map<String, Object> requestMap);
 
   /** 分页查询 */
-  Map<String, Object> getPageList(Map<String, Object> requestMap);
+  IPage<WxPlatformUser> getPageList(Map<String, Object> requestMap);
 }

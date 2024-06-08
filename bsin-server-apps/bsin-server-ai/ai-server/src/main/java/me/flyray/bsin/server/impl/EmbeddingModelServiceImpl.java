@@ -1,12 +1,23 @@
 package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
+import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import me.flyray.bsin.domain.entity.LLMParam;
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.EmbeddingModel;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.service.EmbeddingModelService;
+import me.flyray.bsin.infrastructure.mapper.EmbeddingModelMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -19,21 +30,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-
-import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
-import cn.hutool.crypto.symmetric.SymmetricCrypto;
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.EmbeddingModel;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.EmbeddingModelService;
-import me.flyray.bsin.infrastructure.mapper.EmbeddingModelMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
 
 /**
  * @author leonard
@@ -55,7 +51,7 @@ public class EmbeddingModelServiceImpl implements EmbeddingModelService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public EmbeddingModel add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -90,22 +86,21 @@ public class EmbeddingModelServiceImpl implements EmbeddingModelService {
       embeddingModel.setApiKey(aes.encryptHex(embeddingModel.getApiKey()));
     }
     embeddingModelMapper.insert(embeddingModel);
-    return RespBodyHandler.setRespBodyDto(embeddingModel);
+    return embeddingModel;
   }
 
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     embeddingModelMapper.deleteById(serialNo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public void edit(Map<String, Object> requestMap) {
     EmbeddingModel EmbeddingModel =
         BsinServiceContext.getReqBodyDto(EmbeddingModel.class, requestMap);
     if (EmbeddingModel.getApiKey() != null) {
@@ -113,16 +108,15 @@ public class EmbeddingModelServiceImpl implements EmbeddingModelService {
       EmbeddingModel.setApiKey(aes.encryptHex(EmbeddingModel.getApiKey()));
     }
     embeddingModelMapper.updateById(EmbeddingModel);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public EmbeddingModel getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     EmbeddingModel embeddingModel = embeddingModelMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(embeddingModel);
+    return embeddingModel;
   }
 
   @ApiDoc(desc = "getPageList")
@@ -181,7 +175,7 @@ public class EmbeddingModelServiceImpl implements EmbeddingModelService {
   @ApiDoc(desc = "getList")
   @ShenyuDubboClient("/getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<EmbeddingModel> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -219,13 +213,13 @@ public class EmbeddingModelServiceImpl implements EmbeddingModelService {
     // 匹配系统资源
     wrapper.or().eq(EmbeddingModel::getEditable, false);
     List<EmbeddingModel> embeddingModelList = embeddingModelMapper.selectList(wrapper);
-    return RespBodyHandler.setRespBodyListDto(embeddingModelList);
+    return embeddingModelList;
   }
 
   @ApiDoc(desc = "getDefault")
   @ShenyuDubboClient("/getDefault")
   @Override
-  public Map<String, Object> getDefault(Map<String, Object> requestMap) {
+  public EmbeddingModel getDefault(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -245,13 +239,13 @@ public class EmbeddingModelServiceImpl implements EmbeddingModelService {
     wrapper.eq(StringUtils.isNotBlank(type), EmbeddingModel::getType, type);
     wrapper.eq(EmbeddingModel::getDefaultFlag, true);
     EmbeddingModel embeddingModel = embeddingModelMapper.selectOne(wrapper);
-    return RespBodyHandler.setRespBodyDto(embeddingModel);
+    return embeddingModel;
   }
 
   @ApiDoc(desc = "setDefault")
   @ShenyuDubboClient("/setDefault")
   @Override
-  public Map<String, Object> setDefault(Map<String, Object> requestMap) {
+  public void setDefault(Map<String, Object> requestMap) {
     EmbeddingModel embeddingModel =
         BsinServiceContext.getReqBodyDto(EmbeddingModel.class, requestMap);
     LambdaUpdateWrapper<EmbeddingModel> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
@@ -272,7 +266,6 @@ public class EmbeddingModelServiceImpl implements EmbeddingModelService {
                   embeddingModel.getCustomerNo()));
     }
     embeddingModelMapper.update(null, lambdaUpdateWrapper);
-    return RespBodyHandler.RespBodyDto();
   }
 
 }

@@ -1,21 +1,5 @@
 package me.flyray.bsin.server.impl;
 
-import static java.util.stream.Collectors.joining;
-
-import org.apache.commons.collections4.MapUtils;
-import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
-import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
-import org.apache.shenyu.client.apidocs.annotations.ApiModule;
-import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.model.chat.ChatLanguageModel;
@@ -43,7 +27,21 @@ import me.flyray.bsin.server.biz.VectorRetrievalBiz;
 import me.flyray.bsin.server.memory.chat.BufferWindowInRamStoreMemory;
 import me.flyray.bsin.server.memory.store.InRamStore;
 import me.flyray.bsin.server.memory.store.InRedisStore;
-import me.flyray.bsin.server.utils.RespBodyHandler;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
+import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.joining;
 
 @ShenyuDubboService(path = "/chat", timeout = 6000)
 @ApiModule(value = "chat")
@@ -78,7 +76,7 @@ public class ChatServiceImpl implements ChatService {
   @ApiDoc(desc = "getChatHistoryList")
   @ShenyuDubboClient("/getChatHistoryList")
   @Override
-  public Map<String, Object> getChatHistoryList(Map<String, Object> requestMap) {
+  public List<RedisChatMessage> getChatHistoryList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -110,7 +108,7 @@ public class ChatServiceImpl implements ChatService {
     String tenantId = loginUser.getTenantId();
     List<RedisChatMessage> redisChatMessages =
         inRedisStore.getMessages(chatType, customerNo, receiver);
-    return RespBodyHandler.setRespBodyListDto(redisChatMessages);
+    return redisChatMessages;
   }
 
   @ApiDoc(desc = "chatWithKnowledgeBase")
@@ -230,7 +228,7 @@ public class ChatServiceImpl implements ChatService {
       requestMap.put("chatHistorySummary", null);
       requestMap.put(
           "chatBufferWindow", promptEngineeringBiz.toPromptMessages(chatBufferWindowList));
-      return RespBodyHandler.setRespBodyDto(requestMap);
+      return requestMap;
     } catch (Exception e) {
       inRedisStore.rightPushMessage(
           "chat:",
@@ -261,7 +259,7 @@ public class ChatServiceImpl implements ChatService {
     String question = MapUtils.getString(requestMap, "question");
     String promptTemplateNo = MapUtils.getString(requestMap, "promptTemplateNo");
 
-    return RespBodyHandler.setRespBodyDto(requestMap);
+    return requestMap;
   }
 
   @ApiDoc(desc = "chatWithChiefBrandOfficer")
@@ -277,7 +275,7 @@ public class ChatServiceImpl implements ChatService {
     String question = MapUtils.getString(requestMap, "question");
     String promptTemplateNo = MapUtils.getString(requestMap, "promptTemplateNo");
 
-    return RespBodyHandler.setRespBodyDto(requestMap);
+    return requestMap;
   }
 
   @ApiDoc(desc = "chatWithDigitalAvatar")
@@ -298,13 +296,13 @@ public class ChatServiceImpl implements ChatService {
     String question = MapUtils.getString(requestMap, "question");
     String promptTemplateNo = MapUtils.getString(requestMap, "promptTemplateNo");
 
-    return RespBodyHandler.setRespBodyDto(requestMap);
+    return requestMap;
   }
 
   @ApiDoc(desc = "getQuickReplies")
   @ShenyuDubboClient("/getQuickReplies")
   @Override
-  public Map<String, Object> getQuickReplies(Map<String, Object> requestMap) {
+  public List<QuickReplyMessage> getQuickReplies(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -325,7 +323,7 @@ public class ChatServiceImpl implements ChatService {
     String tenantId = loginUser.getTenantId();
     List<QuickReplyMessage> quickReplyMessages =
         chatBiz.generateQuickReplies(new ArrayList<String>(Arrays.asList(question)), 3);
-    return RespBodyHandler.setRespBodyListDto(quickReplyMessages);
+    return quickReplyMessages;
   }
 
 }

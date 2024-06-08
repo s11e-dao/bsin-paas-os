@@ -4,7 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.PromptTemplateParam;
+import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.service.PromptTemplateService;
+import me.flyray.bsin.infrastructure.mapper.PromptTemplateMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -16,19 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.PromptTemplateParam;
-import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.PromptTemplateService;
-import me.flyray.bsin.infrastructure.mapper.PromptTemplateMapper;
-import me.flyray.bsin.security.contex.LoginInfoContextHelper;
-import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
-import me.flyray.bsin.utils.BsinSnowflake;
 
 /**
  * @author leonard
@@ -47,7 +44,7 @@ public class PromptTemplateServiceImpl implements PromptTemplateService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public PromptTemplateParam add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -76,47 +73,45 @@ public class PromptTemplateServiceImpl implements PromptTemplateService {
     promptTemplateParam.setType("0");
     promptTemplateParam.setEditable(true);
     promptTemplateMapper.insert(promptTemplateParam);
-    return RespBodyHandler.setRespBodyDto(promptTemplateParam);
+    return promptTemplateParam;
   }
 
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     String promptTemplateNo = MapUtils.getString(requestMap, "serialNo");
     if (promptTemplateNo == null) {
       promptTemplateNo = MapUtils.getString(requestMap, "promptTemplateNo");
     }
     promptTemplateMapper.deleteById(promptTemplateNo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public void edit(Map<String, Object> requestMap) {
     PromptTemplateParam PromptTemplateParam =
         BsinServiceContext.getReqBodyDto(PromptTemplateParam.class, requestMap);
     promptTemplateMapper.updateById(PromptTemplateParam);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public PromptTemplateParam getDetail(Map<String, Object> requestMap) {
     String promptTemplateNo = MapUtils.getString(requestMap, "serialNo");
     if (promptTemplateNo == null) {
       promptTemplateNo = MapUtils.getString(requestMap, "promptTemplateNo");
     }
     PromptTemplateParam promptTemplateParam = promptTemplateMapper.selectById(promptTemplateNo);
-    return RespBodyHandler.setRespBodyDto(promptTemplateParam);
+    return promptTemplateParam;
   }
 
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<PromptTemplateParam> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -151,13 +146,13 @@ public class PromptTemplateServiceImpl implements PromptTemplateService {
     // 匹配系统资源
     wrapper.or().eq(PromptTemplateParam::getEditable, false);
     IPage<PromptTemplateParam> pageList = promptTemplateMapper.selectPage(page, wrapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getList")
   @ShenyuDubboClient("/getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<PromptTemplateParam> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -191,13 +186,13 @@ public class PromptTemplateServiceImpl implements PromptTemplateService {
     // 匹配系统资源
     wrapper.or().eq(PromptTemplateParam::getEditable, false);
     List<PromptTemplateParam> embeddingModelList = promptTemplateMapper.selectList(wrapper);
-    return RespBodyHandler.setRespBodyListDto(embeddingModelList);
+    return embeddingModelList;
   }
 
   @ApiDoc(desc = "getDefault")
   @ShenyuDubboClient("/getDefault")
   @Override
-  public Map<String, Object> getDefault(Map<String, Object> requestMap) {
+  public PromptTemplateParam getDefault(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -217,13 +212,13 @@ public class PromptTemplateServiceImpl implements PromptTemplateService {
     wrapper.eq(StringUtils.isNotBlank(type), PromptTemplateParam::getType, type);
     wrapper.eq(PromptTemplateParam::getDefaultFlag, true);
     PromptTemplateParam promptTemplateParam = promptTemplateMapper.selectOne(wrapper);
-    return RespBodyHandler.setRespBodyDto(promptTemplateParam);
+    return promptTemplateParam;
   }
 
   @ApiDoc(desc = "setDefault")
   @ShenyuDubboClient("/setDefault")
   @Override
-  public Map<String, Object> setDefault(Map<String, Object> requestMap) {
+  public void setDefault(Map<String, Object> requestMap) {
     PromptTemplateParam promptTemplateParam =
         BsinServiceContext.getReqBodyDto(PromptTemplateParam.class, requestMap);
     LambdaUpdateWrapper<PromptTemplateParam> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
@@ -245,7 +240,7 @@ public class PromptTemplateServiceImpl implements PromptTemplateService {
                   promptTemplateParam.getCustomerNo()));
     }
     promptTemplateMapper.update(null, lambdaUpdateWrapper);
-    return RespBodyHandler.RespBodyDto();
+
   }
 
 }

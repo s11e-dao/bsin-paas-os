@@ -1,30 +1,15 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
+import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
-import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
-import org.apache.shenyu.client.apidocs.annotations.ApiModule;
-import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
-import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.menu.WxMenu;
 import me.chanjar.weixin.common.bean.menu.WxMenuButton;
@@ -43,11 +28,23 @@ import me.flyray.bsin.infrastructure.mapper.WxPlatformMenuMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.thirdauth.wx.utils.BsinWxCpServiceUtil;
 import me.flyray.bsin.thirdauth.wx.utils.BsinWxMpServiceUtil;
 import me.flyray.bsin.thirdauth.wx.utils.WxMpProperties;
 import me.flyray.bsin.utils.BsinSnowflake;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
+import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author bolei
@@ -82,50 +79,48 @@ public class WxPlatformMenuServiceImpl implements WxPlatformMenuService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public WxPlatformMenu add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     WxPlatformMenu wxPlatformMenu =
         BsinServiceContext.getReqBodyDto(WxPlatformMenu.class, requestMap);
     wxPlatformMenu.setSerialNo(BsinSnowflake.getId());
     wxPlatformMenuMapper.insert(wxPlatformMenu);
-    return RespBodyHandler.setRespBodyDto(wxPlatformMenu);
+    return wxPlatformMenu;
   }
 
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     String serialNo = (String) requestMap.get("serialNo");
     wxPlatformMenuMapper.deleteById(serialNo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public void edit(Map<String, Object> requestMap) {
     WxPlatformMenu wxPlatformMenu =
         BsinServiceContext.getReqBodyDto(WxPlatformMenu.class, requestMap);
     if (Boolean.TRUE.equals(wxPlatformMenu.getDefaultFlag())) {
       setDefault(requestMap);
     }
     wxPlatformMenuMapper.updateById(wxPlatformMenu);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public WxPlatformMenu getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     WxPlatformMenu wxPlatformMenu = wxPlatformMenuMapper.selectById(serialNo);
-    return RespBodyHandler.setRespBodyDto(wxPlatformMenu);
+    return wxPlatformMenu;
   }
 
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<WxPlatformMenu> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -156,13 +151,13 @@ public class WxPlatformMenuServiceImpl implements WxPlatformMenuService {
         WxPlatformMenu::getStatus,
         wxPlatformMenu.getStatus());
     IPage<WxPlatformMenu> pageList = wxPlatformMenuMapper.selectPage(page, wrapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getList")
   @ShenyuDubboClient("/getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<WxPlatformMenu> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -190,13 +185,13 @@ public class WxPlatformMenuServiceImpl implements WxPlatformMenuService {
         WxPlatformMenu::getStatus,
         wxPlatformMenu.getStatus());
     List<WxPlatformMenu> wxPlatformMenuList = wxPlatformMenuMapper.selectList(wrapper);
-    return RespBodyHandler.setRespBodyListDto(wxPlatformMenuList);
+    return wxPlatformMenuList;
   }
 
   @ApiDoc(desc = "getDefault")
   @ShenyuDubboClient("/getDefault")
   @Override
-  public Map<String, Object> getDefault(Map<String, Object> requestMap) {
+  public WxPlatformMenu getDefault(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -213,13 +208,13 @@ public class WxPlatformMenuServiceImpl implements WxPlatformMenuService {
     wrapper.eq(StringUtils.isNotBlank(type), WxPlatformMenu::getType, type);
     wrapper.eq(WxPlatformMenu::getDefaultFlag, true);
     WxPlatformMenu wxPlatformMenu = wxPlatformMenuMapper.selectOne(wrapper);
-    return RespBodyHandler.setRespBodyDto(wxPlatformMenu);
+    return wxPlatformMenu;
   }
 
   @ApiDoc(desc = "setDefault")
   @ShenyuDubboClient("/setDefault")
   @Override
-  public Map<String, Object> setDefault(Map<String, Object> requestMap) {
+  public void setDefault(Map<String, Object> requestMap) {
     WxPlatformMenu wxPlatformMenu =
         BsinServiceContext.getReqBodyDto(WxPlatformMenu.class, requestMap);
     LambdaUpdateWrapper<WxPlatformMenu> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
@@ -235,7 +230,6 @@ public class WxPlatformMenuServiceImpl implements WxPlatformMenuService {
               .set(WxPlatformMenu::getDefaultFlag, Boolean.FALSE));
     }
     wxPlatformMenuMapper.update(null, lambdaUpdateWrapper);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "syncMenu")
@@ -243,22 +237,22 @@ public class WxPlatformMenuServiceImpl implements WxPlatformMenuService {
   @Override
   public Map<String, Object> syncMenu(Map<String, Object> requestMap) {
 
-    return RespBodyHandler.setRespBodyDto(null);
+    return null;
   }
 
   @ApiDoc(desc = "getMenuTemplateMenuTreeList")
   @ShenyuDubboClient("/getMenuTemplateMenuTreeList")
   @Override
-  public Map<String, Object> getMenuTemplateMenuTreeList(Map<String, Object> requestMap) {
+  public List<WxPlatformMenuTreeVo> getMenuTemplateMenuTreeList(Map<String, Object> requestMap) {
     List<WxPlatformMenuTreeVo> wxPlatformMenuTreeVos = new ArrayList<WxPlatformMenuTreeVo>();
 
-    return RespBodyHandler.setRespBodyListDto(wxPlatformMenuTreeVos);
+    return wxPlatformMenuTreeVos;
   }
 
   @ApiDoc(desc = "getMenuTemplateMenuTree")
   @ShenyuDubboClient("/getMenuTemplateMenuTree")
   @Override
-  public Map<String, Object> getMenuTemplateMenuTree(Map<String, Object> requestMap) {
+  public WxPlatformMenuTemplateVo getMenuTemplateMenuTree(Map<String, Object> requestMap) {
     // 根据MenuTemplate ID 查出菜单模版详情
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     WxPlatform wxPlatform = wxPlatformMapper.selectById(serialNo);
@@ -273,7 +267,7 @@ public class WxPlatformMenuServiceImpl implements WxPlatformMenuService {
     // 填充菜单树
     wxPlatformMenuTemplateVo.setChildren(wxPlatformMenuTreeVoOnes);
 
-    return RespBodyHandler.setRespBodyDto(wxPlatformMenuTemplateVo);
+    return wxPlatformMenuTemplateVo;
   }
 
   @ApiDoc(desc = "syncMpMenu")
@@ -382,7 +376,7 @@ public class WxPlatformMenuServiceImpl implements WxPlatformMenuService {
         throw new BusinessException("100000", e.toString());
       }
 
-      return RespBodyHandler.setRespBodyDto(requestMap);
+      return requestMap;
 
     } catch (Exception e) {
       throw new BusinessException("100000", e.toString());
@@ -428,7 +422,7 @@ public class WxPlatformMenuServiceImpl implements WxPlatformMenuService {
       }
       WxMpService wxMpService = bsinWxMpServiceUtil.getWxMpService(config, redisConfig);
       wxMpService.getMenuService().menuDelete();
-      return RespBodyHandler.setRespBodyDto(requestMap);
+      return requestMap;
     } catch (Exception e) {
       throw new BusinessException("100000", e.toString());
     }

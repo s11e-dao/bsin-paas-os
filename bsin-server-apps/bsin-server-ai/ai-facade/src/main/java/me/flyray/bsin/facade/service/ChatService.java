@@ -1,12 +1,16 @@
 package me.flyray.bsin.facade.service;
 
+import me.flyray.bsin.domain.entity.QuickReplyMessage;
+import me.flyray.bsin.domain.entity.RedisChatMessage;
+
+import java.util.List;
 import java.util.Map;
 
 public interface ChatService {
 
 
   /** getChatList */
-  public Map<String, Object> getChatHistoryList(Map<String, Object> requestMap);
+  public List<RedisChatMessage> getChatHistoryList(Map<String, Object> requestMap);
 
 
   /** 知识库问答聊天：
@@ -27,6 +31,6 @@ public interface ChatService {
   /** 快捷回复：
    * 根据上下文聊天内容和知识库内容，生成快捷回复
    * */
-  public Map<String, Object> getQuickReplies(Map<String, Object> requestMap);
+  public List<QuickReplyMessage> getQuickReplies(Map<String, Object> requestMap);
 
 }

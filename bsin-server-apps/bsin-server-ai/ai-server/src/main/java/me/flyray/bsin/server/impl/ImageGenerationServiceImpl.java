@@ -1,24 +1,5 @@
 package me.flyray.bsin.server.impl;
 
-import static java.net.Proxy.Type.HTTP;
-import static dev.ai4j.openai4j.image.ImageModel.DALL_E_QUALITY_HD;
-
-
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
-import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
-import org.apache.shenyu.client.apidocs.annotations.ApiModule;
-import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.util.List;
-import java.util.Map;
-
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
@@ -49,7 +30,23 @@ import me.flyray.bsin.server.biz.PromptEngineeringBiz;
 import me.flyray.bsin.server.memory.chat.BufferWindowInRamStoreMemory;
 import me.flyray.bsin.server.memory.store.InRamStore;
 import me.flyray.bsin.server.memory.store.InRedisStore;
-import me.flyray.bsin.server.utils.RespBodyHandler;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
+import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.util.List;
+import java.util.Map;
+
+import static dev.ai4j.openai4j.image.ImageModel.DALL_E_QUALITY_HD;
+import static java.net.Proxy.Type.HTTP;
 
 
 @ShenyuDubboService(path = "/imageGeneration", timeout = 6000)
@@ -177,7 +174,7 @@ public class ImageGenerationServiceImpl implements ImageGenerationService {
     requestMap.put("answer", answer);
     requestMap.put("url", response.content());
     requestMap.put("tokenUsage", tokenUsage);
-    return RespBodyHandler.setRespBodyDto(requestMap);
+    return requestMap;
   }
 
   //  ImageModel model = OpenAiImageModel.builder()
@@ -331,7 +328,7 @@ public class ImageGenerationServiceImpl implements ImageGenerationService {
     requestMap.put("prompt", promptEngineeringBiz.toPromptMessages(promptChatMessage));
     requestMap.put("chatHistorySummary", null);
     requestMap.put("chatBufferWindow", promptEngineeringBiz.toPromptMessages(chatBufferWindowList));
-    return RespBodyHandler.setRespBodyDto(requestMap);
+    return requestMap;
   }
 
 }

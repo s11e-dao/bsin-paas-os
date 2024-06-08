@@ -1,6 +1,9 @@
 package me.flyray.bsin.facade.service;
 
 
+import me.flyray.bsin.domain.entity.WxPlatformUserTag;
+
+import java.util.List;
 import java.util.Map;
 
 
@@ -15,11 +18,11 @@ public interface WxPlatformUserTagService {
     /**
      *添加w
      */
-    Map<String,Object> add(Map<String,Object> requestMap);
+    WxPlatformUserTag add(Map<String,Object> requestMap);
 
     /**
      *详情
      */
-    Map<String,Object> detail(Map<String,Object> requestMap);
+    List<WxPlatformUserTag> detail(Map<String,Object> requestMap);
 
 }

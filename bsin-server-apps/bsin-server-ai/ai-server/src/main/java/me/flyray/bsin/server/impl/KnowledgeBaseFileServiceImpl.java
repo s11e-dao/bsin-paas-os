@@ -1,24 +1,9 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
-import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
-import org.apache.shenyu.client.apidocs.annotations.ApiModule;
-import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import cn.hutool.core.bean.BeanUtil;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
@@ -29,11 +14,7 @@ import dev.langchain4j.data.segment.TextSegment;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.AiCustomerFunction;
-import me.flyray.bsin.domain.entity.EmbeddingModel;
-import me.flyray.bsin.domain.entity.KnowledgeBase;
-import me.flyray.bsin.domain.entity.KnowledgeBaseFile;
-import me.flyray.bsin.domain.entity.KnowledgeBaseFileChunk;
+import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.FileLoadType;
 import me.flyray.bsin.domain.enums.VectorStoreType;
 import me.flyray.bsin.exception.BusinessException;
@@ -53,8 +34,20 @@ import me.flyray.bsin.server.biz.VectorRetrievalBiz;
 import me.flyray.bsin.server.document.parser.DocumentParserFactory;
 import me.flyray.bsin.server.milvus.BsinTextSegment;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.utils.BsinSnowflake;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
+import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author leonard
@@ -88,7 +81,7 @@ public class KnowledgeBaseFileServiceImpl implements KnowledgeBaseFileService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public KnowledgeBaseFile add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -195,13 +188,13 @@ public class KnowledgeBaseFileServiceImpl implements KnowledgeBaseFileService {
     } catch (Exception e) {
       throw new BusinessException("100000", e.toString());
     }
-    return RespBodyHandler.setRespBodyDto(knowledgeBaseFile);
+    return knowledgeBaseFile;
   }
 
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -228,13 +221,12 @@ public class KnowledgeBaseFileServiceImpl implements KnowledgeBaseFileService {
     } catch (Exception e) {
       throw new BusinessException("100000", e.toString());
     }
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public void edit(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -327,13 +319,13 @@ public class KnowledgeBaseFileServiceImpl implements KnowledgeBaseFileService {
     }
 
     knowledgeBaseFileMapper.updateById(knowledgeBaseFile);
-    return RespBodyHandler.RespBodyDto();
+
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) throws Exception {
+  public KnowledgeBaseFileVO getDetail(Map<String, Object> requestMap) throws Exception {
     String knowledgeBaseFileNo = MapUtils.getString(requestMap, "serialNo");
     if (knowledgeBaseFileNo == null) {
       knowledgeBaseFileNo = MapUtils.getString(requestMap, "knowledgeBaseFileNo");
@@ -366,13 +358,13 @@ public class KnowledgeBaseFileServiceImpl implements KnowledgeBaseFileService {
     }
     knowledgeBaseFileVO.setEmbeddings(embeddingVOList);
 
-    return RespBodyHandler.setRespBodyDto(knowledgeBaseFileVO);
+    return knowledgeBaseFileVO;
   }
 
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<?> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -403,13 +395,13 @@ public class KnowledgeBaseFileServiceImpl implements KnowledgeBaseFileService {
         KnowledgeBaseFile::getStatus,
         knowledgeBaseFile.getStatus());
     IPage<KnowledgeBaseFile> pageList = knowledgeBaseFileMapper.selectPage(page, wrapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getList")
   @ShenyuDubboClient("/getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<KnowledgeBaseFile> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -443,7 +435,7 @@ public class KnowledgeBaseFileServiceImpl implements KnowledgeBaseFileService {
         KnowledgeBaseFile::getStatus,
         knowledgeBaseFile.getStatus());
     List<KnowledgeBaseFile> knowledgeBaseList = knowledgeBaseFileMapper.selectList(wrapper);
-    return RespBodyHandler.setRespBodyListDto(knowledgeBaseList);
+    return knowledgeBaseList;
   }
 
 }

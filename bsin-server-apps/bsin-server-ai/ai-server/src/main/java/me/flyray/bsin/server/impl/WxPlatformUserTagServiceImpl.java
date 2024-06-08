@@ -1,6 +1,11 @@
 package me.flyray.bsin.server.impl;
 
 
+import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.WxPlatformUserTag;
+import me.flyray.bsin.facade.service.WxPlatformUserTagService;
+import me.flyray.bsin.infrastructure.mapper.WxPlatformUserTagMapper;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
@@ -10,13 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.WxPlatformUserTag;
-import me.flyray.bsin.facade.service.WxPlatformUserTagService;
-import me.flyray.bsin.infrastructure.mapper.WxPlatformUserTagMapper;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 
 /**
  * @author bolei
@@ -35,20 +33,20 @@ public class WxPlatformUserTagServiceImpl implements WxPlatformUserTagService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public WxPlatformUserTag add(Map<String, Object> requestMap) {
     WxPlatformUserTag wxPlatformUserTag =
         BsinServiceContext.getReqBodyDto(WxPlatformUserTag.class, requestMap);
     wxPlatformUserTagMapper.insert(wxPlatformUserTag);
-    return RespBodyHandler.setRespBodyDto(wxPlatformUserTag);
+    return wxPlatformUserTag;
   }
 
   @ApiDoc(desc = "detail")
   @ShenyuDubboClient("/detail")
   @Override
-  public Map<String, Object> detail(Map<String, Object> requestMap) {
+  public List<WxPlatformUserTag> detail(Map<String, Object> requestMap) {
     String openId = (String) requestMap.get("openId");
-    List<WxPlatformUserTag> wxPlatformUserTag = wxPlatformUserTagMapper.selectByOpenId(openId);
-    return RespBodyHandler.setRespBodyListDto(wxPlatformUserTag);
+    List<WxPlatformUserTag> wxPlatformUserTags = wxPlatformUserTagMapper.selectByOpenId(openId);
+    return wxPlatformUserTags;
   }
 
 }

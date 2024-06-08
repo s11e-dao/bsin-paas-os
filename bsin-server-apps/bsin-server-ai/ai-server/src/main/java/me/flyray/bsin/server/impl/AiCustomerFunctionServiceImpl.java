@@ -17,7 +17,6 @@ import me.flyray.bsin.redis.provider.BsinRedisProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.RespBodyHandler;
 import me.flyray.bsin.server.utils.VerficationCodeUtil;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
@@ -51,7 +50,7 @@ public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService 
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
-  public Map<String, Object> add(Map<String, Object> requestMap) {
+  public AiCustomerFunction add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -80,22 +79,21 @@ public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService 
     aiCustomerFunction.setMerchantNo(merchantNo);
     aiCustomerFunction.setCustomerNo(customerNo);
     aiCustomerFunctionMapper.insert(aiCustomerFunction);
-    return RespBodyHandler.setRespBodyDto(aiCustomerFunction);
+    return aiCustomerFunction;
   }
 
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
-  public Map<String, Object> delete(Map<String, Object> requestMap) {
+  public void delete(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     aiCustomerFunctionMapper.deleteById(serialNo);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
+  public AiCustomerFunction edit(Map<String, Object> requestMap) {
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     AiCustomerFunction aiCustomerFunction =
         BsinServiceContext.getReqBodyDto(AiCustomerFunction.class, requestMap);
@@ -107,26 +105,26 @@ public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService 
       aiCustomerFunction.setCustomerNo(customerNo);
     }
     aiCustomerFunctionMapper.updateById(aiCustomerFunction);
-    return RespBodyHandler.setRespBodyDto(aiCustomerFunction);
+    return aiCustomerFunction;
   }
 
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
-  public Map<String, Object> getDetail(Map<String, Object> requestMap) {
+  public AiCustomerFunction getDetail(Map<String, Object> requestMap) {
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     if (customerNo == null) {
       customerNo = LoginInfoContextHelper.getCustomerNo();
     }
     AiCustomerFunction customerInfo = aiCustomerFunctionMapper.selectById(customerNo);
     //        customerInfo.setWalletPrivateKey(null);
-    return RespBodyHandler.setRespBodyDto(customerInfo);
+    return customerInfo;
   }
 
   @ApiDoc(desc = "createOrder")
   @ShenyuDubboClient("/createOrder")
   @Override
-  public Map<String, Object> createOrder(Map<String, Object> requestMap) {
+  public AiCustomerFunction createOrder(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -146,13 +144,13 @@ public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService 
     aiCustomerFunction.setStatus(FunctionSubscribeStatus.PENDING_AUDIT.getCode());
     aiCustomerFunction.setType("2");
     aiCustomerFunctionMapper.insert(aiCustomerFunction);
-    return RespBodyHandler.setRespBodyDto(aiCustomerFunction);
+    return aiCustomerFunction;
   }
 
   @ApiDoc(desc = "auditOrder")
   @ShenyuDubboClient("/auditOrder")
   @Override
-  public Map<String, Object> auditOrder(Map<String, Object> requestMap) {
+  public AiCustomerFunction auditOrder(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -177,13 +175,13 @@ public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService 
     } else {
       throw new BusinessException("100000", "请先支付");
     }
-    return RespBodyHandler.setRespBodyDto(aiCustomerFunction);
+    return aiCustomerFunction;
   }
 
   @ApiDoc(desc = "getSubscribableList")
   @ShenyuDubboClient("/getSubscribableList")
   @Override
-  public Map<String, Object> getSubscribableList(Map<String, Object> requestMap) {
+  public List<AiCustomerFunction> getSubscribableList(Map<String, Object> requestMap) {
     AiCustomerFunction aiCustomerFunction =
         BsinServiceContext.getReqBodyDto(AiCustomerFunction.class, requestMap);
     LambdaUpdateWrapper<AiCustomerFunction> wrapper = new LambdaUpdateWrapper<>();
@@ -198,13 +196,13 @@ public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService 
         aiCustomerFunction.getStatus());
     wrapper.eq(AiCustomerFunction::getType, "0");
     List<AiCustomerFunction> list = aiCustomerFunctionMapper.selectList(wrapper);
-    return RespBodyHandler.setRespBodyListDto(list);
+    return list;
   }
 
   @ApiDoc(desc = "getAllFunctionSubscribeList")
   @ShenyuDubboClient("/getAllFunctionSubscribeList")
   @Override
-  public Map<String, Object> getAllFunctionSubscribeList(Map<String, Object> requestMap) {
+  public List<AiCustomerFunction> getAllFunctionSubscribeList(Map<String, Object> requestMap) {
     AiCustomerFunction aiCustomerFunction =
         BsinServiceContext.getReqBodyDto(AiCustomerFunction.class, requestMap);
     LambdaUpdateWrapper<AiCustomerFunction> wrapper = new LambdaUpdateWrapper<>();
@@ -221,13 +219,13 @@ public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService 
     // 系统自带基础服务功能
     wrapper.or().eq(AiCustomerFunction::getType, "3");
     List<AiCustomerFunction> list = aiCustomerFunctionMapper.selectList(wrapper);
-    return RespBodyHandler.setRespBodyListDto(list);
+    return list;
   }
 
   @ApiDoc(desc = "getList")
   @ShenyuDubboClient("/getList")
   @Override
-  public Map<String, Object> getList(Map<String, Object> requestMap) {
+  public List<AiCustomerFunction> getList(Map<String, Object> requestMap) {
 
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
@@ -259,13 +257,13 @@ public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService 
     // 匹配系统资源
     wrapper.or().eq(AiCustomerFunction::getEditable, false);
     List<AiCustomerFunction> list = aiCustomerFunctionMapper.selectList(wrapper);
-    return RespBodyHandler.setRespBodyListDto(list);
+    return list;
   }
 
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<AiCustomerFunction> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if (merchantNo == null) {
@@ -296,7 +294,7 @@ public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService 
     // 匹配系统资源: 类型 0、租户上架的功能(可供客户订阅的功能模版) 1、客户订阅服务 2、客户订阅功能 3、系统自待基础服务
     wrapper.or().eq(AiCustomerFunction::getType, "3");
     IPage<AiCustomerFunction> pageList = aiCustomerFunctionMapper.selectPage(page, wrapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   /**
@@ -314,7 +312,7 @@ public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService 
 
     // 将验证码存在缓存里面 phone:eventType verifycode
 
-    return RespBodyHandler.RespBodyDto();
+    return null;
   }
 
   @ApiDoc(desc = "getMpVerifyCode")
@@ -338,7 +336,7 @@ public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService 
     BsinRedisProvider.setCacheObject("mpVerifyCodeWithCustomerNo:" + customerNo, mpVerifyCode, Duration.ofSeconds(120));
     // 测试用
     requestMap.put("mpVerifyCode", mpVerifyCode);
-    return RespBodyHandler.setRespBodyDto(requestMap);
+    return requestMap;
   }
 
   @ApiDoc(desc = "verifyMpCode")
@@ -362,7 +360,7 @@ public class AiCustomerFunctionServiceImpl implements AiCustomerFunctionService 
     if (!BsinCacheProvider.get("ai","mpVerifyCodeWithCustomerNo:" + customerNo).equals(mpVerifyCode)) {
       throw new BusinessException("100000", "验证码错误");
     }
-    return RespBodyHandler.RespBodyDto();
+    return null;
   }
 
 }
