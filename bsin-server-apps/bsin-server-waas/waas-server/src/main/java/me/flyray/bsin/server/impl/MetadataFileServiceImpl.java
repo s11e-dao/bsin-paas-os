@@ -163,7 +163,7 @@ public class MetadataFileServiceImpl implements MetadataFileService {
     @ShenyuDubboClient("/getPageList")
     @ApiDoc(desc = "getPageList")
     @Override
-    public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+    public IPage<?> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         MetadataFile metadataFile = BsinServiceContext.getReqBodyDto(MetadataFile.class, requestMap);
         Object paginationObj =  requestMap.get("pagination");
@@ -175,7 +175,7 @@ public class MetadataFileServiceImpl implements MetadataFileService {
         warapper.eq(ObjectUtil.isNotNull(loginUser.getTenantId()),MetadataFile::getTenantId, loginUser.getTenantId());
         warapper.eq(ObjectUtil.isNotNull(loginUser.getMerchantNo()),MetadataFile::getMerchantNo, loginUser.getMerchantNo());
         IPage<MetadataFile> pageList = metadataFileMapper.selectPage(page,warapper);
-        return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+        return pageList;
     }
 
     @ShenyuDubboClient("/getDetail")

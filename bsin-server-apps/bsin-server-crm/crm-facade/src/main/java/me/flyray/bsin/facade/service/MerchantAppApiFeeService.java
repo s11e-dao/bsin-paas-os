@@ -1,5 +1,7 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import java.util.Map;
 
 public interface MerchantAppApiFeeService {
@@ -17,7 +19,7 @@ public interface MerchantAppApiFeeService {
     /**
      * 分页查询费用配置
      */
-    public Map<String, Object> getPageList(Map<String, Object> requestMap);
+    public IPage<?> getPageList(Map<String, Object> requestMap);
 
     /**
      * 分页查询

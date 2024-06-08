@@ -1,5 +1,7 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -32,7 +34,7 @@ public interface DigitalAssetsItemService {
   Map<String, Object> getList(Map<String, Object> requestMap) throws Exception;
 
   /** 查询品牌商户发行的数字资产（上架的资产） */
-  public Map<String, Object> getPageList(Map<String, Object> requestMap);
+  public IPage<?> getPageList(Map<String, Object> requestMap);
 
   /**
    * 查询商户发行的数字会员卡

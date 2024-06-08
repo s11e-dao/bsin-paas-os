@@ -183,7 +183,7 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
   @ShenyuDubboClient("/getPageList")
   @ApiDoc(desc = "getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<?> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
 
     //        String customerNo = (String) requestMap.get("customerNo");
@@ -211,7 +211,7 @@ public class CustomerPassCardServiceImpl implements CustomerPassCardService {
     warapper.eq(CustomerPassCard::getTenantId, tenantId);
     warapper.eq(CustomerPassCard::getMerchantNo, merchantNo);
     IPage<CustomerPassCard> pageList = customerPassCardMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   /**

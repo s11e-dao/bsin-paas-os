@@ -43,7 +43,7 @@ public class TransferJournalServiceImpl implements TransferJournalService {
   @ShenyuDubboClient("/getPageList")
   @ApiDoc(desc = "getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<?> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     TransferJournal transferJournal =
         BsinServiceContext.getReqBodyDto(TransferJournal.class, requestMap);
@@ -72,7 +72,7 @@ public class TransferJournalServiceImpl implements TransferJournalService {
         TransferJournal::getAssetsType,
         transferJournal.getAssetsType());
     IPage<TransferJournal> pageList = transferJournalMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ShenyuDubboClient("/getDetail")

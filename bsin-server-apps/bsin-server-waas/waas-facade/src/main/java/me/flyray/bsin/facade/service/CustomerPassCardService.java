@@ -1,5 +1,7 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import java.util.Map;
 
 /**
@@ -35,7 +37,7 @@ public interface CustomerPassCardService {
      * 查询会员用户
      * 我加入的品牌
      */
-    public Map<String, Object> getPageList(Map<String, Object> requestMap);
+    public IPage<?> getPageList(Map<String, Object> requestMap);
 
     /**
      * 查询用户在某个商户下的通行证

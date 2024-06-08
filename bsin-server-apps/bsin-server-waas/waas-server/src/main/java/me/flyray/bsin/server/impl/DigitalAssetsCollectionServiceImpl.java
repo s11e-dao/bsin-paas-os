@@ -420,7 +420,7 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
   @ShenyuDubboClient("/getPageList")
   @ApiDoc(desc = "getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<?> getPageList(Map<String, Object> requestMap) {
     // 发行的商户
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String merchantNo = loginUser.getMerchantNo();
@@ -463,7 +463,7 @@ public class DigitalAssetsCollectionServiceImpl implements DigitalAssetsCollecti
         digitalAssetsColletion.getChainType());
     IPage<DigitalAssetsCollection> pageList =
         digitalAssetsCollectionMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ShenyuDubboClient("/getList")

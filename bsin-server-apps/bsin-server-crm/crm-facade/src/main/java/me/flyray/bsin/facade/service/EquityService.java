@@ -1,5 +1,7 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
@@ -36,7 +38,7 @@ public interface EquityService{
     /**
      * 租户下所有
      */
-    public Map<String, Object> getPageList(Map<String, Object> requestMap);
+    public IPage<?> getPageList(Map<String, Object> requestMap);
 
 
     /**

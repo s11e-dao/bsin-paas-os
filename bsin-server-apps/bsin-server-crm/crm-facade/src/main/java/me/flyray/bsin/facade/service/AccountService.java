@@ -1,5 +1,9 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.Account;
+import me.flyray.bsin.domain.entity.AccountJournal;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
@@ -11,13 +15,13 @@ import java.util.Map;
 public interface AccountService {
 
   /** 开账户 */
-  public Map<String, Object> openAccount(Map<String, Object> requestMap);
+  public void openAccount(Map<String, Object> requestMap);
 
   /** 入账 */
-  public Map<String, Object> inAccount(Map<String, Object> requestMap)throws UnsupportedEncodingException;
+  public void inAccount(Map<String, Object> requestMap)throws UnsupportedEncodingException;
 
   /** 出账 */
-  public Map<String, Object> outAccount(Map<String, Object> requestMap) throws UnsupportedEncodingException;
+  public void outAccount(Map<String, Object> requestMap) throws UnsupportedEncodingException;
 
   /** 冻结金额 */
   public Map<String, Object> freeze(Map<String, Object> requestMap);
@@ -39,19 +43,19 @@ public interface AccountService {
   public Map<String, Object> verifyAccountBalance(Map<String, Object> requestMap);
 
   /** 分页查询 */
-  public Map<String, Object> getPageList(Map<String, Object> requestMap);
+  public IPage<Account> getPageList(Map<String, Object> requestMap);
 
   /** 查询账户 1、品牌账户 2、品牌社区账户 3、品牌商户账户 4、客户账户 */
   public Map<String, Object> getList(Map<String, Object> requestMap);
 
   /** 分页查询账户流水 */
-  public Map<String, Object> getAccountJournalPageList(Map<String, Object> requestMap);
+  public IPage<AccountJournal> getAccountJournalPageList(Map<String, Object> requestMap);
 
   public Map<String, Object> getAccountJournalDetail(Map<String, Object> requestMap);
 
 
   /** 分页查询账户冻结流水 */
-  public Map<String, Object> getAccountFreezeJournalPageList(Map<String, Object> requestMap);
+  public IPage<?> getAccountFreezeJournalPageList(Map<String, Object> requestMap);
 
   public Map<String, Object> getAccountFreezeJournalDetail(Map<String, Object> requestMap);
 

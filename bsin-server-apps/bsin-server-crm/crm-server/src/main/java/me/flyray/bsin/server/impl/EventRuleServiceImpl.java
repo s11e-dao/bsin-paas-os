@@ -1,5 +1,6 @@
 package me.flyray.bsin.server.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
@@ -49,7 +50,7 @@ public class EventRuleServiceImpl implements EventRuleService {
     @ApiDoc(desc = "getPageList")
     @ShenyuDubboClient("/getPageList")
     @Override
-    public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+    public IPage<?> getPageList(Map<String, Object> requestMap) {
         return null;
     }
 

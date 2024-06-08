@@ -1,5 +1,7 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import java.util.Map;
 
 /**
@@ -18,7 +20,7 @@ public interface MemberService {
     /**
      * 租户下所有
      */
-    public Map<String, Object> getPageList(Map<String, Object> requestMap);
+    public IPage<?> getPageList(Map<String, Object> requestMap);
 
     /**
      * 等级下所有会员

@@ -66,7 +66,7 @@ public class MerchantAppApiFeeServiceImpl implements MerchantAppApiFeeService {
     @ApiDoc(desc = "getPageList")
     @ShenyuDubboClient("/getPageList")
     @Override
-    public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+    public IPage<?> getPageList(Map<String, Object> requestMap) {
         String tenantId = (String) requestMap.get("tenantId");
         String productId = (String) requestMap.get("productId");
         Object paginationObj =  requestMap.get("pagination");
@@ -77,7 +77,7 @@ public class MerchantAppApiFeeServiceImpl implements MerchantAppApiFeeService {
         warapper.orderByDesc(MerchantApiFeeConfig::getCreateTime);
         warapper.eq(StringUtils.isNotEmpty(tenantId), MerchantApiFeeConfig::getTenantId, tenantId);
         IPage<MerchantApiFeeConfig> pageList = tenantApiFeeConfigMapper.selectPage(page,warapper);
-        return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+        return pageList;
     }
 
     /**

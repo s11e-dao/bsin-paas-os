@@ -85,7 +85,7 @@ public class ConditionServiceImpl implements ConditionService {
     @ApiDoc(desc = "getPageList")
     @ShenyuDubboClient("/getPageList")
     @Override
-    public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+    public IPage<?> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Condition condition = BsinServiceContext.getReqBodyDto(Condition.class, requestMap);
         Object paginationObj =  requestMap.get("pagination");
@@ -98,7 +98,7 @@ public class ConditionServiceImpl implements ConditionService {
         warapper.eq(Condition::getMerchantNo, loginUser.getMerchantNo());
         warapper.eq(StringUtils.isNotBlank(condition.getType()), Condition::getType, condition.getType());
         IPage<Condition> pageList = conditionMapper.selectPage(page,warapper);
-        return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+        return pageList;
     }
 
 }

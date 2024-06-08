@@ -1,5 +1,7 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import java.util.Map;
 
 
@@ -14,7 +16,7 @@ public interface WithdrawService {
     /**
      * 提现申请列表
      */
-    public Map<String, Object> getPageList(Map<String, Object> requestMap);
+    public IPage<?> getPageList(Map<String, Object> requestMap);
 
     /**
      * 提现

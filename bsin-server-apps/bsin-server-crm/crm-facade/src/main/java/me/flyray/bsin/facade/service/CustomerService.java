@@ -1,5 +1,7 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import java.io.UnsupportedEncodingException;
 import java.security.SignatureException;
 import java.text.ParseException;
@@ -31,7 +33,7 @@ public interface CustomerService {
   public Map<String, Object> identityVerification(Map<String, Object> requestMap);
 
   /** 分页查询客户信息 */
-  public Map<String, Object> getPageList(Map<String, Object> requestMap);
+  public IPage<?> getPageList(Map<String, Object> requestMap);
 
   /** 查询客户信息 1、基础信息 2、等级信息 */
   public Map<String, Object> getDetail(Map<String, Object> requestMap);

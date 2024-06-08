@@ -256,7 +256,7 @@ public class CustomerServiceImpl implements CustomerService {
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<?> getPageList(Map<String, Object> requestMap) {
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
     Object paginationObj =  requestMap.get("pagination");
     Pagination pagination = new Pagination();
@@ -277,7 +277,7 @@ public class CustomerServiceImpl implements CustomerService {
         CustomerBase::getType,
         customerBase.getType());
     IPage<CustomerBase> pageList = customerBaseMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "getDetail")

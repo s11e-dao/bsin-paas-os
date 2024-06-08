@@ -124,7 +124,7 @@ public class MerchantAppServiceImpl implements MerchantAppService {
     @ApiDoc(desc = "getPageList")
     @ShenyuDubboClient("/getPageList")
     @Override
-    public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+    public IPage<?> getPageList(Map<String, Object> requestMap) {
         String tenantId = LoginInfoContextHelper.getTenantId();
         String merchantNo = LoginInfoContextHelper.getMerchantNo();
         String appName = (String) requestMap.get("appName");
@@ -138,7 +138,7 @@ public class MerchantAppServiceImpl implements MerchantAppService {
         warapper.eq(MerchantApp::getMerchantNo, merchantNo);
         warapper.eq(StringUtils.isNotEmpty(appName), MerchantApp::getAppName, appName);
         IPage<MerchantApp> pageList = merchantAppMapper.selectPage(page,warapper);
-        return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+        return pageList;
     }
 
 }

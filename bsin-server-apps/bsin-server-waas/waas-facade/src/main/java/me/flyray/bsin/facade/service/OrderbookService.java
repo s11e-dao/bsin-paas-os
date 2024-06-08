@@ -1,5 +1,7 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import java.util.Map;
 
 /**
@@ -29,7 +31,7 @@ public interface OrderbookService {
     /**
      * 租户和商户的数字资产交易数据
      */
-    Map<String, Object> getPageList(Map<String, Object> requestMap);
+    IPage<?> getPageList(Map<String, Object> requestMap);
 
     /**
      * 市集挂单详情

@@ -1,6 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.MetadataFile;
 
 import java.util.List;
@@ -53,7 +54,7 @@ public interface MetadataFileService {
     /**
      * 分页查询
      */
-    public Map<String, Object> getPageList(Map<String, Object> requestMap);
+    public IPage<?> getPageList(Map<String, Object> requestMap);
 
     /**
      * 查询详情

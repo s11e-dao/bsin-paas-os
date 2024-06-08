@@ -1,6 +1,7 @@
 package me.flyray.bsin.server.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.domain.entity.SettlementAccount;
@@ -104,24 +105,17 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
     @ShenyuDubboClient("/pageList")
     @ApiDoc(desc = "pageList")
     @Override
-    public Page<SettlementAccount> pageList(SettlementAccountDTO settlementAccountDTO) {
+    public IPage<?> pageList(SettlementAccountDTO settlementAccountDTO) {
         log.debug("请求MerchantService.pageList,参数:{} ", settlementAccountDTO);
-        try{
-            LoginUser user = LoginInfoContextHelper.getLoginUser();  // 用户信息
-            int current = settlementAccountDTO.getCurrent()==null?1:settlementAccountDTO.getCurrent();
-            int size = settlementAccountDTO.getSize()==null?10:settlementAccountDTO.getSize();
-            QueryWrapper queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("business_role_no",user.getBizRoleTypeNo());
-            queryWrapper.eq("business_role_type",user.getBizRoleType());
-            queryWrapper.eq("tenant_id",user.getTenantId());
-            queryWrapper.orderByDesc("create_time");
-            return settlementAccountMapper.selectPage(new Page<>(current,size),queryWrapper);
-        }catch (BusinessException be){
-            throw be;
-        }catch (Exception e){
-            log.debug("get settlement account error: " , e.getMessage());
-            throw new BusinessException("SYSTEM_ERROR");
-        }
+        LoginUser user = LoginInfoContextHelper.getLoginUser();  // 用户信息
+        int current = settlementAccountDTO.getCurrent()==null?1:settlementAccountDTO.getCurrent();
+        int size = settlementAccountDTO.getSize()==null?10:settlementAccountDTO.getSize();
+        QueryWrapper queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("business_role_no",user.getBizRoleTypeNo());
+        queryWrapper.eq("business_role_type",user.getBizRoleType());
+        queryWrapper.eq("tenant_id",user.getTenantId());
+        queryWrapper.orderByDesc("create_time");
+        return settlementAccountMapper.selectPage(new Page<>(current,size),queryWrapper);
     }
 
 }

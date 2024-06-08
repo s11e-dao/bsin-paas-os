@@ -72,17 +72,16 @@ public class AccountServiceImpl implements AccountService {
   @ShenyuDubboClient("/openAccount")
   @ApiDoc(desc = "openAccount")
   @Override
-  public Map<String, Object> openAccount(Map<String, Object> requestMap) {
+  public void openAccount(Map<String, Object> requestMap) {
     Account customerAccount =
         BsinServiceContext.getReqBodyDto(Account.class, requestMap);
     customerAccountBiz.openAccount(customerAccount);
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ShenyuDubboClient("/inAccount")
   @ApiDoc(desc = "inAccount")
   @Override
-  public Map<String, Object> inAccount(Map<String, Object> requestMap)
+  public void inAccount(Map<String, Object> requestMap)
       throws UnsupportedEncodingException {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
 
@@ -103,13 +102,12 @@ public class AccountServiceImpl implements AccountService {
     Integer decimals = Integer.valueOf(MapUtils.getString(requestMap, "decimals"));
     customerAccountBiz.inAccount(
         tenantId, customerNo, category, name, ccy, decimals, new BigDecimal(amount));
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ShenyuDubboClient("/outAccount")
   @ApiDoc(desc = "outAccount")
   @Override
-  public Map<String, Object> outAccount(Map<String, Object> requestMap)
+  public void outAccount(Map<String, Object> requestMap)
       throws UnsupportedEncodingException {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String customerNo = MapUtils.getString(requestMap, "customerNo");
@@ -131,7 +129,6 @@ public class AccountServiceImpl implements AccountService {
     Integer decimals = Integer.valueOf(MapUtils.getString(requestMap, "decimals"));
     customerAccountBiz.outAccount(
         tenantId, customerNo, category, name, ccy, decimals, new BigDecimal(amount));
-    return RespBodyHandler.RespBodyDto();
   }
 
   @ShenyuDubboClient("/freeze")
@@ -301,7 +298,7 @@ public class AccountServiceImpl implements AccountService {
   @ShenyuDubboClient("/getPageList")
   @ApiDoc(desc = "getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<Account> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = loginUser.getTenantId();
     String merchantNo = loginUser.getMerchantNo();
@@ -332,7 +329,7 @@ public class AccountServiceImpl implements AccountService {
         Account::getCcy,
         customerAccount.getCcy());
     IPage<Account> pageList = customerAccountMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   /**
@@ -362,7 +359,7 @@ public class AccountServiceImpl implements AccountService {
   @ShenyuDubboClient("/getAccountJournalPageList")
   @ApiDoc(desc = "getAccountJournalPageList")
   @Override
-  public Map<String, Object> getAccountJournalPageList(Map<String, Object> requestMap) {
+  public IPage<AccountJournal> getAccountJournalPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = loginUser.getTenantId();
     String merchantNo = loginUser.getMerchantNo();
@@ -386,7 +383,7 @@ public class AccountServiceImpl implements AccountService {
         customerAccount.getCcy());
     IPage<AccountJournal> pageList =
         customerAccountJournalMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ShenyuDubboClient("/getAccountJournalDetail")
@@ -401,7 +398,7 @@ public class AccountServiceImpl implements AccountService {
   @ShenyuDubboClient("/getAccountFreezeJournalPageList")
   @ApiDoc(desc = "getAccountFreezeJournalPageList")
   @Override
-  public Map<String, Object> getAccountFreezeJournalPageList(Map<String, Object> requestMap) {
+  public IPage<?> getAccountFreezeJournalPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = loginUser.getTenantId();
     String merchantNo = loginUser.getMerchantNo();
@@ -432,7 +429,7 @@ public class AccountServiceImpl implements AccountService {
         AccountFreezeJournal::getType,
         customerAccountFreeze.getType());
     IPage<AccountFreezeJournal> pageList = accountFreezeJournalMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ShenyuDubboClient("/getAccountFreezeJournalDetail")

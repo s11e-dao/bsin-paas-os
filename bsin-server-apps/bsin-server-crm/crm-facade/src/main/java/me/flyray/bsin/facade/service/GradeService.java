@@ -1,5 +1,6 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.Grade;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public interface GradeService {
     /**
      * 商户下分页所有
      */
-    public Map<String, Object> getPageList(Map<String, Object> requestMap);
+    public IPage<?> getPageList(Map<String, Object> requestMap);
     
     /**
      * 查询等级、权益、条件详情

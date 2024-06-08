@@ -97,7 +97,7 @@ public class EquityServiceImpl implements EquityService {
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<?> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     Equity equity = BsinServiceContext.getReqBodyDto(Equity.class, requestMap);
     Object paginationObj =  requestMap.get("pagination");
@@ -110,7 +110,7 @@ public class EquityServiceImpl implements EquityService {
     warapper.eq(Equity::getMerchantNo, loginUser.getMerchantNo());
     warapper.eq(StringUtils.isNotBlank(equity.getType()), Equity::getType, equity.getType());
     IPage<Equity> pageList = equityMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ApiDoc(desc = "grant")

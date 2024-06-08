@@ -228,7 +228,7 @@ public class OrderbookServiceImpl implements OrderbookService {
     @ShenyuDubboClient("/getPageList")
     @ApiDoc(desc = "getPageList")
     @Override
-    public Map<String, Object> getPageList(Map<String, Object> requestMap){
+    public IPage<?> getPageList(Map<String, Object> requestMap){
         Orderbook orderbook = BsinServiceContext.getReqBodyDto(Orderbook.class, requestMap);
         Object paginationObj =  requestMap.get("pagination");
         Pagination pagination = new Pagination();
@@ -261,7 +261,7 @@ public class OrderbookServiceImpl implements OrderbookService {
             }
             orderbookPageList.setRecords(digitalAssetsItemResList);
         }
-        return RespBodyHandler.setRespPageInfoBodyDto(orderbookPageList);
+        return orderbookPageList;
     }
 
     /**

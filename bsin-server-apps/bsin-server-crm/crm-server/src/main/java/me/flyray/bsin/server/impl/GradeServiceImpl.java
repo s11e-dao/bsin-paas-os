@@ -126,7 +126,7 @@ public class GradeServiceImpl implements GradeService {
     @ApiDoc(desc = "getPageList")
     @ShenyuDubboClient("/getPageList")
     @Override
-    public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+    public IPage<?> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Object paginationObj =  requestMap.get("pagination");
         Pagination pagination = new Pagination();
@@ -145,7 +145,7 @@ public class GradeServiceImpl implements GradeService {
         IPage<Grade> pageList =
                 gradeMapper.selectPage(page, warapper);
 
-        return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+        return pageList;
     }
 
 

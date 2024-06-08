@@ -43,7 +43,7 @@ public class MintJournalServiceImpl implements MintJournalService {
   @ShenyuDubboClient("/getPageList")
   @ApiDoc(desc = "getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<?> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     MintJournal mintJournal = BsinServiceContext.getReqBodyDto(MintJournal.class, requestMap);
     Object paginationObj =  requestMap.get("pagination");
@@ -73,7 +73,7 @@ public class MintJournalServiceImpl implements MintJournalService {
         mintJournal.getAssetsType());
 
     IPage<MintJournal> pageList = mintJournalMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ShenyuDubboClient("/getDetail")

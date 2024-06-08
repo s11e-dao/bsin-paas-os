@@ -1,6 +1,7 @@
 package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -70,19 +71,19 @@ public class MemberServiceImpl implements MemberService {
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<?> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
     Object paginationObj =  requestMap.get("pagination");
     Pagination pagination = new Pagination();
     BeanUtil.copyProperties(paginationObj,pagination);
     Page<Member> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-    LambdaUpdateWrapper<Member> warapper = new LambdaUpdateWrapper<>();
+    LambdaQueryWrapper<Member> warapper = new LambdaQueryWrapper<>();
     warapper.orderByDesc(Member::getCreateTime);
     warapper.eq(Member::getTenantId, loginUser.getTenantId());
     warapper.eq(Member::getMerchantNo, loginUser.getMerchantNo());
     IPage<Member> pageList = memberMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   /**

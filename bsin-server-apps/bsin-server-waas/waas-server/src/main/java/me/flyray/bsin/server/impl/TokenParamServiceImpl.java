@@ -86,7 +86,7 @@ public class TokenParamServiceImpl implements TokenParamService {
   @ShenyuDubboClient("/getPageList")
   @ApiDoc(desc = "getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<?> getPageList(Map<String, Object> requestMap) {
     TokenParam tokenReleaseParam = BsinServiceContext.getReqBodyDto(TokenParam.class, requestMap);
     Object paginationObj =  requestMap.get("pagination");
     Pagination pagination = new Pagination();
@@ -99,7 +99,7 @@ public class TokenParamServiceImpl implements TokenParamService {
         TokenParam::getMerchantNo,
         tokenReleaseParam.getMerchantNo());
     IPage<TokenParam> pageList = tokenParamMapper.selectPage(page, warapper);
-    return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+    return pageList;
   }
 
   @ShenyuDubboClient("/getDetailByMerchantNo")

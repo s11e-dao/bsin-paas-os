@@ -305,7 +305,7 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
   @ShenyuDubboClient("/getPageList")
   @ApiDoc(desc = "getPageList")
   @Override
-  public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+  public IPage<?> getPageList(Map<String, Object> requestMap) {
     DigitalAssetsItem digitalAssetsItemReq =
         BsinServiceContext.getReqBodyDto(DigitalAssetsItem.class, requestMap, QueryGroup.class);
     String tenantId = LoginInfoContextHelper.getTenantId();
@@ -352,7 +352,7 @@ public class DigitalAssetsItemServiceImpl implements DigitalAssetsItemService {
       }
       digitalAssetsItemPageList.setRecords(digitalAssetsItemList);
     }
-    return RespBodyHandler.setRespPageInfoBodyDto(digitalAssetsItemPageList);
+    return digitalAssetsItemPageList;
   }
 
   /**

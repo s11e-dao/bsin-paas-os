@@ -1,5 +1,7 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import java.util.Map;
 
 /**
@@ -109,7 +111,7 @@ public interface DigitalAssetsCollectionService {
    * @return
    * @throws Exception
    */
-  Map<String, Object> getPageList(Map<String, Object> requestMap) throws Exception;
+  IPage<?> getPageList(Map<String, Object> requestMap) throws Exception;
 
   /** 查询合约协议详情 */
   public Map<String, Object> getDetail(Map<String, Object> requestMap);

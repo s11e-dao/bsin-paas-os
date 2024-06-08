@@ -70,7 +70,7 @@ public class WithdrawServiceImpl implements WithdrawService {
     @ShenyuDubboClient("/getPageList")
     @ApiDoc(desc = "getPageList")
     @Override
-    public Map<String, Object> getPageList(Map<String, Object> requestMap) {
+    public IPage<?> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         WithdrawOrder withdrawJournal = BsinServiceContext.getReqBodyDto(WithdrawOrder.class, requestMap);
         Pagination pagination = (Pagination) requestMap.get("pagination");
@@ -81,7 +81,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         warapper.eq(WithdrawOrder::getMerchantNo, loginUser.getMerchantNo());
         warapper.eq(Objects.nonNull(withdrawJournal.getStatus()), WithdrawOrder::getStatus, withdrawJournal.getStatus());
         IPage<WithdrawOrder> pageList = withdrawJournalMapper.selectPage(page,warapper);
-        return RespBodyHandler.setRespPageInfoBodyDto(pageList);
+        return pageList;
     }
 
     /**

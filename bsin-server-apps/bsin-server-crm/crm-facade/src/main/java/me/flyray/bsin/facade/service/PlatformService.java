@@ -46,6 +46,6 @@ public interface PlatformService {
      * 查询系统租户平台
      * 场景：查询各业态场景的平台账户
      */
-    public IPage<Platform> getPageList(Map<String, Object> requestMap);
+    public IPage<?> getPageList(Map<String, Object> requestMap);
 
 }
