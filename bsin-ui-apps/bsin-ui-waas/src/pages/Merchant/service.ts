@@ -4,7 +4,7 @@ let upmsPath = process.env.contextPath_upms;
 
 // 分页查询
 export const getMerchantPageList = (params) => {
-  return request(crmPath + '/merchant/getPageList', {
+  return request(crmPath + '/merchant/admin/getPageList', {
     serviceName: 'MerchantService',
     methodName: 'getPageList',
     version: '1.0',

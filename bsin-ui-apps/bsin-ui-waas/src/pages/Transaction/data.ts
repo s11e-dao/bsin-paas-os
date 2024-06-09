@@ -16,16 +16,16 @@ export type columnsDataType = {
 const columnsData: ProColumns<columnsDataType>[] = [
   // 配置搜索框
   {
-    title: '节点名称',
-    dataIndex: 'username',
+    title: '交易hash',
+    dataIndex: 'txHash',
     hideInTable: true,
     fieldProps: {
       maxLength: 20,
     },
   },
   {
-    title: '节点号',
-    dataIndex: 'tenantId',
+    title: '接收地址',
+    dataIndex: 'to',
     hideInTable: true,
     fieldProps: {
       maxLength: 20,
@@ -34,27 +34,51 @@ const columnsData: ProColumns<columnsDataType>[] = [
 
   // table里面的内容
   {
-    title: '节点号',
+    title: '交易hash',
     width: 190,
-    dataIndex: 'tenantId',
+    dataIndex: 'txHash',
     hideInSearch: true,
   },
   {
-    title: '节点名称',
+    title: '转出地址',
     width: 160,
-    dataIndex: 'username',
+    dataIndex: 'from',
     hideInSearch: true,
   },
   {
-    title: '节点描述',
+    title: '转入地址',
     width: 160,
-    dataIndex: 'description',
+    dataIndex: 'to',
     hideInSearch: true,
   },
   {
-    title: '创建者',
+    title: '交易金额',
     width: 160,
-    dataIndex: 'createBy',
+    dataIndex: 'txAmount',
+    hideInSearch: true,
+  },
+  {
+    title: '交易类型',
+    width: 160,
+    dataIndex: 'transactionType',
+    hideInSearch: true,
+  },
+  {
+    title: '交易状态',
+    width: 160,
+    dataIndex: 'transactionStatus',
+    hideInSearch: true,
+  },
+  {
+    title: '合约地址',
+    width: 160,
+    dataIndex: 'contractAddress',
+    hideInSearch: true,
+  },
+  {
+    title: '执行方法',
+    width: 160,
+    dataIndex: 'contractMethod',
     hideInSearch: true,
   },
   {

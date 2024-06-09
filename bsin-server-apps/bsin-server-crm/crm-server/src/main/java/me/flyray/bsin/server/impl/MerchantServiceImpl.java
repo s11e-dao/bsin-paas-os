@@ -278,8 +278,38 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     /**
-     * 1、查询登录平台的商户
-     * 2、c端查询平台的商户
+     * b端查询登录平台的商户
+     * 有token校验
+     * @param requestMap
+     * @return
+     */
+    @ApiDoc(desc = "/admin/getPageList")
+    @ShenyuDubboClient("/admin/getPageList")
+    @Override
+    public IPage<Merchant> getPageListAdmin(Map<String, Object> requestMap) {
+        Merchant merchant = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
+        String tenantId = merchant.getTenantId();
+        String merchantNo = LoginInfoContextHelper.getMerchantNo();
+        if(tenantId == null){
+            tenantId = LoginInfoContextHelper.getTenantId();
+        }
+        Object paginationObj =  requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj,pagination);
+        Page<Merchant> page = new Page<>(pagination.getPageNum(),pagination.getPageSize());
+        LambdaQueryWrapper<Merchant> warapper = new LambdaQueryWrapper<>();
+        warapper.orderByDesc(Merchant::getCreateTime);
+        warapper.eq(Merchant::getTenantId, tenantId);
+        warapper.eq(StringUtils.isNotEmpty(merchant.getBusinessType()),Merchant::getBusinessType, merchant.getBusinessType());
+        warapper.eq(StringUtils.isNotEmpty(merchant.getStatus()),Merchant::getStatus, merchant.getStatus());
+        warapper.eq(StringUtils.isNotEmpty(merchantNo),Merchant::getSerialNo, merchantNo);
+        IPage<Merchant> pageList = merchantMapper.selectPage(page,warapper);
+        return pageList;
+    }
+
+    /**
+     * c端查询平台的商户
+     * 没有token校验
      * @param requestMap
      * @return
      */

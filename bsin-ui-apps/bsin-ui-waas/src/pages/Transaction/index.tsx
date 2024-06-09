@@ -243,7 +243,7 @@ export default () => {
           >
             <Select style={{ width: '100%' }}>
               <Option value="0">请选择节点产品</Option>
-              {productList.map((product) => {
+              {productList?.map((product) => {
                 return (
                   <Option value={product?.productCode}>
                     {product?.productName}

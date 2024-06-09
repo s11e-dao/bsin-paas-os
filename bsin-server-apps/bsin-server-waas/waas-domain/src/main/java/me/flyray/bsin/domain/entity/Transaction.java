@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 @Data
 @TableName(value ="waas_transaction")
 public class Transaction extends BaseEntity implements Serializable {
+
     /**
      * 交易类型;1、转入 2、转出 3、资金归集
      */
@@ -31,7 +32,7 @@ public class Transaction extends BaseEntity implements Serializable {
      */
     private String contractAddress;
     /**
-     * 合约方法
+     * 执行的合约方法
      */
     private String contractMethod;
     /**
@@ -98,4 +99,5 @@ public class Transaction extends BaseEntity implements Serializable {
      */
     @NotBlank(message = "租户ID不能为空！", groups = AddGroup.class)
     private String tenantId;
+
 }

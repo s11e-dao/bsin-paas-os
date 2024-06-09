@@ -57,9 +57,15 @@ public interface MerchantService {
      */
     public Map<String, Object> edit(Map<String, Object> requestMap);
 
+    /**
+     * PC 管理后台查询
+     * @param requestMap
+     * @return
+     */
+    public IPage<Merchant> getPageListAdmin(Map<String, Object> requestMap);
 
     /**
-     * 分页查询商户
+     * C端分页查询商户
      */
     public IPage<Merchant> getPageList(Map<String, Object> requestMap);
 
