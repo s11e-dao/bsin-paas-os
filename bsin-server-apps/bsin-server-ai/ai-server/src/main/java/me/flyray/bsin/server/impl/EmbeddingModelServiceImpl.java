@@ -16,6 +16,7 @@ import me.flyray.bsin.facade.service.EmbeddingModelService;
 import me.flyray.bsin.infrastructure.mapper.EmbeddingModelMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
@@ -177,13 +178,15 @@ public class EmbeddingModelServiceImpl implements EmbeddingModelService {
   @Override
   public List<EmbeddingModel> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-    String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-      if (merchantNo == null) {
-        throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-      }
+
+    String bizRoleType = LoginInfoContextHelper.getBizRoleType();
+    String bizRoleTypeNo = loginUser.getUserId();
+    if(BizRoleType.TENANT.getCode().equals(bizRoleType)){
+      bizRoleTypeNo = loginUser.getTenantId();
+    }else if(BizRoleType.MERCHANT.getCode().equals(bizRoleType)){
+      bizRoleTypeNo = loginUser.getMerchantNo();
     }
+
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     if (customerNo == null) {
       customerNo = loginUser.getCustomerNo();
@@ -196,7 +199,8 @@ public class EmbeddingModelServiceImpl implements EmbeddingModelService {
     LambdaUpdateWrapper<EmbeddingModel> wrapper = new LambdaUpdateWrapper<>();
     wrapper.orderByDesc(EmbeddingModel::getCreateTime);
     wrapper.eq(EmbeddingModel::getTenantId, tenantId);
-    wrapper.eq(EmbeddingModel::getMerchantNo, merchantNo);
+    // TODO 商户号改成业务角色编号
+    wrapper.eq(EmbeddingModel::getMerchantNo, bizRoleTypeNo);
     wrapper.eq(StringUtils.isNotBlank(customerNo), EmbeddingModel::getCustomerNo, customerNo);
     wrapper.eq(
             StringUtils.isNotBlank(embeddingModel.getSerialNo()),

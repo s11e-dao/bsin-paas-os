@@ -24,21 +24,21 @@ export default () => {
     const userInformationTmp = getLocalStorageInfo('userInfo')
     console.log('userInformation')
     console.log(userInformationTmp)
+    const platformInfoTmp = getLocalStorageInfo('platformInfo')
+    console.log('platformInfo')
+    console.log(platformInfoTmp)
     const merchantInfoTmp = getLocalStorageInfo('merchantInfo')
     console.log('merchantInfo')
     console.log(merchantInfoTmp)
 
-    const customerInfoTmp = getLocalStorageInfo('customerInfo')
-    console.log('customerInfo')
-    console.log(customerInfoTmp)
     let chatUIPropsTmp = {
-      merchantNo: merchantInfoTmp.serialNo,
-      marchantName: merchantInfoTmp.merchantName,
-      merchantAvatar: merchantInfoTmp.logoUrl,
+      merchantNo: platformInfoTmp?.serialNo || merchantInfoTmp?.serialNo,
+      marchantName: platformInfoTmp?.platformName || merchantInfoTmp?.merchantName,
+      merchantAvatar: merchantInfoTmp?.logoUrl,
       aiNo: record.serialNo,
       aiAvatar: record.coverImage,
-      customerNo: customerInfoTmp.customerNo,
-      customerAvatar: customerInfoTmp.avatar,
+      customerNo: userInformationTmp.customerNo,
+      customerAvatar: userInformationTmp.avatar,
     }
     setChatUIprops(chatUIPropsTmp)
   }

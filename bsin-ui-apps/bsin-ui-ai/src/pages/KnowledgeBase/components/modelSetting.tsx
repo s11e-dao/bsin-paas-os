@@ -57,7 +57,7 @@ const ModelSetting: React.FC = (knowledgeBaseInfo) => {
 
     getEmbeddingModelList(params).then((res) => {
       let embeddingModelListTmp = []
-      res?.data.map((embeddingModel) => {
+      res?.data?.map((embeddingModel) => {
         let embeddingModelTmp = {
           value: embeddingModel.serialNo,
           label: embeddingModel.name,

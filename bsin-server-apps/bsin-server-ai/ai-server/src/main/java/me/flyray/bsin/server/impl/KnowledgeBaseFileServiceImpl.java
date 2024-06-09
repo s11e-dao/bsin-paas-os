@@ -27,6 +27,7 @@ import me.flyray.bsin.infrastructure.mapper.KnowledgeBaseFileMapper;
 import me.flyray.bsin.infrastructure.mapper.KnowledgeBaseMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.biz.AccountAvailableResourcesBiz;
 import me.flyray.bsin.server.biz.DocumentBiz;
 import me.flyray.bsin.server.biz.ModelBiz;
@@ -403,13 +404,14 @@ public class KnowledgeBaseFileServiceImpl implements KnowledgeBaseFileService {
   @Override
   public List<KnowledgeBaseFile> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-    String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-      if (merchantNo == null) {
-        throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-      }
+    String bizRoleType = LoginInfoContextHelper.getBizRoleType();
+    String bizRoleTypeNo = loginUser.getUserId();
+    if(BizRoleType.TENANT.getCode().equals(bizRoleType)){
+      bizRoleTypeNo = loginUser.getTenantId();
+    }else if(BizRoleType.MERCHANT.getCode().equals(bizRoleType)){
+      bizRoleTypeNo = loginUser.getMerchantNo();
     }
+
     String customerNo = MapUtils.getString(requestMap, "customerNo");
     String tenantId = loginUser.getTenantId();
 
