@@ -208,11 +208,12 @@ export default () => {
           console.log('defaultCopilot:')
           console.log(res?.data)
           let params = {
-            receiver: res.data.serialNo,
+            receiver: res?.data.serialNo,
             sender: customerInfo?.customerNo,
             chatType: 'chat',
           }
           getChatHistoryList(params).then((res) => {
+            console.log(res?.data)
             if (res?.code == 0) {
               let i = 0
               res?.data.map((historyChat) => {

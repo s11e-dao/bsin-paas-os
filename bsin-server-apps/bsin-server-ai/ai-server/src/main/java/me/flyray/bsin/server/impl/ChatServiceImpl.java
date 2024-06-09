@@ -20,6 +20,7 @@ import me.flyray.bsin.infrastructure.mapper.LLMMapper;
 import me.flyray.bsin.infrastructure.mapper.PromptTemplateMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.biz.ChatBiz;
 import me.flyray.bsin.server.biz.ModelBiz;
 import me.flyray.bsin.server.biz.PromptEngineeringBiz;
@@ -73,19 +74,25 @@ public class ChatServiceImpl implements ChatService {
     //    AiMessage chat(@MemoryId String memoryId, @UserMessage String userMessage);
   }
 
+  /**
+   * 根据业务角色查询
+   * 业务角色：运营平台、租户平台、商户、代理商
+   * 根据业务角色ID查询对应聊天记录
+   * @param requestMap
+   * @return
+   */
   @ApiDoc(desc = "getChatHistoryList")
   @ShenyuDubboClient("/getChatHistoryList")
   @Override
   public List<RedisChatMessage> getChatHistoryList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-    String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-      //      if (merchantNo == null) {
-      //        throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-      //      }
+    String bizRoleType = LoginInfoContextHelper.getBizRoleType();
+    String bizRoleTypeNo = loginUser.getUserId();
+    if(BizRoleType.TENANT.getCode().equals(bizRoleType)){
+      bizRoleTypeNo = loginUser.getTenantId();
+    }else if(BizRoleType.MERCHANT.getCode().equals(bizRoleType)){
+      bizRoleTypeNo = loginUser.getMerchantNo();
     }
-    String customerNo = MapUtils.getString(requestMap, "customerNo");
     String receiver = MapUtils.getString(requestMap, "receiver");
     String chatType = MapUtils.getString(requestMap, "chatType"); // chat|retrieval
     if (chatType == null) {
@@ -94,21 +101,12 @@ public class ChatServiceImpl implements ChatService {
     chatType += ":";
 
     if (receiver == null) {
-      throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
+      // app agent chat
+      receiver = "app-agent";
     }
-    if (customerNo == null) {
-      customerNo = MapUtils.getString(requestMap, "sender");
-      if (customerNo == null) {
-        customerNo = loginUser.getCustomerNo();
-      }
-      if (customerNo == null) {
-        throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
-      }
-    }
-    String tenantId = loginUser.getTenantId();
-    List<RedisChatMessage> redisChatMessages =
-        inRedisStore.getMessages(chatType, customerNo, receiver);
-    return redisChatMessages;
+    List<RedisChatMessage> redisChatMessages = inRedisStore.getMessages(chatType, bizRoleTypeNo, receiver);
+    return (redisChatMessages != null ? redisChatMessages : new ArrayList<RedisChatMessage>());
+
   }
 
   @ApiDoc(desc = "chatWithKnowledgeBase")
