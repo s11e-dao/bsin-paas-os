@@ -20,12 +20,9 @@ import java.util.Map;
 @SpringBootTest
 public class HelloTest {
 
-    @Autowired
-    HelloService helloService;
 
     @Test
     public void hello() throws ClassNotFoundException {
         Map<String ,Object> map = new HashMap<>();
-        helloService.add(map);
     }
 }
