@@ -8,7 +8,7 @@ import me.flyray.bsin.domain.entity.Wallet;
 import me.flyray.bsin.domain.entity.WalletAccount;
 import me.flyray.bsin.domain.request.TransactionDTO;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.infrastructure.biz.TransferBiz;
+import me.flyray.bsin.infrastructure.biz.TransactionBiz;
 import me.flyray.bsin.infrastructure.biz.WalletAccountBiz;
 import me.flyray.bsin.infrastructure.mapper.*;
 import me.flyray.bsin.redis.provider.BsinCacheProvider;
@@ -60,7 +60,7 @@ public class ChainTransactionListen {
     @Autowired
     private DictContractMethodMapper dictContractMethodMapper;
     @Autowired
-    private TransferBiz transferBiz;
+    private TransactionBiz transferBiz;
     @Autowired
     private WalletAccountBiz walletAccountBiz;
 

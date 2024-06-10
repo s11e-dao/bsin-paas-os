@@ -36,9 +36,9 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class TransferBiz {
+public class TransactionBiz {
 
-    private static final Logger log = LoggerFactory.getLogger(TransferBiz.class);
+    private static final Logger log = LoggerFactory.getLogger(TransactionBiz.class);
     @Autowired
     private WalletAccountMapper walletAccountMapper;
 
@@ -47,11 +47,8 @@ public class TransferBiz {
     // MPC签名连接URL
     private static final String MPC_SIGN_URL = "http://192.168.1.118:8125/api/v1/mpc/sign/";
 
-
     // 连接以太坊节点
     Web3j web3 = Web3j.build(new HttpService(HTTP_URL));
-
-
 
     /**
      * 代币转出交易

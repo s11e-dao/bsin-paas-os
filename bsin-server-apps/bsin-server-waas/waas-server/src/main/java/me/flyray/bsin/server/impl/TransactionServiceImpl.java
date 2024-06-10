@@ -14,7 +14,7 @@ import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.TransactionService;
 import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.server.listen.ChainTransactionListen;
-import me.flyray.bsin.infrastructure.biz.TransferBiz;
+import me.flyray.bsin.infrastructure.biz.TransactionBiz;
 import me.flyray.bsin.infrastructure.mapper.ChainCoinMapper;
 import me.flyray.bsin.infrastructure.mapper.TransactionAuditMapper;
 import me.flyray.bsin.infrastructure.mapper.TransactionMapper;
@@ -58,7 +58,7 @@ public class TransactionServiceImpl  implements TransactionService {
     @Autowired
     private ChainTransactionListen transactionBiz;
     @Autowired
-    private TransferBiz transferBiz;
+    private TransactionBiz transferBiz;
 
     @Override
     @ShenyuDubboClient("/create")
