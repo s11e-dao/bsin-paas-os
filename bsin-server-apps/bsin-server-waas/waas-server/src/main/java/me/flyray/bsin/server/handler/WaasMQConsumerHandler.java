@@ -1,9 +1,7 @@
 package me.flyray.bsin.server.handler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
-import org.springframework.stereotype.Component;
 
 /**
  * @author bolei
@@ -14,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 //@Component
 //@RocketMQMessageListener(consumerGroup = "consumer_group",topic = "waas-test")
-public class WaasMQConsumer implements RocketMQListener<String> {
+public class WaasMQConsumerHandler implements RocketMQListener<String> {
 
     /**
      * 1、处理钱包创建消息

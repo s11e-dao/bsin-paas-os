@@ -1,4 +1,4 @@
-package me.flyray.bsin.infrastructure.config;
+package me.flyray.bsin.server.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
