@@ -168,7 +168,8 @@ const App: React.FC = () => {
         <Header style={{ padding: 0, background: colorBgContainer }} >
           <div className={styles.nav}>
             <p onClick={() => handleTabClick(1)} className={activeTab === 1 ? 'navItemA' : 'navItem'}>绘画</p>
-            <p onClick={() => handleTabClick(2)} className={activeTab === 2 ? 'navItemA' : 'navItem'}>视频</p>
+            <p onClick={() => handleTabClick(2)} className={activeTab === 2 ? 'navItemA' : 'navItem'}>音频</p>
+            <p onClick={() => handleTabClick(3)} className={activeTab === 3 ? 'navItemA' : 'navItem'}>视频</p>
           </div>
         </Header>
         <Content className={styles.content}>
