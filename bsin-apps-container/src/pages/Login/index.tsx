@@ -88,7 +88,7 @@ export default function () {
       password: hex_md5(nodeLoginState.password),
       tenantId,
     });
-    if (res) {
+    if (res?.code === 0) {
       setLocalStorageInfo('userInfo', res.data?.sysUser);
       setSessionStorageInfo('token', { token: res.data?.token });
       message.success('登录成功！');

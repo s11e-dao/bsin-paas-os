@@ -139,7 +139,7 @@ export default () => {
   const toViewContractTemplate = async (record) => {
     console.log(record);
     let { serialNo } = record;
-    let viewRes = await getPlatformDetail({ customerNo });
+    let viewRes = await getPlatformDetail({ serialNo });
     setIsViewTemplateModal(true);
     console.log('viewRes', viewRes);
     setIsViewRecord(viewRes.data);
