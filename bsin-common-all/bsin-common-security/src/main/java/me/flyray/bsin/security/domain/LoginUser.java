@@ -26,10 +26,14 @@ public class LoginUser implements Serializable {
 
 
     /**
-     * 用户ID
+     * C端客户ID
      */
     private String customerNo;
 
+    /**
+     * C端客户类型： 个人客户 企业客户
+     */
+    private String customerType;
 
     /**
      * 手机号
@@ -58,17 +62,10 @@ public class LoginUser implements Serializable {
      */
     private String merchantNo;
 
-
-    /**
-     * 用户类型
-     */
-    private String customerType;
-
     /**
      * 店铺ID
      */
     private String storeNo;
-
 
     /**
      * 创建者

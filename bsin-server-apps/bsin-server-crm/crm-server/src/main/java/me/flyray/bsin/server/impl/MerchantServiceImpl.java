@@ -180,6 +180,7 @@ public class MerchantServiceImpl implements MerchantService {
         loginUser.setPhone(merchant.getPhone());
         loginUser.setMerchantNo(merchant.getSerialNo());
         loginUser.setBizRoleType(BizRoleType.MERCHANT.getCode());
+        loginUser.setBizRoleTypeNo(merchant.getSerialNo());
         String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
         res.put("merchantInfo",merchant);
         res.put("token",token);
