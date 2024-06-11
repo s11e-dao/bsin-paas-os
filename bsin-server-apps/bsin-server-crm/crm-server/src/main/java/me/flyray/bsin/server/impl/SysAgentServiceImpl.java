@@ -25,6 +25,12 @@ public class SysAgentServiceImpl implements SysAgentService {
     @Autowired
     SysAgentMapper sysAgentMapper;
 
+
+    @Override
+    public Map<String, Object> login(Map<String, Object> requestMap) {
+        return Map.of();
+    }
+
     @Override
     public SysAgent add(Map<String, Object> requestMap) {
         return null;

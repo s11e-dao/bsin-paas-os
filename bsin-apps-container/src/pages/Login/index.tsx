@@ -1,7 +1,9 @@
 import React, { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
 import { history } from 'umi';
-import { Button, message, Select } from 'antd';
+import { Button, message, Select, Radio } from 'antd';
 import { SwapOutlined } from '@ant-design/icons';
+import type { RadioChangeEvent } from 'antd';
+
 import logo from '@/assets/logo.png';
 import loginBg from '@/assets/image/logo.png';
 import loginbg1 from '@/assets/image/login-bg1.png';
@@ -17,7 +19,7 @@ import {
 
 const { Option } = Select;
 
-import { userLogin, getTenantList, nodeUserLogin } from '../../services/login';
+import { userLogin, getTenantList, nodeUserLogin, sysAgentLogin } from '../../services/login';
 
 export default function () {
 
@@ -75,6 +77,11 @@ export default function () {
     setLoadings(false)
     history.push("/home")
   }
+  const [bizRoleType, setBizRoleType] = useState('2');
+
+  const handleBizRoleTypeChange = (e: RadioChangeEvent) => {
+    setBizRoleType(e.target.value);
+  };
 
   // 节点登录
   async function nodeLogin(event: MouseEvent) {
@@ -83,11 +90,21 @@ export default function () {
     if (!nodeLoginState.username) return message.info('请输入用户名');
     if (!nodeLoginState.password) return message.info('请输入密码');
     setLoadings(true);
-    let res = await nodeUserLogin({
-      ...nodeLoginState,
-      password: hex_md5(nodeLoginState.password),
-      tenantId,
-    });
+    let res
+    if(bizRoleType == "2"){
+      res = await nodeUserLogin({
+        ...nodeLoginState,
+        password: hex_md5(nodeLoginState.password),
+        tenantId,
+      });
+    }else{
+      res = await sysAgentLogin({
+        ...nodeLoginState,
+        password: hex_md5(nodeLoginState.password),
+        tenantId,
+      });
+    }
+
     if (res?.code === 0) {
       setLocalStorageInfo('userInfo', res.data?.sysUser);
       setSessionStorageInfo('token', { token: res.data?.token });
@@ -163,9 +180,15 @@ export default function () {
                     <div className={styles.logo}>
                       {/* <i className='bx bxl-html5 bx-lg'></i> */}
                       <img src={logo} />
-                      <h4>BsinPaaS一站式开发平台</h4>
+                      <h4 style={{ marginBottom: '0' }}>BsinPaaS一站式开发平台</h4>
                     </div>
                     <div className={styles.actual_form}>
+                      <div className={styles.input_wrap_role}>
+                        <Radio.Group value={bizRoleType} onChange={handleBizRoleTypeChange}>
+                          <Radio.Button value="2">火源节点</Radio.Button>
+                          <Radio.Button value="4">代理商</Radio.Button>
+                        </Radio.Group>
+                      </div>
                       <div className={styles.input_wrap}>
                         <Select
                           bordered={false}
@@ -229,7 +252,7 @@ export default function () {
                     <div className={styles.logo}>
                       {/* <i className='bx bxl-html5 bx-lg'></i> */}
                       <img src={logo} />
-                      <h4>BsinPaaS一站式开发平台</h4>
+                      <h4 style={{ marginBottom: '0' }}>BsinPaaS一站式开发平台</h4>
                     </div>
                     <div className={styles.actual_form}>
 

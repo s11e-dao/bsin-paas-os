@@ -23,6 +23,18 @@ export const nodeUserLogin = (params: any) => {
   });
 };
 
+// 系统代理商登录
+export const sysAgentLogin = (params: any) => {
+  return request(crmPath + '/sysAgent/login', {
+    serviceName: 'SysAgentService',
+    methodName: 'login',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
 // 商户登录
 export const merchantLogin = (params: any) => {
   return request(crmPath + '/merchant/login', {

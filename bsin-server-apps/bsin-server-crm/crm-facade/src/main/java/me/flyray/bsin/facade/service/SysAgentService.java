@@ -16,6 +16,11 @@ import java.util.Map;
 public interface SysAgentService {
 
     /**
+     * 商户登录
+     */
+    public Map<String, Object> login(Map<String, Object> requestMap);
+
+    /**
      * 添加
      */
     public SysAgent add(Map<String, Object> requestMap);

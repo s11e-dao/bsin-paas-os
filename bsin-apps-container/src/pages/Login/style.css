@@ -142,6 +142,13 @@ body {
     /* background-color: red; */
 }
 
+.input_wrap_role {
+    position: relative;
+    height: 37px;
+    margin-bottom: 1rem;
+    /* background-color: red; */
+}
+
 .input_field {
     position: absolute;
     width: 100%;
