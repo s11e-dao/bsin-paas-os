@@ -39,6 +39,16 @@ const routes = [
         path: '/platform/platform-list',
         component: '@/pages/Platform/index',
       },
+      // **************系统代理商************
+      {
+        path: '/sysAgent',
+        redirect: '/sysAgent/sysAgent-list',
+      },
+      // 系统代理商列表
+      {
+        path: '/sysAgent/sysAgent-list',
+        component: '@/pages/SysAgent/index',
+      },
       // **************商户***************
       {
         path: '/merchant',

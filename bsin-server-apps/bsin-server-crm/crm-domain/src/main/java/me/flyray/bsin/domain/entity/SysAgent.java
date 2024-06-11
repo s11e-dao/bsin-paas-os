@@ -4,20 +4,19 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
-import lombok.Data;
-
 /**
- * 
- * @TableName crm_merchant
+ * 系统代理商
+ * @TableName crm_sys_agent
  */
 
 @Data
-@TableName(value ="crm_merchant")
-public class Merchant implements Serializable {
+@TableName(value ="crm_sys_agent")
+public class SysAgent implements Serializable {
 
     /**
      * 
@@ -33,7 +32,7 @@ public class Merchant implements Serializable {
     /**
      * 企业名称
      */
-    private String merchantName;
+    private String agentName;
 
     /**
      * 企业logo
@@ -78,7 +77,7 @@ public class Merchant implements Serializable {
     /**
      * 企业地址
      */
-    private String merchantAddress;
+    private String agentAddress;
 
     /**
      * 状态：0 正常 1 冻结 2 待审核
@@ -86,12 +85,12 @@ public class Merchant implements Serializable {
     private String status;
 
     /**
-     *  商户类型：1、个人客户 2、企业客户
+     *  代理商类型：1、个人客户 2、企业客户
      */
     private String type;
 
     /**
-     *  商户类别：1、品牌商户 2、社区商户（供销社）
+     * 代理商类型：1、系统级代理 2、租户级代理
      */
     private String category;
 

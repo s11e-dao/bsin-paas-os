@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
- * 平台（租户,例：unionCash）;
+ * 平台（租户,例：jiujiu）;
  * @TableName crm_platform
  */
 
@@ -30,9 +30,14 @@ public class Platform extends BaseEntity implements Serializable {
     private String username;
 
     /**
-     * 类型;1、内部 2、外部
+     *  商户类型：1、个人客户 2、企业客户
      */
     private Integer type;
+
+    /**
+     *
+     */
+    private String category;
 
     /**
      * 状态;1、正常 2、注销
