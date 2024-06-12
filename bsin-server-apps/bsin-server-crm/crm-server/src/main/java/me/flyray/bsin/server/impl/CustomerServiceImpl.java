@@ -24,8 +24,10 @@ import me.flyray.bsin.facade.service.*;
 import me.flyray.bsin.infrastructure.mapper.BondingCurveTokenParamMapper;
 import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberMapper;
+import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.biz.CustomerAccountBiz;
 import me.flyray.bsin.server.biz.CustomerBiz;
 import me.flyray.bsin.server.utils.Pagination;
@@ -67,6 +69,10 @@ import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_NO_NOT_ISNULL;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
+  @Value("${bsin.security.authentication-secretKey}")
+  private String authSecretKey;
+  @Value("${bsin.security.authentication-expiration}")
+  private int authExpiration;
   @Value("${bsin.jiujiu.aesKey}")
   private String aesKey;
   @Autowired private CustomerBaseMapper customerBaseMapper;
@@ -104,16 +110,26 @@ public class CustomerServiceImpl implements CustomerService {
   @ShenyuDubboClient("/login")
   @Override
   public Map<String, Object> login(Map<String, Object> requestMap) {
-    CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
-    CustomerBase customerInfo = customerBiz.login(customerBase);
+    CustomerBase customerBaseReq = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
+    CustomerBase customerInfo = customerBiz.login(customerBaseReq);
     Member member =
         memberMapper.selectOne(
             new LambdaUpdateWrapper<Member>()
                 .eq(Member::getCustomerNo, customerInfo.getCustomerNo()));
-    Map data = new HashMap<>();
-    data.put("customerInfo", customerInfo);
-    data.put("memberInfo", member);
-    return data;
+
+    LoginUser loginUser = new LoginUser();
+    loginUser.setTenantId(customerInfo.getTenantId());
+    loginUser.setUsername(customerInfo.getUsername());
+    loginUser.setPhone(customerInfo.getPhone());
+    loginUser.setCustomerNo(customerInfo.getCustomerNo());
+    loginUser.setBizRoleType(BizRoleType.CUSTORMER.getCode());
+    loginUser.setBizRoleTypeNo(customerInfo.getCustomerNo());
+    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
+    Map res = new HashMap<>();
+    res.put("customerInfo", customerInfo);
+    res.put("memberInfo", member);
+    res.put("token",token);
+    return res;
   }
 
   /**

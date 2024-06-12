@@ -67,7 +67,6 @@ public class SysAgentServiceImpl implements SysAgentService {
 
         // 查询upms用户
         Map res = new HashMap<>();
-
         loginUser.setUsername(sysAgent.getUsername());
         loginUser.setPhone(sysAgent.getPhone());
         loginUser.setBizRoleTypeNo(sysAgent.getSerialNo());

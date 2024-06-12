@@ -22,7 +22,12 @@ public enum BizRoleType {
     /**
      * 系统代理商
      */
-    SYS_AGENT("4", "系统代理商"),;
+    SYS_AGENT("4", "系统代理商"),
+
+    /**
+     * 客户
+     */
+    CUSTORMER("4", "租户客户");
 
     private String code;
 
