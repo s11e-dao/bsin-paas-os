@@ -20,6 +20,7 @@ import me.flyray.bsin.infrastructure.mapper.RoleMenuMapper;
 import me.flyray.bsin.infrastructure.mapper.TenantAppMapper;
 import me.flyray.bsin.infrastructure.mapper.TenantMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.biz.MenuBiz;
 import me.flyray.bsin.utils.BsinSnowflake;
 
@@ -29,6 +30,7 @@ import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +47,8 @@ import java.util.stream.Collectors;
 @Service
 public class MenuServiceImpl implements MenuService {
 
+    @Value("${bsin.sysAgent.role-id}")
+    private String sysAgentRoleId;
     @Autowired
     private MenuMapper menuMapper;
     @Autowired
@@ -209,6 +213,14 @@ public class MenuServiceImpl implements MenuService {
         // 直接查询用户角色
         List<SysRole> userRoles = roleMapper.getRoleListByUserId(userId);
         roles.addAll(userRoles);
+
+        // 如果是代理商直接查询配置角色菜单
+        String bizRoleType = LoginInfoContextHelper.getBizRoleType();
+        if(BizRoleType.SYS_AGENT.getCode().equals(bizRoleType)){
+            SysRole sysAgentRole = new SysRole();
+            sysAgentRole.setRoleId(sysAgentRoleId);
+            roles.add(sysAgentRole);
+        }
 
         // 寻找找出用户在该应用下具有的角色
         List<String> roleIds = new ArrayList<>();

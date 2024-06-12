@@ -91,10 +91,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
-
     @Autowired
     private OrgPostMapper orgPostMapper;
-
     @Autowired
     private UserPostMapper userPostMapper;
     @Autowired
@@ -118,6 +116,8 @@ public class UserServiceImpl implements UserService {
     private String authSecretKey;
     @Value("${bsin.security.authentication-expiration}")
     private int authExpiration;
+    @Value("${bsin.sysAgent.app-id}")
+    private String sysAgentAppId;
 
     @Autowired
     private TenantAppMapper tenantAppMapper;
@@ -560,18 +560,26 @@ public class UserServiceImpl implements UserService {
         SysTenant sysTenant = tenantMapper.selectTenantInfoByTenantId(tenantId);
         SysProduct sysProduct = productMapper.selectByProductCode(sysTenant.getProductCode());
         // 根据业务角色查询默认应用，商户角色默认应用不存在是跟租户相同
-        // TODO 如果是代理商角色，则查询配置的代理商应用
-        SysApp baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), bizRoleType);
-        if(baseApp == null){
-            baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), null);
-        }
-        if (StringUtils.isEmpty(userId)) {
+        // TODO 如果是代理商角色，则查询配置的代理商应用 sysAgentAppId
+        SysApp baseApp = null;
+        if(BizRoleType.SYS_AGENT.getCode().equals(bizRoleType)){
+            baseApp = appMapper.selectOneByAppId(sysAgentAppId);
             sysApps = new ArrayList<>();
             sysApps.add(baseApp);
-        } else {
-            SysUser sysUser = userMapper.selectById(userId);
-            sysApps = appMapper.selectListByOrgId(sysUser.getOrgId());
+        }else {
+            baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), bizRoleType);
+            if(baseApp == null){
+                baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), null);
+            }
+            if (StringUtils.isEmpty(userId)) {
+                sysApps = new ArrayList<>();
+                sysApps.add(baseApp);
+            } else {
+                SysUser sysUser = userMapper.selectById(userId);
+                sysApps = appMapper.selectListByOrgId(sysUser.getOrgId());
+            }
         }
+
         AppListResp appListResp = new AppListResp();
         appListResp.setApps(sysApps);
         appListResp.setDefaultApp(baseApp);

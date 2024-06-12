@@ -47,4 +47,7 @@ public interface AppMapper {
     List<AppResp> selectOrgAppTypeListByOrgId(@Param("orgId") String  orgId );
 
     List<SysApp> selectPublishApps();
+
+    SysApp selectOneByAppId(@Param("appId")String appId);
+
 }
