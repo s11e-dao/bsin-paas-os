@@ -82,10 +82,9 @@
 
   <select id="selectOneByAppId" resultMap="BaseResultMap">
     select
-      sys_app.app_id, app_code, app_name, logo, url,`status`, remark, create_by, create_time, update_by,
-      update_time, theme, sys_app.type,sta.type as tenantAppType, app_Language
-    from sys_app left join sys_tenant_app sta on sys_app.app_id = sta.app_id
-    where  sys_app.app_id = #{appId} and del_flag = 0
+      app_id, app_code, app_name, logo, url,`status`, remark, create_by, create_time, update_by,
+      update_time, theme, type, app_Language
+    from sys_app where  app_id = #{appId} and del_flag = 0
   </select>
 
   <update id="updateById" parameterType="me.flyray.bsin.domain.entity.SysApp">

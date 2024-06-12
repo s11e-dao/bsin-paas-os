@@ -19,7 +19,6 @@ import {
   addSysAgent,
   deleteSysAgent,
   getSysAgentDetail,
-  getProductList,
 } from './service';
 import TableTitle from '../../components/TableTitle';
 import { hex_md5 } from '../../utils/md5';
@@ -34,7 +33,6 @@ export default () => {
   const [isViewTemplateModal, setIsViewTemplateModal] = useState(false);
   // 查看
   const [isViewRecord, setIsViewRecord] = useState({});
-  const [productList, setProductList] = useState([]);
   // 获取表单
   const [FormRef] = Form.useForm();
 
@@ -75,9 +73,6 @@ export default () => {
   // 新增模板
   const increaseTemplate = () => {
     setIsTemplateModal(true);
-    getProductList({productName: ""}).then((res) => {
-      setProductList(res?.data);
-    });
   };
 
   /**
@@ -213,7 +208,7 @@ export default () => {
       />
       {/* 新增合约模板模态框 */}
       <Modal
-        title="添加节点"
+        title="添加代理商"
         centered
         open={isTemplateModal}
         onOk={confirmTemplate}
@@ -228,32 +223,16 @@ export default () => {
           initialValues={{ productCode: '0' }}
         >
           <Form.Item
-            label="节点产品"
-            name="productCode"
-            rules={[{ required: true, message: '请选择节点产品!' }]}
-          >
-            <Select style={{ width: '100%' }}>
-              <Option value="0">请选择节点产品</Option>
-              {productList?.map((product) => {
-                return (
-                  <Option value={product?.productCode}>
-                    {product?.productName}
-                  </Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="节点名称"
-            name="platformName"
-            rules={[{ required: true, message: '请输入节点名称!' }]}
+            label="代理商名称"
+            name="agentName"
+            rules={[{ required: true, message: '请输入代理商名称!' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             label="登录名称"
             name="username"
-            rules={[{ required: true, message: '请输入节点名称!' }]}
+            rules={[{ required: true, message: '请输入登录名称!' }]}
           >
             <Input />
           </Form.Item>

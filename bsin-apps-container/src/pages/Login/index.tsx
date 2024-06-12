@@ -106,7 +106,12 @@ export default function () {
     }
 
     if (res?.code === 0) {
-      setLocalStorageInfo('userInfo', res.data?.sysUser);
+      if (res.data?.sysUser) {
+        setLocalStorageInfo('userInfo', res.data?.sysUser);
+      }
+      if (res.data?.sysAgentInfo) {
+        setLocalStorageInfo('sysAgentInfo', res.data?.sysAgentInfo);
+      }
       setSessionStorageInfo('token', { token: res.data?.token });
       message.success('登录成功！');
     }

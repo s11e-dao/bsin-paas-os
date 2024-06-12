@@ -16,7 +16,7 @@ import java.util.Map;
 public interface SysAgentService {
 
     /**
-     * 商户登录
+     * 代理商登录
      */
     public Map<String, Object> login(Map<String, Object> requestMap);
 

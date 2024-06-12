@@ -151,7 +151,9 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
       if (res.data?.sysUser) {
         setLocalStorageInfo('userInfo', res.data?.sysUser);
       }
-      setLocalStorageInfo('merchantInfo', res.data?.merchantInfo);
+      if (res.data?.merchantInfo) {
+        setLocalStorageInfo('merchantInfo', res.data?.merchantInfo);
+      }
       setSessionStorageInfo('token', { token: res.data?.token });
       
       message.success('登录成功！');

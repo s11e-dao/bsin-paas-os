@@ -23,7 +23,9 @@ import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -49,7 +51,8 @@ public class SysAgentServiceImpl implements SysAgentService {
     @Autowired
     SysAgentMapper sysAgentMapper;
 
-
+    @ApiDoc(desc = "login")
+    @ShenyuDubboClient("/login")
     @Override
     public Map<String, Object> login(Map<String, Object> requestMap) {
         String username = MapUtils.getString(requestMap, "username");
@@ -78,25 +81,35 @@ public class SysAgentServiceImpl implements SysAgentService {
         return res;
     }
 
+    @ApiDoc(desc = "add")
+    @ShenyuDubboClient("/add")
     @Override
     public SysAgent add(Map<String, Object> requestMap) {
         SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
+        String tenantId = LoginInfoContextHelper.getTenantId();
         sysAgent.setSerialNo(BsinSnowflake.getId());
+        sysAgent.setTenantId(tenantId);
         sysAgentMapper.insert(sysAgent);
         return sysAgent;
     }
 
+    @ApiDoc(desc = "delete")
+    @ShenyuDubboClient("/delete")
     @Override
     public void delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         sysAgentMapper.deleteById(serialNo);
     }
 
+    @ApiDoc(desc = "edit")
+    @ShenyuDubboClient("/edit")
     @Override
     public SysAgent edit(Map<String, Object> requestMap) {
         return null;
     }
 
+    @ApiDoc(desc = "getPageList")
+    @ShenyuDubboClient("/getPageList")
     @Override
     public IPage<?> getPageList(Map<String, Object> requestMap) {
         SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
@@ -119,6 +132,8 @@ public class SysAgentServiceImpl implements SysAgentService {
         return pageList;
     }
 
+    @ApiDoc(desc = "getDetail")
+    @ShenyuDubboClient("/getDetail")
     @Override
     public SysAgent getDetail(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");

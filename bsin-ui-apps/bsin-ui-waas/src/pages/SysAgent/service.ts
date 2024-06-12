@@ -51,14 +51,4 @@ export const getSysAgentDetail = (params) => {
   });
 };
 
-// 查询产品列表
-export const getProductList = (params) => {
-  return request(upmsPath + '/product/getList', {
-    serviceName: 'ProductService',
-    methodName: 'getList',
-    bizParams: {
-      ...params,
-    },
-  });
-};
 
