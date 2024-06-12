@@ -9,6 +9,7 @@ import me.flyray.bsin.infrastructure.utils.OkHttpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.web3j.abi.FunctionEncoder;
@@ -42,10 +43,11 @@ public class TransactionBiz {
     @Autowired
     private WalletAccountMapper walletAccountMapper;
 
+    @Value("${bsin.app-chain.gateway-url}")
+    private String appChainGatewayUrl;
+
     // 节点
     private static final String HTTP_URL = "https://go.getblock.io/dc197e59d9b34e0c9428f2f13df66d6e";
-    // MPC签名连接URL
-    private static final String MPC_SIGN_URL = "http://192.168.1.118:8125/api/v1/mpc/sign/";
 
     // 连接以太坊节点
     Web3j web3 = Web3j.build(new HttpService(HTTP_URL));
@@ -210,11 +212,10 @@ public class TransactionBiz {
             WalletAccount walletAccount = walletAccountMapper.selectOne(queryWrapper);
 
             // 3、调用 API 创建 MPC Sign 签名任务
-            String url = MPC_SIGN_URL;
             String pubkey = walletAccount.getPubKey();
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("message", unsignedHash);
-            JSONObject jsonData = OkHttpUtils.httpPost(url + pubkey, jsonObject);
+            JSONObject jsonData = OkHttpUtils.httpPost(appChainGatewayUrl+ "/api/v1/mpc/sign/" + pubkey, jsonObject);
             String sig = (String) jsonData.get("signature");
 
             // 5、构建签名交易

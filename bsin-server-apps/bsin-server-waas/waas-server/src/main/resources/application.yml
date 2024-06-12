@@ -87,3 +87,5 @@ bsin:
     authentication-secretKey: shenyu-test-shenyu-test-shenyu-test
     # 过期时间，单位分钟
     authentication-expiration: 60
+  app-chain:
+    gateway-url: http://192.168.1.118:8125

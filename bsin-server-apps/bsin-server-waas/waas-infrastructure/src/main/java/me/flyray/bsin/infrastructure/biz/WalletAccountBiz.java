@@ -42,6 +42,8 @@ public class WalletAccountBiz {
     private RocketMQProducer rocketMQProducer;
     @Value("${rocketmq.consumer.topic}")
     private String topic;
+    @Value("${bsin.app-chain.gateway-url}")
+    private String appChainGatewayUrl;
 
     /**
      * 创建钱包账户
@@ -60,7 +62,6 @@ public class WalletAccountBiz {
                 throw new BusinessException("chain coin not exist or off shelves");
             }
             // 1、创建链上钱包
-            String url = "http://192.168.1.118:8125/api/v1/mpc/keygen";
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("walletName", wallet.getWalletName());
             jsonObject.put("walletType", "mpc");
@@ -73,7 +74,7 @@ public class WalletAccountBiz {
             jsonObject.put("mpcClients", mpcClients);
             jsonObject.put("sync", false);
             jsonObject.put("timeout", 1000);
-            JSONObject data = OkHttpUtils.httpPost(url, jsonObject);
+            JSONObject data = OkHttpUtils.httpPost(appChainGatewayUrl + "/api/v1/mpc/keygen", jsonObject);
             String pubKey = (String) data.get("pubkey");
             String address = (String)data.get("address");
             String walletAccountId = (String)data.get("address");
