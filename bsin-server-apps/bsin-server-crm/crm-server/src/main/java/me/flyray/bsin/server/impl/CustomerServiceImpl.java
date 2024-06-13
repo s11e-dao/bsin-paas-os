@@ -192,11 +192,22 @@ public class CustomerServiceImpl implements CustomerService {
             new LambdaUpdateWrapper<Member>()
                 .eq(Member::getMerchantNo, merchantNo)
                 .eq(Member::getCustomerNo, customerBaseRegister.getCustomerNo()));
+
+    LoginUser loginUser = new LoginUser();
+    loginUser.setTenantId(customerBaseRegister.getTenantId());
+    loginUser.setUsername(customerBaseRegister.getUsername());
+    loginUser.setPhone(customerBaseRegister.getPhone());
+    loginUser.setCustomerNo(customerBaseRegister.getCustomerNo());
+    loginUser.setBizRoleType(BizRoleType.CUSTORMER.getCode());
+    loginUser.setBizRoleTypeNo(customerBaseRegister.getCustomerNo());
+    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
+
     // 查询客户的角色信息，是否是dao创建者
     // 查询用户加入的dao信息
     Map data = new HashMap<>();
     data.put("customerInfo", customerBaseRegister);
     data.put("memberInfo", member);
+    data.put("token", token);
     return data;
   }
 
@@ -241,10 +252,19 @@ public class CustomerServiceImpl implements CustomerService {
       memberMapper.insert(member);
     }
 
+    LoginUser loginUser = new LoginUser();
+    loginUser.setTenantId(customerBaseRegister.getTenantId());
+    loginUser.setUsername(customerBaseRegister.getUsername());
+    loginUser.setPhone(customerBaseRegister.getPhone());
+    loginUser.setCustomerNo(customerBaseRegister.getCustomerNo());
+    loginUser.setBizRoleType(BizRoleType.CUSTORMER.getCode());
+    loginUser.setBizRoleTypeNo(customerBaseRegister.getCustomerNo());
+    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
+
     Map data = new HashMap<>();
     data.put("customerInfo", customerBaseRegister);
     data.put("memberInfo", member);
-
+    data.put("token", token);
     return data;
   }
 
