@@ -1,10 +1,7 @@
 package me.flyray.bsin.server.impl;
 
 import me.flyray.bsin.constants.ResponseCode;
-import me.flyray.bsin.domain.entity.SysOrg;
-import me.flyray.bsin.domain.entity.SysPost;
-import me.flyray.bsin.domain.entity.SysRole;
-import me.flyray.bsin.domain.entity.SysUser;
+import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.response.AppResp;
 import me.flyray.bsin.domain.response.OrgResp;
 import me.flyray.bsin.domain.response.OrgTree;
@@ -28,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Transactional(rollbackFor = Exception.class)
@@ -352,6 +350,72 @@ public class OrgServiceImpl implements OrgService {
         return appMapper.selectOrgAppTypeListByOrgId(orgId);
     }
 
+    /**
+     * 查询机构下的已授权应用集合
+     * @param requestMap
+     * @return
+     */
+    @ApiDoc(desc = "getAppListByOrgCode")
+    @ShenyuDubboClient("/getAppListByOrgCode")
+    @Override
+    public List<AppResp> getAppListByOrgCode(Map<String, Object> requestMap) {
+        String tenantId = LoginInfoContextHelper.getTenantId();
+        String orgCode = (String) requestMap.get("orgCode");
+        SysOrg sysOrg = orgMapper.selectOrg(tenantId,orgCode);
+        List<AppResp> sysAppList = appMapper.selectOrgAppListByOrgId(sysOrg.getOrgId());
+        return sysAppList;
+    }
+
+    /**
+     * 查询机构下的可授权应用集合
+     * @param requestMap
+     * @return
+     */
+    @ApiDoc(desc = "getAuthorizableAppListByOrgCode")
+    @ShenyuDubboClient("/getAuthorizableAppListByOrgCode")
+    @Override
+    public List<SysApp> getAuthorizableAppListByOrgCode(Map<String, Object> requestMap) {
+        String tenantId = LoginInfoContextHelper.getTenantId();
+        String orgCode = (String) requestMap.get("orgCode");
+        SysOrg sysOrg = orgMapper.selectOrg(tenantId,orgCode);
+        // 查询机构对应租户下可授权应用
+        List<String> authorizableAppIds = appMapper.selectAppIdsByTenantIdAndAppName(tenantId, null);
+        // 已授权机构应用
+        List<String> authorizedAppList = appMapper.selectAppIdsByOrgId(sysOrg.getOrgId());
+
+        List<String> unAuthorizedAppIds = authorizableAppIds.stream()
+                .filter(element -> !authorizedAppList.contains(element))
+                .collect(Collectors.toList());
+        // 根据应用ID查询应用列表
+        List<SysApp> sysAppList = appMapper.selectListByAppIds(unAuthorizedAppIds);
+        return sysAppList;
+    }
+
+    /**
+     * 根据租户查询所有机构
+     */
+    @ApiDoc(desc = "getOrgsByTenantId")
+    @ShenyuDubboClient("/getOrgsByTenantId")
+    @Override
+    public List<OrgResp> getOrgsByTenantId(Map<String, Object> requestMap) {
+        SysOrg sysOrg = new SysOrg();
+        String tenantId = (String) requestMap.get("tenantId");
+        sysOrg.setTenantId(tenantId);
+        List<OrgResp> orgResp = orgMapper.selectOrgList(sysOrg);
+        return orgResp;
+    }
+
+    /**
+     * 根据机构id获取机构
+     * @param requestMap
+     * @return
+     */
+    @Override
+    public SysOrg getOrg(Map<String, Object> requestMap) {
+        String orgId = (String) requestMap.get("orgId");
+        SysOrg sysOrg = orgMapper.selectInfoById(orgId);
+        return sysOrg;
+    }
 
     /**
      * 根据机构id获取机构
@@ -366,8 +430,7 @@ public class OrgServiceImpl implements OrgService {
 
     @Override
     public List<SysOrg> getOrgListByIds(List<String> orgIds) {
-
-            return orgMapper.selectListByIds(orgIds);
+        return orgMapper.selectListByIds(orgIds);
     }
 
     @Override

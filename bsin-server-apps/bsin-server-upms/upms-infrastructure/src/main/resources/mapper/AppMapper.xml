@@ -175,4 +175,22 @@
     where status = 1 and del_flag = 0
   </select>
 
+  <select id="selectOrgAppListByOrgId"  resultMap="AppResultMap">
+    select
+      sys_app.app_id, app_name, sys_org_app.type
+    from sys_org_app left join sys_app on sys_org_app.app_id = sys_app.app_id
+    where org_id = #{orgId,jdbcType=VARCHAR} and del_flag = 0
+  </select>
+
+  <select id="selectListByAppIds"  resultMap="BaseResultMap">
+    select
+    app_id, app_code, app_name, logo, url, remark,status, create_by, create_time, update_by,
+    update_time, theme, type, app_language
+    from sys_app
+    WHERE app_id IN
+    <foreach collection="unauthorizedAppIds" item="appId" open="(" separator="," close=")">
+      #{appId}
+    </foreach>
+  </select>
+
 </mapper>

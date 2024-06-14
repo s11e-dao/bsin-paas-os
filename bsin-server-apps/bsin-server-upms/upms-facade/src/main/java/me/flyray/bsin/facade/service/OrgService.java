@@ -1,9 +1,11 @@
 package me.flyray.bsin.facade.service;
 
 
+import me.flyray.bsin.domain.entity.SysApp;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -86,12 +88,34 @@ public interface OrgService {
     public void unbindPost(String orgId, String postId);
 
     /**
-     * 根据机构id查询应用集合
+     * 根据机构id查询已授权应用
      *
      * @return
      */
     public List<AppResp> getAppListByOrgId(String orgId);
 
+    /**
+     * 根据机构id查询已授权应用
+     * @return
+     */
+    public List<AppResp> getAppListByOrgCode(Map<String, Object> requestMap);
+
+    /**
+     * 查询机构可授权应用
+     */
+    public List<SysApp> getAuthorizableAppListByOrgCode(Map<String, Object> requestMap);
+
+    /**
+     * 根据租户查询所有机构
+     * @return
+     */
+    public List<OrgResp> getOrgsByTenantId(Map<String, Object> requestMap);
+
+    /**
+     * 根据机构id获取机构
+     * @return
+     */
+    public SysOrg getOrg(Map<String, Object> requestMap);
 
     /**
      * 根据机构id获取机构
@@ -117,4 +141,5 @@ public interface OrgService {
 
 
     List<SysOrg> getSubOrgList(String tenantId);
+
 }

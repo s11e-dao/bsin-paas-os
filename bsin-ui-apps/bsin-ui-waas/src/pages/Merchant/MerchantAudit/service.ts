@@ -3,7 +3,7 @@ let crmPath = process.env.contextPath_crm;
 
 // 分页查询合约实例
 export const getCustomerEnterprisePageList = (params) => {
-  return request(crmPath + '/merchant/getPageList', {
+  return request(crmPath + '/merchant/admin/getPageList', {
     serviceName: 'MerchantService',
     methodName: 'getPageList',
     version: '1.0',

@@ -113,7 +113,7 @@ export default () => {
     <div>
       {/* Pro表格 */}
       <ProTable<columnsDataType>
-        headerTitle={<TableTitle title="商户产品api费用配置" />}
+        headerTitle={<TableTitle title="商户应用api费用配置" />}
         scroll={{ x: 900 }}
         bordered
         // 表头

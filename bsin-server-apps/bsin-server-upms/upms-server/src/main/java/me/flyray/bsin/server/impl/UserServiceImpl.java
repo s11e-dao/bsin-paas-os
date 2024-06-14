@@ -234,7 +234,7 @@ public class UserServiceImpl implements UserService {
         merchantOrg.setOrgId(orgId);
         merchantOrg.setParentId(sysOrg.getOrgId());
         merchantOrg.setOrgName(sysUser.getUsername());
-        merchantOrg.setOrgCode(sysUser.getUsername());
+        merchantOrg.setOrgCode(merchantNo);
         orgMapper.insertOrg(merchantOrg);
 
         // 添加添加商户部门用户

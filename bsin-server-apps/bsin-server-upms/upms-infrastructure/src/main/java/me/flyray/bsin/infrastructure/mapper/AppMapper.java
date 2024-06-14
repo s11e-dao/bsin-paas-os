@@ -50,4 +50,8 @@ public interface AppMapper {
 
     SysApp selectOneByAppId(@Param("appId")String appId);
 
+    List<AppResp> selectOrgAppListByOrgId(@Param("orgId") String  orgId );
+
+    List<SysApp> selectListByAppIds(@Param("unauthorizedAppIds") List<String> unauthorizedAppIds);
+
 }

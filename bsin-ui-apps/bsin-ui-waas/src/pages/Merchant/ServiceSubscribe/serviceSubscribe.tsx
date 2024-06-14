@@ -44,12 +44,12 @@ export default ({ setCurrentContent }) => {
     useEffect(() => {
         // 查询商户可授权应用
         let params = {
-            orgCode: getLocalStorageInfo('merchantInfo')?.merchantName
+            orgCode: getLocalStorageInfo('merchantInfo')?.serialNo
         };
         getMerchantAuthorizableAppList(params).then((res) => {
             console.log(res?.data);
             let typeNoListTemp = [];
-            if (res?.code == '000000') {
+            if (res?.code == 0) {
                 res?.data.map((item) => {
                     console.log(item);
                     let typeNoJson = {
