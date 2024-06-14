@@ -186,7 +186,7 @@ const DictManagement = () => {
       console.log(response);
 
       if (checkAddModalTitle === '新增') {
-        let bizRoleType = 99;
+        let bizRoleType = "99";
         if (response.bizRoleType) {
           bizRoleType = response.bizRoleType
         }
