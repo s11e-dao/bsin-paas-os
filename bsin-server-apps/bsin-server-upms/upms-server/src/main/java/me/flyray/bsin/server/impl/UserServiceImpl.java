@@ -760,7 +760,7 @@ public class UserServiceImpl implements UserService {
     private SysUserVO login(SysUser sysUserReq, SysUser sysUser) {
         log.info("登录用户：{}", sysUser);
         if (sysUser == null) {
-            throw new BusinessException(ResponseCode.USER_PASSWORD_IS_FALSE);
+            throw new BusinessException(ResponseCode.USERNAME_PASSWORD_ERROR);
         }
         if (!UserStatusEnum.ON.getStatus().equals(sysUser.getStatus())) {
             throw new BusinessException(ResponseCode.USER_STATUS_ERROR);

@@ -87,6 +87,7 @@ public class PlatformServiceImpl implements PlatformService {
         SysTenantDTO sysTenantDTO = new SysTenantDTO();
         sysTenantDTO.setTenantCode(platformNo);
         sysTenantDTO.setTenantName(platformDTO.getPlatformName());
+        sysTenantDTO.setUsername(platformDTO.getUsername());
         sysTenantDTO.setPassword(platformDTO.getPassword());
         sysTenantDTO.setProductCode(platformDTO.getProductCode());
         SysTenant sysTenant = tenantService.add(sysTenantDTO);
@@ -160,7 +161,7 @@ public class PlatformServiceImpl implements PlatformService {
         warapper.eq(Platform::getUsername, platformReq.getUsername());
         Platform platform = platformMapper.selectOne(warapper);
         if(platform == null){
-            throw new BusinessException(ResponseCode.USER_PASSWORD_IS_FALSE);
+            throw new BusinessException(ResponseCode.USERNAME_PASSWORD_ERROR);
         }
 
         Map res = new HashMap<>();

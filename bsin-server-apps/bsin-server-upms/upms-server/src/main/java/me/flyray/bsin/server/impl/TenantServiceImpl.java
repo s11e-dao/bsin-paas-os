@@ -134,7 +134,7 @@ public class TenantServiceImpl implements TenantService {
 
         // 3、用户：初始租户的超级管理员
         String password = sysTenantReq.getPassword();
-        SysUser adminUser = addTenantAdminUser(tenantId, sysTenant.getTenantName(), password, orgId);
+        SysUser adminUser = addTenantAdminUser(tenantId, sysTenant.getUsername(), password, orgId);
         String userId = adminUser.getUserId();
 
         // 4、初始化一个岗位
@@ -340,12 +340,12 @@ public class TenantServiceImpl implements TenantService {
         return tenantMapper.selectAllList();
     }
 
-    private SysUser addTenantAdminUser(String tenantId, String tenantName, String password, String orgId) {
+    private SysUser addTenantAdminUser(String tenantId, String username, String password, String orgId) {
         String userId = BsinSnowflake.getId();
         if (StringUtils.isEmpty(password)) {
             password = tenantConfig.getPassword();
         }
-        SysUser sysUser = new SysUser(userId, tenantName, password, orgId, tenantId);
+        SysUser sysUser = new SysUser(userId, username, password, orgId, tenantId);
         sysUser.setType(UserType.TENANT.getCode());
         userMapper.insertUser(sysUser);
         return sysUser;

@@ -49,6 +49,12 @@ public class SysTenant implements Serializable {
     private String tenantName;
 
     /**
+     * 租户登录名称
+     */
+    @NotBlank(message = "username不能为空！", groups = AddGroup.class)
+    private String username;
+
+    /**
      * 描述
      */
     private String remark;
@@ -91,4 +97,5 @@ public class SysTenant implements Serializable {
     private String customerNo;
 
     private static final long serialVersionUID = 1L;
+
 }
