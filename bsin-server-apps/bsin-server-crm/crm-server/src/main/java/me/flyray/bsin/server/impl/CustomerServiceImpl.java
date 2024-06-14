@@ -282,24 +282,23 @@ public class CustomerServiceImpl implements CustomerService {
   @Override
   public IPage<?> getPageList(Map<String, Object> requestMap) {
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
+    String tenantId = customerBase.getTenantId();
+    if(tenantId == null){
+      tenantId = LoginInfoContextHelper.getTenantId();
+    }
     Object paginationObj =  requestMap.get("pagination");
     Pagination pagination = new Pagination();
     BeanUtil.copyProperties(paginationObj,pagination);
     Page<CustomerBase> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<CustomerBase> warapper = new LambdaUpdateWrapper<>();
     warapper.orderByDesc(CustomerBase::getCreateTime);
-    warapper.eq(
-        ObjectUtil.isNotNull(customerBase.getTenantId()),
-        CustomerBase::getTenantId,
-        customerBase.getTenantId());
+    warapper.eq(CustomerBase::getTenantId,tenantId);
     warapper.eq(
         ObjectUtil.isNotNull(customerBase.getCustomerNo()),
-        CustomerBase::getCustomerNo,
-        customerBase.getCustomerNo());
+        CustomerBase::getCustomerNo,customerBase.getCustomerNo());
     warapper.eq(
         ObjectUtil.isNotNull(customerBase.getType()),
-        CustomerBase::getType,
-        customerBase.getType());
+        CustomerBase::getType,customerBase.getType());
     IPage<CustomerBase> pageList = customerBaseMapper.selectPage(page, warapper);
     return pageList;
   }
