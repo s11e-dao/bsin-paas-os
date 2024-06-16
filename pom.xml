@@ -16,7 +16,7 @@
         <module>bsin-common-all</module>
         <module>bsin-targe-gateway</module>
         <module>bsin-targe-gateway-admin</module>
-        <module>bsin-server-schedule</module>
+<!--        <module>bsin-server-schedule</module>-->
         <module>bsin-server-apps</module>
         <module>bsin-server-scaffold</module>
     </modules>

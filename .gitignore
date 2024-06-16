@@ -49,3 +49,7 @@ bsin-server-apps/bsin-server-upms/upms-server/src/main/resources/application-pro
 /bsin-server-apps/bsin-server-ai/ai-server/src/main/resources/application-prod.properties
 /bsin-server-apps/bsin-server-ai/ai-server/src/main/resources/application-local.properties
 /bsin-server-apps/bsin-server-crm/crm-server/src/main/resources/application-bsin.properties
+
+bsin-server-apps/bsin-server-ai/ai-go-wechat/vendor/
+
+bsin-server-apps/bsin-server-ai/logs/

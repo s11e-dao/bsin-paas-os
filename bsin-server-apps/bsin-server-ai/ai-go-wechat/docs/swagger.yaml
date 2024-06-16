@@ -1,0 +1,2275 @@
+host: localhost:8126
+info:
+  contact:
+    email: leijiwu001@gmail.com
+    name: leonard
+    url: https://www.s11edao.com
+  description: bsin-paas golang 后台应用
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: bsin-paas golang server
+  version: "1.0"
+paths:
+  /account/batchCreateUser:
+    post:
+      description: create account
+      operationId: "12"
+      parameters:
+      - description: 签名信息:暂时无用，可以随便写死一个
+        in: body
+        name: sign
+        required: true
+        schema:
+          type: string
+      - description: 用户设置的交易密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: 创建账户数量
+        in: body
+        name: num
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"account":"用户的链上账户","privateKey":"用户转账nft需要用到的私钥","retMsg":"ok"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 批量创建账户并保存
+      tags:
+      - blockchain/cfx/account
+  /account/createUser:
+    post:
+      description: create account
+      operationId: "11"
+      parameters:
+      - description: 签名信息:暂时无用，可以随便写死一个
+        in: body
+        name: sign
+        required: true
+        schema:
+          type: string
+      - description: 用户设置的交易密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"account":"用户的链上账户","privateKey":"用户转账nft需要用到的私钥","retMsg":"ok"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 创建账户
+      tags:
+      - blockchain/cfx/account
+  /account/grantRole:
+    post:
+      description: grant role
+      operationId: "13"
+      parameters:
+      - description: 签名信息:暂时无用，可以随便写死一个
+        in: body
+        name: sign
+        required: true
+        schema:
+          type: string
+      - description: 用户设置的交易密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: 创建账户数量
+        in: body
+        name: num
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 授权角色权限
+      tags:
+      - blockchain/cfx/account
+  /account/pause:
+    post:
+      description: pause
+      operationId: "16"
+      parameters:
+      - description: 签名信息:暂时无用，可以随便写死一个
+        in: body
+        name: sign
+        required: true
+        schema:
+          type: string
+      - description: 用户设置的交易密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: 创建账户数量
+        in: body
+        name: num
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 暂停/启用合约
+      tags:
+      - blockchain/cfx/account
+  /account/renounceRole:
+    post:
+      description: grant role
+      operationId: "15"
+      parameters:
+      - description: 签名信息:暂时无用，可以随便写死一个
+        in: body
+        name: sign
+        required: true
+        schema:
+          type: string
+      - description: 用户设置的交易密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: 创建账户数量
+        in: body
+        name: num
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 放弃角色权限
+      tags:
+      - blockchain/cfx/account
+  /account/revokeRole:
+    post:
+      description: grant role
+      operationId: "14"
+      parameters:
+      - description: 签名信息:暂时无用，可以随便写死一个
+        in: body
+        name: sign
+        required: true
+        schema:
+          type: string
+      - description: 用户设置的交易密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: 创建账户数量
+        in: body
+        name: num
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 废除角色权限
+      tags:
+      - blockchain/cfx/account
+  /aigc/ai/baidu/gen:
+    post:
+      description: Generate a yaml configuration file from a directory containing
+        all the layers and following the layer naming guidelines
+      operationId: "2000"
+      parameters:
+      - description: 租户ID
+        in: body
+        name: teanId
+        required: true
+        schema:
+          type: string
+      - description: 时间戳
+        in: body
+        name: timestamp
+        required: true
+        schema:
+          type: string
+      - description: pfp avatar name
+        in: body
+        name: avatarName
+        required: true
+        schema:
+          type: string
+      - description: 素材图片路径
+        in: body
+        name: traitsPath
+        required: true
+        schema:
+          type: string
+      - description: 生成的pfp路径
+        in: body
+        name: traitsOut
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"retMsg":"ok"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: traits dump
+      tags:
+      - aigc/ai
+  /aigc/avatar/collectionRarity:
+    post:
+      description: The report contains all the items in the collection, ordered by
+        most rare from least rare.
+      operationId: "1003"
+      parameters:
+      - description: 租户ID
+        in: body
+        name: teanId
+        required: true
+        schema:
+          type: string
+      - description: 时间戳
+        in: body
+        name: timestamp
+        required: true
+        schema:
+          type: string
+      - description: pfp avatar name
+        in: body
+        name: avatarName
+        required: true
+        schema:
+          type: string
+      - description: collection.json 路径
+        in: body
+        name: rarityPath
+        required: true
+        schema:
+          type: string
+      - description: Trait collection rarity rank report out path
+        in: body
+        name: rarityOut
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"retMsg":"ok"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: traits collection rarity
+      tags:
+      - aigc/avatar
+  /aigc/avatar/image/gen:
+    post:
+      description: Generate a yaml configuration file from a directory containing
+        all the layers and following the layer naming guidelines
+      operationId: "1010"
+      parameters:
+      - description: 租户ID
+        in: body
+        name: teanId
+        required: true
+        schema:
+          type: string
+      - description: 时间戳
+        in: body
+        name: timestamp
+        required: true
+        schema:
+          type: string
+      - description: pfp avatar name
+        in: body
+        name: avatarName
+        required: true
+        schema:
+          type: string
+      - description: the width of the generated image
+        in: body
+        name: imgGenWidth
+        required: true
+        schema:
+          type: string
+      - description: the height of the generated image
+        in: body
+        name: imgGenHeight
+        required: true
+        schema:
+          type: string
+      - description: 'the initial index of the image names, e.g.: you have a collection
+          of 100 and want the names to be from 1000 to 1100, use --starrtingIndex
+          1000'
+        in: body
+        name: imgGenStartingIndex
+        required: true
+        schema:
+          type: string
+      - description: path to the collection json file generated via `nftool traits
+          make`
+        in: body
+        name: imgGenCollectionPath
+        required: true
+        schema:
+          type: string
+      - description: path to the configuration file generated via `nftool traits dump`
+        in: body
+        name: imgGenConfigPath
+        required: true
+        schema:
+          type: string
+      - description: path to the folder where all imgs will be generated
+        in: body
+        name: imgGenOutDir
+        required: true
+        schema:
+          type: string
+      - description: generate images in parallel using all your cores
+        in: body
+        name: imgGenParallel
+        required: true
+        schema:
+          type: string
+      - description: generate png images instead of jpg images
+        in: body
+        name: imgGenSaveAsPng
+        required: true
+        schema:
+          type: string
+      - description: generate only the images that are missing in the output dir
+        in: body
+        name: imgGenOnlyMissing
+        required: true
+        schema:
+          type: string
+      - description: use this flag if the background of your nft is transparent
+        in: body
+        name: imgGenTransparent
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"retMsg":"ok"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: image gen
+      tags:
+      - aigc/avatar
+  /aigc/avatar/metadata/gen:
+    post:
+      description: Generate ERC-721 and ERC-1155 compliant metadata from a collection
+        json
+      operationId: "1020"
+      parameters:
+      - description: 租户ID
+        in: body
+        name: teanId
+        required: true
+        schema:
+          type: string
+      - description: 时间戳
+        in: body
+        name: timestamp
+        required: true
+        schema:
+          type: string
+      - description: pfp avatar name
+        in: body
+        name: avatarName
+        required: true
+        schema:
+          type: string
+      - description: path to the collection json generated via \
+        in: body
+        name: collectionPath
+        required: true
+        schema:
+          type: string
+      - description: path to the config json generated via \
+        in: body
+        name: configPath
+        required: true
+        schema:
+          type: string
+      - description: path to the folder where the generated metadata files will be
+          created
+        in: body
+        name: metadataOutDir
+        required: true
+        schema:
+          type: string
+      - description: 'if the file names generated should follow the ERC-1155 pattern:
+          hex value padded with zeros to size 64'
+        in: body
+        name: use1155Pattern
+        required: true
+        schema:
+          type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"retMsg":"ok"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: matadata Generate
+      tags:
+      - aigc/avatar
+  /aigc/avatar/provenance/gen:
+    post:
+      description: Generate the provenace report of a collection
+      operationId: "1021"
+      parameters:
+      - description: 租户ID
+        in: body
+        name: teanId
+        required: true
+        schema:
+          type: string
+      - description: 时间戳
+        in: body
+        name: timestamp
+        required: true
+        schema:
+          type: string
+      - description: pfp avatar name
+        in: body
+        name: avatarName
+        required: true
+        schema:
+          type: string
+      - description: path to the directory containing the generated images
+        in: body
+        name: provenanceImgsDir
+        required: true
+        schema:
+          type: string
+      - description: where to save the provenance report
+        in: body
+        name: provenanceOut
+        required: true
+        schema:
+          type: string
+      - description: startingIndex
+        in: body
+        name: provenanceStartingIndex
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"retMsg":"ok"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: matadata Generate
+      tags:
+      - aigc/avatar
+  /aigc/avatar/traits/dump:
+    post:
+      description: Generate a yaml configuration file from a directory containing
+        all the layers and following the layer naming guidelines
+      operationId: "1000"
+      parameters:
+      - description: 租户ID
+        in: body
+        name: teanId
+        required: true
+        schema:
+          type: string
+      - description: 时间戳
+        in: body
+        name: timestamp
+        required: true
+        schema:
+          type: string
+      - description: pfp avatar name
+        in: body
+        name: avatarName
+        required: true
+        schema:
+          type: string
+      - description: 素材图片路径
+        in: body
+        name: traitsPath
+        required: true
+        schema:
+          type: string
+      - description: 生成的pfp路径
+        in: body
+        name: traitsOut
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"retMsg":"ok"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: traits dump
+      tags:
+      - aigc/avatar
+  /aigc/avatar/traits/make:
+    post:
+      description: Generate a collection from a config file or a folder with the structured
+        layers
+      operationId: "1001"
+      parameters:
+      - description: 租户ID
+        in: body
+        name: teanId
+        required: true
+        schema:
+          type: string
+      - description: 时间戳
+        in: body
+        name: timestamp
+        required: true
+        schema:
+          type: string
+      - description: pfp avatar name
+        in: body
+        name: avatarName
+        required: true
+        schema:
+          type: string
+      - description: 素材图片路径
+        in: body
+        name: traitsPath
+        required: true
+        schema:
+          type: string
+      - description: 生成的pfp路径
+        in: body
+        name: traitsOut
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"retMsg":"ok"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: traits make
+      tags:
+      - aigc/avatar
+  /aigc/avatar/traits/rarity:
+    post:
+      description: Generate collection rarity report, The report contains the number
+        of appearances of each trait in the collection.
+      operationId: "1002"
+      parameters:
+      - description: 租户ID
+        in: body
+        name: teanId
+        required: true
+        schema:
+          type: string
+      - description: 时间戳
+        in: body
+        name: timestamp
+        required: true
+        schema:
+          type: string
+      - description: pfp avatar name
+        in: body
+        name: avatarName
+        required: true
+        schema:
+          type: string
+      - description: collection.json 路径
+        in: body
+        name: rarityPath
+        required: true
+        schema:
+          type: string
+      - description: Trait Rarity Report out path
+        in: body
+        name: rarityOut
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"retMsg":"ok"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: traits rarity
+      tags:
+      - aigc/avatar
+  /airDrop/oneStop1155:
+    post:
+      description: oneStop ERC1155
+      operationId: "62"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 要空投的nft token id
+        in: body
+        name: tokenId
+        required: true
+        schema:
+          type: string
+      - description: 要空投的token ammount
+        in: body
+        name: tokenAmount
+        required: true
+        schema:
+          type: string
+      - description: addPrivilege toAddr是否添加到白名单
+        in: body
+        name: addPrivilege
+        required: true
+        schema:
+          type: string
+      - description: 空投的用户数量
+        in: body
+        name: num
+        required: true
+        schema:
+          type: string
+      - description: callAddr
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 调用地址私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 部署合约、创建新账户，加入代付白名单，空投token
+      tags:
+      - blockchain/cfx/airDrop
+  /approve/erc20:
+    post:
+      description: approve ERC20
+      operationId: "51"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddr 调用合约的EOA,授权者地址
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 调用合约的EOA的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: approvedOperator：授权对象的EOA地址
+        in: body
+        name: approvedOperator
+        required: true
+        schema:
+          type: string
+      - description: tokenAmount：要授权的金额，确保callAddr地址下amount >= tokenAmount
+        in: body
+        name: tokenAmount
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 授权 ERC20
+      tags:
+      - blockchain/cfx/approve
+  /approve/erc721:
+    post:
+      description: approve ERC721
+      operationId: "52"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddr 调用合约的EOA，授权者地址：NFT owner
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 调用合约的EOA的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: approvedOperator：授权对象的EOA地址
+        in: body
+        name: approvedOperator
+        required: true
+        schema:
+          type: string
+      - description: nft token id：要授权的token id，确保callAddr地址下有这个id的nft
+        in: body
+        name: tokenId
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 授权 ERC721
+      tags:
+      - blockchain/cfx/approve
+  /approve/forAllErc1155:
+    post:
+      description: approve for all ERC1155
+      operationId: "53"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddr 调用合约的EOA，授权者地址：NFT owner
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 调用合约的EOA的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: approvedOperator：授权对象的EOA地址
+        in: body
+        name: approvedOperator
+        required: true
+        schema:
+          type: string
+      - description: 操作类型：bool 类型 true:授权 false:取消授权
+        in: body
+        name: flag
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 授权 ERC1155，将当前授权者地址下的左右token授权给approvedOperator
+      tags:
+      - blockchain/cfx/approve
+  /arirDrop/erc1155:
+    post:
+      description: airDrop erc1155
+      operationId: "61"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: 要空投的nft token id
+        in: body
+        name: tokenId
+        required: true
+        schema:
+          type: string
+      - description: 要空投的token ammount
+        in: body
+        name: tokenAmount
+        required: true
+        schema:
+          type: string
+      - description: addPrivilege toAddr是否添加到白名单
+        in: body
+        name: addPrivilege
+        required: true
+        schema:
+          type: string
+      - description: 空投的用户数量
+        in: body
+        name: num
+        required: true
+        schema:
+          type: string
+      - description: callAddr
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 调用地址私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 空投，加入代付白名单(适用于同质化铸造的1155 Token)
+      tags:
+      - blockchain/cfx/airDrop
+  /burn/batchErc1155:
+    post:
+      description: batch burn erc1155
+      operationId: "84"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: token id 数组
+        in: body
+        name: tokenIds
+        required: true
+        schema:
+          type: string
+      - description: token tokenAmount 数组
+        in: body
+        name: tokenAmounts
+        required: true
+        schema:
+          type: string
+      - description: toAddr 创建账户生成的地址，该处为销毁nft的用户地址
+        in: body
+        name: toAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddr 合约owner，部署合约的EOA
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 合约owner地址的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 批量销毁 ERC1155
+      tags:
+      - blockchain/cfx/burn
+  /burn/erc20:
+    post:
+      description: burn ERC20
+      operationId: "81"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddr 销毁token账户地址
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 合约owner地址的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: tokenAmount 销毁数量
+        in: body
+        name: tokenAmount
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 销毁 ERC20
+      tags:
+      - blockchain/cfx/burn
+  /burn/erc721:
+    post:
+      description: burn ERC721
+      operationId: "82"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: '要销毁的nft token id '
+        in: body
+        name: tokenId
+        required: true
+        schema:
+          type: string
+      - description: callAddr 该处为所要销毁nft的owner地址或者被授权者
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 合约owner地址的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 销毁 ERC721
+      tags:
+      - blockchain/cfx/burn
+  /burn/erc1155:
+    post:
+      description: burn erc1155
+      operationId: "83"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: token id 所要销毁的token id
+        in: body
+        name: tokenId
+        required: true
+        schema:
+          type: string
+      - description: ammount 所要销毁的token的数量
+        in: body
+        name: TokenAmount
+        required: true
+        schema:
+          type: string
+      - description: account 销毁nft的用户地址
+        in: body
+        name: account
+        required: true
+        schema:
+          type: string
+      - description: callAddr 调用合约的账户
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 合调用合约的账户的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 销毁 ERC1155
+      tags:
+      - blockchain/cfx/burn
+  /deploy/erc20:
+    post:
+      description: Deploy ERC721 contract to specified chain
+      operationId: "21"
+      parameters:
+      - description: 请求的区块链
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 部署的合约名称
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: 部署的合约符号
+        in: body
+        name: symbol
+        required: true
+        schema:
+          type: string
+      - description: 部署合约的EOA，默认部署以后为合约owner
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 部署合约owner地址的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"contractAddr":"部署的合约地址","txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 部署 ERC20 合约
+      tags:
+      - blockchain/cfx/deploy
+  /deploy/erc721:
+    post:
+      description: Deploy ERC721 contract to specified chain
+      operationId: "22"
+      parameters:
+      - description: 请求的区块链
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: NFT供应量
+        in: body
+        name: totalSupply
+        required: true
+        schema:
+          type: string
+      - description: 部署的合约名称
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: 部署的合约符号
+        in: body
+        name: symbol
+        required: true
+        schema:
+          type: string
+      - description: token的base uri
+        in: body
+        name: baseUri
+        required: true
+        schema:
+          type: string
+      - description: 部署合约的EOA，默认部署以后为合约owner
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 部署合约owner地址的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"contractAddr":"部署的合约地址","txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 部署 ERC721 合约
+      tags:
+      - blockchain/cfx/deploy
+  /deploy/erc1155:
+    post:
+      description: Deploy ERC721 contract to specified chain
+      operationId: "23"
+      parameters:
+      - description: 请求的区块链
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: NFT供应量
+        in: body
+        name: totalSupply
+        required: true
+        schema:
+          type: string
+      - description: 部署的合约名称
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: 部署的合约符号
+        in: body
+        name: symbol
+        required: true
+        schema:
+          type: string
+      - description: token的base uri
+        in: body
+        name: baseUri
+        required: true
+        schema:
+          type: string
+      - description: 部署合约的EOA，默认部署以后为合约owner
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 部署合约owner地址的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"contractAddr":"部署的合约地址","txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":500,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 部署 ERC1155 合约
+      tags:
+      - blockchain/cfx/deploy
+  /ipfs/download:
+    post:
+      description: download from ipfs
+      operationId: "92"
+      parameters:
+      - description: IPFS上的文件url
+        in: body
+        name: fileUrl
+        required: true
+        schema:
+          type: string
+      - description: 签名信息
+        in: body
+        name: sign
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"fileStream":"IPFS 返回的 数据流","retMsg":"ok"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 从ipfs下载文件--暂未开放
+      tags:
+      - ipfs
+  /ipfs/upload:
+    post:
+      description: upload to ipfs
+      operationId: "91"
+      parameters:
+      - description: 所需上传文件本地全局存储路径，优先级最高，当此字段不为空时，上传本文件
+        in: body
+        name: localPath
+        required: true
+        schema:
+          type: string
+      - description: 所需上传文件http路径，优先级次之，如果localPath为空时，上传fileUrl中的内容
+        in: body
+        name: fileUrl
+        required: true
+        schema:
+          type: string
+      - description: 签名信息，暂未用到
+        in: body
+        name: sign
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"ipfsUri":"IPFS 返回的 URI","retMsg":"ok"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 上传文件到ipfs
+      tags:
+      - ipfs
+  /mint/batchErc1155:
+    post:
+      description: batch mint erc1155
+      operationId: "34"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: token id 数组
+        in: body
+        name: tokenIds
+        required: true
+        schema:
+          type: string
+      - description: token ammount 数组
+        in: body
+        name: tokenAmounts
+        required: true
+        schema:
+          type: string
+      - description: toAddr 创建账户生成的地址，该处为铸造nft的用户地址
+        in: body
+        name: toAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddr 合约owner，部署合约的EOA
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 合约owner地址的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 批量铸造 ERC1155
+      tags:
+      - blockchain/cfx/mint
+  /mint/erc20:
+    post:
+      description: mint ERC20
+      operationId: "31"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: toAddr 铸造token的用户地址
+        in: body
+        name: toAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddr 合约owner，部署合约的EOA
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 合约owner地址的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 铸造 ERC20
+      tags:
+      - blockchain/cfx/mint
+  /mint/erc721:
+    post:
+      description: mint ERC721
+      operationId: "32"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: 'nft token id '
+        in: body
+        name: tokenId
+        required: true
+        schema:
+          type: string
+      - description: toAddr 创建账户生成的地址，该处为铸造nft的用户地址
+        in: body
+        name: toAddr
+        required: true
+        schema:
+          type: string
+      - description: addPrivilege toAddr是否添加到白名单
+        in: body
+        name: addPrivilege
+        required: true
+        schema:
+          type: string
+      - description: callAddr 合约owner，部署合约的EOA
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 合约owner地址的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: tokenUri metadat信息uri 该uri下是json信息
+        in: body
+        name: tokenUri
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 铸造 ERC721
+      tags:
+      - blockchain/cfx/mint
+  /mint/erc1155:
+    post:
+      description: mint erc1155
+      operationId: "33"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: token id
+        in: body
+        name: tokenId
+        required: true
+        schema:
+          type: string
+      - description: 'token ammount: 要创建的token的数量，如果此数量==1，则为非同质化铸造，tokenUri和addPrivilege有效'
+        in: body
+        name: tokenAmount
+        required: true
+        schema:
+          type: string
+      - description: toAddr 创建账户生成的地址，该处为铸造nft的用户地址
+        in: body
+        name: toAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddr 合约owner，部署合约的EOA
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 合约owner地址的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: tokenUri metadat信息uri 该uri下是json信息
+        in: body
+        name: tokenUri
+        required: true
+        schema:
+          type: string
+      - description: addPrivilege toAddr是否添加到白名单
+        in: body
+        name: addPrivilege
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 铸造 ERC1155
+      tags:
+      - blockchain/cfx/mint
+  /sponsor/addPrivilegeByAdmin:
+    post:
+      description: remove sponsor Privage
+      operationId: "75"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址：数图内置代付合约地址：0x0888000000000000000000000000000000000001
+        in: body
+        name: sponsorAddr
+        required: true
+        schema:
+          type: string
+      - description: 要添加代付白名单的合约地址
+        in: body
+        name: contractAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddr 合约admin
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 合约admin地址的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: addresses 要添加的白名单地址，当参数中地址为 0x0000000000000000000000000000000000000000
+          设置合约为全局白名单，即所有用户都为其代付
+        in: body
+        name: addresses
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 添加白名单数组
+      tags:
+      - blockchain/cfx/sponsor
+  /sponsor/removePrivilegeByAdmin:
+    post:
+      description: remove sponsor Privage
+      operationId: "74"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: contractAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddr 合约owner，部署合约的EOA
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 合约owner地址的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: Addresses 移除的名单地址数组
+        in: body
+        name: addresses
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 移除代付白名单数组
+      tags:
+      - blockchain/cfx/sponsor
+  /sponsor/setSponsorForCollateral:
+    post:
+      description: set Sponsor For Collateral
+      operationId: "77"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址：数图内置代付合约地址：0x0888000000000000000000000000000000000001
+        in: body
+        name: sponsorAddr
+        required: true
+        schema:
+          type: string
+      - description: 要添加存储代付白名单的合约地址
+        in: body
+        name: contractAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddr 赞助者地址
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 赞助者地址的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: PayableAmount 赞助金额(单位：eth < PayableAmount < 1e18)
+        in: body
+        name: PayableAmount
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 设置抵押代付
+      tags:
+      - blockchain/cfx/sponsor
+  /sponsor/setSponsorForGas:
+    post:
+      description: set Sponsor For Gas
+      operationId: "76"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址：数图内置代付合约地址：0x0888000000000000000000000000000000000001
+        in: body
+        name: sponsorAddr
+        required: true
+        schema:
+          type: string
+      - description: 要添加代付白名单的合约地址
+        in: body
+        name: contractAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddr 赞助者地址
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 赞助者地址的私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: 'PayableAmount 赞助金额(单位：eth < PayableAmount < 1e18) 满足条件: PayableAmount*1e18
+          > UpperBound'
+        in: body
+        name: PayableAmount
+        required: true
+        schema:
+          type: string
+      - description: UpperBound 单笔代付金额上限(单位：wei 0 < UpperBound < 2^256-1)
+        in: body
+        name: UpperBound
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 设置Gas代付和upperBound
+      tags:
+      - blockchain/cfx/sponsor
+  /transfer/batchErc1155:
+    post:
+      description: transfer ERC1155
+      operationId: "45"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: nft token id
+        in: body
+        name: tokenId
+        required: true
+        schema:
+          type: string
+      - description: token ammount
+        in: body
+        name: tokenAmount
+        required: true
+        schema:
+          type: string
+      - description: fromAddr
+        in: body
+        name: fromAddr
+        required: true
+        schema:
+          type: string
+      - description: toAddr
+        in: body
+        name: toAddr
+        required: true
+        schema:
+          type: string
+      - description: addPrivilege toAddr是否添加到白名单
+        in: body
+        name: addPrivilege
+        required: true
+        schema:
+          type: string
+      - description: callAddr
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 调用地址私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 批量转移 ERC1155
+      tags:
+      - blockchain/cfx/transfer
+  /transfer/cfx:
+    post:
+      description: transfer CFX
+      operationId: "41"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: callAddr 跟fromAddr一致
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 转出地址私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: toAddr 转入地址
+        in: body
+        name: toAddr
+        required: true
+        schema:
+          type: string
+      - description: data
+        in: body
+        name: data
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 转移 CFX
+      tags:
+      - blockchain/cfx/transfer
+  /transfer/erc20:
+    post:
+      description: transfer erc721
+      operationId: "42"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: toAddr 转入地址
+        in: body
+        name: toAddr
+        required: true
+        schema:
+          type: string
+      - description: addPrivilege toAddr是否添加到白名单
+        in: body
+        name: addPrivilege
+        required: true
+        schema:
+          type: string
+      - description: callAddr 转出地址
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 转出地址私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: tokenAmount 转移代币数量
+        in: body
+        name: tokenAmount
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 转移 ERC20
+      tags:
+      - blockchain/cfx/transfer
+  /transfer/erc721:
+    post:
+      description: transfer erc721
+      operationId: "43"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: nft token id：要转让的token id跟用户铸造的id一致，确保fromAddr地址下有这个id的nft
+        in: body
+        name: tokenId
+        required: true
+        schema:
+          type: string
+      - description: fromAddr 转出地址
+        in: body
+        name: fromAddr
+        required: true
+        schema:
+          type: string
+      - description: toAddr 转入地址
+        in: body
+        name: toAddr
+        required: true
+        schema:
+          type: string
+      - description: addPrivilege toAddr是否添加到白名单
+        in: body
+        name: addPrivilege
+        required: true
+        schema:
+          type: string
+      - description: callAddr 跟fromAddr一致
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 转出地址私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: data
+        in: body
+        name: data
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 转移 ERC721
+      tags:
+      - blockchain/cfx/transfer
+  /transfer/erc1155:
+    post:
+      description: transfer ERC1155
+      operationId: "44"
+      parameters:
+      - description: 区块链网络
+        in: body
+        name: reqChain
+        required: true
+        schema:
+          type: string
+      - description: 合约地址
+        in: body
+        name: ContractAddr
+        required: true
+        schema:
+          type: string
+      - description: nft token id
+        in: body
+        name: tokenId
+        required: true
+        schema:
+          type: string
+      - description: token ammount
+        in: body
+        name: tokenAmount
+        required: true
+        schema:
+          type: string
+      - description: fromAddr
+        in: body
+        name: fromAddr
+        required: true
+        schema:
+          type: string
+      - description: toAddr
+        in: body
+        name: toAddr
+        required: true
+        schema:
+          type: string
+      - description: addPrivilege toAddr是否添加到白名单
+        in: body
+        name: addPrivilege
+        required: true
+        schema:
+          type: string
+      - description: callAddr
+        in: body
+        name: callAddr
+        required: true
+        schema:
+          type: string
+      - description: callAddrPrivateKey 调用地址私钥
+        in: body
+        name: callAddrPrivateKey
+        required: true
+        schema:
+          type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"retCode":200,"txHash":"交易哈希","retMsg":"ok","tx":"交易信息","recipt":"交易凭证"}'
+          schema:
+            type: string
+        "400":
+          description: '{"retCode":400,"retMsg":"failed"}'
+          schema:
+            type: string
+      summary: 转移 ERC1155
+      tags:
+      - blockchain/cfx/transfer
+swagger: "2.0"
