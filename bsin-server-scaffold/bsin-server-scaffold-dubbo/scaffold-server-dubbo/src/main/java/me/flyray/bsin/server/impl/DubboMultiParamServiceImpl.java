@@ -73,7 +73,7 @@ public class DubboMultiParamServiceImpl implements DubboMultiParamService {
     @ApiDoc(desc = "batchSave")
     public DubboTest batchSave(final List<DubboTest> dubboTestList) {
         return new DubboTest(join(dubboTestList, DubboTest::getId),
-                "hello world shenyu apache dubbo param batchSave :" + join(dubboTestList, DubboTest::getName));
+                "hello world shenyu apache dubbo param batchSave :" + join(dubboTestList, DubboTest::getEventCode));
     }
 
     @Override
@@ -81,7 +81,7 @@ public class DubboMultiParamServiceImpl implements DubboMultiParamService {
     @ApiDoc(desc = "batchSaveAndNameAndId")
     public DubboTest batchSaveAndNameAndId(final List<DubboTest> dubboTestList, final String id, final String name) {
         return new DubboTest(id, "hello world shenyu apache dubbo param batchSaveAndNameAndId :"
-                + name + ":" + join(dubboTestList, DubboTest::getName));
+                + name + ":" + join(dubboTestList, DubboTest::getEventCode));
     }
 
     @Override
@@ -89,7 +89,7 @@ public class DubboMultiParamServiceImpl implements DubboMultiParamService {
     @ApiDoc(desc = "saveComplexBeanTest")
     public DubboTest saveComplexBeanTest(final ComplexBeanTest complexBeanTest) {
         return new DubboTest(complexBeanTest.getIdLists().toString(),
-                "hello world shenyu apache dubbo param saveComplexBeanTest :" + complexBeanTest.getDubboTest().getName());
+                "hello world shenyu apache dubbo param saveComplexBeanTest :" + complexBeanTest.getDubboTest().getEventCode());
     }
 
     @Override
@@ -97,7 +97,7 @@ public class DubboMultiParamServiceImpl implements DubboMultiParamService {
     @ApiDoc(desc = "saveComplexBeanTestAndName")
     public DubboTest saveComplexBeanTestAndName(final ComplexBeanTest complexBeanTest, final String name) {
         return new DubboTest(complexBeanTest.getIdLists().toString(),
-                "hello world shenyu alibaba dubbo param saveComplexBeanTestAndName :" + complexBeanTest.getDubboTest().getName() + "-" + name);
+                "hello world shenyu alibaba dubbo param saveComplexBeanTestAndName :" + complexBeanTest.getDubboTest().getEventCode() + "-" + name);
     }
     
     private <T> String join(final @NonNull List<T> list, final Function<T, String> mapper) {

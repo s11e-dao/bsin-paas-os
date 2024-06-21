@@ -90,10 +90,10 @@ public class Transaction extends BaseEntity implements Serializable {
     @NotBlank(message = "业务角色类型不能为空！", groups = AddGroup.class)
     private String bizRoleType;
     /**
-     * 业务角色序号
+     * 业务角色类型编号
      */
     @NotBlank(message = "业务角色序号不能为空！", groups = AddGroup.class)
-    private String bizRoleNo;
+    private String bizRoleTypeNo;
     /**
      * 租户
      */

@@ -59,7 +59,7 @@
         <dependency>
             <groupId>me.flyray.bsin</groupId>
             <artifactId>bsin-common-utils</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

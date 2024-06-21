@@ -32,8 +32,8 @@ public class DubboTest implements Serializable {
 
     private String id;
 
-    @NotBlank(message = "名称不能为空")
-    private String name;
+    @NotBlank(message = "事件编号不能为空")
+    private String eventCode;
 
 
     @JsonFormat(pattern = "HH:mm:ss")
@@ -42,9 +42,9 @@ public class DubboTest implements Serializable {
     public DubboTest() {
     }
 
-    public DubboTest(final String id, final String name) {
+    public DubboTest(final String id, final String eventCode) {
         this.id = id;
-        this.name = name;
+        this.eventCode = eventCode;
     }
 
     /**
@@ -70,8 +70,8 @@ public class DubboTest implements Serializable {
      *
      * @return name
      */
-    public String getName() {
-        return name;
+    public String getEventCode() {
+        return eventCode;
     }
 
     public Date getTime() {
@@ -87,15 +87,15 @@ public class DubboTest implements Serializable {
      *
      * @param name name
      */
-    public void setName(final String name) {
-        this.name = name;
+    public void setEventCode(final String eventCode) {
+        this.eventCode = eventCode;
     }
 
     @Override
     public String toString() {
         return "DubboTest{" +
                 "id='" + id + '\'' +
-                ", name='" + name + '\'' +
+                ", eventCode='" + eventCode + '\'' +
                 ", time=" + time +
                 '}';
     }

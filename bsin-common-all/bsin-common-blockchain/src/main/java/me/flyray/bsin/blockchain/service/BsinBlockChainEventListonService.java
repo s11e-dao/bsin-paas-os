@@ -47,23 +47,23 @@ public class BsinBlockChainEventListonService {
      * @param args
      * @throws Exception
      */
-//    public static void main(String[] args) throws Exception {
-//        // testEventSubscribe();
-//        customMonitor();
-//        // testEventLogQuery();
-//    }
+    public static void main(String[] args) throws Exception {
+        // testEventSubscribe();
+        customMonitor();
+        // testEventLogQuery();
+    }
 
     /**
      * 地址生成
      */
-    public static void main(String[] args) throws Exception {
-        // 假设这是你的公钥，通常是一个0x开头的字符串
-        String publicKey = "0xb845657292c59d8e421055bf76a480942af59b6b57dd1e52ae1a677bf264f6c24f5e920bb377f766ff0752858e4494105d39a480add41c3d0bf483e7ed74329";
-        // 使用Web3j的Keys类来生成以太坊地址
-        String address = Keys.getAddress(publicKey);
-        // 打印生成的以太坊地址
-        System.out.println("Eth Address: " + address);
-    }
+//    public static void main(String[] args) throws Exception {
+//        // 假设这是你的公钥，通常是一个0x开头的字符串
+//        String publicKey = "0xb845657292c59d8e421055bf76a480942af59b6b57dd1e52ae1a677bf264f6c24f5e920bb377f766ff0752858e4494105d39a480add41c3d0bf483e7ed74329";
+//        // 使用Web3j的Keys类来生成以太坊地址
+//        String address = Keys.getAddress(publicKey);
+//        // 打印生成的以太坊地址
+//        System.out.println("Eth Address: " + address);
+//    }
 
     /**
      * 解析log返回的data

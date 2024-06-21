@@ -2,6 +2,7 @@ package me.flyray.bsin.blockchain.utils;
 
 import com.alibaba.fastjson.JSONObject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECDSASignature;
 import org.web3j.crypto.Hash;
@@ -38,6 +39,7 @@ public class Web3WalletUtil {
      * 参考 eth_sign in https://github.com/ethereum/execution-apis
      */
     public static final String PERSONAL_MESSAGE_PREFIX = "u0019Ethereum Signed Message:n";
+    public static final int ADDRESS_LENGTH_IN_HEX = 40;
 
     /**
      * 对签名消息，原始消息，账号地址三项信息进行认证，判断签名是否有效
@@ -197,6 +199,25 @@ public class Web3WalletUtil {
         String parseAddress = "0x" + Keys.getAddress(publicKey);
         // 将钱包地址进行比对
         return parseAddress.equalsIgnoreCase(walletAddress);
+    }
+
+    public static boolean isETHValidAddress(String input) {
+        if (StringUtils.isBlank(input) || !input.startsWith("0x"))
+            return false;
+        return Web3WalletUtil.isValidAddress(input);
+    }
+
+    public static boolean isValidAddress(String input) {
+        String cleanInput = Numeric.cleanHexPrefix(input);
+
+        try {
+            Numeric.toBigIntNoPrefix(cleanInput);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+        return cleanInput.length() == ADDRESS_LENGTH_IN_HEX;
+
     }
 
     public static void main(String[] args) throws SignatureException {

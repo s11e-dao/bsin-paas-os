@@ -31,6 +31,12 @@ public interface WalletService {
     public void createMPCWallet(WalletDTO walletDTO);
 
     /**
+     * 基于钱包提现
+     * @param walletDTO
+     */
+    public void withdraw(WalletDTO walletDTO);
+
+    /**
      * 分页查询钱包列表
      * @param walletDTO
      * @return

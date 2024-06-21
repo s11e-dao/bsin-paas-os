@@ -26,12 +26,4 @@ public class BsinWaasApplication {
         springApplication.run(args);
     }
 
-    /**
-     * 初始化监听数据
-     */
-
-    /**
-     * 开启链上scan
-     */
-
 }

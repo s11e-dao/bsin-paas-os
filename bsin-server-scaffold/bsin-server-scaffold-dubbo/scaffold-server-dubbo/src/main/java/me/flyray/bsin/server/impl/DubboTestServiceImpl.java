@@ -18,6 +18,7 @@
 package me.flyray.bsin.server.impl;
 
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
 import org.apache.rocketmq.client.producer.SendCallback;
@@ -68,19 +69,22 @@ public class DubboTestServiceImpl implements DubboTestService {
     @ApiDoc(desc = "sendMq")
     @Override
     public BsinResultEntity<DubboTest> sendMq(DubboTest bean) {
-        Message<String> msg = MessageBuilder.withPayload("Hello,RocketMQ").build();
+
+        JSONObject mQMsgReq = new JSONObject();
+        mQMsgReq.put("requisitionId", "requisitionId");
+        mQMsgReq.put("eventCode", bean.getEventCode());
         // 延时消息等级分为18个：1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
         SendCallback callback = new SendCallback() {
             @Override
             public void onSuccess(SendResult sendResult) {
-                System.out.println("123");
+                System.out.println("发送成功");
             }
             @Override
             public void onException(Throwable throwable) {
-                System.out.println("456");
+                System.out.println("发送失败");
             }
         };
-        rocketMQProducer.sendDelay(topic,"张三", callback,7);
+        rocketMQProducer.sendDelay(topic,mQMsgReq.toString(), callback,4);
         return BsinResultEntity.ok(bean);
     }
 
@@ -107,7 +111,7 @@ public class DubboTestServiceImpl implements DubboTestService {
     @ShenyuDubboClient("/insert")
     @ApiDoc(desc = "insert")
     public DubboTest insert(final DubboTest dubboTest) {
-        dubboTest.setName("hello world shenyu Apache Dubbo: " + dubboTest.getName());
+        dubboTest.setEventCode("hello world shenyu Apache Dubbo: " + dubboTest.getEventCode());
         return dubboTest;
     }
     

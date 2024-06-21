@@ -94,7 +94,7 @@ public class TransactionServiceImpl  implements TransactionService {
             transaction.setTxAmount(new BigDecimal(transactionRequest.getTxAmount()));
             transaction.setTo(transactionRequest.getToAddress());
             transaction.setBizRoleType(user.getBizRoleType());
-            transaction.setBizRoleNo(user.getBizRoleTypeNo());
+            transaction.setBizRoleTypeNo(user.getBizRoleTypeNo());
             transaction.setTenantId(transactionRequest.getTenantId());
             transaction.setCreateTime(new Date());
             transaction.setCreateBy(user.getUserId());
@@ -174,7 +174,6 @@ public class TransactionServiceImpl  implements TransactionService {
         transactionDTO.setTenantId(user.getTenantId());
         return transactionMapper.pageList(new Page<>(pagination.getPageNum(), pagination.getPageSize()),transactionDTO );
     }
-
 
 }
 

@@ -3,7 +3,7 @@ package me.flyray.bsin.server.listen;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import me.flyray.bsin.domain.entity.ChainCoin;
-import me.flyray.bsin.domain.entity.DictContractMethod;
+import me.flyray.bsin.domain.entity.ContractMethod;
 import me.flyray.bsin.domain.entity.Wallet;
 import me.flyray.bsin.domain.entity.WalletAccount;
 import me.flyray.bsin.domain.request.TransactionDTO;
@@ -16,6 +16,7 @@ import me.flyray.bsin.utils.BsinSnowflake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
@@ -43,8 +44,15 @@ import java.util.*;
 @Service
 public class ChainTransactionListen {
 
-    private static final String WS_URL = "wss://go.getblock.io/9953f84cc65c47a38ea3a501d9ec86f3";
-    private static final String HTTP_URL = "https://go.getblock.io/dc197e59d9b34e0c9428f2f13df66d6e";
+    @Value("${bsin.app-chain.eth.chain-listen-url-wss}")
+    private String ethChainListenUrlWss;
+    @Value("${bsin.app-chain.eth.chain-listen-url-http}")
+    private String ethChainListenUrlHttp;
+    @Value("${bsin.app-chain.bsc.chain-listen-url-wss}")
+    private String bscChainListenUrlWss;
+    @Value("${bsin.app-chain.bsc.chain-listen-url-http}")
+    private String bscChainListenUrlHttp;
+
     private static final Logger log = LoggerFactory.getLogger(ChainTransactionListen.class);
 
     @Resource
@@ -58,7 +66,7 @@ public class ChainTransactionListen {
     @Autowired
     private ChainCoinMapper chainCoinMapper;
     @Autowired
-    private DictContractMethodMapper dictContractMethodMapper;
+    private ContractMethodMapper contractMethodMapper;
     @Autowired
     private TransactionBiz transferBiz;
     @Autowired
@@ -69,7 +77,9 @@ public class ChainTransactionListen {
         this.taskExecutor = taskExecutor;
     }
 
-    // 启动程序时调用
+    /**
+     * 启动链上交易监听
+     */
     @PostConstruct
     public void executeAllMonitor() {
         QueryWrapper<ChainCoin> queryWrapper = new QueryWrapper<>();
@@ -79,7 +89,8 @@ public class ChainTransactionListen {
         List<ChainCoin> chainCoins = chainCoinMapper.selectList(queryWrapper);
         chainCoins.forEach(m -> {
             try {
-                contractAddressMonitor(m.getContractAddress());
+                // contractAddressMonitor(m.getContractAddress());
+                contractAddressMonitor("0x06A0F0fa38AE42b7B3C8698e987862AfA58e90D9");
             } catch (Exception e) {
                 e.printStackTrace();
                 log.info("智能合约监听失败，智能合约：{}", m.getContractAddress());
@@ -94,17 +105,17 @@ public class ChainTransactionListen {
     @Async("taskExecutor")
     public void contractAddressMonitor(String contractAddress) throws Exception {
         log.info("开始监听智能合约：{}", contractAddress);
-        WebSocketService ws = new WebSocketService(WS_URL, true);
+        WebSocketService ws = new WebSocketService(bscChainListenUrlWss, true);
         ws.connect();
         Web3j web3jWs = Web3j.build(ws);
 
-        //设置过滤条件 这个示例是监听最新的1000个块
+        //设置过滤条件 这个示例是监听最新的100个块
         BigInteger blockNumber = web3jWs.ethBlockNumber().send().getBlockNumber()
-                .subtract(new BigInteger("10000"));
+                .subtract(new BigInteger("100"));
         EthFilter ethFilter = new EthFilter(DefaultBlockParameter.valueOf(blockNumber),
                 DefaultBlockParameterName.LATEST, contractAddress);
 
-        Web3j web3j = Web3j.build(new HttpService(HTTP_URL));
+        Web3j web3j = Web3j.build(new HttpService(bscChainListenUrlHttp));
 
         // 监听的合约对应的币种
         QueryWrapper<ChainCoin> queryWrapper = new QueryWrapper<>();
@@ -112,20 +123,22 @@ public class ChainTransactionListen {
         queryWrapper.eq("contract_address", contractAddress);
         ChainCoin chainCoin = chainCoinMapper.selectOne(queryWrapper);
 
-        List<DictContractMethod> dictContractMethods = dictContractMethodMapper.selectList(new QueryWrapper<>());
+        List<ContractMethod> contractMethods = contractMethodMapper.selectList(new QueryWrapper<>());
         Map<String, String> methodMap = new HashMap<>();
         Map<String, String> notMethodMap = new HashMap<>();
-        for (DictContractMethod dictContractMethod : dictContractMethods) {
-            if(dictContractMethod.getType()==1){
+        for (ContractMethod contractMethod : contractMethods) {
+            if(contractMethod.getType()==1){
                 // 合约方法
-                methodMap.put(dictContractMethod.getMethodId(), dictContractMethod.getMethodName());
-            }else if(dictContractMethod.getType()==2){
+                methodMap.put(contractMethod.getMethodId(), contractMethod.getMethodName());
+            }else if(contractMethod.getType()==2){
                 // 非合约方法
-                notMethodMap.put(dictContractMethod.getMethodId(), dictContractMethod.getMethodName());
+                notMethodMap.put(contractMethod.getMethodId(), contractMethod.getMethodName());
             }
         }
 
         web3jWs.ethLogFlowable(ethFilter).subscribe(ethLog -> {
+            System.out.println(log);
+            log.info("交易hash: {}",ethLog.getTransactionHash());
             // 查看智能合约币种状态是否正常
             QueryWrapper<ChainCoin> chainCoinQueryWrapper = new QueryWrapper<>();
             chainCoinQueryWrapper.eq("contract_address", contractAddress);
@@ -243,7 +256,7 @@ public class ChainTransactionListen {
                                 transactionDTO.setTxAmount(txAmount);     // 交易金额
                                 transactionDTO.setSerialNo(BsinSnowflake.getId());
                                 transactionDTO.setBizRoleType(wallet.getBizRoleType());
-                                transactionDTO.setBizRoleNo(wallet.getBizRoleTypeNo());
+                                transactionDTO.setBizRoleTypeNo(wallet.getBizRoleTypeNo());
                                 transactionDTO.setTenantId(walletAccount.getTenantId());
                                 transactionMapper.insert(transactionDTO);
                                 log.info("生成交易记录成功，to地址：{}",to);
@@ -260,7 +273,9 @@ public class ChainTransactionListen {
                                     if( wallet.getWalletTag().equals("DEPOSIT")){
                                         if(!gatherAccount.equals(to)){
                                             log.info("归集账户资金开始,账户地址："+to);
-                                            transferBiz.tokenTransfer(to, gatherAccount.getAddress(), contractAddress, tokenTransferAmount, BigInteger.valueOf(0));
+                                            // TODO 资金归集处理
+                                            transferBiz.cashConcentrationProcess();
+                                            // transferBiz.tokenTransfer(to, gatherAccount.getAddress(), contractAddress, tokenTransferAmount, BigInteger.valueOf(0));
                                             log.info("归集账户资金结束");
                                         }
                                     }
@@ -288,7 +303,7 @@ public class ChainTransactionListen {
                                 transactionDTO.setTxAmount(txAmount.multiply(new BigDecimal("-1")));
                                 transactionDTO.setSerialNo(BsinSnowflake.getId());
                                 transactionDTO.setBizRoleType(wallet.getBizRoleType());
-                                transactionDTO.setBizRoleNo(wallet.getBizRoleTypeNo());
+                                transactionDTO.setBizRoleTypeNo(wallet.getBizRoleTypeNo());
                                 transactionDTO.setTenantId(walletAccount.getTenantId());
                                 transactionMapper.insert(transactionDTO);
                                 log.info("生成交易记录成功，from地址：{}",from);

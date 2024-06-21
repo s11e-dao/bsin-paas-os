@@ -14,4 +14,5 @@ public class TransactionVO extends Transaction {
      * 主链
      */
     public String chainName;
+
 }

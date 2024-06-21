@@ -54,7 +54,7 @@ public class DubboClassTestServiceImpl implements DubboClassTestService {
     @Override
     public DubboTest insert(final DubboTest dubboTest) {
 
-        dubboTest.setName("hello world shenyu Apache Dubbo: " + dubboTest.getName());
+        dubboTest.setEventCode("hello world shenyu Apache Dubbo: " + dubboTest.getEventCode());
         return dubboTest;
     }
     

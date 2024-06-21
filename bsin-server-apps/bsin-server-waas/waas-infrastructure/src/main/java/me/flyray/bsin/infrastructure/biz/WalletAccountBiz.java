@@ -78,10 +78,12 @@ public class WalletAccountBiz {
             String pubKey = (String) data.get("pubkey");
             String address = (String)data.get("address");
             String walletAccountId = (String)data.get("address");
+            String requisitionId = (String)data.get("requisitionId");
 
             // TODO 请求消息队列，添加一条延时队列
-            Message<String> msg = MessageBuilder.withPayload("Hello,RocketMQ").build();
-            // 延时消息等级分为18个：1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
+            JSONObject mQMsgReq = new JSONObject();
+            mQMsgReq.put("requisitionId", requisitionId);
+            mQMsgReq.put("eventCode", "createMpcWallet");
             SendCallback callback = new SendCallback() {
                 @Override
                 public void onSuccess(SendResult sendResult) {
@@ -92,7 +94,8 @@ public class WalletAccountBiz {
                     System.out.println("456");
                 }
             };
-            rocketMQProducer.sendDelay(topic,"张三", callback,7);
+            // 延时消息等级分为18个：1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
+            rocketMQProducer.sendDelay(topic,mQMsgReq.toString(), callback,7);
 
             // 2、创建钱包账户
             WalletAccount walletAccount = new WalletAccount();
@@ -141,4 +144,12 @@ public class WalletAccountBiz {
         WalletAccount walletAccount = walletAccountMapper.selectOne(queryWrapper);
         return walletAccount;
     };
+
+    /**
+     * 1、查询MPC网络钱包地址
+     * 2、更新用户的钱包地址
+     */
+    public void getAppChainWalletAddress() {
+
+    }
 }

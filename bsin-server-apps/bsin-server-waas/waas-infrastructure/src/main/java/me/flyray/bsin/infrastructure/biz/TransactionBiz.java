@@ -271,4 +271,53 @@ public class TransactionBiz {
         System.out.println("Token Balance: " + balance);
         return balance;
     }
+
+    /**
+     * gas 加油
+     */
+    public void getGas() {
+        // 链原生TOKEN转账逻辑 ethTransfer
+
+    }
+
+    /**
+     * 1、执行归集资金
+     * 2、放入队列等待确认
+     */
+    public void cashConcentration() {
+        // 链上TOKEN转账逻辑 tokenTransfer
+
+    }
+
+    /**
+     * 用户充值资金归集
+     * 1、给用户账户加油
+     * 2、归集资金
+     */
+    public void cashConcentrationProcess() {
+        // 链上TOKEN转账逻辑
+        getGas();
+    }
+
+    /**
+     * gas 加油事件通知
+     * 1、gas 加油确认
+     * 2、进行资金归集
+     */
+    public void getGasEventNotify() {
+        // 查询交易确认进行资金归集
+        cashConcentration();
+    }
+
+    /**
+     * 队列通知资金归集结果
+     * 1、确认链上交易状态
+     * 2、回调平台或是商户
+     */
+    public void cashConcentrationEventNotify() {
+        // 查询链上交易，确认归集状态
+
+        // 通知平台或是商户
+
+    }
 }

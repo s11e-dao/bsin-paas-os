@@ -137,6 +137,11 @@ public class WalletServiceImpl implements WalletService {
   }
 
   @Override
+  public void withdraw(WalletDTO walletDTO) {
+
+  }
+
+  @Override
   @ApiDoc(desc = "getPageList")
   @ShenyuDubboClient("/getPageList")
   public Page<WalletVO> getPageList(WalletDTO walletDTO) {
