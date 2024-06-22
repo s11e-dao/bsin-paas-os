@@ -30,7 +30,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // @EnableTransactionManagement // 默认开启
 @MapperScan("me.flyray.bsin.infrastructure.mapper")
 @SpringBootApplication(scanBasePackages = "me.flyray.bsin")
-public class BsinEsApplication {
+public class BsinSearchApplication {
     
     /**
      * Main Entrance.
@@ -38,6 +38,6 @@ public class BsinEsApplication {
      * @param args startup arguments
      */
     public static void main(final String[] args) {
-        SpringApplication.run(BsinEsApplication.class, args);
+        SpringApplication.run(BsinSearchApplication.class, args);
     }
 }

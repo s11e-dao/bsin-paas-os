@@ -25,7 +25,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling // 开启定时任务
 @MapperScan("me.flyray.bsin.infrastructure.mapper")
 @ComponentScan("me.flyray.bsin.*")
-public class BsinAiApplication {
+public class BsinAiAgentApplication {
 
   @Bean
   EmbeddingModel embeddingModel() {
@@ -35,7 +35,7 @@ public class BsinAiApplication {
 
   public static void main(String[] args) {
     ConfigurableApplicationContext applicationContext =
-        SpringApplication.run(BsinAiApplication.class, args);
+        SpringApplication.run(BsinAiAgentApplication.class, args);
     WebSocketServer.setApplicationContext(applicationContext);
     WxPlatformMsgHandlerBiz.setApplicationContext(applicationContext);
   }
