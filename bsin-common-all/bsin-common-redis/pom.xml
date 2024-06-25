@@ -12,6 +12,10 @@
 
     <artifactId>bsin-common-redis</artifactId>
 
+    <properties>
+        <java.version>11</java.version>
+    </properties>
+
     <description>
         bsin-common-redis redis服务
     </description>

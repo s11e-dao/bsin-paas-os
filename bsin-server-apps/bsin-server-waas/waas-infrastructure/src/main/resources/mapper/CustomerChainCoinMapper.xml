@@ -6,8 +6,8 @@
 
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.CustomerChainCoin">
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
-            <result property="businessRoleType" column="business_role_type" jdbcType="VARCHAR"/>
-            <result property="businessRoleNo" column="business_role_no" jdbcType="INTEGER"/>
+            <result property="bizRoleType" column="biz_role_type" jdbcType="VARCHAR"/>
+            <result property="bizRoleTypeNo" column="biz_role_type_no" jdbcType="INTEGER"/>
             <result property="chainCoinNo" column="chain_coin_no" jdbcType="VARCHAR"/>
             <result property="createRoleAccountFlag" column="create_role_account_flag" jdbcType="INTEGER"/>
             <result property="createUserAccountFlag" column="create_user_account_flag" jdbcType="INTEGER"/>
@@ -33,8 +33,8 @@
         c3.type,
         c3.remark,
         c3.logo_url
-        from crm_chain_coin as c3
-        left join crm_customer_chain_coin as c4
+        from waas_chain_coin as c3
+        left join waas_customer_chain_coin as c4
         on c3.serial_no = c4.chain_coin_no and c4.del_flag = '0'
         <trim prefix="where" prefixOverrides="and">
             <if test="params.createRoleAccountFlag != null ">
@@ -43,11 +43,11 @@
             <if test="params.createUserAccountFlag != null ">
                 and c4.create_user_account_flag = #{params.createUserAccountFlag}
             </if>
-            <if test="params.businessRoleNo != null and params.businessRoleNo != ''">
-                and c4.business_role_no = #{params.businessRoleNo}
+            <if test="params.bizRoleTypeNo != null and params.bizRoleTypeNo != ''">
+                and c4.biz_role_type_no = #{params.bizRoleTypeNo}
             </if>
-            <if test="params.businessRoleType != null and params.businessRoleType != ''">
-                and c4.business_role_type = #{params.businessRoleType}
+            <if test="params.bizRoleType != null and params.bizRoleType != ''">
+                and c4.biz_role_type = #{params.bizRoleType}
             </if>
             and c4.tenant_id = #{params.tenantId}
             and c4.del_flag = '0'
@@ -95,7 +95,7 @@
                 and c4.create_user_account_flag = #{params.createUserAccountFlag}
             </if>
             <if test="params.bizRoleNo != null and params.bizRoleNo != ''">
-                and c4.biz_role_no = #{params.bizRoleNo}
+                and c4.biz_role_type_no = #{params.bizRoleTypeNo}
             </if>
             <if test="params.bizRoleType != null and params.bizRoleType != ''">
                 and c4.biz_role_type = #{params.bizRoleType}

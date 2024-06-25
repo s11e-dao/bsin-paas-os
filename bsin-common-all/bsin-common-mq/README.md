@@ -13,15 +13,16 @@ bsin-pass 消息队列服务
 - server.port: 
 
 ```shell
-docker compose -f docker-compose-rocketmq.yml up
-# 后台运行
-docker compose -f docker-compose-rocketmq.yml up -d
+
+docker run -d --name rocketmq-dashboard -e "JAVA_OPTS=-Drocketmq.namesrv.addr=127.0.0.1:9876" -p 8080:8080 -t apacherocketmq/rocketmq-dashboard:latest
+
 ```
 
 ```shell
+
 nohup sh mqnamesrv > name.out 2>&1 &
 
-nohup sh mqbroker -c /home/rednet/soft/rocketmq-all-5.1.4-bin-release/conf/broker.conf > broker.out 2>&1 &
+# nohup sh mqbroker -c /home/rednet/soft/rocketmq-all-5.1.4-bin-release/conf/broker.conf > broker.out 2>&1 &
 
 nohup sh mqbroker -c /home/rednet/soft/rocketmq-all-4.9.4-bin-release/conf/broker.conf > broker.out 2>&1 &
 
@@ -30,8 +31,10 @@ sh mqshutdown namesrv
 
 sh mqshutdown broker
 
-docker run -d --name rocketmq-dashboard -e "JAVA_OPTS=-Drocketmq.namesrv.addr=127.0.0.1:9876" -p 8080:8080 -t apacherocketmq/rocketmq-dashboard:latest
 ```
+
+控制台访问：
+http://localhost:8080/#/cluster
 
 ##发送和接收消息测试
 

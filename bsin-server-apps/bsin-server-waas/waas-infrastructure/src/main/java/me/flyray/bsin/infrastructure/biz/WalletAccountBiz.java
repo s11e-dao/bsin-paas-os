@@ -78,15 +78,12 @@ public class WalletAccountBiz {
         jsonObject.put("timeout", 1000);
         JSONObject data = OkHttpUtils.httpPost(appChainGatewayUrl + "/api/v1/mpc/keygen", jsonObject);
         String pubKey = (String) data.get("pubkey");
-        String address = (String)data.get("address");
-
         String requisitionId = (String)data.get("requisitionId");
-
+        log.info("MCP网络返回请求ID：{}", requisitionId);
         // 2、创建钱包账户
         String walletAccountNo = BsinSnowflake.getId();
         WalletAccount walletAccount = new WalletAccount();
         walletAccount.setSerialNo(walletAccountNo);
-        walletAccount.setAddress(address);
         walletAccount.setPubKey(pubKey);
         walletAccount.setChainCoinNo(chainCoinNo);
         walletAccount.setStatus(1);  // 账户状态 1、正常
@@ -97,7 +94,7 @@ public class WalletAccountBiz {
         walletAccount.setTenantId(wallet.getTenantId());
         walletAccount.setCreateTime(new Date());
         walletAccountMapper.insert(walletAccount);
-        log.info("结束创建钱包账户，wallet:{},chainCoinNo:{}",wallet,chainCoinNo);
+        log.info("结束创建钱包账户，wallet:{}, chainCoinNo:{}",wallet,chainCoinNo);
 
         // TODO 请求消息队列，添加一条延时队列
         JSONObject mQMsgReq = new JSONObject();
@@ -150,6 +147,7 @@ public class WalletAccountBiz {
      * 2、更新用户的钱包地址
      */
     public void getAppChainWalletAddress(JSONObject mQMsg) {
+        log.info("mq 消息：{}", mQMsg.toString());
         // 查询MPC网络
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("walletType", "mpc");
@@ -167,7 +165,6 @@ public class WalletAccountBiz {
             walletAccount.setAddress(address);
             walletAccount.setSerialNo((String) mQMsg.get("walletAccountNo"));
             walletAccountMapper.updateById(walletAccount);
-
         }
 
     }

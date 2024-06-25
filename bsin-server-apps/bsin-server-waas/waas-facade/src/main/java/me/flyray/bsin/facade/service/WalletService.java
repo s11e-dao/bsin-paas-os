@@ -29,7 +29,7 @@ public interface WalletService {
      * 4、创建链上地址，创建钱包账户
      * @return
      */
-    public Wallet createMPCWallet(WalletDTO walletDTO);
+    public Wallet createMPCWallet(Wallet walletReq);
 
     /**
      * 基于钱包提现
@@ -58,6 +58,6 @@ public interface WalletService {
      */
     public void delete(WalletDTO walletDTO);
 
-    WalletVO getDetail(WalletDTO walletDTO);
+    WalletVO getDetail(Wallet wallet);
 
 }

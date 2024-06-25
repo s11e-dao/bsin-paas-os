@@ -9,8 +9,8 @@
             <result property="walletName" column="wallet_name" jdbcType="VARCHAR"/>
             <result property="type" column="type" jdbcType="INTEGER"/>
             <result property="status" column="status" jdbcType="INTEGER"/>
-            <result property="bizRoleType" column="business_role_type" jdbcType="VARCHAR"/>
-            <result property="bizRoleNo" column="business_role_no" jdbcType="INTEGER"/>
+            <result property="bizRoleType" column="biz_role_type" jdbcType="VARCHAR"/>
+            <result property="bizRoleTypeNo" column="biz_role_type_no" jdbcType="INTEGER"/>
             <result property="balance" column="balance" jdbcType="INTEGER"/>
             <result property="walletTag" column="wallet_tag" jdbcType="VARCHAR"/>
             <result property="outUserId" column="out_user_id" jdbcType="VARCHAR"/>
@@ -24,7 +24,7 @@
 
     <sql id="Base_Column_List">
         wallet_id,wallet_name,type,
-        status,customer_type,wallet_tag,
+        status,biz_role_type,wallet_tag,
         out_user_id,remark,customer_id,
         create_time,create_by,update_time,
         update_by,del_flag
@@ -36,8 +36,8 @@
         cw.wallet_name as walletName,
         cw.type as type,
         cw.status as status,
-        cw.business_role_type as businessRoleType,
-        cw.business_role_no as businessRoleNo,
+        cw.biz_role_type as bizRoleType,
+        cw.biz_role_type_no as bizRoleTypeNo,
         cw.wallet_tag as walletTag,
         cw.category as category,
         cw.env as env,
@@ -69,9 +69,6 @@
             <if test="wallet.bizRoleType != null">
                 and cw.biz_role_type = #{wallet.bizRoleType}
             </if>
-<!--            <if test="wallet.businessRoleNo != null">-->
-<!--                and cw.business_role_no = #{wallet.businessRoleNo}-->
-<!--            </if>-->
             <if test="wallet.startTime != null" >
                 <![CDATA[and cw.create_time >= #{wallet.startTime}]]>
             </if>

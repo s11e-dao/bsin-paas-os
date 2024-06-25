@@ -14,7 +14,9 @@
     <description>
         bsin-common-sensitive
     </description>
+
     <properties>
+        <java.version>11</java.version>
     </properties>
 
     <dependencies>

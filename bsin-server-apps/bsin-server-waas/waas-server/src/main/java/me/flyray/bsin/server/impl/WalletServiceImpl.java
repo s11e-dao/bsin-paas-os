@@ -89,11 +89,11 @@ public class WalletServiceImpl implements WalletService {
   @ApiDoc(desc = "createMPCWallet")
   @ShenyuDubboClient("/createMPCWallet")
   @Transactional(rollbackFor = Exception.class)
-  public Wallet createMPCWallet(WalletDTO walletDTO) {
-    log.info("请求WalletService.createMPCWallet,参数:{}", walletDTO);
+  public Wallet createMPCWallet(Wallet walletReq) {
+    log.info("请求WalletService.createMPCWallet,参数:{}", walletReq);
     LoginUser user = LoginInfoContextHelper.getLoginUser();
     Wallet wallet = new Wallet();
-    BeanUtils.copyProperties(walletDTO,wallet);
+    BeanUtils.copyProperties(walletReq, wallet);
 
     // 2、创建钱包
     String serialNo = BsinSnowflake.getId();
@@ -103,8 +103,8 @@ public class WalletServiceImpl implements WalletService {
     wallet.setCreateBy(user.getUserId());
     wallet.setCreateTime(new Date());
     wallet.setTenantId(user.getTenantId());
-    wallet.setBizRoleTypeNo(user.getBizRoleTypeNo());
-    wallet.setBizRoleType(user.getBizRoleType());
+    wallet.setBizRoleTypeNo("1");
+    wallet.setBizRoleType("1");
     walletMapper.insert(wallet);
 
     List<ChainCoin> chainCoinList = new ArrayList<>();
@@ -203,15 +203,18 @@ public class WalletServiceImpl implements WalletService {
 
   /**
    * 返回钱包及钱包下的账户集合
-   * @param walletDTO
+   * @param Wallet
    * @return
    */
   @Override
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
-  public WalletVO getDetail(WalletDTO walletDTO){
+  public WalletVO getDetail(Wallet walletReq){
+    Wallet wallet = walletMapper.selectById(walletReq.getSerialNo());
+    WalletVO walletVO = new WalletVO();
+    BeanUtils.copyProperties(wallet, walletVO);
 
-    return null;
+    return walletVO;
   }
 
 }
