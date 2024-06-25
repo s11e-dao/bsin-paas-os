@@ -1,0 +1,3 @@
+[submodule "bisn-server-env"]
+	path = bisn-server-env
+	url = git@gitee.com:s11e-DAO/bisn-server-env.git
