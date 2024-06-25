@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import me.flyray.bsin.domain.entity.Wallet;
 import me.flyray.bsin.domain.request.WalletDTO;
 import me.flyray.bsin.domain.response.WalletVO;
+import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
 
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public interface WalletService {
      * 4、创建链上地址，创建钱包账户
      * @return
      */
-    public void createMPCWallet(WalletDTO walletDTO);
+    public Wallet createMPCWallet(WalletDTO walletDTO);
 
     /**
      * 基于钱包提现
@@ -56,5 +57,7 @@ public interface WalletService {
      * @param walletDTO
      */
     public void delete(WalletDTO walletDTO);
+
+    WalletVO getDetail(WalletDTO walletDTO);
 
 }

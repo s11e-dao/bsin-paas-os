@@ -38,7 +38,7 @@ public class WaasMQConsumerHandler implements RocketMQListener<String> {
     @Override
     public void onMessage(String message) {
         // 处理消息的逻辑
-        log.info("wallet mq received message: " + message);
+        log.info("wallet mq received message:{}", message);
         JSONObject mQMsg = JSON.parseObject(message);
         EventCode eventCode = EventCode.getInstanceById((String) mQMsg.get("eventCode"));
 
@@ -46,17 +46,17 @@ public class WaasMQConsumerHandler implements RocketMQListener<String> {
             case CREATE_MPC_WALLET:
                 // 如果是创建钱包队列，则请求MPC网络查询地址
                 log.info("createMpcWallet {}", message);
-                walletAccountBiz.getAppChainWalletAddress();
+                walletAccountBiz.getAppChainWalletAddress(mQMsg);
                 break;
             case GET_GAS_NOTIFY:
                 // 如果是gas加油，则发送归集交易
                 log.info("getGas {}", message);
-                transactionBiz.getGasEventNotify();
+                transactionBiz.getGasEventNotify(mQMsg);
                 break;
             case CASH_CONCENTRATION_NOTIFY:
                 // 如果是归集交易，则确认修改交易状态
                 log.info("cashConcentration {}", message);
-                transactionBiz.cashConcentrationEventNotify();
+                transactionBiz.cashConcentrationEventNotify(mQMsg);
                 break;
             default:
                 break;

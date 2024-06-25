@@ -2,6 +2,7 @@ package me.flyray.bsin.infrastructure.biz;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import me.flyray.bsin.domain.entity.ChainCoin;
 import me.flyray.bsin.domain.entity.Platform;
 import me.flyray.bsin.domain.entity.Wallet;
@@ -12,6 +13,8 @@ import me.flyray.bsin.infrastructure.mapper.WalletAccountMapper;
 import me.flyray.bsin.infrastructure.mapper.WalletMapper;
 import me.flyray.bsin.infrastructure.utils.OkHttpUtils;
 import me.flyray.bsin.mq.producer.RocketMQProducer;
+import me.flyray.bsin.utils.BsinSnowflake;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.slf4j.Logger;
@@ -56,67 +59,64 @@ public class WalletAccountBiz {
     @Async("taskExecutor")
     public WalletAccount createWalletAccount(Wallet wallet, String chainCoinNo) {
         log.info("开始创建钱包账户，wallet:{},chainCoinNo:{}",wallet,chainCoinNo);
-        try{
-            ChainCoin chainCoin = chainCoinMapper.selectById(chainCoinNo);
-            if(chainCoin == null || chainCoin.getStatus() == 0){
-                throw new BusinessException("chain coin not exist or off shelves");
-            }
-            // 1、创建链上钱包
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("walletName", wallet.getWalletName());
-            jsonObject.put("walletType", "mpc");
-            jsonObject.put("chainType", "ERC20");
-            jsonObject.put("threshold", 2);
-            jsonObject.put("partiyNum", 2);
-            List mpcClients = new ArrayList();
-            mpcClients.add(0);
-            mpcClients.add(1);
-            jsonObject.put("mpcClients", mpcClients);
-            jsonObject.put("sync", false);
-            jsonObject.put("timeout", 1000);
-            JSONObject data = OkHttpUtils.httpPost(appChainGatewayUrl + "/api/v1/mpc/keygen", jsonObject);
-            String pubKey = (String) data.get("pubkey");
-            String address = (String)data.get("address");
-            String walletAccountId = (String)data.get("address");
-            String requisitionId = (String)data.get("requisitionId");
-
-            // TODO 请求消息队列，添加一条延时队列
-            JSONObject mQMsgReq = new JSONObject();
-            mQMsgReq.put("requisitionId", requisitionId);
-            mQMsgReq.put("eventCode", "createMpcWallet");
-            SendCallback callback = new SendCallback() {
-                @Override
-                public void onSuccess(SendResult sendResult) {
-                    System.out.println("123");
-                }
-                @Override
-                public void onException(Throwable throwable) {
-                    System.out.println("456");
-                }
-            };
-            // 延时消息等级分为18个：1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
-            rocketMQProducer.sendDelay(topic,mQMsgReq.toString(), callback,7);
-
-            // 2、创建钱包账户
-            WalletAccount walletAccount = new WalletAccount();
-            walletAccount.setSerialNo(walletAccountId);
-            walletAccount.setAddress(address);
-            walletAccount.setPubKey(pubKey);
-            walletAccount.setChainCoinNo(chainCoinNo);
-            walletAccount.setStatus(1);  // 账户状态 1、正常
-            walletAccount.setWalletNo(wallet.getSerialNo());
-            walletAccount.setBalance(BigDecimal.ZERO);
-            wallet.setBizRoleTypeNo(wallet.getBizRoleTypeNo());
-            wallet.setBizRoleType(wallet.getBizRoleType());
-            walletAccount.setTenantId(wallet.getTenantId());
-            walletAccount.setCreateTime(new Date());
-            walletAccountMapper.insert(walletAccount);
-            log.info("结束创建钱包账户，wallet:{},chainCoinNo:{}",wallet,chainCoinNo);
-            return walletAccount;
-        }catch (Exception e){
-            e.printStackTrace();
-            throw new BusinessException("create wallet fail");
+        ChainCoin chainCoin = chainCoinMapper.selectById(chainCoinNo);
+        if(chainCoin == null || chainCoin.getStatus() == 0){
+            throw new BusinessException("chain coin not exist or off shelves");
         }
+        // 1、创建链上钱包
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("walletName", wallet.getWalletName());
+        jsonObject.put("walletType", "mpc");
+        jsonObject.put("chainType", "ERC20");
+        jsonObject.put("threshold", 2);
+        jsonObject.put("partiyNum", 2);
+        List mpcClients = new ArrayList();
+        mpcClients.add(0);
+        mpcClients.add(1);
+        jsonObject.put("mpcClients", mpcClients);
+        jsonObject.put("sync", false);
+        jsonObject.put("timeout", 1000);
+        JSONObject data = OkHttpUtils.httpPost(appChainGatewayUrl + "/api/v1/mpc/keygen", jsonObject);
+        String pubKey = (String) data.get("pubkey");
+        String address = (String)data.get("address");
+
+        String requisitionId = (String)data.get("requisitionId");
+
+        // 2、创建钱包账户
+        String walletAccountNo = BsinSnowflake.getId();
+        WalletAccount walletAccount = new WalletAccount();
+        walletAccount.setSerialNo(walletAccountNo);
+        walletAccount.setAddress(address);
+        walletAccount.setPubKey(pubKey);
+        walletAccount.setChainCoinNo(chainCoinNo);
+        walletAccount.setStatus(1);  // 账户状态 1、正常
+        walletAccount.setWalletNo(wallet.getSerialNo());
+        walletAccount.setBalance(BigDecimal.ZERO);
+        wallet.setBizRoleTypeNo(wallet.getBizRoleTypeNo());
+        wallet.setBizRoleType(wallet.getBizRoleType());
+        walletAccount.setTenantId(wallet.getTenantId());
+        walletAccount.setCreateTime(new Date());
+        walletAccountMapper.insert(walletAccount);
+        log.info("结束创建钱包账户，wallet:{},chainCoinNo:{}",wallet,chainCoinNo);
+
+        // TODO 请求消息队列，添加一条延时队列
+        JSONObject mQMsgReq = new JSONObject();
+        mQMsgReq.put("requisitionId", requisitionId);
+        mQMsgReq.put("eventCode", "createMpcWallet");
+        mQMsgReq.put("walletAccountNo", walletAccountNo);
+        SendCallback callback = new SendCallback() {
+            @Override
+            public void onSuccess(SendResult sendResult) {
+                System.out.println("123");
+            }
+            @Override
+            public void onException(Throwable throwable) {
+                System.out.println("456");
+            }
+        };
+        // 延时消息等级分为18个：1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
+        rocketMQProducer.sendDelay(topic,mQMsgReq.toString(), callback,7);
+        return walletAccount;
     }
 
     /**
@@ -149,7 +149,26 @@ public class WalletAccountBiz {
      * 1、查询MPC网络钱包地址
      * 2、更新用户的钱包地址
      */
-    public void getAppChainWalletAddress() {
+    public void getAppChainWalletAddress(JSONObject mQMsg) {
+        // 查询MPC网络
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("walletType", "mpc");
+        jsonObject.put("chainType", "ERC20");
+        jsonObject.put("threshold", 2);
+        jsonObject.put("partiyNum", 2);
+        jsonObject.put("timeout", 1000);
+        JSONObject data = OkHttpUtils.httpGet(appChainGatewayUrl + "/api/v1/mpc/keygen/"+ mQMsg.get("requisitionId"));
+        String address = (String)data.get("address");
+        if(StringUtils.isNotEmpty(address)){
+            //  更新钱包地址
+            UpdateWrapper<WalletAccount> queryWrapper = new UpdateWrapper();
+            queryWrapper.eq("chain_coin_no", mQMsg.get(""));
+            WalletAccount walletAccount = new WalletAccount();
+            walletAccount.setAddress(address);
+            walletAccount.setSerialNo((String) mQMsg.get("walletAccountNo"));
+            walletAccountMapper.updateById(walletAccount);
+
+        }
 
     }
 }

@@ -1,5 +1,7 @@
 package me.flyray.bsin.facade.service;
 
+import me.flyray.bsin.domain.entity.DigitalAssetsCollection;
+
 import java.util.Map;
 
 /**
@@ -15,6 +17,20 @@ public interface DigitalPointsService {
      * 1、开通数字积分相关账户
      * 2、部署智能合约
      */
-    Map<String, Object> issue(Map<String, Object> requestMap) throws Exception;
+    void issue(Map<String, Object> requestMap) throws Exception;
+
+
+    /**
+     * 查询商户数字积分信息
+     */
+    DigitalAssetsCollection getDetailByMerchantNo(Map<String, Object> requestMap);
+
+
+
+    /**
+     * 铸造数字积分
+     */
+    void mint(Map<String, Object> requestMap) throws Exception;
+
 
 }

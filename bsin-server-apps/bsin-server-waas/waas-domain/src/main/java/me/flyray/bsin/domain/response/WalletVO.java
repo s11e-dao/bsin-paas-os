@@ -9,4 +9,5 @@ public class WalletVO extends Wallet {
     public String customerNo;
 
     public String platformName;
+
 }

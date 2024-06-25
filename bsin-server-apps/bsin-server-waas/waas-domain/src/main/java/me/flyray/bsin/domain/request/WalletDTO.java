@@ -25,4 +25,5 @@ public class WalletDTO extends Wallet {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public String  endTime;
+
 }

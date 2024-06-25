@@ -1,5 +1,6 @@
 package me.flyray.bsin.mq.enums;
 
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**

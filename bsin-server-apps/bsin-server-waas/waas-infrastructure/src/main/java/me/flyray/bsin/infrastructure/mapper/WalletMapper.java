@@ -21,6 +21,7 @@ public interface WalletMapper extends BaseMapper<Wallet> {
     Page<WalletVO> pageList(Page<Wallet> page, @Param("wallet") WalletDTO wallet);
 
     int updateDelFlag(@Param("params") Wallet wallet);
+
 }
 
 

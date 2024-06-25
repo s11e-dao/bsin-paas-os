@@ -20,7 +20,7 @@ public class OkHttpUtils {
      * 同步的GET
      * @param url
      */
-    public static String  httpGet(String url){
+    public static JSONObject  httpGet(String url){
         OkHttpClient  client = new OkHttpClient();
 
         Request getRequest = new Request.Builder()
@@ -30,7 +30,17 @@ public class OkHttpUtils {
         try {
             Response response = client.newCall(getRequest).execute();
             System.out.println(response.body().string());
-            return response.body().string();
+            String bodyStr = response.body().string();
+            JSONObject jsonObject1 = (JSONObject) JSON.parse(bodyStr);
+            if((Integer)jsonObject1.get("code") != 0){
+                log.info("http调用失败,错误信息：{}", jsonObject1.get("msg"));
+                throw new BusinessException("调用失败");
+            }
+            JSONObject data = (JSONObject)jsonObject1.get("data");
+            if(data==null){
+                throw new BusinessException("调用失败");
+            }
+            return data;
         } catch (IOException e) {
             e.printStackTrace();
             throw new BusinessException("调用失败");
@@ -62,8 +72,8 @@ public class OkHttpUtils {
             Response response = client.newCall(postRequest).execute();
             String bodyStr = response.body().string();
             JSONObject jsonObject1 = (JSONObject) JSON.parse(bodyStr);
-            if((Integer)jsonObject1.get("code")!=0){
-                log.info("http调用失败，jsonObject：{},错误信息：{}",jsonObject,jsonObject1.get("msg"));
+            if((Integer)jsonObject1.get("code") != 0){
+                log.info("http调用失败，jsonObject：{},错误信息：{}", jsonObject, jsonObject1.get("msg"));
                 throw new BusinessException("调用失败");
             }
             JSONObject data = (JSONObject)jsonObject1.get("data");

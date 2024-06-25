@@ -89,7 +89,7 @@ public class WalletServiceImpl implements WalletService {
   @ApiDoc(desc = "createMPCWallet")
   @ShenyuDubboClient("/createMPCWallet")
   @Transactional(rollbackFor = Exception.class)
-  public void createMPCWallet(WalletDTO walletDTO) {
+  public Wallet createMPCWallet(WalletDTO walletDTO) {
     log.info("请求WalletService.createMPCWallet,参数:{}", walletDTO);
     LoginUser user = LoginInfoContextHelper.getLoginUser();
     Wallet wallet = new Wallet();
@@ -130,10 +130,10 @@ public class WalletServiceImpl implements WalletService {
     // 3、 根据支持的币种创建钱包地址，并创建钱包账户
     if(chainCoinList != null && !chainCoinList.isEmpty()){
       for(ChainCoin chainCoin : chainCoinList){
-        walletAccountBiz.createWalletAccount(wallet,chainCoin.getSerialNo());
+        walletAccountBiz.createWalletAccount(wallet, chainCoin.getSerialNo());
       }
     }
-
+    return wallet;
   }
 
   @Override
@@ -199,6 +199,19 @@ public class WalletServiceImpl implements WalletService {
       e.printStackTrace();
       throw new BusinessException("SYSTEM ERROR");
     }
+  }
+
+  /**
+   * 返回钱包及钱包下的账户集合
+   * @param walletDTO
+   * @return
+   */
+  @Override
+  @ApiDoc(desc = "getDetail")
+  @ShenyuDubboClient("/getDetail")
+  public WalletVO getDetail(WalletDTO walletDTO){
+
+    return null;
   }
 
 }

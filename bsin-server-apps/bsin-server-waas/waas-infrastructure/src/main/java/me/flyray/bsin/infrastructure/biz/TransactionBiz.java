@@ -304,7 +304,7 @@ public class TransactionBiz {
      * 1、gas 加油确认
      * 2、进行资金归集
      */
-    public void getGasEventNotify() {
+    public void getGasEventNotify(JSONObject mQMsg) {
         // 查询交易确认进行资金归集
         cashConcentration();
     }
@@ -314,7 +314,7 @@ public class TransactionBiz {
      * 1、确认链上交易状态
      * 2、回调平台或是商户
      */
-    public void cashConcentrationEventNotify() {
+    public void cashConcentrationEventNotify(JSONObject mQMsg) {
         // 查询链上交易，确认归集状态
 
         // 通知平台或是商户
