@@ -1,6 +1,7 @@
-#  bsin-apps-container
+#  bsin-ui-upms
 
 ## 介绍
+bsin-paas 通用用户权限管理系统(User Permissions Management System)前端UI
 
 ## 软件架构
 
@@ -24,6 +25,7 @@ yarn
 yarn start
 
 # 打包
+yarn build
 
 ~~~
 
