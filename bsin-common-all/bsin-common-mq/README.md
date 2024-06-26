@@ -14,11 +14,7 @@ bsin-pass 消息队列服务
 
 ```shell
 
-docker run -d --name rocketmq-dashboard -e "JAVA_OPTS=-Drocketmq.namesrv.addr=127.0.0.1:9876" -p 8080:8080 -t apacherocketmq/rocketmq-dashboard:latest
-
-```
-
-```shell
+docker run -d --name rocketmq-dashboard -e "JAVA_OPTS=-Drocketmq.namesrv.addr=192.168.198.197:9876" -p 8080:8080 -t apacherocketmq/rocketmq-dashboard:latest
 
 nohup sh mqnamesrv > name.out 2>&1 &
 
@@ -30,6 +26,27 @@ nohup sh mqbroker -c /home/rednet/soft/rocketmq-all-4.9.4-bin-release/conf/broke
 sh mqshutdown namesrv
 
 sh mqshutdown broker
+
+查看运行状态
+
+ps -ef | grep mqnamesrv
+
+ps -ef | grep mqbroker
+
+```
+
+## docker-compose 部署
+
+```shell
+
+docker-compose up -d
+
+docker-compose down
+
+$ docker exec -it rmqbroker bash
+$ sh mqadmin updatetopic -t TestTopic -c DefaultCluster
+
+tail -f ~/logs/rocketmqlogs/broker.log 
 
 ```
 
@@ -47,6 +64,8 @@ http://localhost:8080/#/cluster
 
 ## rocketMq安装
 https://blog.csdn.net/daringdart/article/details/136880725
+
+https://blog.csdn.net/bacawa/article/details/130521794
 
 ## 注意事项
 * linux 下需要关闭防火墙
