@@ -53,3 +53,5 @@ bsin-server-apps/bsin-server-upms/upms-server/src/main/resources/application-pro
 bsin-server-apps/bsin-server-ai/ai-go-wechat/vendor/
 
 bsin-server-apps/bsin-server-ai/logs/
+
+bsin-ui-apps/bsin-ui-aiAgent/dist/
