@@ -30,10 +30,6 @@
         <mybatis-plus.version>3.5.3.2</mybatis-plus.version>
     </properties>
 
-    <build>
-        <finalName>scaffold-infrastructure-sofa</finalName>
-    </build>
-
     <dependencies>
 
         <dependency>
@@ -49,5 +45,19 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.verison}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

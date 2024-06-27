@@ -27,10 +27,6 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>scaffold-domain-dubbo</artifactId>
 
-    <build>
-        <finalName>scaffold-domain-dubbo</finalName>
-    </build>
-
     <dependencies>
         <!--<dependency>
             <groupId>me.flyray.bsin</groupId>
@@ -55,7 +51,6 @@
             <version>${project.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>me.flyray.bsin</groupId>
             <artifactId>bsin-common-utils</artifactId>
@@ -63,5 +58,19 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.verison}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

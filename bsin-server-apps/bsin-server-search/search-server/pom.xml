@@ -99,7 +99,6 @@
             <version>${spring-boot.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-client</artifactId>
@@ -150,17 +149,10 @@
         </dependency>
 
         <dependency>
-            <groupId>me.flyray.bsin</groupId>
-            <artifactId>bsin-common-mq</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.github.houbb</groupId>
             <artifactId>sensitive-logback</artifactId>
             <version>${sensitive-logback.version}</version>
         </dependency>
-
 
     </dependencies>
 

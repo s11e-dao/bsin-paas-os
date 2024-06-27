@@ -22,6 +22,7 @@
 
     <properties>
         <java.version>11</java.version>
+        <maven-compiler-plugin.verison>3.11.0</maven-compiler-plugin.verison>
     </properties>
 
     <dependencies>
@@ -52,4 +53,19 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.verison}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
