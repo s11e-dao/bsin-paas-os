@@ -1,0 +1,53 @@
+spring:
+  #数据库配置
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/rblcmall?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: 123456
+  #redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: root
+    database: 123456
+
+shenyu:
+  register:
+    registerType: http #zookeeper #etcd #nacos #consul
+    serverLists: http://127.0.0.1:9095 #localhost:2181 #http://localhost:2379 #localhost:8848
+    props:
+      username: admin
+      password: 123456
+  client:
+    dubbo:
+      props:
+        contextPath: /scaffold-dubbo
+        appName: scaffold-dubbo
+
+dubbo:
+  application:
+    name: ${spring.application.name}
+    # 注册行为：应用级别  可选值 interface、instance、all
+    register-mode: interface
+    qos-enable: false
+  registry:
+    address: nacos://127.0.0.1:8848
+    username: nacos
+    password: nacos
+  protocol:
+    name: dubbo
+    port: -1
+  scan:
+    base-packages: me.flyray.bsin.server.impl
+  provider:
+    validation: true
+    version: dev
+  consumer:
+    check: false
+    version: dev
+  custom:
+    log-level: full
+    request-log: true
+
