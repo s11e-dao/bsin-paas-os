@@ -40,7 +40,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
     copyable: true,
     ellipsis: true,
-    tooltip: '过长会自动收缩',
+    // tooltip: '过长会自动收缩',
     formItemProps: {
       rules: [
         {
@@ -57,7 +57,6 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
     copyable: true,
     ellipsis: true,
-    tooltip: '过长会自动收缩',
     formItemProps: {
       rules: [
         {
@@ -74,7 +73,6 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
     copyable: true,
     ellipsis: true,
-    tooltip: '过长会自动收缩',
     formItemProps: {
       rules: [
         {
@@ -117,6 +115,14 @@ const columnsData: ProColumns<columnsDataType>[] = [
     width: 160,
     dataIndex: 'contractAddress',
     hideInSearch: true,
+    formItemProps: {
+      rules: [
+        {
+          required: true,
+          message: '此项为必填项',
+        },
+      ],
+    }
   },
   {
     title: '执行方法',
