@@ -1,5 +1,11 @@
 ## milvus
 
+
+### milvus一键安装
+```shell
+docker-compose -f milvus-standalone-docker-compose.yml up -d
+```
+
 ### 字段设计
 - 方案一
 >* 一个Tenant创建一个库-database

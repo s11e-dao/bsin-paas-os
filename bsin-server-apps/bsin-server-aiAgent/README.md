@@ -157,3 +157,22 @@ copilot通过AI编排整合用户输入，知识库(archieval)Search，聊天上
 [BsinCopilot-打开微信扫一扫，登录您的微信AI分身](https://www.bilibili.com/video/BV1yJ4m1Y74G/?spm_id_from=333.1365.list.card_archive.click&vd_source=a6a847135c9dc5b402452069e1192313)
 [Bsin-PaaS一分钟让公众号接入chatGPT智能客服](https://www.bilibili.com/video/BV14M4y1j7BS/?vd_source=a6a847135c9dc5b402452069e1192313)
 [基于大语言模型的AI应用系统架构设计](https://www.bilibili.com/video/BV14M4y1j7BS/?vd_source=a6a847135c9dc5b402452069e1192313)
+
+##  工作安装
+```shell
+启动向量数据库
+
+docker-compose -f milvus-standalone-docker-compose.yml up -d
+
+关闭向量数据库
+sudo docker-compose -f milvus-standalone-docker-compose.yml down
+
+查看向量数据库运行状态
+docker-compose -f milvus-standalone-docker-compose.yml ps
+
+向量数据库可视化工具
+docker run -p 8000:3000  -e MILVUS_URL=127.0.0.1:19530 zilliz/attu:latest
+
+
+```
+
