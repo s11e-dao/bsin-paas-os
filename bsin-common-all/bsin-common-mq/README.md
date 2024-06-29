@@ -43,8 +43,9 @@ docker-compose up -d
 
 docker-compose down
 
+进入队里容器，手动添加topic
 $ docker exec -it rmqbroker bash
-$ sh mqadmin updatetopic -t TestTopic -c DefaultCluster
+$ sh mqadmin updatetopic -t waas-test -c DefaultCluster
 
 tail -f ~/logs/rocketmqlogs/broker.log 
 

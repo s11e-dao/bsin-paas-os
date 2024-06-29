@@ -26,7 +26,6 @@ services:
       MINIO_SECRET_KEY: minioadmin
     ports:
       - "9001:9001"
-      - "9000:9000"
     volumes:
       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/minio:/minio_data
     command: minio server /minio_data --console-address ":9001"
@@ -38,10 +37,10 @@ services:
 
   standalone:
     container_name: milvus-standalone
-    image: milvusdb/milvus:v2.3.7
+    image: milvusdb/milvus:v2.4.5
     command: ["milvus", "run", "standalone"]
     security_opt:
-    - seccomp:unconfined
+      - seccomp:unconfined
     environment:
       ETCD_ENDPOINTS: etcd:2379
       MINIO_ADDRESS: minio:9000
@@ -59,6 +58,16 @@ services:
     depends_on:
       - "etcd"
       - "minio"
+  # 增加attu容器，注意版本必须是v2.2.2
+  attu:
+    container_name: attu
+    image: zilliz/attu:latest
+    environment:
+      MILVUS_URL: standalone:19530
+    ports:
+      - "3000:3000"
+    depends_on:
+      - "standalone"
 
 networks:
   default:
