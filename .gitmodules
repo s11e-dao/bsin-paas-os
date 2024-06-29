@@ -1,0 +1,3 @@
+[submodule "bsin-server-env"]
+	path = bsin-server-env
+	url = git@gitee.com:s11e-DAO/bsin-server-env.git
