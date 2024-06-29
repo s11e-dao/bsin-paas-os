@@ -53,7 +53,7 @@
         left join crm_platform as cp
         on cw.tenant_id = cp.tenant_id and cp.del_flag = '0'
         left join (
-            select wallet_no,sum(balance) as balance from crm_wallet_account group by wallet_no
+            select wallet_no,sum(balance) as balance from waas_wallet_account group by wallet_no
         )as T1
         on T1.wallet_no = cw.serial_no
         <trim prefix="where" prefixOverrides="and">

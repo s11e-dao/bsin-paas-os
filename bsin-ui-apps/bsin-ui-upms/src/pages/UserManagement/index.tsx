@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import OrganizationTree from './OrganizationTree';
-import PositionTable from './PositionTable';
+import UserTable from './UserTable';
 import { Row, Col } from 'antd';
 
 export default function PositionManagement() {
@@ -22,7 +22,7 @@ export default function PositionManagement() {
       </Col>
       <Col span={19}>
         {/* 重新赋值为orgId*/}
-        <PositionTable orgId={isTreeKey} />
+        <UserTable orgId={isTreeKey} />
       </Col>
     </Row>
   );

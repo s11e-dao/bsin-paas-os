@@ -38,35 +38,78 @@ const columnsData: ProColumns<columnsDataType>[] = [
     width: 190,
     dataIndex: 'txHash',
     hideInSearch: true,
+    copyable: true,
+    ellipsis: true,
+    tooltip: '过长会自动收缩',
+    formItemProps: {
+      rules: [
+        {
+          required: true,
+          message: '此项为必填项',
+        },
+      ],
+    }
   },
   {
     title: '转出地址',
     width: 160,
     dataIndex: 'from',
     hideInSearch: true,
+    copyable: true,
+    ellipsis: true,
+    tooltip: '过长会自动收缩',
+    formItemProps: {
+      rules: [
+        {
+          required: true,
+          message: '此项为必填项',
+        },
+      ],
+    }
   },
   {
     title: '转入地址',
     width: 160,
     dataIndex: 'to',
     hideInSearch: true,
+    copyable: true,
+    ellipsis: true,
+    tooltip: '过长会自动收缩',
+    formItemProps: {
+      rules: [
+        {
+          required: true,
+          message: '此项为必填项',
+        },
+      ],
+    }
   },
   {
     title: '交易金额',
-    width: 160,
+    width: 80,
     dataIndex: 'txAmount',
     hideInSearch: true,
   },
   {
     title: '交易类型',
-    width: 160,
+    width: 80,
     dataIndex: 'transactionType',
     hideInSearch: true,
   },
   {
     title: '交易状态',
-    width: 160,
+    width: 80,
     dataIndex: 'transactionStatus',
+    hideInSearch: true,
+    valueEnum: {
+      0: { text: '成功', status: 'Processing' },
+      1: { text: '失败', status: 'Error' },
+    },
+  },
+  {
+    title: '交易时间',
+    width: 160,
+    dataIndex: 'createTime',
     hideInSearch: true,
   },
   {
@@ -79,12 +122,6 @@ const columnsData: ProColumns<columnsDataType>[] = [
     title: '执行方法',
     width: 160,
     dataIndex: 'contractMethod',
-    hideInSearch: true,
-  },
-  {
-    title: '创建时间',
-    width: 160,
-    dataIndex: 'createTime',
     hideInSearch: true,
   },
   {

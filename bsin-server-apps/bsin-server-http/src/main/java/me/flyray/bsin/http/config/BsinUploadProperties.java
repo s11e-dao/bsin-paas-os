@@ -21,5 +21,4 @@ public class BsinUploadProperties {
 
     private String preImgUrl; //图片回显地址
 
-
 }

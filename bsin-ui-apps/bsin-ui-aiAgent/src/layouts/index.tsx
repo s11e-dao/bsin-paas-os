@@ -1,9 +1,10 @@
 import { Outlet } from 'umi'
+import { ConfigProvider } from 'antd'
  
 export default (props) => {
   return (
-    <div> 
-      <Outlet/> 
-    </div>
+    <ConfigProvider prefixCls="aiAgent">
+      <Outlet />
+    </ConfigProvider>
   )
 }
