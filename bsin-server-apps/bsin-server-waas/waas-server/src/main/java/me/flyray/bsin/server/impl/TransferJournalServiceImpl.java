@@ -80,4 +80,5 @@ public class TransferJournalServiceImpl implements TransferJournalService {
     TransferJournal transferJournal = transferJournalMapper.selectById(serialNo);
     return transferJournal;
   }
+
 }

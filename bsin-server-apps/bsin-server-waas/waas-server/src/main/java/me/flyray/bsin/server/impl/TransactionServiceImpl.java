@@ -3,10 +3,7 @@ package me.flyray.bsin.server.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.entity.ChainCoin;
-import me.flyray.bsin.domain.entity.Transaction;
-import me.flyray.bsin.domain.entity.TransactionAudit;
-import me.flyray.bsin.domain.entity.WalletAccount;
+import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.request.TransactionDTO;
 import me.flyray.bsin.domain.request.TransactionRequest;
 import me.flyray.bsin.domain.response.TransactionVO;
@@ -22,6 +19,7 @@ import me.flyray.bsin.infrastructure.mapper.WalletAccountMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.utils.BsinSnowflake;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -32,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Map;
 
 /**
 * @author Admin
@@ -173,6 +172,15 @@ public class TransactionServiceImpl  implements TransactionService {
         Pagination pagination = transactionDTO.getPagination();
         transactionDTO.setTenantId(user.getTenantId());
         return transactionMapper.pageList(new Page<>(pagination.getPageNum(), pagination.getPageSize()),transactionDTO );
+    }
+
+    @ShenyuDubboClient("/getDetail")
+    @ApiDoc(desc = "getDetail")
+    @Override
+    public Transaction getDetail(Map<String, Object> requestMap) {
+        String serialNo = MapUtils.getString(requestMap, "serialNo");
+        Transaction transaction = transactionMapper.selectById(serialNo);
+        return transaction;
     }
 
 }

@@ -2,7 +2,7 @@ import { request } from '@umijs/max'
 let waasPath = process.env.contextPath_waas;
 
 // 分页查询
-export const getPlatformPageList = (params) => {
+export const getTransactionPageList = (params) => {
   return request(waasPath + '/transaction/getPageList', {
     serviceName: 'TransactionService',
     methodName: 'getPageList',
@@ -14,7 +14,7 @@ export const getPlatformPageList = (params) => {
 };
 
 // 添加平台
-export const addPlatform = (params) => {
+export const addTransaction = (params) => {
   return request(waasPath + '/transaction/openTenant', {
     serviceName: 'TransactionService',
     methodName: 'openTenant',
@@ -26,7 +26,7 @@ export const addPlatform = (params) => {
 };
 
 // 删除
-export const deletePlatform = (params) => {
+export const deleteTransaction = (params) => {
   return request(waasPath + '/transaction/delete', {
     serviceName: 'TransactionService',
     methodName: 'delete',
@@ -38,7 +38,7 @@ export const deletePlatform = (params) => {
 };
 
 // 查询详情
-export const getPlatformDetail = (params) => {
+export const getTransactionDetail = (params) => {
   console.log('params', params);
   return request(waasPath + '/transaction/getDetail', {
     serviceName: 'TransactionService',

@@ -115,6 +115,8 @@ const columnsData: ProColumns<columnsDataType>[] = [
     width: 160,
     dataIndex: 'contractAddress',
     hideInSearch: true,
+    copyable: true,
+    ellipsis: true,
     formItemProps: {
       rules: [
         {

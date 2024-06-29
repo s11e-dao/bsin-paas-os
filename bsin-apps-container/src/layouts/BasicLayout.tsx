@@ -413,6 +413,13 @@ export default () => {
     }
   }
 
+  const logout = () => {
+    setIsLogin(false)
+    localStorage.clear()
+    sessionStorage.clear()
+    history.push('/login')
+  }
+
   return (
     <div
       id="test-pro-layout"
@@ -554,17 +561,9 @@ export default () => {
                         },
                         {
                           key: 'logout',
-                          icon: <LogoutOutlined />,
+                          icon: <LogoutOutlined onClick={logout}/>,
                           label: (
-                            <span
-                              onClick={() => {
-                                console.log('点击图标')
-                                setIsLogin(false)
-                                localStorage.clear()
-                                sessionStorage.clear()
-                                history.push('/login')
-                              }}
-                            >
+                            <span onClick={logout}>
                               退出登录
                             </span>
                           ),

@@ -16,10 +16,10 @@ import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './data';
 import {
-  getPlatformPageList,
-  addPlatform,
-  deletePlatform,
-  getPlatformDetail,
+  getTransactionPageList,
+  addTransaction,
+  deleteTransaction,
+  getTransactionDetail,
   getProductList,
 } from './service';
 import TableTitle from '../../components/TableTitle';
@@ -113,7 +113,7 @@ export default () => {
           ...response,
           password: hex_md5(response.password),
         };
-        addPlatform(reqParam).then((res) => {
+        addTransaction(reqParam).then((res) => {
           console.log('add', res);
           if (res.code === '000000') {
             message.success('添加成功');
@@ -144,7 +144,7 @@ export default () => {
   const toDelContractTemplate = async (record) => {
     console.log('record', record);
     let { customerNo } = record;
-    let delRes = await deletePlatform({ customerNo });
+    let delRes = await deleteTransaction({ customerNo });
     console.log('delRes', delRes);
     if (delRes.code === '000000') {
       // 删除成功刷新表单
@@ -157,8 +157,8 @@ export default () => {
    */
   const toViewContractTemplate = async (record) => {
     console.log(record);
-    let { customerNo } = record;
-    let viewRes = await getPlatformDetail({ customerNo });
+    let { serialNo } = record;
+    let viewRes = await getTransactionDetail({ serialNo });
     setIsViewTemplateModal(true);
     console.log('viewRes', viewRes);
     setIsViewRecord(viewRes.data);
@@ -193,7 +193,7 @@ export default () => {
         // 请求获取的数据
         request={async (params) => {
           // console.log(params);
-          let res = await getPlatformPageList({
+          let res = await getTransactionPageList({
             ...params,
             // 租户客户类型
             type: '3',
