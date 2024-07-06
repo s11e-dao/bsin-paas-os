@@ -1,4 +1,4 @@
-package me.flyray.bsin.server.impl;
+package me.flyray.bsin.server.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;

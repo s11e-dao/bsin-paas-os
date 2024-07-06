@@ -12,4 +12,5 @@ public interface BsinAdminProcessDefinitionService {
      * 查询最新版本的流程定义列表
      */
     PageInfo<ProcessDefinition> getProcessDefinitionPageList(Map<String, Object> requestMap);
+
 }

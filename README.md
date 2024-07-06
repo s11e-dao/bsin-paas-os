@@ -29,18 +29,13 @@ Bsin-PaaS（毕昇） 是一套企业级的低代码、零代码去中心化应�
 http://operation.flyray.me/
 演示环境暂时无法访问
 
-
 ```
 > 演示视频
 
 https://www.bilibili.com/video/BV1VM4y1a7PF/?vd_source=360ae092de70c0b6c577d1d26f3565fe
 
 ## 平台定位
-提供daPaaS层的一站式企业级技术解决方案，帮助企业快速实现商业创新，完成数字化转型。
-
-## 理念
-为经营者谋发展，为消费者权益，为投资者谋财富
-共创价值 共享价值
+提供daPaaS层的一站式企业级技术解决方案，帮助企业快速实现数字商业创新，完成数字化转型。
 
 ## 平台总架构设计
 ![avatar](./doc/images/sys/架构设计.png)
@@ -127,66 +122,6 @@ bsin-paas-all-in-one
      └── bsin-ui-react -- react脚手架
 ```
 
-## Bsin-PaaS 后端仓库项目介绍
-|              项目名称               | 是否开源 |                                     仓库地址                                     | 功能简介                                     |
-|:-------------------------------:|:----:|:----------------------------------------------------------------------------:|:-----------------------------------------|
-|     bsin-server-common-all      |  是   |   [bsin-paas-all-in-one](https://gitee.com/s11e-DAO/bsin-paas-all-in-one)    | Bsin-PaaS 公共工具、库                         |
-|    bsin-server-targe-gateway    |  是   |   [bsin-paas-all-in-one](https://gitee.com/s11e-DAO/bsin-paas-all-in-one)    | Bsin-PaaS 网关                             |
-|        bsin-server-upms         |  是   |   [bsin-paas-all-in-one](https://gitee.com/s11e-DAO/bsin-paas-all-in-one)    | Bsin-PaaS 权限管理                           |
-|      bsin-server-workflow       |  是   |   [bsin-paas-all-in-one](https://gitee.com/s11e-DAO/bsin-paas-all-in-one)    | Bsin-PaaS 工作流                            |
-|   bsin-server-workflow-admin    |  是   |   [bsin-paas-all-in-one](https://gitee.com/s11e-DAO/bsin-paas-all-in-one)    | Bsin-PaaS 工作流后台管理                        |
-|     bsin-server-intelligent     |  是   |   [bsin-paas-all-in-one](https://gitee.com/s11e-DAO/bsin-paas-all-in-one)    | Bsin-PaaS 智能决策引擎                         |
-|         bsin-server-env         |  是   |        [bisn-server-env](https://gitee.com/s11e-DAO/bisn-server-env)         | Bsin-PaaS 后台服务环境，seata、zookeepe、maven软件包 |
-|         bsin-server-ai          |  是   |    [bsin-server-ai](https://gitee.com/s11e-DAO/bsin-server-ai)               | Bsin-PaaS 通用人工智能后台                       |
-|    bsin-server-web3-ability     |  否   | [bsin-paas-all-in-one](https://gitee.com/s11e-DAO/bsin-server-web3-ability)  | Bsin-PaaS web3应用能力平台                     |
-|     bsin-server-blockchain      |  否   | [bsin-server-blockchain](https://gitee.com/s11e-DAO/bsin-server-blockchain)  | Bsin-PaaS 区块链公链适配器                       |
-| bsin-server-web3-orchestration  |  否   | [bsin-paas-all-in-one](https://gitee.com/s11e-DAO/bsin-server-orchestration) | Bsin-PaaS 服务编排前段                         |
-|      bsin-server-scaffold       |  是   |   [bsin-server-scaffold](https://gitee.com/s11e-DAO/bsin-server-scaffold)    | Bsin-Paas 后端原子服务应用开发脚手架                  |
-|       bsin-bigan-sdk-java       |  否   |    [bsin-bigan-sdk-java](https://gitee.com/s11e-DAO/bsin-bigan-sdk-java)     | Bsin-Paas 后端原子服务应用开发脚手架                  |
-
-
-
-
-## Bsin-PaaS 前端仓库项目介绍
-|              项目名称              |   是否开源    |                                            仓库地址                                             | 功能简介                                                 |
-|:------------------------------:|:---------:|:-------------------------------------------------------------------------------------------:|:-----------------------------------------------------|
-|       bsin-ui-container        |     是     |           [bsin-paas-all-in-one](https://gitee.com/s11e-DAO/bsin-paas-all-in-one)           | Bsin-PaaS应用基座前端                                      |
-|          bsin-ui-upms          |     是     |           [bsin-paas-all-in-one](https://gitee.com/s11e-DAO/bsin-paas-all-in-one)           | Bsin-PaaS权限管理后台子应用前端                                 | 
-|     bsin-ui-orchestration      |     否     |          [bsin-ui-orchestration](https://gitee.com/s11e-DAO/bsin-ui-orchestration)          | Bsin-PaaS服务编排前段后台子应用前端                               | 
-|  bsin-ui-intelligent-decision  |     否     |      [bsin-ui-orchestration](https://gitee.com/s11e-DAO/bsin-ui-intelligent-decision)       | Bsin-PaaS智能决策引擎                                      |
-|        bsin-ui-daobook         |     否     |                [bsin-ui-daobook](https://gitee.com/s11e-DAO/bsin-ui-daobook)                | Bsin-PaaS dapbook后台管理后台子应用前端                         |
-|           bsin-ui-ai           |     否     |                     [bsin-ui-ai](https://gitee.com/s11e-DAO/bsin-ui-ai)                     | Bsin-PaaS 通用人工智能管理子应用前端                              |
-|          bsin-ui-dapp          |     否     |                   [bsin-ui-dapp](https://gitee.com/s11e-DAO/bsin-ui-dapp)                   | web3 Dapp开发脚手架，集成钱包管理、智能合约交、NFT画廊等等                  |
-|        bsin-ui-merchant        |     否     |               [bsin-ui-merchant](https://gitee.com/s11e-DAO/bsin-ui-merchant)               | bigan产品的h5活动领取页面                                     |
-|        bsin-ui-bigan-h5        |     否     |               [bsin-ui-bigan-h5](https://gitee.com/s11e-DAO/bsin-ui-bigan-h5)               | bigan SaaS服务                                         |
-|      bsin-minapp-merchant      |     否     |           [bsin-minapp-merchant](https://gitee.com/s11e-DAO/bsin-minapp-merchant)           |                                                      |
-|       bsin-minapp-baigui       |     否     |            [bsin-minapp-merchant](https://gitee.com/s11e-DAO/bsin-minapp-baigui)            | Baigui是dao的nft发行流通工具，属于daobook内置模块。                  |
-|    bsin-minapp-daobook-task    |     是     |       [bsin-minapp-daobook-task](https://gitee.com/s11e-DAO/bsin-minapp-daobook-task)       | 治理工具：daobook                                         |
-|     bsin-minapp-huajianmo      |     否     |          [bsin-minapp-huajianmo](https://gitee.com/s11e-DAO/bsin-minapp-huajianmo)          | 云电商 uniCloud 版                                       |
-|  bsin-minapp-huajianmo-admin   |     否     |    [bsin-minapp-huajianmo-admin](https://gitee.com/s11e-DAO/bsin-minapp-huajianmo-admin)    | 云电商 uniCloud 版                                       |
-|       bsin-minapp-wallet       |     否     |             [bsin-minapp-wallet](https://gitee.com/s11e-DAO/bsin-minapp-wallet)             |                                                      |
-|   bsin-minapps-container-ios   |     否     |     [bsin-minapp-container-ios](https://gitee.com/s11e-DAO/bsin-minapps-container-ios)      | 原生ios APP壳应用，可容纳各种小程序应用，提供极致的h5用户体验，帮助企业打造超级应用生态     |
-| bsin-minapps-container-android |     否      | [bsin-minapps-container-android](https://gitee.com/s11e-DAO/bsin-minapps-container-android) | 原生android APP壳应用，可容纳各种小程序应用，提供极致的h5用户体验，帮助企业打造超级应用生态 |
-|       bsin-ui-umi4-demo        |     是     |              [bsin-ui-umi4-demo](https://gitee.com/s11e-DAO/bsin-ui-umi4-demo)              | 基于react umi wagmi和Web3UIKit和Material UI的dapp demo应用  |
-|         bsin-paas-doc          |     是     |                 [bsin-paas-help](https://gitee.com/s11e-DAO/bsin-paas-help)                 | Bsin 帮助文档中心                                          |
-|      bsin-ui-huoyuanshequ      |     否     |           [bsin-ui-huoyuanshequ](https://gitee.com/s11e-DAO/bsin-ui-huoyuanshequ)           | 火源社区官网论坛                                             |
-|  bsin-ui-scaffold-react-app1   |     是     |    [bsin-ui-scaffold-react-app1](https://gitee.com/s11e-DAO/bsin-ui-scaffold-react-app1)    | Bsin-PaaS react开发脚手架                                 |
-|     bsin-ui-scaffold-vue3      |     是     |          [bsin-ui-scaffold-vue3](https://gitee.com/s11e-DAO/bsin-ui-scaffold-vue3)          | Bsin-PaaS Vu3开发脚手架                                   |
-|     bsin-ui-scaffold-vue2      |     是     |          [bsin-ui-scaffold-vue2](https://gitee.com/s11e-DAO/bsin-ui-scaffold-vue2)          | Bsin-PaaS Vu2开发脚手架                                   |
-
-
-
-
-
-## Bsin-PaaS 智能合约仓库项目工程介绍
-|        项目名称         |    是否开源     |                            仓库地址                             | 功能简介                                                                                                                                                                                                  |
-|:-------------------:|:-----------:|:-----------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|    s11e-protocol    |    即将开源     |  [s11e-protocol](https://gitee.com/s11e-DAO/s11e-protocol)  | s11e Protocol是部署在conflux公链上的dao治理协议，作为daobook(DAO治理服务平台)的智能合约接口服务，KOL使用daobook能够简单快速地启动dao，发行管理dao数字资产，使用链上地址进行身份验证，根据成员的的数字积分和SBT进行提案、任务、选举的投票治理和权益的记录和追溯，在保障去中心化和平权的同时，实现对协同的赋能和约束以及公正透明的量化每个成员的贡献。 |
-|   fire-beast-pfp    |    即将开源     | [fire-beast-pfp](https://gitee.com/s11e-DAO/fire-beast-pfp) | s11eDao 火源兽PFP智能合约及官网DAPP                                                                                                                                                                             |
-|      huajianmo      |    即将开源     |      [huajianmo](https://gitee.com/s11e-DAO/huajianmo)      | 花尖墨web3共创品牌官网dapp                                                                                                                                                                                     |
-
-
-
 > 帮助文档
 * http://help.flyray.me
 
@@ -195,7 +130,7 @@ bsin-paas-all-in-one
 
 ## UI展示
 * 登录页
-![avatar](./doc/images/sys/首页.png)
+![avatar](./doc/images/sys/login.png)
 
 * 首页工作台
 ![avatar](./doc/images/sys/工作台.png)
@@ -213,6 +148,15 @@ bsin-paas-all-in-one
 * 菜单主题上
 ![avatar](./doc/images/sys/菜单主题上.png)
 
+* 菜单主题
+![avatar](./doc/images/sys/菜单主题1.png)
+
+* 菜单主题
+![avatar](./doc/images/sys/菜单主题2.png)
+
+* app-agent
+![avatar](./doc/images/sys/app-agent.png)
+
 * 权限管理
 ![avatar](./doc/images/sys/权限管理.png)
 
@@ -225,17 +169,14 @@ bsin-paas-all-in-one
 * 智能决策引擎
 ![avatar](./doc/images/sys/智能决策引擎.png)
 
-* 服务编排
-![avatar](./doc/images/sys/服务编排.png)
-
-* 服务编排画布
-![avatar](./doc/images/sys/服务编排1.png)
-
 * 通用人工智能
 ![avatar](./doc/images/sys/通用人工智能模块.png)
 
 * AI员工.png
 ![avatar](./doc/images/sys/AI员工.png)
+
+* 火源钱包
+  ![avatar](./doc/images/sys/火源钱包.png)
 
   ![avatar](./doc/images/sys/aiWorkflow.png)
 

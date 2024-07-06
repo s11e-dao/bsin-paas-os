@@ -98,6 +98,7 @@ export const qiankun = () => {
           excludeAssetFilter: (assestUrl: any) => {
             return assestUrl.endsWith(".css");
           },
+          prefetch: false
         };
       }
       return {

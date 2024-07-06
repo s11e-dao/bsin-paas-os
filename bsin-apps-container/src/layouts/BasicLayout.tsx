@@ -165,10 +165,6 @@ export default () => {
     }
   }, [location.pathname.split('/')[1]])
 
-  window.addEventListener('load', function () {
-    console.log('页面可能被刷新了');
-  });
-
   let chatData = {
     chats: {
       ZGxiX2p4: {
