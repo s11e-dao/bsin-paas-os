@@ -8,6 +8,7 @@ import me.flyray.bsin.validate.AddGroup;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * 链上货币;
@@ -53,7 +54,7 @@ public class ChainCoin extends BaseEntity implements Serializable {
      * 币种精度
      */
     @NotBlank(message = "币种精度不能为空！", groups = AddGroup.class)
-    private BigDecimal coinDecimal;
+    private BigInteger coinDecimal;
 
     /**
      * 单位

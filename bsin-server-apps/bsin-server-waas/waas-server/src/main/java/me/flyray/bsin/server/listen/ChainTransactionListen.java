@@ -234,9 +234,6 @@ public class ChainTransactionListen {
                     transactionDTO.setFrom(from);  // 交易发起者地址
                     // 交易数量
                     BigDecimal txAmount = new BigDecimal(tokenTransferAmount);
-                    if(txAmount.compareTo(BigDecimal.ZERO)!= 0){
-                        txAmount = txAmount.divide(new BigDecimal(Math.pow(10, chainCoin.getCoinDecimal().doubleValue())));
-                    }
 
                     transactionDTO.setGasFee(new BigDecimal(transactionReceipt.getCumulativeGasUsed())); // 当前交易执行后累计花费的gas总值
                     transactionDTO.setTo(to);    // 交易接受者地址
@@ -249,7 +246,7 @@ public class ChainTransactionListen {
 
                     // 转入交易
                     if (toWalletAccount != null) {
-                        handleTransferIn(from, to, tokenTransferAmount, transactionDTO, chainCoin.getSerialNo(), toWalletAccount);
+                        handleTransferIn(from, to, tokenTransferAmount, transactionDTO, chainCoin.getSerialNo(), toWalletAccount, chainCoin.getCoinDecimal());
                     }
 
                     QueryWrapper<WalletAccount> formWalletAccountQueryWrapper = new QueryWrapper();
@@ -271,7 +268,7 @@ public class ChainTransactionListen {
         });
     }
 
-    private void handleTransferIn(String from, String to, BigInteger tokenTransferAmount, TransactionDTO transactionDTO, String chainCoinNo, WalletAccount walletAccount) throws Exception {
+    private void handleTransferIn(String from, String to, BigInteger tokenTransferAmount, TransactionDTO transactionDTO, String chainCoinNo, WalletAccount walletAccount, BigInteger decimals) throws Exception {
         BigDecimal txAmount = new BigDecimal(tokenTransferAmount);
         Wallet wallet = walletMapper.selectById(walletAccount.getWalletNo());
         if (wallet != null) {
@@ -303,8 +300,8 @@ public class ChainTransactionListen {
                 if( wallet.getWalletTag().equals("DEPOSIT")){
                     if(!gatherAccount.equals(to)){
                         log.info("归集账户资金开始,账户地址：{}", to);
-                        // TODO 资金归集处理
-                        transferBiz.cashConcentrationProcess(to);
+                        // TODO 资金归集处理 String fromAddress, String toAddress, String contractAddress, BigInteger amount, BigInteger decimals
+                        transferBiz.cashConcentrationProcess(from, to, transactionDTO.getContractAddress(), tokenTransferAmount, decimals);
                         // transferBiz.tokenTransfer(to, gatherAccount.getAddress(), contractAddress, tokenTransferAmount, BigInteger.valueOf(0));
                         log.info("归集账户资金结束");
                     }

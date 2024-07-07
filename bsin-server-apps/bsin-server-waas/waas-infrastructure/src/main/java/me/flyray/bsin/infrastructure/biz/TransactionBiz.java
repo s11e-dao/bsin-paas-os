@@ -35,6 +35,7 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -293,15 +294,21 @@ public class TransactionBiz {
      * 1、给用户账户加油
      * 2、归集资金(队列处理)
      */
-    public void cashConcentrationProcess(String toAddress) throws Exception {
+    public void cashConcentrationProcess(String fromAddress, String toAddress, String contractAddress, BigInteger amount, BigInteger decimals) throws Exception {
         // 链上TOKEN转账逻辑
         // 链原生TOKEN转账逻辑 ethTransfer String fromAddress, String toAddress, BigInteger amount
-        String transactionHash = ethTransfer(getGasAddress, toAddress, new BigInteger(getGasAmount));
-        // 调用延时队列，等加油成功之后做资金归集
+        String txHash = ethTransfer(getGasAddress, toAddress, new BigInteger(getGasAmount));
 
+        // 调用延时队列，等加油成功之后做资金归集
         JSONObject mQMsgReq = new JSONObject();
-        mQMsgReq.put("requisitionId", "requisitionId");
+        mQMsgReq.put("txHash", txHash);
         mQMsgReq.put("eventCode", MqEventCode.GET_GAS_NOTIFY.getCode());
+        mQMsgReq.put("fromAddress", fromAddress);
+        mQMsgReq.put("toAddress", MqEventCode.GET_GAS_NOTIFY.getCode());
+        mQMsgReq.put("contractAddress", contractAddress);
+        mQMsgReq.put("amount", amount);
+        mQMsgReq.put("decimals", decimals);
+
         // 延时消息等级分为18个：1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
         SendCallback callback = new SendCallback() {
             @Override
@@ -322,10 +329,43 @@ public class TransactionBiz {
      * 2、进行资金归集
      * 3、放入队列等待确认
      */
-    public void cashConcentration(JSONObject mQMsg) {
-        // 查询gas交易确认
+    public void cashConcentration(JSONObject mQMsg) throws Exception {
+        // 查询gas交易确认 通过hash获取链上交易
+        String gasTxHash = (String) mQMsg.get("txHash");
+        // 通过交易哈希查询交易收据
+        TransactionReceipt transactionReceipt = web3.ethGetTransactionReceipt(gasTxHash).send().getTransactionReceipt().orElseThrow(() -> new RuntimeException("交易未找到"));
 
-        // 确认后进行资金归集
+        String fromAddress = (String) mQMsg.get("");
+        String toAddress = (String) mQMsg.get("");
+        String contractAddress = (String) mQMsg.get("");
+        BigInteger amount = (BigInteger) mQMsg.get("");
+        BigInteger decimals = (BigInteger) mQMsg.get("");
+        // 检查交易状态
+        if (transactionReceipt.isStatusOK()) {
+            // 交易成功进行资金归集 String fromAddress, String toAddress, String contractAddress, BigInteger amount, BigInteger decimals
+            String txHash = tokenTransfer(fromAddress, toAddress, contractAddress, amount, decimals);
+
+            // 放入队列等待确认
+            JSONObject mQMsgReq = new JSONObject();
+            mQMsgReq.put("txHash", txHash);
+            mQMsgReq.put("eventCode", MqEventCode.CASH_CONCENTRATION_NOTIFY.getCode());
+            // 延时消息等级分为18个：1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
+            SendCallback callback = new SendCallback() {
+                @Override
+                public void onSuccess(SendResult sendResult) {
+                    System.out.println("发送成功");
+                }
+                @Override
+                public void onException(Throwable throwable) {
+                    System.out.println("发送失败");
+                }
+            };
+            rocketMQProducer.sendDelay(topic, mQMsgReq.toString(), callback,4);
+
+        } else {
+            // 继续gas加油，继续仍给延时队列处理
+
+        }
 
     }
 
@@ -334,10 +374,16 @@ public class TransactionBiz {
      * 1、确认链上交易状态
      * 2、回调平台或是商户
      */
-    public void cashConcentrationEventNotify(JSONObject mQMsg) {
+    public void cashConcentrationEventNotify(JSONObject mQMsg) throws IOException {
         // 查询链上交易，确认归集状态
+// 查询gas交易确认 通过hash获取链上交易
+        String gasTxHash = (String) mQMsg.get("txHash");
+        // 通过交易哈希查询交易收据
+        TransactionReceipt transactionReceipt = web3.ethGetTransactionReceipt(gasTxHash).send().getTransactionReceipt().orElseThrow(() -> new RuntimeException("交易未找到"));
+        // 检查交易状态
+        if (transactionReceipt.isStatusOK()) {
+            // 通知平台或是商户
 
-        // 通知平台或是商户
-
+        }
     }
 }

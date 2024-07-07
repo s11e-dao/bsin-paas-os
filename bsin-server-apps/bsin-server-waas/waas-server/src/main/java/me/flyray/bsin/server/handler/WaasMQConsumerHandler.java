@@ -10,6 +10,8 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 /**
  * @author bolei
  * @date 2024/5/20
@@ -48,12 +50,20 @@ public class WaasMQConsumerHandler implements RocketMQListener<String> {
             case GET_GAS_NOTIFY:
                 // 如果是gas加油，则发送归集交易
                 log.info("getGas {}", message);
-                transactionBiz.cashConcentration(mQMsg);
+                try {
+                    transactionBiz.cashConcentration(mQMsg);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             case CASH_CONCENTRATION_NOTIFY:
                 // 如果是归集交易，则确认修改交易状态
                 log.info("cashConcentration {}", message);
-                transactionBiz.cashConcentrationEventNotify(mQMsg);
+                try {
+                    transactionBiz.cashConcentrationEventNotify(mQMsg);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             default:
                 break;

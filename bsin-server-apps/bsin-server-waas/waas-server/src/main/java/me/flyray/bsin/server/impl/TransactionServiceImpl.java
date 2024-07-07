@@ -156,7 +156,7 @@ public class TransactionServiceImpl  implements TransactionService {
             throw new BusinessException("非平台钱包账户地址");
         }
         log.info("开始提现交易，账户余额为：{}",walletAccount.getBalance());
-        transferBiz.tokenTransfer(fromAddress,toAddress,contractAddress,txAmount.toBigInteger(), chainCoin.getCoinDecimal().toBigInteger());
+        transferBiz.tokenTransfer(fromAddress,toAddress,contractAddress,txAmount.toBigInteger(), chainCoin.getCoinDecimal());
         BigDecimal balance = walletAccount.getBalance().subtract(txAmount);
         log.info("提现交易结束，账户余额为：{}",balance);
         walletAccount.setBalance(balance);
