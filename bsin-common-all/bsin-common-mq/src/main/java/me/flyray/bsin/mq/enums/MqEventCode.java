@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * @desc 队列事件编码
  */
 
-public enum EventCode {
+public enum MqEventCode {
 
     /**
      * 创建钱包
@@ -31,7 +31,7 @@ public enum EventCode {
 
     private String desc;
 
-    EventCode(String code, String desc) {
+    MqEventCode(String code, String desc) {
         this.code = code;
         this.desc = desc;
     }
@@ -48,11 +48,11 @@ public enum EventCode {
      * Json 枚举序列化
      */
     @JsonCreator
-    public static EventCode getInstanceById(String id) {
+    public static MqEventCode getInstanceById(String id) {
         if (id == null) {
             return null;
         }
-        for (EventCode status : values()) {
+        for (MqEventCode status : values()) {
             if (id.equals(status.getCode())) {
                 return status;
             }

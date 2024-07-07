@@ -5,13 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.infrastructure.biz.TransactionBiz;
 import me.flyray.bsin.infrastructure.biz.WalletAccountBiz;
-import me.flyray.bsin.mq.enums.EventCode;
-import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
+import me.flyray.bsin.mq.enums.MqEventCode;
 import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import static me.flyray.bsin.mq.enums.EventCode.*;
 
 /**
  * @author bolei
@@ -40,7 +37,7 @@ public class WaasMQConsumerHandler implements RocketMQListener<String> {
         // 处理消息的逻辑
         log.info("wallet mq received message:{}", message);
         JSONObject mQMsg = JSON.parseObject(message);
-        EventCode eventCode = EventCode.getInstanceById((String) mQMsg.get("eventCode"));
+        MqEventCode eventCode = MqEventCode.getInstanceById((String) mQMsg.get("eventCode"));
 
         switch (eventCode){
             case CREATE_MPC_WALLET:
@@ -51,7 +48,7 @@ public class WaasMQConsumerHandler implements RocketMQListener<String> {
             case GET_GAS_NOTIFY:
                 // 如果是gas加油，则发送归集交易
                 log.info("getGas {}", message);
-                transactionBiz.getGasEventNotify(mQMsg);
+                transactionBiz.cashConcentration(mQMsg);
                 break;
             case CASH_CONCENTRATION_NOTIFY:
                 // 如果是归集交易，则确认修改交易状态

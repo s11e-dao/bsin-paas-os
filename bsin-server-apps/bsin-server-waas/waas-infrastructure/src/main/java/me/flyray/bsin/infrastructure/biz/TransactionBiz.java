@@ -6,6 +6,10 @@ import me.flyray.bsin.domain.entity.WalletAccount;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.infrastructure.mapper.WalletAccountMapper;
 import me.flyray.bsin.infrastructure.utils.OkHttpUtils;
+import me.flyray.bsin.mq.enums.MqEventCode;
+import me.flyray.bsin.mq.producer.RocketMQProducer;
+import org.apache.rocketmq.client.producer.SendCallback;
+import org.apache.rocketmq.client.producer.SendResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +49,18 @@ public class TransactionBiz {
 
     @Value("${bsin.app-chain.gateway-url}")
     private String appChainGatewayUrl;
+
+    @Value("${bsin.app-chain.get-gas.address}")
+    private String getGasAddress;
+
+    @Value("${bsin.app-chain.get-gas.amount}")
+    private String getGasAmount;
+    @Autowired
+    private RocketMQProducer rocketMQProducer;
+    @Value("${rocketmq.consumer.topic}")
+    private String topic;
+
+
 
     // 节点
     private static final String HTTP_URL = "https://go.getblock.io/dc197e59d9b34e0c9428f2f13df66d6e";
@@ -273,40 +289,44 @@ public class TransactionBiz {
     }
 
     /**
-     * gas 加油
-     */
-    public void getGas() {
-        // 链原生TOKEN转账逻辑 ethTransfer
-
-    }
-
-    /**
-     * 1、执行归集资金
-     * 2、放入队列等待确认
-     */
-    public void cashConcentration() {
-        // 链上TOKEN转账逻辑 tokenTransfer
-
-    }
-
-    /**
      * 用户充值资金归集
      * 1、给用户账户加油
-     * 2、归集资金
+     * 2、归集资金(队列处理)
      */
-    public void cashConcentrationProcess() {
+    public void cashConcentrationProcess(String toAddress) throws Exception {
         // 链上TOKEN转账逻辑
-        getGas();
+        // 链原生TOKEN转账逻辑 ethTransfer String fromAddress, String toAddress, BigInteger amount
+        String transactionHash = ethTransfer(getGasAddress, toAddress, new BigInteger(getGasAmount));
+        // 调用延时队列，等加油成功之后做资金归集
+
+        JSONObject mQMsgReq = new JSONObject();
+        mQMsgReq.put("requisitionId", "requisitionId");
+        mQMsgReq.put("eventCode", MqEventCode.GET_GAS_NOTIFY.getCode());
+        // 延时消息等级分为18个：1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
+        SendCallback callback = new SendCallback() {
+            @Override
+            public void onSuccess(SendResult sendResult) {
+                System.out.println("发送成功");
+            }
+            @Override
+            public void onException(Throwable throwable) {
+                System.out.println("发送失败");
+            }
+        };
+        rocketMQProducer.sendDelay(topic, mQMsgReq.toString(), callback,4);
     }
 
     /**
      * gas 加油事件通知
      * 1、gas 加油确认
      * 2、进行资金归集
+     * 3、放入队列等待确认
      */
-    public void getGasEventNotify(JSONObject mQMsg) {
-        // 查询交易确认进行资金归集
-        cashConcentration();
+    public void cashConcentration(JSONObject mQMsg) {
+        // 查询gas交易确认
+
+        // 确认后进行资金归集
+
     }
 
     /**

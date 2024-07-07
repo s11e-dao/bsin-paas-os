@@ -289,7 +289,7 @@ public class ChainTransactionListen {
             transactionDTO.setBizRoleTypeNo(wallet.getBizRoleTypeNo());
             transactionDTO.setTenantId(walletAccount.getTenantId());
             transactionMapper.insert(transactionDTO);
-            log.info("生成交易记录成功，to地址：{}",to);
+            log.info("生成交易记录成功，to地址：{}", to);
             // 代币数量>0,需要资金归集
             if(wallet != null && tokenTransferAmount.compareTo(BigInteger.ZERO)>0){
                 // 入账
@@ -297,14 +297,14 @@ public class ChainTransactionListen {
                 BigDecimal balance = walletAccount.getBalance().add(txAmount);
                 walletAccount.setBalance(balance);
                 walletAccountMapper.updateById(walletAccount);
-                log.info("入账结束，当前账户余额为：{}",balance);
+                log.info("入账结束，当前账户余额为：{}", balance);
 
                 // 资金归集-查询钱包标识为DEPOSIT
                 if( wallet.getWalletTag().equals("DEPOSIT")){
                     if(!gatherAccount.equals(to)){
-                        log.info("归集账户资金开始,账户地址："+to);
+                        log.info("归集账户资金开始,账户地址：{}", to);
                         // TODO 资金归集处理
-                        transferBiz.cashConcentrationProcess();
+                        transferBiz.cashConcentrationProcess(to);
                         // transferBiz.tokenTransfer(to, gatherAccount.getAddress(), contractAddress, tokenTransferAmount, BigInteger.valueOf(0));
                         log.info("归集账户资金结束");
                     }
