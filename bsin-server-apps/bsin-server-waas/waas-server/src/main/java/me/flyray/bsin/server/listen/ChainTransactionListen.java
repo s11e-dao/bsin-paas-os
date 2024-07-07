@@ -89,7 +89,7 @@ public class ChainTransactionListen {
         List<ChainCoin> chainCoins = chainCoinMapper.selectList(queryWrapper);
         chainCoins.forEach(m -> {
             try {
-                // contractAddressMonitor(m.getContractAddress());
+                // TODO contractAddressMonitor(m.getContractAddress());
                 contractAddressMonitor("0x06A0F0fa38AE42b7B3C8698e987862AfA58e90D9");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -109,13 +109,11 @@ public class ChainTransactionListen {
         ws.connect();
         Web3j web3jWs = Web3j.build(ws);
 
-        //设置过滤条件 这个示例是监听最新的100个块
+        // 设置过滤条件 100指的是监听最新的100个块
         BigInteger blockNumber = web3jWs.ethBlockNumber().send().getBlockNumber()
                 .subtract(new BigInteger("100"));
         EthFilter ethFilter = new EthFilter(DefaultBlockParameter.valueOf(blockNumber),
                 DefaultBlockParameterName.LATEST, contractAddress);
-
-        Web3j web3j = Web3j.build(new HttpService(bscChainListenUrlHttp));
 
         // 监听的合约对应的币种
         QueryWrapper<ChainCoin> queryWrapper = new QueryWrapper<>();
@@ -127,27 +125,34 @@ public class ChainTransactionListen {
         Map<String, String> methodMap = new HashMap<>();
         Map<String, String> notMethodMap = new HashMap<>();
         for (ContractMethod contractMethod : contractMethods) {
-            if(contractMethod.getType()==1){
+            if(contractMethod.getType() == 1){
                 // 合约方法
                 methodMap.put(contractMethod.getMethodId(), contractMethod.getMethodName());
-            }else if(contractMethod.getType()==2){
+            }else if(contractMethod.getType() == 2){
                 // 非合约方法
                 notMethodMap.put(contractMethod.getMethodId(), contractMethod.getMethodName());
             }
         }
 
+        Web3j web3j = Web3j.build(new HttpService(bscChainListenUrlHttp));
+
+        // 查看智能合约币种状态是否正常
+        QueryWrapper<ChainCoin> chainCoinQueryWrapper = new QueryWrapper<>();
+        chainCoinQueryWrapper.eq("contract_address", contractAddress);
+        chainCoinQueryWrapper.eq("status", 1);  // 上架
+        List<ChainCoin> chainCoins = chainCoinMapper.selectList(chainCoinQueryWrapper);
+        if (chainCoins == null || chainCoins.size() == 0) {
+            taskExecutor.shutdown();
+        }
+
+        // 监听链上活动数据
         web3jWs.ethLogFlowable(ethFilter).subscribe(ethLog -> {
-            System.out.println(log);
-            log.info("交易hash: {}",ethLog.getTransactionHash());
-            // 查看智能合约币种状态是否正常
-            QueryWrapper<ChainCoin> chainCoinQueryWrapper = new QueryWrapper<>();
-            chainCoinQueryWrapper.eq("contract_address", contractAddress);
-            chainCoinQueryWrapper.eq("status", 1);  // 上架
-            List<ChainCoin> chainCoins = chainCoinMapper.selectList(chainCoinQueryWrapper);
-            if (chainCoins == null || chainCoins.size() == 0) {
-                taskExecutor.shutdown();
-            }
+            System.out.println(ethLog);
+            log.info("链上日志信息: {}", ethLog);
             String txHash = ethLog.getTransactionHash();         // 交易hash
+            log.info("交易hash: {}", txHash);
+
+            // 判断该交易是否已经处理
             QueryWrapper<me.flyray.bsin.domain.entity.Transaction> query = Wrappers.query();
             query.eq("tx_hash",txHash);
             List<me.flyray.bsin.domain.entity.Transaction> transactionList = transactionMapper.selectList(query);
@@ -162,11 +167,11 @@ public class ChainTransactionListen {
             }
             BsinCacheProvider.put("waas",txHash, String.valueOf(ethLog.getBlockNumber()));
             try{
-                // 1、通过hash获取交易 包含logs
+                // 1、通过hash获取交易信息 包含logs
                 EthGetTransactionReceipt ethGetTransactionReceipt = web3j.ethGetTransactionReceipt(txHash).sendAsync().get();
                 TransactionReceipt transactionReceipt = ethGetTransactionReceipt.getTransactionReceipt().orElseThrow(RuntimeException::new);
 
-                // 2、通过hash获取交易 普通交易数据
+                // 2、通过hash获取链上交易
                 Optional<Transaction> transactions = web3j.ethGetTransactionByHash(txHash).send().getTransaction();
                 if (transactions.isPresent()) {
                     Transaction transaction = transactions.orElseThrow(RuntimeException::new);
@@ -177,13 +182,13 @@ public class ChainTransactionListen {
                     Integer methodInvokeWay = 1;
                     String input = transaction.getInput();
 
-                    // 检查是否是代币交易（transfer 方法调用）
+                    // 检查是否是原生代币交易（transfer 方法调用）
                     if (input.startsWith("0xa9059cbb")) {
                         // 第一个参数是接收地址（to 地址）
                         to = "0x"+Numeric.cleanHexPrefix(input.substring(34, 74));
-                        System.out.println("ERC-20 Token Receiver Address: " + to);
+                        log.info("ERC-20 Token Receiver Address:  {}", to);
                     } else {
-                        System.out.println("This is not an ERC-20 token transfer transaction.");
+                        log.info("This is not an ERC-20 token transfer transaction.");
                     }
 
                     BigInteger tokenTransferAmount = getTokenTransferAmount(input);
@@ -229,7 +234,7 @@ public class ChainTransactionListen {
                     transactionDTO.setFrom(from);  // 交易发起者地址
                     // 交易数量
                     BigDecimal txAmount = new BigDecimal(tokenTransferAmount);
-                    if(txAmount.compareTo(BigDecimal.ZERO)!=0){
+                    if(txAmount.compareTo(BigDecimal.ZERO)!= 0){
                         txAmount = txAmount.divide(new BigDecimal(Math.pow(10, chainCoin.getCoinDecimal().doubleValue())));
                     }
 
@@ -238,14 +243,22 @@ public class ChainTransactionListen {
                     transactionDTO.setCompletedTime(LocalDateTime.now().toString());
                     transactionDTO.setCreateTime(new Date());
 
+                    QueryWrapper<WalletAccount> toWalletAccountQueryWrapper = new QueryWrapper();
+                    toWalletAccountQueryWrapper.eq("address", to);
+                    WalletAccount toWalletAccount = walletAccountMapper.selectOne(toWalletAccountQueryWrapper);
+
                     // 转入交易
-                    if (to != null) {
-                        handleTransferIn(from, to, tokenTransferAmount, transactionDTO, chainCoin.getSerialNo());
+                    if (toWalletAccount != null) {
+                        handleTransferIn(from, to, tokenTransferAmount, transactionDTO, chainCoin.getSerialNo(), toWalletAccount);
                     }
 
+                    QueryWrapper<WalletAccount> formWalletAccountQueryWrapper = new QueryWrapper();
+                    formWalletAccountQueryWrapper.eq("address", from);
+                    WalletAccount fromWalletAccount = walletAccountMapper.selectOne(formWalletAccountQueryWrapper);
+
                     //  转出交易
-                    if (from != null) {
-                        handleTransferOut(from, to, tokenTransferAmount, transactionDTO, chainCoin.getSerialNo());
+                    if (fromWalletAccount != null) {
+                        handleTransferOut(from, to, tokenTransferAmount, transactionDTO, chainCoin.getSerialNo(), fromWalletAccount);
                     }
                 }
             }catch (Exception e){
@@ -258,77 +271,67 @@ public class ChainTransactionListen {
         });
     }
 
-    private void handleTransferIn(String from, String to, BigInteger tokenTransferAmount, TransactionDTO transactionDTO, String chainCoinNo) throws Exception {
-        QueryWrapper<WalletAccount> walletAccountQueryWrapper = new QueryWrapper();
-        walletAccountQueryWrapper.eq("address", to);
-        WalletAccount walletAccount = walletAccountMapper.selectOne(walletAccountQueryWrapper);
+    private void handleTransferIn(String from, String to, BigInteger tokenTransferAmount, TransactionDTO transactionDTO, String chainCoinNo, WalletAccount walletAccount) throws Exception {
         BigDecimal txAmount = new BigDecimal(tokenTransferAmount);
-        if(walletAccount != null){
-            Wallet wallet = walletMapper.selectById(walletAccount.getWalletNo());
-            if (wallet != null) {
-                log.info("监听到平台用户钱包账户，to地址：{}",to);
-                // 查询归集账户地址
-                WalletAccount gatherAccount = walletAccountBiz.getGatherAccount(wallet.getTenantId(), chainCoinNo);
-                if(gatherAccount != null&& gatherAccount.getAddress().equals(to)){
-                    transactionDTO.setTransactionType(3);     // 交易类型：3、资金归集
-                }else {
-                    transactionDTO.setTransactionType(1);     // 交易类型：1、转入
-                }
-                transactionDTO.setTxAmount(txAmount);     // 交易金额
-                transactionDTO.setSerialNo(BsinSnowflake.getId());
-                transactionDTO.setBizRoleType(wallet.getBizRoleType());
-                transactionDTO.setBizRoleTypeNo(wallet.getBizRoleTypeNo());
-                transactionDTO.setTenantId(walletAccount.getTenantId());
-                transactionMapper.insert(transactionDTO);
-                log.info("生成交易记录成功，to地址：{}",to);
-                // 代币数量>0,需要资金归集
-                if(wallet != null && tokenTransferAmount.compareTo(BigInteger.ZERO)>0){
-                    // 入账
-                    log.info("合约代币数量 > 0,开始进行入账，账户余额：{}",walletAccount.getBalance());
-                    BigDecimal balance = walletAccount.getBalance().add(txAmount);
-                    walletAccount.setBalance(balance);
-                    walletAccountMapper.updateById(walletAccount);
-                    log.info("入账结束，当前账户余额为：{}",balance);
+        Wallet wallet = walletMapper.selectById(walletAccount.getWalletNo());
+        if (wallet != null) {
+            log.info("监听到平台用户钱包账户，to地址：{}",to);
+            // 查询归集账户地址
+            WalletAccount gatherAccount = walletAccountBiz.getGatherAccount(wallet.getTenantId(), chainCoinNo);
+            if(gatherAccount != null&& gatherAccount.getAddress().equals(to)){
+                transactionDTO.setTransactionType(3);     // 交易类型：3、资金归集
+            }else {
+                transactionDTO.setTransactionType(1);     // 交易类型：1、转入
+            }
+            transactionDTO.setTxAmount(txAmount);     // 交易金额
+            transactionDTO.setSerialNo(BsinSnowflake.getId());
+            transactionDTO.setBizRoleType(wallet.getBizRoleType());
+            transactionDTO.setBizRoleTypeNo(wallet.getBizRoleTypeNo());
+            transactionDTO.setTenantId(walletAccount.getTenantId());
+            transactionMapper.insert(transactionDTO);
+            log.info("生成交易记录成功，to地址：{}",to);
+            // 代币数量>0,需要资金归集
+            if(wallet != null && tokenTransferAmount.compareTo(BigInteger.ZERO)>0){
+                // 入账
+                log.info("合约代币数量 > 0,开始进行入账，账户余额：{}",walletAccount.getBalance());
+                BigDecimal balance = walletAccount.getBalance().add(txAmount);
+                walletAccount.setBalance(balance);
+                walletAccountMapper.updateById(walletAccount);
+                log.info("入账结束，当前账户余额为：{}",balance);
 
-                    // 资金归集-查询钱包标识为DEPOSIT
-                    if( wallet.getWalletTag().equals("DEPOSIT")){
-                        if(!gatherAccount.equals(to)){
-                            log.info("归集账户资金开始,账户地址："+to);
-                            // TODO 资金归集处理
-                            transferBiz.cashConcentrationProcess();
-                            // transferBiz.tokenTransfer(to, gatherAccount.getAddress(), contractAddress, tokenTransferAmount, BigInteger.valueOf(0));
-                            log.info("归集账户资金结束");
-                        }
+                // 资金归集-查询钱包标识为DEPOSIT
+                if( wallet.getWalletTag().equals("DEPOSIT")){
+                    if(!gatherAccount.equals(to)){
+                        log.info("归集账户资金开始,账户地址："+to);
+                        // TODO 资金归集处理
+                        transferBiz.cashConcentrationProcess();
+                        // transferBiz.tokenTransfer(to, gatherAccount.getAddress(), contractAddress, tokenTransferAmount, BigInteger.valueOf(0));
+                        log.info("归集账户资金结束");
                     }
                 }
             }
         }
     }
 
-    private void handleTransferOut(String from, String to, BigInteger tokenTransferAmount, TransactionDTO transactionDTO, String chainCoinNo) throws Exception {
-        QueryWrapper<WalletAccount> walletAccountQueryWrapper = new QueryWrapper();
-        walletAccountQueryWrapper.eq("address", from);
-        WalletAccount walletAccount = walletAccountMapper.selectOne(walletAccountQueryWrapper);
+    private void handleTransferOut(String from, String to, BigInteger tokenTransferAmount, TransactionDTO transactionDTO, String chainCoinNo , WalletAccount walletAccount) throws Exception {
         BigDecimal txAmount = new BigDecimal(tokenTransferAmount);
-        if(walletAccount != null){
-            log.info("监听到平台用户钱包账户，from地址：{}",from);
-            Wallet wallet = walletMapper.selectById(walletAccount.getWalletNo());
-            if (wallet != null && tokenTransferAmount.compareTo(BigInteger.ZERO)>0) {
-                // 查询归集账户地址
-                WalletAccount gatherAccount = walletAccountBiz.getGatherAccount(wallet.getTenantId(), chainCoinNo);
-                if(gatherAccount != null&& gatherAccount.getAddress().equals(to)){
-                    return;
-                }else {
-                    transactionDTO.setTransactionType(2);     // 交易类型：2、转出
-                }
-                transactionDTO.setTxAmount(txAmount.multiply(new BigDecimal("-1")));
-                transactionDTO.setSerialNo(BsinSnowflake.getId());
-                transactionDTO.setBizRoleType(wallet.getBizRoleType());
-                transactionDTO.setBizRoleTypeNo(wallet.getBizRoleTypeNo());
-                transactionDTO.setTenantId(walletAccount.getTenantId());
-                transactionMapper.insert(transactionDTO);
-                log.info("生成交易记录成功，from地址：{}",from);
+        log.info("监听到平台用户钱包账户，from地址：{}",from);
+        Wallet wallet = walletMapper.selectById(walletAccount.getWalletNo());
+        if (wallet != null && tokenTransferAmount.compareTo(BigInteger.ZERO)>0) {
+            // 查询归集账户地址
+            WalletAccount gatherAccount = walletAccountBiz.getGatherAccount(wallet.getTenantId(), chainCoinNo);
+            if(gatherAccount != null&& gatherAccount.getAddress().equals(to)){
+                return;
+            }else {
+                transactionDTO.setTransactionType(2);     // 交易类型：2、转出
             }
+            transactionDTO.setTxAmount(txAmount.multiply(new BigDecimal("-1")));
+            transactionDTO.setSerialNo(BsinSnowflake.getId());
+            transactionDTO.setBizRoleType(wallet.getBizRoleType());
+            transactionDTO.setBizRoleTypeNo(wallet.getBizRoleTypeNo());
+            transactionDTO.setTenantId(walletAccount.getTenantId());
+            transactionMapper.insert(transactionDTO);
+            log.info("生成交易记录成功，from地址：{}",from);
         }
     }
 
