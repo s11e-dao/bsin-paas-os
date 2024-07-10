@@ -49,6 +49,11 @@ $ sh mqadmin updatetopic -t waas-test -c DefaultCluster
 
 tail -f ~/logs/rocketmqlogs/broker.log 
 
+$ docker exec -it rmqnamesrv bash
+
+# 查看rmqnamesrv容器信息
+docker inspect rmqnamesrv
+
 ```
 
 控制台访问：

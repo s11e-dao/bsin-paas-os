@@ -34,7 +34,7 @@ public interface DubboTestService {
 
     BsinResultEntity<DubboTest> add(@Valid DubboTest bean);
 
-    public BsinResultEntity<DubboTest> sendMq(DubboTest bean);
+    public DubboTest sendMq(DubboTest bean);
 
     /**
      * find by id.

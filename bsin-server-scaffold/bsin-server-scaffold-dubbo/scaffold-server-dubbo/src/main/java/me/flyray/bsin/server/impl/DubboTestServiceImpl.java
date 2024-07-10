@@ -68,7 +68,7 @@ public class DubboTestServiceImpl implements DubboTestService {
     @ShenyuDubboClient("/sendMq")
     @ApiDoc(desc = "sendMq")
     @Override
-    public BsinResultEntity<DubboTest> sendMq(DubboTest bean) {
+    public DubboTest sendMq(DubboTest bean) {
 
         JSONObject mQMsgReq = new JSONObject();
         mQMsgReq.put("requisitionId", "requisitionId");
@@ -84,8 +84,8 @@ public class DubboTestServiceImpl implements DubboTestService {
                 System.out.println("发送失败");
             }
         };
-        rocketMQProducer.sendDelay(topic,mQMsgReq.toString(), callback,4);
-        return BsinResultEntity.ok(bean);
+        rocketMQProducer.sendDelay(topic,mQMsgReq.toString(), callback,3);
+        return bean;
     }
 
     @Override

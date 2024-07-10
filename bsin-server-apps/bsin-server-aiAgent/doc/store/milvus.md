@@ -6,6 +6,10 @@
 docker-compose -f milvus-standalone-docker-compose.yml up -d
 ```
 
+访问客户端
+
+
+
 ### 字段设计
 - 方案一
 >* 一个Tenant创建一个库-database

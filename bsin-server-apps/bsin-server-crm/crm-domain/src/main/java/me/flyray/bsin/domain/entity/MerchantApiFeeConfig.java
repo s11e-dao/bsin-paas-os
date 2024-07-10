@@ -46,4 +46,9 @@ public class MerchantApiFeeConfig implements Serializable {
      * 应用ID
      */
     private String appId;
+
+    /**
+     * 接口的方法
+     */
+    private String apiCode;
 }
