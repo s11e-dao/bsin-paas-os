@@ -1,6 +1,7 @@
 package me.flyray.bsin.infrastructure.biz;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import me.flyray.bsin.domain.entity.ChainCoin;
@@ -56,7 +57,6 @@ public class WalletAccountBiz {
      * @param wallet
      * @param chainCoinNo
      */
-    @Async("taskExecutor")
     public WalletAccount createWalletAccount(Wallet wallet, String chainCoinNo) {
         log.info("开始创建钱包账户，wallet:{},chainCoinNo:{}",wallet,chainCoinNo);
         ChainCoin chainCoin = chainCoinMapper.selectById(chainCoinNo);
@@ -94,7 +94,7 @@ public class WalletAccountBiz {
         walletAccount.setTenantId(wallet.getTenantId());
         walletAccount.setCreateTime(new Date());
         walletAccountMapper.insert(walletAccount);
-        log.info("结束创建钱包账户，wallet:{}, chainCoinNo:{}",wallet,chainCoinNo);
+        log.info("结束创建钱包账户，wallet:{}, chainCoinNo:{}", wallet,chainCoinNo);
 
         // TODO 请求消息队列，添加一条延时队列
         JSONObject mQMsgReq = new JSONObject();
@@ -104,11 +104,11 @@ public class WalletAccountBiz {
         SendCallback callback = new SendCallback() {
             @Override
             public void onSuccess(SendResult sendResult) {
-                System.out.println("123");
+                System.out.println("createMpcWallet 成功");
             }
             @Override
             public void onException(Throwable throwable) {
-                System.out.println("456");
+                System.out.println("createMpcWallet 失败");
             }
         };
         // 延时消息等级分为18个：1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
@@ -155,12 +155,11 @@ public class WalletAccountBiz {
         jsonObject.put("threshold", 2);
         jsonObject.put("partiyNum", 2);
         jsonObject.put("timeout", 1000);
-        JSONObject data = OkHttpUtils.httpGet(appChainGatewayUrl + "/api/v1/mpc/keygen/"+ mQMsg.get("requisitionId"));
-        String address = (String)data.get("address");
+        JSONObject result = OkHttpUtils.httpGet(appChainGatewayUrl + "/api/v1/mpc/requisition/"+ mQMsg.get("requisitionId"));
+        log.info("MPC 信息：{}", result.toString());
+        String address = (String)result.get("address");
         if(StringUtils.isNotEmpty(address)){
             //  更新钱包地址
-            UpdateWrapper<WalletAccount> queryWrapper = new UpdateWrapper();
-            queryWrapper.eq("chain_coin_no", mQMsg.get(""));
             WalletAccount walletAccount = new WalletAccount();
             walletAccount.setAddress(address);
             walletAccount.setSerialNo((String) mQMsg.get("walletAccountNo"));

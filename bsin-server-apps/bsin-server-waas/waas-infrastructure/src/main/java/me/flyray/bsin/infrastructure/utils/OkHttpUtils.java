@@ -1,6 +1,6 @@
 package me.flyray.bsin.infrastructure.utils;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSON;
 import me.flyray.bsin.exception.BusinessException;
 import okhttp3.*;
@@ -29,7 +29,6 @@ public class OkHttpUtils {
 
         try {
             Response response = client.newCall(getRequest).execute();
-            System.out.println(response.body().string());
             String bodyStr = response.body().string();
             JSONObject jsonObject1 = (JSONObject) JSON.parse(bodyStr);
             if((Integer)jsonObject1.get("code") != 0){

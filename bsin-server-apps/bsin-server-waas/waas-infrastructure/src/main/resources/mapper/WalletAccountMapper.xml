@@ -19,7 +19,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        wallet_account_id,address,chain_coin_id,
+        wallet_account_id,address,chain_coin_no,
         balance,wallet_id,create_time,
         create_by,update_time,update_by,
         del_flag

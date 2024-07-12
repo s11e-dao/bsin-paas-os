@@ -9,6 +9,7 @@ import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.ChainCoin;
 import me.flyray.bsin.domain.entity.CustomerChainCoin;
 import me.flyray.bsin.domain.entity.Wallet;
+import me.flyray.bsin.domain.entity.WalletAccount;
 import me.flyray.bsin.domain.request.WalletDTO;
 import me.flyray.bsin.domain.response.WalletVO;
 import me.flyray.bsin.exception.BusinessException;
@@ -102,7 +103,7 @@ public class WalletServiceImpl implements WalletService {
     wallet.setWalletTag("DEPOSIT");
     wallet.setCreateBy(user.getUserId());
     wallet.setCreateTime(new Date());
-    wallet.setTenantId(user.getTenantId());
+    wallet.setTenantId("1");
     wallet.setBizRoleTypeNo("1");
     wallet.setBizRoleType("1");
     walletMapper.insert(wallet);

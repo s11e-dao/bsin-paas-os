@@ -33,8 +33,8 @@
         c3.type,
         c3.remark,
         c3.logo_url
-        from waas_chain_coin as c3
-        left join waas_customer_chain_coin as c4
+        from waas_customer_chain_coin as c4
+        left join waas_chain_coin as c3
         on c3.serial_no = c4.chain_coin_no and c4.del_flag = '0'
         <trim prefix="where" prefixOverrides="and">
             <if test="params.createRoleAccountFlag != null ">
