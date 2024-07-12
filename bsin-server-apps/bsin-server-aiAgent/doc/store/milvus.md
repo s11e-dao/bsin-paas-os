@@ -4,6 +4,10 @@
 ### milvus一键安装
 ```shell
 docker-compose -f milvus-standalone-docker-compose.yml up -d
+
+# 停掉容器并移除应用
+docker-compose down
+
 ```
 
 访问客户端
