@@ -89,8 +89,8 @@ public class ChainTransactionListen {
         List<ChainCoin> chainCoins = chainCoinMapper.selectList(queryWrapper);
         chainCoins.forEach(m -> {
             try {
-                // TODO contractAddressMonitor(m.getContractAddress());
-                contractAddressMonitor("0x06A0F0fa38AE42b7B3C8698e987862AfA58e90D9");
+                contractAddressMonitor(m.getContractAddress());
+                // contractAddressMonitor("0xf543ee44170d417cbe70e0ed49927a433f62bff5");
             } catch (Exception e) {
                 e.printStackTrace();
                 log.info("智能合约监听失败，智能合约：{}", m.getContractAddress());
@@ -231,12 +231,12 @@ public class ChainTransactionListen {
                     } else if (transactionReceipt.getStatus().equals("0x0")) {
                         transactionDTO.setTransactionStatus(3);         // 0x0’ 事务失败
                     }
-                    transactionDTO.setFrom(from);  // 交易发起者地址
+                    transactionDTO.setFromAddress(from);  // 交易发起者地址
                     // 交易数量
                     BigDecimal txAmount = new BigDecimal(tokenTransferAmount);
 
                     transactionDTO.setGasFee(new BigDecimal(transactionReceipt.getCumulativeGasUsed())); // 当前交易执行后累计花费的gas总值
-                    transactionDTO.setTo(to);    // 交易接受者地址
+                    transactionDTO.setToAddress(to);    // 交易接受者地址
                     transactionDTO.setCompletedTime(LocalDateTime.now().toString());
                     transactionDTO.setCreateTime(new Date());
 
@@ -244,7 +244,7 @@ public class ChainTransactionListen {
                     toWalletAccountQueryWrapper.eq("address", to);
                     WalletAccount toWalletAccount = walletAccountMapper.selectOne(toWalletAccountQueryWrapper);
 
-                    // 转入交易
+                    // 转入地址在系统生成的地址中则是转入交易
                     if (toWalletAccount != null) {
                         handleTransferIn(from, to, tokenTransferAmount, transactionDTO, chainCoin.getSerialNo(), toWalletAccount, chainCoin.getCoinDecimal());
                     }
@@ -253,7 +253,7 @@ public class ChainTransactionListen {
                     formWalletAccountQueryWrapper.eq("address", from);
                     WalletAccount fromWalletAccount = walletAccountMapper.selectOne(formWalletAccountQueryWrapper);
 
-                    //  转出交易
+                    //  转出地址在系统生成的地址中则是转出交易
                     if (fromWalletAccount != null) {
                         handleTransferOut(from, to, tokenTransferAmount, transactionDTO, chainCoin.getSerialNo(), fromWalletAccount);
                     }
@@ -269,13 +269,13 @@ public class ChainTransactionListen {
     }
 
     private void handleTransferIn(String from, String to, BigInteger tokenTransferAmount, TransactionDTO transactionDTO, String chainCoinNo, WalletAccount walletAccount, BigInteger decimals) throws Exception {
+        log.info("监听到平台用户钱包账户，to地址：{}",to);
         BigDecimal txAmount = new BigDecimal(tokenTransferAmount);
         Wallet wallet = walletMapper.selectById(walletAccount.getWalletNo());
         if (wallet != null) {
-            log.info("监听到平台用户钱包账户，to地址：{}",to);
             // 查询归集账户地址
             WalletAccount gatherAccount = walletAccountBiz.getGatherAccount(wallet.getTenantId(), chainCoinNo);
-            if(gatherAccount != null&& gatherAccount.getAddress().equals(to)){
+            if(gatherAccount != null && gatherAccount.getAddress().equals(to)){
                 transactionDTO.setTransactionType(3);     // 交易类型：3、资金归集
             }else {
                 transactionDTO.setTransactionType(1);     // 交易类型：1、转入
@@ -288,7 +288,7 @@ public class ChainTransactionListen {
             transactionMapper.insert(transactionDTO);
             log.info("生成交易记录成功，to地址：{}", to);
             // 代币数量>0,需要资金归集
-            if(wallet != null && tokenTransferAmount.compareTo(BigInteger.ZERO)>0){
+            if(wallet != null && tokenTransferAmount.compareTo(BigInteger.ZERO) > 0){
                 // 入账
                 log.info("合约代币数量 > 0,开始进行入账，账户余额：{}",walletAccount.getBalance());
                 BigDecimal balance = walletAccount.getBalance().add(txAmount);
@@ -298,7 +298,7 @@ public class ChainTransactionListen {
 
                 // 资金归集-查询钱包标识为DEPOSIT
                 if( wallet.getWalletTag().equals("DEPOSIT")){
-                    if(!gatherAccount.equals(to)){
+                    if(gatherAccount != null && !gatherAccount.equals(to)){
                         log.info("归集账户资金开始,账户地址：{}", to);
                         // TODO 资金归集处理 String fromAddress, String toAddress, String contractAddress, BigInteger amount, BigInteger decimals
                         transferBiz.cashConcentrationProcess(from, to, transactionDTO.getContractAddress(), tokenTransferAmount, decimals);
@@ -311,8 +311,8 @@ public class ChainTransactionListen {
     }
 
     private void handleTransferOut(String from, String to, BigInteger tokenTransferAmount, TransactionDTO transactionDTO, String chainCoinNo , WalletAccount walletAccount) throws Exception {
-        BigDecimal txAmount = new BigDecimal(tokenTransferAmount);
         log.info("监听到平台用户钱包账户，from地址：{}",from);
+        BigDecimal txAmount = new BigDecimal(tokenTransferAmount);
         Wallet wallet = walletMapper.selectById(walletAccount.getWalletNo());
         if (wallet != null && tokenTransferAmount.compareTo(BigInteger.ZERO)>0) {
             // 查询归集账户地址

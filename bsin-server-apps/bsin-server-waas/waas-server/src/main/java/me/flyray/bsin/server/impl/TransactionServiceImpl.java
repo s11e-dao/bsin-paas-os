@@ -89,9 +89,9 @@ public class TransactionServiceImpl  implements TransactionService {
             transaction.setOutSerialNo(transactionRequest.getOutSerialNo());
             transaction.setTransactionType(2);       // 交易类型 2、转出
             transaction.setComment(transactionRequest.getComment());
-            transaction.setFrom(transactionRequest.getFromAddress());
+            transaction.setFromAddress(transactionRequest.getFromAddress());
             transaction.setTxAmount(new BigDecimal(transactionRequest.getTxAmount()));
-            transaction.setTo(transactionRequest.getToAddress());
+            transaction.setToAddress(transactionRequest.getToAddress());
             transaction.setBizRoleType(user.getBizRoleType());
             transaction.setBizRoleTypeNo(user.getBizRoleTypeNo());
             transaction.setTenantId(transactionRequest.getTenantId());
@@ -136,8 +136,8 @@ public class TransactionServiceImpl  implements TransactionService {
     @ApiDoc(desc = "transferOut")
     public void transferOut(TransactionDTO transactionDTO) throws Exception {
         log.debug("请求TransactionService.transferOut,参数:{}", transactionDTO);
-        String fromAddress = transactionDTO.getFrom();
-        String toAddress = transactionDTO.getTo();
+        String fromAddress = transactionDTO.getFromAddress();
+        String toAddress = transactionDTO.getToAddress();
         String contractAddress = transactionDTO.getContractAddress();
         BigDecimal txAmount = transactionDTO.getTxAmount();
 

@@ -295,8 +295,7 @@ public class TransactionBiz {
      * 2、归集资金(队列处理)
      */
     public void cashConcentrationProcess(String fromAddress, String toAddress, String contractAddress, BigInteger amount, BigInteger decimals) throws Exception {
-        // 链上TOKEN转账逻辑
-        // 链原生TOKEN转账逻辑 ethTransfer String fromAddress, String toAddress, BigInteger amount
+        // TODO 支付gas费用账户通过数据库配置 链原生TOKEN转账逻辑 ethTransfer String fromAddress, String toAddress, BigInteger amount
         String txHash = ethTransfer(getGasAddress, toAddress, new BigInteger(getGasAmount));
 
         // 调用延时队列，等加油成功之后做资金归集

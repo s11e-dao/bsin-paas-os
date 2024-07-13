@@ -25,7 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class s11eCopilotTest {
+public class ChoreographyTest {
 
   @Autowired
   private AipmnModelParseService aipmnModelParseService;

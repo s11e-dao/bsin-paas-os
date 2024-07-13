@@ -77,14 +77,12 @@ public class WalletAccountBiz {
         jsonObject.put("sync", false);
         jsonObject.put("timeout", 1000);
         JSONObject data = OkHttpUtils.httpPost(appChainGatewayUrl + "/api/v1/mpc/keygen", jsonObject);
-        String pubKey = (String) data.get("pubkey");
         String requisitionId = (String)data.get("requisitionId");
         log.info("MCP网络返回请求ID：{}", requisitionId);
         // 2、创建钱包账户
         String walletAccountNo = BsinSnowflake.getId();
         WalletAccount walletAccount = new WalletAccount();
         walletAccount.setSerialNo(walletAccountNo);
-        walletAccount.setPubKey(pubKey);
         walletAccount.setChainCoinNo(chainCoinNo);
         walletAccount.setStatus(1);  // 账户状态 1、正常
         walletAccount.setWalletNo(wallet.getSerialNo());
@@ -118,25 +116,25 @@ public class WalletAccountBiz {
 
     /**
      * 获取平台归集账户
+     * TODO 查询平台配置的钱包处理平台归集钱包
      */
-    public WalletAccount getGatherAccount(String tenantId,String chainCoinNo) throws Exception {
+    public WalletAccount getGatherAccount(String tenantId, String chainCoinNo) throws Exception {
         QueryWrapper<Platform> platformQueryWrapper = new QueryWrapper<>();
         platformQueryWrapper.eq("tenant_id", tenantId);
-        Platform platform = new Platform();
 
         QueryWrapper<Wallet> walletQueryWrapper = new QueryWrapper<>();
         walletQueryWrapper.eq("wallet_tag", "GATHER");
-        walletQueryWrapper.eq("business_role_type", 1);  // 平台
-        walletQueryWrapper.eq("business_role_no", platform.getSerialNo());
+        walletQueryWrapper.eq("biz_role_type", 1);  // 平台
+        walletQueryWrapper.eq("biz_role_type_no", "1");
         walletQueryWrapper.eq("type", 1); // 默认钱包
-        walletQueryWrapper.eq("tenant_id", tenantId);
+        walletQueryWrapper.eq("tenant_id", '1');
         walletQueryWrapper.eq("status", 1);  // 状态正常
 
         Wallet wallet = walletMapper.selectOne(walletQueryWrapper);
 
         QueryWrapper<WalletAccount> queryWrapper = new QueryWrapper();
         queryWrapper.eq("chain_coin_no", chainCoinNo);
-        queryWrapper.eq("wallet_no",wallet.getSerialNo());
+        queryWrapper.eq("wallet_no", wallet.getSerialNo());
         queryWrapper.eq("tenant_id",tenantId);
         WalletAccount walletAccount = walletAccountMapper.selectOne(queryWrapper);
         return walletAccount;
@@ -158,10 +156,12 @@ public class WalletAccountBiz {
         JSONObject result = OkHttpUtils.httpGet(appChainGatewayUrl + "/api/v1/mpc/requisition/"+ mQMsg.get("requisitionId"));
         log.info("MPC 信息：{}", result.toString());
         String address = (String)result.get("address");
+        String pubKey = (String)result.get("pubKey");
         if(StringUtils.isNotEmpty(address)){
             //  更新钱包地址
             WalletAccount walletAccount = new WalletAccount();
             walletAccount.setAddress(address);
+            walletAccount.setPubKey(pubKey);
             walletAccount.setSerialNo((String) mQMsg.get("walletAccountNo"));
             walletAccountMapper.updateById(walletAccount);
         }

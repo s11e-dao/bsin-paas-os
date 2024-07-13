@@ -21,6 +21,7 @@ public class WalletAccount extends BaseEntity implements Serializable {
      */
     @NotBlank(message = "链地址不能为空" ,groups = AddGroup.class)
     private String address;
+
     /**
      * 签名公钥
      */
@@ -41,11 +42,6 @@ public class WalletAccount extends BaseEntity implements Serializable {
      * 余额
      */
     private BigDecimal balance;
-
-    /**
-     * 冻结余额
-     */
-    private BigDecimal freezeBalance;
 
     /**
      * 钱包id
