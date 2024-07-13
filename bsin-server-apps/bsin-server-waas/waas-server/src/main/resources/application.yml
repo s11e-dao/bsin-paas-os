@@ -96,5 +96,5 @@ bsin:
       chain-listen-url-http: https://go.getblock.io/7f69a828c68743dc84d3fc44eb77b837
       chain-listen-url-wss: wss://go.getblock.io/466b806dd386446c8c4dcf8e6aa62b78
     get-gas:
-      address: 0x5d90A41098954fd90eb70805b3E9442AF9E91625  # 资金归结gas fee账号
+      address: '0x5d90A41098954fd90eb70805b3E9442AF9E91625'  # 资金归结gas fee账号
       amount: 1000

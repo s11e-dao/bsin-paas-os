@@ -167,7 +167,7 @@ public class TransactionBiz {
      * gasPrice     gas费价格
      */
     public String ethTransfer(String fromAddress, String toAddress, BigInteger amount) throws Exception {
-        log.info("开始ETH转出交易，fromAddress:{}，toAddress:{},amount:{}",fromAddress,toAddress,amount);
+        log.info("开始ETH转出交易，fromAddress:{}，toAddress:{},amount:{}", fromAddress, toAddress, amount);
         // 获取发起地址的nonce、chainId
         EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount(
                 fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
@@ -222,42 +222,36 @@ public class TransactionBiz {
      * @throws Exception
      */
     public String signRawTransaction(RawTransaction rawTransaction,String unsignedHash,String address) throws Exception {
-        try{
-            log.info("开始签名交易，address:{}",address);
-            QueryWrapper<WalletAccount> queryWrapper = new QueryWrapper();
-            queryWrapper.eq("address", address);
-            WalletAccount walletAccount = walletAccountMapper.selectOne(queryWrapper);
+        log.info("开始签名交易，address:{}",address);
+        QueryWrapper<WalletAccount> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("address", address);
+        WalletAccount walletAccount = walletAccountMapper.selectOne(queryWrapper);
 
-            // 3、调用 API 创建 MPC Sign 签名任务
-            String pubkey = walletAccount.getPubKey();
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("message", unsignedHash);
-            JSONObject jsonData = OkHttpUtils.httpPost(appChainGatewayUrl+ "/api/v1/mpc/sign/" + pubkey, jsonObject);
-            String sig = (String) jsonData.get("signature");
+        // 3、调用 API 创建 MPC Sign 签名任务
+        String pubkey = walletAccount.getPubKey();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("message", unsignedHash);
+        JSONObject jsonData = OkHttpUtils.httpPost(appChainGatewayUrl+ "/api/v1/mpc/sign/" + pubkey, jsonObject);
+        String sig = (String) jsonData.get("signature");
 
-            // 5、构建签名交易
-            // Split sig into R, S, V
-            String sigR = sig.substring(0, 64);
-            String sigS = sig.substring(64, 128);
-            String sigV = sig.substring(128);
+        // 5、构建签名交易
+        // Split sig into R, S, V
+        String sigR = sig.substring(0, 64);
+        String sigS = sig.substring(64, 128);
+        String sigV = sig.substring(128);
 
-            Integer v = Integer.parseInt(sigV, 16) + 27;
+        Integer v = Integer.parseInt(sigV, 16) + 27;
 
-            // 创建签名。SignatureData对象
-            Sign.SignatureData signatureData = new Sign.SignatureData(v.byteValue(),
-                    Numeric.hexStringToByteArray(sigR),
-                    Numeric.hexStringToByteArray(sigS));
-            // 这里的 unsignedTransaction 是获取到签名结果后重新构建的，构建方法与上文中的 "构建未签名交易" 完全一致，
-            // 需要注意的是，两次构建过程中使用的所有数据必须保持完全一致。
-            byte[] signedMessage = TransactionEncoder.encode(rawTransaction, signatureData);
-            String signedTransaction = Numeric.toHexString(signedMessage);
-            log.info("签名交易完成，address:{}",address);
-            return signedTransaction;
-        }catch (Exception e){
-            e.printStackTrace();
-            log.debug("签名交易失败，原因：{}",e.getMessage());
-            throw new BusinessException("error signing raw transaction",e);
-        }
+        // 创建签名。SignatureData对象
+        Sign.SignatureData signatureData = new Sign.SignatureData(v.byteValue(),
+                Numeric.hexStringToByteArray(sigR),
+                Numeric.hexStringToByteArray(sigS));
+        // 这里的 unsignedTransaction 是获取到签名结果后重新构建的，构建方法与上文中的 "构建未签名交易" 完全一致，
+        // 需要注意的是，两次构建过程中使用的所有数据必须保持完全一致。
+        byte[] signedMessage = TransactionEncoder.encode(rawTransaction, signatureData);
+        String signedTransaction = Numeric.toHexString(signedMessage);
+        log.info("签名交易完成，address:{}",address);
+        return signedTransaction;
     }
 
     /**
@@ -296,9 +290,11 @@ public class TransactionBiz {
      */
     public void cashConcentrationProcess(String fromAddress, String toAddress, String contractAddress, BigInteger amount, BigInteger decimals) throws Exception {
         // TODO 支付gas费用账户通过数据库配置 链原生TOKEN转账逻辑 ethTransfer String fromAddress, String toAddress, BigInteger amount
+
+        // 1、给用户账户加油
         String txHash = ethTransfer(getGasAddress, toAddress, new BigInteger(getGasAmount));
 
-        // 调用延时队列，等加油成功之后做资金归集
+        // 2、归集资金(队列处理) 调用延时队列，等加油成功之后做资金归集
         JSONObject mQMsgReq = new JSONObject();
         mQMsgReq.put("txHash", txHash);
         mQMsgReq.put("eventCode", MqEventCode.GET_GAS_NOTIFY.getCode());
