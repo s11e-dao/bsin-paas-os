@@ -1,0 +1,53 @@
+package rules
+
+global java.util.Map globalMap
+
+rule "decision_rule_1_10"
+    lock-on-active true
+when
+    $map : Map()
+then
+    System.out.println("触发规则：decision_rule_1_10");
+end
+
+rule "decision_rule_1_11"
+    lock-on-active true
+when
+    $map : Map()
+    eval($map.get('sex').equals("女") && Integer.parseInt($map.get('userAge').toString()) > 20 && $map.get('userName').equals("张三"))
+then
+    globalMap.put("userScore", "100");
+    globalMap.put("validVip", "不是vip");
+    $map.put("userScore", "100");
+    $map.put("validVip", "不是vip");
+    update($map);
+    System.out.println("触发规则：decision_rule_1_11");
+end
+
+rule "decision_rule_1_12"
+    lock-on-active true
+when
+    $map : Map()
+    eval($map.get('sex').equals("男"))
+    eval(Integer.parseInt($map.get('userAge').toString()) <= 20)
+then
+    globalMap.put("userScore", "500");
+    globalMap.put("validResult", "通过");
+    $map.put("userScore", "500");
+    $map.put("validResult", "通过");
+    update($map);
+    System.out.println("触发规则：decision_rule_1_12");
+end
+
+rule "decision_rule_1_13"
+    lock-on-active true
+when
+    $map : Map()
+    eval(!($map.get('sex').equals("男") && Integer.parseInt($map.get('userAge').toString()) <= 20))
+    eval($map.get('userName').equals("李四"))
+then
+    globalMap.put("userScore", "300");
+    $map.put("userScore", "300");
+    update($map);
+    System.out.println("触发规则：decision_rule_1_13");
+end

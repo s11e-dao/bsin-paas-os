@@ -1,4 +1,4 @@
-package me.flyray.bsin.server;
+package me.flyray.bsin.server.init;
 
 import me.flyray.bsin.domain.entity.SensitiveWords;
 import me.flyray.bsin.infrastructure.mapper.SensitiveWordsMapper;

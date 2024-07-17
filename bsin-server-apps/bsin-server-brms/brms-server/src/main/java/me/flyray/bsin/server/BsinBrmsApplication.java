@@ -17,10 +17,12 @@
 
 package me.flyray.bsin.server;
 
+import me.flyray.bsin.server.context.DecisionEngineContextBuilder;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
 /**
  * TestDubboApplication.
@@ -38,6 +40,10 @@ public class BsinBrmsApplication {
      * @param args startup arguments
      */
     public static void main(final String[] args) {
-        SpringApplication.run(BsinBrmsApplication.class, args);
+        ApplicationContext applicationContext = SpringApplication.run(BsinBrmsApplication.class, args);
+        DecisionEngineContextBuilder decisionEngineContextBuilder = (DecisionEngineContextBuilder) applicationContext.getBean("decisionEngineContextBuilder");
+        // 应用启动的时候，加载数据库中规则在规则库中
+        decisionEngineContextBuilder.decisionEngineInitial();
     }
+
 }

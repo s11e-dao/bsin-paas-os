@@ -1,0 +1,145 @@
+{
+  "rules": [
+    {
+      "name": "decision_rule_1_10",
+      "attributes": {
+        "lock-on-active": true
+      },
+      "conditions": [
+        {
+          "type": "Map"
+        }
+      ],
+      "actions": [
+        {
+          "type": "print",
+          "message": "触发规则：decision_rule_1_10"
+        }
+      ]
+    },
+    {
+      "name": "decision_rule_1_11",
+      "attributes": {
+        "lock-on-active": true
+      },
+      "conditions": [
+        {
+          "type": "Map",
+          "eval": "$map.get('sex').equals('女') || Integer.parseInt($map.get('userAge').toString()) > 20 && $map.get('userName').equals('张三')"
+        }
+      ],
+      "actions": [
+        {
+          "type": "globalMap.put",
+          "key": "userScore",
+          "value": "100"
+        },
+        {
+          "type": "globalMap.put",
+          "key": "validVip",
+          "value": "不是vip"
+        },
+        {
+          "type": "map.put",
+          "key": "userScore",
+          "value": "100"
+        },
+        {
+          "type": "map.put",
+          "key": "validVip",
+          "value": "不是vip"
+        },
+        {
+          "type": "update",
+          "map": "$map"
+        },
+        {
+          "type": "print",
+          "message": "触发规则：decision_rule_1_11"
+        }
+      ]
+    },
+    {
+      "name": "decision_rule_1_12",
+      "attributes": {
+        "lock-on-active": true
+      },
+      "conditions": [
+        {
+          "type": "Map",
+          "eval": "$map.get('sex').equals('男')"
+        },
+        {
+          "type": "eval",
+          "condition": "Integer.parseInt($map.get('userAge').toString()) <= 20"
+        }
+      ],
+      "actions": [
+        {
+          "type": "globalMap.put",
+          "key": "userScore",
+          "value": "500"
+        },
+        {
+          "type": "globalMap.put",
+          "key": "validResult",
+          "value": "通过"
+        },
+        {
+          "type": "map.put",
+          "key": "userScore",
+          "value": "500"
+        },
+        {
+          "type": "map.put",
+          "key": "validResult",
+          "value": "通过"
+        },
+        {
+          "type": "update",
+          "map": "$map"
+        },
+        {
+          "type": "print",
+          "message": "触发规则：decision_rule_1_12"
+        }
+      ]
+    },
+    {
+      "name": "decision_rule_1_13",
+      "attributes": {
+        "lock-on-active": true
+      },
+      "conditions": [
+        {
+          "type": "Map",
+          "eval": "!($map.get('sex').equals('男') && Integer.parseInt($map.get('userAge').toString()) <= 20)"
+        },
+        {
+          "type": "eval",
+          "condition": "$map.get('userName').equals('李四')"
+        }
+      ],
+      "actions": [
+        {
+          "type": "globalMap.put",
+          "key": "userScore",
+          "value": "300"
+        },
+        {
+          "type": "map.put",
+          "key": "userScore",
+          "value": "300"
+        },
+        {
+          "type": "update",
+          "map": "$map"
+        },
+        {
+          "type": "print",
+          "message": "触发规则：decision_rule_1_13"
+        }
+      ]
+    }
+  ]
+}

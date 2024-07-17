@@ -14,4 +14,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SensitiveWordsMapper extends BaseMapper<SensitiveWords> {
   SensitiveWords selectSysSensitiveWords(Boolean defaultFlag);
+
 }

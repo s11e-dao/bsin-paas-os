@@ -19,6 +19,9 @@ package me.flyray.bsin.server.impl;
 
 
 import com.alibaba.fastjson.JSONObject;
+import me.flyray.bsin.domain.entity.DecisionRule;
+import me.flyray.bsin.infrastructure.mapper.DecisionRuleMapper;
+import me.flyray.bsin.server.context.DecisionEngineContextBuilder;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
 import org.apache.rocketmq.client.producer.SendCallback;
@@ -31,15 +34,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 
+import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import org.kie.api.runtime.KieSession;
+import me.flyray.bsin.server.handler.JsonToDroolsHandler;
 
-import lombok.Setter;
 import me.flyray.bsin.domain.entity.DubboTest;
-import me.flyray.bsin.domain.entity.ListResp;
 import me.flyray.bsin.facade.service.DubboTestService;
 import me.flyray.bsin.mq.producer.RocketMQProducer;
 import me.flyray.bsin.utils.BsinResultEntity;
@@ -55,6 +59,12 @@ public class DubboTestServiceImpl implements DubboTestService {
     private RocketMQProducer rocketMQProducer;
     @Value("${rocketmq.consumer.topic}")
     private String topic;
+    @Autowired
+    private DecisionRuleMapper decisionRuleMapper;
+    @Autowired
+    private DecisionEngineContextBuilder decisionEngineContextBuilder;
+    @Autowired
+    private JsonToDroolsHandler jsonToDroolsHandler;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DubboTestServiceImpl.class);
 
@@ -89,37 +99,64 @@ public class DubboTestServiceImpl implements DubboTestService {
     }
 
     @Override
-    @ShenyuDubboClient("/findById")
-    @ApiDoc(desc = "findById")
+    @ShenyuDubboClient("/addRule")
+    @ApiDoc(desc = "addRule")
     // @GlobalTransactional
-    public DubboTest findById(final String id) {
-       /* if ("1".equals(id)) {
-            throw new BusinessException(new I18eCode("exception.insert.data.to.db"));
-        }*/
+    public DecisionRule addRule(final DecisionRule decisionRule) throws IOException {
+        // 模型转换
+        String contentJson = decisionRule.getContentJson();
+        // json 转换成drl字符串文件
+        String content = jsonToDroolsHandler.jsonToDrools(contentJson);
+        decisionRule.setContent(content);
+        decisionRuleMapper.insert(decisionRule);
         LOGGER.info(GsonUtils.getInstance().toJson(RpcContext.getContext().getAttachments()));
-        return new DubboTest(id, "hello world shenyu Apache, findById");
+        return decisionRule;
     }
-    
+
     @Override
-    @ShenyuDubboClient("/findAll")
-    @ApiDoc(desc = "findAll")
-    public DubboTest findAll() {
-        return new DubboTest(String.valueOf(new Random().nextInt()), "hello world shenyu Apache, findAll");
-    }
-    
-    @Override
-    @ShenyuDubboClient("/insert")
-    @ApiDoc(desc = "insert")
-    public DubboTest insert(final DubboTest dubboTest) {
-        dubboTest.setEventCode("hello world shenyu Apache Dubbo: " + dubboTest.getEventCode());
-        return dubboTest;
-    }
-    
-    @Override
-    @ShenyuDubboClient("/findList")
-    @ApiDoc(desc = "findList")
-    public ListResp findList() {
-        return new ListResp(1, Collections.singletonList(new DubboTest("1", "test")));
+    @ShenyuDubboClient("/testRule")
+    @ApiDoc(desc = "testRule")
+    // @GlobalTransactional
+    public DubboTest testRule(Map<String, Object> requestMap) {
+
+        // 根据事件查询对应规则
+        String eventCode = (String) requestMap.get("eventCode");
+
+        DecisionRule decisionRule = decisionRuleMapper.selectById("123456");
+        // 1、构建决策引擎环境
+        KieSession kieSession = decisionEngineContextBuilder.buildDecisionEngine(decisionRule,
+                decisionRule.getKieBaseName() + "-session");
+
+        // 创建globalMap
+        Map<String, Object> globalMap = new HashMap<>();
+        kieSession.setGlobal("globalMap", globalMap);
+
+        //TODO 2、执行决策引擎，一个决策模型对应多个kieSession
+        // 创建kieSession
+//        StringBuilder resultInfo = new StringBuilder();
+//        kieSession.setGlobal("resultInfo", resultInfo);
+        // 添加fact（事实对象，接收数据的对象实体类），会员基本信息
+        Map<String, Object> factMap = new HashMap<>();
+        factMap.put("sex", "女");
+        factMap.put("userAge", "25");
+        factMap.put("userName", "李四");
+
+        kieSession.insert(factMap);
+        // 触发规则
+        kieSession.fireAllRules();
+        // 关闭KieSession
+        kieSession.dispose();
+        //TODO 获取命中的规则，执行规则计算
+        // 根据决策状态和决策结果触发规则事件服务
+        String serviceName = (String) requestMap.get("serviceName");
+        String methodName = (String) requestMap.get("methodName");
+        System.out.println(serviceName);
+        System.out.println(methodName);
+        // 3、返回决策执行结果
+        // 打印globalMap的内容
+        System.out.println("globalMap内容：" + globalMap);
+
+        return new DubboTest(eventCode, "hello world shenyu Apache, findById");
     }
 
 }

@@ -18,13 +18,14 @@
 package me.flyray.bsin.facade.service;
 
 
+import me.flyray.bsin.domain.entity.DecisionRule;
 import me.flyray.bsin.domain.entity.DubboTest;
-import me.flyray.bsin.domain.entity.ListResp;
 import me.flyray.bsin.utils.BsinResultEntity;
-import me.flyray.bsin.validate.AddGroup;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * DubboTestService.
@@ -36,6 +37,8 @@ public interface DubboTestService {
 
     public BsinResultEntity<DubboTest> sendMq(DubboTest bean);
 
+    public DecisionRule addRule(final DecisionRule decisionRule) throws IOException;
+
     /**
      * find by id.
      * body：{"id":"1223"}
@@ -43,28 +46,7 @@ public interface DubboTestService {
      * @param id id
      * @return DubboTest dubbo test
      */
-    DubboTest findById(String id);
+    public DubboTest testRule(Map<String, Object> requestMap);
 
-    /**
-     * Find all dubbo test.
-     *
-     * @return the dubbo test
-     */
-    DubboTest findAll();
 
-    /**
-     * Insert dubbo test.
-     * body :{"id":"122344","name":"xiaoyu"}
-     *
-     * @param dubboTest the dubbo test
-     * @return the dubbo test
-     */
-    DubboTest insert(DubboTest dubboTest);
-
-    /**
-     * findList.
-     *
-     * @return {@linkplain ListResp}
-     */
-    ListResp findList();
 }

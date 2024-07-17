@@ -1,0 +1,14 @@
+<kmodule xmlns="http://www.drools.org/xsd/kmodule">
+    <!-- packages指定要加载的规则包，对应规则脚本中package指定的包名，有多个包名时逗号隔开 -->
+    <kbase name="kabse" packages="rules" default="false">
+        <!-- type指定ksession的类型，stateful 有状态的、stateless 无状态的；default指定是否作为该种类型的默认ksession -->
+        <ksession name="ksession" default="false" type="stateful">
+            <consoleLogger/>
+            <listeners>
+                <ruleRuntimeEventListener type="org.kie.api.event.rule.DebugRuleRuntimeEventListener"/>
+                <processEventListener type="org.drools.core.event.DebugProcessEventListener"/>
+                <agendaEventListener type="org.drools.core.event.DebugAgendaEventListener"/>
+            </listeners>
+        </ksession>
+    </kbase>
+</kmodule>

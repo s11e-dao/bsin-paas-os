@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
  * @date 2024/5/20
  * @desc
  */
+
 //@Component
 //@RocketMQMessageListener(consumerGroup = "consumer_group",topic = "waas-test")
 public class RocketMQConsumer implements RocketMQListener<String> {
