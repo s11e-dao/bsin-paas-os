@@ -2,6 +2,7 @@ package me.flyray.bsin.server.context;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
+import lombok.Getter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.kie.api.KieBase;
@@ -42,6 +43,7 @@ public class DecisionEngineContextBuilder {
     // 可以理解为构建 kmodule.xml
     private final KieModuleModel kieModuleModel = kieServices.newKieModuleModel();
 
+    @Getter
     private KieContainer kieContainer;
 
     @Autowired
@@ -161,7 +163,7 @@ public class DecisionEngineContextBuilder {
     /**
      * 构建KieContainer
      */
-    private void buildKieContainer() {
+    private KieContainer buildKieContainer() {
         KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
         // 通过KieBuilder构建KieModule下所有的KieBase
         kieBuilder.buildAll();
@@ -182,6 +184,7 @@ public class DecisionEngineContextBuilder {
             // 实现动态更新
             ((KieContainerImpl) kieContainer).updateToKieModule((InternalKieModule) kieBuilder.getKieModule());
         }
+        return kieContainer;
     }
 
 }

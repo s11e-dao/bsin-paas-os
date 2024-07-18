@@ -1,145 +1,177 @@
 {
-  "rules": [
+  "name": "test5",
+  "beforeContent": [
     {
-      "name": "decision_rule_1_10",
-      "attributes": {
-        "lock-on-active": true
-      },
-      "conditions": [
+      "actionType": "3",
+      "operationList": [],
+      "render_key": 0,
+      "generalizationObject": {
+        "coordinate": "result#format",
+        "paramType": "2",
+        "fieldObject": {
+          "metricsEntityNo": "1787766088068198402",
+          "metricsEntityKey": "user",
+          "key": "123",
+          "name": "小刘创建了第二个",
+          "category": "1",
+          "type": "String",
+          "serialNo": "1787774079521746945"
+        }
+      }
+    }
+  ],
+  "whenContent": [
+    {
+      "ruleGroupList": [
         {
-          "type": "Map"
+          "ruleType": "1",
+          "render_key": 0,
+          "leftComparatorsList": [
+            {
+              "operationType": "1",
+              "inputValue": "b"
+            }
+          ],
+          "comparatorsObject": {
+            "value": "<",
+            "title": "小于"
+          },
+          "rightComparatorsList": [
+            {
+              "operationType": "1",
+              "inputValue": "a"
+            },
+            {
+              "operationType": "2",
+              "operatorObject": {
+                "value": "-",
+                "title": "减掉"
+              }
+            },
+            {
+              "operationType": "5",
+              "metricsObject": {
+                "key": "3",
+                "name": "3",
+                "category": "2",
+                "type": "Double",
+                "serialNo": "1789248136217763841"
+              }
+            }
+          ]
+        },
+        {
+          "ruleType": "1",
+          "logicalObject": {
+            "title": "并且",
+            "value": "&&"
+          },
+          "render_key": 1,
+          "leftComparatorsList": [
+            {
+              "operationType": "3",
+              "generalizationObject": {
+                "coordinate": "a#b",
+                "paramType": "2",
+                "fieldObject": {
+                  "metricsEntityNo": "1787766088068198402",
+                  "metricsEntityKey": "user",
+                  "key": "123",
+                  "name": "小刘创建了第二个",
+                  "category": "1",
+                  "type": "String",
+                  "serialNo": "1787774079521746945"
+                }
+              }
+            }
+          ],
+          "comparatorsObject": {
+            "value": "==",
+            "title": "等于"
+          },
+          "rightComparatorsList": [
+            {
+              "operationType": "5",
+              "metricsObject": {
+                "key": "3",
+                "name": "3",
+                "category": "2",
+                "type": "Double",
+                "serialNo": "1789248136217763841"
+              }
+            }
+          ]
         }
       ],
-      "actions": [
-        {
-          "type": "print",
-          "message": "触发规则：decision_rule_1_10"
-        }
-      ]
+      "ruleType": "2",
+      "render_key": 0
     },
     {
-      "name": "decision_rule_1_11",
-      "attributes": {
-        "lock-on-active": true
-      },
-      "conditions": [
+      "render_key": 1,
+      "ruleGroupList": [
         {
-          "type": "Map",
-          "eval": "$map.get('sex').equals('女') || Integer.parseInt($map.get('userAge').toString()) > 20 && $map.get('userName').equals('张三')"
+          "ruleType": "1",
+          "render_key": 0,
+          "leftComparatorsList": [
+            {
+              "operationType": "5",
+              "metricsObject": {
+                "key": "xiaoli12",
+                "name": "小刘创建了第二个",
+                "category": "2",
+                "type": "List",
+                "serialNo": "1788775579567992834"
+              }
+            }
+          ],
+          "comparatorsObject": {
+            "value": "==",
+            "title": "等于"
+          },
+          "rightComparatorsList": [
+            {
+              "operationType": "5",
+              "metricsObject": {
+                "key": "3",
+                "name": "3",
+                "category": "2",
+                "type": "Double",
+                "serialNo": "1789248136217763841"
+              }
+            }
+          ]
         }
       ],
-      "actions": [
-        {
-          "type": "globalMap.put",
-          "key": "userScore",
-          "value": "100"
-        },
-        {
-          "type": "globalMap.put",
-          "key": "validVip",
-          "value": "不是vip"
-        },
-        {
-          "type": "map.put",
-          "key": "userScore",
-          "value": "100"
-        },
-        {
-          "type": "map.put",
-          "key": "validVip",
-          "value": "不是vip"
-        },
-        {
-          "type": "update",
-          "map": "$map"
-        },
-        {
-          "type": "print",
-          "message": "触发规则：decision_rule_1_11"
-        }
-      ]
-    },
+      "ruleType": "2",
+      "logicalObject": {
+        "title": "并且",
+        "value": "&&"
+      }
+    }
+  ],
+  "thenContent": [
     {
-      "name": "decision_rule_1_12",
-      "attributes": {
-        "lock-on-active": true
-      },
-      "conditions": [
+      "actionType": "1",
+      "operationList": [
         {
-          "type": "Map",
-          "eval": "$map.get('sex').equals('男')"
-        },
-        {
-          "type": "eval",
-          "condition": "Integer.parseInt($map.get('userAge').toString()) <= 20"
+          "operationType": "5",
+          "metricsObject": {
+            "key": "8",
+            "name": "8",
+            "category": "2",
+            "type": "Double",
+            "serialNo": "1789248214756106242"
+          }
         }
       ],
-      "actions": [
-        {
-          "type": "globalMap.put",
-          "key": "userScore",
-          "value": "500"
-        },
-        {
-          "type": "globalMap.put",
-          "key": "validResult",
-          "value": "通过"
-        },
-        {
-          "type": "map.put",
-          "key": "userScore",
-          "value": "500"
-        },
-        {
-          "type": "map.put",
-          "key": "validResult",
-          "value": "通过"
-        },
-        {
-          "type": "update",
-          "map": "$map"
-        },
-        {
-          "type": "print",
-          "message": "触发规则：decision_rule_1_12"
-        }
-      ]
-    },
-    {
-      "name": "decision_rule_1_13",
-      "attributes": {
-        "lock-on-active": true
-      },
-      "conditions": [
-        {
-          "type": "Map",
-          "eval": "!($map.get('sex').equals('男') && Integer.parseInt($map.get('userAge').toString()) <= 20)"
-        },
-        {
-          "type": "eval",
-          "condition": "$map.get('userName').equals('李四')"
-        }
-      ],
-      "actions": [
-        {
-          "type": "globalMap.put",
-          "key": "userScore",
-          "value": "300"
-        },
-        {
-          "type": "map.put",
-          "key": "userScore",
-          "value": "300"
-        },
-        {
-          "type": "update",
-          "map": "$map"
-        },
-        {
-          "type": "print",
-          "message": "触发规则：decision_rule_1_13"
-        }
-      ]
+      "render_key": 0,
+      "metricsObject": {
+        "key": "8",
+        "name": "8",
+        "category": "2",
+        "type": "Double",
+        "serialNo": "1789248214756106242"
+      }
     }
   ]
 }

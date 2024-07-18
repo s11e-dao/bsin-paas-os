@@ -36,12 +36,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
+
 import org.kie.api.runtime.KieSession;
-import me.flyray.bsin.server.handler.JsonToDroolsHandler;
+import me.flyray.bsin.server.handler.JsonToDroolsConverter;
 
 import me.flyray.bsin.domain.entity.DubboTest;
 import me.flyray.bsin.facade.service.DubboTestService;
@@ -63,8 +62,6 @@ public class DubboTestServiceImpl implements DubboTestService {
     private DecisionRuleMapper decisionRuleMapper;
     @Autowired
     private DecisionEngineContextBuilder decisionEngineContextBuilder;
-    @Autowired
-    private JsonToDroolsHandler jsonToDroolsHandler;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DubboTestServiceImpl.class);
 
@@ -106,7 +103,7 @@ public class DubboTestServiceImpl implements DubboTestService {
         // 模型转换
         String contentJson = decisionRule.getContentJson();
         // json 转换成drl字符串文件
-        String content = jsonToDroolsHandler.jsonToDrools(contentJson);
+        String content = JsonToDroolsConverter.convertToJsonToDrl(contentJson);
         decisionRule.setContent(content);
         decisionRuleMapper.insert(decisionRule);
         LOGGER.info(GsonUtils.getInstance().toJson(RpcContext.getContext().getAttachments()));

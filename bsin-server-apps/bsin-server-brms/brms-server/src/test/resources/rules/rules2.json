@@ -1,0 +1,78 @@
+{
+  "rules": [
+    {
+      "name": "decision_rule_1_11",
+      "attributes": {
+        "lock-on-active": true
+      },
+      "before": {
+
+      },
+      "conditions": [
+        {
+          "logic": "",
+          "expression": {
+            "left": {
+              "type": "bracket",
+              "expression": {
+                "left": {
+                  "type": "bracket",
+                  "expression": {
+                    "left": {
+                      "type": "value",
+                      "value": "1"
+                    },
+                    "operator": "+",
+                    "right": {
+                      "type": "value",
+                      "value": "5"
+                    }
+                  }
+                },
+                "operator": "*",
+                "right": {
+                  "type": "value",
+                  "value": "3"
+                }
+              }
+            },
+            "operator": ">",
+            "right": {
+              "type": "value",
+              "value": "10"
+            }
+          }
+        },
+        {
+          "logic": "&&",
+          "expression": {
+            "left": {
+              "type": "value",
+              "value": "$map.get('sex')"
+            },
+            "operator": "==",
+            "right": {
+              "type": "value",
+              "value": "\"女\""
+            }
+          }
+        }
+      ],
+      "actions": [
+        {
+          "type": "globalMap.put",
+          "key": "userScore",
+          "value": "100"
+        },
+        {
+          "type": "update",
+          "map": "$map"
+        },
+        {
+          "type": "print",
+          "message": "触发规则：decision_rule_1_11"
+        }
+      ]
+    }
+  ]
+}
