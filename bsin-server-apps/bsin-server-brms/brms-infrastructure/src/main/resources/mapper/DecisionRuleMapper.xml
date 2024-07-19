@@ -10,7 +10,7 @@
             <result property="kiePackageName" column="kie_package_name" jdbcType="VARCHAR"/>
             <result property="kieBaseName" column="kie_base_name" jdbcType="VARCHAR"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
-            <result property="content" column="content_json" jdbcType="VARCHAR"/>
+            <result property="contentJson" column="content_json" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="type" column="type" jdbcType="VARCHAR"/>

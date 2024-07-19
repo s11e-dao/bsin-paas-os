@@ -1,8 +1,8 @@
 package org.apache.shenyu.plugin.rulesEngine;
 
 import com.alibaba.fastjson.JSON;
-import me.flyray.bsin.domain.params.ExecuteParams;
-import me.flyray.bsin.facade.ReReleaseService;
+import me.flyray.bsin.domain.request.ExecuteParams;
+import me.flyray.bsin.facade.service.DecisionEngineService;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
@@ -13,14 +13,14 @@ import java.util.Map;
 public class DubboService {
 
     public static Map<?, ?> call(String eventKey, Map<?, ?> params) {
-        ReferenceConfig<ReReleaseService> reference = new ReferenceConfig<>();
-        reference.setInterface(ReReleaseService.class);
+        ReferenceConfig<DecisionEngineService> reference = new ReferenceConfig<>();
+        reference.setInterface(DecisionEngineService.class);
         DubboBootstrap instance = DubboBootstrap.getInstance();
         instance.application("first-dubbo-consumer");
         instance.registry(new RegistryConfig("nacos://192.168.1.165:8848"));
         instance.reference(reference);
 
-        ReReleaseService r = reference.get();
+        DecisionEngineService r = reference.get();
         ExecuteParams executeParams = new ExecuteParams();
         executeParams.setEventKey(eventKey);
         executeParams.setJsonParams(JSON.toJSONString(params));

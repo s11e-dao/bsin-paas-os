@@ -175,7 +175,6 @@ public class DecisionEngineContextBuilder {
             for (Message message : messages) {
                 log.error(message.getText());
             }
-            throw new RuntimeException("加载规则出现异常");
         }
         // KieContainer只有第一次时才需要创建，之后就是使用这个
         if (null == kieContainer) {

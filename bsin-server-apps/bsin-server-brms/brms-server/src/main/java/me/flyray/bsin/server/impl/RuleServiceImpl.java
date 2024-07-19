@@ -18,9 +18,13 @@
 package me.flyray.bsin.server.impl;
 
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import me.flyray.bsin.domain.entity.DecisionRule;
+import me.flyray.bsin.domain.entity.EventModel;
 import me.flyray.bsin.infrastructure.mapper.DecisionRuleMapper;
+import me.flyray.bsin.infrastructure.mapper.EventModelMapper;
 import me.flyray.bsin.server.context.DecisionEngineContextBuilder;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
@@ -43,7 +47,7 @@ import org.kie.api.runtime.KieSession;
 import me.flyray.bsin.server.handler.JsonToDroolsConverter;
 
 import me.flyray.bsin.domain.entity.DubboTest;
-import me.flyray.bsin.facade.service.DubboTestService;
+import me.flyray.bsin.facade.service.RuleService;
 import me.flyray.bsin.mq.producer.RocketMQProducer;
 import me.flyray.bsin.utils.BsinResultEntity;
 
@@ -52,7 +56,7 @@ import me.flyray.bsin.utils.BsinResultEntity;
  */
 @DubboService
 @ApiModule(value = "dubboTestService")
-public class DubboTestServiceImpl implements DubboTestService {
+public class RuleServiceImpl implements RuleService {
 
     @Autowired
     private RocketMQProducer rocketMQProducer;
@@ -61,9 +65,11 @@ public class DubboTestServiceImpl implements DubboTestService {
     @Autowired
     private DecisionRuleMapper decisionRuleMapper;
     @Autowired
+    private EventModelMapper eventModelMapper;
+    @Autowired
     private DecisionEngineContextBuilder decisionEngineContextBuilder;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DubboTestServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RuleServiceImpl.class);
 
     @ShenyuDubboClient("/add")
     @ApiDoc(desc = "add")
@@ -101,10 +107,11 @@ public class DubboTestServiceImpl implements DubboTestService {
     // @GlobalTransactional
     public DecisionRule addRule(final DecisionRule decisionRule) throws IOException {
         // 模型转换
-        String contentJson = decisionRule.getContentJson();
+        JSONObject ruleJson = decisionRule.getRuleJson();
         // json 转换成drl字符串文件
-        String content = JsonToDroolsConverter.convertToJsonToDrl(contentJson);
+        String content = JsonToDroolsConverter.convertToJsonToDrl(ruleJson.toJSONString());
         decisionRule.setContent(content);
+        decisionRule.setContentJson(ruleJson.toJSONString());
         decisionRuleMapper.insert(decisionRule);
         LOGGER.info(GsonUtils.getInstance().toJson(RpcContext.getContext().getAttachments()));
         return decisionRule;
@@ -118,8 +125,10 @@ public class DubboTestServiceImpl implements DubboTestService {
 
         // 根据事件查询对应规则
         String eventCode = (String) requestMap.get("eventCode");
-
-        DecisionRule decisionRule = decisionRuleMapper.selectById("123456");
+        LambdaQueryWrapper<EventModel> warapper = new LambdaQueryWrapper<>();
+        warapper.eq(EventModel::getEventCode, eventCode);
+        EventModel eventModel = eventModelMapper.selectOne(warapper);
+        DecisionRule decisionRule = decisionRuleMapper.selectById(eventModel.getModelNo());
         // 1、构建决策引擎环境
         KieSession kieSession = decisionEngineContextBuilder.buildDecisionEngine(decisionRule,
                 decisionRule.getKieBaseName() + "-session");
@@ -129,10 +138,11 @@ public class DubboTestServiceImpl implements DubboTestService {
         kieSession.setGlobal("globalMap", globalMap);
 
         //TODO 2、执行决策引擎，一个决策模型对应多个kieSession
-        // 创建kieSession
 //        StringBuilder resultInfo = new StringBuilder();
 //        kieSession.setGlobal("resultInfo", resultInfo);
         // 添加fact（事实对象，接收数据的对象实体类），会员基本信息
+        // 解析规则引擎before部分，根据内容获取事实数据，和判断事实是否为空
+
         Map<String, Object> factMap = new HashMap<>();
         factMap.put("sex", "女");
         factMap.put("userAge", "25");

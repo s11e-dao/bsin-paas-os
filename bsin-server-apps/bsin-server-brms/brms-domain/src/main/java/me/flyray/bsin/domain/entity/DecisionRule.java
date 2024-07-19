@@ -1,5 +1,8 @@
 package me.flyray.bsin.domain.entity;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.util.Date;
@@ -44,6 +47,12 @@ public class DecisionRule {
      * 规则内容
      */
     private String content;
+
+    /**
+     * 规则内容JSON
+     */
+    @TableField(exist = false)
+    private JSONObject ruleJson;
 
     /**
      * 规则内容JSON

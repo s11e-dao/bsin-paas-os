@@ -1,5 +1,7 @@
 package me.flyray.bsin.server.handler;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -7,33 +9,17 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ *  前端规则配置json转换成drools规则文件处理
+ */
+
 public class JsonToDroolsConverter {
-
-    public static void main(String[] args) {
-
-        String filePath =
-                "/home/rednet/x-workspace/bsin-paas-os/bsin-server-apps/bsin-server-brms/brms-server/target/test-classes/rules/rules2.json";
-        try {
-            // 解析JSON
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(new File(filePath));
-
-            // 转换成Drools规则文件内容
-            String droolsContent = convertToJsonToDrl(String.valueOf(rootNode));
-
-            // 打印生成的Drools规则
-            System.out.println(droolsContent);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static String convertToJsonToDrl(String jsonStr) throws IOException {
 
         // 解析JSON
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode rootNode = objectMapper.readTree(jsonStr.getBytes());
+        JsonNode rootNode = objectMapper.readTree(jsonStr);
 
         StringBuilder droolsContent = new StringBuilder();
         droolsContent.append("package rules\n\n");
@@ -79,6 +65,9 @@ public class JsonToDroolsConverter {
                 } else if (actionType.equals("print")) {
                     String message = actionNode.get("message").asText();
                     droolsContent.append("    System.out.println(\"").append(message).append("\");\n");
+                } else if (actionType.equals("dubboInvoke")) {
+                    // TODO dubbo泛化调用，处理命中后逻辑
+
                 }
             }
 
@@ -88,6 +77,11 @@ public class JsonToDroolsConverter {
         return droolsContent.toString();
     }
 
+    /**
+     * 表达式解析处理
+     * @param expressionNode
+     * @return
+     */
     private static String convertExpression(JsonNode expressionNode) {
         StringBuilder expressionBuilder = new StringBuilder();
         ObjectNode expressionObject = (ObjectNode) expressionNode;
@@ -106,6 +100,11 @@ public class JsonToDroolsConverter {
         return expressionBuilder.toString();
     }
 
+    /**
+     * 算术运算处理
+     * @param operandNode
+     * @return
+     */
     private static String convertOperand(JsonNode operandNode) {
         StringBuilder operandBuilder = new StringBuilder();
         ObjectNode operandObject = (ObjectNode) operandNode;
@@ -123,6 +122,26 @@ public class JsonToDroolsConverter {
         }
 
         return operandBuilder.toString();
+    }
+
+    public static void main(String[] args) {
+
+        String filePath =
+                "/home/rednet/x-workspace/bsin-paas-os/bsin-server-apps/bsin-server-brms/brms-server/target/test-classes/rules/rules2.json";
+        try {
+            // 解析JSON
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(new File(filePath));
+
+            // 转换成Drools规则文件内容
+            String droolsContent = convertToJsonToDrl(String.valueOf(rootNode));
+
+            // 打印生成的Drools规则
+            System.out.println(droolsContent);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

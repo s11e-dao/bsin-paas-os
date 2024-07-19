@@ -17,8 +17,8 @@ public class ExecuteParams implements Serializable {
     /**
      * 事件Key
      */
-    @NotBlank(message = "eventKey不能为空")
-    String eventKey;
+    @NotBlank(message = "eventCode不能为空")
+    String eventCode;
 
     /**
      * json类型的参数

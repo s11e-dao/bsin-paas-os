@@ -20,7 +20,7 @@ public class DroolsTest {
         Map<String, Object> globalMap = new HashMap<>();
         kieSession.setGlobal("globalMap", globalMap);
 
-        // 创建要处理的Map对象
+        // 创建要处理的Map对象，事实数据的处理
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("sex", "女");
         inputData.put("userAge", "25");

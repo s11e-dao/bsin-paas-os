@@ -31,7 +31,7 @@ import java.util.Map;
  * DubboTestService.
  */
 @Validated
-public interface DubboTestService {
+public interface RuleService {
 
     BsinResultEntity<DubboTest> add(@Valid DubboTest bean);
 
@@ -42,11 +42,8 @@ public interface DubboTestService {
     /**
      * find by id.
      * body：{"id":"1223"}
-     *
-     * @param id id
      * @return DubboTest dubbo test
      */
     public DubboTest testRule(Map<String, Object> requestMap);
-
 
 }
