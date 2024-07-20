@@ -2,7 +2,7 @@ package rules
 
 global java.util.Map globalMap
 
-rule "decision_rule_1_11"
+rule "decision_rule_1_112"
     lock-on-active true
 when
     $map : Map()
@@ -10,5 +10,5 @@ when
 then
     globalMap.put("userScore", "100");
     update($map);
-    System.out.println("触发规则：decision_rule_1_11");
+    System.out.println("触发规则：decision_rule_1_112");
 end

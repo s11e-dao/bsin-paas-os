@@ -24,6 +24,7 @@ public class JsonToDroolsConverter {
         StringBuilder droolsContent = new StringBuilder();
         droolsContent.append("package rules\n\n");
         droolsContent.append("global java.util.Map globalMap\n\n");
+        // droolsContent.append("me.flyray.bsin.server.context.DubboHelper dubboHelper\n\n");
 
         ArrayNode rulesArray = (ArrayNode) rootNode.get("rules");
         for (JsonNode ruleNode : rulesArray) {

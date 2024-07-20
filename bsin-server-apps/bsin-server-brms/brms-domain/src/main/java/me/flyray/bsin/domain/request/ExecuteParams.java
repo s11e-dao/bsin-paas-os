@@ -1,11 +1,11 @@
 package me.flyray.bsin.domain.request;
 
-import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.Data;
-import me.flyray.bsin.exception.BusinessException;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,17 +23,21 @@ public class ExecuteParams implements Serializable {
     /**
      * json类型的参数
      */
-    String jsonParams;
+    JSONObject jsonParams;
 
     /**
      * 执行参数(即部分事实)
      */
-    Map<?, ?> params;
+    Map<String, Object> params = new HashMap<>();
 
-    public void setJsonParams(String jsonParams) {
-        if (!JSON.isValid(jsonParams)) throw new BusinessException("JSONPARAMS_NOT_JSON");
+    public void setJsonParams(JSONObject jsonParams) {
         this.jsonParams = jsonParams;
-        params = JSON.parseObject(jsonParams);
+        // 将JSONObject转换成Map
+        Map<String, Object> hashMap = new HashMap<>();
+        for (String key : jsonParams.keySet()) {
+            hashMap.put(key, jsonParams.get(key));
+        }
+        this.params = hashMap;
     }
 
 }

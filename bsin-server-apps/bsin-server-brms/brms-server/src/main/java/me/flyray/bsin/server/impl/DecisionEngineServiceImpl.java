@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import me.flyray.bsin.domain.entity.DecisionRule;
 import me.flyray.bsin.domain.entity.EventModel;
 import me.flyray.bsin.domain.request.ExecuteParams;
+import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DecisionEngineService;
 import me.flyray.bsin.infrastructure.mapper.DecisionRuleMapper;
 import me.flyray.bsin.infrastructure.mapper.EventModelMapper;
@@ -42,18 +43,27 @@ public class DecisionEngineServiceImpl implements DecisionEngineService {
         warapper.eq(EventModel::getEventCode, eventCode);
         EventModel eventModel = eventModelMapper.selectOne(warapper);
         DecisionRule decisionRule = decisionRuleMapper.selectById(eventModel.getModelNo());
+        if(decisionRule == null){
+            throw new BusinessException("事件模型不存在");
+        }
         // 1、构建决策引擎环境
         KieSession kieSession = decisionEngineContextBuilder.buildDecisionEngine(decisionRule,
                 decisionRule.getKieBaseName() + "-session");
-        LinkedHashMap<?, ?> resultMap = new LinkedHashMap<>();
-        kieSession.setGlobal("resultMap", resultMap);
-        kieSession.setGlobal("globalMap", dubboHelper);
+        Map<String, Object> globalMap = new HashMap<>();
+        kieSession.setGlobal("globalMap", globalMap);
+        // kieSession.setGlobal("dubboHelper", dubboHelper);
         // 添加fact（事实对象，接收数据的对象实体类）
-        Map<?, ?> params = executeParams.getParams();
-        if (params == null) kieSession.insert(new HashMap<>());
-        else kieSession.insert(executeParams.getParams());
+        Map<String, Object> params = executeParams.getParams();
+        if (params == null) {
+            params = new HashMap<>();
+        }
+        // 创建要处理的Map对象，事实数据的处理
+        params.put("sex", "女");
+        // 插入数据并执行规则
+        kieSession.insert(params);
+
         kieSession.fireAllRules();
         kieSession.destroy();
-        return resultMap;
+        return globalMap;
     }
 }
