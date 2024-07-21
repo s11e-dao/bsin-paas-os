@@ -12,7 +12,7 @@ Bsin-PaaS（毕昇） 是一套企业级的低代码、零代码去中心化应�
 
 ## 部署手册
 
-[Bsin-PaaS服务端部署文档](./Bsin-PaaS服务端部署文档.md)
+[Bsin-PaaS服务端部署文档](https://gitee.com/s11e-DAO/bsin-server-env/blob/master/Bsin-PaaS-OS%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2%E6%96%87%E6%A1%A3.md)
 
 
 ###  **服务端代码部署** 
@@ -128,7 +128,7 @@ bsin-server-targegateway\src\main\java\me\flyray\bsin\gateway\BsinGatewayApplica
 upms-server\src\main\java\me\flyray\bsin\server\BsinUpmsApplication.java
 ```
 
-[Bsin-PaaS前端部署文档](./Bsin-PaaS前端部署文档.md)
+[Bsin-PaaS前端部署文档](./https://gitee.com/s11e-DAO/bsin-server-env/blob/master/Bsin-PaaS%E5%89%8D%E7%AB%AF%E9%83%A8%E7%BD%B2%E6%96%87%E6%A1%A3.md)
 
 ###  **前端代码部署** 
 
