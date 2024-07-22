@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.github.ipfs</groupId>
             <artifactId>java-ipfs-api</artifactId>
-            <version>1.3.3</version>
+            <version>v1.3.3</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/doc/libs/ipfs/java-ipfs-api-1.3.3.jar</systemPath>
         </dependency>
@@ -53,31 +53,31 @@
             <groupId>com.github.multiformats</groupId>
             <artifactId>java-multihash</artifactId>
             <version>v1.3.0</version>
-            <!--            <scope>system</scope>-->
-            <!--            <systemPath>${project.basedir}/doc/lib/multihash-v1.3.0.jar</systemPath>-->
+            <scope>system</scope>
+            <systemPath>${project.basedir}/doc/libs/ipfs/multihash-v1.3.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.github.multiformats</groupId>
             <artifactId>java-multibase</artifactId>
             <version>v1.1.0</version>
-            <!--            <scope>system</scope>-->
-            <!--            <systemPath>${project.basedir}/doc/lib/multibase-v1.1.0.jar</systemPath>-->
+            <scope>system</scope>
+            <systemPath>${project.basedir}/doc/libs/ipfs/multibase-v1.1.0.jar</systemPath>
         </dependency>
 
         <dependency>
             <groupId>com.github.multiformats</groupId>
             <artifactId>java-multiaddr</artifactId>
             <version>v1.4.0</version>
-            <!--            <scope>system</scope>-->
-            <!--            <systemPath>${project.basedir}/doc/lib/multiaddr-v1.4.0.jar</systemPath>-->
+            <scope>system</scope>
+            <systemPath>${project.basedir}/doc/libs/ipfs/multiaddr-v1.4.0.jar</systemPath>
         </dependency>
 
         <dependency>
             <groupId>com.github.ipld</groupId>
             <artifactId>java-cid</artifactId>
             <version>v1.3.0</version>
-            <!--            <scope>system</scope>-->
-            <!--            <systemPath>${project.basedir}/doc/lib/cid-v1.3.0.jar</systemPath>-->
+            <scope>system</scope>
+            <systemPath>${project.basedir}/doc/libs/ipfs/cid-v1.3.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.alipay.sofa</groupId>
