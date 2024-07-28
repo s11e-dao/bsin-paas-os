@@ -21,12 +21,14 @@ public class JsonToDroolsConverter {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(jsonStr);
 
+        // 规则文件公共引入类
         StringBuilder droolsContent = new StringBuilder();
         droolsContent.append("package rules\n\n");
         droolsContent.append("global java.util.Map globalMap\n\n");
         // droolsContent.append("me.flyray.bsin.server.context.DubboHelper dubboHelper\n\n");
 
         ArrayNode rulesArray = (ArrayNode) rootNode.get("rules");
+        // 解析规则
         for (JsonNode ruleNode : rulesArray) {
             ObjectNode ruleObject = (ObjectNode) ruleNode;
 
@@ -35,23 +37,25 @@ public class JsonToDroolsConverter {
             droolsContent.append("    lock-on-active true\n");
             droolsContent.append("when\n");
 
-            // Conditions
+            // 解析Conditions部分
             droolsContent.append("    $map : Map()\n");
             ArrayNode conditionsArray = (ArrayNode) ruleObject.get("conditions");
             StringBuilder conditions = new StringBuilder("eval(");
             boolean firstCondition = true;
             for (JsonNode conditionNode : conditionsArray) {
+                // 第一个条件没有逻辑运算符
                 if (!firstCondition) {
                     conditions.append(" ").append(conditionNode.get("logic").asText()).append(" ");
                 }
                 firstCondition = false;
                 ObjectNode conditionObject = (ObjectNode) conditionNode;
+                // 递归解析条件部分的表达式：算术运算、逻辑运算、比较运算
                 conditions.append(convertExpression(conditionObject.get("expression")));
             }
             conditions.append(")");
             droolsContent.append("    ").append(conditions.toString()).append("\n");
 
-            // Actions
+            // 解析Actions部分
             droolsContent.append("then\n");
             ArrayNode actionsArray = (ArrayNode) ruleObject.get("actions");
             for (JsonNode actionNode : actionsArray) {

@@ -66,4 +66,5 @@ public class DecisionEngineServiceImpl implements DecisionEngineService {
         kieSession.destroy();
         return globalMap;
     }
+
 }

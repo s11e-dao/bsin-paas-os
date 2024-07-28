@@ -70,7 +70,6 @@ public interface BondingCurveTokenService {
    */
   public BondingCurveTokenJournal getTransactionDetail(Map<String, Object> requestMap);
 
-
   /**
    * 获取联合曲线数据--曲线展示
    *

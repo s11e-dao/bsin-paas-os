@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
 * @author bolei
-* @description 针对表【market_withdraw_journal】的数据库操作Service
+* @description 基于账户的体现操作
 * @createDate 2023-09-12
 */
 
@@ -29,7 +29,6 @@ public interface WithdrawService {
      * 提现申请
      */
     public WithdrawOrder withdrawApply(Map<String, Object> requestMap);
-
 
     /**
      * 提现审核

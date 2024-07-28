@@ -41,7 +41,6 @@ public interface AccountService {
   /** 查询账户详细 */
   public Account getDetail(Map<String, Object> requestMap);
 
-
   /** 账户资产验证 */
   public Map<String, Object> verifyAccountBalance(Map<String, Object> requestMap);
 
@@ -55,7 +54,6 @@ public interface AccountService {
   public IPage<AccountJournal> getAccountJournalPageList(Map<String, Object> requestMap);
 
   public AccountJournal getAccountJournalDetail(Map<String, Object> requestMap);
-
 
   /** 分页查询账户冻结流水 */
   public IPage<?> getAccountFreezeJournalPageList(Map<String, Object> requestMap);
