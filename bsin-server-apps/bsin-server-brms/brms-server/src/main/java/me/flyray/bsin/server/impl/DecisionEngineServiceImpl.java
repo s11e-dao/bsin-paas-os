@@ -52,18 +52,17 @@ public class DecisionEngineServiceImpl implements DecisionEngineService {
         Map<String, Object> globalMap = new HashMap<>();
         kieSession.setGlobal("globalMap", globalMap);
         // kieSession.setGlobal("dubboHelper", dubboHelper);
-        // 添加fact（事实对象，接收数据的对象实体类）
-        Map<String, Object> params = executeParams.getParams();
-        if (params == null) {
-            params = new HashMap<>();
-        }
-        // 创建要处理的Map对象，事实数据的处理
-        params.put("sex", "女");
-        // 插入数据并执行规则
-        kieSession.insert(params);
 
+        // 2、处理fact（事实对象，接收数据的对象实体类）
+        Map<String, Object> params = decisionEngineContextBuilder.buildDecisionFact(decisionRule);
+
+        // 3、插入数据并执行规则
+        kieSession.insert(params);
         kieSession.fireAllRules();
         kieSession.destroy();
+
+        // 根据decisionRule中json afer配置和globalMap结果调用逻辑处理
+
         return globalMap;
     }
 

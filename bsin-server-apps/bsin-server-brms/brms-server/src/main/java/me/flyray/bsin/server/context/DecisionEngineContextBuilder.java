@@ -1,8 +1,10 @@
 package me.flyray.bsin.server.context;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
+import me.flyray.bsin.domain.entity.DecisionRule;
+import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
+import me.flyray.bsin.infrastructure.mapper.DecisionRuleMapper;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.kie.api.KieBase;
@@ -21,16 +23,11 @@ import org.kie.internal.utils.KieHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PreDestroy;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.PreDestroy;
-
-import lombok.extern.log4j.Log4j2;
-import me.flyray.bsin.domain.entity.DecisionRule;
-import me.flyray.bsin.infrastructure.mapper.DecisionRuleMapper;
 
 @Log4j2
 @Service
@@ -48,6 +45,8 @@ public class DecisionEngineContextBuilder {
 
     @Autowired
     private DecisionRuleMapper decisionRuleMapper;
+    @Autowired
+    private BsinServiceInvoke bsinServiceInvokeUtil;
 
     @PreDestroy
     public void destroy() {
@@ -186,4 +185,26 @@ public class DecisionEngineContextBuilder {
         return kieContainer;
     }
 
+    /**
+     * 加工处理事实对象
+     * 1、解析before配置
+     * 2、获取事实指标参数
+     * @param decisionRule
+     * @return
+     */
+    public Map<String, Object> buildDecisionFact(DecisionRule decisionRule) {
+
+        // 根据decisionRule中json before配置获取指标字段事实
+        if(true){
+            // 泛化调用获取事实指标
+
+        }
+        // 直接获取请求参数指标
+
+        Map<String, Object> params = new HashMap<>();
+        // 创建要处理的Map对象，事实数据的处理
+        params.put("sex", "女");
+
+        return params;
+    }
 }

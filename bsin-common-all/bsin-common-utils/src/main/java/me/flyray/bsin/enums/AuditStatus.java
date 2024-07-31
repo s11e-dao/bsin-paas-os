@@ -15,9 +15,14 @@ public enum AuditStatus {
     PASS("0", "通过"),
 
     /**
-     * 拒绝 Reject
+     * 驳回 拒绝 Reject
      */
-    REJECT("1", "拒绝");
+    REJECT("1", "拒绝"),
+
+    /**
+     * 终止 terminate
+     */
+    TERMINATE("2", "终止");
 
     private String code;
 

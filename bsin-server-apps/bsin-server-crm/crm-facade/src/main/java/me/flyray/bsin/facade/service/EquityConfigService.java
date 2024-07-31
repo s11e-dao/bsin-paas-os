@@ -24,7 +24,7 @@ public interface EquityConfigService {
     public void delete(Map<String, Object> requestMap);
 
     /**
-     * 获取配置的权益
+     * 根据权益分类编号获取权益
      */
     public List<?> getListByCategoryNo(Map<String, Object> requestMap);
 
