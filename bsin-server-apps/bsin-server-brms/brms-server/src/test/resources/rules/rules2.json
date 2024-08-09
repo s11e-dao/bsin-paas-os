@@ -5,9 +5,34 @@
       "attributes": {
         "lock-on-active": true
       },
-      "before": {
-
-      },
+      "before": [
+        {
+          "type": "String",
+          "metricsKey": "user",
+          "metricsValue": "123",
+          "name": "小刘创建了第二个",
+          "category": "1",
+          "serialNo": "1787774079521746945"
+        },
+        {
+          "actionType": "3",
+          "operationList": [],
+          "render_key": 0,
+          "generalizationObject": {
+            "coordinate": "result#format",
+            "paramType": "2",
+            "fieldObject": {
+              "metricsEntityNo": "1787766088068198402",
+              "metricsEntityKey": "user",
+              "key": "123",
+              "name": "小刘创建了第二个",
+              "category": "1",
+              "type": "String",
+              "serialNo": "1787774079521746945"
+            }
+          }
+        }
+      ],
       "conditions": [
         {
           "logic": "",

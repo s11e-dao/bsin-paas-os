@@ -69,14 +69,15 @@ const routes = [
         path: '/merchant/merchant-account',
         component: '@/pages/Merchant/MerchantAccount/index',
       },
-      {
-        path: '/merchant/merchant-app',
-        component: '@/pages/Merchant/MerchantApp/index',
-      },
       // api费用配置（应用审核）
       {
         path: '/merchant/app-audit',
         component: '@/pages/Merchant/ApiTxFeeConfig/index',
+      },
+      // 商户应用：小程序、公众号、app
+      {
+        path: '/merchant/merchant-app',
+        component: '@/pages/Merchant/MerchantApp/index',
       },
       // 商户认证信息审核
       {

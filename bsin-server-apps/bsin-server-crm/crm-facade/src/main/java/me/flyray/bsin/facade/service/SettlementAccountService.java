@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import me.flyray.bsin.domain.entity.SettlementAccount;
 import me.flyray.bsin.domain.request.SettlementAccountDTO;
 
+/**
+ * 管理商户的结算提现账号
+ */
 public interface SettlementAccountService {
 
     public void saveSettlementAccount(SettlementAccountDTO settlementAccountDTO);

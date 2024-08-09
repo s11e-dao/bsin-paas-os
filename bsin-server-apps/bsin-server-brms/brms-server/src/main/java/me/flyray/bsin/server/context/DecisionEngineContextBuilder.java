@@ -3,6 +3,7 @@ package me.flyray.bsin.server.context;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import me.flyray.bsin.domain.entity.DecisionRule;
+import me.flyray.bsin.domain.request.ExecuteParams;
 import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.infrastructure.mapper.DecisionRuleMapper;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -187,16 +188,16 @@ public class DecisionEngineContextBuilder {
 
     /**
      * 加工处理事实对象
-     * 1、解析before配置
-     * 2、获取事实指标参数
+     * 1、解析before配置的指标字段
+     * 2、获取事实指标参数：从请求参数获取或是通过泛化调用获取
      * @param decisionRule
      * @return
      */
-    public Map<String, Object> buildDecisionFact(DecisionRule decisionRule) {
+    public Map<String, Object> buildDecisionFact(DecisionRule decisionRule, ExecuteParams executeParams) {
 
         // 根据decisionRule中json before配置获取指标字段事实
         if(true){
-            // 泛化调用获取事实指标
+            // 泛化调用获取事实指标对象，从对象获取指标字段
 
         }
         // 直接获取请求参数指标

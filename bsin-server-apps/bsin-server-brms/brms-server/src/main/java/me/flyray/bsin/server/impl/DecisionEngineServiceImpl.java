@@ -54,7 +54,7 @@ public class DecisionEngineServiceImpl implements DecisionEngineService {
         // kieSession.setGlobal("dubboHelper", dubboHelper);
 
         // 2、处理fact（事实对象，接收数据的对象实体类）
-        Map<String, Object> params = decisionEngineContextBuilder.buildDecisionFact(decisionRule);
+        Map<String, Object> params = decisionEngineContextBuilder.buildDecisionFact(decisionRule, executeParams);
 
         // 3、插入数据并执行规则
         kieSession.insert(params);
