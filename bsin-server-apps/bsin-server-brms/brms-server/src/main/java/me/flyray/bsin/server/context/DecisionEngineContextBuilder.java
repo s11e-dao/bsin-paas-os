@@ -56,6 +56,18 @@ public class DecisionEngineContextBuilder {
         }
     }
 
+    /**
+     * 初始化规则引擎，将数据库中规则加载到规则库中
+     */
+    public void decisionEngineInitial(){
+        // 查询数据库中的规则
+        List<DecisionRule> decisionRules = decisionRuleMapper.getAllDecisionRuleList();
+        for (DecisionRule decisionRule : decisionRules) {
+            //TODO 根据规则类型解析规则内容,解析出ksession
+            addOrUpdateRule(decisionRule);
+        }
+    }
+
     public KieSession buildDecisionEngine_back(DecisionRule decisionRule, String kieSessionModelName){
         KieHelper kieHelper = new KieHelper();
         kieHelper.addContent(decisionRule.getContent(), ResourceType.DRL);
@@ -100,18 +112,6 @@ public class DecisionEngineContextBuilder {
         }
         log.info("需要创建KieBase:{}", kieBaseName);
         return false;
-    }
-
-    /**
-     * 初始化规则引擎，将数据库中规则加载到规则库中
-     */
-    public void decisionEngineInitial(){
-        // 查询数据库中的规则
-        List<DecisionRule> decisionRules = decisionRuleMapper.getAllDecisionRuleList();
-        for (DecisionRule decisionRule : decisionRules) {
-            //TODO 根据规则类型解析规则内容,解析出ksession
-            addOrUpdateRule(decisionRule);
-        }
     }
 
     /**

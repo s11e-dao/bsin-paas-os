@@ -52,7 +52,7 @@ import me.flyray.bsin.mq.producer.RocketMQProducer;
 import me.flyray.bsin.utils.BsinResultEntity;
 
 /**
- * The type Dubbo service.
+ * 规则管理
  */
 @DubboService
 @ApiModule(value = "dubboTestService")
