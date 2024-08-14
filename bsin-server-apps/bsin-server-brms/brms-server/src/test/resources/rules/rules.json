@@ -6,8 +6,8 @@
       "operationList": [],
       "render_key": 0,
       "generalizationObject": {
-        "coordinate": "result#format",
         "paramType": "2",
+        "coordinate": "result#format",
         "fieldObject": {
           "metricsEntityNo": "1787766088068198402",
           "metricsEntityKey": "user",

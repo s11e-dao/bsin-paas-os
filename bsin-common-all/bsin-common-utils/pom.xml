@@ -91,6 +91,10 @@
             <version>1.69</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
 
     </dependencies>
 
