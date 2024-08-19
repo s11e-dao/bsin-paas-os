@@ -17,4 +17,5 @@ public enum UserStatusEnum {
     private final Integer status;
 
     private final String desc;
+
 }

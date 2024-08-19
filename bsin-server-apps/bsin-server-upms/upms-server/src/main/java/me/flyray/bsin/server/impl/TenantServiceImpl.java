@@ -172,9 +172,6 @@ public class TenantServiceImpl implements TenantService {
             if (sysMenu.getMenuName().equals("租户管理")) {
                 continue;
             }
-            if (sysMenu.getMenuName().equals("协会管理")) {
-                continue;
-            }
             authMenuIds.add(sysMenu.getMenuId());
         }
         roleMenuMapper.authorizeMenus(appId, roleId, authMenuIds);
