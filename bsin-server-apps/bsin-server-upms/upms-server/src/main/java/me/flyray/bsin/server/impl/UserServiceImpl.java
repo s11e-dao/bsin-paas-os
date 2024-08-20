@@ -213,6 +213,20 @@ public class UserServiceImpl implements UserService {
         return sysUser;
     }
 
+    /**
+     * 1、查询租户顶级机构，在租户顶级机构下添加一个部门，如果是门店根据商户的信息查询门店的上级机构
+     * 2、添加添加商户部门用户
+     * 3、添加商户岗位 建立机构与岗位的关系、用户与岗位的关系
+     * 4、给用户分配新岗位
+     * 5、查询商户对应租户代理的产品的基础应用 一个租户对应一个产品
+     * 6、给商户部门分配可以访问的应用
+     * 7、查出基础应用的基础功能
+     * 8、新增角色
+     * 9、为该角色添加基础功能菜单
+     * 10、建立商户岗位与角色的关系
+     * @param sysUserReq
+     * @return
+     */
     @ApiDoc(desc = "addMerchantOrStore")
     @ShenyuDubboClient("/addMerchantOrStore")
     @Transactional
@@ -224,7 +238,7 @@ public class UserServiceImpl implements UserService {
 
         String merchantNo = sysUserReq.getMerchantId();
         String tenantId = sysUserReq.getTenantId();
-        // 查询租户顶级机构，在租户顶级机构下添加一个部门
+        // TODO 1、查询租户顶级机构，在租户顶级机构下添加一个部门，如果是门店根据商户的信息查询门店的上级机构
         SysOrg sysOrg = orgMapper.selectTopOrgByTenantId(sysUser.getTenantId());
 
         // 在租户下添加商户部门
@@ -237,7 +251,7 @@ public class UserServiceImpl implements UserService {
         merchantOrg.setOrgCode(merchantNo);
         orgMapper.insertOrg(merchantOrg);
 
-        // 添加添加商户部门用户
+        // 2、添加添加商户部门用户
         sysUser.setType(UserType.MERCHANT.getCode());
         sysUser.setOrgId(orgId);
         Snowflake snowflake = IdUtil.createSnowflake(1, 1);
@@ -248,7 +262,7 @@ public class UserServiceImpl implements UserService {
         sysUser.setPassword("e10adc3949ba59abbe56e057f20f883e");
         userMapper.insertUser(sysUser);
 
-        // 添加商户岗位 建立机构与岗位的关系、用户与岗位的关系
+        // 3、添加商户默认岗位 建立机构与岗位的关系、用户与岗位的关系
         String postId = BsinSnowflake.getId();
         SysPost sysPost = new SysPost();
         sysPost.setPostId(postId);
@@ -260,11 +274,11 @@ public class UserServiceImpl implements UserService {
         postIds.add(postId);
         orgPostMapper.assignPosts(orgId, postIds);
 
-        // 给用户分配新岗位
+        // 4、给用户分配新岗位
         userPostMapper.assignPosts(merchantNo, postIds);
 
         // TODO 一个租户代理两个产品会存在两个基础应用
-        // 查询商户对应租户代理的产品的基础应用 一个租户对应一个产品
+        // 5、查询商户对应租户代理的产品的基础应用 一个租户对应一个产品
         SysTenant sysTenant = tenantMapper.selectTenantInfoByTenantId(tenantId);
         SysProduct sysProduct = productMapper.selectByProductCode(sysTenant.getProductCode());
         SysApp baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), BizRoleType.MERCHANT.getCode());
@@ -272,10 +286,10 @@ public class UserServiceImpl implements UserService {
         if(baseApp == null){
             baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), null);
         }
-        // 给商户部门分配可以访问的应用
+        // 6、给商户部门分配可以访问的应用
         orgAppMapper.authorizeApp(orgId, baseApp.getAppId(), TenantOrgAppType.AUTH.getCode());
 
-        // 查出基础应用的基础功能
+        // 7、查出基础应用的基础功能
         List<SysAppFunction> appFunctionList = appFunctionMapper.selectListByAppId(baseApp.getAppId());
         // 查询基础功能对应的菜单
         List<String> appFunctionIds = new ArrayList<>();
@@ -285,16 +299,18 @@ public class UserServiceImpl implements UserService {
         // 查询基础功能菜单
         List<String> authMenuIds = menuMapper.selectListByAppFunctionIds(appFunctionIds);
 
-        // 新增角色
+        // 方案一： 为基础应用配置一个统一的基础角色 方案二： 为每个商户添加新的角色（选择方案二）
+        // 8、为商户新增默认角色，方便为商户自定义
         String roleId = BsinSnowflake.getId();
-        SysRole sysRole = new SysRole(roleId, "商户默认角色", "0", baseApp.getAppId(), sysUser.getTenantId(), 4);
+        // orgId
+        SysRole sysRole = new SysRole(roleId, sysUser.getUsername() + "商户"+ baseApp.getAppName() +"基础角色", "0", baseApp.getAppId(), sysUser.getTenantId(), 4);
         roleMapper.insert(sysRole);
 
-        // 为该角色添加基础功能菜单
+        // 9、为该角色添加基础功能菜单
         roleMenuMapper.authorizeMenus(baseApp.getAppId(), roleId, authMenuIds);
         List<String> roleIds = new ArrayList<>();
         roleIds.add(roleId);
-        // 建立商户岗位与角色的关系
+        // 10、建立商户岗位与角色的关系
         postRoleMapper.assignRoles(postId, roleIds, baseApp.getAppId());
         return sysUser;
     }
