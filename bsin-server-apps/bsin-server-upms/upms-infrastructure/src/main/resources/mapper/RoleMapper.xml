@@ -16,6 +16,7 @@
         <result column="update_by" property="updateBy"/>
         <result column="tenant_id" property="tenantId"/>
         <result column="type" property="type"/>
+        <result column="org_id" property="org_id"/>
     </resultMap>
 
     <resultMap id="FacadeResultMap" type="me.flyray.bsin.domain.response.RoleResp">
@@ -26,15 +27,16 @@
         <result column="remark" property="remark"/>
         <result column="app_name" property="appName"/>
         <result column="type" property="type"/>
+        <result column="org_id" property="orgId"/>
     </resultMap>
 
     <insert id="insert" parameterType="me.flyray.bsin.domain.entity.SysRole">
-        insert into sys_role(role_id, role_code, role_name, app_id, remark, type, create_by, tenant_id)
-        values (#{roleId}, #{roleCode}, #{roleName}, #{appId}, #{remark}, #{type}, #{createBy}, #{tenantId})
+        insert into sys_role(role_id, role_code, role_name, app_id, remark, type, create_by, tenant_id, org_id)
+        values (#{roleId}, #{roleCode}, #{roleName}, #{appId}, #{remark}, #{type}, #{createBy}, #{tenantId}, #{orgId})
     </insert>
 
     <select id="getRoleInfoByRoleCode" resultMap="BaseResultMap">
-        select role_id, role_code, role_name, app_id, remark, type
+        select role_id, role_code, role_name, app_id, remark, type, org_id
         from sys_role
         where role_code = #{roleCode}
           and app_id = #{appId}

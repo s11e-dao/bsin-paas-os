@@ -159,7 +159,7 @@ public class TenantServiceImpl implements TenantService {
 
         // 7、获取默认普通租户权限管理角色
         String roleId = BsinSnowflake.getId();
-        SysRole sysRole = new SysRole(roleId, tenantConfig.getRoleName(), sysTenant.getTenantCode(), appId, tenantId, tenantConfig.getRoleType());
+        SysRole sysRole = new SysRole(roleId, tenantConfig.getRoleName(), sysTenant.getTenantCode(), appId, tenantId, tenantConfig.getRoleType(), null);
         roleMapper.insert(sysRole);
 
         // 8、给角色授予菜单权限
@@ -319,7 +319,7 @@ public class TenantServiceImpl implements TenantService {
         String roleId;
         for (String appId : dealAuthAppIds) {
             roleId = BsinSnowflake.getId();
-            SysRole sysRole = new SysRole(roleId, tenantConfig.getRoleName(), roleId, appId, tenantId, 2);
+            SysRole sysRole = new SysRole(roleId, tenantConfig.getRoleName(), roleId, appId, tenantId, 2, null);
             roleMapper.insert(sysRole);
             List<SysMenu> sysMenus = menuMapper.selectListByAppId(appId);
             List<String> menusIds = sysMenus.stream().map(SysMenu::getMenuId).collect(Collectors.toList());
@@ -369,7 +369,7 @@ public class TenantServiceImpl implements TenantService {
         for (String bizAppId : bizAppIds) {
             // 7、新建业务应用角色
             String bizAppRoleId = BsinSnowflake.getId();
-            SysRole bizRole = new SysRole(bizAppRoleId, tenantConfig.getBizRoleName(), tenantCode, bizAppId, tenantId, tenantConfig.getRoleType());
+            SysRole bizRole = new SysRole(bizAppRoleId, tenantConfig.getBizRoleName(), tenantCode, bizAppId, tenantId, tenantConfig.getRoleType(), null);
             roleMapper.insert(bizRole);
 
             // 8、给角色授予菜单权限

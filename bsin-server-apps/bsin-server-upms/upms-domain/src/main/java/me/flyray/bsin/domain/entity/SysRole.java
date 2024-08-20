@@ -92,9 +92,9 @@ public class SysRole implements Serializable {
 	private String tenantId;
 
 	/**
-	 * 商户id
+	 * 商户的专属角色：解决商户和店铺权限问题
 	 */
-	private String merchantId;
+	private String orgId;
 
 	/**
 	 * 角色类型: 1、超级租户默认角色 2、授权应用默认角色 3、普通角色
@@ -132,12 +132,13 @@ public class SysRole implements Serializable {
 		this.appId = appId;
 	}
 
-	public SysRole(String roleId, String roleName, String roleCode, String appId,String tenantId,Integer type) {
+	public SysRole(String roleId, String roleName, String roleCode, String appId, String tenantId, Integer type, String orgId) {
 		this.roleId = roleId;
 		this.roleName = roleName;
 		this.roleCode = roleCode;
 		this.appId = appId;
 		this.tenantId = tenantId;
 		this.type = type;
+		this.orgId = orgId;
 	}
 }

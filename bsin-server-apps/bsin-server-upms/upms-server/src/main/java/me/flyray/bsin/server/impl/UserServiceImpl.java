@@ -303,7 +303,7 @@ public class UserServiceImpl implements UserService {
         // 8、为商户新增默认角色，方便为商户自定义
         String roleId = BsinSnowflake.getId();
         // orgId
-        SysRole sysRole = new SysRole(roleId, sysUser.getUsername() + "商户"+ baseApp.getAppName() +"基础角色", "0", baseApp.getAppId(), sysUser.getTenantId(), 4);
+        SysRole sysRole = new SysRole(roleId, sysUser.getUsername() + "商户"+ baseApp.getAppName() +"基础角色", "0", baseApp.getAppId(), sysUser.getTenantId(), 4, orgId);
         roleMapper.insert(sysRole);
 
         // 9、为该角色添加基础功能菜单
@@ -839,20 +839,24 @@ public class UserServiceImpl implements UserService {
     public Map<String, Object> authMerchantFunction(Map<String, Object> requestMap) {
         List<String> appFunctionIds = (List<String>) requestMap.get("appFunctionIds");
         String tenantId = (String) requestMap.get("tenantId");
-        String merchantNo = (String) requestMap.get("merchantNo");
+        //  将商户号转换为org
+        String orgCode = (String) requestMap.get("merchantNo");
+        SysOrg sysOrg = orgMapper.selectByOrgCode(orgCode);
+        String orgId = sysOrg.getOrgId();
+
         String appId = (String) requestMap.get("appId");
 
         // 查询订阅功能对应的菜单
         List<String> authMenuIds = menuMapper.selectListByAppFunctionIds(appFunctionIds);
         // 新增角色
         String roleId = BsinSnowflake.getId();
-        SysRole sysRole = new SysRole(roleId, "商户默认角色", "0", appId, tenantId, 4);
+        SysRole sysRole = new SysRole(roleId, "商户订阅角色", "0", appId, tenantId, 4, orgId);
         roleMapper.insert(sysRole);
         // 为该角色添加基础功能菜单
         roleMenuMapper.authorizeMenus(appId, roleId, authMenuIds);
 
         // 添加商户默认岗位的code是商户号
-        SysPost sysPost = postMapper.getPostByPostCode(merchantNo);
+        SysPost sysPost = postMapper.getPostByPostCode(orgId);
         List<String> roleIds = new ArrayList<>();
         roleIds.add(roleId);
         // 建立商户岗位与角色的关系
