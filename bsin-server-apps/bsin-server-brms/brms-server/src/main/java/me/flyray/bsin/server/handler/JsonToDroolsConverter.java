@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import me.flyray.bsin.domain.constant.DroolsTemplateConstant;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -24,8 +26,7 @@ public class JsonToDroolsConverter {
         // 规则文件公共引入类
         StringBuilder droolsContent = new StringBuilder();
         droolsContent.append("package rules\n\n");
-        droolsContent.append("global java.util.Map globalMap\n\n");
-        // droolsContent.append("me.flyray.bsin.server.context.DubboHelper dubboHelper\n\n");
+        droolsContent.append(DroolsTemplateConstant.HEAD);
 
         ArrayNode rulesArray = (ArrayNode) rootNode.get("rules");
         // 解析规则
@@ -38,7 +39,7 @@ public class JsonToDroolsConverter {
             droolsContent.append("when\n");
 
             // 解析Conditions部分
-            droolsContent.append("    $map : Map()\n");
+            droolsContent.append("    $map : HashMap()\n");
             ArrayNode conditionsArray = (ArrayNode) ruleObject.get("conditions");
             StringBuilder conditions = new StringBuilder("eval(");
             boolean firstCondition = true;
@@ -95,11 +96,19 @@ public class JsonToDroolsConverter {
         JsonNode operatorNode = expressionObject.get("operator");
         JsonNode rightNode = expressionObject.get("right");
         if (leftNode != null && operatorNode != null && rightNode != null) {
-            expressionBuilder.append(convertOperand(leftNode));
-            expressionBuilder.append(" ");
-            expressionBuilder.append(operatorNode.asText());
-            expressionBuilder.append(" ");
-            expressionBuilder.append(convertOperand(rightNode));
+            if(operatorNode.asText().equals("==")){
+                // 比较值相等
+                expressionBuilder.append(convertOperand(leftNode));
+                expressionBuilder.append(".equals(");
+                expressionBuilder.append(convertOperand(rightNode));
+                expressionBuilder.append(")");
+            }else {
+                expressionBuilder.append(convertOperand(leftNode));
+                expressionBuilder.append(" ");
+                expressionBuilder.append(operatorNode.asText());
+                expressionBuilder.append(" ");
+                expressionBuilder.append(convertOperand(rightNode));
+            }
         }
 
         return expressionBuilder.toString();

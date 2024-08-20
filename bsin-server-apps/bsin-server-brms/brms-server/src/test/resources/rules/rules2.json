@@ -7,39 +7,48 @@
       },
       "before": [
         {
+          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
+          "valueTakingMethod": "1",
           "type": "String",
           "name": "用户名",
           "metricsKey": "username",
-          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
-          "valueTakingMethod": "1",
           "metricsValue": "bolei"
         },
         {
+          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
+          "valueTakingMethod": "2",
           "type": "String",
           "name": "年龄",
           "metricsKey": "age",
-          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
-          "valueTakingMethod": "2",
           "metricsValue": ""
         },
         {
-          "type": "Object",
-          "name": "用户对象",
-          "metricsKey": "user",
           "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
           "valueTakingMethod": "3",
+          "type": "Object",
+          "name": "用户对象",
+          "metricsKey?": "固定的字段",
+          "metricsKey": "dubboMap",
           "generalizationObject": {
             "coordinate": "userService#getUserDetail",
-            "paramType": "2",
-            "fieldObject": {
-              "metricsEntityNo": "1787766088068198402",
-              "metricsObjectKey": "user",
-              "key": "123",
-              "name": "小刘创建了第二个",
-              "category": "1",
-              "type": "String",
-              "serialNo": "1787774079521746945"
-            }
+            "params": [
+              {
+                "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、规则结果获取",
+                "valueTakingMethod": "1",
+                "type": "String",
+                "name": "小刘创建了第二个",
+                "key": "age",
+                "value": "12"
+              },
+              {
+                "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、规则结果获取",
+                "valueTakingMethod": "1",
+                "type": "String",
+                "name": "小刘创建了第二个",
+                "key": "username",
+                "value": "bolei"
+              }
+            ]
           }
         }
       ],
@@ -83,12 +92,12 @@
           "expression": {
             "left": {
               "type": "value",
-              "value": "$map.get('sex')"
+              "value": "$map.get('userAge')"
             },
             "operator": "==",
             "right": {
               "type": "value",
-              "value": "\"女\""
+              "value": "\"18\""
             }
           }
         }
@@ -122,9 +131,37 @@
           }
         }
       ],
-      "after": {
-
-      }
+      "after": [
+        {
+          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
+          "valueTakingMethod": "3",
+          "type": "Object",
+          "name": "用户对象",
+          "metricsKey?": "固定的字段",
+          "metricsKey": "dubboMap",
+          "generalizationObject": {
+            "coordinate": "userService#getUserDetail",
+            "params": [
+              {
+                "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、规则结果获取",
+                "valueTakingMethod": "1",
+                "type": "String",
+                "name": "小刘创建了第二个",
+                "key": "age",
+                "value": "12"
+              },
+              {
+                "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、规则结果获取",
+                "valueTakingMethod": "1",
+                "type": "String",
+                "name": "小刘创建了第二个",
+                "key": "username",
+                "value": "bolei"
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }

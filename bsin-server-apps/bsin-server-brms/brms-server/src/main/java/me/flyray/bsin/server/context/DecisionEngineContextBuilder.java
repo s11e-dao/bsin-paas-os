@@ -194,7 +194,8 @@ public class DecisionEngineContextBuilder {
      * @return
      */
     public Map<String, Object> buildDecisionFact(DecisionRule decisionRule, ExecuteParams executeParams) {
-
+        log.info("请求参数: {}", executeParams.getParams());
+        System.out.println(executeParams.getJsonParams());
         // 根据decisionRule中json before配置获取指标字段事实
         if(true){
             // 泛化调用获取事实指标对象，从对象获取指标字段
@@ -204,8 +205,29 @@ public class DecisionEngineContextBuilder {
 
         Map<String, Object> params = new HashMap<>();
         // 创建要处理的Map对象，事实数据的处理
-        params.put("sex", "女");
+        // params.put("sex", executeParams.getParams().get("sex"));
+        log.info("性别：{}", executeParams.getParams().get("sex"));
+        String sex = String.valueOf(executeParams.getParams().get("sex"));
+        params.put("sex", sex);
+        String userAge = String.valueOf(executeParams.getParams().get("userAge"));
+        params.put("userAge", userAge);
 
         return params;
+    }
+
+    /**
+     * 处理规则触发后的调用
+     * @param decisionRule
+     * @param globalMap
+     */
+    public void handleThenResult(DecisionRule decisionRule, Map<String, Object> globalMap) {
+
+        log.info("规则触发结果参数: {}", globalMap);
+        // 根据decisionRule中json after配置获取指标字段事实
+        if(true){
+            // 泛化调用获取事实指标对象，从对象获取指标字段
+
+        }
+
     }
 }

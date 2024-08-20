@@ -29,12 +29,22 @@ public class DecisionEngineServiceImpl implements DecisionEngineService {
 
     @Autowired
     private DecisionEngineContextBuilder decisionEngineContextBuilder;
+
     private final DubboHelper dubboHelper;
     @Autowired
     private DecisionRuleMapper decisionRuleMapper;
     @Autowired
     private EventModelMapper eventModelMapper;
 
+    /**
+     * 规则引擎执行入口
+     * 1、构建决策引擎环境
+     * 2、处理fact（事实对象，接收数据的对象实体类）
+     * 3、插入数据并执行规则
+     * 4、根据decisionRule中json afer配置和then的globalMap结果调用逻辑处理
+     * @param executeParams
+     * @return
+     */
     @Override
     @ShenyuDubboClient("/execute")
     public Map<?, ?> execute(ExecuteParams executeParams) {
@@ -49,9 +59,8 @@ public class DecisionEngineServiceImpl implements DecisionEngineService {
         // 1、构建决策引擎环境
         KieSession kieSession = decisionEngineContextBuilder.buildDecisionEngine(decisionRule,
                 decisionRule.getKieBaseName() + "-session");
-        Map<String, Object> globalMap = new HashMap<>();
+        Map<String, Object> globalMap = new LinkedHashMap<>();
         kieSession.setGlobal("globalMap", globalMap);
-        // kieSession.setGlobal("dubboHelper", dubboHelper);
 
         // 2、处理fact（事实对象，接收数据的对象实体类）
         Map<String, Object> params = decisionEngineContextBuilder.buildDecisionFact(decisionRule, executeParams);
@@ -61,7 +70,8 @@ public class DecisionEngineServiceImpl implements DecisionEngineService {
         kieSession.fireAllRules();
         kieSession.destroy();
 
-        // 根据decisionRule中json afer配置和globalMap结果调用逻辑处理
+        // 4、根据decisionRule中json afer配置和then的globalMap结果调用逻辑处理
+        decisionEngineContextBuilder.handleThenResult(decisionRule,globalMap);
 
         return globalMap;
     }
