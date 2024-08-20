@@ -2,13 +2,13 @@ package rules
 
 global java.util.Map globalMap
 
-rule "decision_rule_1_112"
+rule "decision_rule_1_11"
     lock-on-active true
 when
-    $map : Map()
-    eval(((1 + 5) * 3) > 10 && $map.get('sex') == "女")
+    $map : HashMap()
+    eval(((1 + 5) * 3) > 10 && $map.get('userAge').equals("18"))
 then
     globalMap.put("userScore", "100");
     update($map);
-    System.out.println("触发规则：decision_rule_1_112");
+    System.out.println("触发规则：decision_rule_1_11");
 end

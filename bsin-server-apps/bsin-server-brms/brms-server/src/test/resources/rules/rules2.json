@@ -113,21 +113,48 @@
           "map": "$map"
         },
         {
-          "type": "print",
-          "message": "触发规则：decision_rule_1_11"
+          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
+          "valueTakingMethod": "1",
+          "type": "String",
+          "name": "用户名",
+          "metricsKey": "username",
+          "metricsValue": "bolei"
         },
         {
-          "type": "dubboInvoke",
-          "coordinate": "result#format",
-          "paramType": "2",
-          "fieldObject": {
-            "metricsEntityNo": "1787766088068198402",
-            "metricsEntityKey": "user",
-            "key": "123",
-            "name": "小刘创建了第二个",
-            "category": "1",
-            "type": "String",
-            "serialNo": "1787774079521746945"
+          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
+          "valueTakingMethod": "2",
+          "type": "String",
+          "name": "年龄",
+          "metricsKey": "age",
+          "metricsValue": ""
+        },
+        {
+          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
+          "valueTakingMethod": "3",
+          "type": "Object",
+          "name": "用户对象",
+          "metricsKey?": "固定的字段",
+          "metricsKey": "dubboMap",
+          "generalizationObject": {
+            "coordinate": "userService#getUserDetail",
+            "params": [
+              {
+                "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、规则结果获取",
+                "valueTakingMethod": "1",
+                "type": "String",
+                "name": "小刘创建了第二个",
+                "key": "age",
+                "value": "12"
+              },
+              {
+                "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、规则结果获取",
+                "valueTakingMethod": "1",
+                "type": "String",
+                "name": "小刘创建了第二个",
+                "key": "username",
+                "value": "bolei"
+              }
+            ]
           }
         }
       ],
@@ -135,7 +162,7 @@
         {
           "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
           "valueTakingMethod": "3",
-          "type": "Object",
+          "type": "dubboInvoke",
           "name": "用户对象",
           "metricsKey?": "固定的字段",
           "metricsKey": "dubboMap",
