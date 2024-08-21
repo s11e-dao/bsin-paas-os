@@ -1,0 +1,19 @@
+CREATE TABLE `ai_agent_model` (
+  `serial_no` varchar(32) NOT NULL,
+  `tenant_id` varchar(32) DEFAULT NULL,
+  `merchant_no` varchar(32) DEFAULT NULL COMMENT '商户号',
+  `customer_no` varchar(32) DEFAULT NULL COMMENT '客户号',
+  `name` varchar(255) DEFAULT NULL COMMENT 'AI编排模型名称',
+  `type` varchar(11) DEFAULT '1' COMMENT 'AI编排模型类型： ',
+  `cover_image` varchar(255) DEFAULT NULL,
+  `access_authority` varchar(2) NOT NULL DEFAULT '1' COMMENT '访问权限： 1-private 2-public',
+  `description` text COMMENT '描述',
+  `status` varchar(2) NOT NULL DEFAULT '1' COMMENT '状态： 0：禁用 1:启用',
+  `del_flag` bit(1) NOT NULL DEFAULT b'0' COMMENT '逻辑删除 0、未删除 1、已删除',
+  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `create_by` varchar(32) DEFAULT NULL COMMENT '创建人',
+  `llm_no` varchar(32) DEFAULT NULL COMMENT '绑定的大语言模型ID',
+  `default_flag` bit(1) DEFAULT NULL COMMENT '是否为默认： 1-默认',
+  PRIMARY KEY (`serial_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='AI本地知识库';

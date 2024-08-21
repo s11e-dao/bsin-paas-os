@@ -22,6 +22,30 @@
       "data": {
         "label": "结束节点"
       }
+    },
+    {
+      "id": "4",
+      "type": "rule",
+      "data": {
+        "model": "3.5",
+        "label": "关联规则事件模型"
+      }
+    },
+    {
+      "id": "5",
+      "type": "dubboInvoke",
+      "data": {
+        "model": "3.5",
+        "label": "dubbo调用"
+      }
+    },
+    {
+      "id": "6",
+      "type": "kb",
+      "data": {
+        "model": "3.5",
+        "label": "知识库调用"
+      }
     }
   ],
   "edges": [

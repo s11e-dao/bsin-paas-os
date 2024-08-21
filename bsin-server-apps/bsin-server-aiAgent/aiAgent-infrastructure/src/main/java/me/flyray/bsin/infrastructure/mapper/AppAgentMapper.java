@@ -1,7 +1,7 @@
 package  me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import me.flyray.bsin.domain.entity.Hello;
+import me.flyray.bsin.domain.entity.AppAgent;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -15,8 +15,8 @@ import java.util.List;
 
 @Repository
 @Mapper
-public interface HelloMapper extends BaseMapper<Hello> {
+public interface AppAgentMapper extends BaseMapper<AppAgent> {
 
-    List<Hello> listPage();
+    List<AppAgent> listPage();
 
 }

@@ -337,6 +337,12 @@
             <version>5.3.3</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>me.flyray.bsin</groupId>
+            <artifactId>brms-facade</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

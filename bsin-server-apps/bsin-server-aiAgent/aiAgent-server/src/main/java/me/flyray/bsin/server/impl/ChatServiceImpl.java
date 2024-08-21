@@ -1,5 +1,6 @@
 package me.flyray.bsin.server.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.model.chat.ChatLanguageModel;
@@ -8,6 +9,7 @@ import dev.langchain4j.model.output.Response;
 import dev.langchain4j.model.output.TokenUsage;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
+import me.flyray.bsin.domain.entity.AppAgent;
 import me.flyray.bsin.domain.entity.LLMParam;
 import me.flyray.bsin.domain.entity.QuickReplyMessage;
 import me.flyray.bsin.domain.entity.RedisChatMessage;
@@ -15,6 +17,7 @@ import me.flyray.bsin.domain.enums.VectorStoreType;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.response.EmbeddingVO;
 import me.flyray.bsin.facade.service.ChatService;
+import me.flyray.bsin.infrastructure.mapper.AppAgentMapper;
 import me.flyray.bsin.infrastructure.mapper.KnowledgeBaseMapper;
 import me.flyray.bsin.infrastructure.mapper.LLMMapper;
 import me.flyray.bsin.infrastructure.mapper.PromptTemplateMapper;
@@ -25,6 +28,8 @@ import me.flyray.bsin.server.biz.ChatBiz;
 import me.flyray.bsin.server.biz.ModelBiz;
 import me.flyray.bsin.server.biz.PromptEngineeringBiz;
 import me.flyray.bsin.server.biz.VectorRetrievalBiz;
+import me.flyray.bsin.server.engine.AiBpmnModelParseService;
+import me.flyray.bsin.server.engine.BsinAppAgentEngine;
 import me.flyray.bsin.server.memory.chat.BufferWindowInRamStoreMemory;
 import me.flyray.bsin.server.memory.store.InRamStore;
 import me.flyray.bsin.server.memory.store.InRedisStore;
@@ -67,6 +72,12 @@ public class ChatServiceImpl implements ChatService {
   @Autowired private InRedisStore inRedisStore; // 用于缓存历史聊天记录
   @Autowired private ModelBiz modelBiz;
   @Autowired private ChatBiz chatBiz;
+  @Autowired
+  private AiBpmnModelParseService aipmnModelParseService;
+  @Autowired
+  private BsinAppAgentEngine bsinAppAgentEngine;
+  @Autowired
+  private AppAgentMapper appAgentMapper;
 
   interface Assistant {
     // String chat(@MemoryId int memoryId, @UserMessage String userMessage);
@@ -322,6 +333,34 @@ public class ChatServiceImpl implements ChatService {
     List<QuickReplyMessage> quickReplyMessages =
         chatBiz.generateQuickReplies(new ArrayList<String>(Arrays.asList(question)), 3);
     return quickReplyMessages;
+  }
+
+  /**
+   * 与app-agent对话
+   * 1、根据appAgentId查找对应的agent
+   * 2、执行编排
+   * 3、根据返回方式返回结果
+   * @param requestMap
+   * @return
+   */
+  @ApiDoc(desc = "chatWithAppAgent")
+  @ShenyuDubboClient("/chatWithAppAgent")
+  @Override
+  public Map<String, Object> chatWithAppAgent(Map<String, Object> requestMap) {
+    String appAgentId = MapUtils.getString(requestMap, "appAgentId");
+    // TODO 根据customerNo查询customerNo对应的默认Copilot
+    if (appAgentId == null) {
+      throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
+    }
+    // 获取appAgent信息
+    AppAgent appAgent = appAgentMapper.selectById(appAgentId);
+    log.info("AI编排数据：{}", appAgent.getAppAgentModel());
+    // 编排数据
+    JSONObject jsonObject = JSONObject.parseObject(appAgent.getAppAgentModel());
+    // 执行编排
+    requestMap = bsinAppAgentEngine.startExecutors(jsonObject);
+    // 返回结果
+    return requestMap;
   }
 
 }

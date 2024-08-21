@@ -3,24 +3,19 @@ package me.flyray.bsin.server.engine;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import me.flyray.bsin.facade.node.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.facade.model.AiProcess;
-import me.flyray.bsin.facade.model.AipmnModel;
-import me.flyray.bsin.facade.model.ChatgptAgent;
-import me.flyray.bsin.facade.model.EndEvent;
+import me.flyray.bsin.facade.model.AiBpmnModel;
 import me.flyray.bsin.facade.model.FlowElement;
 import me.flyray.bsin.facade.model.FlowNode;
 import me.flyray.bsin.facade.model.SequenceFlow;
-import me.flyray.bsin.facade.model.StartEvent;
 
 /**
  * @author bolei
@@ -29,21 +24,19 @@ import me.flyray.bsin.facade.model.StartEvent;
  */
 @Slf4j
 @Component
-public class AipmnModelParseService {
+public class AiBpmnModelParseService {
 
   /** 解析json数据 */
-  public AipmnModel parse(JSONObject jsonObejct) {
+  public AiBpmnModel parse(JSONObject jsonObejct) {
     // 解析成 AipmnModel
-    AipmnModel aipmnModel = new AipmnModel();
+    AiBpmnModel aiBpmnModel = new AiBpmnModel();
     // 将json解析成模型对象
-    parseToAipmnModel(jsonObejct, aipmnModel);
+    parseToAipmnModel(jsonObejct, aiBpmnModel);
     // TODO 根据联系排序节点
     // 排序节点及获得节点的数据 节点数据处理(ai_ru_variable：存储节点处理结果数据)
     // ai_copipot_model ai_copipot_ru_actinst(运行实例) ai_copipot_ru_variable
     // 执行节点流程
-    execute(aipmnModel);
-
-    return aipmnModel;
+    return aiBpmnModel;
   }
 
   /**
@@ -51,7 +44,7 @@ public class AipmnModelParseService {
    *
    * @param jsonObejct
    */
-  private void parseToAipmnModel(JSONObject jsonObejct, AipmnModel aipmnModel) {
+  private void parseToAipmnModel(JSONObject jsonObejct, AiBpmnModel aiBpmnModel) {
     // 解析流程
     List<AiProcess> aiProcesses = new ArrayList<>();
     AiProcess aiProcess = new AiProcess();
@@ -62,9 +55,7 @@ public class AipmnModelParseService {
     Iterator nodesIter = nodes.iterator();
     while (nodesIter.hasNext()) {
       JSONObject nodeJson = (JSONObject) nodesIter.next();
-
-      // 处理边线
-      // 输入线
+      // 处理边线,输入线
       List<SequenceFlow> incomingFlows = new ArrayList<>();
       SequenceFlow intSequenceFlow = new SequenceFlow();
       intSequenceFlow.setId(("1"));
@@ -99,28 +90,56 @@ public class AipmnModelParseService {
 
         flowElements.add(endEvent);
       } else if ("llm".equals(type)) {
-        ChatgptAgent chatgptAgent = new ChatgptAgent();
-        chatgptAgent.setId((String) nodeJson.get("id"));
+        LlmAgent llmAgent = new LlmAgent();
+        llmAgent.setId((String) nodeJson.get("id"));
         JSONObject dataJson = (JSONObject) nodeJson.get("data");
-        chatgptAgent.setName((String) dataJson.get("label"));
+        llmAgent.setName((String) dataJson.get("label"));
 
-        chatgptAgent.setIncomingFlows(incomingFlows);
-        chatgptAgent.setOutgoingFlows(outgoingFlows);
+        llmAgent.setIncomingFlows(incomingFlows);
+        llmAgent.setOutgoingFlows(outgoingFlows);
+        flowElements.add(llmAgent);
+      }else if ("rule".equals(type)) {
+        // 规则应用调用
+        RuleAgent ruleAgent = new RuleAgent();
+        ruleAgent.setId((String) nodeJson.get("id"));
+        JSONObject dataJson = (JSONObject) nodeJson.get("data");
+        ruleAgent.setName((String) dataJson.get("label"));
 
-        flowElements.add(chatgptAgent);
+        ruleAgent.setIncomingFlows(incomingFlows);
+        ruleAgent.setOutgoingFlows(outgoingFlows);
+        flowElements.add(ruleAgent);
+      }else if ("dubboInvoke".equals(type)) {
+        // dubbo服务调用
+        DubboAgent dubboAgent = new DubboAgent();
+        dubboAgent.setId((String) nodeJson.get("id"));
+        JSONObject dataJson = (JSONObject) nodeJson.get("data");
+        dubboAgent.setName((String) dataJson.get("label"));
+
+        dubboAgent.setIncomingFlows(incomingFlows);
+        dubboAgent.setOutgoingFlows(outgoingFlows);
+        flowElements.add(dubboAgent);
+      }else if ("kb".equals(type)) {
+        // 知识库调用
+        KnowledgeBaseAgent knowledgeBaseAgent = new KnowledgeBaseAgent();
+        knowledgeBaseAgent.setId((String) nodeJson.get("id"));
+        JSONObject dataJson = (JSONObject) nodeJson.get("data");
+        knowledgeBaseAgent.setName((String) dataJson.get("label"));
+
+        knowledgeBaseAgent.setIncomingFlows(incomingFlows);
+        knowledgeBaseAgent.setOutgoingFlows(outgoingFlows);
+        flowElements.add(knowledgeBaseAgent);
       }
     }
     aiProcess.setFlowElements(flowElements);
     aiProcesses.add(aiProcess);
 
-    aipmnModel.setAiProcesses(aiProcesses);
+    aiBpmnModel.setAiProcesses(aiProcesses);
 
     // 找到开始节点
-    FlowElement startEvent = findFirstFlowElement(aipmnModel);
+    FlowElement startEvent = findFirstFlowElement(aiBpmnModel);
     aiProcess.setInitialFlowElement(startEvent);
 
     // 根据开始节点顺序找到下一个节点，放到有序集合中
-
     List<SequenceFlow> sequenceFlows = new ArrayList<>();
     // 获取到连线 处理边线
     JSONArray edges = (JSONArray) jsonObejct.get("edges");
@@ -131,128 +150,21 @@ public class AipmnModelParseService {
       sequenceFlow.setId((String) edgesJson.get("id"));
       sequenceFlow.setSourceRef((String) edgesJson.get("source"));
       sequenceFlow.setTargetRef((String) edgesJson.get("target"));
+      sequenceFlow.setSourceFlowElement(getFlowElement(flowElements, (String) edgesJson.get("source")));
+      sequenceFlow.setTargetFlowElement(getFlowElement(flowElements, (String) edgesJson.get("target")));
       sequenceFlows.add(sequenceFlow);
     }
-    aipmnModel.setSequenceFlows(sequenceFlows);
+    aiBpmnModel.setSequenceFlows(sequenceFlows);
   }
 
   /** 找出第一个处理节点 */
-  private FlowElement execute(AipmnModel aipmnModel) {
-    // 根据节点类型执行
-
-    List<FlowElement> taskNodeList = aipmnModel.getAiProcesses().get(0).getFlowElements();
-
-    for (FlowElement flowNode : taskNodeList) {
-      if (flowNode instanceof StartEvent) {
-        log.info("-----------------");
-        log.info("开始节点开始");
-        log.info("-----------------");
-        log.info("开始节点结束");
-      } else if (flowNode instanceof ChatgptAgent) {
-        log.info("-----------------");
-        log.info("chatGPT节点开始");
-
-        log.info("-----------------");
-        log.info("chatGPT节点结束");
-
-      } else if (flowNode instanceof EndEvent) {
-        log.info("-----------------");
-        log.info("结束节点开始");
-        log.info("-----------------");
-        log.info("结束节点结束");
-      }
-    }
-
-    return null;
-  }
-
-  /** 找出第一个处理节点 */
-  private FlowElement findFirstFlowElement(AipmnModel aipmnModel) {
+  private FlowElement findFirstFlowElement(AiBpmnModel aipmnModel) {
     for (FlowElement flowElement : aipmnModel.getAiProcesses().get(0).getFlowElements()) {
       if (flowElement instanceof StartEvent) {
         return flowElement;
       }
     }
     return null;
-  }
-
-  private void getFlowElementList(List<FlowNode> taskList, Collection<FlowElement> flowElements) {
-
-    // 获取第一个UserTask
-    FlowElement startElement =
-        flowElements.stream()
-            .filter(flowElement -> flowElement instanceof StartEvent)
-            .collect(Collectors.toList())
-            .get(0);
-
-    List<SequenceFlow> outgoingFlows = ((StartEvent) startElement).getOutgoingFlows();
-
-    // 选择对外数据
-    String targetRef = outgoingFlows.get(0).getTargetRef();
-
-    // 根据ID找到FlowElement
-    FlowElement targetElementOfStartElement = getFlowElement(flowElements, targetRef);
-    this.getTaskList(taskList, flowElements, targetElementOfStartElement);
-  }
-
-  /***
-   * 根据bpmnmodel获取流程节点的顺序信息
-   * @param taskList
-   * @param flowElements
-   * @param curFlowElement
-   */
-  private void getTaskList(
-      List<FlowNode> taskList, Collection<FlowElement> flowElements, FlowElement curFlowElement) {
-    if (curFlowElement == null && taskList.size() == 0) {
-      // 获取第一个UserTask
-      FlowElement startElement =
-          flowElements.stream()
-              .filter(flowElement -> flowElement instanceof StartEvent)
-              .collect(Collectors.toList())
-              .get(0);
-      List<SequenceFlow> outgoingFlows = ((StartEvent) startElement).getOutgoingFlows();
-      String targetRef = outgoingFlows.get(0).getTargetRef();
-      // 根据ID找到FlowElement
-      FlowElement targetElementOfStartElement = getFlowElement(flowElements, targetRef);
-      if (targetElementOfStartElement instanceof ChatgptAgent) {
-        this.getTaskList(taskList, flowElements, targetElementOfStartElement);
-      }
-
-    } else if (curFlowElement instanceof StartEvent) {
-      taskList.add((FlowNode) curFlowElement);
-      String targetRef = "";
-      List<SequenceFlow> outgoingFlows = ((ChatgptAgent) curFlowElement).getOutgoingFlows();
-      if (outgoingFlows.size() == 1) {
-        targetRef = outgoingFlows.get(0).getTargetRef();
-      } else {
-        // 找到表达式成立的sequenceFlow的
-        SequenceFlow sequenceFlow = getSequenceFlow(outgoingFlows);
-        if (sequenceFlow != null) {
-          targetRef = sequenceFlow.getTargetRef();
-        }
-      }
-      // 根据ID找到FlowElement
-      FlowElement targetElement = getFlowElement(flowElements, targetRef);
-
-      this.getTaskList(taskList, flowElements, targetElement);
-    } else if (curFlowElement instanceof EndEvent) {
-      taskList.add((FlowNode) curFlowElement);
-      String targetRef = "";
-      List<SequenceFlow> outgoingFlows = ((ChatgptAgent) curFlowElement).getOutgoingFlows();
-      if (outgoingFlows.size() == 1) {
-        targetRef = outgoingFlows.get(0).getTargetRef();
-      } else {
-        // 找到表达式成立的sequenceFlow的
-        SequenceFlow sequenceFlow = getSequenceFlow(outgoingFlows);
-        if (sequenceFlow != null) {
-          targetRef = sequenceFlow.getTargetRef();
-        }
-      }
-      // 根据ID找到FlowElement
-      FlowElement targetElement = getFlowElement(flowElements, targetRef);
-
-      this.getTaskList(taskList, flowElements, targetElement);
-    }
   }
 
   /***

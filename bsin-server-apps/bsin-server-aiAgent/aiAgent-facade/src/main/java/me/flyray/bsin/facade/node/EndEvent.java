@@ -1,6 +1,7 @@
-package me.flyray.bsin.facade.model;
+package me.flyray.bsin.facade.node;
 
 import lombok.Data;
+import me.flyray.bsin.facade.model.FlowNode;
 
 /**
  * @author bolei

@@ -1,8 +1,6 @@
 package me.flyray.bsin.facade.model;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import lombok.Data;
 
@@ -13,7 +11,7 @@ import lombok.Data;
  */
 
 @Data
-public class AipmnModel {
+public class AiBpmnModel {
 
     /**
      * 模型名称
@@ -24,7 +22,7 @@ public class AipmnModel {
      */
 
     /**
-     * process
+     * 流程process集合
      */
     private List<AiProcess> aiProcesses;
 

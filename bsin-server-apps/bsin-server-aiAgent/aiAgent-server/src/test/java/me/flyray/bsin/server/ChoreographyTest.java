@@ -13,7 +13,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.server.engine.AipmnModelParseService;
+import me.flyray.bsin.server.engine.AiBpmnModelParseService;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class ChoreographyTest {
 
   @Autowired
-  private AipmnModelParseService aipmnModelParseService;
+  private AiBpmnModelParseService aipmnModelParseService;
 
   @Test
   public void parseAiModelJson() throws IOException {

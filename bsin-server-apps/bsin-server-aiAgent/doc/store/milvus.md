@@ -3,7 +3,7 @@
 
 ### milvus一键安装
 ```shell
-docker-compose -f milvus-standalone-docker-compose.yml up -d
+docker-compose -f docker-compose.yml up -d
 
 # 停掉容器并移除应用
 docker-compose down
@@ -12,6 +12,9 @@ docker-compose down
 
 访问客户端
 
+http://localhost:3000/#/connect
+
+![avatar](../images/milvus-login.jpg)
 
 
 ### 字段设计

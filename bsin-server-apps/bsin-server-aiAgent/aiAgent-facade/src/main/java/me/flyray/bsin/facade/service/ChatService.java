@@ -33,4 +33,6 @@ public interface ChatService {
    * */
   public List<QuickReplyMessage> getQuickReplies(Map<String, Object> requestMap);
 
+  public Map<String, Object> chatWithAppAgent(Map<String, Object> requestMap);
+
 }

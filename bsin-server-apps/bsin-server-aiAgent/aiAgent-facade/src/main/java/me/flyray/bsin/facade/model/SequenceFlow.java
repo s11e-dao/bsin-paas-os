@@ -39,4 +39,5 @@ public class SequenceFlow extends FlowElement {
 
     @JsonIgnore
     protected FlowElement targetFlowElement;
+
 }
