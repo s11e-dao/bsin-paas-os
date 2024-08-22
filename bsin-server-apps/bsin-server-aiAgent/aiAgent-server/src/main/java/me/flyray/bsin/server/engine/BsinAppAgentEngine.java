@@ -37,23 +37,18 @@ public class BsinAppAgentEngine {
 
   public Map<String, Object> startExecutors(JSONObject appAgentModel) {
 
+    // 将AI编排Json数据解析成Ai的Bpmn对象
     AiBpmnModel aipmnModel = aipmnModelParseService.parse(appAgentModel);
-
     // 根据节点连线组成的有序集合，默认当前设计只有一个流程，直接取get(0)
     AiProcess aiProcess = aipmnModel.getAiProcesses().get(0);
-    // 流程节点
+    // 获取所有流程节点
     List<FlowElement> taskNodeList = aiProcess.getFlowElements();
-    // 流程顺序
+    // 获取流程节点顺序
     List<SequenceFlow> sequenceFlows = aipmnModel.getSequenceFlows();
-
     // 编排流程的开始节点
     FlowElement initialFlowElement = aiProcess.getInitialFlowElement();
-    // 节点类型： startEvent type: 'start', (开始节点) 开场白和角色设置
-    log.info("开始节点开始");
-
-    log.info("开始节点结束");
     // 根据开始节点不断递归查找下一个节点并进行处理
-    Map<String, Object> resultMap = handleFlowElement(initialFlowElement, sequenceFlows);
+    Map<String, Object> resultMap = handleFlowElement(initialFlowElement, sequenceFlows, null);
 
     return resultMap;
   }
@@ -64,17 +59,15 @@ public class BsinAppAgentEngine {
    * @param sequenceFlows
    * @return
    */
-  public Map<String, Object> handleFlowElement(FlowElement currentFlowElement, List<SequenceFlow> sequenceFlows) {
+  public Map<String, Object> handleFlowElement(FlowElement currentFlowElement, List<SequenceFlow> sequenceFlows, Map<String, Object> requetMap) {
     // 处理当前节点的业务逻辑
-    Map<String, Object> resultMap = processCurrentFlowElement(currentFlowElement);
-
+    Map<String, Object> resultMap = processCurrentFlowElement(currentFlowElement,requetMap);
     // 递归查找下一个节点
     FlowElement nextFlowElement = getNextFlowElement(currentFlowElement, sequenceFlows);
-
-    // 如果存在下一个节点，递归处理下一个节点
+    // 如果存在下一个节点，递归处理下一个节点, 并将上一个节点处理的结果作为下一个节点处理的入参
     if (nextFlowElement != null) {
-      Map<String, Object> nextResultMap = handleFlowElement(nextFlowElement, sequenceFlows);
-      // 合并当前节点和下一个节点的结果
+      Map<String, Object> nextResultMap = handleFlowElement(nextFlowElement, sequenceFlows, resultMap);
+      // 合并当前节点和上一个节点的结果，作为下一个节点的入参
       resultMap.putAll(nextResultMap);
     }
     return resultMap;
@@ -85,38 +78,49 @@ public class BsinAppAgentEngine {
    * @param flowNode
    * @return
    */
-  private Map<String, Object> processCurrentFlowElement(FlowElement flowNode) {
+  private Map<String, Object> processCurrentFlowElement(FlowElement flowNode, Map<String, Object> requetMap) {
     Map<String, Object> resultMap = new HashMap<>();
 
-    if (flowNode instanceof LlmAgent) {
-      /** 节点类型： ai-agent 调用大模型，(有输入输出) type: 'aiAgent', data{ 调用llm input output } */
+    // 在此处执行与当前节点相关的操作, 例如，根据节点类型进行不同的处理
+    if (flowNode instanceof StartEvent) {
+      // 节点类型： startEvent type: 'start', (开始节点) 开场白和角色设置
+      log.info("开始节点开始");
+
+      log.info("开始节点结束");
+    } else if (flowNode instanceof LlmAgent) {
+      // 对用户意图的理解，理解之后决定是否会调用dubbo
       log.info("大模型节点开始");
       LlmChat llmChat = new AliDashscopeLlm();
-      llmChat.chat();
+      resultMap = llmChat.chat();
       log.info("大模型节点结束");
     } else if (flowNode instanceof RuleAgent) {
       /** 节点类型： rule 调用规则引擎 type: 'rule', data{ eventCode } */
       log.info("规则引擎节点开始");
       ExecuteParams executeParams = new ExecuteParams();
-      executeParams.setEventCode("chat");
-      // decisionEngineService.execute(executeParams);
+      // 固定eventCode为appAgentChat
+      executeParams.setEventCode("appAgentChat");
+      // resultMap = decisionEngineService.execute(executeParams);
       log.info("规则引擎节点结束");
     } else if (flowNode instanceof DubboAgent) {
       /** 节点类型： fetchApi 调用api (有输入输出) type: 'fetchApi', data{ url content-type input output } */
       log.info("dubbo调用节点开始");
-      // bsinServiceInvoke.genericInvoke(null,null,null,null);
+      // 指令查询，如何指令存在，则根据指令调用dubbo服务器
+      // resultMap = bsinServiceInvoke.genericInvoke(null,null,null,null);
       log.info("dubbo调用节点结束");
+    } else if (flowNode instanceof KnowledgeBaseAgent) {
+      log.info("知识库节点开始");
+
+      log.info("知识库节点结束");
     } else if (flowNode instanceof EndEvent) {
       log.info("结束节点开始");
-
+      if(resultMap == null){
+        resultMap = new HashMap<>();
+      }
+      // 加工处理requetMap和resultMap
+      resultMap.putAll(requetMap);
+      resultMap.put(flowNode.getId(), "对话返回结果");
       log.info("结束节点结束");
     }
-
-    // 在此处执行与当前节点相关的操作
-    // 例如，根据节点类型进行不同的处理
-    System.out.println("Processing FlowElement: " + flowNode.getId());
-    resultMap.put(flowNode.getId(), "Processed");
-
     return resultMap;
   }
 

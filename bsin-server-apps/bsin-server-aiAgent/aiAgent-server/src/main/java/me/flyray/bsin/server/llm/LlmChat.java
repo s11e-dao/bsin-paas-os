@@ -1,7 +1,9 @@
 package me.flyray.bsin.server.llm;
 
+import java.util.Map;
+
 public interface LlmChat {
 
-    void chat();
+    Map<String, Object> chat();
 
 }

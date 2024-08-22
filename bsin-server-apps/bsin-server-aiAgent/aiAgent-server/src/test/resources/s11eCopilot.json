@@ -57,6 +57,21 @@
     {
       "id": "e2-3",
       "source": "2",
+      "target": "4"
+    },
+    {
+      "id": "e2-3",
+      "source": "4",
+      "target": "6"
+    },
+    {
+      "id": "e2-3",
+      "source": "6",
+      "target": "5"
+    },
+    {
+      "id": "e3-4",
+      "source": "5",
       "target": "3"
     }
   ],
