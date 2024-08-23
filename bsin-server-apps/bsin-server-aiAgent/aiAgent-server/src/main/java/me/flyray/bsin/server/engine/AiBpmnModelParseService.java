@@ -118,16 +118,6 @@ public class AiBpmnModelParseService {
         dubboAgent.setIncomingFlows(incomingFlows);
         dubboAgent.setOutgoingFlows(outgoingFlows);
         flowElements.add(dubboAgent);
-      }else if ("kb".equals(type)) {
-        // 知识库调用
-        KnowledgeBaseAgent knowledgeBaseAgent = new KnowledgeBaseAgent();
-        knowledgeBaseAgent.setId((String) nodeJson.get("id"));
-        JSONObject dataJson = (JSONObject) nodeJson.get("data");
-        knowledgeBaseAgent.setName((String) dataJson.get("label"));
-
-        knowledgeBaseAgent.setIncomingFlows(incomingFlows);
-        knowledgeBaseAgent.setOutgoingFlows(outgoingFlows);
-        flowElements.add(knowledgeBaseAgent);
       }
     }
     aiProcess.setFlowElements(flowElements);

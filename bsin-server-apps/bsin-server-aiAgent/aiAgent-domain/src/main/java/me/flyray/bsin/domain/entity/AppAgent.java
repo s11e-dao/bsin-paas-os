@@ -51,6 +51,9 @@ public class AppAgent {
   /** 访问权限： 1-private 2-public */
   private String accessAuthority;
 
+  /** 知识库 */
+  private String knowledgeBaseNo;
+
   /** 是否为默认商户或者用户copilot */
   private Boolean defaultFlag;
 

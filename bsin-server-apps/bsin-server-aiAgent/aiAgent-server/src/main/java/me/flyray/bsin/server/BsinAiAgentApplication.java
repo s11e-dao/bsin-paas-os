@@ -1,6 +1,9 @@
 package me.flyray.bsin.server;
 
+import dev.langchain4j.store.embedding.EmbeddingStore;
 import me.flyray.bsin.server.biz.WxPlatformMsgHandlerBiz;
+import me.flyray.bsin.server.milvus.BsinMilvusEmbeddingStore;
+import me.flyray.bsin.server.milvus.BsinTextSegment;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -12,4 +12,6 @@ import me.flyray.bsin.facade.model.FlowNode;
 @Data
 public class StartEvent extends FlowNode {
 
+    private String prologue;
+
 }

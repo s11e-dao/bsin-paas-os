@@ -10,6 +10,7 @@
     <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
     <result property="name" column="name" jdbcType="VARCHAR"/>
     <result property="type" column="type" jdbcType="VARCHAR"/>
+    <result property="knowledgeBaseNo" column="Knowledge_base_no" jdbcType="VARCHAR"/>
     <result property="appAgentModel" column="app_agent_model" jdbcType="VARCHAR"/>
     <result property="accessAuthority" column="access_authority" jdbcType="VARCHAR"/>
     <result property="defaultFlag" column="default_flag" jdbcType="VARCHAR"/>
@@ -21,7 +22,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    serial_no,default_flag,streaming,editable
+    serial_no,default_flag,streaming,editable,Knowledge_base_no
         ,tenant_id,merchant_no,customer_no,app_agent_model,avatar,
         ,type,cover_image,access_authority,`status`,create_time,update_time
   </sql>

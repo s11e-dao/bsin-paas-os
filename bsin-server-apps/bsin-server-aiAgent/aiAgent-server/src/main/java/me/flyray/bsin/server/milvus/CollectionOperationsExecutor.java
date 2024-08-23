@@ -4,6 +4,10 @@ import static io.milvus.grpc.DataType.FloatVector;
 import static io.milvus.grpc.DataType.VarChar;
 import static io.milvus.grpc.DataType.Int64;
 import static me.flyray.bsin.server.milvus.BsinMilvusEmbeddingStore.*;
+import static me.flyray.bsin.server.milvus.BsinMilvusEmbeddingStore.ID_FIELD_NAME;
+import static me.flyray.bsin.server.milvus.BsinMilvusEmbeddingStore.TEXT_FIELD_NAME;
+import static me.flyray.bsin.server.milvus.BsinMilvusEmbeddingStore.VECTOR_FIELD_NAME;
+import static me.flyray.bsin.server.milvus.BsinOsOperateCodeEmbeddingStore.*;
 import static me.flyray.bsin.server.milvus.CollectionRequestBuilder.*;
 
 import io.milvus.client.MilvusServiceClient;
@@ -40,7 +44,7 @@ class CollectionOperationsExecutor {
     return response.getData();
   }
 
-  static void createCollection(
+  static void createOsOperateCodeCollection(
       MilvusServiceClient milvusClient, String collectionName, int dimension) {
 
     CreateCollectionParam request =
@@ -56,39 +60,27 @@ class CollectionOperationsExecutor {
                     .build())
             .addFieldType(
                 FieldType.newBuilder()
-                    .withName(TYPE_FIELD_NAME)
-                    .withDataType(VarChar)
-                    .withMaxLength(20)
-                    .build())
-            .addFieldType(
-                FieldType.newBuilder()
-                    .withName(CUSTOMER_NO_FIELD_NAME)
-                    .withDataType(VarChar)
-                    .withMaxLength(20)
-                    .build())
-            .addFieldType(
-                FieldType.newBuilder()
-                    .withName(AI_NO)
-                    .withDataType(VarChar)
-                    .withMaxLength(20)
-                    .build())
-            .addFieldType(
-                FieldType.newBuilder()
-                    .withName(KNOWLEDGE_BASE_FILE_NO_FIELD_NAME)
-                    .withDataType(VarChar)
-                    .withMaxLength(20)
-                    .build())
-            .addFieldType(
-                FieldType.newBuilder()
-                    .withName(CHUNK_NO_FIELD_NAME)
-                    .withDataType(VarChar)
-                    .withMaxLength(26)
-                    .build())
-            .addFieldType(
-                FieldType.newBuilder()
                     .withName(TEXT_FIELD_NAME)
                     .withDataType(VarChar)
-                    .withMaxLength(65535)
+                    .withMaxLength(20)
+                    .build())
+            .addFieldType(
+                FieldType.newBuilder()
+                    .withName(OP_CODE_FIELD_NAME)
+                    .withDataType(VarChar)
+                    .withMaxLength(20)
+                    .build())
+            .addFieldType(
+                FieldType.newBuilder()
+                    .withName(PARAMS_FIELD_NAME)
+                    .withDataType(VarChar)
+                    .withMaxLength(20)
+                    .build())
+            .addFieldType(
+                FieldType.newBuilder()
+                    .withName(SCOPE_FIELD_NAME)
+                    .withDataType(VarChar)
+                    .withMaxLength(20)
                     .build())
             .addFieldType(
                 FieldType.newBuilder()
@@ -97,6 +89,67 @@ class CollectionOperationsExecutor {
                     .withDimension(dimension)
                     .build())
             .build();
+
+    R<RpcStatus> response = milvusClient.createCollection(request);
+    checkResponseNotFailed(response);
+  }
+
+  static void createCollection(
+          MilvusServiceClient milvusClient, String collectionName, int dimension) {
+    CreateCollectionParam request =
+            CreateCollectionParam.newBuilder()
+                    .withCollectionName(collectionName)
+                    .addFieldType(
+                            FieldType.newBuilder()
+                                    .withName(ID_FIELD_NAME)
+                                    .withDataType(VarChar)
+                                    .withMaxLength(20)
+                                    .withPrimaryKey(true)
+                                    .withAutoID(false)
+                                    .build())
+                    .addFieldType(
+                            FieldType.newBuilder()
+                                    .withName(TYPE_FIELD_NAME)
+                                    .withDataType(VarChar)
+                                    .withMaxLength(20)
+                                    .build())
+                    .addFieldType(
+                            FieldType.newBuilder()
+                                    .withName(CUSTOMER_NO_FIELD_NAME)
+                                    .withDataType(VarChar)
+                                    .withMaxLength(20)
+                                    .build())
+                    .addFieldType(
+                            FieldType.newBuilder()
+                                    .withName(AI_NO)
+                                    .withDataType(VarChar)
+                                    .withMaxLength(20)
+                                    .build())
+                    .addFieldType(
+                            FieldType.newBuilder()
+                                    .withName(KNOWLEDGE_BASE_FILE_NO_FIELD_NAME)
+                                    .withDataType(VarChar)
+                                    .withMaxLength(20)
+                                    .build())
+                    .addFieldType(
+                            FieldType.newBuilder()
+                                    .withName(CHUNK_NO_FIELD_NAME)
+                                    .withDataType(VarChar)
+                                    .withMaxLength(26)
+                                    .build())
+                    .addFieldType(
+                            FieldType.newBuilder()
+                                    .withName(TEXT_FIELD_NAME)
+                                    .withDataType(VarChar)
+                                    .withMaxLength(65535)
+                                    .build())
+                    .addFieldType(
+                            FieldType.newBuilder()
+                                    .withName(VECTOR_FIELD_NAME)
+                                    .withDataType(FloatVector)
+                                    .withDimension(dimension)
+                                    .build())
+                    .build();
 
     R<RpcStatus> response = milvusClient.createCollection(request);
     checkResponseNotFailed(response);

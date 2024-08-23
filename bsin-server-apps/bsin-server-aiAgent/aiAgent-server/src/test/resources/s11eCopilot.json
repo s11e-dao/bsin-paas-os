@@ -38,14 +38,6 @@
         "model": "3.5",
         "label": "dubbo调用"
       }
-    },
-    {
-      "id": "6",
-      "type": "kb",
-      "data": {
-        "model": "3.5",
-        "label": "知识库调用"
-      }
     }
   ],
   "edges": [
@@ -62,11 +54,6 @@
     {
       "id": "e2-3",
       "source": "4",
-      "target": "6"
-    },
-    {
-      "id": "e2-3",
-      "source": "6",
       "target": "5"
     },
     {

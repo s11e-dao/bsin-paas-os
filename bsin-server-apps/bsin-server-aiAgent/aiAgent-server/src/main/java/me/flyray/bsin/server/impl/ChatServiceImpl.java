@@ -348,6 +348,7 @@ public class ChatServiceImpl implements ChatService {
   @Override
   public Map<String, Object> chatWithAppAgent(Map<String, Object> requestMap) {
     String appAgentId = MapUtils.getString(requestMap, "appAgentId");
+    String question = MapUtils.getString(requestMap, "question");
     // TODO 根据customerNo查询customerNo对应的默认Copilot
     if (appAgentId == null) {
       throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
@@ -355,10 +356,8 @@ public class ChatServiceImpl implements ChatService {
     // 获取appAgent信息
     AppAgent appAgent = appAgentMapper.selectById(appAgentId);
     log.info("AI编排数据：{}", appAgent.getAppAgentModel());
-    // 编排数据
-    JSONObject jsonObject = JSONObject.parseObject(appAgent.getAppAgentModel());
     // 执行编排
-    requestMap = bsinAppAgentEngine.startExecutors(jsonObject);
+    requestMap = bsinAppAgentEngine.startExecutors(appAgent,question);
     // 返回结果
     return requestMap;
   }

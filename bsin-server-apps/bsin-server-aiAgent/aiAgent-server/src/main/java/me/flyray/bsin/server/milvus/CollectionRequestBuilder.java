@@ -5,6 +5,10 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.joining;
 import static me.flyray.bsin.server.milvus.BsinMilvusEmbeddingStore.*;
+import static me.flyray.bsin.server.milvus.BsinMilvusEmbeddingStore.ID_FIELD_NAME;
+import static me.flyray.bsin.server.milvus.BsinMilvusEmbeddingStore.TEXT_FIELD_NAME;
+import static me.flyray.bsin.server.milvus.BsinMilvusEmbeddingStore.VECTOR_FIELD_NAME;
+import static me.flyray.bsin.server.milvus.BsinOsOperateCodeEmbeddingStore.*;
 
 import io.milvus.common.clientenum.ConsistencyLevelEnum;
 import io.milvus.param.MetricType;
@@ -57,6 +61,30 @@ class CollectionRequestBuilder {
                 KNOWLEDGE_BASE_FILE_NO_FIELD_NAME,
                 CHUNK_NO_FIELD_NAME))
         .build();
+  }
+
+  static SearchParam buildBsinOsOpCodeSearchRequest(
+          String collectionName,
+          List<Float> vector,
+          int maxResults,
+          MetricType metricType,
+          ConsistencyLevelEnum consistencyLevel) {
+    return SearchParam.newBuilder()
+            .withCollectionName(collectionName)
+            .withVectors(singletonList(vector))
+            .withVectorFieldName(VECTOR_FIELD_NAME)
+            .withTopK(maxResults)
+            .withMetricType(metricType)
+            .withConsistencyLevel(consistencyLevel)
+            .withOutFields(
+                    asList(
+                        ID_FIELD_NAME,
+                        TEXT_FIELD_NAME,
+                        OP_CODE_FIELD_NAME,
+                        PARAMS_FIELD_NAME,
+                        SCOPE_FIELD_NAME
+                    ))
+            .build();
   }
 
   static SearchParam buildSearchRequest(
