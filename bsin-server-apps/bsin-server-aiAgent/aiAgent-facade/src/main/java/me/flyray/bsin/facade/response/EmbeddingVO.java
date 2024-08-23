@@ -23,7 +23,7 @@ public class EmbeddingVO implements Serializable {
     /**
      * 客户ID
      */
-    private String customerNo;
+    private String tenantId;
 
     /**
      * AI编号： copilot_no|agent_no|品牌馆_no|customer_no|knowledge_base_no

@@ -115,7 +115,7 @@ class CollectionOperationsExecutor {
                                     .build())
                     .addFieldType(
                             FieldType.newBuilder()
-                                    .withName(CUSTOMER_NO_FIELD_NAME)
+                                    .withName(TENANT_ID_FIELD_NAME)
                                     .withDataType(VarChar)
                                     .withMaxLength(20)
                                     .build())

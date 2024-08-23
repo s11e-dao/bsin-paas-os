@@ -11,7 +11,7 @@ public class BsinTextSegment extends TextSegment {
    */
   private final String type;
 
-  private final String customerNo;
+  private final String tenantId;
   private final String aiNo;
   private final String knowledgeBaseFileNo;
   private final String chunkNo;
@@ -21,7 +21,7 @@ public class BsinTextSegment extends TextSegment {
   public BsinTextSegment(
       String text,
       Metadata metadata,
-      String customerNo,
+      String tenantId,
       String type,
       String aiNo,
       String knowledgeBaseFileNo,
@@ -30,7 +30,7 @@ public class BsinTextSegment extends TextSegment {
     super(text, metadata);
     //    this.customerNo = ensureNotBlank(customerNo, "customerNo");
     //    this.knowledgeBaseFileNo = ensureNotNull(knowledgeBaseFileNo, "knowledgeBaseFileNo");
-    this.customerNo = customerNo;
+    this.tenantId = tenantId;
     this.type = type;
     this.vector = vector;
     this.aiNo = aiNo;
@@ -40,7 +40,7 @@ public class BsinTextSegment extends TextSegment {
 
   public BsinTextSegment(
       TextSegment textSegment,
-      String customerNo,
+      String tenantId,
       String type,
       String aiNo,
       String knowledgeBaseFileNo,
@@ -49,7 +49,7 @@ public class BsinTextSegment extends TextSegment {
     super(textSegment.text(), textSegment.metadata());
     //    this.customerNo = ensureNotBlank(customerNo, "customerNo");
     //    this.knowledgeBaseFileNo = ensureNotNull(knowledgeBaseFileNo, "knowledgeBaseFileNo");
-    this.customerNo = customerNo;
+    this.tenantId = tenantId;
     this.type = type;
     this.aiNo = aiNo;
     this.knowledgeBaseFileNo = knowledgeBaseFileNo;
@@ -57,8 +57,8 @@ public class BsinTextSegment extends TextSegment {
     this.vector = vector;
   }
 
-  public String customerNo() {
-    return customerNo;
+  public String tenantId() {
+    return tenantId;
   }
 
   public String type() {
@@ -97,12 +97,12 @@ public class BsinTextSegment extends TextSegment {
   public static BsinTextSegment fromBsin(
       String text,
       String type,
-      String customerNo,
+      String tenantId,
       String aiNo,
       String knowledgeBaseFileNo,
       String chunkNo,
       List<Float> vector) {
     return new BsinTextSegment(
-        text, new Metadata(), customerNo, type, aiNo, knowledgeBaseFileNo, chunkNo, vector);
+        text, new Metadata(), tenantId, type, aiNo, knowledgeBaseFileNo, chunkNo, vector);
   }
 }

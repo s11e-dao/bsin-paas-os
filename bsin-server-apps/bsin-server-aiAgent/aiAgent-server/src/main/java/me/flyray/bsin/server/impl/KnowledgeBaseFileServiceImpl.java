@@ -348,7 +348,7 @@ public class KnowledgeBaseFileServiceImpl implements KnowledgeBaseFileService {
     for (BsinTextSegment bsinTextSegment : bsinTextSegments) {
       EmbeddingVO embeddingVO = new EmbeddingVO();
       embeddingVO.setText(bsinTextSegment.text());
-      embeddingVO.setCustomerNo(bsinTextSegment.customerNo());
+      embeddingVO.setTenantId(bsinTextSegment.tenantId());
       embeddingVO.setAiNo(bsinTextSegment.aiNo());
       embeddingVO.setKnowledgeBaseFileNo(bsinTextSegment.knowledgeBaseFileNo());
       embeddingVO.setChunkNo(bsinTextSegment.chunkNo());

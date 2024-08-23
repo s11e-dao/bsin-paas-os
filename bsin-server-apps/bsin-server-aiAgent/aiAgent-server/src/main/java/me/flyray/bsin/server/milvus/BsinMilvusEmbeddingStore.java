@@ -44,7 +44,7 @@ public class BsinMilvusEmbeddingStore implements EmbeddingStore<BsinTextSegment>
   public static final String ID_FIELD_NAME = "id";
   public static final String TEXT_FIELD_NAME = "text";
   public static final String VECTOR_FIELD_NAME = "vector";
-  public static final String CUSTOMER_NO_FIELD_NAME = "customer_no";
+  public static final String TENANT_ID_FIELD_NAME = "tenant_id";
   public static final String TYPE_FIELD_NAME = "type";
   public static final String AI_NO = "ai_no";
   public static final String KNOWLEDGE_BASE_FILE_NO_FIELD_NAME = "knowledge_base_file_no";
@@ -142,7 +142,7 @@ public class BsinMilvusEmbeddingStore implements EmbeddingStore<BsinTextSegment>
               TYPE_FIELD_NAME,
               TEXT_FIELD_NAME,
               VECTOR_FIELD_NAME,
-              CUSTOMER_NO_FIELD_NAME,
+              TENANT_ID_FIELD_NAME,
               AI_NO,
               KNOWLEDGE_BASE_FILE_NO_FIELD_NAME,
               CHUNK_NO_FIELD_NAME);
@@ -167,9 +167,9 @@ public class BsinMilvusEmbeddingStore implements EmbeddingStore<BsinTextSegment>
         String type =
             String.valueOf(
                 queryResultWrapper.getFieldWrapper(TYPE_FIELD_NAME).getFieldData().get(i));
-        String customerNo =
+        String tenantId =
             String.valueOf(
-                queryResultWrapper.getFieldWrapper(CUSTOMER_NO_FIELD_NAME).getFieldData().get(i));
+                queryResultWrapper.getFieldWrapper(TENANT_ID_FIELD_NAME).getFieldData().get(i));
         String knowledgeBaseNo =
             String.valueOf(queryResultWrapper.getFieldWrapper(AI_NO).getFieldData().get(i));
         String knowledgeBaseFileNo =
@@ -185,7 +185,7 @@ public class BsinMilvusEmbeddingStore implements EmbeddingStore<BsinTextSegment>
             isNullOrBlank(text)
                 ? null
                 : BsinTextSegment.fromBsin(
-                    text, customerNo, type, knowledgeBaseNo, knowledgeBaseFileNo, chunkNo, vector);
+                    text, tenantId, type, knowledgeBaseNo, knowledgeBaseFileNo, chunkNo, vector);
         bsegments.add(textSegment);
       }
       return bsegments;
@@ -375,7 +375,7 @@ public class BsinMilvusEmbeddingStore implements EmbeddingStore<BsinTextSegment>
     List<InsertParam.Field> fields = new ArrayList<>();
     fields.add(new InsertParam.Field(ID_FIELD_NAME, ids));
     fields.add(
-        new InsertParam.Field(CUSTOMER_NO_FIELD_NAME, toCustomerNo(textSegments, ids.size())));
+        new InsertParam.Field(TENANT_ID_FIELD_NAME, toTenantId(textSegments, ids.size())));
     fields.add(new InsertParam.Field(TYPE_FIELD_NAME, toType(textSegments, ids.size())));
     fields.add(new InsertParam.Field(AI_NO, toAiNo(textSegments, ids.size())));
     fields.add(

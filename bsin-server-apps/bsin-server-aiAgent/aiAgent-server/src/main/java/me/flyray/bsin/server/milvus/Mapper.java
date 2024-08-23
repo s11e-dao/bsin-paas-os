@@ -41,9 +41,9 @@ class Mapper {
     return noScalars ? generateEmptyScalars(size) : bsinOsOperateCodeTextSegmentsToScalars(textSegments);
   }
 
-  static <T> List<String> toCustomerNo(List<T> textSegments, int size) {
+  static <T> List<String> toTenantId(List<T> textSegments, int size) {
     return textSegments.stream()
-            .map(segment -> ((BsinTextSegment) segment).customerNo())
+            .map(segment -> ((BsinTextSegment) segment).tenantId())
             .collect(toList());
   }
 
@@ -128,7 +128,7 @@ class Mapper {
       Embedding embedding = idToEmbedding.get(rowId);
       String text = String.valueOf(resultsWrapper.getFieldData(TEXT_FIELD_NAME, 0).get(i));
       String customerNo =
-              String.valueOf(resultsWrapper.getFieldData(CUSTOMER_NO_FIELD_NAME, 0).get(i));
+              String.valueOf(resultsWrapper.getFieldData(TENANT_ID_FIELD_NAME, 0).get(i));
       String aiNo = String.valueOf(resultsWrapper.getFieldData(AI_NO, 0).get(i));
       String type = String.valueOf(resultsWrapper.getFieldData(TYPE_FIELD_NAME, 0).get(i));
       String knowledgeBaseFileNo =

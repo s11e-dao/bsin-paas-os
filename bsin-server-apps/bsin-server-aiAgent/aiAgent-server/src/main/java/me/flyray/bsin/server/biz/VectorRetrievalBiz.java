@@ -507,7 +507,7 @@ public class VectorRetrievalBiz {
       embeddingVO.setMetadata(relevantEmbedding.embedded().metadata());
       embeddingVO.setText(relevantEmbedding.embedded().text());
       embeddingVO.setEmbeddingId(relevantEmbedding.embeddingId());
-      embeddingVO.setCustomerNo(relevantEmbedding.embedded().customerNo());
+      embeddingVO.setTenantId(relevantEmbedding.embedded().tenantId());
       embeddingVO.setAiNo(relevantEmbedding.embedded().aiNo());
       embeddingVO.setKnowledgeBaseFileNo(relevantEmbedding.embedded().knowledgeBaseFileNo());
       embeddingVO.setChunkNo(relevantEmbedding.embedded().chunkNo());

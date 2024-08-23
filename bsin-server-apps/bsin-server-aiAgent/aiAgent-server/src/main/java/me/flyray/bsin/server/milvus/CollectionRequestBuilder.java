@@ -55,7 +55,7 @@ class CollectionRequestBuilder {
             asList(
                 ID_FIELD_NAME,
                 TEXT_FIELD_NAME,
-                CUSTOMER_NO_FIELD_NAME,
+                TENANT_ID_FIELD_NAME,
                 TYPE_FIELD_NAME,
                 AI_NO,
                 KNOWLEDGE_BASE_FILE_NO_FIELD_NAME,
@@ -93,14 +93,14 @@ class CollectionRequestBuilder {
       int maxResults,
       MetricType metricType,
       ConsistencyLevelEnum consistencyLevel,
-      String customerNo,
+      String tenantId,
       String type,
       String aiNo,
       String knowledgeBaseFileNo,
       String chunkNo) {
     String queryExpr = "";
-    if (customerNo != null) {
-      queryExpr += CUSTOMER_NO_FIELD_NAME + " == '" + customerNo + "'";
+    if (tenantId != null) {
+      queryExpr += TENANT_ID_FIELD_NAME + " == '" + tenantId + "'";
       if (aiNo != null) {
         queryExpr += " && " + AI_NO + " == '" + aiNo + "'";
       }
@@ -143,7 +143,7 @@ class CollectionRequestBuilder {
                 ID_FIELD_NAME,
                 TEXT_FIELD_NAME,
                 TYPE_FIELD_NAME,
-                CUSTOMER_NO_FIELD_NAME,
+                TENANT_ID_FIELD_NAME,
                 AI_NO,
                 KNOWLEDGE_BASE_FILE_NO_FIELD_NAME,
                 CHUNK_NO_FIELD_NAME))
