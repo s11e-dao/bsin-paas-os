@@ -225,8 +225,8 @@ public class BsinAppAgentEngine {
   private Map<String, Object> handleEndEvent(Map<String, Object> requestMap) {
     log.info("结束节点");
     Map<String, Object> resultMap = new HashMap<>();
+
     resultMap.putAll(requestMap);
-    resultMap.put("", "对话返回结果");
     return resultMap;
   }
 

@@ -27,8 +27,8 @@ public class AliDashscopeLlm implements LlmChat{
         Application application = new Application();
         ApplicationResult result = application.call(param);
 
-        System.out.printf("requestId: %s, text: %s, finishReason: %s\n",
-                result.getRequestId(), result.getOutput().getText(), result.getOutput().getFinishReason());
+        System.out.printf("requestId: %s, 大模型返回结果: %s \n",
+                result.getRequestId(), result.getOutput().getText());
         Map resultMap = new HashMap<>();
         resultMap.put("jsonAnswer", result.getOutput().getText());
         return resultMap;
