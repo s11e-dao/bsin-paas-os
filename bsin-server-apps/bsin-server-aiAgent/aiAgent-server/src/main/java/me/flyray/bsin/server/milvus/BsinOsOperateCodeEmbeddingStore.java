@@ -94,8 +94,7 @@ public class BsinOsOperateCodeEmbeddingStore implements EmbeddingStore<BsinOsOpe
       // 初始化的时候创建集合字段
       createOsOperateCodeCollection(milvusClient, this.collectionName, ensureNotNull(dimension, "dimension"));
       // TODO: create partition
-      createIndex(
-          milvusClient, this.collectionName, getOrDefault(indexType, FLAT), this.metricType);
+      createIndex(milvusClient, this.collectionName, getOrDefault(indexType, FLAT), this.metricType);
     }
   }
 

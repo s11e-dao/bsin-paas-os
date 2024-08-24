@@ -2,7 +2,9 @@ package me.flyray.bsin.server.engine;
 
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.model.embedding.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
@@ -69,24 +71,27 @@ public class BsinAppAgentEngine {
       KnowledgeBase knowledgeBase = knowledgeBaseMapper.selectById(appAgent.getKnowledgeBaseNo());
       // TODO 确定milvus的数据库
 
-      // 调用milvus向量数据库，检索指令
-      BsinOsOperateCodeSegment segment1 = BsinOsOperateCodeSegment.fromBsin(question, null, null, null, null);
-      System.out.println("TextSegment: \n\n" + segment1);
-      Embedding embedding1 = embeddingModel.embed(segment1).content();
-
-      // embeddingStore.add(embedding1, segment1);
-      BsinOsOperateCodeEmbeddingStore embeddingStore =
-              BsinOsOperateCodeEmbeddingStore.builder().host("localhost").port(19530).collectionName("osOperateCode").dimension(384).build();
-
-      List<EmbeddingMatch<BsinOsOperateCodeSegment>> matches = embeddingStore.findRelevant(embedding1,1);
-      EmbeddingMatch<BsinOsOperateCodeSegment> embeddingMatch = matches.get(0);
-      System.out.println(embeddingMatch.score()); // 0.8144287765026093
-      System.out.println(embeddingMatch.embedded().text()); // I like football.
-      System.out.println(embeddingMatch.embedded().getParams()); // I like football.
-      System.out.println(embeddingMatch.embedded().getOpCode()); // I like football.
-
       Map<String, Object> requestMap = new HashMap<>();
-      requestMap.put("","");
+
+      // 调用milvus向量数据库，检索指令
+      BsinOsOperateCodeEmbeddingStore embeddingStore =
+              BsinOsOperateCodeEmbeddingStore.builder().host("localhost").port(19530).collectionName("osOperateCode").dimension(512).build();
+      Embedding queryEmbedding = embeddingModel.embed(question).content();
+      List<EmbeddingMatch<BsinOsOperateCodeSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 1);
+      if(relevant != null && relevant.size() > 0){
+        // 存在操作指令，则通过大语言模型和指令参数字段进行指令调用的参数拼装
+        EmbeddingMatch<BsinOsOperateCodeSegment> embeddingMatch = relevant.get(0);
+        log.info("AI OS 操作指令匹配得分: {}", embeddingMatch.score());
+        log.info("AI OS 操作指令描述: {}", embeddingMatch.embedded().text());
+        log.info("AI OS 操作指令: {}", embeddingMatch.embedded().getOpCode());
+        log.info("AI OS 请求参数字段: {}", embeddingMatch.embedded().getParams());
+        requestMap.put("hasOsOp",true);
+        requestMap.put("opCode",embeddingMatch.embedded().getOpCode());
+        requestMap.put("opCodeParams",embeddingMatch.embedded().getParams());
+        requestMap.put("text",embeddingMatch.embedded().text());
+        requestMap.put("question",question);
+      }
+
       // 根据开始节点不断递归查找下一个节点并进行处理
       resultMap = handleFlowElement(initialFlowElement, sequenceFlows, requestMap);
 
@@ -153,7 +158,7 @@ public class BsinAppAgentEngine {
       log.error("Unexpected error processing current flow element: {}", e.getMessage(), e);
       resultMap.put("error", "Unexpected error occurred in processing flow element.");
     }
-
+    resultMap.putAll(requestMap);
     return resultMap;
   }
 
@@ -175,6 +180,12 @@ public class BsinAppAgentEngine {
    */
   private Map<String, Object> handleLlmAgent(LlmAgent flowNode, Map<String, Object> requestMap) throws NoApiKeyException, InputRequiredException {
     log.info("大模型节点");
+    // 判断是否需要os指令处理
+    Boolean hasOsOp = (Boolean) requestMap.get("hasOsOp");
+    if(hasOsOp){
+
+    }
+
     LlmChat llmChat = new AliDashscopeLlm();
     return llmChat.chat(requestMap);
   }
@@ -187,6 +198,9 @@ public class BsinAppAgentEngine {
     log.info("规则引擎节点");
     ExecuteParams executeParams = new ExecuteParams();
     executeParams.setEventCode("appAgentChat");
+    executeParams.setJsonParams(JSONObject.from(new JSONObject(requestMap)));
+    // decisionEngineService.execute(executeParams);
+
     return new HashMap<>(); // 替换为实际的返回值
   }
 
@@ -194,8 +208,12 @@ public class BsinAppAgentEngine {
    * 处理Dubbo调用节点的逻辑
    * @return Dubbo调用结果
    */
-  private Map<String, Object> handleDubboAgent(DubboAgent flowNode, Map<String, Object> requestMap) {
-    log.info("dubbo调用节点");
+  private Map<String, Object> handleDubboAgent(DubboAgent flowNode, Map<String, Object> requestMap) throws JsonProcessingException {
+    log.info("dubbo调用节点，请求参数: {}", requestMap.get("jsonAnswer"));
+    String jsonAnswer = (String) requestMap.get("jsonAnswer");
+    Map dubboRequest = new ObjectMapper().readValue(jsonAnswer, Map.class);
+    // Object object = bsinServiceInvoke.genericInvoke("","",null,dubboRequest);
+    // 处理请求参数
     return new HashMap<>(); // 替换为实际的返回值
   }
 

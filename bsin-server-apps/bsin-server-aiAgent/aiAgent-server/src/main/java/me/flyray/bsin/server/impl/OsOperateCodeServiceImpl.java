@@ -77,6 +77,8 @@ public class OsOperateCodeServiceImpl implements OsOperateCodeService {
         System.out.println(embeddingMatch.embedded().text()); // I like football.
         Map<String, Object> result = new HashMap<>();
         result.put("answer",embeddingMatch.embedded().text());
+        result.put("params",embeddingMatch.embedded().getParams());
+        result.put("opCode",embeddingMatch.embedded().getOpCode());
         return result;
 
     }

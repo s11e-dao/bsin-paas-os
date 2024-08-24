@@ -3,14 +3,17 @@
     {
       "id": "1",
       "type": "startEvent",
-      "data": {
-        "label": "开始节点"
+      "input": {
+
+      },
+      "output": {
+        "prologue": "我是一个app-agent助手，擅长json数据处理"
       }
     },
     {
       "id": "2",
       "type": "llm",
-      "data": {
+      "output": {
         "llm": "chatgpt",
         "model": "3.5",
         "label": "根据角色定义获取营销热点信息"
@@ -19,14 +22,14 @@
     {
       "id": "3",
       "type": "endEvent",
-      "data": {
+      "output": {
         "label": "结束节点"
       }
     },
     {
       "id": "4",
       "type": "rule",
-      "data": {
+      "output": {
         "model": "3.5",
         "label": "关联规则事件模型"
       }
@@ -34,7 +37,7 @@
     {
       "id": "5",
       "type": "dubboInvoke",
-      "data": {
+      "output": {
         "model": "3.5",
         "label": "dubbo调用"
       }

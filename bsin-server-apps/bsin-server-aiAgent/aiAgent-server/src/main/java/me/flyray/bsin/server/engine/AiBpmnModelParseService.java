@@ -1,8 +1,8 @@
 package me.flyray.bsin.server.engine;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
+import com.alibaba.fastjson2.JSONObject;
 import me.flyray.bsin.facade.node.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
