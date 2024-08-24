@@ -18,10 +18,9 @@ import io.milvus.common.clientenum.ConsistencyLevelEnum;
 import io.milvus.exception.ParamException;
 import io.milvus.response.QueryResultsWrapper;
 import io.milvus.response.SearchResultsWrapper;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+import java.util.function.Function;
 
 class Mapper {
 
@@ -107,46 +106,47 @@ class Mapper {
           String collectionName,
           ConsistencyLevelEnum consistencyLevel,
           boolean queryForVectorOnSearch) {
+
+    return createEmbeddingMatches(
+            milvusClient,
+            resultsWrapper,
+            collectionName,
+            consistencyLevel,
+            queryForVectorOnSearch,
+            Mapper::mapBsinTextSegment);
+  }
+
+  private static <T> List<EmbeddingMatch<T>> createEmbeddingMatches(
+          MilvusServiceClient milvusClient,
+          SearchResultsWrapper resultsWrapper,
+          String collectionName,
+          ConsistencyLevelEnum consistencyLevel,
+          boolean queryForVectorOnSearch,
+          Function<SearchResultsWrapper, T> textSegmentMapper) {
+
     List<EmbeddingMatch<T>> matches = new ArrayList<>();
+    Map<String, Embedding> idToEmbedding = queryForVectorOnSearch
+            ? queryEmbeddings(milvusClient, collectionName, getRowIds(resultsWrapper), consistencyLevel)
+            : Collections.emptyMap();
 
-    Map<String, Embedding> idToEmbedding = new HashMap<>();
-    if (queryForVectorOnSearch) {
-      try {
-        List<String> rowIds =
-                (List<String>) resultsWrapper.getFieldWrapper(ID_FIELD_NAME).getFieldData();
-        idToEmbedding.putAll(
-                queryEmbeddings(milvusClient, collectionName, rowIds, consistencyLevel));
-      } catch (ParamException e) {
-        // There is no way to check if the result is empty or not.
-        // If the result is empty, the exception will be thrown.
-      }
-    }
-
-    for (int i = 0; i < resultsWrapper.getRowRecords().size(); i++) {
-      double score = resultsWrapper.getIDScore(0).get(i).getScore();
-      String rowId = resultsWrapper.getIDScore(0).get(i).getStrID();
+    resultsWrapper.getIDScore(0).forEach(record -> {
+      double score = record.getScore();
+      String rowId = record.getStrID();
       Embedding embedding = idToEmbedding.get(rowId);
-      String text = String.valueOf(resultsWrapper.getFieldData(TEXT_FIELD_NAME, 0).get(i));
-      String customerNo =
-              String.valueOf(resultsWrapper.getFieldData(TENANT_ID_FIELD_NAME, 0).get(i));
-      String aiNo = String.valueOf(resultsWrapper.getFieldData(AI_NO, 0).get(i));
-      String type = String.valueOf(resultsWrapper.getFieldData(TYPE_FIELD_NAME, 0).get(i));
-      String knowledgeBaseFileNo =
-              String.valueOf(resultsWrapper.getFieldData(KNOWLEDGE_BASE_FILE_NO_FIELD_NAME, 0).get(i));
-      String chunkNo =
-              String.valueOf(resultsWrapper.getFieldData(CHUNK_NO_FIELD_NAME, 0).get(i));
-      T textSegment =
-              isNullOrBlank(text)
-                      ? null
-                      : (T) BsinTextSegment.fromBsin(
-                      text, customerNo, type, aiNo, knowledgeBaseFileNo, chunkNo, null);
-      EmbeddingMatch<T> embeddingMatch =
-              new EmbeddingMatch<>(
-                      RelevanceScore.fromCosineSimilarity(score), rowId, embedding, textSegment);
-      matches.add(embeddingMatch);
-    }
+      T textSegment = textSegmentMapper.apply(resultsWrapper);
+
+      matches.add(new EmbeddingMatch<>(
+              RelevanceScore.fromCosineSimilarity(score),
+              rowId,
+              embedding,
+              textSegment));
+    });
 
     return matches;
+  }
+
+  private static List<String> getRowIds(SearchResultsWrapper resultsWrapper) {
+    return (List<String>) resultsWrapper.getFieldWrapper(ID_FIELD_NAME).getFieldData();
   }
 
   static <T> List<EmbeddingMatch<T>> toBsinOsOpCodeEmbeddingMatches(
@@ -155,42 +155,34 @@ class Mapper {
           String collectionName,
           ConsistencyLevelEnum consistencyLevel,
           boolean queryForVectorOnSearch) {
-    List<EmbeddingMatch<T>> matches = new ArrayList<>();
 
-    Map<String, Embedding> idToEmbedding = new HashMap<>();
-    if (queryForVectorOnSearch) {
-      try {
-        List<String> rowIds =
-                (List<String>) resultsWrapper.getFieldWrapper(ID_FIELD_NAME).getFieldData();
-        idToEmbedding.putAll(
-                queryEmbeddings(milvusClient, collectionName, rowIds, consistencyLevel));
-      } catch (ParamException e) {
-        // There is no way to check if the result is empty or not.
-        // If the result is empty, the exception will be thrown.
-      }
-    }
+    return createEmbeddingMatches(
+            milvusClient,
+            resultsWrapper,
+            collectionName,
+            consistencyLevel,
+            queryForVectorOnSearch,
+            Mapper::mapBsinOsOperateCodeSegment);
+  }
 
-    for (int i = 0; i < resultsWrapper.getRowRecords().size(); i++) {
-      double score = resultsWrapper.getIDScore(0).get(i).getScore();
-      String rowId = resultsWrapper.getIDScore(0).get(i).getStrID();
-      Embedding embedding = idToEmbedding.get(rowId);
-      String text = String.valueOf(resultsWrapper.getFieldData(TEXT_FIELD_NAME, 0).get(i));
-      String opCode =
-              String.valueOf(resultsWrapper.getFieldData(OP_CODE_FIELD_NAME, 0).get(i));
-      String params = String.valueOf(resultsWrapper.getFieldData(PARAMS_FIELD_NAME, 0).get(i));
-      String scope = String.valueOf(resultsWrapper.getFieldData(SCOPE_FIELD_NAME, 0).get(i));
-      T textSegment =
-              isNullOrBlank(text)
-                      ? null
-                      : (T) BsinOsOperateCodeSegment.fromBsin(
-                      text, opCode, params, scope, null);
-      EmbeddingMatch<T> embeddingMatch =
-              new EmbeddingMatch<>(
-                      RelevanceScore.fromCosineSimilarity(score), rowId, embedding, textSegment);
-      matches.add(embeddingMatch);
-    }
+  private static <T> T mapBsinOsOperateCodeSegment(SearchResultsWrapper resultsWrapper) {
+    String text = String.valueOf(resultsWrapper.getFieldData(TEXT_FIELD_NAME, 0).get(0));
+    String opCode = String.valueOf(resultsWrapper.getFieldData(OP_CODE_FIELD_NAME, 0).get(0));
+    String params = String.valueOf(resultsWrapper.getFieldData(PARAMS_FIELD_NAME, 0).get(0));
+    String scope = String.valueOf(resultsWrapper.getFieldData(SCOPE_FIELD_NAME, 0).get(0));
 
-    return matches;
+    return (T) BsinOsOperateCodeSegment.fromBsin(text, opCode, params, scope, null);
+  }
+
+  private static <T> T mapBsinTextSegment(SearchResultsWrapper resultsWrapper) {
+    String text = String.valueOf(resultsWrapper.getFieldData(TEXT_FIELD_NAME, 0).get(0));
+    String customerNo = String.valueOf(resultsWrapper.getFieldData(TENANT_ID_FIELD_NAME, 0).get(0));
+    String aiNo = String.valueOf(resultsWrapper.getFieldData(AI_NO, 0).get(0));
+    String type = String.valueOf(resultsWrapper.getFieldData(TYPE_FIELD_NAME, 0).get(0));
+    String knowledgeBaseFileNo = String.valueOf(resultsWrapper.getFieldData(KNOWLEDGE_BASE_FILE_NO_FIELD_NAME, 0).get(0));
+    String chunkNo = String.valueOf(resultsWrapper.getFieldData(CHUNK_NO_FIELD_NAME, 0).get(0));
+
+    return (T) BsinTextSegment.fromBsin(text, customerNo, type, aiNo, knowledgeBaseFileNo, chunkNo, null);
   }
 
   private static Map<String, Embedding> queryEmbeddings(
