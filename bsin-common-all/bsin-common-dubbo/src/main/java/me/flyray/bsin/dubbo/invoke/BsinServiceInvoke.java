@@ -42,7 +42,7 @@ public class BsinServiceInvoke {
         GenericService genericService = reference.get();
 
         // 泛化调用
-        Object result = genericService.$invoke(serviceName, new String[]{"java.lang.String"}, new Object[]{reqParam});
+        Object result = genericService.$invoke(methodName, new String[]{"java.lang.String"}, new Object[]{reqParam});
         return result;
     }
 

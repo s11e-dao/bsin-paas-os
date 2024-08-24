@@ -212,7 +212,7 @@ public class BsinAppAgentEngine {
     log.info("dubbo调用节点，请求参数: {}", requestMap.get("jsonAnswer"));
     String jsonAnswer = (String) requestMap.get("jsonAnswer");
     Map dubboRequest = new ObjectMapper().readValue(jsonAnswer, Map.class);
-    // Object object = bsinServiceInvoke.genericInvoke("","",null,dubboRequest);
+    Object object = bsinServiceInvoke.genericInvoke("","",null,dubboRequest);
     // 处理请求参数
     return new HashMap<>(); // 替换为实际的返回值
   }
