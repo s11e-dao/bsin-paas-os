@@ -26,9 +26,11 @@ public interface AppFunctionMapper {
 
     void deleteById( @Param("appFunctionId") String appFunctionId);
 
-    List<SysAppFunction> selectListByAppId(String appId);
+    List<SysAppFunction> selectListByAppId(@Param("appId") String appId);
 
     IPage<SysAppFunction> selectPageListByAppId(@Param("page") IPage<?> page, @Param("appId") String appId);
+
+    List<SysAppFunction> selectBaseListByAppId(@Param("appId") String appId);
 
 }
 

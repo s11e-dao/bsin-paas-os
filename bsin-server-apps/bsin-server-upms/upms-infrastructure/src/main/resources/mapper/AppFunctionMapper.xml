@@ -34,23 +34,19 @@
     <select id="selectListByAppId"  resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"></include>
-        from sys_app_function
-        <where>
-            <if test="appId != null and appId != ''">
-                and app_id= #{appId}
-            </if>
-        </where>
+        from sys_app_function where app_id= #{appId}
+    </select>
+
+    <select id="selectBaseListByAppId"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"></include>
+        from sys_app_function where app_id= #{appId} and base_flag = '1'
     </select>
 
     <select id="selectPageListByAppId"  resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"></include>
-        from sys_app_function
-        <where>
-            <if test="appId != null and appId != ''">
-                and app_id= #{appId}
-            </if>
-        </where>
+        from sys_app_function where app_id= #{appId}
     </select>
 
 </mapper>

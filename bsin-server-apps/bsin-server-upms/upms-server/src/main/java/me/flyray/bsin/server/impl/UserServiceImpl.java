@@ -290,7 +290,7 @@ public class UserServiceImpl implements UserService {
         orgAppMapper.authorizeApp(orgId, baseApp.getAppId(), TenantOrgAppType.AUTH.getCode());
 
         // 7、查出基础应用的基础功能
-        List<SysAppFunction> appFunctionList = appFunctionMapper.selectListByAppId(baseApp.getAppId());
+        List<SysAppFunction> appFunctionList = appFunctionMapper.selectBaseListByAppId(baseApp.getAppId());
         // 查询基础功能对应的菜单
         List<String> appFunctionIds = new ArrayList<>();
         for (SysAppFunction sysAppFunction : appFunctionList) {
