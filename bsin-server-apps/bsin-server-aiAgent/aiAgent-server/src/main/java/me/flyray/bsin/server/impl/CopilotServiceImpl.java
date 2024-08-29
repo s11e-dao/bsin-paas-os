@@ -286,7 +286,9 @@ public class CopilotServiceImpl implements CopilotService {
       tenantId = MapUtils.getString(requestMap, "tenantId");
     }
     CopilotInfo copilotInfo = BsinServiceContext.getReqBodyDto(CopilotInfo.class, requestMap);
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj, pagination);
     Page<CopilotInfo> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<CopilotInfo> wrapper = new LambdaUpdateWrapper<>();
     wrapper.orderByDesc(CopilotInfo::getCreateTime);
