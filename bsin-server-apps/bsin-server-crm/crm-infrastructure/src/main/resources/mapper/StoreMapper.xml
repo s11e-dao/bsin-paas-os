@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.StoreMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.Store">
+            <id property="serialNo" column="serial_no" jdbcType="INTEGER"/>
+            <result property="storeName" column="store_name" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="longitude" column="longitude" jdbcType="VARCHAR"/>
+            <result property="latitude" column="latitude" jdbcType="VARCHAR"/>
+            <result property="businessHours" column="business_hours" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="logo" column="logo" jdbcType="INTEGER"/>
+            <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,store_name,address,
+        longitude,latitude,business_hours,
+        description,logo,merchant_no,
+        tenant_id,del_flag
+    </sql>
+</mapper>

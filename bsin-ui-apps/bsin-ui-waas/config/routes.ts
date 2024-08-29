@@ -89,6 +89,32 @@ const routes = [
         path: '/merchant/service-subscribe',
         component: '@/pages/Merchant/ServiceSubscribe/index',
       },
+      // ******************门店********************
+      {
+        path: '/store',
+        redirect: '/store/store-list',
+      },
+      // 门店列表
+      {
+        path: '/store/store-list',
+        component: '@/pages/Store/index',
+      },
+      // 门店账户
+      {
+        path: '/store/store-account',
+        component: '@/pages/Store/StoreAccount/index',
+      },
+      // 门店员工
+      {
+        path: '/store/staff',
+        component: '@/pages/Store/Staff/index',
+      },
+      // 门店设置
+      {
+        path: '/store/store-setting',
+        component: '@/pages/Store/StoreSetting/index',
+      },
+      // *******************订单********************
       // **************************客户**************************
       {
         path: '/customer',
