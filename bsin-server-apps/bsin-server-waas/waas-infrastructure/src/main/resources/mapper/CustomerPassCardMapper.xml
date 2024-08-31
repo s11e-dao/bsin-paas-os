@@ -96,9 +96,9 @@
                dmj.metadata_image as pass_card_nft_image,
                dmj.metadata_url   as pass_card_nft_token_uri,
                dmj.item_name      as name
-        from da_customer_pass_card cpc
-                 left join da_digital_assets_item dai on cpc.digital_assets_item_no = dai.serial_no
-                 left join da_mint_journal dmj
+        from waas_customer_pass_card cpc
+                 left join waas_digital_assets_item dai on cpc.digital_assets_item_no = dai.serial_no
+                 left join waas_mint_journal dmj
                            on dai.serial_no = dmj.digital_assets_item_no and dmj.token_id = cpc.token_id
         where cpc.tenant_id = #{tenantId}
           and cpc.customer_no = #{customerNo}
