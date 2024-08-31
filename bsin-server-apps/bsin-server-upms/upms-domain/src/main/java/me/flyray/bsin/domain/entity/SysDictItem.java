@@ -89,4 +89,9 @@ public class SysDictItem  implements Serializable {
 	 */
 	private String delFlag;
 
+	/**
+	 * 所属租户
+	 */
+	private String tenantId;
+
 }

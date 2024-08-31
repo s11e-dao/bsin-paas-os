@@ -97,7 +97,9 @@ public class DictServiceImpl implements DictService {
     @Override
     public SysDictItem addItem(SysDictItem dictItem) {
         String id = BsinSnowflake.getId();
+        String tenantId = LoginInfoContextHelper.getTenantId();
         dictItem.setId(id);
+        dictItem.setTenantId(tenantId);
         dictItemMapper.insert(dictItem);
         return dictItem;
     }
@@ -128,17 +130,19 @@ public class DictServiceImpl implements DictService {
     @ShenyuDubboClient("/getDictItemPageList")
     @Override
     public IPage<?> getDictItemPageList(@Validated(QueryGroup.class) SysDictDTO dictDTO) {
+        String tenantId = LoginInfoContextHelper.getTenantId();
         String dictType = dictDTO.getDictType();
         Pagination pagination = dictDTO.getPagination();
         Page<SysDict> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-        IPage<SysDictItem> pageList = dictItemMapper.selectPageList(page, dictType);
+        IPage<SysDictItem> pageList = dictItemMapper.selectPageList(page, tenantId, dictType);
         return pageList;
     }
 
     @ApiDoc(desc = "getDictItemList")
     @ShenyuDubboClient("/getDictItemList")
     @Override
-    public List<SysDictItem> getDictItemList(String dictType) {
-        return dictItemMapper.selectList(dictType);
+    public List<SysDictItem> getDictItemList(SysDict dictItem) {
+        String tenantId = LoginInfoContextHelper.getTenantId();
+        return dictItemMapper.selectList(tenantId, dictItem.getDictType());
     }
 }

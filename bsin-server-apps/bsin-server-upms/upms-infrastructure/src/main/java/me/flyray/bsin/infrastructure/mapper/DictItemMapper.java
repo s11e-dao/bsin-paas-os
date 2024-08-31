@@ -40,9 +40,10 @@ public interface DictItemMapper extends BaseMapper<SysDictItem> {
 
     public void deleteById(String appId);
 
-    public IPage<SysDictItem> selectPageList(@Param("page") IPage<?> page, @Param("dictType") String dictType);
+    public IPage<SysDictItem> selectPageList(@Param("page") IPage<?> page, @Param("tenantId") String tenantId, @Param("dictType") String dictType);
 
     public int updateById(SysDictItem dictItem);
 
-    List<SysDictItem> selectList(String dictType);
+    List<SysDictItem> selectList(@Param("tenantId") String tenantId, String dictType);
+
 }

@@ -83,7 +83,7 @@ public interface DictService {
     /**
      * 分页查询字典项集合
      */
-    List<SysDictItem> getDictItemList(String dictType);
+    List<SysDictItem> getDictItemList(SysDict sysDict);
 
 
 }
