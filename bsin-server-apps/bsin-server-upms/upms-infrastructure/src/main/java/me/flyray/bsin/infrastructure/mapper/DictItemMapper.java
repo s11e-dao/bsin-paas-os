@@ -44,6 +44,6 @@ public interface DictItemMapper extends BaseMapper<SysDictItem> {
 
     public int updateById(SysDictItem dictItem);
 
-    List<SysDictItem> selectList(@Param("tenantId") String tenantId, String dictType);
+    List<SysDictItem> selectList(@Param("tenantId") String tenantId, @Param("dictType") String dictType);
 
 }

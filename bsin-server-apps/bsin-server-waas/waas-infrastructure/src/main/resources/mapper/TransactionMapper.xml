@@ -12,12 +12,12 @@
             <result property="methodInvokeWay" column="method_invoke_way" jdbcType="VARCHAR"/>
             <result property="transactionType" column="transaction_type" jdbcType="INTEGER"/>
             <result property="transactionStatus" column="transaction_status" jdbcType="INTEGER"/>
-            <result property="from" column="from" jdbcType="VARCHAR"/>
+            <result property="fromAddress" column="from_address" jdbcType="VARCHAR"/>
             <result property="bizRoleType" column="biz_role_type" jdbcType="VARCHAR"/>
             <result property="bizRoleType" column="biz_role_type_no" jdbcType="INTEGER"/>
             <result property="txAmount" column="tx_amount" jdbcType="DECIMAL"/>
             <result property="fee" column="fee" jdbcType="DECIMAL"/>
-            <result property="to" column="to" jdbcType="VARCHAR"/>
+            <result property="toAddress" column="to_address" jdbcType="VARCHAR"/>
             <result property="comment" column="comment" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
@@ -37,10 +37,10 @@
         ct.method_invoke_way,
         ct.transaction_type,
         ct.transaction_status,
-        ct.from,
+        ct.from_address,
         ct.tx_amount,
         ct.fee,
-        ct.to,
+        ct.to_address,
         ct.comment,
         ct.biz_role_type,
         ct.biz_role_type_no,
@@ -71,7 +71,7 @@
                 and ct.tx_hash = #{params.txHash}
             </if>
             <if test="params.address != null and params.address != ''">
-                and (ct.from = #{params.address} || ct.to = #{params.address})
+                and (ct.from_address = #{params.address} || ct.to_address = #{params.address})
             </if>
             <if test="params.startTime != null" >
                 <![CDATA[and ct.create_time >= #{params.startTime}]]>
