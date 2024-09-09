@@ -48,8 +48,8 @@ import java.util.Map;
  * @desc
  */
 @Slf4j
-@ShenyuDubboService(path = "/token", timeout = 6000)
-@ApiModule(value = "token")
+@ShenyuDubboService(path = "/tokenParam", timeout = 6000)
+@ApiModule(value = "tokenParam")
 @Service
 public class TokenParamServiceImpl implements TokenParamService {
 

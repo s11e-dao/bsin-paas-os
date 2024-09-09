@@ -21,7 +21,7 @@ import java.io.IOException;
 
 @Slf4j
 @Component
-@RocketMQMessageListener(consumerGroup = "consumer_group",topic = "waas-test")
+//@RocketMQMessageListener(consumerGroup = "consumer_group",topic = "waas-test")
 public class WaasMQConsumerHandler implements RocketMQListener<String> {
 
     @Autowired

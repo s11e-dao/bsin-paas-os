@@ -3,9 +3,9 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.198.198:3306/bsin-upms?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
-    username: root
-    password: 123456
+    url: jdbc:mysql://rm-2zeq9708apq292r36ko.mysql.rds.aliyuncs.com:3306/bsin-upms?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+    username: flyray_eco
+    password: bsin_paas_os123
   #redis
   redis:
     host: 127.0.0.1

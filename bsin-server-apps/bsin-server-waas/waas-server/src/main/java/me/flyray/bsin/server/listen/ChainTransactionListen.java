@@ -94,7 +94,7 @@ public class ChainTransactionListen {
             } catch (Exception e) {
                 e.printStackTrace();
                 log.info("智能合约监听失败，智能合约：{}", m.getContractAddress());
-                throw new BusinessException("智能合约监听失败");
+                // throw new BusinessException("智能合约监听失败");
             }
         });
     }

@@ -3,9 +3,10 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/rblcmall?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
-    username: root
-    password: 123456
+    url: jdbc:mysql://rm-2zeq9708apq292r36ko.mysql.rds.aliyuncs.com:3306/bsin-intelligent-decision?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+    username: flyray_eco
+    password: bsin_paas_os123
+
   #redis
   redis:
     host: 127.0.0.1
@@ -23,8 +24,8 @@ shenyu:
   client:
     dubbo:
       props:
-        contextPath: /scaffold-dubbo
-        appName: scaffold-dubbo
+        contextPath: /brms
+        appName: brms
 
 dubbo:
   application:
