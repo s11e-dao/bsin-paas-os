@@ -1,5 +1,5 @@
 {
-  "name": "bsin-ui-workflow-admin",
+  "name": "bsin-ui-decision-admin",
   "private": true,
   "scripts": {
     "dev": "cross-env PORT=5555 max dev",

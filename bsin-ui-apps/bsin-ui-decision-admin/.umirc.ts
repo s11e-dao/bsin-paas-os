@@ -38,7 +38,7 @@ export default {
     },
     slave: {},
   },
-  base: '/bsin-ui-workflow-admin',
+  base: '/bsin-ui-decision-admin',
   routes,
   // 路由模式
   hash: true,
