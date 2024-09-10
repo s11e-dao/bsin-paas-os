@@ -26,7 +26,11 @@ export default {
         {
           name: 'bsin-ui-upms', // 唯一 id
           entry: 'http://127.0.0.1:8003', // html entry 
-        //  entry: 'http://copilotupms.s11edao.com',
+          //  entry: 'http://copilotupms.s11edao.com',
+          props: {
+            // bsin-ui-decision-admin的应用ID
+            appId: "1644514349827624960",
+          }
         },
       ],
       routes: [
