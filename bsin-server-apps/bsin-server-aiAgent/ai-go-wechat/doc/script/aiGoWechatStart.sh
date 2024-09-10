@@ -1,1 +1,0 @@
-nohup ./ai-go-wechat  >ai-go-wechat.log &
