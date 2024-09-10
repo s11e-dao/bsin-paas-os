@@ -1,4 +1,3 @@
-import { useModel } from 'umi';
 import type { RequestConfig } from 'umi';
 import { notification } from 'antd';
 import { getSessionStorageInfo, getLocalStorageInfo } from '@/utils/localStorageInfo';
@@ -26,14 +25,6 @@ export const qiankun = {
   },
 };
 
-// 向子应用传递参数
-export const useQiankunStateForSlave = () => {
-  let data = useModel('@@qiankunStateFromMaster');
-  let appId = data?.appId;
-  return {
-    appId,
-  };
-};
 
 // 错误处理方案： 错误类型
 enum ErrorShowType {
