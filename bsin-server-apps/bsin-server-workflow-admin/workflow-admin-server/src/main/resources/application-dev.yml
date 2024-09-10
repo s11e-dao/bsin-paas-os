@@ -4,8 +4,8 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://rm-2ze2tn8118l90v997no.mysql.rds.aliyuncs.com:3306/bsin-flowable67?nullCatalogMeansCurrent=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF8
-    username: flyray_eco
-    password: flyray_eco123
+    username: root
+    password: root
   #redis
   redis:
     host: 127.0.0.1
