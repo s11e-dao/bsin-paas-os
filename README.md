@@ -183,6 +183,9 @@ bsin-paas-all-in-one
 * bsin-bot低代码平台
 ![avatar](./doc/images/sys/前端低代码.png)
 
+* bsin-bot 表单设计
+![avatar](./doc/images/sys/form.png)
+
 * 数字资产管理平台
 ![avatar](./doc/images/sys/数字资产管理平台.png)
 
