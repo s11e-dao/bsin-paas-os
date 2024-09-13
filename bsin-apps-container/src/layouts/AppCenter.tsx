@@ -60,7 +60,7 @@ export default ({ userApps, getAppMenu }) => {
         onOpenChange={handleHoverChange}
         placement="bottom"
         overlayStyle={{
-          width: 'calc(100vw - 24px)',
+          width: 'calc(100vw - 40vw)',
           padding: '24px',
           paddingTop: 8,
           height: '307px',
