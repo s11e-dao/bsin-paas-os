@@ -99,14 +99,14 @@ bsin-paas-all-in-one
 |    ├── bsin-server-waas -- 钱包即服务
 |    ├── bsin-server-workflow -- 工作流引擎服务
 |    ├── bsin-server-workflow-admin -- 工作流引擎管理
-|    ├── bsin-server-intelligent-decision -- 智能决策引擎
+|    ├── bsin-server-brms -- 智能决策引擎
 |    ├── bsin-server-aiAgent -- AI引擎
 |    └── bsin-server-orchestration -- 服务编排
 ├── bsin-ui-apps -- 子应用前端（不同业务系统应用集）
 |    ├── bsin-ui-upms -- 通用权限管理
 |    ├── bsin-ui-waas -- 钱包即服务
 |    ├── bsin-ui-workflow-admin -- 工作流引擎管理
-|    ├── bsin-ui-intelligent-decision -- 智能决策引擎
+|    ├── bsin-ui-decision-admin -- 智能决策引擎
 |    ├── bsin-ui-aiAgent -- AI引擎
 |    └── bsin-ui-orchestration -- 服务编排
 ├── bsin-app-scaffold --  c端应用脚手架
