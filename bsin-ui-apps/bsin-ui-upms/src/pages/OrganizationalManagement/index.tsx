@@ -242,7 +242,7 @@ export default () => {
       <Modal
         title={isOption.option === 'add' ? '新增机构' : '编辑机构'}
         centered
-        visible={isFormModal}
+        open={isFormModal}
         onOk={confirmOrgInfo}
         onCancel={cancelOrgInfo}
         width={700}
@@ -336,7 +336,7 @@ export default () => {
       <Modal
         title="机构授权应用"
         centered
-        visible={isPowerModal}
+        open={isPowerModal}
         onOk={confirmPower}
         onCancel={cancelPower}
         width={800}
