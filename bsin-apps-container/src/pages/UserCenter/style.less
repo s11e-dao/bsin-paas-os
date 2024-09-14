@@ -7,7 +7,7 @@
   padding-bottom: 16px;
   background-color: @menu-bg;
   .leftMenu {
-    width: 224px;
+    width: 200px;
     border-right: @border-width-base @border-style-base @border-color-split;
     :global {
       .ant-menu-inline {
@@ -15,6 +15,8 @@
       }
       .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
         font-weight: bold;
+        color: rgba(255, 255, 255, 0.88) !important;
+        background-color: #9f67fe !important
       }
     }
   }
