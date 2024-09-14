@@ -16,6 +16,14 @@ const routes = [
           '@/wrappers/auth',
         ],
       },
+      // 个人中心
+      {
+        path: '/userCenter',
+        component: '@/pages/UserCenter/index',
+        wrappers: [
+          '@/wrappers/auth',
+        ],
+      },
       {
         path: '/404',
         component: '@/pages/Home/index'

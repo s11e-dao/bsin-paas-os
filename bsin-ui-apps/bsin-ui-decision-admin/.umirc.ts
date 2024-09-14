@@ -17,6 +17,9 @@ export default {
     'process.env.biganH5Url': 'http://localhost:8080/', // biganH5 url local test
     'process.env.tenantAppType': 'ai', //
     'process.env.webScoketUrl': 'ws://192.168.1.6:8126/websocket',
+    'process.env.contextPath_aiAgent': '/aiAgent',  // aiAgent应用
+    'process.env.contextPath_brms': '/brms',  // 业务规则系统
+    'process.env.contextPath_workflow': '/workflow-admin',  // 工作流系统
   },
   model: {},
   qiankun: {

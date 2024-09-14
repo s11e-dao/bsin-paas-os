@@ -38,6 +38,9 @@ public interface AccountService {
   /** 转账 */
   public Map<String, Object> transfer(Map<String, Object> requestMap);
 
+  /** 电子钱包支付 */
+  public Map<String, Object> pay(Map<String, Object> requestMap);
+
   /** 查询账户详细 */
   public Account getDetail(Map<String, Object> requestMap);
 

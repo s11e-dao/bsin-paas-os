@@ -208,6 +208,13 @@ public class AccountServiceImpl implements AccountService {
     return null;
   }
 
+  @ShenyuDubboClient("/pay")
+  @ApiDoc(desc = "pay")
+  @Override
+  public Map<String, Object> pay(Map<String, Object> requestMap) {
+    return null;
+  }
+
   /**
    * 查询客户的账户账户详情
    *

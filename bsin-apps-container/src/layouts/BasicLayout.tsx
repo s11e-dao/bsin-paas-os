@@ -545,10 +545,8 @@ export default () => {
                           label: (
                             <span
                               onClick={() => {
-                                // 根据当前登录的用户类型判断跳转不同的中心：租户个人中心，商户个人中心
-                                history.push(
-                                  `/${defaultApp.appCode}/userCenter`,
-                                )
+                                // 根据当前登录的用户类型判断展示不同的中心：租户个人中心，商户个人中心
+                                history.push(`/userCenter`)
                               }}
                             >
                               个人中心
