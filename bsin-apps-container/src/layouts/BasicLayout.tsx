@@ -545,6 +545,10 @@ export default () => {
                           label: (
                             <span
                               onClick={() => {
+                                // 处理选中路由
+                                setPathname('/userCenter')
+                                // 清空菜单数据
+                                setAppMenus({})
                                 // 根据当前登录的用户类型判断展示不同的中心：租户个人中心，商户个人中心
                                 history.push(`/userCenter`)
                               }}
