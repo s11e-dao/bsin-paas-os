@@ -37,37 +37,51 @@ https://www.bilibili.com/video/BV1VM4y1a7PF/?vd_source=360ae092de70c0b6c577d1d26
 ## 平台定位
 提供daPaaS层的一站式企业级技术解决方案，帮助企业快速实现数字商业创新，完成数字化转型。
 
+![avatar](./doc/images/sys/bsin-paas定位.png)
+
 ## 平台总架构设计
-![avatar](./doc/images/sys/架构设计.png)
+![avatar](./doc/images/architecture/平台总架构设计.png)
 
-## 平台架构基于DDD设计理念
-![avatar](./doc/images/sys/DDD设计理念.png)
-
-![avatar](./doc/images/sys/DDD设计依赖关系.png)
-
-## 区块链应用架构
-![avatar](./doc/images/sys/区块链应用架构.png)
-
-## 基于大语言模型的AI应用架构图
-![avatar](./doc/images/sys/基于大语言模型的AI应用架构图.png)
+## 逻辑架构示图
+![avatar](./doc/images/architecture/架构设计.png)
 
 ## 应用业务流程视图
 ![avatar](./doc/images/sys/应用业务流程视图.png)
 
+## 平台架构基于DDD设计理念
+![avatar](./doc/images/sys/DDD设计理念.png)
+
+## 区块链应用架构
+![avatar](./doc/images/sys/区块链应用架构.png)
+
+### 区块链钱包架构图
+![avatar](./doc/images/architecture/区块链钱包架构图.png)
+
+## 基于大语言模型的AI应用架构图
+![avatar](./doc/images/architecture/基于大语言模型的AI应用架构图.png)
+
+### AI交互流程
+![avatar](./doc/images/sys/基于大语言模型的AI应用架构图.png)
+
+## 智能决策引擎架构图
+![avatar](./doc/images/architecture/智能决策引擎架构图.png)
+
+## 业务场景架构图
+![avatar](./doc/images/architecture/业务场景架构图.png)
+
 ## 业务能力示意图
 ![avatar](./doc/images/sys/业务示意图.png)
 
-## 商业版图
-![avatar](./doc/images/sys/商业版图.png)
-
-## bsin-paas定位
-![avatar](./doc/images/sys/bsin-paas定位.png)
+## 业务场景应用架构图
+![avatar](./doc/images/architecture/业务场景应用架构图.png)
 
 ## bsin-paas-mvp
 ![avatar](./doc/images/sys/bsin-paas-mvp.png)
 
 ## 后端开发脚手架
 ![avatar](./doc/images/sys/后端开发脚手架.png)
+
+![avatar](./doc/images/sys/DDD设计依赖关系.png)
 
 ## 前端开发脚手架
 ![avatar](./doc/images/sys/前端开发模式.png)
