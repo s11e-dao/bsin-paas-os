@@ -209,6 +209,15 @@ bsin-paas-all-in-one
 * react 不同子应用相互嵌套展示
 ![avatar](./doc/images/sys/react应用嵌套.png)
 
+* AI 产品应用
+![avatar](./doc/images/ui/vuca-ui-1.png)
+
+![avatar](./doc/images/ui/vuca-ui-2.png)
+
+![avatar](./doc/images/ui/vuca-ui-3.png)
+
+![avatar](./doc/images/ui/vuca-ui-4.png)
+
 ## 开源协议
 
 apache license 2.0
