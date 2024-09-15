@@ -168,9 +168,11 @@ public class MenuServiceImpl implements MenuService {
         String appId = sysRole.getAppId();
         String roleId = sysRole.getRoleId();
         List<SysMenu> sysMenus;
+        // 1、判断应用id和角色id是否存在
         if (StringUtils.isBlank(appId)) {
             throw new BusinessException(ResponseCode.ID_NOT_ISNULL);
         }
+        // 2、根据应用id或应用id和角色id查询菜单集合
         if (StrUtil.isNotEmpty(roleId)) {
             sysMenus = menuMapper.selectListByAppIdAndRoleId(appId, roleId);
         } else {
@@ -181,6 +183,7 @@ public class MenuServiceImpl implements MenuService {
             sysMenus = sysMenus.stream().filter(menu -> !menu.getMenuName().equals("租户管理")).collect(Collectors.toList());
         }
         List<SysMenu> finalSysMenus = sysMenus;
+        // 3、通过递归调用生成菜单树
         List<MenuTree> menuTreeList = sysMenus.stream().filter(menu -> menu.getParentId().equals("-1"))
                 .map(m -> {
                     MenuTree level1Menu = new MenuTree(m.getMenuId(), m.getMenuCode(), m.getMenuName(), m.getPermission(),

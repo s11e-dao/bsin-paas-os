@@ -167,7 +167,30 @@ const MenuManagement = () => {
     getAppFunctionList({appId}).then((res)=>{
       setAppFunctionList(res?.data)
     })
+  };
 
+  // edit
+  const handleEdit = (record: object) => {
+    // 保存每行数据
+    setMenuRecordInfo(record);
+    // 数据回显
+    formRef.setFieldsValue(record);
+    // edit标识
+    setIsOption('edit');
+    setIsFromModal(true);
+    getAppFunctionList({appId}).then((res)=>{
+      setAppFunctionList(res?.data)
+    })
+  };
+
+  // 删除
+  const delOk = async (record: object) => {
+    const { menuId } = record;
+    let res = await delMenu({ menuId });
+    res ? message.success('删除数据成功') : message.error(`删除数据失败`);
+    // 重新请求数据页面渲染
+    const { data } = await getMenuList({ appId });
+    setIsMenuList(data[0]);
   };
 
   // 确认add
@@ -215,29 +238,6 @@ const MenuManagement = () => {
     formRef.resetFields();
   };
 
-  // edit
-  const handleEdit = (record: object) => {
-    // 保存每行数据
-    setMenuRecordInfo(record);
-    // 数据回显
-    formRef.setFieldsValue(record);
-    // edit标识
-    setIsOption('edit');
-    setIsFromModal(true);
-    getAppFunctionList({appId}).then((res)=>{
-      setAppFunctionList(res?.data)
-    })
-  };
-
-  // 删除
-  const delOk = async (record: object) => {
-    const { menuId } = record;
-    let res = await delMenu({ menuId });
-    res ? message.success('删除数据成功') : message.error(`删除数据失败`);
-    // 重新请求数据页面渲染
-    const { data } = await getMenuList({ appId });
-    setIsMenuList(data[0]);
-  };
   // 菜单图标弹窗
  const showModal = () => {
    setIsModalVisible(true);
