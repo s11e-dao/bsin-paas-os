@@ -89,32 +89,32 @@ const routes = [
         path: '/merchant/service-subscribe',
         component: '@/pages/Merchant/ServiceSubscribe/index',
       },
-      // ******************门店********************
+      // ******************线上商城********************
       {
-        path: '/store',
-        redirect: '/store/store-list',
+        path: '/merchant/shop-mall',
+        component: '@/pages/Store/index',
       },
+      // ******************门店********************
       // 门店列表
       {
-        path: '/store/store-list',
+        path: '/merchant/store-list',
         component: '@/pages/Store/index',
       },
       // 门店账户
       {
-        path: '/store/store-account',
+        path: '/merchant/store-account',
         component: '@/pages/Store/StoreAccount/index',
       },
       // 门店员工
       {
-        path: '/store/staff',
+        path: '/merchant/staff',
         component: '@/pages/Store/Staff/index',
       },
       // 门店设置
       {
-        path: '/store/store-setting',
+        path: '/merchant/store-setting',
         component: '@/pages/Store/StoreSetting/index',
       },
-      // *******************订单********************
       // **************************客户**************************
       {
         path: '/customer',
