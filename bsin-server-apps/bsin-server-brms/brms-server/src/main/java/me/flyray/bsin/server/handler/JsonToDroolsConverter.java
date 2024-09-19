@@ -40,18 +40,21 @@ public class JsonToDroolsConverter {
 
             // 解析Conditions部分
             droolsContent.append("    $map : HashMap()\n");
-            ArrayNode conditionsArray = (ArrayNode) ruleObject.get("conditions");
+            ArrayNode conditionGroupArray = (ArrayNode) ruleObject.get("conditions");
             StringBuilder conditions = new StringBuilder("eval(");
             boolean firstCondition = true;
-            for (JsonNode conditionNode : conditionsArray) {
+            for (JsonNode conditionGroupNode : conditionGroupArray) {
                 // 第一个条件没有逻辑运算符
                 if (!firstCondition) {
-                    conditions.append(" ").append(conditionNode.get("logic").asText()).append(" ");
+                    conditions.append(" ").append(conditionGroupNode.get("logic").asText()).append(" ");
                 }
                 firstCondition = false;
-                ObjectNode conditionObject = (ObjectNode) conditionNode;
-                // 递归解析条件部分的表达式：算术运算、逻辑运算、比较运算
-                conditions.append(convertExpression(conditionObject.get("expression")));
+                ObjectNode conditionGroupObject = (ObjectNode) conditionGroupNode;
+                ArrayNode conditionsArray = (ArrayNode) conditionGroupObject.get("expressionGroup");
+                for(JsonNode conditionNode : conditionsArray){
+                    // 递归解析条件部分的表达式：算术运算、逻辑运算、比较运算
+                    conditions.append(convertExpression(conditionNode.get("expression")));
+                }
             }
             conditions.append(")");
             droolsContent.append("    ").append(conditions.toString()).append("\n");
