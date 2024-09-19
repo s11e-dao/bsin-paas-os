@@ -33,7 +33,7 @@
             "coordinate": "userService#getUserDetail",
             "params": [
               {
-                "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、规则结果获取",
+                "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取",
                 "valueTakingMethod": "1",
                 "type": "String",
                 "name": "小刘创建了第二个",
@@ -41,7 +41,7 @@
                 "value": "12"
               },
               {
-                "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、规则结果获取",
+                "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取",
                 "valueTakingMethod": "1",
                 "type": "String",
                 "name": "小刘创建了第二个",
@@ -55,51 +55,109 @@
       "conditions": [
         {
           "logic": "",
-          "expression": {
-            "left": {
-              "type": "bracket",
+          "expressionGroup": [
+            {
+              "logic": "",
               "expression": {
                 "left": {
                   "type": "bracket",
                   "expression": {
                     "left": {
-                      "type": "value",
-                      "value": "1"
+                      "type": "bracket",
+                      "expression": {
+                        "left": {
+                          "type": "value",
+                          "value": "1"
+                        },
+                        "operator": "+",
+                        "right": {
+                          "type": "value",
+                          "value": "5"
+                        }
+                      }
                     },
-                    "operator": "+",
+                    "operator": "*",
                     "right": {
                       "type": "value",
-                      "value": "5"
+                      "value": "3"
                     }
                   }
                 },
-                "operator": "*",
+                "operator": ">",
                 "right": {
                   "type": "value",
-                  "value": "3"
+                  "value": "10"
                 }
               }
             },
-            "operator": ">",
-            "right": {
-              "type": "value",
-              "value": "10"
+            {
+              "logic": "&&",
+              "expression": {
+                "left": {
+                  "type": "value",
+                  "value": "$map.get('userAge')"
+                },
+                "operator": "==",
+                "right": {
+                  "type": "value",
+                  "value": "\"18\""
+                }
+              }
             }
-          }
+          ]
         },
         {
           "logic": "&&",
-          "expression": {
-            "left": {
-              "type": "value",
-              "value": "$map.get('userAge')"
+          "expressionGroup": [
+            {
+              "logic": "",
+              "expression": {
+                "left": {
+                  "type": "bracket",
+                  "expression": {
+                    "left": {
+                      "type": "bracket",
+                      "expression": {
+                        "left": {
+                          "type": "value",
+                          "value": "1"
+                        },
+                        "operator": "+",
+                        "right": {
+                          "type": "value",
+                          "value": "5"
+                        }
+                      }
+                    },
+                    "operator": "*",
+                    "right": {
+                      "type": "value",
+                      "value": "3"
+                    }
+                  }
+                },
+                "operator": ">",
+                "right": {
+                  "type": "value",
+                  "value": "10"
+                }
+              }
             },
-            "operator": "==",
-            "right": {
-              "type": "value",
-              "value": "\"18\""
+            {
+              "logic": "&&",
+              "expression": {
+                "left": {
+                  "type": "value",
+                  "value": "$map.get('userAge')"
+                },
+                "operator": "==",
+                "right": {
+                  "type": "value",
+                  "value": "\"18\""
+                }
+              }
             }
-          }
+          ]
         }
       ],
       "actions": [
@@ -171,7 +229,7 @@
             "params": [
               {
                 "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、规则结果获取",
-                "valueTakingMethod": "1",
+                "valueTakingMethod": "3",
                 "type": "String",
                 "name": "小刘创建了第二个",
                 "key": "age",
@@ -179,7 +237,7 @@
               },
               {
                 "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、规则结果获取",
-                "valueTakingMethod": "1",
+                "valueTakingMethod": "3",
                 "type": "String",
                 "name": "小刘创建了第二个",
                 "key": "username",
