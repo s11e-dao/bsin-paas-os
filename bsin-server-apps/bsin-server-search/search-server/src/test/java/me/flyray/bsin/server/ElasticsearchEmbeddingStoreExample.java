@@ -24,6 +24,7 @@ public class ElasticsearchEmbeddingStoreExample {
 
     public static void main(String[] args) throws IOException {
 
+
         // 使用 try-with-resources 启动 Elasticsearch 容器，确保容器在结束时关闭
         try (ElasticsearchContainer elastic =
                      // 创建 Elasticsearch 容器，指定使用的 Docker 镜像版本

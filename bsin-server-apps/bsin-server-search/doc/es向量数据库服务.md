@@ -17,6 +17,8 @@ docker network create es-net
 ```json
 docker pull elasticsearch:8.15.0
 
+docker pull docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+
 ```
 
 > 3、创建挂载目录
