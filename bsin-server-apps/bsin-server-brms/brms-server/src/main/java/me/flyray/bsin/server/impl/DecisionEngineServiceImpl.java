@@ -37,11 +37,12 @@ public class DecisionEngineServiceImpl implements DecisionEngineService {
     private EventModelMapper eventModelMapper;
 
     /**
-     * 规则引擎执行入口
+     * 智能决策引擎执行入口
      * 1、构建决策引擎环境
-     * 2、处理fact（事实对象，接收数据的对象实体类）
-     * 3、插入数据并执行规则
+     * 2、处理fact（决策事实对象，接收数据的对象实体类）
+     * 3、插入数据并执行决策规则
      * 4、根据decisionRule中json afer配置和then的globalMap结果调用逻辑处理
+     * 5、结果处理，同步作出决策触发业务处理，异步通过工作流人工干预，人工处理完成之后回调业务处理
      * @param executeParams
      * @return
      */
