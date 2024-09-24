@@ -66,8 +66,9 @@ const routes = [
       },
       // 推理模型
       {
+        name: '推理模型',
         path: '/model/inference-model',
-        component: '@/pages/DecisionModel/index',
+        component: '@/pages/InferenceModel/index',
       },
       {
         name: '流程模型',

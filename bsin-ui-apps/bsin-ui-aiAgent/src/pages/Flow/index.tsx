@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Space, Card } from 'antd';
 
-import AiWorkflow from '../../components/Flow';
+import { AiAgentDesign } from 'bsin-agent-ui'
 
 
 export default function FlowPage() {
@@ -9,7 +9,7 @@ export default function FlowPage() {
     <Card
       bodyStyle={{ height: 800 }}
     >
-      <AiWorkflow />
+      <AiAgentDesign />
     </Card>
   </div>;
 }

@@ -40,7 +40,8 @@ const routes = [
       // Copilot
       {
         path: '/ai-copilot',
-        component: '@/pages/Copilot',
+        // component: '@/pages/Copilot',
+        component: '@/pages/Agent',
       },
       // Tool
       {
