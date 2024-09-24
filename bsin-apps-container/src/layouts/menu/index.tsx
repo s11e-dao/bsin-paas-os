@@ -110,7 +110,7 @@ const SubmenuNav = (props: { appMenus: any }) => {
       <div className='submenu-links'>
         <ul>
           {links.map(item => (
-            <li key={item.name} className={location.pathname.includes(item.path) ? 'active' : ''}
+            <li key={item?.menuId} className={location.pathname.includes(item.path) ? 'active' : ''}
               onClick={() => handleClick(item.path)}>{item.menuName}</li>
           ))}
         </ul>

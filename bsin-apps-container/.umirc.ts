@@ -51,4 +51,13 @@ export default {
     require('postcss-nested'),
     require('autoprefixer'),
   ],
+  // 子应用表单引擎配置
+  externals: {
+    'react': 'React',
+    'react-dom': 'ReactDOM'
+  },
+  headScripts: [
+    'https://unpkg.com/react@18.0.0/umd/react.production.min.js',
+    'https://unpkg.com/react-dom@18.0.0/umd/react-dom.production.min.js',
+  ]
 }
