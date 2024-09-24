@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModelDefinition } from 'bsin-workflow-ui';
+import { ModelDefinition } from 'bsin-decision-ui';
 
 const ModelDefinitionAdmin = () => {
   return (

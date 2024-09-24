@@ -1,5 +1,5 @@
 import React from "react";
-import { ModelManagement } from 'bsin-workflow-ui';
+import { ModelManagement } from 'bsin-decision-ui';
 
 const ModelManagementAdmin = () => {
     return (<div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormDesign } from 'bsin-workflow-ui';
+import { FormDesign } from 'bsin-decision-ui';
 
 function index() {
   return <FormDesign />;

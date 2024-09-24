@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProcessInstance } from 'bsin-workflow-ui';
+import { ProcessInstance } from 'bsin-decision-ui';
 
 const ProcessInstanceAdmin = () => {
   return (

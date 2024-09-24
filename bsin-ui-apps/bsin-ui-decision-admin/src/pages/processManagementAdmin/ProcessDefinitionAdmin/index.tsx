@@ -1,5 +1,5 @@
 import React from "react";
-import { ProcessDefinition } from 'bsin-workflow-ui';
+import { ProcessDefinition } from 'bsin-decision-ui';
 
 const ProcessDefinitionAdmin = () => {
     return (<div>

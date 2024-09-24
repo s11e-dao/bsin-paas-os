@@ -131,11 +131,6 @@ const routes = [
         path: '/decision-metrics/metrics-field',
         component: '@/pages/DecisionIndicator/index',
       },
-      // 决策树
-      {
-        path: '/decision-tree',
-        component: '@/pages/DecisionTree/index',
-      },
       // 决策表
       {
         path: '/decision-table',

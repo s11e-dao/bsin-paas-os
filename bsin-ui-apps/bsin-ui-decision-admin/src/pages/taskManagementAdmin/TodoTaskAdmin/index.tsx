@@ -1,5 +1,5 @@
 import React from 'react';
-import { TodoTask } from 'bsin-workflow-ui';
+import { TodoTask } from 'bsin-decision-ui';
 
 const TodoTaskAdmin = () => {
   return (

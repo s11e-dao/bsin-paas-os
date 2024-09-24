@@ -1,10 +1,10 @@
 import React from 'react';
-import { TodoClaimTask } from 'bsin-workflow-ui';
+import { TaskClaim } from 'bsin-decision-ui';
 
 const TodoClaimTaskAdmin = () => {
   return (
     <div>
-      <TodoClaimTask></TodoClaimTask>
+      <TaskClaim></TaskClaim>
     </div>
   );
 };

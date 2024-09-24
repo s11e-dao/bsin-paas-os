@@ -1,5 +1,5 @@
 import React from "react";
-import { ModelType } from 'bsin-workflow-ui';
+import { ModelType } from 'bsin-decision-ui';
 
 const ModelTypeAdmin = () => {
     return (<div>
