@@ -40,7 +40,7 @@ const routes = [
       // ****************************事件模型***********************
       {
         path: '/event-model',
-        component: '@/pages/DecisionTest/index',
+        component: '@/pages/EventModel/index',
       },
       // ****************************模型***********************
       {
@@ -131,6 +131,7 @@ const routes = [
         path: '/decision-metrics/metrics-field',
         component: '@/pages/DecisionIndicator/index',
       },
+    
       // 决策表
       {
         path: '/decision-table',
