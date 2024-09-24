@@ -60,8 +60,8 @@ const routes = [
       },
       // 生成式聊天
       {
-        path: '/ai-chat',
-        component: '@/pages/Chat/index',
+        path: '/bsin-chat',
+        component: '@/pages/BsinChat/index',
       },
       // 敏感词
       {
