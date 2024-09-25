@@ -1,11 +1,7 @@
-# es向量数据库服务
+# elasticsearch向量数据库服务搭建
 [toc]
 
-## es向量数据库服务搭建
-
-https://blog.csdn.net/cmh1008611/article/details/141562198
-
-### es安装步骤
+### 一、es安装步骤
 
 > 1、创建网络
 ```json
@@ -105,7 +101,7 @@ docker restart elasticsearch
 
 ```
 
-### es可视化kibana安装步骤
+### 二、es可视化kibana安装步骤
 > 1、拉取镜像
 
 ```json
@@ -114,7 +110,7 @@ docker pull kibana:8.10.2
 
 ```
 
-> 2、创建配置
+> 2、创建配置（可选项）
 ```json
 vi /home/data/kibana/config/kibana.yml
 
@@ -165,12 +161,12 @@ http://192.168.198.197:5601
 
 ```
 
-### 安装elasticsearch-head
+### 三、安装elasticsearch-head
 直接使用浏览器插件Multi ElasticSearch Head
 
 使用教程：https://blog.csdn.net/qq_50854662/article/details/135967448
 
-## 数据测试，kibana脚本，操作es
+## 四、数据测试，kibana脚本，操作es
 dev tool控制台处理
 
 ```json
@@ -251,7 +247,7 @@ DELETE goods_index
 
 ```
 
-## 向量数据测试，kibana脚本，操作es
+## 五、向量数据测试，kibana脚本，操作es
 
 ```json
 1. 创建索引
@@ -298,3 +294,7 @@ POST /vector_index/_search
 
 ```
 
+## 参考资料
+* https://blog.csdn.net/cmh1008611/article/details/141562198
+
+* https://blog.csdn.net/qq_50854662/article/details/135967448
