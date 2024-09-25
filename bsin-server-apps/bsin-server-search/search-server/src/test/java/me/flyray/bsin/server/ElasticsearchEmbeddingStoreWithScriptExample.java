@@ -17,23 +17,12 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.RestClient;
-import org.testcontainers.elasticsearch.ElasticsearchContainer;
 
 import java.io.IOException;
 
 public class ElasticsearchEmbeddingStoreWithScriptExample {
 
     public static void main(String[] args) throws IOException {
-
-        // 使用 try-with-resources 启动 Elasticsearch 容器，确保容器在结束时关闭
-        try (ElasticsearchContainer elastic =
-                     // 创建 Elasticsearch 容器，指定使用的 Docker 镜像版本
-                     new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:8.15.0")
-                             // 设置 Elasticsearch 密码
-                             .withPassword("changeme")
-        ) {
-            // 启动 Elasticsearch 容器
-            elastic.start();
 
             // 创建一个 CredentialsProvider，用于存储用户名和密码
             final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
@@ -43,13 +32,13 @@ public class ElasticsearchEmbeddingStoreWithScriptExample {
             );
 
             // 创建一个 RestClient，用于与 Elasticsearch 进行 HTTP 通信
-            RestClient client = RestClient.builder(HttpHost.create("https://" + elastic.getHttpHostAddress()))
+            RestClient client = RestClient.builder(HttpHost.create("https://"))
                     // 设置 HTTP 客户端的回调，用于配置身份验证和 SSL
                     .setHttpClientConfigCallback(httpClientBuilder -> {
                         // 使用创建的凭证来设置默认的身份验证
                         httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
                         // 使用 Elasticsearch 容器的 CA 来配置 SSL 上下文
-                        httpClientBuilder.setSSLContext(elastic.createSslContextFromCa());
+//                        httpClientBuilder.setSSLContext(elastic.createSslContextFromCa());
                         return httpClientBuilder;
                     })
                     .build();
@@ -102,7 +91,6 @@ public class ElasticsearchEmbeddingStoreWithScriptExample {
 
             // 关闭 Elasticsearch 客户端
             client.close();
-        }
     }
 
 }
