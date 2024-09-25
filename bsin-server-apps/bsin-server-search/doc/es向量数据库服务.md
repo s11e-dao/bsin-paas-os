@@ -165,6 +165,11 @@ http://192.168.198.197:5601
 
 ```
 
+### 安装elasticsearch-head
+直接使用浏览器插件Multi ElasticSearch Head
+
+使用教程：https://blog.csdn.net/qq_50854662/article/details/135967448
+
 ## 数据测试，kibana脚本，操作es
 dev tool控制台处理
 
