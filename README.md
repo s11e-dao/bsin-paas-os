@@ -37,13 +37,16 @@ https://www.bilibili.com/video/BV1VM4y1a7PF/?vd_source=360ae092de70c0b6c577d1d26
 ## 平台定位
 提供daPaaS层的一站式企业级技术解决方案，帮助企业快速实现数字商业创新，完成数字化转型。
 
-![avatar](./doc/images/sys/bsin-paas定位.png)
+![avatar](./doc/images/architecture/bsin-paas定位.png)
 
 ## 平台总架构设计
 ![avatar](./doc/images/architecture/平台总架构设计.png)
 
 ## 逻辑架构示图
 ![avatar](./doc/images/architecture/架构设计.png)
+
+## 系统业务角色定义
+![avatar](./doc/images/architecture/bizRole.jpg)
 
 ## 应用业务流程视图
 ![avatar](./doc/images/sys/应用业务流程视图.png)
