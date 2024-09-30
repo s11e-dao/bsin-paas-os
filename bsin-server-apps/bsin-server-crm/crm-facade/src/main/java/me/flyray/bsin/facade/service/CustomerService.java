@@ -50,7 +50,7 @@ public interface CustomerService {
   /** 根据数组查询客户信息 */
   public List<?> getListByCustomerNos(Map<String, Object> requestMap);
 
-  /** 实名认证后 */
+  /** 实名认证 */
   public CustomerBase certification(Map<String, Object> requestMap) throws Exception;
 
   /** 设置钱包信息 */

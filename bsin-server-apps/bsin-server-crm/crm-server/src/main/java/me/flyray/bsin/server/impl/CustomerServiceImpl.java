@@ -367,11 +367,10 @@ public class CustomerServiceImpl implements CustomerService {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
     Map<String, Object> walletData = walletService.createWallet(requestMap);
-    Map wallet = (Map) walletData.get("data");
     // 查找资产客户 --> 获取私钥
-    customerBase.setWalletAddress((String) wallet.get("walletAddress"));
+    customerBase.setWalletAddress((String) walletData.get("walletAddress"));
     SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
-    customerBase.setWalletPrivateKey(aes.encryptHex((String) wallet.get("walletPrivateKey")));
+    customerBase.setWalletPrivateKey(aes.encryptHex((String) walletData.get("walletPrivateKey")));
     // 更新客户信息
     customerBase.setTxPassword((String) requestMap.get("password"));
     customerBase.setTxPasswordStatus("1");
