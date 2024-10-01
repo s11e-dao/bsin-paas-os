@@ -137,9 +137,6 @@ public class Merchant implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
-    @TableField(exist = false)
-    private String password;
-
     private String username;
 
 }

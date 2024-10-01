@@ -149,6 +149,7 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public Map<String, Object> login(Map<String, Object> requestMap) {
         String username = MapUtils.getString(requestMap, "username");
+        String password = MapUtils.getString(requestMap, "password");
         // 查询商户信息
         LambdaQueryWrapper<Merchant> warapper = new LambdaQueryWrapper<>();
         warapper.eq(Merchant::getUsername, username);
@@ -158,24 +159,27 @@ public class MerchantServiceImpl implements MerchantService {
         if(merchant == null){
             throw new BusinessException(ResponseCode.MERCHANT_NOT_EXISTS);
         }
+
+        if(!merchant.getPassword().equals(password)){
+            throw new BusinessException(ResponseCode.USERNAME_PASSWORD_ERROR);
+        }
         LoginUser loginUser = new LoginUser();
         BeanUtil.copyProperties(merchant, loginUser);
 
         // 查询upms用户
         Map res = new HashMap<>();
         // userService
-        SysUser sysUser = new SysUser();
-        BeanUtil.copyProperties(requestMap,sysUser);
-        UserResp userResp = userService.getUserInfo(sysUser);
+        SysUser sysUserReq = new SysUser();
+        BeanUtil.copyProperties(requestMap,sysUserReq);
+        UserResp userResp = userService.getUserInfo(sysUserReq);
         Map data = new HashMap();
-        BeanUtil.copyProperties(userResp,data);
+        BeanUtil.copyProperties(userResp, data);
         res.putAll(data);
-
+        SysUser sysUser = userResp.getSysUser();
         // 商户认证之后不为空
         if(sysUser != null){
-            loginUser.setUserId((String) sysUser.getUserId());
+            loginUser.setUserId(sysUser.getUserId());
         }
-
         loginUser.setUsername(merchant.getUsername());
         loginUser.setPhone(merchant.getPhone());
         loginUser.setMerchantNo(merchant.getSerialNo());
