@@ -21,7 +21,7 @@ import me.flyray.bsin.domain.entity.Equity;
 @Mapper
 public interface EquityMapper extends BaseMapper<Equity> {
 
-    List<Equity> getEquityList(@Param("categoryNo") String categoryNo);
+    List<Equity> getEquityList(@Param("typeNo") String typeNo);
 
 }
 

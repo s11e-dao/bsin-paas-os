@@ -50,13 +50,13 @@ public class ConditionConfigServiceImpl implements ConditionConfigService {
         conditionRelationshipMapper.deleteById(serialNo);
     }
 
-    @ApiDoc(desc = "getListByCategoryNo")
-    @ShenyuDubboClient("/getListByCategoryNo")
+    @ApiDoc(desc = "getListByTypeNo")
+    @ShenyuDubboClient("/getListByTypeNo")
     @Override
-    public List<?> getListByCategoryNo(Map<String, Object> requestMap) {
+    public List<?> getListByTypeNo(Map<String, Object> requestMap) {
         // 权益分类编号：关联等级 任务 活动的编号
-        String categoryNo = MapUtils.getString(requestMap, "categoryNo");
-        List<Condition> conditionList =  conditionMapper.getConditionList(categoryNo);
+        String typeNo = MapUtils.getString(requestMap, "typeNo");
+        List<Condition> conditionList =  conditionMapper.getConditionList(typeNo);
         return conditionList;
     }
 
