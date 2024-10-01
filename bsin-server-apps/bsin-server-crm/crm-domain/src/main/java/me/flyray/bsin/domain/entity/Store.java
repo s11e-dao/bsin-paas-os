@@ -28,6 +28,11 @@ public class Store implements Serializable {
     private String storeName;
 
     /**
+     * 登录密码
+     */
+    private String password;
+
+    /**
      * 店铺地址
      */
     private String address;

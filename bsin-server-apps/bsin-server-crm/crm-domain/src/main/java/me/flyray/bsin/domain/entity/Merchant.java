@@ -36,6 +36,11 @@ public class Merchant implements Serializable {
     private String merchantName;
 
     /**
+     * 登录密码
+     */
+    private String password;
+
+    /**
      * 企业logo
      */
     private String logoUrl;
