@@ -20,7 +20,7 @@ import me.flyray.bsin.domain.entity.Condition;
 @Mapper
 public interface ConditionMapper extends BaseMapper<Condition> {
 
-    List<Condition> getConditionList(@Param("typeNo") String categoryNo);
+    List<Condition> getConditionList(@Param("categoryNo") String categoryNo);
 
 }
 

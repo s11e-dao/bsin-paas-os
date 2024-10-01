@@ -26,6 +26,6 @@ public interface ConditionConfigService {
     /**
      * 获取配置的条件
      */
-    public List<?> getListByTypeNo(Map<String, Object> requestMap);
+    public List<?> getListByCategoryNo(Map<String, Object> requestMap);
 
 }

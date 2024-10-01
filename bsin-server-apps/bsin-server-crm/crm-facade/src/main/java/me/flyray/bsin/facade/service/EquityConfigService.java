@@ -26,6 +26,6 @@ public interface EquityConfigService {
     /**
      * 根据权益分类编号获取权益
      */
-    public List<?> getListByTypeNo(Map<String, Object> requestMap);
+    public List<?> getListByCategoryNo(Map<String, Object> requestMap);
 
 }
