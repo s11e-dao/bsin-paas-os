@@ -1,0 +1,15 @@
+# 基础镜像
+FROM  openjdk:11-jre
+# author
+MAINTAINER bsin-paas
+
+# 挂载目录
+VOLUME /home/bsin-paas-os/server-apps/wass
+# 创建目录
+RUN mkdir -p /home/bsin-paas-os/server-apps/wass
+# 指定路径
+WORKDIR /home/bsin-paas-os/server-apps/wass
+# 复制jar文件到路径
+COPY ./jar/wass-server-2.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/wass/wass-server-2.0.0-SNAPSHOT.jar
+# 启动用户服务
+ENTRYPOINT ["java","-jar","wass-server-2.0.0-SNAPSHOT.jar"]

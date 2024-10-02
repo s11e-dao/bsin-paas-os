@@ -1,0 +1,15 @@
+# 基础镜像
+FROM  openjdk:11-jre
+# author
+MAINTAINER bsin-paas
+
+# 挂载目录
+VOLUME /home/bsin-paas-os/targe-gateway
+# 创建目录
+RUN mkdir -p /home/bsin-paas-os/targe-gateway
+# 指定路径
+WORKDIR /home/bsin-paas-os/targe-gateway
+# 复制jar文件到路径
+COPY ./jar/targe-gateway-server-2.0.0-SNAPSHOT.jar /home/bsin-paas-os/targe-gateway/targe-gateway-server-2.0.0-SNAPSHOT.jar
+# 启动用户服务
+ENTRYPOINT ["java","-jar","targe-gateway-server-2.0.0-SNAPSHOT.jar"]
