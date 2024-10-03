@@ -90,3 +90,9 @@ docker/bsin-paas-os/targe-gateway/jar/
 docker/middleware/mysql/db/
 
 docker/bsin-paas-os/targe-gateway-admin/jar/
+
+docker/middleware/mysql/data
+
+docker/middleware/redis/data
+
+bsin-targe-gateway-admin/logs

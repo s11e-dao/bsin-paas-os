@@ -1,5 +1,5 @@
 # 基础镜像
-FROM  openjdk:11-jre
+FROM  openjdk:11
 # author
 MAINTAINER bsin-paas
 

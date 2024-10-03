@@ -5,7 +5,7 @@ version: '2.0'
 services:
   bsin-nacos:
     container_name: bsin-nacos
-    image: nacos/nacos-server:2.3.2
+    image: nacos/nacos-server:latest
     build:
       context: middleware/nacos
     environment:
@@ -28,7 +28,7 @@ services:
 
   bsin-mysql:
     container_name: bsin-mysql
-    image: mysql:8.0.26
+    image: mysql:latest
     build:
       context: middleware/mysql
     ports:
@@ -69,7 +69,7 @@ services:
 
   bsin-redis:
     container_name: bsin-redis
-    image: redis:6.0.8
+    image: redis:latest
     build:
       context: middleware/redis
       dockerfile: dockerfile
@@ -136,7 +136,7 @@ services:
       - bsin-nacos
       - bsin-redis
       - bsin-mysql
-      -
+
   # targe-gateway
   bsin-targe-gateway:
     container_name: bsin-targe-gateway
@@ -218,8 +218,8 @@ services:
       - bsin-mysql
       - bsin-targe-gateway
 
-  bsin-server-aiAgent:
-    container_name: bsin-server-aiAgent
+  bsin-server-ai-agent:
+    container_name: bsin-server-ai-agent
     build:
       context: ./bsin-paas-os/server-apps/aiAgent
       dockerfile: dockerfile

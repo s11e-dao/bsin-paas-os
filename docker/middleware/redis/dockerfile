@@ -1,5 +1,5 @@
 # 基础镜像
-FROM redis:6.0.8
+FROM redis:latest
 # author
 MAINTAINER bsin-paas
 
