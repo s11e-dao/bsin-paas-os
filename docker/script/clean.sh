@@ -15,13 +15,19 @@ rm -f ../bsin-paas-os/server-apps/workflow/jar/workflow-serve-2.0.0-SNAPSHOT.jar
 rm -f ../bsin-paas-os/server-apps/workflow-admin/jar/workflow-admin-serve-2.0.0-SNAPSHOT.jar
 
 # gateway
-rm -f ../bsin-paas-os/targe-gateway/jar/shenyu-bootstrap.jar
-rm -f ../bsin-paas-os/targe-gateway/jar/shenyu-bootstrap-sources.jar
+#rm -f ../bsin-paas-os/targe-gateway/jar/shenyu-bootstrap.jar
+#rm -f ../bsin-paas-os/targe-gateway/jar/shenyu-bootstrap-sources.jar
+rm -f ../bsin-paas-os/targe-gateway/jar/targe-gateway-admin-server-2.0.0-SNAPSHOT.jar
+rm -f ../bsin-paas-os/targe-gateway/jar/targe-gateway-admin-sources-2.0.0-SNAPSHOT.jar
 
 # gateway-admin
-rm -f ../bsin-paas-os/targe-gateway-admin/jar/shenyu-admin.jar
-rm -f ../bsin-paas-os/targe-gateway-admin/jar/shenyu-admin-javadoc.jar
-rm -f ../bsin-paas-os/targe-gateway-admin/jar/shenyu-admin-sources.jar
+#rm -f ../bsin-paas-os/targe-gateway-admin/jar/shenyu-admin.jar
+#rm -f ../bsin-paas-os/targe-gateway-admin/jar/shenyu-admin-javadoc.jar
+#rm -f ../bsin-paas-os/targe-gateway-admin/jar/shenyu-admin-sources.jar
+rm -f ../bsin-paas-os/targe-gateway/jar/targe-gateway-admin-server-2.0.0-SNAPSHOT.jar
+rm -f ../bsin-paas-os/targe-gateway/jar/targe-gateway-admin-javadoc-2.0.0-SNAPSHOT.jar
+rm -f ../bsin-paas-os/targe-gateway/jar/targe-gateway-admin-sources-2.0.0-SNAPSHOT.jar
+
 
 echo "2.remove *.jar finished!!!"
 
