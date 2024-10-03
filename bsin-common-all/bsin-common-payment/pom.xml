@@ -27,7 +27,6 @@
             <version>${weixin-java-pay.version}</version>
         </dependency>
 
-
     </dependencies>
 
     <build>

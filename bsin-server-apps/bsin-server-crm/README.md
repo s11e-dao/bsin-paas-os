@@ -37,3 +37,5 @@
 4、达到条件则根据token释放条件配置执行分配
 5、token分配给持有pass card的成员对应的账户
 
+## 微信小程序和公众号对接
+https://github.com/Wechat-Group/WxJava
