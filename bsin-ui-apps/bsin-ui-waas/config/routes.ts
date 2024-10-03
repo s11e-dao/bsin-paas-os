@@ -17,14 +17,6 @@ const routes = [
         ],
       },
       {
-        name: '用户中心',
-        path: '/userCenter',
-        component: '@/pages/UserCenter/index',
-        wrappers: [
-          '@/wrappers/auth',
-        ],
-      },
-      {
         name: '非基座运行',
         path: '/uncontainer',
         component: '@/pages/uncontainer'
@@ -199,6 +191,11 @@ const routes = [
       {
         path: '/wallet/sys-agent-wallet',
         component: '@/pages/Wallet/SysAgentWallet/index',
+      },
+      // **************************币种*************************
+      {
+        path: '/currency-management',
+        component: '@/pages/Currency/index',
       },
       // **************************资产*************************
       {
