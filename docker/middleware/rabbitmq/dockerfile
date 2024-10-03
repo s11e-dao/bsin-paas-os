@@ -1,0 +1,13 @@
+# 基础镜像
+FROM rabbitmq:3.7.8
+
+# author
+MAINTAINER bsin-paas
+
+# 创建目录
+RUN mkdir -p /home/bsin-paas-os/middleware/rabbitmq
+# 指定路径
+WORKDIR /home/bsin-paas-os/middleware/rabbitmq
+
+## 复制conf文件到路径
+#COPY ./conf/application.properties /home/bsin-paas-os/middleware/nacos/conf/application.properties

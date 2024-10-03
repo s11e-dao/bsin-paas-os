@@ -1,0 +1,238 @@
+# 描述 Compose 文件的版本信息
+version: '2.0'
+
+# 定义服务
+services:
+  bsin-nacos:
+    container_name: bsin-nacos
+    image: nacos/nacos-server:2.3.2
+    build:
+      context: middleware/nacos
+    environment:
+      - MODE=standalone
+    volumes:
+      - ./middleware/nacos/logs/:/home/bsin-paas-os/middleware/nacos/logs
+      - ./middleware/nacos/conf/application.properties:/home/bsin-paas-os/middleware/nacos/conf/application.properties
+    # 容器对外暴露的端口，格式：左边宿主机端口:右边容器端口
+    ports:
+      - "8848:8848"
+    expose:
+      #容器暴露的端口不映射到宿主机，只允许能被连接的服务访问
+      - "9848"
+      - "9849"
+    restart: always
+    privileged: true
+    depends_on:
+      bsin-mysql:
+        condition: service_healthy
+
+  bsin-mysql:
+    container_name: bsin-mysql
+    image: mysql:8.0.26
+    build:
+      context: middleware/mysql
+    ports:
+      - "3306:3306"
+    restart: always
+    volumes:
+      # 绝对路径
+      # - "/mydata/docker_mysql/data:/var/lib/mysql"
+      # 相对路径，相对当前 docker-compose.yml 文件所在目录
+      # - “./conf:/etc/mysql/conf.d“
+      # - “./docker_volume/mysql:/var/lib/mysql“
+      # 匿名挂载，匿名挂载只需要写容器目录即可，容器外对应的目录会在 /var/lib/docker/volume 中生成
+      # - "/var/lib/mysql"
+      # 具名挂载，就是给数据卷起了个名字，容器外对应的目录会在 /var/lib/docker/volume 中生成
+      # - "mysql-data-volume:/var/lib/mysql"
+      - ./middleware/mysql/conf:/etc/mysql/conf.d
+      - ./middleware/mysql/logs:/logs
+      - ./middleware/mysql/data:/var/lib/mysql
+      - ./middleware/mysql/db:/docker-entrypoint-initdb.d/
+    command: [
+      'mysqld',
+      '--innodb-buffer-pool-size=80M',
+      '--character-set-server=utf8mb4',
+      '--collation-server=utf8mb4_unicode_ci',
+      '--default-time-zone=+8:00',
+      '--lower-case-table-names=1'
+    ]
+    privileged: true
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 5
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+#      MYSQL_DATABASE: bsin-mpc
+#      MYSQL_USER: bsin
+#      MYSQL_PASSWORD: 123456
+
+  bsin-redis:
+    container_name: bsin-redis
+    image: redis:6.0.8
+    build:
+      context: middleware/redis
+      dockerfile: dockerfile
+    ports:
+      - "6379:6379"
+    restart: always
+    volumes:
+      - ./middleware/redis/conf/redis.conf:/home/bsin-paas-os/middleware/redis/redis.conf
+      - ./middleware/redis/data:/data
+    command: redis-server /home/bsin-paas-os/middleware/redis/redis.conf
+
+#  bsin-rabbitmq:
+#    container_name: bsin-rabbitmq
+#    image: rabbitmq:3.7.8
+#    build:
+#      context: middleware/rabbitmq
+#      dockerfile: dockerfile
+#    ports:
+#      - "6379:6379"
+#    restart: always
+#    volumes:
+#      - ./middleware/rabbitmq/conf/rabbitmq.conf:/home/bsin-paas-os/middleware/rabbitmq/rabbitmq.conf
+#
+#  bsin-milvus:
+#    container_name: bsin-milvus
+#    image:
+#    build:
+#      context: middleware/milvus
+#      dockerfile: dockerfile
+#    ports:
+#      - "6379:6379"
+#    restart: always
+#    volumes:
+#      - ./middleware/milvus/conf:/home/bsin-paas-os/middleware/milvus/conf
+#
+#    bsin-elasticsearch:
+#      container_name: bsin-elasticsearch
+#      image:
+#      build:
+#        context: middleware/elasticsearch
+#        dockerfile: dockerfile
+#      ports:
+#        - "6379:6379"
+#      restart: always
+#      volumes:
+#        - ./middleware/elasticsearch/conf:/home/bsin-paas-os/middleware/elasticsearch/conf
+
+  # targe-gateway-admin
+  bsin-targe-gateway-admin:
+    container_name: bsin-targe-gateway-admin
+    build:
+      context: ./bsin-paas-os/targe-gateway-admin
+      dockerfile: dockerfile
+    ports:
+      - "9095:9095"
+    restart: always
+    volumes:
+      - ./bsin-paas-os/targe-gateway-admin/logs:/home/bsin-paas-os/targe-gateway-admin/logs
+    depends_on:
+      - bsin-nacos
+      - bsin-redis
+      - bsin-mysql
+    links:
+      - bsin-nacos
+      - bsin-redis
+      - bsin-mysql
+      -
+  # targe-gateway
+  bsin-targe-gateway:
+    container_name: bsin-targe-gateway
+    build:
+      context: ./bsin-paas-os/targe-gateway
+      dockerfile: dockerfile
+    ports:
+      - "9195:9195"
+    restart: always
+    volumes:
+      - ./bsin-paas-os/targe-gateway/logs:/home/bsin-paas-os/targe-gateway/logs
+    depends_on:
+      - bsin-nacos
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway-admin
+    links:
+      - bsin-nacos
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway-admin
+
+  # server-apps
+  bsin-server-upms:
+    container_name: bsin-server-upms
+    build:
+      context: ./bsin-paas-os/server-apps/upms
+      dockerfile: dockerfile
+    ports:
+      - "8013:8013"
+    restart: always
+    volumes:
+      - ./bsin-paas-os/server-apps/upms/logs:/home/bsin-paas-os/server-apps/upms/logs
+    depends_on:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    links:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+
+  bsin-server-waas:
+    container_name: bsin-server-waas
+    build:
+      context: ./bsin-paas-os/server-apps/waas
+      dockerfile: dockerfile
+    ports:
+      - "8085:8085"
+    restart: always
+    volumes:
+      - ./bsin-paas-os/server-apps/waas/logs:/home/bsin-paas-os/server-apps/waas/logs
+    depends_on:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    links:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+
+
+  bsin-server-crm:
+    container_name: bsin-server-crm
+    build:
+      context: ./bsin-paas-os/server-apps/crm
+      dockerfile: dockerfile
+    ports:
+      - "8072:8072"
+    restart: always
+    volumes:
+      - ./bsin-paas-os/server-apps/crm/logs:/home/bsin-paas-os/server-apps/crm/logs
+    depends_on:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    links:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+
+  bsin-server-aiAgent:
+    container_name: bsin-server-aiAgent
+    build:
+      context: ./bsin-paas-os/server-apps/aiAgent
+      dockerfile: dockerfile
+    ports:
+      - "8084:8084"
+    restart: always
+    volumes:
+      - ./bsin-paas-os/server-apps/aiAgent/logs:/home/bsin-paas-os/server-apps/aiAgent/logs
+    depends_on:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    links:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
