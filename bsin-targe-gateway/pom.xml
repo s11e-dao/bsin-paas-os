@@ -672,15 +672,22 @@
         </profile>
     </profiles>
     <build>
-<!--        <finalName>shenyu-bootstrap</finalName>-->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <mainClass>me.flyray.bsin.gateway.BsinGatewayApplication</mainClass>
-                    <executable>true</executable>
+                    <skip>false</skip>
+<!--                    <executable>true</executable>-->
                 </configuration>
             </plugin>
 <!--            <plugin>-->

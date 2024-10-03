@@ -2,7 +2,7 @@
 
 # 使用说明，用来提示输入参数
 usage(){
-	echo "Usage: sh 执行脚本.sh [build|middleware|gateway|server_apps|ui_apps|all|stop|rm]"
+	echo "Usage: sh 执行脚本.sh [build|middleware|gateway|server_apps|ui_apps|start|stop|rm]"
 	exit 1
 }
 
@@ -57,6 +57,12 @@ case "$1" in
 	server_apps
 ;;
 "ui_apps")
+	ui_apps
+;;
+"start")
+	middleware
+	gateway
+	server_apps
 	ui_apps
 ;;
 "stop")
