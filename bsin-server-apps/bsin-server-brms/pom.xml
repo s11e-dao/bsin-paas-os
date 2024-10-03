@@ -26,8 +26,12 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+    <groupId>me.flyray.bsin</groupId>
     <artifactId>bsin-server-brms</artifactId>
     <packaging>pom</packaging>
+    <version>2.0.0-SNAPSHOT</version>
+    <name>bsin-server-brms</name>
+    <description>bsin-paas平台：BRMS</description>
 
     <modules>
         <module>brms-domain</module>

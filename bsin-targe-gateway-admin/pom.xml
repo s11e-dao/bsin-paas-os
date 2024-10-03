@@ -24,10 +24,15 @@
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>bsin-targe-gateway-admin</artifactId>
+    <artifactId>targe-gateway-admin</artifactId>
+    <packaging>jar</packaging>
+    <version>2.0.0-SNAPSHOT</version>
+    <description>bsin-paas平台：网关管理模块</description>
+
 
     <properties>
         <orai18n.version>19.7.0.0</orai18n.version>
+        <shenyu.version>2.6.1</shenyu.version>
         <nacos-client.version>2.3.2</nacos-client.version>
     </properties>
 
@@ -35,25 +40,25 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-common</artifactId>
-            <version>${project.version}</version>
+            <version>${shenyu.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-disruptor</artifactId>
-            <version>${project.version}</version>
+            <version>${shenyu.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-register-common</artifactId>
-            <version>${project.version}</version>
+            <version>${shenyu.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-alert</artifactId>
-            <version>${project.version}</version>
+            <version>${shenyu.version}</version>
         </dependency>
 
         <dependency>
@@ -231,19 +236,19 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-discovery-etcd</artifactId>
-            <version>${project.version}</version>
+            <version>${shenyu.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-discovery-zookeeper</artifactId>
-            <version>${project.version}</version>
+            <version>${shenyu.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-discovery-nacos</artifactId>
-            <version>${project.version}</version>
+            <version>${shenyu.version}</version>
         </dependency>
 
         <dependency>
@@ -255,7 +260,7 @@
                     <artifactId>servlet-api</artifactId>
                 </exclusion>
             </exclusions>
-            <version>${project.version}</version>
+            <version>${shenyu.version}</version>
         </dependency>
         <!-- shenyu discovery end -->
 
@@ -263,31 +268,31 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-admin-listener-consul</artifactId>
-            <version>${project.version}</version>
+            <version>${shenyu.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-admin-listener-etcd</artifactId>
-            <version>${project.version}</version>
+            <version>${shenyu.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-admin-listener-nacos</artifactId>
-            <version>${project.version}</version>
+            <version>${shenyu.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-admin-listener-polaris</artifactId>
-            <version>${project.version}</version>
+            <version>${shenyu.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-admin-listener-zookeeper</artifactId>
-            <version>${project.version}</version>
+            <version>${shenyu.version}</version>
         </dependency>
         <!-- shenyu-admin-listener end-->
 
@@ -312,13 +317,16 @@
     </profiles>
 
     <build>
-        <finalName>shenyu-admin</finalName>
         <plugins>
 
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
+                <configuration>
+                    <mainClass>org.apache.shenyu.admin.BsinGatewayAdminApplication</mainClass>
+                    <executable>true</executable>
+                </configuration>
             </plugin>
 
             <plugin>

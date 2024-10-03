@@ -51,25 +51,25 @@ echo "4. end copy sql "
 echo "5. begin copy jar "
 
 echo "5.1 begin copy targe-gateway-admin jar "
-cp ../../bsin-targe-gateway-admin/target/shenyu-admin.jar ../bsin-paas-os/targe-gateway-admin/jar/targe-gateway-admin-server-2.0.0-SNAPSHOT.jar
-cp ../../bsin-targe-gateway-admin/target/shenyu-admin-javadoc.jar ../bsin-paas-os/targe-gateway-admin/jar/targe-gateway-admin-javadoc-2.0.0-SNAPSHOT.jar
-cp ../../bsin-targe-gateway-admin/target/shenyu-admin-sources.jar ../bsin-paas-os/targe-gateway-admin/jar/targe-gateway-admin-sources-2.0.0-SNAPSHOT.jar
+cp ../../bsin-targe-gateway-admin/target/targe-gateway-admin-2.0.0-SNAPSHOT.jar ../bsin-paas-os/targe-gateway-admin/jar/targe-gateway-admin-server-2.0.0-SNAPSHOT.jar
+cp ../../bsin-targe-gateway-admin/target/targe-gateway-admin-2.0.0-SNAPSHOT-javadoc.jar ../bsin-paas-os/targe-gateway-admin/jar/targe-gateway-admin-javadoc-2.0.0-SNAPSHOT.jar
+cp ../../bsin-targe-gateway-admin/target/targe-gateway-admin-2.0.0-SNAPSHOT-sources.jar ../bsin-paas-os/targe-gateway-admin/jar/targe-gateway-admin-sources-2.0.0-SNAPSHOT.jar
 
 
 echo "5.2 begin copy targe-gateway jar "
-cp ../../bsin-targe-gateway/target/shenyu-bootstrap.jar ../bsin-paas-os/targe-gateway/jar/targe-gateway-server-2.0.0-SNAPSHOT.jar
-cp ../../bsin-targe-gateway/target/shenyu-bootstrap-sources.jar ../bsin-paas-os/targe-gateway/jar/targe-gateway-sources-2.0.0-SNAPSHOT.jar
+cp ../../bsin-targe-gateway/target/targe-gateway-2.0.0-SNAPSHOT.jar ../bsin-paas-os/targe-gateway/jar/targe-gateway-server-2.0.0-SNAPSHOT.jar
+cp ../../bsin-targe-gateway/target/targe-gateway-2.0.0-SNAPSHOT-sources.jar ../bsin-paas-os/targe-gateway/jar/targe-gateway-sources-2.0.0-SNAPSHOT.jar
 
 echo "5.3 begin copy server-apps"
 cp ../../bsin-server-apps/bsin-server-aiAgent/aiAgent-server/target/aiAgent-server-2.0.0-SNAPSHOT.jar ../bsin-paas-os/server-apps/aiAgent/jar/aiAgent-server-2.0.0-SNAPSHOT.jar
-cp ../../bsin-server-apps/bsin-server-brms/brms-server/target/brms-server.jar ../bsin-paas-os/server-apps/brms/jar/brms-server-2.0.0-SNAPSHOT.jar
+cp ../../bsin-server-apps/bsin-server-brms/brms-server/target/brms-server-2.0.0-SNAPSHOT.jar ../bsin-paas-os/server-apps/brms/jar/brms-server-2.0.0-SNAPSHOT.jar
 cp ../../bsin-server-apps/bsin-server-crm/crm-server/target/crm-server-2.0.0-SNAPSHOT.jar ../bsin-paas-os/server-apps/crm/jar/crm-server-2.0.0-SNAPSHOT.jar
 cp ../../bsin-server-apps/bsin-server-http/target/bsin-server-http.jar ../bsin-paas-os/server-apps/http/jar/http-server-2.0.0-SNAPSHOT.jar
-cp ../../bsin-server-apps/bsin-server-search/search-server/target/search-server.jar ../bsin-paas-os/server-apps/search/jar/search-server-2.0.0-SNAPSHOT.jar
-cp ../../bsin-server-apps/bsin-server-upms/upms-server/target/upms-server.jar ../bsin-paas-os/server-apps/upms/jar/upms-server-2.0.0-SNAPSHOT.jar
+cp ../../bsin-server-apps/bsin-server-search/search-server/target/search-server-2.0.0-SNAPSHOT.jar ../bsin-paas-os/server-apps/search/jar/search-server-2.0.0-SNAPSHOT.jar
+cp ../../bsin-server-apps/bsin-server-upms/upms-server/target/upms-server-2.0.0-SNAPSHOT.jar ../bsin-paas-os/server-apps/upms/jar/upms-server-2.0.0-SNAPSHOT.jar
 cp ../../bsin-server-apps/bsin-server-waas/waas-server/target/waas-server-2.0.0-SNAPSHOT.jar ../bsin-paas-os/server-apps/waas/jar/waas-server-2.0.0-SNAPSHOT.jar
-cp ../../bsin-server-apps/bsin-server-workflow/workflow-server/target/workflow-server.jar ../bsin-paas-os/server-apps/workflow/jar/workflow-server-2.0.0-SNAPSHOT.jar
-cp ../../bsin-server-apps/bsin-server-workflow-admin/workflow-admin-server/target/workflow-admin-server.jar ../bsin-paas-os/server-apps/workflow-admin/jar/workflow-admin-server-2.0.0-SNAPSHOT.jar
+cp ../../bsin-server-apps/bsin-server-workflow/workflow-server/target/workflow-server-2.0.0-SNAPSHOT.jar ../bsin-paas-os/server-apps/workflow/jar/workflow-server-2.0.0-SNAPSHOT.jar
+cp ../../bsin-server-apps/bsin-server-workflow-admin/workflow-admin-server/target/workflow-admin-server-2.0.0-SNAPSHOT.jar ../bsin-paas-os/server-apps/workflow-admin/jar/workflow-admin-server-2.0.0-SNAPSHOT.jar
 
 echo "6. end copy jar "
 
