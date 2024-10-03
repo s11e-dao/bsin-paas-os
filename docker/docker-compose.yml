@@ -3,32 +3,25 @@ version: '2.0'
 
 # 定义服务
 services:
-  bsin-nacos:
-    container_name: bsin-nacos
-    image: nacos/nacos-server:latest
-    build:
-      context: middleware/nacos
+  bsin-nacos-standalone:
+    container_name: bsin-nacos-standalone
+    image: nacos/nacos-server:v2.4.2
     environment:
+      - PREFER_HOST_MODE=hostname
       - MODE=standalone
+      - NACOS_AUTH_IDENTITY_KEY=serverIdentity
+      - NACOS_AUTH_IDENTITY_VALUE=security
+      - NACOS_AUTH_TOKEN=SecretKey012345678901234567890123456789012345678901234567890123456789
     volumes:
       - ./middleware/nacos/logs/:/home/bsin-paas-os/middleware/nacos/logs
-      - ./middleware/nacos/conf/application.properties:/home/bsin-paas-os/middleware/nacos/conf/application.properties
-    # 容器对外暴露的端口，格式：左边宿主机端口:右边容器端口
+#      - ./middleware/nacos/conf/application.properties:/home/bsin-paas-os/middleware/nacos/conf/application.properties
     ports:
       - "8848:8848"
-    expose:
-      #容器暴露的端口不映射到宿主机，只允许能被连接的服务访问
-      - "9848"
-      - "9849"
-    restart: always
-    privileged: true
-    depends_on:
-      bsin-mysql:
-        condition: service_healthy
+      - "9848:9848"
 
   bsin-mysql:
     container_name: bsin-mysql
-    image: mysql:latest
+    image: bsin-mysql:2.0.0
     build:
       context: middleware/mysql
     ports:
@@ -69,7 +62,7 @@ services:
 
   bsin-redis:
     container_name: bsin-redis
-    image: redis:latest
+    image: bsin-redis:2.0.0
     build:
       context: middleware/redis
       dockerfile: dockerfile
@@ -120,6 +113,7 @@ services:
   # targe-gateway-admin
   bsin-targe-gateway-admin:
     container_name: bsin-targe-gateway-admin
+    image: bsin-targe-gateway-admin:2.0.0
     build:
       context: ./bsin-paas-os/targe-gateway-admin
       dockerfile: dockerfile
@@ -129,17 +123,18 @@ services:
     volumes:
       - ./bsin-paas-os/targe-gateway-admin/logs:/home/bsin-paas-os/targe-gateway-admin/logs
     depends_on:
-      - bsin-nacos
+      - bsin-nacos-standalone
       - bsin-redis
       - bsin-mysql
     links:
-      - bsin-nacos
+      - bsin-nacos-standalone
       - bsin-redis
       - bsin-mysql
 
   # targe-gateway
   bsin-targe-gateway:
     container_name: bsin-targe-gateway
+    image: bsin-targe-gateway:2.0.0
     build:
       context: ./bsin-paas-os/targe-gateway
       dockerfile: dockerfile
@@ -149,12 +144,12 @@ services:
     volumes:
       - ./bsin-paas-os/targe-gateway/logs:/home/bsin-paas-os/targe-gateway/logs
     depends_on:
-      - bsin-nacos
+      - bsin-nacos-standalone
       - bsin-redis
       - bsin-mysql
       - bsin-targe-gateway-admin
     links:
-      - bsin-nacos
+      - bsin-nacos-standalone
       - bsin-redis
       - bsin-mysql
       - bsin-targe-gateway-admin
@@ -162,6 +157,7 @@ services:
   # server-apps
   bsin-server-upms:
     container_name: bsin-server-upms
+    image: bsin-server-upms:2.0.0
     build:
       context: ./bsin-paas-os/server-apps/upms
       dockerfile: dockerfile
@@ -181,6 +177,7 @@ services:
 
   bsin-server-waas:
     container_name: bsin-server-waas
+    image: bsin-server-waas:2.0.0
     build:
       context: ./bsin-paas-os/server-apps/waas
       dockerfile: dockerfile
@@ -201,6 +198,7 @@ services:
 
   bsin-server-crm:
     container_name: bsin-server-crm
+    image: bsin-server-crm:2.0.0
     build:
       context: ./bsin-paas-os/server-apps/crm
       dockerfile: dockerfile
@@ -220,6 +218,7 @@ services:
 
   bsin-server-ai-agent:
     container_name: bsin-server-ai-agent
+    image: bsin-server-ai-agent:2.0.0
     build:
       context: ./bsin-paas-os/server-apps/aiAgent
       dockerfile: dockerfile

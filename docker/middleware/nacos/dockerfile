@@ -1,14 +1,14 @@
 # 基础镜像
-FROM nacos/nacos-server:latest
+FROM nacos/nacos-server:2.4.2.1
 
 # author
 MAINTAINER bsin-paas
 
 # 创建目录
-RUN mkdir -p /home/bsin-paas-os/middleware/nacos
+RUN mkdir -p /home/bsin-paas-os/middleware/nacos/conf
 
 # 指定路径
 WORKDIR /home/bsin-paas-os/middleware/nacos
 
 # 复制conf文件到路径
-COPY conf/application.properties /home/bsin-paas-os/middleware/nacos/conf/application.properties
+COPY ./conf/application.properties /home/bsin-paas-os/middleware/nacos/conf/application.properties

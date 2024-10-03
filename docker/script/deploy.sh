@@ -2,13 +2,20 @@
 
 # 使用说明，用来提示输入参数
 usage(){
-	echo "Usage: sh 执行脚本.sh [middleware|gateway|server_apps|ui_apps|all|stop|rm]"
+	echo "Usage: sh 执行脚本.sh [build|middleware|gateway|server_apps|ui_apps|all|stop|rm]"
 	exit 1
+}
+
+# 重新构建
+build(){
+	docker-compose stop
+	docker-compose rm
+	docker-compose build
 }
 
 # 启动基础环境（必须）
 middleware(){
-	docker-compose up -d bsin-mysql bsin-redis bsin-nacos #bsin-rabbitmq bsin-milvus
+	docker-compose up -d bsin-mysql bsin-redis bsin-nacos-standalone #bsin-rabbitmq bsin-milvus
 }
 
 # 启动网关模块（必须）
@@ -37,6 +44,9 @@ rm(){
 
 # 根据输入参数，选择执行对应方法，不输入则执行使用说明
 case "$1" in
+"build")
+	build
+;;
 "middleware")
 	middleware
 ;;

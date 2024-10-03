@@ -3,6 +3,8 @@ FROM  openjdk:11
 # author
 MAINTAINER bsin-paas
 
+LABEL version=2.0.0
+
 # 挂载目录
 VOLUME /home/bsin-paas-os/targe-gateway-admin
 # 创建目录
