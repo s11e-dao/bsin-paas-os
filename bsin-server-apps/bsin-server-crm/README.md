@@ -20,11 +20,12 @@
 ## 三、技术框架
 - 端口说明
 
-|           | port  | 备注 |
-|-----------|-------| --- |
-| server    | 8082  |      | 
-| sofa rest | 8342  |      | 
-| sofa bolt | 12202 |      | 
+|                | port  | 备注 |
+|----------------|-------| --- |
+| server         | 8072  |      | 
+| sofa rest      | 8342  |      | 
+| sofa bolt      | 12202 |      | 
+| shenyu gateway | 9195  |      | 
 
 
 - [swagger接口](https://www.sofastack.tech/projects/sofa-rpc/restful-swagger/)

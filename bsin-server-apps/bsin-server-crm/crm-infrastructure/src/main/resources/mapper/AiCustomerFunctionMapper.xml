@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.AiCustomerFunctionMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.AiCustomerFunction">
+        <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <id property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+        <id property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <id property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+        <id property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+        <result property="copilotNum" column="copilot_num" jdbcType="INTEGER"/>
+        <result property="knowledgeBaseNum" column="knowledge_base_num" jdbcType="INTEGER"/>
+        <result property="knowledgeBaseFileNum" column="knowledge_base_file_num" jdbcType="INTEGER"/>
+        <result property="menuTemplateNum" column="menu_template_num" jdbcType="INTEGER"/>
+        <result property="miniappNum" column="miniapp_num" jdbcType="INTEGER"/>
+        <result property="mpNum" column="mp_num" jdbcType="INTEGER"/>
+        <result property="cpNum" column="cp_num" jdbcType="INTEGER"/>
+        <result property="wechatNum" column="wechat_num" jdbcType="INTEGER"/>
+        <result property="groupChat" column="group_chat" jdbcType="INTEGER"/>
+        <result property="historyChatSummary" column="history_chat_summary" jdbcType="INTEGER"/>
+        <result property="sensitiveWordsNum" column="sensitive_words_num" jdbcType="INTEGER"/>
+        <result property="price" column="price" jdbcType="INTEGER"/>
+        <result property="payReceipt" column="pay_receipt" jdbcType="VARCHAR"/>
+        <result property="tokenBalance" column="token_balance" jdbcType="INTEGER"/>
+        <result property="tokenUsed" column="token_used" jdbcType="INTEGER"/>
+        <result property="serviceDuration" column="service_duration" jdbcType="INTEGER"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="editable" column="editable" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="inviteCode" column="invite_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no
+        ,customer_no,menu_template_num,miniapp_num,sensitive_words_num,group_chat,history_chat_summary,
+        ,service_duration,status,token_balance,token_used,pay_receipt,editable
+        ,tenant_id,merchant_no,name,start_time,end_time,copilot_num,knowledge_base_num,knowledge_base_file_num,mp_num,cp_num,wechat_num,
+        type,create_time,update_time,invite_code,description
+    </sql>
+
+</mapper>

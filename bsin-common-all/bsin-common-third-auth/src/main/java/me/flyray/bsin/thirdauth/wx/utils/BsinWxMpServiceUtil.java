@@ -18,7 +18,7 @@ public class BsinWxMpServiceUtil {
       new ConcurrentHashMap();
 
   public WxMpService getWxMpService(
-      WxMpProperties.MpConfig mpConfig, WxMpProperties.RedisConfig redisConfig) {
+      WxMpProperties.MpConfig mpConfig, WxRedisConfig redisConfig) {
 
     WxMpService wxService;
     wxService = (WxMpService) concurrentWxServiceHashMap.get(mpConfig.getAppId());

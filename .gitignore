@@ -55,3 +55,8 @@ bsin-server-apps/bsin-server-ai/ai-go-wechat/vendor/
 bsin-server-apps/bsin-server-ai/logs/
 
 bsin-ui-apps/bsin-ui-aiAgent/dist/
+
+/bsin-server-env.bak
+.idea.bak/
+
+bsin-ui-apps/bsin-ui-waas/dist/
