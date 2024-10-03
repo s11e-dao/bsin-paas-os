@@ -1,0 +1,7 @@
+# 基础镜像
+FROM elasticsearch:8.15.0
+
+# author
+MAINTAINER bsin-paas
+
+
