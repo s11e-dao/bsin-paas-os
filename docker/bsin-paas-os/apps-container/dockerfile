@@ -13,5 +13,7 @@ VOLUME /home/bsin-paas-os/apps-container/dist
 # 将前端静态文件复制到Nginx默认的静态文件目录
 COPY ./dist /home/bsin-paas-os/apps-container/dist
 
+EXPOSE 80
+
 # 启动Nginx服务
 CMD ["nginx", "-g", "daemon off;"]
