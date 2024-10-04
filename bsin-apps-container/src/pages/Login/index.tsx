@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
 import { history } from 'umi';
-import { Button, message, Select, Radio } from 'antd';
+import { Button, message, Select, Radio, Flex } from 'antd';
 import { SwapOutlined } from '@ant-design/icons';
 import type { RadioChangeEvent } from 'antd';
 
@@ -91,13 +91,13 @@ export default function () {
     if (!nodeLoginState.password) return message.info('请输入密码');
     setLoadings(true);
     let res
-    if(bizRoleType == "2"){
+    if (bizRoleType == "2") {
       res = await nodeUserLogin({
         ...nodeLoginState,
         password: hex_md5(nodeLoginState.password),
         tenantId,
       });
-    }else{
+    } else {
       res = await sysAgentLogin({
         ...nodeLoginState,
         password: hex_md5(nodeLoginState.password),
@@ -158,6 +158,17 @@ export default function () {
     });
   }
 
+  const options = [
+    {
+      label: '火源节点',
+      value: '2',
+    },
+    {
+      label: '代理商',
+      value: '4',
+    }
+  ];
+
   return (
     <>
       <Button
@@ -189,10 +200,9 @@ export default function () {
                     </div>
                     <div className={styles.actual_form}>
                       <div className={styles.input_wrap_role}>
-                        <Radio.Group value={bizRoleType} onChange={handleBizRoleTypeChange}>
-                          <Radio.Button value="2">火源节点</Radio.Button>
-                          <Radio.Button value="4">代理商</Radio.Button>
-                        </Radio.Group>
+                        <Flex vertical gap="middle">
+                          <Radio.Group block options={options} defaultValue="2" optionType="button" onChange={handleBizRoleTypeChange} />
+                        </Flex>
                       </div>
                       <div className={styles.input_wrap}>
                         <Select
