@@ -8,6 +8,8 @@ usage(){
 
 # 重新构建
 build(){
+#  ./script/package.sh
+  ./script/copy.sh
 	docker-compose stop
 	docker-compose rm
 	docker-compose build
@@ -29,8 +31,7 @@ server_apps(){
 
 # 启动ui-apps模块
 ui_apps(){
-#	docker-compose up -d
-  echo "not support!"
+	docker-compose up -d bsin-apps-container bsin-ui-upms bsin-ui-ai-agent bsin-ui-waas #bsin-ui-decision-admin
 }
 # 关闭所有环境/模块
 stop(){

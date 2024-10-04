@@ -3,7 +3,7 @@
 echo "1. build frontend start..."
 
 echo "1.1. build bsin-apps-container"
-cd ../../bsin-apps-container
+cd ../bsin-apps-container
 yarn build
 
 echo "1.2. build bsin-ui-aiAgent"

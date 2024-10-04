@@ -26,7 +26,7 @@ services:
       context: middleware/mysql
     ports:
       - "3306:3306"
-    restart: always
+    #restart: always
     volumes:
       # 绝对路径
       # - "/mydata/docker_mysql/data:/var/lib/mysql"
@@ -68,7 +68,7 @@ services:
       dockerfile: dockerfile
     ports:
       - "6379:6379"
-    restart: always
+    #restart: always
     volumes:
       - ./middleware/redis/conf/redis.conf:/home/bsin-paas-os/middleware/redis/redis.conf
       - ./middleware/redis/data:/data
@@ -119,7 +119,7 @@ services:
       dockerfile: dockerfile
     ports:
       - "9095:9095"
-    restart: always
+    #restart: always
     volumes:
       - ./bsin-paas-os/targe-gateway-admin/logs:/home/bsin-paas-os/targe-gateway-admin/logs
     depends_on:
@@ -140,7 +140,7 @@ services:
       dockerfile: dockerfile
     ports:
       - "9195:9195"
-    restart: always
+    #restart: always
     volumes:
       - ./bsin-paas-os/targe-gateway/logs:/home/bsin-paas-os/targe-gateway/logs
     depends_on:
@@ -163,7 +163,7 @@ services:
       dockerfile: dockerfile
     ports:
       - "8013:8013"
-    restart: always
+    #restart: always
     volumes:
       - ./bsin-paas-os/server-apps/upms/logs:/home/bsin-paas-os/server-apps/upms/logs
     depends_on:
@@ -183,7 +183,7 @@ services:
       dockerfile: dockerfile
     ports:
       - "8085:8085"
-    restart: always
+    #restart: always
     volumes:
       - ./bsin-paas-os/server-apps/waas/logs:/home/bsin-paas-os/server-apps/waas/logs
     depends_on:
@@ -204,7 +204,7 @@ services:
       dockerfile: dockerfile
     ports:
       - "8072:8072"
-    restart: always
+    #restart: always
     volumes:
       - ./bsin-paas-os/server-apps/crm/logs:/home/bsin-paas-os/server-apps/crm/logs
     depends_on:
@@ -224,7 +224,7 @@ services:
       dockerfile: dockerfile
     ports:
       - "8084:8084"
-    restart: always
+    #restart: always
     volumes:
       - ./bsin-paas-os/server-apps/aiAgent/logs:/home/bsin-paas-os/server-apps/aiAgent/logs
     depends_on:
@@ -235,3 +235,81 @@ services:
       - bsin-redis
       - bsin-mysql
       - bsin-targe-gateway
+
+  # apps-container
+  bsin-apps-container:
+    container_name: bsin-apps-container
+    image: bsin-apps-container:2.0.0
+    build:
+      context: ./bsin-paas-os/apps-container
+      dockerfile: dockerfile
+    ports:
+      - "8000:80"
+#    expose:
+#      - "80"
+    volumes:
+      - ./bsin-paas-os/apps-container/dist:/home/bsin-paas-os/apps-container/dist
+      - ./bsin-paas-os/apps-container/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./bsin-paas-os/apps-container/logs:/var/log/nginx
+
+# ui-apps
+  bsin-ui-upms:
+    container_name: bsin-ui-upms
+    image: bsin-ui-upms:2.0.0
+    build:
+      context: ./bsin-paas-os/ui-apps/upms
+      dockerfile: dockerfile
+    ports:
+      - "8003:80"
+#    expose:
+#      - "80"
+    volumes:
+      - ./bsin-paas-os/ui-apps/upms/dist:/home/bsin-paas-os/ui-apps/upms/dist
+      - ./bsin-paas-os/ui-apps/upms/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./bsin-paas-os/ui-apps/upms/logs:/var/log/nginx
+
+  bsin-ui-ai-agent:
+    container_name: bsin-ui-ai-agent
+    image: bsin-ui-ai-agent:2.0.0
+    build:
+      context: ./bsin-paas-os/ui-apps/aiAgent
+      dockerfile: dockerfile
+    ports:
+      - "8014:80"
+#    expose:
+#      - "80"
+    volumes:
+      - ./bsin-paas-os/ui-apps/aiAgent/dist:/home/bsin-paas-os/ui-apps/aiAgent/dist
+      - ./bsin-paas-os/ui-apps/aiAgent/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./bsin-paas-os/ui-apps/aiAgent/logs:/var/log/nginx
+
+  bsin-ui-waas:
+    container_name: bsin-ui-waas
+    image: bsin-ui-waas:2.0.0
+    build:
+      context: ./bsin-paas-os/ui-apps/waas
+      dockerfile: dockerfile
+    ports:
+      - "8004:80"
+#    expose:
+#      - "80"
+    volumes:
+      - ./bsin-paas-os/ui-apps/waas/dist:/home/bsin-paas-os/ui-apps/waas/dist
+      - ./bsin-paas-os/ui-apps/waas/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./bsin-paas-os/ui-apps/waas/logs:/var/log/nginx
+
+
+  bsin-ui-decision-admin:
+    container_name: bsin-ui-decision-admin
+    image: bsin-ui-decision-admin:2.0.0
+    build:
+      context: ./bsin-paas-os/ui-apps/decision-admin
+      dockerfile: dockerfile
+    ports:
+      - "5555:80"
+#    expose:
+#      - "80"
+    volumes:
+      - ./bsin-paas-os/ui-apps/decision-admin/dist:/home/bsin-paas-os/ui-apps/decision-admin/dist
+      - ./bsin-paas-os/ui-apps/decision-admin/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./bsin-paas-os/ui-apps/decision-admin/logs:/var/log/nginx

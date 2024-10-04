@@ -96,3 +96,9 @@ docker/middleware/mysql/data
 docker/middleware/redis/data
 
 bsin-targe-gateway-admin/logs
+
+docker/bsin-paas-os/targe-gateway/logs/
+
+docker/bsin-paas-os/targe-gateway-admin/logs/
+
+docker/bsin-paas-os/apps-container/dist/
