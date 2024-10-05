@@ -19,7 +19,7 @@ import me.flyray.bsin.domain.entity.AccountJournal;
 import me.flyray.bsin.domain.enums.AccountEnum;
 import me.flyray.bsin.domain.enums.AccountJournalEnum;
 import me.flyray.bsin.infrastructure.mapper.CustomerAccountJournalMapper;
-import me.flyray.bsin.infrastructure.mapper.CustomerAccountMapper;
+import me.flyray.bsin.infrastructure.mapper.AccountMapper;
 import me.flyray.bsin.utils.BsinSnowflake;
 
 /**
@@ -30,7 +30,7 @@ import me.flyray.bsin.utils.BsinSnowflake;
 @Component
 public class CustomerAccountBiz {
 
-  @Autowired private CustomerAccountMapper customerAccountMapper;
+  @Autowired private AccountMapper customerAccountMapper;
   @Autowired private CustomerAccountJournalMapper customerAccountJournalMapper;
 
   public Account openAccount(Account customerAccount) {
@@ -89,7 +89,7 @@ public class CustomerAccountBiz {
       Integer journalDirection) {
     LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
     warapper.eq(Account::getTenantId, tenantId);
-    warapper.eq(Account::getCustomerNo, customerNo);
+    warapper.eq(Account::getBizRoleTypeNo, customerNo);
     warapper.eq(Account::getCcy, ccy);
     warapper.eq(ObjectUtil.isNotNull(category), Account::getCategory, category);
     Account customerAccount = customerAccountMapper.selectOne(warapper);
@@ -101,7 +101,7 @@ public class CustomerAccountBiz {
     }
     if (customerAccount == null) {
       customerAccount = new Account();
-      customerAccount.setCustomerNo(customerNo);
+      customerAccount.setBizRoleTypeNo(customerNo);
       customerAccount.setTenantId(tenantId);
       customerAccount.setCcy(ccy);
       customerAccount.setType("0");
@@ -116,14 +116,14 @@ public class CustomerAccountBiz {
         throw new BusinessException(ResponseCode.AMOUNT_MUST_GREATER_THAN_ZERO);
       }
       customerAccount.setBalance(amount);
-      md5 = new MD5(customerAccount.getCustomerNo().getBytes());
+      md5 = new MD5(customerAccount.getBizRoleTypeNo().getBytes());
       String checkCode = HexUtil.encodeHexStr(md5.digest(amountStr));
       System.out.println("1.Check Code: \n\n\n\n" + checkCode);
       customerAccount.setCheckCode(checkCode);
       customerAccount.setStatus(AccountEnum.NORMAL.getCode());
       customerAccountMapper.insert(customerAccount);
     } else {
-      md5 = new MD5(customerAccount.getCustomerNo().getBytes());
+      md5 = new MD5(customerAccount.getBizRoleTypeNo().getBytes());
       // 余额校验
       String checkCode = HexUtil.encodeHexStr(md5.digest(customerAccount.getBalance().toString()));
       System.out.println("2.Check Code: \n\n\n\n" + checkCode);
@@ -154,7 +154,7 @@ public class CustomerAccountBiz {
     accountJournal.setSerialNo(BsinSnowflake.getId());
     accountJournal.setAccountNo(customerAccount.getSerialNo());
     accountJournal.setAccountType(customerAccount.getType());
-    accountJournal.setCustomerNo(customerAccount.getCustomerNo());
+    accountJournal.setCustomerNo(customerAccount.getBizRoleTypeNo());
     accountJournal.setAmount(amount);
     //        accountJournal.setOrderNo(orderNo);
     accountJournal.setInOutFlag(journalDirection);
@@ -169,7 +169,7 @@ public class CustomerAccountBiz {
   public Account getAccountDetail(
       String merchantNo, String customerNo, String ccy, String category) {
     LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
-    warapper.eq(Account::getCustomerNo, customerNo);
+    warapper.eq(Account::getBizRoleTypeNo, customerNo);
     warapper.eq(Account::getCcy, ccy);
     warapper.eq(Account::getCategory, category);
     Account customerAccount = customerAccountMapper.selectOne(warapper);

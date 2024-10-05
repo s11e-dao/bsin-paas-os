@@ -2,12 +2,13 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="me.flyray.bsin.infrastructure.mapper.CustomerAccountMapper">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.AccountMapper">
 
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.Account">
         <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
-        <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+        <result property="bizRoleTypeNo" column="biz_role_type_no" jdbcType="VARCHAR"/>
+        <result property="bizRoleType" column="biz_role_type" jdbcType="VARCHAR"/>
         <result property="category" column="category" jdbcType="VARCHAR"/>
         <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
         <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
@@ -26,7 +27,7 @@
 
     <sql id="Base_Column_List">
         serial_no
-        ,name,customer_no,
+        ,name,biz_role_type_no,biz_role_type,
         category,tenant_id,merchant_no,cumulative_amount,
         balance,decimals,freeze_amount,type,
         ccy,status,check_code,create_time,
@@ -37,7 +38,7 @@
         update crm_customer_account
         set freeze_amount = freeze_amount + #{query.freezeAmount},
         balance =balance - #{query.freezeAmount}
-        where customer_no = #{query.customerNo}
+        where biz_role_type_no = #{query.bizRoleTypeNo}
 <!--        <if test="query.category != null and query.category != ‘’">-->
             and category = #{query.category}
 <!--        </if>-->
@@ -51,7 +52,7 @@
         update crm_customer_account
         set freeze_amount = freeze_amount - #{query.freezeAmount},
         balance =balance + #{query.freezeAmount}
-        where customer_no = #{query.customerNo}
+        where biz_role_type_no = #{query.bizRoleTypeNo}
 <!--        <if test="query.category != null and query.category != ‘’">-->
             and category = #{query.category}
 <!--        </if>-->
@@ -64,7 +65,7 @@
             parameterType="me.flyray.bsin.domain.entity.Account">
         select sum(balance) amount
         from crm_customer_account
-        where customer_no = #{query.customerNo}
+        where biz_role_type_no = #{query.bizRoleTypeNo}
           and category = #{query.category}
           and ccy = #{query.ccy}
     </select>

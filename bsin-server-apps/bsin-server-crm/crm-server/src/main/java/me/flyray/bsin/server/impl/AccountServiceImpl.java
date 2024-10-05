@@ -22,7 +22,7 @@ import me.flyray.bsin.facade.service.AccountService;
 import me.flyray.bsin.facade.service.TokenParamService;
 import me.flyray.bsin.infrastructure.mapper.AccountFreezeJournalMapper;
 import me.flyray.bsin.infrastructure.mapper.CustomerAccountJournalMapper;
-import me.flyray.bsin.infrastructure.mapper.CustomerAccountMapper;
+import me.flyray.bsin.infrastructure.mapper.AccountMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.biz.CustomerAccountBiz;
@@ -59,7 +59,7 @@ import static me.flyray.bsin.constants.ResponseCode.TASK_NON_CLAIM_CONDITION;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-  @Autowired private CustomerAccountMapper customerAccountMapper;
+  @Autowired private AccountMapper customerAccountMapper;
   @Autowired private CustomerAccountJournalMapper customerAccountJournalMapper;
   @Autowired private CustomerAccountBiz customerAccountBiz;
   @Autowired private AccountFreezeJournalMapper accountFreezeJournalMapper;
@@ -143,7 +143,7 @@ public class AccountServiceImpl implements AccountService {
         customerAccountMapper.selectOne(
             new LambdaQueryWrapper<Account>()
                 .eq(Account::getTenantId, customerAccount.getTenantId())
-                .eq(Account::getCustomerNo, customerAccount.getCustomerNo())
+                .eq(Account::getBizRoleTypeNo, customerAccount.getBizRoleTypeNo())
                 .eq(Account::getCcy, customerAccount.getCcy())
                 .eq(Account::getCategory, customerAccount.getCategory()));
     if (customerFreezeAccount == null) {
@@ -157,7 +157,7 @@ public class AccountServiceImpl implements AccountService {
     accountFreezeJournal.setFreezeAmount(customerAccount.getFreezeAmount());
     accountFreezeJournal.setType((String) requestMap.get("type")); // 冻结事件类型
     accountFreezeJournal.setTypeNo((String) requestMap.get("typeNo")); // 冻结事件编号
-    accountFreezeJournal.setCustomerNo(customerFreezeAccount.getCustomerNo());
+    accountFreezeJournal.setCustomerNo(customerFreezeAccount.getBizRoleTypeNo());
     accountFreezeJournal.setStatus(FreezeStatus.FREEZE.getCode());
 
     accountFreezeJournalMapper.insert(accountFreezeJournal);
@@ -175,7 +175,7 @@ public class AccountServiceImpl implements AccountService {
 
     for (String customerNo : customerNoList) {
       // 1.解冻
-      customerAccount.setCustomerNo(customerNo);
+      customerAccount.setBizRoleTypeNo(customerNo);
       int i = customerAccountMapper.unFreezeAmount(customerAccount);
       // 查询出冻结记录
       AccountFreezeJournal accountFreezeJournal =
@@ -183,7 +183,7 @@ public class AccountServiceImpl implements AccountService {
               new LambdaQueryWrapper<AccountFreezeJournal>()
                   .eq(AccountFreezeJournal::getType, customerAccount.getType())
                   .eq(AccountFreezeJournal::getTypeNo, requestMap.get("typeNo"))
-                  .eq(AccountFreezeJournal::getCustomerNo, customerAccount.getCustomerNo())
+                  .eq(AccountFreezeJournal::getCustomerNo, customerAccount.getBizRoleTypeNo())
                   .eq(AccountFreezeJournal::getStatus, FreezeStatus.FREEZE.getCode()));
       // 修改冻结状态
       if (accountFreezeJournal != null) {
@@ -254,7 +254,7 @@ public class AccountServiceImpl implements AccountService {
     if (serialNo == null) {
       LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
       warapper.eq(Account::getTenantId, tenantId);
-      warapper.eq(Account::getCustomerNo, customerNo);
+      warapper.eq(Account::getBizRoleTypeNo, customerNo);
       warapper.eq(Account::getCategory, customerAccount.getCategory());
       warapper.eq(Account::getCcy, customerAccount.getCcy());
       accountDetail = customerAccountMapper.selectOne(warapper);
@@ -264,7 +264,7 @@ public class AccountServiceImpl implements AccountService {
     // 如果账户不存在则开通账户
     if (accountDetail == null && isAutoOpenAccount) {
       customerAccount.setTenantId(tenantId);
-      customerAccount.setCustomerNo(customerNo);
+      customerAccount.setBizRoleTypeNo(customerNo);
       customerAccountBiz.openAccount(customerAccount);
       customerAccount.setBalance(BigDecimal.ZERO);
       accountDetail = customerAccount;
@@ -343,7 +343,7 @@ public class AccountServiceImpl implements AccountService {
     String tenantId = (String) requestMap.get("tenantId");
     LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
     warapper.eq(Account::getTenantId, tenantId);
-    warapper.eq(Account::getCustomerNo, customerAccount.getCustomerNo());
+    warapper.eq(Account::getBizRoleTypeNo, customerAccount.getBizRoleTypeNo());
     warapper.eq(
         ObjectUtil.isNotNull(customerAccount.getCcy()),
         Account::getCcy,
@@ -370,9 +370,9 @@ public class AccountServiceImpl implements AccountService {
     warapper.orderByDesc(AccountJournal::getCreateTime);
     warapper.eq(AccountJournal::getTenantId, tenantId);
     warapper.eq(
-        StringUtils.isNotEmpty(customerAccount.getCustomerNo()),
+        StringUtils.isNotEmpty(customerAccount.getBizRoleTypeNo()),
         AccountJournal::getCustomerNo,
-        customerAccount.getCustomerNo());
+        customerAccount.getBizRoleTypeNo());
     warapper.eq(
         StringUtils.isNotEmpty(customerAccount.getCcy()),
         AccountJournal::getCcy,
@@ -476,7 +476,7 @@ public class AccountServiceImpl implements AccountService {
       // 查询用户在该币种下的余额
       LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
       warapper.eq(Account::getTenantId, tenantId);
-      warapper.eq(Account::getCustomerNo, customerNo);
+      warapper.eq(Account::getBizRoleTypeNo, customerNo);
       warapper.eq(Account::getCategory, AccountCategory.BALANCE.getCode());
       warapper.eq(Account::getCcy, ccy);
       accountDetail = customerAccountMapper.selectOne(warapper);
@@ -485,7 +485,7 @@ public class AccountServiceImpl implements AccountService {
 
     LambdaQueryWrapper<Account> fdWarapper = new LambdaQueryWrapper<>();
     fdWarapper.eq(Account::getTenantId, tenantId);
-    fdWarapper.eq(Account::getCustomerNo, customerNo);
+    fdWarapper.eq(Account::getBizRoleTypeNo, customerNo);
     fdWarapper.eq(Account::getCategory, AccountCategory.BALANCE.getCode());
     fdWarapper.eq(Account::getCcy, CcyType.CNY.getCode());
     Account fdAccountDetail = customerAccountMapper.selectOne(fdWarapper);

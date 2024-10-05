@@ -4,7 +4,7 @@ import me.flyray.bsin.domain.entity.Account;
 import me.flyray.bsin.domain.entity.TokenReleaseJournal;
 import me.flyray.bsin.domain.enums.AccountCategory;
 import me.flyray.bsin.facade.service.TokenParamService;
-import me.flyray.bsin.infrastructure.mapper.CustomerAccountMapper;
+import me.flyray.bsin.infrastructure.mapper.AccountMapper;
 import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import java.util.Map;
 @Component
 public class TokenReleaseBiz {
 
-  @Autowired private CustomerAccountMapper customerAccountMapper;
+  @Autowired private AccountMapper customerAccountMapper;
 
   @DubboReference(version = "dev")
   private TokenParamService tokenReleaseParamService;
@@ -41,7 +41,7 @@ public class TokenReleaseBiz {
     Account customerAccountRet =
         customerAccountBiz.inAccount(
             customerAccount.getTenantId(),
-            customerAccount.getCustomerNo(),
+            customerAccount.getBizRoleTypeNo(),
             AccountCategory.BALANCE.getCode(),
             AccountCategory.BALANCE.getDesc(),
             customerAccount.getCcy(),
@@ -52,13 +52,13 @@ public class TokenReleaseBiz {
     BsinCacheProvider.put("crm",
         "customerAccount:"
             + customerAccount.getTenantId()
-            + customerAccount.getCustomerNo()
+            + customerAccount.getBizRoleTypeNo()
             + customerAccount.getCcy(),
         customerAccountRet);
 
     Map<String, Object> requestMap = new HashMap<>();
     requestMap.put("tenantId", customerAccount.getTenantId());
-    requestMap.put("customerNo", customerAccount.getCustomerNo());
+    requestMap.put("customerNo", customerAccount.getBizRoleTypeNo());
     requestMap.put("customerAccount", customerAccountRet);
 
     // 2.请求token释放分配
@@ -71,7 +71,7 @@ public class TokenReleaseBiz {
     customerAccountRet =
             customerAccountBiz.outAccount(
                     customerAccount.getTenantId(),
-                    customerAccount.getCustomerNo(),
+                    customerAccount.getBizRoleTypeNo(),
                     AccountCategory.BALANCE.getCode(),
                     AccountCategory.BALANCE.getDesc(),
                     customerAccount.getCcy(),

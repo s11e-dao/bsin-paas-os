@@ -26,9 +26,14 @@ public class Account implements Serializable {
     private String name;
 
     /**
-     * 客户编号
+     * 业务角色编号（用户编号）
      */
-    private String customerNo;
+    private String bizRoleTypeNo;
+
+    /**
+     * 业务角色类型（用户类型）
+     */
+    private String bizRoleType;
 
     /**
      * 账户类别

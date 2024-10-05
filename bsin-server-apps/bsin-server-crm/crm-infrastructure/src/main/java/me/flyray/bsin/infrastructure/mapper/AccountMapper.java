@@ -16,7 +16,7 @@ import java.math.BigDecimal;
  */
 @Repository
 @Mapper
-public interface CustomerAccountMapper extends BaseMapper<Account> {
+public interface AccountMapper extends BaseMapper<Account> {
   int freezeAmount(@Param("query") Account customerAccount);
 
   int unFreezeAmount(@Param("query") Account customerAccount);
