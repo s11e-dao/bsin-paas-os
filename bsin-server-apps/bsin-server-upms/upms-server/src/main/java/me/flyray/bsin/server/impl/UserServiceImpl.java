@@ -807,8 +807,8 @@ public class UserServiceImpl implements UserService {
         // 生成token
         LoginUser loginUser = new LoginUser();
         BeanUtil.copyProperties(sysUserReq, loginUser);
+        loginUser.setTenantId(sysUser.getTenantId());
         loginUser.setUserId(sysUser.getUserId());
-        loginUser.setMerchantNo(sysUser.getOrgId());
         loginUser.setUsername(sysUser.getUsername());
         loginUser.setPhone(sysUser.getPhone());
         loginUser.setBizRoleType(sysUser.getBizRoleType());

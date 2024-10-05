@@ -172,7 +172,7 @@ public class PlatformServiceImpl implements PlatformService {
         SysUserVO sysUserVO = userService.login(sysUser);
         BeanUtil.beanToMap(sysUserVO);
         res.putAll(BeanUtil.beanToMap(sysUserVO));
-        res.put("platformInfo",BeanUtil.beanToMap(platform));
+        res.put("platformInfo", BeanUtil.beanToMap(platform));
         return res;
     }
 

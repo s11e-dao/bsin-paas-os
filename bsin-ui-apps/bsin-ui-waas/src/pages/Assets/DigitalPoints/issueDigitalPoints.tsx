@@ -66,7 +66,7 @@ export default ({ setCurrentContent }) => {
           }
         });
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   const protocolCodeChange = (value) => {
@@ -99,7 +99,7 @@ export default ({ setCurrentContent }) => {
           <Form
             name="basic"
             form={FormRef}
-            labelCol={{ span: 3 }}
+            labelCol={{ span: 5 }}
             wrapperCol={{ span: 7 }}
             // 表单默认值
             initialValues={{
@@ -201,7 +201,7 @@ export default ({ setCurrentContent }) => {
             <Tooltip
               placement="rightTop"
               title="发行时初始铸造量"
-              // arrow={mergedArrow}
+            // arrow={mergedArrow}
             >
               <Form.Item
                 label="初始供应量"
@@ -269,13 +269,11 @@ export default ({ setCurrentContent }) => {
               </Select>
             </Form.Item>
 
-            <Form.Item label=" ">
-              <Button
-                type="primary"
+            <Form.Item wrapperCol={{ offset: 5, span: 12 }}>
+              <Button type="primary" htmlType="submit"
                 onClick={() => {
                   confirmIssue();
-                }}
-              >
+                }}>
                 发行
               </Button>
             </Form.Item>

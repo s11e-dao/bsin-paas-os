@@ -142,19 +142,19 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '资产集合名称',
-    width: 160,
+    width: 110,
     dataIndex: 'name',
     hideInSearch: true,
   },
   {
     title: '资产符号',
-    width: 160,
+    width: 80,
     dataIndex: 'symbol',
     hideInSearch: true,
   },
   {
     title: '总供应量',
-    width: 80,
+    width: 160,
     dataIndex: 'totalSupply',
     hideInSearch: true,
   },

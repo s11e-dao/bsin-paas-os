@@ -384,7 +384,7 @@ export default () => {
       </Modal>
       {/* 查看详情模态框 */}
       <Modal
-        title="详情"
+        title="商户详情"
         width={800}
         centered
         open={isViewTemplateModal}
@@ -392,7 +392,7 @@ export default () => {
         onCancel={() => setIsViewTemplateModal(false)}
       >
         {/* 详情信息 */}
-        <Descriptions title="商户信息">
+        <Descriptions>
           <Descriptions.Item label="客户号">
             {isViewRecord?.customerNo}
           </Descriptions.Item>
