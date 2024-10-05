@@ -1,6 +1,6 @@
 package me.flyray.bsin.domain.enums;
 
-public enum AccountJournalEnum {
+public enum AccountTxType {
 
     NONE(100,"无"),
 
@@ -26,7 +26,7 @@ public enum AccountJournalEnum {
     // 状态信息
     private String message;
 
-    AccountJournalEnum(Integer code, String message) {
+    AccountTxType(Integer code, String message) {
         this.code = code;
         this.message = message;
     }

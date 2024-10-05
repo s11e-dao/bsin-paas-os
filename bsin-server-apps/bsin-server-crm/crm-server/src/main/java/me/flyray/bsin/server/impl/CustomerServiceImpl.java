@@ -28,7 +28,7 @@ import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.security.enums.BizRoleType;
-import me.flyray.bsin.server.biz.CustomerAccountBiz;
+import me.flyray.bsin.server.biz.AccountBiz;
 import me.flyray.bsin.server.biz.CustomerBiz;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.server.utils.SignUtils;
@@ -78,7 +78,7 @@ public class CustomerServiceImpl implements CustomerService {
   @Autowired private CustomerBaseMapper customerBaseMapper;
   @Autowired private CustomerBiz customerBiz;
   @Autowired private MemberMapper memberMapper;
-  @Autowired private CustomerAccountBiz customerAccountBiz;
+  @Autowired private AccountBiz customerAccountBiz;
   @Autowired private BondingCurveTokenParamMapper bondingCurveTokenParamMapper;
   @Autowired private SignUtils signUtils;
 

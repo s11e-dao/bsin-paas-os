@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import lombok.Data;
+import me.flyray.bsin.domain.enums.AccountTxType;
 
 /**
  *
@@ -37,7 +38,7 @@ public class AccountJournal implements Serializable {
     /**
      * 客户编号
      */
-    private String customerNo;
+    private String bizRoleTypeNo;
 
     /**
      * 账户编号
@@ -50,7 +51,8 @@ public class AccountJournal implements Serializable {
     private String accountType;
 
     /**
-     * 订单类型 0、支付 1、退款 2、出售 3、充值 4、转账 5、提现
+     * 业务类型 0、支付 1、退款 2、出售 3、充值 4、转账 5、提现
+     * @see AccountTxType
      */
     private Integer orderType;
 

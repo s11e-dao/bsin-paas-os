@@ -27,7 +27,7 @@ public class TokenReleaseBiz {
   @DubboReference(version = "dev")
   private TokenParamService tokenReleaseParamService;
 
-  @Autowired private CustomerAccountBiz customerAccountBiz;
+  @Autowired private AccountBiz customerAccountBiz;
 
   /**
    * 根据tokenParam参数进行数字积分链上铸造

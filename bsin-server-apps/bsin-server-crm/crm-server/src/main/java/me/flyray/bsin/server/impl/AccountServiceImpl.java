@@ -21,11 +21,11 @@ import me.flyray.bsin.facade.response.CommunityLedgerVO;
 import me.flyray.bsin.facade.service.AccountService;
 import me.flyray.bsin.facade.service.TokenParamService;
 import me.flyray.bsin.infrastructure.mapper.AccountFreezeJournalMapper;
-import me.flyray.bsin.infrastructure.mapper.CustomerAccountJournalMapper;
+import me.flyray.bsin.infrastructure.mapper.AccountJournalMapper;
 import me.flyray.bsin.infrastructure.mapper.AccountMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.biz.CustomerAccountBiz;
+import me.flyray.bsin.server.biz.AccountBiz;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
@@ -60,8 +60,8 @@ import static me.flyray.bsin.constants.ResponseCode.TASK_NON_CLAIM_CONDITION;
 public class AccountServiceImpl implements AccountService {
 
   @Autowired private AccountMapper customerAccountMapper;
-  @Autowired private CustomerAccountJournalMapper customerAccountJournalMapper;
-  @Autowired private CustomerAccountBiz customerAccountBiz;
+  @Autowired private AccountJournalMapper customerAccountJournalMapper;
+  @Autowired private AccountBiz accountBiz;
   @Autowired private AccountFreezeJournalMapper accountFreezeJournalMapper;
 
   @DubboReference(version = "${dubbo.provider.version}")
@@ -71,11 +71,16 @@ public class AccountServiceImpl implements AccountService {
   @ApiDoc(desc = "openAccount")
   @Override
   public void openAccount(Map<String, Object> requestMap) {
-    Account customerAccount =
+    Account account =
         BsinServiceContext.getReqBodyDto(Account.class, requestMap);
-    customerAccountBiz.openAccount(customerAccount);
+    accountBiz.openAccount(account);
   }
 
+  /**
+   * 根据账号ID入账或是根据四要数入账（业务角色类型编号，业务角色类型，币种，会计分类）
+   * @param requestMap
+   * @throws UnsupportedEncodingException
+   */
   @ShenyuDubboClient("/inAccount")
   @ApiDoc(desc = "inAccount")
   @Override
@@ -83,9 +88,9 @@ public class AccountServiceImpl implements AccountService {
       throws UnsupportedEncodingException {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
 
-    String customerNo = MapUtils.getString(requestMap, "customerNo");
-    if (customerNo == null) {
-      customerNo = loginUser.getCustomerNo();
+    String bizRoleTypeNo = MapUtils.getString(requestMap, "bizRoleTypeNo");
+    if (bizRoleTypeNo == null) {
+      throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
     }
     String tenantId = MapUtils.getString(requestMap, "tenantId");
     if (tenantId == null) {
@@ -98,8 +103,9 @@ public class AccountServiceImpl implements AccountService {
     String category = MapUtils.getString(requestMap, "category");
     String name = MapUtils.getString(requestMap, "name");
     Integer decimals = Integer.valueOf(MapUtils.getString(requestMap, "decimals"));
-    customerAccountBiz.inAccount(
-        tenantId, customerNo, category, name, ccy, decimals, new BigDecimal(amount));
+    accountBiz.inAccount(
+        tenantId, bizRoleTypeNo, category, name, ccy, decimals, new BigDecimal(amount));
+
   }
 
   @ShenyuDubboClient("/outAccount")
@@ -108,12 +114,9 @@ public class AccountServiceImpl implements AccountService {
   public void outAccount(Map<String, Object> requestMap)
       throws UnsupportedEncodingException {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-    String customerNo = MapUtils.getString(requestMap, "customerNo");
-    if (customerNo == null) {
-      customerNo = loginUser.getCustomerNo();
-      if (customerNo == null) {
-        throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
-      }
+    String bizRoleTypeNo = MapUtils.getString(requestMap, "bizRoleTypeNo");
+    if (bizRoleTypeNo == null) {
+      throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
     }
     String tenantId = MapUtils.getString(requestMap, "tenantId");
     if (tenantId == null) {
@@ -125,8 +128,8 @@ public class AccountServiceImpl implements AccountService {
     String category = MapUtils.getString(requestMap, "category");
     String name = MapUtils.getString(requestMap, "name");
     Integer decimals = Integer.valueOf(MapUtils.getString(requestMap, "decimals"));
-    customerAccountBiz.outAccount(
-        tenantId, customerNo, category, name, ccy, decimals, new BigDecimal(amount));
+    accountBiz.outAccount(
+        tenantId, bizRoleTypeNo, category, name, ccy, decimals, new BigDecimal(amount));
   }
 
   @ShenyuDubboClient("/freeze")
@@ -139,25 +142,25 @@ public class AccountServiceImpl implements AccountService {
     int i = customerAccountMapper.freezeAmount(customerAccount);
 
     // 客户的账户编号
-    Account customerFreezeAccount =
+    Account freezeAccount =
         customerAccountMapper.selectOne(
             new LambdaQueryWrapper<Account>()
                 .eq(Account::getTenantId, customerAccount.getTenantId())
                 .eq(Account::getBizRoleTypeNo, customerAccount.getBizRoleTypeNo())
                 .eq(Account::getCcy, customerAccount.getCcy())
                 .eq(Account::getCategory, customerAccount.getCategory()));
-    if (customerFreezeAccount == null) {
+    if (freezeAccount == null) {
       throw new BusinessException(CUSTOMER_ACCOUNT_IS_NULL);
     }
     // 2.插入冻结流水记录
     AccountFreezeJournal accountFreezeJournal = new AccountFreezeJournal();
     accountFreezeJournal.setSerialNo(BsinSnowflake.getId());
     accountFreezeJournal.setTenantId(customerAccount.getTenantId());
-    accountFreezeJournal.setCustomerAccountNo(customerFreezeAccount.getSerialNo());
+    accountFreezeJournal.setAccountNo(freezeAccount.getSerialNo());
     accountFreezeJournal.setFreezeAmount(customerAccount.getFreezeAmount());
     accountFreezeJournal.setType((String) requestMap.get("type")); // 冻结事件类型
     accountFreezeJournal.setTypeNo((String) requestMap.get("typeNo")); // 冻结事件编号
-    accountFreezeJournal.setCustomerNo(customerFreezeAccount.getBizRoleTypeNo());
+    accountFreezeJournal.setBizRoleTypeNo(freezeAccount.getBizRoleTypeNo());
     accountFreezeJournal.setStatus(FreezeStatus.FREEZE.getCode());
 
     accountFreezeJournalMapper.insert(accountFreezeJournal);
@@ -183,7 +186,7 @@ public class AccountServiceImpl implements AccountService {
               new LambdaQueryWrapper<AccountFreezeJournal>()
                   .eq(AccountFreezeJournal::getType, customerAccount.getType())
                   .eq(AccountFreezeJournal::getTypeNo, requestMap.get("typeNo"))
-                  .eq(AccountFreezeJournal::getCustomerNo, customerAccount.getBizRoleTypeNo())
+                  .eq(AccountFreezeJournal::getBizRoleTypeNo, customerAccount.getBizRoleTypeNo())
                   .eq(AccountFreezeJournal::getStatus, FreezeStatus.FREEZE.getCode()));
       // 修改冻结状态
       if (accountFreezeJournal != null) {
@@ -265,7 +268,7 @@ public class AccountServiceImpl implements AccountService {
     if (accountDetail == null && isAutoOpenAccount) {
       customerAccount.setTenantId(tenantId);
       customerAccount.setBizRoleTypeNo(customerNo);
-      customerAccountBiz.openAccount(customerAccount);
+      accountBiz.openAccount(customerAccount);
       customerAccount.setBalance(BigDecimal.ZERO);
       accountDetail = customerAccount;
     }
@@ -371,7 +374,7 @@ public class AccountServiceImpl implements AccountService {
     warapper.eq(AccountJournal::getTenantId, tenantId);
     warapper.eq(
         StringUtils.isNotEmpty(customerAccount.getBizRoleTypeNo()),
-        AccountJournal::getCustomerNo,
+        AccountJournal::getBizRoleTypeNo,
         customerAccount.getBizRoleTypeNo());
     warapper.eq(
         StringUtils.isNotEmpty(customerAccount.getCcy()),
@@ -398,7 +401,7 @@ public class AccountServiceImpl implements AccountService {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = loginUser.getTenantId();
     String merchantNo = loginUser.getMerchantNo();
-    AccountFreezeJournal customerAccountFreeze =
+    AccountFreezeJournal accountFreeze =
         BsinServiceContext.getReqBodyDto(AccountFreezeJournal.class, requestMap);
     Object paginationObj =  requestMap.get("pagination");
     Pagination pagination = new Pagination();
@@ -409,21 +412,21 @@ public class AccountServiceImpl implements AccountService {
     warapper.eq(AccountFreezeJournal::getTenantId, tenantId);
     warapper.eq(AccountFreezeJournal::getMerchantNo, merchantNo);
     warapper.eq(
-        StringUtils.isNotEmpty(customerAccountFreeze.getCustomerNo()),
-        AccountFreezeJournal::getCustomerNo,
-        customerAccountFreeze.getCustomerNo());
+        StringUtils.isNotEmpty(accountFreeze.getBizRoleTypeNo()),
+        AccountFreezeJournal::getBizRoleTypeNo,
+            accountFreeze.getBizRoleTypeNo());
     warapper.eq(
-        StringUtils.isNotEmpty(customerAccountFreeze.getCustomerAccountNo()),
-        AccountFreezeJournal::getCustomerAccountNo,
-        customerAccountFreeze.getCustomerAccountNo());
+        StringUtils.isNotEmpty(accountFreeze.getBizRoleTypeNo()),
+        AccountFreezeJournal::getBizRoleTypeNo,
+            accountFreeze.getBizRoleTypeNo());
     warapper.eq(
-        StringUtils.isNotEmpty(customerAccountFreeze.getTypeNo()),
+        StringUtils.isNotEmpty(accountFreeze.getTypeNo()),
         AccountFreezeJournal::getTypeNo,
-        customerAccountFreeze.getTypeNo());
+            accountFreeze.getTypeNo());
     warapper.eq(
-        StringUtils.isNotEmpty(customerAccountFreeze.getType()),
+        StringUtils.isNotEmpty(accountFreeze.getType()),
         AccountFreezeJournal::getType,
-        customerAccountFreeze.getType());
+            accountFreeze.getType());
     IPage<AccountFreezeJournal> pageList = accountFreezeJournalMapper.selectPage(page, warapper);
     return pageList;
   }

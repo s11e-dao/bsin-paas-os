@@ -17,8 +17,8 @@ import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.domain.entity.Account;
 import me.flyray.bsin.domain.entity.AccountJournal;
 import me.flyray.bsin.domain.enums.AccountEnum;
-import me.flyray.bsin.domain.enums.AccountJournalEnum;
-import me.flyray.bsin.infrastructure.mapper.CustomerAccountJournalMapper;
+import me.flyray.bsin.domain.enums.AccountTxType;
+import me.flyray.bsin.infrastructure.mapper.AccountJournalMapper;
 import me.flyray.bsin.infrastructure.mapper.AccountMapper;
 import me.flyray.bsin.utils.BsinSnowflake;
 
@@ -28,14 +28,14 @@ import me.flyray.bsin.utils.BsinSnowflake;
  * @desc
  */
 @Component
-public class CustomerAccountBiz {
+public class AccountBiz {
 
-  @Autowired private AccountMapper customerAccountMapper;
-  @Autowired private CustomerAccountJournalMapper customerAccountJournalMapper;
+  @Autowired private AccountMapper accountMapper;
+  @Autowired private AccountJournalMapper customerAccountJournalMapper;
 
-  public Account openAccount(Account customerAccount) {
-    customerAccountMapper.insert(customerAccount);
-    return customerAccount;
+  public Account openAccount(Account account) {
+    accountMapper.insert(account);
+    return account;
   }
 
   public Account inAccount(
@@ -55,7 +55,7 @@ public class CustomerAccountBiz {
         ccy,
         decimals,
         amount,
-        AccountJournalEnum.INT_ACCOUNT.getCode());
+        AccountTxType.INT_ACCOUNT.getCode());
   }
 
   public Account outAccount(
@@ -75,7 +75,7 @@ public class CustomerAccountBiz {
         ccy,
         decimals,
         amount,
-        AccountJournalEnum.OUT_ACCOUNT.getCode());
+        AccountTxType.OUT_ACCOUNT.getCode());
   }
 
   private Account handleAccount(
@@ -92,7 +92,7 @@ public class CustomerAccountBiz {
     warapper.eq(Account::getBizRoleTypeNo, customerNo);
     warapper.eq(Account::getCcy, ccy);
     warapper.eq(ObjectUtil.isNotNull(category), Account::getCategory, category);
-    Account customerAccount = customerAccountMapper.selectOne(warapper);
+    Account customerAccount = accountMapper.selectOne(warapper);
     DecimalFormat decimalFormat = new DecimalFormat("#.00");
     MD5 md5 = null;
     AccountJournal accountJournal = new AccountJournal();
@@ -109,7 +109,7 @@ public class CustomerAccountBiz {
       customerAccount.setCategory(category);
       customerAccount.setDecimals(decimals);
       String amountStr = decimalFormat.format(amount);
-      if (AccountJournalEnum.INT_ACCOUNT.getCode().equals(journalDirection)) {
+      if (AccountTxType.INT_ACCOUNT.getCode().equals(journalDirection)) {
         customerAccount.setBalance(amount);
         accountJournal.setInOutFlag(1);
       } else {
@@ -121,7 +121,7 @@ public class CustomerAccountBiz {
       System.out.println("1.Check Code: \n\n\n\n" + checkCode);
       customerAccount.setCheckCode(checkCode);
       customerAccount.setStatus(AccountEnum.NORMAL.getCode());
-      customerAccountMapper.insert(customerAccount);
+      accountMapper.insert(customerAccount);
     } else {
       md5 = new MD5(customerAccount.getBizRoleTypeNo().getBytes());
       // 余额校验
@@ -139,7 +139,7 @@ public class CustomerAccountBiz {
         throw new BusinessException(ResponseCode.ACCOUNT_BALANCE_INSUFFICIENT);
       }
 
-      if (AccountJournalEnum.INT_ACCOUNT.getCode().equals(journalDirection)) {
+      if (AccountTxType.INT_ACCOUNT.getCode().equals(journalDirection)) {
         customerAccount.setBalance(customerAccount.getBalance().add(amount));
         accountJournal.setInOutFlag(1);
       } else {
@@ -154,14 +154,14 @@ public class CustomerAccountBiz {
     accountJournal.setSerialNo(BsinSnowflake.getId());
     accountJournal.setAccountNo(customerAccount.getSerialNo());
     accountJournal.setAccountType(customerAccount.getType());
-    accountJournal.setCustomerNo(customerAccount.getBizRoleTypeNo());
+    accountJournal.setBizRoleTypeNo(customerAccount.getBizRoleTypeNo());
     accountJournal.setAmount(amount);
     //        accountJournal.setOrderNo(orderNo);
     accountJournal.setInOutFlag(journalDirection);
     accountJournal.setCcy(customerAccount.getCcy());
     accountJournal.setTenantId(customerAccount.getTenantId());
     customerAccountJournalMapper.insert(accountJournal);
-    customerAccountMapper.updateById(customerAccount);
+    accountMapper.updateById(customerAccount);
 
     return customerAccount;
   }
@@ -172,7 +172,7 @@ public class CustomerAccountBiz {
     warapper.eq(Account::getBizRoleTypeNo, customerNo);
     warapper.eq(Account::getCcy, ccy);
     warapper.eq(Account::getCategory, category);
-    Account customerAccount = customerAccountMapper.selectOne(warapper);
+    Account customerAccount = accountMapper.selectOne(warapper);
     return customerAccount;
   }
 

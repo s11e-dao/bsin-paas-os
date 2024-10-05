@@ -14,7 +14,7 @@ import me.flyray.bsin.facade.service.TokenParamService;
 import me.flyray.bsin.infrastructure.mapper.*;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.biz.CustomerAccountBiz;
+import me.flyray.bsin.server.biz.AccountBiz;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
@@ -58,7 +58,7 @@ public class GradeServiceImpl implements GradeService {
     private EquityMapper equityMapper;
     @Autowired
     private ConditionMapper conditionMapper;
-    @Autowired private CustomerAccountBiz customerAccountBiz;
+    @Autowired private AccountBiz customerAccountBiz;
 
     @DubboReference(version = "${dubbo.provider.version}")
     private TokenParamService tokenParamService;

@@ -49,13 +49,13 @@ public class AccountFreezeJournal implements Serializable {
      * 客户号
      */
     @TableField(exist = false)
-    private String customerNo;
+    private String bizRoleTypeNo;
 
 
     /**
      * 客户或者商户的账户编号
      */
-    private String customerAccountNo;
+    private String accountNo;
 
     /**
      * 冻结事件类型：（提案、订单等类型)

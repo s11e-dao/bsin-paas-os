@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Mapper
-public interface CustomerAccountJournalMapper extends BaseMapper<AccountJournal> {
+public interface AccountJournalMapper extends BaseMapper<AccountJournal> {
 
 }
 
