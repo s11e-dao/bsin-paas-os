@@ -19,7 +19,7 @@ import me.flyray.bsin.infrastructure.mapper.BondingCurveTokenParamMapper;
 import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
-import me.flyray.bsin.server.biz.CustomerAccountBiz;
+import me.flyray.bsin.server.biz.AccountBiz;
 import me.flyray.bsin.server.biz.TokenReleaseBiz;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
@@ -54,7 +54,7 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
 
   @Autowired private BondingCurveTokenJournalMapper bondingCurveTokenJournalMapper;
   @Autowired private BondingCurveTokenParamMapper bondingCurveTokenParamMapper;
-  @Autowired private CustomerAccountBiz customerAccountBiz;
+  @Autowired private AccountBiz customerAccountBiz;
   @Autowired private TokenReleaseBiz tokenReleaseBiz;
 
   /**

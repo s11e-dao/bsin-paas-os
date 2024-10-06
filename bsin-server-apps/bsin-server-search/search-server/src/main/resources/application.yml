@@ -66,3 +66,8 @@ rocketmq:
     # 是否在内部发送失败时重试另一个broker，默认false
     retryNextServer: false
 
+elasticsearch:
+  hostname: http://localhost
+  port: 9200
+  username: elastic
+  password: changeme
