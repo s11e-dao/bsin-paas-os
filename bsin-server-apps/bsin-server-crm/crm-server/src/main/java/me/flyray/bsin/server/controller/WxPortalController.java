@@ -1,7 +1,9 @@
 package me.flyray.bsin.server.controller;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
+import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaMessage;
+import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.constant.WxMaConstants;
 import cn.binarywang.wx.miniapp.message.WxMaMessageRouter;
 import cn.binarywang.wx.miniapp.message.WxMaXmlOutMessage;
@@ -10,6 +12,7 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.service.WxService;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlMessage;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlOutMessage;
@@ -18,12 +21,16 @@ import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.CustomerBase;
 import me.flyray.bsin.enums.WxPlatformType;
-//import me.flyray.bsin.server.biz.WxMpClickHandlerBiz;
-//import me.flyray.bsin.server.biz.WxMpMsgHandlerBiz;
-//import me.flyray.bsin.server.biz.WxMpSubscribeHandlerBiz;
-//import me.flyray.bsin.server.biz.WxMpViewHandlerBiz;
+// import me.flyray.bsin.server.biz.WxMpClickHandlerBiz;
+// import me.flyray.bsin.server.biz.WxMpMsgHandlerBiz;
+// import me.flyray.bsin.server.biz.WxMpSubscribeHandlerBiz;
+// import me.flyray.bsin.server.biz.WxMpViewHandlerBiz;
+import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.infrastructure.mapper.MerchantAppMapper;
+import me.flyray.bsin.server.biz.CustomerBiz;
 import me.flyray.bsin.thirdauth.wx.utils.*;
 import me.flyray.bsin.domain.entity.MerchantApp;
 import me.flyray.bsin.infrastructure.mapper.WxPlatformMapper;
@@ -31,10 +38,15 @@ import me.flyray.bsin.infrastructure.mapper.WxPlatformMapper;
 import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import me.flyray.bsin.utils.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
+import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
 import java.util.Objects;
 
 import static me.chanjar.weixin.common.api.WxConsts.EventType.*;
@@ -48,20 +60,18 @@ import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType.TEXT;
 @RestController
 public class WxPortalController {
 
-//  @Autowired private WxMpMsgHandlerBiz wxMpMsgHandlerBiz;
-//  @Autowired private WxMpSubscribeHandlerBiz wxMpSubscribeHandlerBiz;
-//  @Autowired private WxMpClickHandlerBiz wxMpClickHandlerBiz;
-//  @Autowired private WxMpViewHandlerBiz wxMpViewHandlerBiz;
+  //  @Autowired private WxMpMsgHandlerBiz wxMpMsgHandlerBiz;
+  //  @Autowired private WxMpSubscribeHandlerBiz wxMpSubscribeHandlerBiz;
+  //  @Autowired private WxMpClickHandlerBiz wxMpClickHandlerBiz;
+  //  @Autowired private WxMpViewHandlerBiz wxMpViewHandlerBiz;
 
-  @Autowired
-  BsinWxMaServiceUtil bsinWxMaServiceUtil;
-  @Autowired
-  BsinWxMpServiceUtil bsinWxMpServiceUtil;
-  @Autowired
-  BsinWxCpServiceUtil bsinWxCpServiceUtil;
+  @Autowired BsinWxMaServiceUtil bsinWxMaServiceUtil;
+  @Autowired BsinWxMpServiceUtil bsinWxMpServiceUtil;
+  @Autowired BsinWxCpServiceUtil bsinWxCpServiceUtil;
+
+  @Autowired private CustomerBiz customerBiz;
 
   @Autowired private MerchantAppMapper merchantAppMapper;
-
 
   @Value("${bsin.crm.aesKey}")
   private String aesKey;
@@ -74,6 +84,7 @@ public class WxPortalController {
 
   @Value("${wx.mp.config-storage.redis.password}")
   private String wxRedisPassword;
+
   private static WxRedisConfig wxRedisConfig;
 
   /**
@@ -86,7 +97,7 @@ public class WxPortalController {
    * @param echostr
    * @return
    */
-  //TODO: 映射到 shenyu 网关
+  // TODO: 映射到 shenyu 网关
   @GetMapping(value = "/{appid}", produces = "text/plain;charset=utf-8")
   public String authGet(
       @PathVariable String appid,
@@ -105,20 +116,7 @@ public class WxPortalController {
     }
     if (StringUtils.equals(merchantWxApp.getWxType(), WxPlatformType.MP.getType())) {
       log.info("微信公众号请求验证");
-      WxMpProperties.MpConfig config = new WxMpProperties.MpConfig();
-      config.setAesKey(merchantWxApp.getAesKey());
-      config.setAppId(appid);
-      SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
-      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
-      config.setToken(merchantWxApp.getToken());
-      if (wxRedisConfig == null) {
-        wxRedisConfig = new WxRedisConfig();
-        wxRedisConfig.setHost(wxRedisHost);
-        wxRedisConfig.setPort(wxRedisPort);
-        wxRedisConfig.setPassword(wxRedisPassword);
-      }
-      WxMpService wxService = bsinWxMpServiceUtil.getWxMpService(config, wxRedisConfig);
-
+      WxMpService wxService = (WxMpService) getWxService(merchantWxApp);
       if (!wxService.switchover(appid)) {
         throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
       }
@@ -131,33 +129,104 @@ public class WxPortalController {
       log.debug("微信企业号|企业微信请求验证");
       // TODO: 企业号暂时不支持
       return "暂不支持企业号";
-    }else if (merchantWxApp.getWxType().equals(WxPlatformType.MINIAPP.getType())) {
+    } else if (merchantWxApp.getWxType().equals(WxPlatformType.MINIAPP.getType())) {
       log.debug("小程序请求验证");
-      WxMaProperties.MaConfig config = new WxMaProperties.MaConfig();
-      config.setAesKey(merchantWxApp.getAesKey());
-      config.setAppId(appid);
-      SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
-      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
-      config.setToken(merchantWxApp.getToken());
-      if (wxRedisConfig == null) {
-        wxRedisConfig = new WxRedisConfig();
-        wxRedisConfig.setHost(wxRedisHost);
-        wxRedisConfig.setPort(wxRedisPort);
-        wxRedisConfig.setPassword(wxRedisPassword);
-      }
-      WxMaService wxService = bsinWxMaServiceUtil.getWxMaService(config, wxRedisConfig);
-
+      WxMaService wxService = (WxMaService) getWxService(merchantWxApp);
       if (!wxService.switchover(appid)) {
         throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
       }
       // TODO: 校验失败
       if (wxService.checkSignature(timestamp, nonce, signature)) {
         log.info("微信公众号请求验证成功:=[%s]", echostr);
-        WxMaConfigHolder.remove();//清理ThreadLocal
+        WxMaConfigHolder.remove(); // 清理ThreadLocal
         return echostr;
       }
     }
     return "非法请求";
+  }
+
+  /**
+   * 不对外暴露接口调用，作为rpc服务对内提供
+   *
+   * @param appid
+   * @param code
+   * @return
+   */
+  public CustomerBase authorizedLogin(String appid, String code)
+      throws UnsupportedEncodingException {
+    MerchantApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
+    if (merchantWxApp == null) {
+      throw new BusinessException("100000", "未找到对应appid");
+    }
+    if (StringUtils.equals(merchantWxApp.getWxType(), WxPlatformType.MINIAPP.getType())) {
+      WxMaService wxService = (WxMaService) getWxService(merchantWxApp);
+
+      // 调用微信sdk获取openId及sessionKey
+      String sessionKey = null;
+      String openId = null;
+      try {
+        long beginTime = System.currentTimeMillis();
+        WxMaJscode2SessionResult result = wxService.getUserService().getSessionInfo(code);
+        //        Thread.sleep(6000);
+        long endTime = System.currentTimeMillis();
+        log.info("响应时间:{}", (endTime - beginTime));
+        sessionKey = result.getSessionKey(); // session id
+        openId = result.getOpenid(); // 用户唯一标识 OpenID
+      } catch (Exception e) {
+        throw new BusinessException("100000", e.toString());
+      }
+
+      if (sessionKey == null || openId == null) {
+        log.error("微信登录,调用官方接口失败：{}", code);
+        throw new BusinessException("100000", "微信登录,调用官方接口失败:" + code);
+      } else {
+        log.info("openId={},sessionKey={}", openId, sessionKey);
+      }
+      // 根据openId查询 crm_customer_base 表, 如果不存在，初始化wx_user,并保存到数据库中, 如果存在，更新最后登录时间
+      CustomerBase customerBase = customerBiz.getCustomerByOpenId(openId);
+      if (customerBase == null) {
+        customerBase.setSessionKey(sessionKey);
+        customerBase.setOpenId(openId);
+        customerBiz.register(customerBase);
+      }
+      return customerBase;
+    }
+    return null;
+  }
+
+  /**
+   * 绑定微信平台用户手机号
+   *
+   * @param appid
+   * @param encryptedData
+   * @param iv
+   * @return
+   */
+  public String bindingPhoneNumber(String openId, String appid, String encryptedData, String iv) {
+    String phone = null;
+    MerchantApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
+    if (merchantWxApp == null) {
+      throw new BusinessException("100000", "未找到对应appid");
+    }
+    if (StringUtils.equals(merchantWxApp.getWxType(), WxPlatformType.MINIAPP.getType())) {
+      WxMaService wxService = (WxMaService) getWxService(merchantWxApp);
+
+      CustomerBase customerBase = customerBiz.getCustomerByOpenId(openId);
+      WxMaPhoneNumberInfo phoneNumberInfo = null;
+      try {
+        phoneNumberInfo =
+            wxService
+                .getUserService()
+                .getPhoneNoInfo(customerBase.getSessionKey(), encryptedData, iv);
+      } catch (Exception e) {
+        log.error("绑定手机号码失败,获取微信绑定的手机号码出错：{}", e.toString());
+        e.printStackTrace();
+        throw new BusinessException("100000", "绑定手机号码失败,获取微信绑定的手机号码出错:" + e.toString());
+      }
+      phone = phoneNumberInfo.getPhoneNumber();
+      customerBiz.updateCustomerBase(customerBase);
+    }
+    return phone;
   }
 
   /**
@@ -226,7 +295,7 @@ public class WxPortalController {
         WxMpXmlMessage inMessage = WxMpXmlMessage.fromXml(requestBody);
         inMessage.getFromUser();
         // 设置用户的 公众号 appId
-        BsinCacheProvider.put("ai",inMessage.getFromUser(), appid);
+        BsinCacheProvider.put("ai", inMessage.getFromUser(), appid);
         outMessage = this.mpRoute(inMessage, wxService);
         if (outMessage == null) {
           return "";
@@ -235,18 +304,18 @@ public class WxPortalController {
       } else if ("aes".equalsIgnoreCase(encType)) {
         // aes加密的消息
         WxMpXmlMessage inMessage =
-                WxMpXmlMessage.fromEncryptedXml(
-                        requestBody, wxService.getWxMpConfigStorage(), timestamp, nonce, msgSignature);
+            WxMpXmlMessage.fromEncryptedXml(
+                requestBody, wxService.getWxMpConfigStorage(), timestamp, nonce, msgSignature);
         log.debug("\n消息解密后内容为：\n{} ", inMessage.toString());
         // 设置用户的 公众号 appId
-        BsinCacheProvider.put("ai",inMessage.getFromUser(), appid);
+        BsinCacheProvider.put("ai", inMessage.getFromUser(), appid);
         outMessage = this.mpRoute(inMessage, wxService);
         if (outMessage == null) {
           return "";
         }
         out = outMessage.toEncryptedXml(wxService.getWxMpConfigStorage());
       }
-    }else if (StringUtils.equals(merchantWxApp.getWxType(), WxPlatformType.MINIAPP.getType())) {
+    } else if (StringUtils.equals(merchantWxApp.getWxType(), WxPlatformType.MINIAPP.getType())) {
       WxMaXmlOutMessage outMessage = null;
       WxMaProperties.MaConfig config = new WxMaProperties.MaConfig();
       config.setAesKey(merchantWxApp.getAesKey());
@@ -262,35 +331,36 @@ public class WxPortalController {
       }
       WxMaService wxMaService = bsinWxMaServiceUtil.getWxMaService(config, wxRedisConfig);
 
-      final boolean isJson = Objects.equals(wxMaService.getWxMaConfig().getMsgDataFormat(),
-              WxMaConstants.MsgDataFormat.JSON);
+      final boolean isJson =
+          Objects.equals(
+              wxMaService.getWxMaConfig().getMsgDataFormat(), WxMaConstants.MsgDataFormat.JSON);
       if (StringUtils.isBlank(encType)) {
         // 明文传输的消息
         WxMaMessage inMessage;
         if (isJson) {
           inMessage = WxMaMessage.fromJson(requestBody);
-        } else {//xml
+        } else { // xml
           inMessage = WxMaMessage.fromXml(requestBody);
         }
 
         outMessage = this.maRoute(inMessage, wxMaService);
-        WxMaConfigHolder.remove();//清理ThreadLocal
+        WxMaConfigHolder.remove(); // 清理ThreadLocal
         if (outMessage == null) {
           return "";
         }
         out = outMessage.toXml();
-      }
-      else if ("aes".equals(encType)) {
+      } else if ("aes".equals(encType)) {
         // 是aes加密的消息
         WxMaMessage inMessage;
         if (isJson) {
           inMessage = WxMaMessage.fromEncryptedJson(requestBody, wxMaService.getWxMaConfig());
-        } else {//xml
-          inMessage = WxMaMessage.fromEncryptedXml(requestBody, wxMaService.getWxMaConfig(),
-                  timestamp, nonce, msgSignature);
+        } else { // xml
+          inMessage =
+              WxMaMessage.fromEncryptedXml(
+                  requestBody, wxMaService.getWxMaConfig(), timestamp, nonce, msgSignature);
         }
         outMessage = this.maRoute(inMessage, wxMaService);
-        WxMaConfigHolder.remove();//清理ThreadLocal
+        WxMaConfigHolder.remove(); // 清理ThreadLocal
         if (outMessage == null) {
           return "";
         }
@@ -313,40 +383,40 @@ public class WxPortalController {
    */
   private WxMpXmlOutMessage mpRoute(WxMpXmlMessage message, WxMpService wxMpService) {
     final WxMpMessageRouter newRouter = new WxMpMessageRouter(wxMpService);
-//    // 默认文本消息处理
-//    newRouter.rule().async(false).msgType(TEXT).handler(wxMpMsgHandlerBiz).end();
-//    // 关注事件
-//    newRouter
-//            .rule()
-//            .async(false)
-//            .msgType(EVENT)
-//            .event(SUBSCRIBE)
-//            .handler(wxMpSubscribeHandlerBiz)
-//            .end();
-//    // 取消关注事件
-//    newRouter
-//            .rule()
-//            .async(false)
-//            .msgType(EVENT)
-//            .event(UNSUBSCRIBE)
-//            .handler(wxMpSubscribeHandlerBiz)
-//            .end();
-//    // click事件
-//    newRouter
-//            .rule()
-//            .async(false)
-//            .msgType(EVENT)
-//            .event(CLICK)
-//            .handler(wxMpClickHandlerBiz)
-//            .end();
-//    // view事件:貌似view事件公众号自动跳转到相应链接了
-//    newRouter
-//            .rule()
-//            .async(false)
-//            .msgType(VIEW)
-//            .event(CLICK)
-//            .handler(wxMpViewHandlerBiz)
-//            .end();
+    //    // 默认文本消息处理
+    //    newRouter.rule().async(false).msgType(TEXT).handler(wxMpMsgHandlerBiz).end();
+    //    // 关注事件
+    //    newRouter
+    //            .rule()
+    //            .async(false)
+    //            .msgType(EVENT)
+    //            .event(SUBSCRIBE)
+    //            .handler(wxMpSubscribeHandlerBiz)
+    //            .end();
+    //    // 取消关注事件
+    //    newRouter
+    //            .rule()
+    //            .async(false)
+    //            .msgType(EVENT)
+    //            .event(UNSUBSCRIBE)
+    //            .handler(wxMpSubscribeHandlerBiz)
+    //            .end();
+    //    // click事件
+    //    newRouter
+    //            .rule()
+    //            .async(false)
+    //            .msgType(EVENT)
+    //            .event(CLICK)
+    //            .handler(wxMpClickHandlerBiz)
+    //            .end();
+    //    // view事件:貌似view事件公众号自动跳转到相应链接了
+    //    newRouter
+    //            .rule()
+    //            .async(false)
+    //            .msgType(VIEW)
+    //            .event(CLICK)
+    //            .handler(wxMpViewHandlerBiz)
+    //            .end();
     try {
       return newRouter.route(message);
     } catch (Exception e) {
@@ -364,40 +434,40 @@ public class WxPortalController {
    */
   private WxMaXmlOutMessage maRoute(WxMaMessage message, WxMaService wxMaService) {
     final WxMaMessageRouter newRouter = new WxMaMessageRouter(wxMaService);
-//    // 默认文本消息处理
-//    newRouter.rule().async(false).msgType(TEXT).handler(wxMaMsgHandlerBiz).end();
-//    // 关注事件
-//    newRouter
-//            .rule()
-//            .async(false)
-//            .msgType(EVENT)
-//            .event(SUBSCRIBE)
-//            .handler(wxMaSubscribeHandlerBiz)
-//            .end();
-//    // 取消关注事件
-//    newRouter
-//            .rule()
-//            .async(false)
-//            .msgType(EVENT)
-//            .event(UNSUBSCRIBE)
-//            .handler(wxMaSubscribeHandlerBiz)
-//            .end();
-//    // click事件
-//    newRouter
-//            .rule()
-//            .async(false)
-//            .msgType(EVENT)
-//            .event(CLICK)
-//            .handler(wxMaClickHandlerBiz)
-//            .end();
-//    // view事件:貌似view事件公众号自动跳转到相应链接了
-//    newRouter
-//            .rule()
-//            .async(false)
-//            .msgType(VIEW)
-//            .event(CLICK)
-//            .handler(wxMaViewHandlerBiz)
-//            .end();
+    //    // 默认文本消息处理
+    //    newRouter.rule().async(false).msgType(TEXT).handler(wxMaMsgHandlerBiz).end();
+    //    // 关注事件
+    //    newRouter
+    //            .rule()
+    //            .async(false)
+    //            .msgType(EVENT)
+    //            .event(SUBSCRIBE)
+    //            .handler(wxMaSubscribeHandlerBiz)
+    //            .end();
+    //    // 取消关注事件
+    //    newRouter
+    //            .rule()
+    //            .async(false)
+    //            .msgType(EVENT)
+    //            .event(UNSUBSCRIBE)
+    //            .handler(wxMaSubscribeHandlerBiz)
+    //            .end();
+    //    // click事件
+    //    newRouter
+    //            .rule()
+    //            .async(false)
+    //            .msgType(EVENT)
+    //            .event(CLICK)
+    //            .handler(wxMaClickHandlerBiz)
+    //            .end();
+    //    // view事件:貌似view事件公众号自动跳转到相应链接了
+    //    newRouter
+    //            .rule()
+    //            .async(false)
+    //            .msgType(VIEW)
+    //            .event(CLICK)
+    //            .handler(wxMaViewHandlerBiz)
+    //            .end();
     try {
       return newRouter.route(message);
     } catch (Exception e) {
@@ -419,12 +489,12 @@ public class WxPortalController {
    */
   @GetMapping(value = "/{corpId}/{agentId}", produces = "text/plain;charset=utf-8")
   public String authGet(
-          @PathVariable String corpId,
-          @PathVariable Integer agentId,
-          @RequestParam(name = "msg_signature", required = false) String signature,
-          @RequestParam(name = "timestamp", required = false) String timestamp,
-          @RequestParam(name = "nonce", required = false) String nonce,
-          @RequestParam(name = "echostr", required = false) String echostr) {
+      @PathVariable String corpId,
+      @PathVariable Integer agentId,
+      @RequestParam(name = "msg_signature", required = false) String signature,
+      @RequestParam(name = "timestamp", required = false) String timestamp,
+      @RequestParam(name = "nonce", required = false) String nonce,
+      @RequestParam(name = "echostr", required = false) String echostr) {
     log.info("\n接收到来自微信服务器的认证消息：[{}, {}, {}, {}]", signature, timestamp, nonce, echostr);
     if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
       throw new IllegalArgumentException("请求参数非法，请核实!");
@@ -463,18 +533,18 @@ public class WxPortalController {
    */
   @PostMapping(produces = "application/xml; charset=UTF-8")
   public String post(
-          @PathVariable String corpId,
-          @PathVariable Integer agentId,
-          @RequestBody String requestBody,
-          @RequestParam("msg_signature") String signature,
-          @RequestParam("timestamp") String timestamp,
-          @RequestParam("nonce") String nonce) {
+      @PathVariable String corpId,
+      @PathVariable Integer agentId,
+      @RequestBody String requestBody,
+      @RequestParam("msg_signature") String signature,
+      @RequestParam("timestamp") String timestamp,
+      @RequestParam("nonce") String nonce) {
     log.info(
-            "\n接收微信请求：[signature=[{}], timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
-            signature,
-            timestamp,
-            nonce,
-            requestBody);
+        "\n接收微信请求：[signature=[{}], timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
+        signature,
+        timestamp,
+        nonce,
+        requestBody);
     MerchantApp merchantWxApp = merchantAppMapper.selectByAppId(corpId + agentId.toString());
     WxCpProperties.CpConfig config = new WxCpProperties.CpConfig();
     config.setAesKey(merchantWxApp.getAesKey());
@@ -486,8 +556,8 @@ public class WxPortalController {
       throw new IllegalArgumentException(String.format("未找到对应agentId=[%d]的配置，请核实！", agentId));
     }
     WxCpXmlMessage inMessage =
-            WxCpXmlMessage.fromEncryptedXml(
-                    requestBody, wxCpService.getWxCpConfigStorage(), timestamp, nonce, signature);
+        WxCpXmlMessage.fromEncryptedXml(
+            requestBody, wxCpService.getWxCpConfigStorage(), timestamp, nonce, signature);
     log.debug("\n消息解密后内容为：\n{} ", JsonUtils.toJson(inMessage));
     //        WxCpXmlOutMessage outMessage = this.route(corpId, agentId, inMessage);
     //        if (outMessage == null) {
@@ -499,13 +569,50 @@ public class WxPortalController {
     return null;
   }
 
-    private WxCpXmlOutMessage cpRoute(String corpId, Integer agentId, WxCpXmlMessage message) {
-//        final WxCpMessageRouter newRouter = new WxCpMessageRouter(wxCpService);
-//        try {
-//            return WxCpConfiguration.getRouters().get(corpId + agentId).route(message);
-//        } catch (Exception e) {
-//            log.error(e.getMessage(), e);
-//        }
-        return null;
+  private WxCpXmlOutMessage cpRoute(String corpId, Integer agentId, WxCpXmlMessage message) {
+    //        final WxCpMessageRouter newRouter = new WxCpMessageRouter(wxCpService);
+    //        try {
+    //            return WxCpConfiguration.getRouters().get(corpId + agentId).route(message);
+    //        } catch (Exception e) {
+    //            log.error(e.getMessage(), e);
+    //        }
+    return null;
+  }
+
+  private WxService getWxService(MerchantApp merchantWxApp) {
+    WxService wxService = null;
+    if (StringUtils.equals(merchantWxApp.getWxType(), WxPlatformType.MP.getType())) {
+      log.info("微信公众号应用");
+      WxMpProperties.MpConfig config = new WxMpProperties.MpConfig();
+      config.setAesKey(merchantWxApp.getAesKey());
+      config.setAppId(merchantWxApp.getAppId());
+      SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
+      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
+      config.setToken(merchantWxApp.getToken());
+      if (wxRedisConfig == null) {
+        wxRedisConfig = new WxRedisConfig();
+        wxRedisConfig.setHost(wxRedisHost);
+        wxRedisConfig.setPort(wxRedisPort);
+        wxRedisConfig.setPassword(wxRedisPassword);
+      }
+      wxService = bsinWxMpServiceUtil.getWxMpService(config, wxRedisConfig);
+    } else if (StringUtils.equals(merchantWxApp.getWxType(), WxPlatformType.MINIAPP.getType())) {
+      log.info("微信小程序应用");
+      WxMaProperties.MaConfig config = new WxMaProperties.MaConfig();
+      config.setAesKey(merchantWxApp.getAesKey());
+      config.setAppId(merchantWxApp.getAppId());
+      SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
+      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
+      config.setToken(merchantWxApp.getToken());
+      if (wxRedisConfig == null) {
+        wxRedisConfig = new WxRedisConfig();
+        wxRedisConfig.setHost(wxRedisHost);
+        wxRedisConfig.setPort(wxRedisPort);
+        wxRedisConfig.setPassword(wxRedisPassword);
+      }
+      wxService = bsinWxMaServiceUtil.getWxMaService(config, wxRedisConfig);
+    } else {
     }
+    return wxService;
+  }
 }

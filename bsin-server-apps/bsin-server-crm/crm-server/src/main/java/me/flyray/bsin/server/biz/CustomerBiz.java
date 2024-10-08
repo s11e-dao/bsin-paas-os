@@ -58,6 +58,19 @@ public class CustomerBiz {
     return customerInfo;
   }
 
+
+  public CustomerBase getCustomerByOpenId(String openId) {
+    // 客户用户名唯一，查询客户信息
+    LambdaQueryWrapper<CustomerBase> warapper = new LambdaQueryWrapper<>();
+    warapper.eq(CustomerBase::getOpenId, openId);
+    return customerBaseMapper.selectOne(warapper);
+  }
+
+
+  public  void updateCustomerBase(CustomerBase customerBase) {
+    customerBaseMapper.updateById(customerBase);
+  }
+
   /**
    * @param customerBase
    * @return
