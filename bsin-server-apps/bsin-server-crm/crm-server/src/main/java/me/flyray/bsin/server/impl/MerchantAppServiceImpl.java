@@ -106,7 +106,7 @@ public class MerchantAppServiceImpl implements MerchantAppService {
         MerchantApp merchantApp = new MerchantApp();
         merchantApp.setTenantId(tenantId);
         merchantApp.setAppId(serialNo);
-        MerchantApp tenantAppResult = merchantAppMapper.getProductInfo(merchantApp);
+        MerchantApp tenantAppResult = merchantAppMapper.getAppInfo(merchantApp);
         return tenantAppResult;
     }
 

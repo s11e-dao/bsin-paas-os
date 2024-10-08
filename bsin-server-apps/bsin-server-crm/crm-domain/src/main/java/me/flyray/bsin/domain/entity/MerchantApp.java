@@ -39,8 +39,15 @@ public class MerchantApp implements Serializable {
 
     /**
      * 应用ID：自动生成
+     * 微信公众号的appID：公众号通过此ID检索公众号参数 设置企业微信的corpId：企业微信通过此ID检索公众号参数
      */
     private String appId;
+
+    /** 企业号ID，数据库统一字段为appId，此字段废弃 */
+    private String corpId;
+
+    /** 设置企业微信应用的AgentId */
+    private Integer agentId;
 
     /**
      * 1: 应用 2：接口
@@ -48,9 +55,20 @@ public class MerchantApp implements Serializable {
     private String appType;
 
     /**
+     * 微信平台类别：mp(公众号服务订阅号)、miniapp(小程序)、 cp(企业号|企业微信)、pay(微信支付)、open(微信开放平台) wechat(个人微信) menu(菜单模版)
+     */
+    private String wxType;
+
+    /**
      * 应用密钥：自动生成
      */
     private String appSecret;
+
+    /** 企业微信/微信公众号的EncodingAESKey */
+    private String aesKey;
+
+    /** 微信公众号/企业微信/小程序的token */
+    private String token;
 
     /**
      * 通知地址

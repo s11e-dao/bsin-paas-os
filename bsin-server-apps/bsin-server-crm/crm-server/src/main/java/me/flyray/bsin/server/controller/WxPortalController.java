@@ -23,8 +23,9 @@ import me.flyray.bsin.enums.WxPlatformType;
 //import me.flyray.bsin.server.biz.WxMpMsgHandlerBiz;
 //import me.flyray.bsin.server.biz.WxMpSubscribeHandlerBiz;
 //import me.flyray.bsin.server.biz.WxMpViewHandlerBiz;
+import me.flyray.bsin.infrastructure.mapper.MerchantAppMapper;
 import me.flyray.bsin.thirdauth.wx.utils.*;
-import me.flyray.bsin.domain.entity.WxPlatform;
+import me.flyray.bsin.domain.entity.MerchantApp;
 import me.flyray.bsin.infrastructure.mapper.WxPlatformMapper;
 
 import me.flyray.bsin.redis.provider.BsinCacheProvider;
@@ -59,7 +60,7 @@ public class WxPortalController {
   @Autowired
   BsinWxCpServiceUtil bsinWxCpServiceUtil;
 
-  @Autowired private WxPlatformMapper wxPlatformMapper;
+  @Autowired private MerchantAppMapper merchantAppMapper;
 
 
   @Value("${bsin.crm.aesKey}")
@@ -85,6 +86,7 @@ public class WxPortalController {
    * @param echostr
    * @return
    */
+  //TODO: 映射到 shenyu 网关
   @GetMapping(value = "/{appid}", produces = "text/plain;charset=utf-8")
   public String authGet(
       @PathVariable String appid,
@@ -97,18 +99,18 @@ public class WxPortalController {
     if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
       throw new IllegalArgumentException("请求参数非法，请核实!");
     }
-    WxPlatform wxPlatform = wxPlatformMapper.selectByAppId(appid);
-    if (wxPlatform == null) {
+    MerchantApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
+    if (merchantWxApp == null) {
       return "未找到微信平台配置信息";
     }
-    if (StringUtils.equals(wxPlatform.getType(), WxPlatformType.MP.getType())) {
+    if (StringUtils.equals(merchantWxApp.getWxType(), WxPlatformType.MP.getType())) {
       log.info("微信公众号请求验证");
       WxMpProperties.MpConfig config = new WxMpProperties.MpConfig();
-      config.setAesKey(wxPlatform.getAesKey());
+      config.setAesKey(merchantWxApp.getAesKey());
       config.setAppId(appid);
       SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
-      config.setSecret(aes.decryptStr(wxPlatform.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
-      config.setToken(wxPlatform.getToken());
+      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
+      config.setToken(merchantWxApp.getToken());
       if (wxRedisConfig == null) {
         wxRedisConfig = new WxRedisConfig();
         wxRedisConfig.setHost(wxRedisHost);
@@ -125,18 +127,18 @@ public class WxPortalController {
         log.info("微信公众号请求验证成功:=[%s]", echostr);
         return echostr;
       }
-    } else if (wxPlatform.getType().equals(WxPlatformType.CP.getType())) {
+    } else if (merchantWxApp.getWxType().equals(WxPlatformType.CP.getType())) {
       log.debug("微信企业号|企业微信请求验证");
       // TODO: 企业号暂时不支持
       return "暂不支持企业号";
-    }else if (wxPlatform.getType().equals(WxPlatformType.MINIAPP.getType())) {
+    }else if (merchantWxApp.getWxType().equals(WxPlatformType.MINIAPP.getType())) {
       log.debug("小程序请求验证");
       WxMaProperties.MaConfig config = new WxMaProperties.MaConfig();
-      config.setAesKey(wxPlatform.getAesKey());
+      config.setAesKey(merchantWxApp.getAesKey());
       config.setAppId(appid);
       SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
-      config.setSecret(aes.decryptStr(wxPlatform.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
-      config.setToken(wxPlatform.getToken());
+      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
+      config.setToken(merchantWxApp.getToken());
       if (wxRedisConfig == null) {
         wxRedisConfig = new WxRedisConfig();
         wxRedisConfig.setHost(wxRedisHost);
@@ -194,18 +196,18 @@ public class WxPortalController {
 
     String out = null;
 
-    WxPlatform wxPlatform = wxPlatformMapper.selectByAppId(appid);
-    if (wxPlatform == null) {
+    MerchantApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
+    if (merchantWxApp == null) {
       throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
     }
-    if (StringUtils.equals(wxPlatform.getType(), WxPlatformType.MP.getType())) {
+    if (StringUtils.equals(merchantWxApp.getWxType(), WxPlatformType.MP.getType())) {
       WxMpXmlOutMessage outMessage = null;
       WxMpProperties.MpConfig config = new WxMpProperties.MpConfig();
-      config.setAesKey(wxPlatform.getAesKey());
+      config.setAesKey(merchantWxApp.getAesKey());
       config.setAppId(appid);
       SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
-      config.setSecret(aes.decryptStr(wxPlatform.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
-      config.setToken(wxPlatform.getToken());
+      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
+      config.setToken(merchantWxApp.getToken());
       if (wxRedisConfig == null) {
         wxRedisConfig = new WxRedisConfig();
         wxRedisConfig.setHost(wxRedisHost);
@@ -244,14 +246,14 @@ public class WxPortalController {
         }
         out = outMessage.toEncryptedXml(wxService.getWxMpConfigStorage());
       }
-    }else if (StringUtils.equals(wxPlatform.getType(), WxPlatformType.MINIAPP.getType())) {
+    }else if (StringUtils.equals(merchantWxApp.getWxType(), WxPlatformType.MINIAPP.getType())) {
       WxMaXmlOutMessage outMessage = null;
       WxMaProperties.MaConfig config = new WxMaProperties.MaConfig();
-      config.setAesKey(wxPlatform.getAesKey());
+      config.setAesKey(merchantWxApp.getAesKey());
       config.setAppId(appid);
       SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
-      config.setSecret(aes.decryptStr(wxPlatform.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
-      config.setToken(wxPlatform.getToken());
+      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
+      config.setToken(merchantWxApp.getToken());
       if (wxRedisConfig == null) {
         wxRedisConfig = new WxRedisConfig();
         wxRedisConfig.setHost(wxRedisHost);
@@ -427,16 +429,16 @@ public class WxPortalController {
     if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
       throw new IllegalArgumentException("请求参数非法，请核实!");
     }
-    WxPlatform wxPlatform = wxPlatformMapper.selectByCorpAgentId(corpId, agentId.toString());
-    if (StringUtils.equals(wxPlatform.getType(), WxPlatformType.CP.getType())) {
+    MerchantApp merchantWxApp = merchantAppMapper.selectByCorpAgentId(corpId, agentId.toString());
+    if (StringUtils.equals(merchantWxApp.getWxType(), WxPlatformType.CP.getType())) {
       log.debug("微信企业号|企业微信请求验证");
       WxCpProperties.CpConfig config = new WxCpProperties.CpConfig();
-      config.setAesKey(wxPlatform.getAesKey());
+      config.setAesKey(merchantWxApp.getAesKey());
       config.setCorpId(corpId);
       config.setAgentId(agentId);
       SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
-      config.setSecret(aes.decryptStr(wxPlatform.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
-      config.setToken(wxPlatform.getToken());
+      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
+      config.setToken(merchantWxApp.getToken());
       WxCpService wxCpService = bsinWxCpServiceUtil.getWxCpService(config);
       if (wxCpService == null) {
         throw new IllegalArgumentException(String.format("未找到对应agentId=[%d]的配置，请核实！", agentId));
@@ -473,9 +475,9 @@ public class WxPortalController {
             timestamp,
             nonce,
             requestBody);
-    WxPlatform wxPlatform = wxPlatformMapper.selectByAppId(corpId + agentId.toString());
+    MerchantApp merchantWxApp = merchantAppMapper.selectByAppId(corpId + agentId.toString());
     WxCpProperties.CpConfig config = new WxCpProperties.CpConfig();
-    config.setAesKey(wxPlatform.getAesKey());
+    config.setAesKey(merchantWxApp.getAesKey());
     config.setCorpId(corpId);
     config.setAgentId(agentId);
 

@@ -2,6 +2,7 @@ package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import me.flyray.bsin.domain.entity.WxPlatform;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -20,5 +21,8 @@ public interface MerchantAppMapper extends BaseMapper<MerchantApp> {
                                   @Param("productSecret")String productSecret
                               );
 
-    MerchantApp getProductInfo(MerchantApp merchantApp);
+    MerchantApp getAppInfo(MerchantApp merchantApp);
+
+    MerchantApp selectByAppId(String appId);
+    MerchantApp selectByCorpAgentId(String corpId, String agentId);
 }
