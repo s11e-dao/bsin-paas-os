@@ -15,6 +15,8 @@
         <id property="username" column="username" jdbcType="VARCHAR"/>
         <result property="authMethod" column="auth_method" jdbcType="VARCHAR"/>
         <result property="credential" column="credential" jdbcType="VARCHAR"/>
+        <result property="sessionKey" column="session_key" jdbcType="VARCHAR"/>
+        <result property="openId" column="open_id" jdbcType="VARCHAR"/>
         <result property="idNumber" column="id_number" jdbcType="VARCHAR"/>
         <result property="password" column="password" jdbcType="VARCHAR"/>
         <result property="nickname" column="nickname" jdbcType="VARCHAR"/>

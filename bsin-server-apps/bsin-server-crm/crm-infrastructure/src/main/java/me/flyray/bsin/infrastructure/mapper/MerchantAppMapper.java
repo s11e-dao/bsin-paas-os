@@ -23,6 +23,6 @@ public interface MerchantAppMapper extends BaseMapper<MerchantApp> {
 
     MerchantApp getAppInfo(MerchantApp merchantApp);
 
-    MerchantApp selectByAppId(String appId);
+    MerchantApp selectByAppId(@Param("appId")String appId);
     MerchantApp selectByCorpAgentId(String corpId, String agentId);
 }

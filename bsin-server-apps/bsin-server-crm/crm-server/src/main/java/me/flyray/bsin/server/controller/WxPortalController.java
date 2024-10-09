@@ -601,9 +601,11 @@ public class WxPortalController {
       WxMaProperties.MaConfig config = new WxMaProperties.MaConfig();
       config.setAesKey(merchantWxApp.getAesKey());
       config.setAppId(merchantWxApp.getAppId());
-      SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
-      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
+//      SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
+//      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
+      config.setSecret(merchantWxApp.getAppSecret());
       config.setToken(merchantWxApp.getToken());
+      config.setMsgDataFormat("JSON");
       if (wxRedisConfig == null) {
         wxRedisConfig = new WxRedisConfig();
         wxRedisConfig.setHost(wxRedisHost);

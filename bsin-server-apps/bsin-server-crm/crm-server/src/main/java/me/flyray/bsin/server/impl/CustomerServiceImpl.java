@@ -30,6 +30,7 @@ import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.biz.AccountBiz;
 import me.flyray.bsin.server.biz.CustomerBiz;
+import me.flyray.bsin.server.controller.WxPortalController;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.server.utils.SignUtils;
 import me.flyray.bsin.validate.AddGroup;
@@ -81,6 +82,7 @@ public class CustomerServiceImpl implements CustomerService {
   @Autowired private AccountBiz customerAccountBiz;
   @Autowired private BondingCurveTokenParamMapper bondingCurveTokenParamMapper;
   @Autowired private SignUtils signUtils;
+  @Autowired private WxPortalController wxPortalController;
 
   @DubboReference(version = "${dubbo.provider.version}")
   private TenantService tenantService;
@@ -208,6 +210,31 @@ public class CustomerServiceImpl implements CustomerService {
     data.put("customerInfo", customerBaseRegister);
     data.put("memberInfo", member);
     data.put("token", token);
+    return data;
+  }
+
+  /**
+   * 微信平台授权登录
+   * 微信小程序获取openId和sessionKey
+   * @param requestMap
+   * @return
+   */
+  @ApiDoc(desc = "getOpenId")
+  @ShenyuDubboClient("/getOpenId")
+  @Override
+  public Map<String, Object> getOpenId(Map<String, Object> requestMap)
+          throws UnsupportedEncodingException {
+    String tenantId = MapUtils.getString(requestMap, "tenantId");
+    String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+    String code = MapUtils.getString(requestMap, "code");
+    String appId = MapUtils.getString(requestMap, "appId");
+    CustomerBase customerBase = wxPortalController.authorizedLogin(appId, code);
+    if (customerBase == null) {
+      throw new BusinessException("100000", "customerBase is null");
+    }
+    Map data = new HashMap<>();
+    data.put("openId", customerBase.getOpenId());
+    data.put("sessionKey", customerBase.getSessionKey());
     return data;
   }
 

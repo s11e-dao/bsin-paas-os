@@ -24,12 +24,9 @@
     </resultMap>
 
     <sql id="baseColumnList">
-        serial_no
-        ,app_name,app_id,app_type,wx_type,exception_resp,pre_resp,default_flag,group_chat
-        ,description,status,merchant_no
-        ,tenant_id,type,agent_id,corp_id,app_id,token
-        ,app_secret,aes_key,create_time
-        ,update_time
+        serial_no,tenant_id,merchant_no,app_name,app_id,corp_id,app_type,app_secret,aes_key
+        ,app_type,token,wx_type,app_description,status
+        ,create_time,update_time
     </sql>
 
     <update id="delete">

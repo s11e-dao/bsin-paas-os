@@ -29,6 +29,9 @@ public interface CustomerService {
   /** 客户注册登录接口:用户注册成一个客户，还不是会员，会员需要开通 1、微信注册登录 2、手机验证码注册登录 */
   public Map<String, Object> registerOrLogin(Map<String, Object> requestMap)throws UnsupportedEncodingException ;
 
+  /** 微信平台授权登录 */
+  public Map<String, Object> getOpenId(Map<String, Object> requestMap) throws UnsupportedEncodingException;
+
   /** web3登录 前端钱包签名，后端验证之后换取token */
   public Map<String, Object> web3Login(Map<String, Object> requestMap) throws SignatureException, UnsupportedEncodingException;
 
