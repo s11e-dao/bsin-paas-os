@@ -12,43 +12,30 @@ import java.util.List;
 @Data
 public class WxCpProperties {
 
-    private List<CpConfig> CpConfigs;
+  private List<CpConfig> CpConfigs;
 
-    @Getter
-    @Setter
-    public static class CpConfig {
+  @Getter
+  @Setter
+  public static class CpConfig {
 
-        /**
-         * 设置企业微信的corpId
-         */
-        private String corpId;
+    /** 设置企业微信的corpId */
+    private String corpId;
 
-        /**
-         * 设置企业微信应用的AgentId
-         */
-        private Integer agentId;
+    /** 设置企业微信应用的AgentId */
+    private Integer agentId;
 
-        /**
-         * 设置企业微信应用的Secret
-         */
-        private String secret;
+    /** 设置企业微信应用的Secret */
+    private String secret;
 
-        /**
-         * 设置企业微信应用的token
-         */
-        private String token;
+    /** 设置企业微信应用的token */
+    private String token;
 
-        /**
-         * 设置企业微信应用的EncodingAESKey
-         */
-        private String aesKey;
+    /** 设置企业微信应用的EncodingAESKey */
+    private String aesKey;
+  }
 
-    }
-
-
-    @Override
-    public String toString() {
-        return JsonUtils.toJson(this);
-    }
-
+//  @Override
+//  public String toString() {
+//    return JsonUtils.toJson(this);
+//  }
 }

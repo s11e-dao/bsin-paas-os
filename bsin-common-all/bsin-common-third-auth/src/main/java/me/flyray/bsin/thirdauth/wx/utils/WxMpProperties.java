@@ -3,6 +3,8 @@ package me.flyray.bsin.thirdauth.wx.utils;
 import java.util.List;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * wechat mp properties
@@ -11,75 +13,36 @@ import lombok.Data;
  */
 @Data
 public class WxMpProperties {
-    /**
-     * 是否使用redis存储access token
-     */
-    private boolean useRedis;
+  /** 是否使用redis存储access token */
+  private boolean useRedis;
 
-    /**
-     * redis 配置
-     */
-    private RedisConfig redisConfig;
+  /** redis 配置 */
+  private WxRedisConfig redisConfig;
 
-    @Data
-    public static class RedisConfig {
-        /**
-         * redis服务器 主机地址
-         */
-        private String host;
+  /** 多个公众号配置信息 */
+  private List<MpConfig> configs;
 
-        /**
-         * redis服务器 端口号
-         */
-        private Integer port;
+  @Getter
+  @Setter
+  public static class MpConfig {
+    /** 设置微信公众号的appid */
+    private String appId;
 
-        /**
-         * redis服务器 密码
-         */
-        private String password;
+    /** 设置微信公众号的app secret */
+    private String secret;
 
-        /**
-         * redis 服务连接超时时间
-         */
-        private Integer timeout;
-    }
+    /** 设置微信公众号的token */
+    private String token;
 
-    /**
-     * 多个公众号配置信息
-     */
-    private List<MpConfig> configs;
+    /** 设置微信公众号的EncodingAESKey */
+    private String aesKey;
 
-    @Data
-    public static class MpConfig {
-        /**
-         * 设置微信公众号的appid
-         */
-        private String appId;
+    /** chatGPT key */
+    private String gptKey;
+  }
 
-        /**
-         * 设置微信公众号的app secret
-         */
-        private String secret;
-
-        /**
-         * 设置微信公众号的token
-         */
-        private String token;
-
-        /**
-         * 设置微信公众号的EncodingAESKey
-         */
-        private String aesKey;
-
-
-        /**
-         * chatGPT key
-         */
-        private String gptKey;
-    }
-
-    @Override
-    public String toString() {
-        return JsonUtils.toJson(this);
-    }
+//  @Override
+//  public String toString() {
+//    return JsonUtils.toJson(this);
+//  }
 }

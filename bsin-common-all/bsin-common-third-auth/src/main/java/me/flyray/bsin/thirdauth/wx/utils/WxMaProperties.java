@@ -2,6 +2,8 @@ package me.flyray.bsin.thirdauth.wx.utils;
 
 import java.util.List;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * wechat miniapp properties
@@ -10,75 +12,36 @@ import lombok.Data;
  */
 @Data
 public class WxMaProperties {
-    /**
-     * 是否使用redis存储access token
-     */
-    private boolean useRedis;
+  /** 是否使用redis存储access token */
+  private boolean useRedis;
 
-    /**
-     * redis 配置
-     */
-    private RedisConfig redisConfig;
+  /** redis 配置 */
+  private WxRedisConfig redisConfig;
 
-    @Data
-    public static class RedisConfig {
-        /**
-         * redis服务器 主机地址
-         */
-        private String host;
+  /** 多个小程序配置信息 */
+  private List<MaConfig> configs;
 
-        /**
-         * redis服务器 端口号
-         */
-        private Integer port;
+  @Getter
+  @Setter
+  public static class MaConfig {
+    /** 设置微信小程序的appid */
+    private String appId;
 
-        /**
-         * redis服务器 密码
-         */
-        private String password;
+    /** 设置微信小程序的Secret */
+    private String secret;
 
-        /**
-         * redis 服务连接超时时间
-         */
-        private Integer timeout;
-    }
+    /** 设置微信小程序消息服务器配置的token */
+    private String token;
 
-    /**
-     * 多个小程序配置信息
-     */
-    private List<MaConfig> configs;
+    /** 设置微信小程序消息服务器配置的EncodingAESKey */
+    private String aesKey;
 
-    @Data
-    public static class MaConfig {
-        /**
-         * 设置微信小程序的appid
-         */
-        private String appId;
+    /** 消息格式，XML或者JSON */
+    private String msgDataFormat;
+  }
 
-        /**
-         * 设置微信小程序的Secret
-         */
-        private String secret;
-
-        /**
-         * 设置微信小程序消息服务器配置的token
-         */
-        private String token;
-
-        /**
-         * 设置微信小程序消息服务器配置的EncodingAESKey
-         */
-        private String aesKey;
-
-
-        /**
-         * 消息格式，XML或者JSON
-         */
-        private String msgDataFormat;
-    }
-
-    @Override
-    public String toString() {
-        return JsonUtils.toJson(this);
-    }
+//  @Override
+//  public String toString() {
+//    return JsonUtils.toJson(this);
+//  }
 }
