@@ -50,7 +50,7 @@ public class MerchantApp implements Serializable {
     private Integer agentId;
 
     /**
-     * 1: 应用 2：接口
+     * 1: app应用 2：接口 3：小程序
      */
     private String appType;
 

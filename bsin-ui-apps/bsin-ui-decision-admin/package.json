@@ -23,7 +23,7 @@
     "@umijs/max": "^4.1.10",
     "@umijs/plugins": "^4.1.10",
     "antd": "^5.4.7",
-    "bsin-decision-ui": "^1.0.4",
+    "bsin-decision-ui": "^1.0.6",
     "bsin-agent-ui": "^1.0.0",
     "@xrenders/schema-builder": "^1.0.0-alpha.18",
     "form-render": "^2.4.9",

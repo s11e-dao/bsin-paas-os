@@ -62,7 +62,7 @@ const routes = [
       {
         name: '规则模型',
         path: '/model/decision-model',
-        component: '@/pages/DecisionSet/index',
+        component: '@/pages/DecisionModel/index',
       },
       // 推理模型
       {
