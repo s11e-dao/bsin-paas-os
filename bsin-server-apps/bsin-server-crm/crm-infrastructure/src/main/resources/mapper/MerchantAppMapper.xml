@@ -5,11 +5,17 @@
         <result column="serial_no" jdbcType="VARCHAR" property="serialNo"/>
         <result column="tenant_id" jdbcType="VARCHAR" property="tenantId"/>
         <result column="merchant_no" jdbcType="VARCHAR" property="merchantNo"/>
-        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
-        <result column="product_id" jdbcType="VARCHAR" property="productId"/>
-        <result column="product_type" jdbcType="VARCHAR" property="productType"/>
-        <result column="product_secret" jdbcType="VARCHAR" property="productSecret"/>
-        <result column="product_description" jdbcType="VARCHAR" property="productDescription"/>
+        <result column="app_name" jdbcType="VARCHAR" property="appName"/>
+        <result property="appType" column="app_type" jdbcType="VARCHAR"/>
+        <result column="app_id" jdbcType="VARCHAR" property="appId"/>
+        <result property="corpId" column="corp_id" jdbcType="VARCHAR"/>
+        <result property="wxType" column="wx_type" jdbcType="VARCHAR"/>
+        <result property="agentId" column="agent_id" jdbcType="VARCHAR"/>
+        <result column="app_type" jdbcType="VARCHAR" property="appType"/>
+        <result column="app_secret" jdbcType="VARCHAR" property="appSecret"/>
+        <result property="aesKey" column="aes_key" jdbcType="VARCHAR"/>
+        <result property="token" column="token" jdbcType="VARCHAR"/>
+        <result column="app_description" jdbcType="VARCHAR" property="appDescription"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="del_flag" jdbcType="INTEGER" property="delFlag"/>
@@ -17,8 +23,14 @@
         <result column="notify_url" jdbcType="VARCHAR" property="notifyUrl"/>
     </resultMap>
 
+    <sql id="baseColumnList">
+        serial_no,tenant_id,merchant_no,app_name,app_id,corp_id,app_type,app_secret,aes_key
+        ,app_type,token,wx_type,app_description,status
+        ,create_time,update_time
+    </sql>
+
     <update id="delete">
-        update crm_merchant_product
+        update crm_merchant_app
         set del_flag = 1
         where serial_no = #{serialNo}
     </update>
@@ -27,64 +39,88 @@
         select serial_no,
         tenant_id,
         merchant_no,
-        product_name,
-        product_id,
-        product_type,
-        product_secret,
-        product_description,
+        app_name,
+        app_id,
+        app_type,
+        app_secret,
+        app_description,
         create_time,
         update_time,
         del_flag,
         status
-        from crm_merchant_product
+        from crm_merchant_app
         where del_flag = 0
-        <if test="productName != null">
-            and product_name like concat('%',#{productName},'%')
+        <if test="appName != null">
+            and app_name like concat('%',#{appName},'%')
         </if>
-        <if test="productId != null">
-            and product_id = #{productId}
+        <if test="appId != null">
+            and app_id = #{appId}
         </if>
         <if test="tenantId != null">
             and tenant_id = #{tenantId}
         </if>
-        <if test="productSecret != null">
-            and product_secret = #{productSecret}
+        <if test="appSecret != null">
+            and app_secret = #{appSecret}
         </if>
     </select>
 
-    <select id="getProductInfo" resultMap="BaseResultMap">
+    <select id="getAppInfo" resultMap="BaseResultMap">
         select serial_no,
                tenant_id,
                merchant_no,
-               product_name,
-               product_id,
-               product_type,
-               product_secret,
-               product_description,
+               app_name,
+               app_id,
+               app_type,
+               app_secret,
+               app_description,
                create_time,
                update_time,
                del_flag,
                status
-        from crm_merchant_product
+        from crm_merchant_app
         where del_flag = 0 and
-            tenant_id = #{tenantId} and  merchant_no = #{merchantNo} and product_id = #{productId}
+            tenant_id = #{tenantId} and  merchant_no = #{merchantNo} and app_id = #{appId}
     </select>
 
-    <select id="getProductInfoByProductId" resultMap="BaseResultMap">
+    <select id="getAppInfoByAppId" resultMap="BaseResultMap">
         select serial_no,
                tenant_id,
                merchant_no,
-               product_name,
-               product_id,
-               product_type,
-               product_secret,
-               product_description,
+               app_name,
+               app_id,
+               app_type,
+               app_secret,
+               app_description,
                create_time,
                update_time,
                del_flag,
                status
-        from crm_merchant_product
-        where del_flag = 0 and product_id = #{productId}
+        from crm_merchant_app
+        where del_flag = 0 and app_id = #{appId}
+    </select>
+
+    <select id="selectByAppId" resultMap="BaseResultMap">
+        select
+        <include refid="baseColumnList"/>
+        from crm_merchant_app
+        where app_id = #{appId}
+    </select>
+
+
+    <select id="selectByCorpAgentId" resultMap="BaseResultMap">
+        select
+        <include refid="baseColumnList"/>
+        from crm_merchant_app
+        <where>
+            <if test="corpId != null and corpId != ''">
+                corp_id = #{corpId}
+            </if>
+            <if test="agentId != null and agentId != ''">
+                agent_id = #{agentId}
+            </if>
+        </where>
+        order by create_time desc
+        limit 1
     </select>
 
 </mapper>

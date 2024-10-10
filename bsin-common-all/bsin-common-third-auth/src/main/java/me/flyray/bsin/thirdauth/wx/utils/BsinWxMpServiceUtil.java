@@ -17,8 +17,7 @@ public class BsinWxMpServiceUtil {
   private static ConcurrentHashMap<String, WxMpService> concurrentWxServiceHashMap =
       new ConcurrentHashMap();
 
-  public WxMpService getWxMpService(
-      WxMpProperties.MpConfig mpConfig, WxRedisConfig redisConfig) {
+  public WxMpService getWxMpService(WxMpProperties.MpConfig mpConfig, WxRedisConfig redisConfig) {
 
     WxMpService wxService;
     wxService = (WxMpService) concurrentWxServiceHashMap.get(mpConfig.getAppId());
@@ -39,18 +38,19 @@ public class BsinWxMpServiceUtil {
             .map(
                 a -> {
                   WxMpDefaultConfigImpl configStorage;
-//                  if (redisConfig != null) {
-//                    JedisPoolConfig poolConfig = new JedisPoolConfig();
-//                    JedisPool jedisPool =
-//                        new JedisPool(
-//                            poolConfig,
-//                            redisConfig.getHost(),
-//                            redisConfig.getPort(),
-//                            redisConfig.getTimeout(),
-//                            redisConfig.getPassword());
-//                    configStorage =
-//                        new WxMpRedisConfigImpl(new JedisWxRedisOps(jedisPool), a.getAppId());
-//                  } else
+                  //                  if (redisConfig != null) {
+                  //                    JedisPoolConfig poolConfig = new JedisPoolConfig();
+                  //                    JedisPool jedisPool =
+                  //                        new JedisPool(
+                  //                            poolConfig,
+                  //                            redisConfig.getHost(),
+                  //                            redisConfig.getPort(),
+                  //                            redisConfig.getTimeout(),
+                  //                            redisConfig.getPassword());
+                  //                    configStorage =
+                  //                        new WxMpRedisConfigImpl(new JedisWxRedisOps(jedisPool),
+                  // a.getAppId());
+                  //                  } else
                   {
                     configStorage = new WxMpDefaultConfigImpl();
                   }

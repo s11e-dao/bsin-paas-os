@@ -42,8 +42,9 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author bolei
- * @description 针对表【ai_tenant_wxmp】的数据库操作Service实现
+ * @description 针对表【crm_merchant_app】的数据库操作Service实现
  * @createDate 2023-04-25 18:41:19
+ * TODO: 迁移到 merchantAppService 中
  */
 
 @ShenyuDubboService(path = "/tenantWxPlatform", timeout = 6000)

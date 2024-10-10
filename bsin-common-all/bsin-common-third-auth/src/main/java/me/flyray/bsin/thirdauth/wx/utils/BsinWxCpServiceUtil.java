@@ -12,33 +12,33 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class BsinWxCpServiceUtil {
 
-    private static ConcurrentHashMap<String, WxCpService> concurrentWxServiceHashMap = new ConcurrentHashMap();
+  private static ConcurrentHashMap<String, WxCpService> concurrentWxServiceHashMap =
+      new ConcurrentHashMap();
 
-    public WxCpService getWxCpService(WxCpProperties.CpConfig cpConfig) {
+  public WxCpService getWxCpService(WxCpProperties.CpConfig cpConfig) {
 
-        WxCpService wxCpService;
-        wxCpService = (WxCpService) concurrentWxServiceHashMap.get(cpConfig.getCorpId() + cpConfig.getAgentId());
+    WxCpService wxCpService;
+    wxCpService =
+        (WxCpService) concurrentWxServiceHashMap.get(cpConfig.getCorpId() + cpConfig.getAgentId());
 
-        if (null != wxCpService) {
-            return wxCpService;
-        }
-
-        final List<WxCpProperties.CpConfig> configs = new ArrayList<>();
-        configs.add(cpConfig);
-        if (configs == null) {
-            throw new RuntimeException("配资文件未生效！");
-        }
-        boolean isUseRedis = false;
-        wxCpService = new WxCpServiceImpl();
-        WxCpDefaultConfigImpl configStorage = new WxCpDefaultConfigImpl();
-        configStorage.setAgentId(cpConfig.getAgentId());
-        configStorage.setCorpId(cpConfig.getCorpId());
-        configStorage.setToken(cpConfig.getToken());
-        configStorage.setAesKey(cpConfig.getAesKey());
-        wxCpService.setWxCpConfigStorage(configStorage);
-        concurrentWxServiceHashMap.put(cpConfig.getCorpId() + cpConfig.getAgentId(), wxCpService);
-        return wxCpService;
+    if (null != wxCpService) {
+      return wxCpService;
     }
 
-
+    final List<WxCpProperties.CpConfig> configs = new ArrayList<>();
+    configs.add(cpConfig);
+    if (configs == null) {
+      throw new RuntimeException("配资文件未生效！");
+    }
+    boolean isUseRedis = false;
+    wxCpService = new WxCpServiceImpl();
+    WxCpDefaultConfigImpl configStorage = new WxCpDefaultConfigImpl();
+    configStorage.setAgentId(cpConfig.getAgentId());
+    configStorage.setCorpId(cpConfig.getCorpId());
+    configStorage.setToken(cpConfig.getToken());
+    configStorage.setAesKey(cpConfig.getAesKey());
+    wxCpService.setWxCpConfigStorage(configStorage);
+    concurrentWxServiceHashMap.put(cpConfig.getCorpId() + cpConfig.getAgentId(), wxCpService);
+    return wxCpService;
+  }
 }
