@@ -140,7 +140,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
 
   // 操作行数据 自定义操作行
   const actionRender: any = (text: any, record: any, index: number) => (
-    <ul className="ant-list-item-action" style={{ margin: 0 }}>
+    <ul className="ant-list-item-action" style={{ margin: 0, display: 'flex', justifyContent: "space-around" }}>
       <li>
         <a
           onClick={() => {
@@ -590,10 +590,9 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
             />
             <Button
               style={{ marginTop: 16 }}
-              type="primary"
-              onClick={openConfigModel}
+              type="dashed"
             >
-              配置
+              国库资金
             </Button>
           </Card>
         </Col>
@@ -787,6 +786,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
       {/* 配置数字积分参数模态框 */}
       <Modal
         title="数字积分配置"
+        width={800}
         centered
         open={isViewConfigModel}
         onOk={confirmlConfig}
@@ -795,9 +795,9 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
         <Form
           name="basic"
           form={FormRef}
-          style={{ maxWidth: 700 }}
+          style={{ minWidth: 600 }}
           labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
+          wrapperCol={{ span: 14 }}
           // 表单默认值
           initialValues={{
             serialNo: isViewTokenParamRecord?.serialNo,
@@ -1039,7 +1039,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
         title="查看数字资产Item详情"
         width={800}
         centered
-        visible={isViewAssetsItemModal}
+        open={isViewAssetsItemModal}
         onOk={() => setIsViewAssetsItemModal(false)}
         onCancel={() => setIsViewAssetsItemModal(false)}
       >
@@ -1088,7 +1088,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
         title="查看交易详情"
         width={800}
         centered
-        visible={isViewTradingModal}
+        open={isViewTradingModal}
         onOk={() => setIsViewTradingModal(false)}
         onCancel={() => setIsViewTradingModal(false)}
       >

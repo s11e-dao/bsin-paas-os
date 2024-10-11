@@ -142,7 +142,7 @@ const columnsData: ProColumns<columnsDataType>[] =  [
   },
   {
     title: '资产集合名称',
-    width: 110,
+    width: 120,
     dataIndex: 'name',
     hideInSearch: true,
   },
@@ -160,7 +160,7 @@ const columnsData: ProColumns<columnsDataType>[] =  [
   },
   {
     title: '库存',
-    width: 80,
+    width: 180,
     dataIndex: 'inventory',
     hideInSearch: true,
   },
@@ -235,7 +235,7 @@ const columnsData: ProColumns<columnsDataType>[] =  [
   },
   {
     title: '操作',
-    width: 170,
+    width: 190,
     hideInSearch: true,
     dataIndex: 'action',
     fixed: 'right',
