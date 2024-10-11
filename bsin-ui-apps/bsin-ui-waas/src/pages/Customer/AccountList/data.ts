@@ -17,7 +17,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   // 配置搜索框
   {
     title: '客户号',
-    dataIndex: 'customerNo',
+    dataIndex: 'bizRoleTypeNo',
     hideInTable: true,
   },
   {
@@ -72,7 +72,13 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '客户号',
     width: 190,
-    dataIndex: 'customerNo',
+    dataIndex: 'bizRoleTypeNo',
+    hideInSearch: true,
+  },
+  {
+    title: '账户号',
+    width: 190,
+    dataIndex: 'serialNo',
     hideInSearch: true,
   },
   {

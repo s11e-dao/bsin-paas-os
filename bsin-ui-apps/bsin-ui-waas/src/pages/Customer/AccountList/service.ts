@@ -49,3 +49,16 @@ export const getCustomerAccountDetail = (params) => {
     },
   });
 };
+
+// 创建客户账户
+export const rechargeAccount = (params) => {
+  return request(crmPath + '/account/recharge', {
+    serviceName: 'AccountService',
+    methodName: 'recharge',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+

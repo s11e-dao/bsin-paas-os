@@ -17,6 +17,7 @@ import columnsData, { columnsDataType } from './data';
 import {
   getCustomerAccountPageList,
   addCustomerAccount,
+  rechargeAccount,
   deleteCustomerAccount,
   getCustomerAccountDetail,
 } from './service';
@@ -80,7 +81,7 @@ export default () => {
   };
 
   /**
-   * 确认添加模板
+   * 账户充值
    */
   const confirmAccount = () => {
     // 获取输入的表单值
@@ -89,9 +90,9 @@ export default () => {
         // 获取表单结果
         let response = FormRef.getFieldsValue();
         console.log(response);
-        addCustomerAccount(response).then((res) => {
-          console.log('add', res);
-          if (res.code === '000000') {
+        rechargeAccount(response).then((res) => {
+          console.log('rechargeAccount', res);
+          if (res.code === 0) {
             // 重置输入的表单
             FormRef.resetFields();
             // 刷新proTable
