@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import me.flyray.bsin.domain.entity.MerchantSubscribeJournal;
+import me.flyray.bsin.domain.entity.BizRoleSubscribeJournal;
 
 /**
 * @author bolei
@@ -16,7 +16,7 @@ import me.flyray.bsin.domain.entity.MerchantSubscribeJournal;
 
 @Mapper
 @Repository
-public interface MerchantSubscribeJournalMapper extends BaseMapper<MerchantSubscribeJournal> {
+public interface MerchantSubscribeJournalMapper extends BaseMapper<BizRoleSubscribeJournal> {
 
 }
 

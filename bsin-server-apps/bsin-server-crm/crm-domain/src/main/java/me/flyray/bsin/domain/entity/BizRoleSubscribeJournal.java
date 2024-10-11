@@ -11,12 +11,12 @@ import lombok.Data;
 
 /**
  * 
- * @TableName market_merchant_subscribe_journal
+ * @TableName 租户和或商户订阅系统应用或功能
  */
 
 @Data
-@TableName(value ="crm_merchant_subscribe_journal")
-public class MerchantSubscribeJournal implements Serializable {
+@TableName(value ="crm_biz_role_subscribe_journal")
+public class BizRoleSubscribeJournal implements Serializable {
     /**
      * 
      */

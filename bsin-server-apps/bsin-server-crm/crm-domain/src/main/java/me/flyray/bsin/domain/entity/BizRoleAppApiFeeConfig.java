@@ -8,8 +8,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@TableName(value ="crm_merchant_app_api_fee")
-public class MerchantApiFeeConfig implements Serializable {
+@TableName(value ="crm_biz_role_app_api_fee")
+public class BizRoleAppApiFeeConfig implements Serializable {
 
     /**
      * 序号

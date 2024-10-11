@@ -69,13 +69,13 @@ export default function () {
     });
     console.log("-------------")
     console.log(res)
-    if (res) {
+    if (res?.code == 0) {
       setLocalStorageInfo('userInfo', res.data?.sysUser);
       setSessionStorageInfo('token', { token: res.data?.token });
       message.success('登录成功！');
+      setLoadings(false)
+      history.push("/home")
     }
-    setLoadings(false)
-    history.push("/home")
   }
   const [bizRoleType, setBizRoleType] = useState('2');
 
@@ -114,9 +114,9 @@ export default function () {
       }
       setSessionStorageInfo('token', { token: res.data?.token });
       message.success('登录成功！');
+      setLoadings(false)
+      history.push("/home")
     }
-    setLoadings(false)
-    history.push("/home")
   }
 
   // 切换登录页面

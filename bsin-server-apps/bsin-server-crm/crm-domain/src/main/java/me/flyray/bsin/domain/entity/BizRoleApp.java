@@ -11,9 +11,12 @@ import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
 
+/**
+ * 系统接入的产品应用信息表：平台和商户接入的应用
+ */
 @Data
-@TableName(value ="crm_merchant_app")
-public class MerchantApp implements Serializable {
+@TableName(value ="crm_biz_role_app")
+public class BizRoleApp implements Serializable {
 
     /**
      * 序号

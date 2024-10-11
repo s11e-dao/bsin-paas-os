@@ -6,9 +6,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.MerchantApp;
-import me.flyray.bsin.facade.service.MerchantAppService;
-import me.flyray.bsin.infrastructure.mapper.MerchantAppMapper;
+import me.flyray.bsin.domain.entity.BizRoleApp;
+import me.flyray.bsin.facade.service.BizRoleAppService;
+import me.flyray.bsin.infrastructure.mapper.BizRoleAppMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
@@ -28,10 +28,10 @@ import java.util.Map;
 @ShenyuDubboService(path = "/merchantApp", timeout = 6000)
 @ApiModule(value = "merchantApp")
 @Service
-public class MerchantAppServiceImpl implements MerchantAppService {
+public class BizRoleAppServiceImpl implements BizRoleAppService {
 
     @Autowired
-    private MerchantAppMapper merchantAppMapper;
+    private BizRoleAppMapper merchantAppMapper;
 
     /**
      * 添加
@@ -44,7 +44,7 @@ public class MerchantAppServiceImpl implements MerchantAppService {
     public void add(Map<String, Object> requestMap) {
         String tenantId = LoginInfoContextHelper.getTenantId();
         String merchantNo = LoginInfoContextHelper.getMerchantNo();
-        MerchantApp merchantApp = BsinServiceContext.getReqBodyDto(MerchantApp.class, requestMap);
+        BizRoleApp merchantApp = BsinServiceContext.getReqBodyDto(BizRoleApp.class, requestMap);
         merchantApp.setSerialNo(BsinSnowflake.getId());
         String appId = BsinSnowflake.getId();
         merchantApp.setTenantId(tenantId);
@@ -72,7 +72,7 @@ public class MerchantAppServiceImpl implements MerchantAppService {
     @ShenyuDubboClient("/delete")
     @Override
     public void delete(Map<String, Object> requestMap) {
-        MerchantApp merchantApp = BsinServiceContext.bisId(MerchantApp.class, requestMap);
+        BizRoleApp merchantApp = BsinServiceContext.bisId(BizRoleApp.class, requestMap);
         merchantAppMapper.deleteById(merchantApp.getSerialNo());
     }
 
@@ -85,7 +85,7 @@ public class MerchantAppServiceImpl implements MerchantAppService {
     @ShenyuDubboClient("/edit")
     @Override
     public void edit(Map<String, Object> requestMap) {
-        MerchantApp merchantApp = BsinServiceContext.bisId(MerchantApp.class, requestMap);
+        BizRoleApp merchantApp = BsinServiceContext.bisId(BizRoleApp.class, requestMap);
         String serialNo = (String) requestMap.get("serialNo");
         merchantApp.setAppId(serialNo);
         merchantAppMapper.updateById(merchantApp);
@@ -99,14 +99,14 @@ public class MerchantAppServiceImpl implements MerchantAppService {
     @ApiDoc(desc = "getDetail")
     @ShenyuDubboClient("/getDetail")
     @Override
-    public MerchantApp getDetail(Map<String, Object> requestMap) {
+    public BizRoleApp getDetail(Map<String, Object> requestMap) {
         String tenantId = LoginInfoContextHelper.getTenantId();
         // 从当前token中获取appId
         String serialNo = (String) requestMap.get("serialNo");
-        MerchantApp merchantApp = new MerchantApp();
+        BizRoleApp merchantApp = new BizRoleApp();
         merchantApp.setTenantId(tenantId);
         merchantApp.setAppId(serialNo);
-        MerchantApp tenantAppResult = merchantAppMapper.getAppInfo(merchantApp);
+        BizRoleApp tenantAppResult = merchantAppMapper.getAppInfo(merchantApp);
         return tenantAppResult;
     }
 
@@ -125,13 +125,13 @@ public class MerchantAppServiceImpl implements MerchantAppService {
         Object paginationObj =  requestMap.get("pagination");
         Pagination pagination = new Pagination();
         BeanUtil.copyProperties(paginationObj,pagination);
-        Page<MerchantApp> page = new Page<>(pagination.getPageNum(),pagination.getPageSize());
-        LambdaUpdateWrapper<MerchantApp> warapper = new LambdaUpdateWrapper<>();
-        warapper.orderByDesc(MerchantApp::getCreateTime);
-        warapper.eq(MerchantApp::getTenantId, tenantId);
-        warapper.eq(MerchantApp::getMerchantNo, merchantNo);
-        warapper.eq(StringUtils.isNotEmpty(appName), MerchantApp::getAppName, appName);
-        IPage<MerchantApp> pageList = merchantAppMapper.selectPage(page,warapper);
+        Page<BizRoleApp> page = new Page<>(pagination.getPageNum(),pagination.getPageSize());
+        LambdaUpdateWrapper<BizRoleApp> warapper = new LambdaUpdateWrapper<>();
+        warapper.orderByDesc(BizRoleApp::getCreateTime);
+        warapper.eq(BizRoleApp::getTenantId, tenantId);
+        warapper.eq(BizRoleApp::getMerchantNo, merchantNo);
+        warapper.eq(StringUtils.isNotEmpty(appName), BizRoleApp::getAppName, appName);
+        IPage<BizRoleApp> pageList = merchantAppMapper.selectPage(page,warapper);
         return pageList;
     }
 

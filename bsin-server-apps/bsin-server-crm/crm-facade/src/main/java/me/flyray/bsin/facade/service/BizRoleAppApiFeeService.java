@@ -1,12 +1,12 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import me.flyray.bsin.domain.entity.MerchantApiFeeConfig;
+import me.flyray.bsin.domain.entity.BizRoleAppApiFeeConfig;
 
 import java.util.List;
 import java.util.Map;
 
-public interface MerchantAppApiFeeService {
+public interface BizRoleAppApiFeeService {
 
     /**
      * 修改费用配置
@@ -16,7 +16,7 @@ public interface MerchantAppApiFeeService {
     /**
      * 查询费用配置
      */
-    public MerchantApiFeeConfig getApiFeeConfigInfo(Map<String, Object> requestMap);
+    public BizRoleAppApiFeeConfig getApiFeeConfigInfo(Map<String, Object> requestMap);
 
     /**
      * 分页查询费用配置

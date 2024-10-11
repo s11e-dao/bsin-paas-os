@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.Map;
 
-public interface MerchantApiConsumingRecordService {
+public interface BizRoleAppApiJournalService {
 
     /**
      * api消费

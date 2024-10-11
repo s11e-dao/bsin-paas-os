@@ -8,12 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.CustomerBase;
-import me.flyray.bsin.domain.entity.MerchantApiConsumingRecord;
-import me.flyray.bsin.domain.entity.MerchantApiFeeConfig;
+import me.flyray.bsin.domain.entity.BizRoleAppApiJournal;
+import me.flyray.bsin.domain.entity.BizRoleAppApiFeeConfig;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.MerchantApiConsumingRecordService;
-import me.flyray.bsin.infrastructure.mapper.MerchantApiConsumingRecordMapper;
-import me.flyray.bsin.infrastructure.mapper.MerchantApiFeeConfigMapper;
+import me.flyray.bsin.facade.service.BizRoleAppApiJournalService;
+import me.flyray.bsin.infrastructure.mapper.BizRoleApiConsumingRecordMapper;
+import me.flyray.bsin.infrastructure.mapper.BizRoleAppApiFeeConfigMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
@@ -33,12 +33,12 @@ import java.util.Map;
 @ShenyuDubboService(path = "/merchantApiConsumingRecord", timeout = 6000)
 @ApiModule(value = "merchantApiConsumingRecord")
 @Service
-public class MerchantApiConsumingRecordServiceImpl implements MerchantApiConsumingRecordService {
+public class BizRoleAppApiJournalImpl implements BizRoleAppApiJournalService {
 
     @Autowired
-    private MerchantApiConsumingRecordMapper tenantApiConsumingRecordMapper;
+    private BizRoleApiConsumingRecordMapper tenantApiConsumingRecordMapper;
     @Autowired
-    private MerchantApiFeeConfigMapper tenantApiFeeConfigMapper;
+    private BizRoleAppApiFeeConfigMapper tenantApiFeeConfigMapper;
 
 
     /**
@@ -53,9 +53,9 @@ public class MerchantApiConsumingRecordServiceImpl implements MerchantApiConsumi
     @Override
     public void apiConsuming(Map<String, Object> requestMap) {
         // 添加消费记录
-        MerchantApiConsumingRecord tenantApiConsumingRecord =
-                BsinServiceContext.getReqBodyDto(MerchantApiConsumingRecord.class, requestMap);
-        MerchantApiFeeConfig tenantApiFeeConfig = tenantApiFeeConfigMapper.getTenantApiFeeConfig(tenantApiConsumingRecord
+        BizRoleAppApiJournal tenantApiConsumingRecord =
+                BsinServiceContext.getReqBodyDto(BizRoleAppApiJournal.class, requestMap);
+        BizRoleAppApiFeeConfig tenantApiFeeConfig = tenantApiFeeConfigMapper.getTenantApiFeeConfig(tenantApiConsumingRecord
                 .getAppId(), tenantApiConsumingRecord.getTenantId());
         if (tenantApiFeeConfig == null){
             throw new BusinessException(ResponseCode.APP_NOT_FEE_CONFIG);
@@ -94,17 +94,17 @@ public class MerchantApiConsumingRecordServiceImpl implements MerchantApiConsumi
         Object paginationObj =  requestMap.get("pagination");
         Pagination pagination = new Pagination();
         BeanUtil.copyProperties(paginationObj,pagination);
-        Page<MerchantApiConsumingRecord> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-        LambdaQueryWrapper<MerchantApiConsumingRecord> warapper = new LambdaQueryWrapper<>();
-        warapper.orderByDesc(MerchantApiConsumingRecord::getCreateTime);
-        warapper.eq(MerchantApiConsumingRecord::getTenantId, loginUser.getTenantId());
+        Page<BizRoleAppApiJournal> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+        LambdaQueryWrapper<BizRoleAppApiJournal> warapper = new LambdaQueryWrapper<>();
+        warapper.orderByDesc(BizRoleAppApiJournal::getCreateTime);
+        warapper.eq(BizRoleAppApiJournal::getTenantId, loginUser.getTenantId());
         warapper.eq(StringUtils.isNotEmpty(appId),
-                MerchantApiConsumingRecord::getAppId, appId);
+                BizRoleAppApiJournal::getAppId, appId);
         warapper.eq(StringUtils.isNotEmpty(apiName),
-                MerchantApiConsumingRecord::getApiName, apiName);
+                BizRoleAppApiJournal::getApiName, apiName);
         warapper.eq(StringUtils.isNotEmpty(customerNo),
-                MerchantApiConsumingRecord::getCustomerNo, customerNo);
-        IPage<MerchantApiConsumingRecord> pageList = tenantApiConsumingRecordMapper.selectPage(page, warapper);
+                BizRoleAppApiJournal::getCustomerNo, customerNo);
+        IPage<BizRoleAppApiJournal> pageList = tenantApiConsumingRecordMapper.selectPage(page, warapper);
         return pageList;
     }
 

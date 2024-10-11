@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.Merchant;
-import me.flyray.bsin.domain.entity.MerchantSubscribeJournal;
+import me.flyray.bsin.domain.entity.BizRoleSubscribeJournal;
 import me.flyray.bsin.domain.entity.SysUser;
 import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.domain.request.WalletDTO;
@@ -258,7 +258,7 @@ public class MerchantServiceImpl implements MerchantService {
         // 功能授权
         userService.authMerchantFunction(requestMap);
         for (String appFunctionId : appFunctionIds) {
-            MerchantSubscribeJournal merchantSubscribeJournal = new MerchantSubscribeJournal();
+            BizRoleSubscribeJournal merchantSubscribeJournal = new BizRoleSubscribeJournal();
             merchantSubscribeJournal.setMerchantNo(merchantNo);
             merchantSubscribeJournal.setAppId(appId);
             merchantSubscribeJournal.setAppFunctionId(appFunctionId);

@@ -1,7 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import me.flyray.bsin.domain.entity.MerchantApp;
+import me.flyray.bsin.domain.entity.BizRoleApp;
 
 import java.util.Map;
 
@@ -10,7 +10,7 @@ import java.util.Map;
  * 商户通过appId和appKey访问网络服务
  */
 
-public interface MerchantAppService {
+public interface BizRoleAppService {
 
     /**
      * 添加
@@ -27,7 +27,7 @@ public interface MerchantAppService {
      */
     public void edit(Map<String, Object> requestMap);
 
-    MerchantApp getDetail(Map<String, Object> requestMap);
+    BizRoleApp getDetail(Map<String, Object> requestMap);
 
     /**
      * 分页查询

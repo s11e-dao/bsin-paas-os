@@ -21,7 +21,6 @@ import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
-import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.CustomerBase;
 import me.flyray.bsin.enums.WxPlatformType;
 // import me.flyray.bsin.server.biz.WxMpClickHandlerBiz;
@@ -29,29 +28,20 @@ import me.flyray.bsin.enums.WxPlatformType;
 // import me.flyray.bsin.server.biz.WxMpSubscribeHandlerBiz;
 // import me.flyray.bsin.server.biz.WxMpViewHandlerBiz;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.infrastructure.mapper.MerchantAppMapper;
+import me.flyray.bsin.infrastructure.mapper.BizRoleAppMapper;
 import me.flyray.bsin.server.biz.CustomerBiz;
 import me.flyray.bsin.thirdauth.wx.utils.*;
-import me.flyray.bsin.domain.entity.MerchantApp;
-import me.flyray.bsin.infrastructure.mapper.WxPlatformMapper;
+import me.flyray.bsin.domain.entity.BizRoleApp;
 
 import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import me.flyray.bsin.utils.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
-import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
 import java.util.Objects;
-
-import static me.chanjar.weixin.common.api.WxConsts.EventType.*;
-import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType.EVENT;
-import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType.TEXT;
 
 /**
  * @author <a href="https://github.com/binarywang">Binary Wang</a>
@@ -71,7 +61,7 @@ public class WxPortalController {
 
   @Autowired private CustomerBiz customerBiz;
 
-  @Autowired private MerchantAppMapper merchantAppMapper;
+  @Autowired private BizRoleAppMapper merchantAppMapper;
 
   @Value("${bsin.crm.aesKey}")
   private String aesKey;
@@ -110,7 +100,7 @@ public class WxPortalController {
     if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
       throw new IllegalArgumentException("请求参数非法，请核实!");
     }
-    MerchantApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
+    BizRoleApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
     if (merchantWxApp == null) {
       return "未找到微信平台配置信息";
     }
@@ -154,7 +144,7 @@ public class WxPortalController {
    */
   public CustomerBase authorizedLogin(String appid, String code)
       throws UnsupportedEncodingException {
-    MerchantApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
+    BizRoleApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
     if (merchantWxApp == null) {
       throw new BusinessException("100000", "未找到对应appid");
     }
@@ -204,7 +194,7 @@ public class WxPortalController {
    */
   public String bindingPhoneNumber(String openId, String appid, String encryptedData, String iv) {
     String phone = null;
-    MerchantApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
+    BizRoleApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
     if (merchantWxApp == null) {
       throw new BusinessException("100000", "未找到对应appid");
     }
@@ -265,7 +255,7 @@ public class WxPortalController {
 
     String out = null;
 
-    MerchantApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
+    BizRoleApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
     if (merchantWxApp == null) {
       throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
     }
@@ -499,7 +489,7 @@ public class WxPortalController {
     if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
       throw new IllegalArgumentException("请求参数非法，请核实!");
     }
-    MerchantApp merchantWxApp = merchantAppMapper.selectByCorpAgentId(corpId, agentId.toString());
+    BizRoleApp merchantWxApp = merchantAppMapper.selectByCorpAgentId(corpId, agentId.toString());
     if (StringUtils.equals(merchantWxApp.getWxType(), WxPlatformType.CP.getType())) {
       log.debug("微信企业号|企业微信请求验证");
       WxCpProperties.CpConfig config = new WxCpProperties.CpConfig();
@@ -545,7 +535,7 @@ public class WxPortalController {
         timestamp,
         nonce,
         requestBody);
-    MerchantApp merchantWxApp = merchantAppMapper.selectByAppId(corpId + agentId.toString());
+    BizRoleApp merchantWxApp = merchantAppMapper.selectByAppId(corpId + agentId.toString());
     WxCpProperties.CpConfig config = new WxCpProperties.CpConfig();
     config.setAesKey(merchantWxApp.getAesKey());
     config.setCorpId(corpId);
@@ -579,7 +569,7 @@ public class WxPortalController {
     return null;
   }
 
-  private WxService getWxService(MerchantApp merchantWxApp) {
+  private WxService getWxService(BizRoleApp merchantWxApp) {
     WxService wxService = null;
     if (StringUtils.equals(merchantWxApp.getWxType(), WxPlatformType.MP.getType())) {
       log.info("微信公众号应用");
