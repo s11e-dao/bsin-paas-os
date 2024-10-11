@@ -269,14 +269,14 @@ export default () => {
           </Form.Item>
           <Form.Item
             label="账户号"
-            name="name"
+            name="accountNo"
             rules={[{ required: true, message: '请输入账户号!' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             label="金额"
-            name="name"
+            name="amount"
             rules={[{ required: true, message: '请输入金额!' }]}
           >
             <Input />
