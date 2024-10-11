@@ -68,8 +68,7 @@ import logoImg from '../assets/logo.png'
 
 import './index.less'
 
-import { getAppByUserId, getAppListByUserId } from '@/services/getAppByUserId'
-import { getPublishApps } from '@/services/getPublishApps'
+import { getAppListByUserId } from '@/services/getAppByUserId'
 import { getUserMenuTreeByAppCode } from '@/services/appMenu'
 
 import customMenuDate from './customMenu'

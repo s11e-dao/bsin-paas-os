@@ -6,6 +6,7 @@ export default {
     dataField: '', //空为拿到后端的原始数据
   },
   define: {
+    'process.env.title': 'Bsin-Paas',
     // 后台访问地址
     'process.env.baseUrl': 'http://127.0.0.1:9195',
     //'process.env.baseUrl': 'http://api.s11edao.com/gateway',
