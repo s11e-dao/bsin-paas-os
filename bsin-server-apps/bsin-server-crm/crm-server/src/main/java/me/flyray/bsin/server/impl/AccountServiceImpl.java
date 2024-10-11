@@ -218,6 +218,27 @@ public class AccountServiceImpl implements AccountService {
     return null;
   }
 
+  @ShenyuDubboClient("/refund")
+  @ApiDoc(desc = "refund")
+  @Override
+  public Map<String, Object> refund(Map<String, Object> requestMap) {
+    return null;
+  }
+
+  @ShenyuDubboClient("/recharge")
+  @ApiDoc(desc = "recharge")
+  @Override
+  public Map<String, Object> recharge(Map<String, Object> requestMap) {
+    return null;
+  }
+
+  @ShenyuDubboClient("/withdraw")
+  @ApiDoc(desc = "withdraw")
+  @Override
+  public Map<String, Object> withdraw(Map<String, Object> requestMap) {
+    return null;
+  }
+
   /**
    * 查询客户的账户账户详情
    *

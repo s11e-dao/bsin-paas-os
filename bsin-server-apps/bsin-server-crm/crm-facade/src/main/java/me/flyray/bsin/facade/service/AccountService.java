@@ -41,6 +41,15 @@ public interface AccountService {
   /** 电子钱包支付 */
   public Map<String, Object> pay(Map<String, Object> requestMap);
 
+  /** 电子钱包退款 */
+  public Map<String, Object> refund(Map<String, Object> requestMap);
+
+  /** 电子钱包充值 */
+  public Map<String, Object> recharge(Map<String, Object> requestMap);
+
+  /** 电子钱包提现 */
+  public Map<String, Object> withdraw(Map<String, Object> requestMap);
+
   /** 查询账户详细 */
   public Account getDetail(Map<String, Object> requestMap);
 
