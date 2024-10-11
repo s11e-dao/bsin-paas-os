@@ -2,7 +2,7 @@ import type { RequestConfig } from 'umi';
 import { notification } from 'antd';
 import { getSessionStorageInfo, getLocalStorageInfo } from '@/utils/localStorageInfo';
 // 判断子应用运行环境
-import "./public-path.js";
+import "./public-path";
 
 // src/app.ts
 export const qiankun = {

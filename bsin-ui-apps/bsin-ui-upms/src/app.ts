@@ -1,7 +1,7 @@
 import type { RequestConfig } from 'umi';
 import { notification } from 'antd';
 import { getSessionStorageInfo, getLocalStorageInfo } from '@/utils/localStorageInfo';
-
+import "./public-path";
 // src/app.ts
 export const qiankun = {
     // 应用加载之前

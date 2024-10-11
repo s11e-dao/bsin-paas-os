@@ -12,6 +12,11 @@ const routes = [
         path: '/home',
         component: '@/pages/Home/index',
       },
+      {
+        name: '非基座运行',
+        path: '/uncontainer',
+        component: '@/pages/uncontainer'
+      },
       // LLM模型
       {
         path: '/ai-llm',

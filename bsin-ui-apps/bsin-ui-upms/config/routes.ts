@@ -14,6 +14,11 @@ const routes = [
         component: '@/pages/Home/index',
       },
       {
+        name: '非基座运行',
+        path: '/uncontainer',
+        component: '@/pages/uncontainer'
+      },
+      {
         name: '应用管理',
         path: '/application-management',
         component: '@/pages/ApplicationManagement/index',
@@ -72,7 +77,7 @@ const routes = [
         name: '用户中心',
         path: '/userCenter',
         component: '@/pages/UserCenter/index',
-      },
+      }
     ]
   }
 
