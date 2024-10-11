@@ -54,12 +54,6 @@ public class CustomerBase implements Serializable {
     private String sessionKey;
 
     /**
-     * 微信平台：登录用户与微信平台唯一标识
-     */
-    private String openId;
-
-
-    /**
      * 身份证号
      */
     private String idNumber;

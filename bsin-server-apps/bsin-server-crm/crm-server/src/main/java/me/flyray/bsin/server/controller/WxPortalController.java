@@ -175,8 +175,9 @@ public class WxPortalController {
       // 根据openId查询 crm_customer_base 表, 如果不存在，初始化wx_user,并保存到数据库中, 如果存在，更新最后登录时间
       CustomerBase customerBase = customerBiz.getCustomerByOpenId(openId);
       if (customerBase == null) {
+        customerBase.setAuthMethod("3");
         customerBase.setSessionKey(sessionKey);
-        customerBase.setOpenId(openId);
+        customerBase.setCredential(openId);
         customerBiz.register(customerBase);
       }
       return customerBase;

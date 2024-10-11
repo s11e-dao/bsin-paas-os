@@ -62,7 +62,7 @@ public class CustomerBiz {
   public CustomerBase getCustomerByOpenId(String openId) {
     // 客户用户名唯一，查询客户信息
     LambdaQueryWrapper<CustomerBase> warapper = new LambdaQueryWrapper<>();
-    warapper.eq(CustomerBase::getOpenId, openId);
+    warapper.eq(CustomerBase::getCredential, openId);
     return customerBaseMapper.selectOne(warapper);
   }
 

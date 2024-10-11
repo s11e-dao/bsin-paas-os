@@ -233,7 +233,7 @@ public class CustomerServiceImpl implements CustomerService {
       throw new BusinessException("100000", "customerBase is null");
     }
     Map data = new HashMap<>();
-    data.put("openId", customerBase.getOpenId());
+    data.put("openId", customerBase.getCredential());
     data.put("sessionKey", customerBase.getSessionKey());
     return data;
   }
