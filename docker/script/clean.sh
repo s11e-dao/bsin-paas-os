@@ -3,7 +3,7 @@
 # 删除jar文件
 echo "1.start remove *.jar"
 # apps
-rm -f ./bsin-paas-os/server-apps/aiAgent/jar/aiAgent-server-2.0.0-SNAPSHOT.jar
+rm -f ./bsin-paas-os/server-apps/ai-agent/jar/ai-agent-server-2.0.0-SNAPSHOT.jar
 rm -f ./bsin-paas-os/server-apps/brms/jar/brms-server-2.0.0-SNAPSHOT.jar
 rm -f ./bsin-paas-os/server-apps/crm/jar/crm-server-2.0.0-SNAPSHOT.jar
 rm -f ./bsin-paas-os/server-apps/http/jar/http-2.0.0-SNAPSHOT.jar

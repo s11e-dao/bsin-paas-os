@@ -6,12 +6,12 @@ MAINTAINER bsin-paas
 LABEL version=2.0.0
 
 # 挂载目录
-VOLUME /home/bsin-paas-os/server-apps/aiAgent
+VOLUME /home/bsin-paas-os/server-apps/ai-agent
 # 创建目录
-RUN mkdir -p /home/bsin-paas-os/server-apps/aiAgent
+RUN mkdir -p /home/bsin-paas-os/server-apps/ai-agent
 # 指定路径
-WORKDIR /home/bsin-paas-os/server-apps/aiAgent
+WORKDIR /home/bsin-paas-os/server-apps/ai-agent
 # 复制jar文件到路径
-COPY ./jar/aiAgent-server-2.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/aiAgent/aiAgent-server-2.0.0-SNAPSHOT.jar
+COPY ./jar/ai-agent-server-2.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/ai-agent/ai-agent-server-2.0.0-SNAPSHOT.jar
 # 启动用户服务
-ENTRYPOINT ["java","-jar","aiAgent-server-2.0.0-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","ai-agent-server-2.0.0-SNAPSHOT.jar"]

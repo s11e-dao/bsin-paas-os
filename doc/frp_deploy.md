@@ -115,7 +115,7 @@ local_port = 9095
 remote_port = 9095
 
 
-[bsin-server-aiAgent]  
+[bsin-server-ai-agent]  
 type = tcp
 local_ip = 127.0.0.1
 # linux远程连接服务端口
@@ -168,7 +168,7 @@ local_port = 8003
 #远程的时候链接的端
 remote_port = 8003
 
-[bsin-ui-aiAgent]  
+[bsin-ui-ai-agent]  
 type = tcp
 local_ip = 127.0.0.1
 # linux远程连接服务端口

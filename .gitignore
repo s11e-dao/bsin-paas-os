@@ -54,14 +54,14 @@ bsin-server-apps/bsin-server-ai/ai-go-wechat/vendor/
 
 bsin-server-apps/bsin-server-ai/logs/
 
-bsin-ui-apps/bsin-ui-aiAgent/dist/
+bsin-ui-apps/bsin-ui-ai-agent/dist/
 
 /bsin-server-env.bak
 .idea.bak/
 
 bsin-ui-apps/bsin-ui-waas/dist/
 
-docker/bsin-paas-os/server-apps/aiAgent/jar/
+docker/bsin-paas-os/server-apps/ai-agent/jar/
 
 docker/bsin-paas-os/server-apps/brms/jar/
 
@@ -79,7 +79,7 @@ docker/bsin-paas-os/server-apps/search/jar/
 
 docker/bsin-paas-os/server-apps/http/jar/
 
-docker/bsin-paas-os/ui-apps/aiAgent/dist/
+docker/bsin-paas-os/ui-apps/ai-agent/dist/
 
 docker/bsin-paas-os/ui-apps/upms/dist/
 

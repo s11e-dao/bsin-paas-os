@@ -5,13 +5,13 @@ FROM nginx
 COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 
 # 创建目录
-RUN mkdir -p /home/bsin-paas-os/ui-apps/aiAgent/dist
+RUN mkdir -p /home/bsin-paas-os/ui-apps/ai-agent/dist
 
 # 挂载目录
-VOLUME /home/bsin-paas-os/ui-apps/aiAgent/dist
+VOLUME /home/bsin-paas-os/ui-apps/ai-agent/dist
 
 # 将前端静态文件复制到Nginx默认的静态文件目录
-COPY ./dist /home/bsin-paas-os/ui-apps/aiAgent/dist
+COPY ./dist /home/bsin-paas-os/ui-apps/ai-agent/dist
 
 
 # 启动Nginx服务

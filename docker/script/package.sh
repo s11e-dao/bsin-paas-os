@@ -6,8 +6,8 @@ echo "1.1. build bsin-apps-container"
 cd ../bsin-apps-container
 yarn build
 
-echo "1.2. build bsin-ui-aiAgent"
-cd ../bsin-ui-apps/bsin-ui-aiAgent
+echo "1.2. build bsin-ui-ai-agent"
+cd ../bsin-ui-apps/bsin-ui-ai-agent
 yarn build
 
 echo "1.3. build bsin-ui-decision-admin"

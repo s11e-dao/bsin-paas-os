@@ -220,13 +220,13 @@ services:
     container_name: bsin-server-ai-agent
     image: bsin-server-ai-agent:2.0.0
     build:
-      context: ./bsin-paas-os/server-apps/aiAgent
+      context: ./bsin-paas-os/server-apps/ai-agent
       dockerfile: dockerfile
     ports:
       - "8084:8084"
     #restart: always
     volumes:
-      - ./bsin-paas-os/server-apps/aiAgent/logs:/home/bsin-paas-os/server-apps/aiAgent/logs
+      - ./bsin-paas-os/server-apps/ai-agent/logs:/home/bsin-paas-os/server-apps/ai-agent/logs
     depends_on:
       - bsin-redis
       - bsin-mysql
@@ -272,16 +272,16 @@ services:
     container_name: bsin-ui-ai-agent
     image: bsin-ui-ai-agent:2.0.0
     build:
-      context: ./bsin-paas-os/ui-apps/aiAgent
+      context: ./bsin-paas-os/ui-apps/ai-agent
       dockerfile: dockerfile
     ports:
       - "8014:80"
 #    expose:
 #      - "80"
     volumes:
-      - ./bsin-paas-os/ui-apps/aiAgent/dist:/home/bsin-paas-os/ui-apps/aiAgent/dist
-      - ./bsin-paas-os/ui-apps/aiAgent/conf/nginx.conf:/etc/nginx/nginx.conf
-      - ./bsin-paas-os/ui-apps/aiAgent/logs:/var/log/nginx
+      - ./bsin-paas-os/ui-apps/ai-agent/dist:/home/bsin-paas-os/ui-apps/ai-agent/dist
+      - ./bsin-paas-os/ui-apps/ai-agent/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./bsin-paas-os/ui-apps/ai-agent/logs:/var/log/nginx
 
   bsin-ui-waas:
     container_name: bsin-ui-waas
