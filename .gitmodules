@@ -4,6 +4,3 @@
 [submodule "bsin-server-apps/bsin-server-waas"]
 	path = bsin-server-apps/bsin-server-waas
 	url = https://gitee.com/s11e-DAO/bsin-server-waas.git
-[submodule "bsin-server-apps/bsin-server-aiAgent"]
-	path = bsin-server-apps/bsin-server-aiAgent
-	url = https://gitee.com/s11e-DAO/bsin-server-aiAgent.git
