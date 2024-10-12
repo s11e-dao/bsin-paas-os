@@ -139,7 +139,7 @@ bsin-paas-os
      ├── bsin-ui-vue -- vue脚手架
      └── bsin-ui-react -- react脚手架
 ```
-- ![代码仓库介绍](./doc/repository.md)
+- [代码仓库介绍](./doc/repository.md)
 
 > 帮助文档
 * http://help.flyray.me

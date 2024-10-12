@@ -15,7 +15,7 @@
 | bsin-server-workflow-admin |  是   | [bsin-server-workflow-admin](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-server-apps/bsin-server-ai-workflow-admin) | Bsin-PaaS 工作流后台管理                                                                  | 9106 |  
 |      bsin-server-waas      |  否   |                                 [bsin-server-waas](https://gitee.com/s11e-DAO/bsin-server-waas)                                  | Bsin-PaaS 火源钱包系统                                                                   | 9107 |  
 |      bsin-server-http      |  是   |            [bsin-server-http](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-server-apps/bsin-server-http)             | Bsin-PaaS http服务                                                                   | 9108 |  
-|     bsin-server-search     |  是   |           [bsin-server-http](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-server-apps/bsin-server-search)            | Bsin-PaaS 搜索引擎服务                                                                   | 9109 |  
+|     bsin-server-search     |  是   |          [bsin-server-search](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-server-apps/bsin-server-search)           | Bsin-PaaS 搜索引擎服务                                                                   | 9109 |  
 
 ## Bsin-PaaS 后台管理前端，app，小程序...仓库
 
@@ -71,13 +71,13 @@
 
 ## 中间件
 
-| 中间件 | 版本 | 地址 | 功能简介 | port |   
-|:---------------:|::|:-------------------------------------------------------------:|:-----------------------|:------------|  
-| mysql | | [mysql](https://gitee.com/s11e-DAO/bisn-server-env) | | 3306 |  
-| redis | |   [redis](https://gitee.com/s11e-DAO/bsin-paas-doc)   | | 6379 |  
-| nacos | 2.4.2.1 |   [redis](https://nacos.io/download/nacos-server/)   | | 8848 |  
-| zookeeper | |   [redis](https://gitee.com/s11e-DAO/bsin-paas-doc)   | | |  
-| seata | |   [redis](https://gitee.com/s11e-DAO/bsin-paas-doc)   | | |  
-| rabbitmq | |   [redis](https://gitee.com/s11e-DAO/bsin-paas-doc)   | | 9876|  
-| milvus | 2.4.5 |   [redis](https://gitee.com/s11e-DAO/bsin-paas-doc)   | 9001 19530 9091 3000|  
-| Elasticsearch | 8.15.0 |   [redis](https://gitee.com/s11e-DAO/bsin-paas-doc)   | | 9200|  
+|      中间件      |   版本    |                         地址                          | 功能简介 | port                 |   
+|:-------------:|:-------:|:---------------------------------------------------:|:-----|:---------------------|  
+|     mysql     |         | [mysql](https://gitee.com/s11e-DAO/bisn-server-env) |      | 3306                 |  
+|     redis     |         |  [redis](https://gitee.com/s11e-DAO/bsin-paas-doc)  |      | 6379                 |  
+|     nacos     | 2.4.2.1 |  [redis](https://nacos.io/download/nacos-server/)   |      | 8848                 |  
+|   zookeeper   |         |  [redis](https://gitee.com/s11e-DAO/bsin-paas-doc)  |      |                      |  
+|     seata     |         |  [redis](https://gitee.com/s11e-DAO/bsin-paas-doc)  |      |                      |  
+|   rabbitmq    |         |  [redis](https://gitee.com/s11e-DAO/bsin-paas-doc)  |      | 9876                 |  
+|    milvus     |  2.4.5  |  [redis](https://gitee.com/s11e-DAO/bsin-paas-doc)  |      | 9001 19530 9091 3000 |  
+| Elasticsearch | 8.15.0  |  [redis](https://gitee.com/s11e-DAO/bsin-paas-doc)  |      | 9200                 |  
