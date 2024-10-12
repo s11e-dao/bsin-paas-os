@@ -20,7 +20,7 @@ export default {
     'process.env.tenantAppType': 'ai', //
     'process.env.webScoketUrl': 'ws://43.200.152.71:8126/websocket',
     // 'process.env.webScoketUrl': 'ws://127.0.0.1:8126/websocket',
-    'process.env.contextPath_aiAgent': '/aiAgent',  // aiAgent应用
+    'process.env.contextPath_aiAgent': '/ai-agent',  // aiAgent应用
   },
   antd: false,
   lessLoader: {

@@ -23,7 +23,7 @@ export default {
     'process.env.defaultMerchantNo': '1737853502828482561',  // 默认商户号
     'process.env.contextPath_upms': '/upms',  // upms应用
     'process.env.contextPath_crm': '/crm',  // crm应用
-    'process.env.contextPath_appAgent': '/aiAgent',  // ai应用
+    'process.env.contextPath_appAgent': '/ai-agent',  // ai应用
     'process.env.contextPath_oms': '/oms',  // oms应用
     
   },

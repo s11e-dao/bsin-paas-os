@@ -1,4 +1,4 @@
-#  bsin-ui-aiAgent
+#  bsin-ui-ai-agent
 
 ## 介绍
 
