@@ -394,14 +394,14 @@ export default () => {
     return layoutMenudata
   }
 
-  // 切换Tab的事件处理函数
+  // 是否展示展开收起图标
   const collapsedButtonRender = (layout) => {
     if (layout == 'side') {
       return false
     }
   }
 
-  // 切换Tab的事件处理函数
+  // 默认展开还是收起
   const collapsed = (layout) => {
     if (layout == 'side') {
       return true
