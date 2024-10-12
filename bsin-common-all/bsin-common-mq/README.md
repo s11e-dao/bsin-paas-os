@@ -14,7 +14,7 @@ bsin-pass 消息队列服务
 
 ```shell
 
-docker run -d --name rocketmq-dashboard -e "JAVA_OPTS=-Drocketmq.namesrv.addr=192.168.198.197:9876" -p 8080:8080 -t apacherocketmq/rocketmq-dashboard:latest
+docker run -d --name rocketmq-dashboard -e "JAVA_OPTS=-Drocketmq.namesrv.addr=localhost:9876" -p 8080:8080 -t apacherocketmq/rocketmq-dashboard:latest
 
 nohup sh mqnamesrv > name.out 2>&1 &
 

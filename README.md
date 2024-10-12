@@ -96,7 +96,7 @@ https://www.bilibili.com/video/BV1VM4y1a7PF/?vd_source=360ae092de70c0b6c577d1d26
 ## 工程介绍
 
 ```
-bsin-paas-all-in-one
+bsin-paas-os
 ├── bsin-paas-dependencies -- 系统全局maven依赖
 ├── bsin-common-all -- 系统公共模块
 |    ├── bsin-common-blockchain -- 区块链工具类
@@ -139,6 +139,7 @@ bsin-paas-all-in-one
      ├── bsin-ui-vue -- vue脚手架
      └── bsin-ui-react -- react脚手架
 ```
+- ![代码仓库介绍](./doc/repository.md)
 
 > 帮助文档
 * http://help.flyray.me

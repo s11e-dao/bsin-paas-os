@@ -85,7 +85,7 @@ sudo docker restart elasticsearch
 
 > 7、测试Elasticsearch是否安装成功
 ```json
-http://192.168.198.197:9200
+http://localhost:9200
 
 ```
 
@@ -124,7 +124,7 @@ server.shutdownTimeout: "5s"
  
 #####----------elasticsearch相关----------#####
 # kibana访问es服务器的URL,就可以有多个，以逗号","隔开
-elasticsearch.hosts: [ "http://192.168.198.197:9200" ]
+elasticsearch.hosts: [ "http://localhost:9200" ]
 monitoring.ui.container.elasticsearch.enabled: true
 
 
@@ -157,7 +157,7 @@ docker restart kibana1
 > 5、访问地址
 
 ```json
-http://192.168.198.197:5601
+http://localhost:5601
 
 ```
 

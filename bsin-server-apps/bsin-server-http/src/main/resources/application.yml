@@ -14,7 +14,7 @@
 # limitations under the License.
 
 server:
-  port: 8189
+  port: 9108
   address: 0.0.0.0
   tomcat:
     max-http-form-post-size: 100MB
@@ -25,7 +25,7 @@ shenyu:
     serverLists: http://localhost:9095 #localhost:2181 #http://localhost:2379 #localhost:8848
     props:
       username: admin
-      password: 123456
+      password: 123456_Aa
   client:
       http:
         props:

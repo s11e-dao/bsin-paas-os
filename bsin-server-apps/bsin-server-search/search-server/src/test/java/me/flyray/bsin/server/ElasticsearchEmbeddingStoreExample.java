@@ -33,7 +33,7 @@ public class ElasticsearchEmbeddingStoreExample {
      * @return
      */
     private static RestClient initClient(){
-        String hostname = "192.168.198.197";
+        String hostname = "localhost";
         int port = 9200;
         String username = "your username";
         String password = "your password";

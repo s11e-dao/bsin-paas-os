@@ -18,7 +18,7 @@ export default {
     'process.env.storeMethod': '6', //  1.IPFS存储：需要同时指定 backup 存储平台  2.aliOSS存储：  4.服务器本地存储：  3.both IPFS and aliOSS:  5.both IPFS and 服务器本地存储
     'process.env.biganH5Url': 'http://localhost:8080/', // biganH5 url local test
     'process.env.tenantAppType': 'ai', //
-    'process.env.webScoketUrl': 'ws://43.200.152.71:8126/websocket',
+    'process.env.webScoketUrl': 'ws://127.0.0.1:8126/websocket',
     // 'process.env.webScoketUrl': 'ws://127.0.0.1:8126/websocket',
     'process.env.contextPath_aiAgent': '/ai-agent',  // aiAgent应用
   },
