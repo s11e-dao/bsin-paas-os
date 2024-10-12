@@ -217,6 +217,11 @@ const routes = [
         path: '/assets/digital-points',
         component: '@/pages/Assets/DigitalPoints/index',
       },
+      // 联合曲线积分
+      {
+        path: '/assets/bonding-curve',
+        component: '@/pages/Assets/BondingCurve/index',
+      },
       // pass card
       {
         path: '/assets/pass-cards',
