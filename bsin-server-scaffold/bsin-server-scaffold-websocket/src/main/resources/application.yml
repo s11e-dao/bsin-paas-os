@@ -14,7 +14,7 @@
 # limitations under the License.
 
 server:
-  port: 8001
+  port: 9205
   address: 0.0.0.0
 
 shenyu:
@@ -23,7 +23,7 @@ shenyu:
     serverLists: http://localhost:9095
     props:
       username: admin
-      password: 123456
+      password: 123456_Aa
   client:
     websocket:
       props:

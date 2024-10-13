@@ -15,12 +15,12 @@ import me.flyray.bsin.domain.entity.BizRoleApp;
 public interface BizRoleAppMapper extends BaseMapper<BizRoleApp> {
 
     List<BizRoleApp> getPageList(@Param("tenantId") String tenantId,
-                                 @Param("productName")String productName,
-                                 @Param("productId")String productId,
-                                 @Param("productSecret")String productSecret
+                                 @Param("appName")String appName,
+                                 @Param("appId")String appId,
+                                 @Param("appSecret")String appSecret
                               );
 
-    BizRoleApp getAppInfo(BizRoleApp merchantApp);
+    BizRoleApp getAppInfo(BizRoleApp bizRoleApp);
 
     BizRoleApp selectByAppId(@Param("appId")String appId);
     BizRoleApp selectByCorpAgentId(String corpId, String agentId);

@@ -25,8 +25,8 @@ import java.util.Map;
 
 
 @Slf4j
-@ShenyuDubboService(path = "/merchantApp", timeout = 6000)
-@ApiModule(value = "merchantApp")
+@ShenyuDubboService(path = "/bizRoleApp", timeout = 6000)
+@ApiModule(value = "bizRoleApp")
 @Service
 public class BizRoleAppServiceImpl implements BizRoleAppService {
 
@@ -44,14 +44,14 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
     public void add(Map<String, Object> requestMap) {
         String tenantId = LoginInfoContextHelper.getTenantId();
         String merchantNo = LoginInfoContextHelper.getMerchantNo();
-        BizRoleApp merchantApp = BsinServiceContext.getReqBodyDto(BizRoleApp.class, requestMap);
-        merchantApp.setSerialNo(BsinSnowflake.getId());
+        BizRoleApp bizRoleApp = BsinServiceContext.getReqBodyDto(BizRoleApp.class, requestMap);
+        bizRoleApp.setSerialNo(BsinSnowflake.getId());
         String appId = BsinSnowflake.getId();
-        merchantApp.setTenantId(tenantId);
-        merchantApp.setMerchantNo(merchantNo);
-        merchantApp.setAppId(appId);
-        merchantApp.setAppSecret(BsinSnowflake.getId());
-        merchantAppMapper.insert(merchantApp);
+        bizRoleApp.setTenantId(tenantId);
+        bizRoleApp.setBizRoleTypeNo(merchantNo);
+        bizRoleApp.setAppId(appId);
+        bizRoleApp.setAppSecret(BsinSnowflake.getId());
+        merchantAppMapper.insert(bizRoleApp);
 //        MerchantApiFeeConfig tenantApiFeeConfig = new MerchantApiFeeConfig();
 //        tenantApiFeeConfig.setTenantId(tenantId);
 //        tenantApiFeeConfig.setProductId(productId);
@@ -72,8 +72,8 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
     @ShenyuDubboClient("/delete")
     @Override
     public void delete(Map<String, Object> requestMap) {
-        BizRoleApp merchantApp = BsinServiceContext.bisId(BizRoleApp.class, requestMap);
-        merchantAppMapper.deleteById(merchantApp.getSerialNo());
+        BizRoleApp bizRoleApp = BsinServiceContext.bisId(BizRoleApp.class, requestMap);
+        merchantAppMapper.deleteById(bizRoleApp.getSerialNo());
     }
 
     /**
@@ -85,10 +85,10 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
     @ShenyuDubboClient("/edit")
     @Override
     public void edit(Map<String, Object> requestMap) {
-        BizRoleApp merchantApp = BsinServiceContext.bisId(BizRoleApp.class, requestMap);
+        BizRoleApp bizRoleApp = BsinServiceContext.bisId(BizRoleApp.class, requestMap);
         String serialNo = (String) requestMap.get("serialNo");
-        merchantApp.setAppId(serialNo);
-        merchantAppMapper.updateById(merchantApp);
+        bizRoleApp.setAppId(serialNo);
+        merchantAppMapper.updateById(bizRoleApp);
     }
 
     /**
@@ -103,10 +103,10 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
         String tenantId = LoginInfoContextHelper.getTenantId();
         // 从当前token中获取appId
         String serialNo = (String) requestMap.get("serialNo");
-        BizRoleApp merchantApp = new BizRoleApp();
-        merchantApp.setTenantId(tenantId);
-        merchantApp.setAppId(serialNo);
-        BizRoleApp tenantAppResult = merchantAppMapper.getAppInfo(merchantApp);
+        BizRoleApp bizRoleApp = new BizRoleApp();
+        bizRoleApp.setTenantId(tenantId);
+        bizRoleApp.setAppId(serialNo);
+        BizRoleApp tenantAppResult = merchantAppMapper.getAppInfo(bizRoleApp);
         return tenantAppResult;
     }
 
@@ -129,7 +129,7 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
         LambdaUpdateWrapper<BizRoleApp> warapper = new LambdaUpdateWrapper<>();
         warapper.orderByDesc(BizRoleApp::getCreateTime);
         warapper.eq(BizRoleApp::getTenantId, tenantId);
-        warapper.eq(BizRoleApp::getMerchantNo, merchantNo);
+        warapper.eq(BizRoleApp::getBizRoleTypeNo, merchantNo);
         warapper.eq(StringUtils.isNotEmpty(appName), BizRoleApp::getAppName, appName);
         IPage<BizRoleApp> pageList = merchantAppMapper.selectPage(page,warapper);
         return pageList;

@@ -104,3 +104,5 @@ docker/bsin-paas-os/targe-gateway-admin/logs/
 docker/bsin-paas-os/apps-container/dist/
 
 docker/bsin-paas-os/ui-apps/decision-admin/dist/
+
+bsin-ui-apps/bsin-ui-decision-admin/dist/

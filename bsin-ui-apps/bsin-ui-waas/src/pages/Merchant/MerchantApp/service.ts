@@ -3,7 +3,7 @@ let crmPath = process.env.contextPath_crm;
 
 // 分页查询
 export const getMerchantProductPageList = (params) => {
-  return request(crmPath + '/merchantApp/getPageList', {
+  return request(crmPath + '/bizRoleApp/getPageList', {
     serviceName: 'MerchantAppService',
     methodName: 'getPageList',
     version: '1.0',
@@ -15,7 +15,7 @@ export const getMerchantProductPageList = (params) => {
 
 // 创建
 export const addMerchantProduct = (params) => {
-  return request(crmPath + '/merchantApp/add', {
+  return request(crmPath + '/bizRoleApp/add', {
     serviceName: 'MerchantAppService',
     methodName: 'add',
     version: '1.0',
@@ -27,7 +27,7 @@ export const addMerchantProduct = (params) => {
 
 // 编辑
 export const editMerchantProduct = (params) => {
-  return request(crmPath + '/merchantApp/edit', {
+  return request(crmPath + '/bizRoleApp/edit', {
     serviceName: 'MerchantAppService',
     methodName: 'edit',
     version: '1.0',
@@ -39,7 +39,7 @@ export const editMerchantProduct = (params) => {
 
 // 删除
 export const deleteMerchantProduct = (params) => {
-  return request(crmPath + '/merchantApp/delete', {
+  return request(crmPath + '/bizRoleApp/delete', {
     serviceName: 'MerchantAppService',
     methodName: 'delete',
     version: '1.0',
@@ -52,7 +52,7 @@ export const deleteMerchantProduct = (params) => {
 // 查询详情
 export const getMerchantProductDetail = (params) => {
   console.log('params', params);
-  return request(crmPath + '/merchantApp/getDetail', {
+  return request(crmPath + '/bizRoleApp/getDetail', {
     serviceName: 'MerchantAppService',
     methodName: 'getDetail',
     version: '1.0',

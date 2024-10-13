@@ -43,7 +43,7 @@ public class CustomerBase implements Serializable {
     private String authMethod;
 
     /**
-     * 凭据，第三方标识
+     * 凭据，第三方标识，微信平台的openId
      */
     private String credential;
 

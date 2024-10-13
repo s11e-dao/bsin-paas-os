@@ -30,9 +30,14 @@ public class BizRoleApp implements Serializable {
     private String tenantId;
 
     /**
+     * 业务角色类型：见枚举
+     */
+    private String bizRoleType;
+
+    /**
      * 商户号
      */
-    private String merchantNo;
+    private String bizRoleTypeNo;
 
     /**
      * 应用名称
@@ -53,15 +58,9 @@ public class BizRoleApp implements Serializable {
     private Integer agentId;
 
     /**
-     * 1: app应用 2：接口 3：小程序
+     * 1: app应用 2：接口 3：小程序 4:mp(公众号服务订阅号) 5:miniapp(小程序) 6:cp(企业号|企业微信) 7:pay(微信支付) 8:open(微信开放平台) 9:wechat(个人微信) 10:menu(菜单模版)
      */
     private String appType;
-
-    /**
-     * 微信平台类别：mp(公众号服务订阅号)、miniapp(小程序)、 cp(企业号|企业微信)、pay(微信支付)、open(微信开放平台) wechat(个人微信) menu(菜单模版)
-     */
-    private String wxType;
-
     /**
      * 应用密钥：自动生成
      */
