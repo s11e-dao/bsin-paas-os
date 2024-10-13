@@ -17,11 +17,11 @@ import ProTable from '@ant-design/pro-table';
 import { PlusOutlined, InboxOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './data';
 import {
-  getMerchantProductPageList,
-  addMerchantProduct,
-  editMerchantProduct,
-  deleteMerchantProduct,
-  getMerchantProductDetail,
+  getBizRoleAppPageList,
+  addBizRoleApp,
+  editBizRoleApp,
+  deleteBizRoleApp,
+  getBizRoleAppDetail,
 } from './service';
 import TableTitle from '../../../components/TableTitle';
 import { hex_md5 } from '@/utils/md5';
@@ -124,7 +124,7 @@ export default () => {
         console.log(reqParam);
 
         if (addModalTitle === '新增') {
-          addMerchantProduct(reqParam).then((res) => {
+          addBizRoleApp(reqParam).then((res) => {
             console.log('add', res);
             if (res.code === '000000') {
               message.success('添加成功');
@@ -139,7 +139,7 @@ export default () => {
           });
         } else {
           reqParam.serialNo = checkItem.serialNo;
-          editMerchantProduct(reqParam).then((res) => {
+          addBizRoleApp(reqParam).then((res) => {
             console.log('add', res);
             if (res.code === '000000') {
               message.success('修改成功');
@@ -181,7 +181,7 @@ export default () => {
   const toDelContractTemplate = async (record) => {
     console.log('record', record);
     let { serialNo } = record;
-    let delRes = await deleteMerchantProduct({ serialNo });
+    let delRes = await deleteBizRoleApp({ serialNo });
     console.log('delRes', delRes);
     if (delRes.code === '000000') {
       // 删除成功刷新表单
@@ -194,7 +194,7 @@ export default () => {
    */
   const toViewContractTemplate = async (record) => {
     let { serialNo } = record;
-    let viewRes = await getMerchantProductDetail({ serialNo });
+    let viewRes = await getBizRoleAppDetail({ serialNo });
     setIsViewTemplateModal(true);
     console.log('viewRes', viewRes);
     setIsViewRecord(record);
@@ -264,7 +264,7 @@ export default () => {
     <div>
       {/* Pro表格 */}
       <ProTable<columnsDataType>
-        headerTitle={<TableTitle title="产品列表" />}
+        headerTitle={<TableTitle title="应用列表" />}
         scroll={{ x: 900 }}
         bordered
         // 表头
@@ -273,7 +273,7 @@ export default () => {
         // 请求获取的数据
         request={async (params) => {
           // console.log(params);
-          let res = await getMerchantProductPageList({
+          let res = await getBizRoleAppPageList({
             ...params,
             // pageNum: params.current,
           });
@@ -323,25 +323,66 @@ export default () => {
           labelCol={{ span: 7 }}
           wrapperCol={{ span: 14 }}
           // 表单默认值
-          initialValues={{ productType: '1' }}
+          initialValues={{ appType: '1' }}
         >
           <Form.Item
-            label="产品名称"
-            name="productName"
-            rules={[{ required: true, message: '请输入产品名称!' }]}
+            label="应用名称"
+            name="appName"
+            rules={[{ required: true, message: '请输入应用名称!' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="产品类型"
-            name="productType"
-            rules={[{ required: true, message: '请输入产品类型!' }]}
+            label="应用类型"
+            name="appType"
+            rules={[{ required: true, message: '请输入应用类型!' }]}
           >
             <Select style={{ width: '100%' }}>
               <Option value="1">应用</Option>
               <Option value="2">接口</Option>
+              <Option value="3">微信公众号</Option>
+              <Option value="4">微信小程序</Option>
+              <Option value="5">企业微信</Option>
+              <Option value="6">微信支付</Option>
+              <Option value="7">微信开放平台</Option>
+              <Option value="8">个人微信</Option>
+              <Option value="9">公众号菜单</Option>
+              <Option value="10">其他</Option>
             </Select>
           </Form.Item>
+
+          <Form.Item
+              label="appId"
+              name="appId"
+              rules={[{ required: true, message: '请输入appId!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+              label="appSecret"
+              name="appSecret"
+              rules={[{ required: true, message: '请输入appSecret!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+              label="toeken"
+              name="toeken"
+              rules={[{ required: true, message: '请输入toeken!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+              label="aesKey"
+              name="aesKey"
+              rules={[{ required: true, message: '请输入aesKey!' }]}
+          >
+            <Input />
+          </Form.Item>
+
 
           <Form.Item
             label="服务回调地址"
@@ -361,9 +402,9 @@ export default () => {
           </Form.Item> */}
 
           <Form.Item
-            label="产品描述"
-            name="productDescription"
-            rules={[{ required: true, message: '请输入产品描述!' }]}
+            label="应用描述"
+            name="appDescription"
+            rules={[{ required: true, message: '请输入应用描述!' }]}
           >
             <TextArea />
           </Form.Item>
@@ -379,21 +420,21 @@ export default () => {
         onCancel={() => setIsViewTemplateModal(false)}
       >
         {/* 详情信息 */}
-        <Descriptions title="商户产品">
+        <Descriptions title="商户应用">
           <Descriptions.Item label="租户号">
             {isViewRecord?.tenantId}
           </Descriptions.Item>
           <Descriptions.Item label="商户号">
             {isViewRecord?.merchantNo}
           </Descriptions.Item>
-          <Descriptions.Item label="产品名称">
-            {isViewRecord?.productName}
+          <Descriptions.Item label="应用名称">
+            {isViewRecord?.appName}
           </Descriptions.Item>
-          <Descriptions.Item label="产品ID">
-            {isViewRecord?.productId}
+          <Descriptions.Item label="应用ID">
+            {isViewRecord?.appId}
           </Descriptions.Item>
-          <Descriptions.Item label="产品密钥">
-            {isViewRecord?.productSecret}
+          <Descriptions.Item label="应用密钥">
+            {isViewRecord?.appSecret}
           </Descriptions.Item>
           <Descriptions.Item label="通知地址">
             {isViewRecord?.notifyUrl}

@@ -2,7 +2,7 @@ import { request } from '@umijs/max'
 let crmPath = process.env.contextPath_crm;
 
 // 分页查询
-export const getMerchantProductPageList = (params) => {
+export const getBizRoleAppPageList = (params) => {
   return request(crmPath + '/bizRoleApp/getPageList', {
     serviceName: 'MerchantAppService',
     methodName: 'getPageList',
@@ -14,7 +14,7 @@ export const getMerchantProductPageList = (params) => {
 };
 
 // 创建
-export const addMerchantProduct = (params) => {
+export const addBizRoleApp = (params) => {
   return request(crmPath + '/bizRoleApp/add', {
     serviceName: 'MerchantAppService',
     methodName: 'add',
@@ -26,9 +26,9 @@ export const addMerchantProduct = (params) => {
 };
 
 // 编辑
-export const editMerchantProduct = (params) => {
+export const editBizRoleApp = (params) => {
   return request(crmPath + '/bizRoleApp/edit', {
-    serviceName: 'MerchantAppService',
+    serviceName: 'BizRoleAppService',
     methodName: 'edit',
     version: '1.0',
     bizParams: {
@@ -38,9 +38,9 @@ export const editMerchantProduct = (params) => {
 };
 
 // 删除
-export const deleteMerchantProduct = (params) => {
+export const deleteBizRoleApp = (params) => {
   return request(crmPath + '/bizRoleApp/delete', {
-    serviceName: 'MerchantAppService',
+    serviceName: 'BizRoleAppService',
     methodName: 'delete',
     version: '1.0',
     bizParams: {
@@ -50,10 +50,10 @@ export const deleteMerchantProduct = (params) => {
 };
 
 // 查询详情
-export const getMerchantProductDetail = (params) => {
+export const getBizRoleAppDetail = (params) => {
   console.log('params', params);
   return request(crmPath + '/bizRoleApp/getDetail', {
-    serviceName: 'MerchantAppService',
+    serviceName: 'BizRoleAppService',
     methodName: 'getDetail',
     version: '1.0',
     bizParams: {
