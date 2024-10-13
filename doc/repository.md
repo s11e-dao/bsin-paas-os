@@ -21,8 +21,8 @@
 |           项目名称           | 是否开源 |                                         仓库地址                                         | 功能简介                            | port                |   
 |:------------------------:|:----:|:------------------------------------------------------------------------------------:|:--------------------------------|:--------------------|  
 |     bsin-wallet-mpc      |  否   |            [bsin-wallet-mpc](https://gitee.com/s11e-DAO/bsin-wallet-mpc)             | Bsin-PaaS MPC 钱包服务(golang)      | 8225 8226 8227 8228 |  
-| bsin-server-ai-go-wechat |  是   | [bsin-server-ai-agent](https://gitee.com/s11e-DAO/bsin-server-ai-agent/ai-go-wechat) | Bsin-PaaS ai微信平台(golang)        | 8026                |
-|      s11e-protocol       |  是   |           [bsin-server-ai-agent](https://gitee.com/s11e-DAO/s11e-protocol)           | Bsin-PaaS s11e 智能合约协议(solidity) |                     |
+| bsin-server-ai-go-wechat |  是   | [bsin-server-ai-go-wechat](https://gitee.com/s11e-DAO/bsin-server-ai-agent/ai-go-wechat) | Bsin-PaaS ai微信平台(golang)        | 8026                |
+|      s11e-protocol       |  是   |           [s11e-protocol ](https://gitee.com/s11e-DAO/s11e-protocol)           | Bsin-PaaS s11e 智能合约协议(solidity) |                     |
 
 ## Bsin-PaaS 后台管理前端，app，小程序...仓库
 
@@ -63,13 +63,6 @@
 | bsin-server-community |  否   | [bsin-server-community](https://gitee.com/s11e-DAO/jiujiu-saas/tree/master/jiujiu-paas-server/bsin-server-community) | jiujiu DAO活动任务子系统             | 9110 |   
 |    bsin-server-oms    |  否   |       [bsin-server-oms](https://gitee.com/s11e-DAO/jiujiu-saas/tree/master/jiujiu-paas-server/bsin-server-oms)       | jiujiu 订单管理子系统                | 9111 |    
 
-## Bsin-PaaS 业务闭源水多模态大数据海防观测物联网平台仓库
-
-|             项目名称             | 是否开源 |                                    仓库地址                                    | 功能简介                      | port |   
-|:----------------------------:|:----:|:--------------------------------------------------------------------------:|:--------------------------|:-----|  
-|  bsin-server-sea-condition   |  否   |    [jiujiu-paas](https://gitee.com/s11e-DAO/bsin-server-sea-condition)     | 基于bsin-paas构建的水域监控物联网平台后台 | 9001 |  
-| bsin-sea-condition-container |  否   | [bsin-app-baigui](https://gitee.com/s11e-DAO/bsin-sea-condition-container) | 多模态大数据海防观测平台后基座           | 8000 |   
-|    bsin-ui-sea-condition     |  否   | [bsin-ui-sea-condition](https://gitee.com/s11e-DAO/bsin-ui-sea-condition)  | 多模态大数据海防观测平台后台子应用前端       | 8001 |
 
 ## Bsin-PaaS 开发脚手架仓库
 

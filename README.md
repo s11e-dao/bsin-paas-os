@@ -243,11 +243,12 @@ s11eDAO是一个专注于Web3.0商业构建的数字化社区。社区拥有NFT�
 ### 开源贡献者
 * [@博羸](https://gitee.com/boleixiongdi)
 * [@leonard](https://gitee.com/leijiwu)
-
+* [@arrowspider](https://gitee.com/arrowspider)
 
 ## 个人开发着授权名单
 * [PiritXu](https://gitee.com/XHKai)
 * [Ale-Domisholy](https://gitee.com/domisholy)
+* [keep-klaus_pd](https://gitee.com/klaus_pd)
 
 
 注：非授权商用举报直接奖励10000元
