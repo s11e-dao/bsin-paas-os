@@ -2,18 +2,19 @@
 
 # 使用说明，用来提示输入参数
 usage(){
-	echo "Usage: sh 执行脚本.sh [build|middleware|gateway|server_apps|ui_apps|start|stop|rm]"
+	echo "Usage: sh deploy.sh [build|middleware|gateway|server_apps|ui_apps|start|stop|rm]"
 	exit 1
 }
 
 # 重新构建
 build(){
 #  ./script/package.sh
-  ./script/copy.sh
+#  ./script/copy.sh
 	docker-compose stop
 	docker-compose rm
 	docker-compose build
 }
+
 
 # 启动基础环境（必须）
 middleware(){
