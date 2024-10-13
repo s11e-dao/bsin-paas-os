@@ -2,7 +2,7 @@ import React, { useState, useRef, FC, useEffect } from 'react';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { EditableProTable } from '@ant-design/pro-table';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import QRCode from 'qrcode.react'
+import { QRCodeSVG } from 'qrcode.react';
 
 import ProForm, {
     StepsForm,
@@ -231,13 +231,7 @@ export default () => {
                     <StepsForm.StepForm name="time" title="支付确认">
                         <div style={{ position: 'absolute', opacity: '0', zIndex: '-100' }}>
                             {url && randomId && (
-                                <QRCode
-                                    id={randomId}
-                                    value={url}
-                                    size={150} // 二维码的大小
-                                    fgColor="#000000" // 二维码的颜色
-                                    style={{ margin: 'auto', backgroundColor: 'white', padding: '10px' }}
-                                />
+                                <QRCodeSVG value={url} />
                             )}
                         </div>
                         <img style={{ margin: '10px' }} src={qrcodeUrl} />

@@ -2,7 +2,7 @@ import React, { useState, useRef, FC, useEffect } from 'react';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { EditableProTable } from '@ant-design/pro-table';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import {QRCodeSVG} from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 
 import ProForm, {
     StepsForm,
