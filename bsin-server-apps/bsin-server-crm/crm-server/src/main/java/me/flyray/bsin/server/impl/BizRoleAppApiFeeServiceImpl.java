@@ -55,10 +55,10 @@ public class BizRoleAppApiFeeServiceImpl implements BizRoleAppApiFeeService {
         // 更新应用调用费用配置
         tenantApiFeeConfigMapper.updateById(merchantApiFeeConfig);
         // 更新商户产品状态
-        BizRoleApp merchantApp = merchantAppMapper.selectOne(new LambdaQueryWrapper<BizRoleApp>()
+        BizRoleApp bizRoleApp = merchantAppMapper.selectOne(new LambdaQueryWrapper<BizRoleApp>()
                 .eq(BizRoleApp::getAppId,merchantApiFeeConfig.getAppId()));
-        merchantApp.setStatus("1");
-        merchantAppMapper.updateById(merchantApp);
+        bizRoleApp.setStatus("1");
+        merchantAppMapper.updateById(bizRoleApp);
     }
 
     @ApiDoc(desc = "getPageList")

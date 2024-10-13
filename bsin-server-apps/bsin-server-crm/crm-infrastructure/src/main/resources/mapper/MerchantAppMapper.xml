@@ -4,12 +4,12 @@
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.BizRoleApp">
         <result column="serial_no" jdbcType="VARCHAR" property="serialNo"/>
         <result column="tenant_id" jdbcType="VARCHAR" property="tenantId"/>
-        <result column="merchant_no" jdbcType="VARCHAR" property="merchantNo"/>
+        <result column="biz_role_type" jdbcType="VARCHAR" property="bizRoleType"/>
+        <result column="biz_role_type_no" jdbcType="VARCHAR" property="bizRoleTypeNo"/>
         <result column="app_name" jdbcType="VARCHAR" property="appName"/>
         <result property="appType" column="app_type" jdbcType="VARCHAR"/>
         <result column="app_id" jdbcType="VARCHAR" property="appId"/>
         <result property="corpId" column="corp_id" jdbcType="VARCHAR"/>
-        <result property="wxType" column="wx_type" jdbcType="VARCHAR"/>
         <result property="agentId" column="agent_id" jdbcType="VARCHAR"/>
         <result column="app_type" jdbcType="VARCHAR" property="appType"/>
         <result column="app_secret" jdbcType="VARCHAR" property="appSecret"/>

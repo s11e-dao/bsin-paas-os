@@ -25,7 +25,7 @@ export default {
       apps: [
         {
           name: 'bsin-ui-upms', // 唯一 id
-          entry: 'http://127.0.0.1:8003', // html entry 
+          entry: 'http://127.0.0.1:8001', // html entry
         //  entry: 'http://copilotupms.s11edao.com',
         },
       ],

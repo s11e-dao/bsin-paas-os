@@ -14,7 +14,7 @@
 # limitations under the License.
 
 server:
-  port: 28011
+  port: 9204
   address: 0.0.0.0
   servlet:
     context-path: /
@@ -28,8 +28,8 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/shenyu?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
-    username: root
-    password: 12345678
+    username: flyray_eco
+    password: bsin_paas_os123
 
 com:
   alipay:
@@ -47,7 +47,7 @@ shenyu:
     serverLists: http://localhost:9095 #localhost:2181 #http://localhost:2379 #localhost:8848
     props:
       username: admin
-      password: 123456
+      password: 123456_Aa
   client:
     sofa:
       props:

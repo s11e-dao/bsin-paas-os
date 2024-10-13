@@ -18,11 +18,11 @@
 
 ## Bsin-PaaS 其他后端仓库及服务
 
-|           项目名称           | 是否开源 |                                         仓库地址                                         | 功能简介                            | port                |   
-|:------------------------:|:----:|:------------------------------------------------------------------------------------:|:--------------------------------|:--------------------|  
-|     bsin-wallet-mpc      |  否   |            [bsin-wallet-mpc](https://gitee.com/s11e-DAO/bsin-wallet-mpc)             | Bsin-PaaS MPC 钱包服务(golang)      | 8225 8226 8227 8228 |  
+|           项目名称           | 是否开源 |                                           仓库地址                                           | 功能简介                            | port                |   
+|:------------------------:|:----:|:----------------------------------------------------------------------------------------:|:--------------------------------|:--------------------|  
+|     bsin-wallet-mpc      |  否   |              [bsin-wallet-mpc](https://gitee.com/s11e-DAO/bsin-wallet-mpc)               | Bsin-PaaS MPC 钱包服务(golang)      | 8225 8226 8227 8228 |  
 | bsin-server-ai-go-wechat |  是   | [bsin-server-ai-go-wechat](https://gitee.com/s11e-DAO/bsin-server-ai-agent/ai-go-wechat) | Bsin-PaaS ai微信平台(golang)        | 8026                |
-|      s11e-protocol       |  是   |           [s11e-protocol ](https://gitee.com/s11e-DAO/s11e-protocol)           | Bsin-PaaS s11e 智能合约协议(solidity) |                     |
+|      s11e-protocol       |  是   |                [s11e-protocol ](https://gitee.com/s11e-DAO/s11e-protocol)                | Bsin-PaaS s11e 智能合约协议(solidity) |                     |
 
 ## Bsin-PaaS 后台管理前端，app，小程序...仓库
 
@@ -33,10 +33,10 @@
 |       bsin-ui-waas       |  否   |           [bsin-ui-waas](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-ui-apps/bsin-ui-waas)           | Bsin-PaaS 钱包即服务，火源钱包系统后台管理子应用前端     | 8002 |   
 |  bsin-ui-decision-admin  |  否   | [bsin-ui-decision-admin](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-ui-apps/bsin-ui-decision-admin) | Bsin-PaaS 智能决策引擎后台管理子应用前端           | 8003 |    
 |     bsin-ui-ai-agent     |  否   |       [bsin-ui-ai-agent](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-ui-apps/bsin-ui-ai-agent)       | Bsin-PaaS 通用人工智后台管理子应用前端            | 8004 |      
-|       bsin-ui-erp        |  否   |                          [bsin-ui-orchestration](https://gitee.com/s11e-DAO/bsin-ui-erp)                          | Bsin-PaaS ERP系统后台管理子应用前端            | 8005 |      
+|       bsin-ui-erp        |  否   |                          [bsin-ui-erp](https://gitee.com/s11e-DAO/bsin-ui-erp)                          | Bsin-PaaS ERP系统后台管理子应用前端            | 8005 |      
 |     bsin-ui-merchant     |  否   |                          [bsin-ui-merchant](https://gitee.com/s11e-DAO/bsin-ui-merchant)                          | Bsin-PaaS 平台商户中心标准版后台管理子应用前端        | 8006 |   
 |     bsin-ui-daobook      |  否   |                           [bsin-ui-daobook](https://gitee.com/s11e-DAO/bsin-ui-daobook)                           | Bsin-PaaS 数字资产管理平台后台管理子应用前端         | 8007 |    
-|       bsin-ui-dapp       |  否   |                           [bsin-minapp-wallet](https://gitee.com/s11e-DAO/bsin-ui-dapp)                           | web3 Dapp开发套件                       |      |
+|       bsin-ui-dapp       |  否   |                           [bsin-minapp-wallet](https://gitee.com/s11e-DAO/bsin-ui-dapp)                           | web3 Dapp开发套件                       | 8008 |
 |   bsin-minapp-merchant   |  否   |                      [bsin-minapp-merchant](https://gitee.com/s11e-DAO/bsin-minapp-merchant)                      | Bsin-PaaS 数字资产管理平台小程序               |      |    
 |    bsin-minapp-baigui    |  否   |                       [bsin-minapp-merchant](https://gitee.com/s11e-DAO/bsin-minapp-baigui)                       | Baigui是dao的nft发行流通工具，属于daobook内置模块。 |      |    
 | bsin-minapp-daobook-task |  是   |                  [bsin-minapp-daobook-task](https://gitee.com/s11e-DAO/bsin-minapp-daobook-task)                  | 治理工具：daobook  小程序                   |      |      
@@ -58,21 +58,20 @@
 |    bsin-app-baigui    |  否   |         [bsin-app-baigui](https://gitee.com/s11e-DAO/jiujiu-saas/tree/master/jiujiu-paas-ui/bsin-app-baigui)         | Baigui 是 S11e Network 的智慧收银终端 |      |   
 |    bsin-app-bigan     |  否   |         [bsin-app-baigui](https://gitee.com/s11e-DAO/jiujiu-saas/tree/master/jiujiu-paas-ui/bsin-app-bigan)          | bigan 是s11e network 商户端       |      |   
 |    bsin-app-jiuiju    |  否   |         [bsin-app-jiuiju](https://gitee.com/s11e-DAO/jiujiu-saas/tree/master/jiujiu-paas-ui/bsin-app-jiuiju)         | jiujiu 小程序、app                | 8110 |    
-|     bsin-app-vuca     |  否   |           [bsin-app-vuca](https://gitee.com/s11e-DAO/jiujiu-saas/tree/master/jiujiu-paas-ui/bsin-app-vuca)           | AI智能体web3应用                   |      |   
+|     bsin-app-vuca     |  否   |           [bsin-app-vuca](https://gitee.com/s11e-DAO/jiujiu-saas/tree/master/jiujiu-paas-ui/bsin-app-vuca)           | AI智能体web3应用                   | 8011 |   
 |     bsin-ui-bigan     |  否   |           [bsin-ui-bigan](https://gitee.com/s11e-DAO/jiujiu-saas/tree/master/jiujiu-paas-ui/bsin-ui-bigan)           | jiujiu后台管理子应用前端               | 8010 |     
 | bsin-server-community |  否   | [bsin-server-community](https://gitee.com/s11e-DAO/jiujiu-saas/tree/master/jiujiu-paas-server/bsin-server-community) | jiujiu DAO活动任务子系统             | 9110 |   
 |    bsin-server-oms    |  否   |       [bsin-server-oms](https://gitee.com/s11e-DAO/jiujiu-saas/tree/master/jiujiu-paas-server/bsin-server-oms)       | jiujiu 订单管理子系统                | 9111 |    
-
 
 ## Bsin-PaaS 开发脚手架仓库
 
 |              项目名称              | 是否开源 |                                                                   仓库地址                                                                    | 功能简介                                                 | port |   
 |:------------------------------:|:----:|:-----------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------|:-----|  
-|   bsin-server-scaffold-dubbo   |  是   |     [bsin-server-scaffold-dubbo](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-server-scaffold/bsin-server-scaffold-dubbo)     | Bsin-Paas 后端dubbo服务应用开发脚手架                           |      |  
-|   bsin-server-scaffold-http    |  是   |      [bsin-server-scaffold-http](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-server-scaffold/bsin-server-scaffold-http)      | Bsin-Paas 后端http服务应用开发脚手架                            |      |  
-|   bsin-server-scaffold-mqtt    |  是   |      [bsin-server-scaffold-mqtt](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-server-scaffold/bsin-server-scaffold-mqtt)      | Bsin-Paas 后端mqtt服务应用开发脚手架                            |      |  
-|   bsin-server-scaffold-sofa    |  是   |      [bsin-server-scaffold-sofa](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-server-scaffold/bsin-server-scaffold-sofa)      | Bsin-Paas 后端sofa服务应用开发脚手架                            |      |  
-| bsin-server-scaffold-websocket |  是   | [bsin-server-scaffold-websocket](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-server-scaffold/bsin-server-scaffold-websocket) | Bsin-Paas 后端websocket服务应用开发脚手架                       |      |  
+|   bsin-server-scaffold-dubbo   |  是   |     [bsin-server-scaffold-dubbo](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-server-scaffold/bsin-server-scaffold-dubbo)     | Bsin-Paas 后端dubbo服务应用开发脚手架                           | 9201 |  
+|   bsin-server-scaffold-http    |  是   |      [bsin-server-scaffold-http](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-server-scaffold/bsin-server-scaffold-http)      | Bsin-Paas 后端http服务应用开发脚手架                            | 9202 |  
+|   bsin-server-scaffold-mqtt    |  是   |      [bsin-server-scaffold-mqtt](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-server-scaffold/bsin-server-scaffold-mqtt)      | Bsin-Paas 后端mqtt服务应用开发脚手架                            | 9203 |  
+|   bsin-server-scaffold-sofa    |  是   |      [bsin-server-scaffold-sofa](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-server-scaffold/bsin-server-scaffold-sofa)      | Bsin-Paas 后端sofa服务应用开发脚手架                            | 9204 |  
+| bsin-server-scaffold-websocket |  是   | [bsin-server-scaffold-websocket](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-server-scaffold/bsin-server-scaffold-websocket) | Bsin-Paas 后端websocket服务应用开发脚手架                       | 9205 |  
 |  bsin-ui-scaffold-react-app1   |  是   |      [bsin-ui-scaffold-react-app1](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-ui-scaffold/bsin-ui-scaffold-react-app1)      | Bsin-PaaS react-app1开发脚手架                            |      |  
 |  bsin-ui-scaffold-react-app2   |  是   |      [bsin-ui-scaffold-react-app2](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-ui-scaffold/bsin-ui-scaffold-react-app1)      | Bsin-PaaS react-app2开发脚手架                            |      |  
 |  bsin-ui-scaffold-react-umi4   |  是   |      [bsin-ui-scaffold-react-umi4](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-ui-scaffold/bsin-ui-scaffold-react-app1)      | Bsin-PaaS react-umi4开发脚手架                            |      |  

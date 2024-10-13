@@ -115,40 +115,104 @@ local_port = 9095
 remote_port = 9095
 
 
-[bsin-server-ai-agent]  
-type = tcp
-local_ip = 127.0.0.1
-# linux远程连接服务端口
-local_port = 8084
-#远程的时候链接的端
-remote_port = 8084
-
-
-[bsin-server-waas]  
-type = tcp
-local_ip = 127.0.0.1
-# linux远程连接服务端口
-local_port = 8085
-#远程的时候链接的端
-remote_port = 8085
-
-
 [bsin-server-upms]
 type = tcp
 local_ip = 127.0.0.1
 # linux远程连接服务端口
-local_port = 8013
+local_port = 9101
 #远程的时候链接的端
-remote_port = 8013
+remote_port = 9101
 
 
 [bsin-server-crm]  
 type = tcp
 local_ip = 127.0.0.1
 # linux远程连接服务端口
-local_port = 8072
+local_port = 9102
 #远程的时候链接的端
-remote_port = 8072
+remote_port = 9102
+
+[bsin-server-ai-brms]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
+local_port = 9103
+#远程的时候链接的端
+remote_port = 9103
+
+
+[bsin-server-ai-agent]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
+local_port = 9104
+#远程的时候链接的端
+remote_port = 9104
+
+
+[bsin-server-ai-workflow]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
+local_port = 9105
+#远程的时候链接的端
+remote_port = 9105
+
+
+[bsin-server-ai-workflow-admin]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
+local_port = 9106
+#远程的时候链接的端
+remote_port = 9106
+
+
+[bsin-server-waas]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
+local_port = 9107
+#远程的时候链接的端
+remote_port = 9107
+
+
+[bsin-server-http]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
+local_port = 9108
+#远程的时候链接的端
+remote_port = 9108
+
+
+[bsin-server-search]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
+local_port = 9109
+#远程的时候链接的端
+remote_port = 9109
+
+
+
+[bsin-server-community]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
+local_port = 9110
+#远程的时候链接的端
+remote_port = 9110
+
+
+
+[bsin-server-oms]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
+local_port = 9111
+#远程的时候链接的端
+remote_port = 9111
 
 
 
@@ -164,19 +228,28 @@ remote_port = 8000
 type = tcp
 local_ip = 127.0.0.1
 # linux远程连接服务端口
+local_port = 8001
+#远程的时候链接的端
+remote_port = 8001
+
+[bsin-ui-waas]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
+local_port = 8002
+#远程的时候链接的端
+remote_port = 8002
+
+[bsin-ui-decision-admin]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
 local_port = 8003
 #远程的时候链接的端
 remote_port = 8003
 
-[bsin-ui-ai-agent]  
-type = tcp
-local_ip = 127.0.0.1
-# linux远程连接服务端口
-local_port = 8014
-#远程的时候链接的端
-remote_port = 8014
 
-[bsin-ui-waas]  
+[bsin-ui-ai-agent]  
 type = tcp
 local_ip = 127.0.0.1
 # linux远程连接服务端口
@@ -184,22 +257,38 @@ local_port = 8004
 #远程的时候链接的端
 remote_port = 8004
 
-[bsin-ui-decision-admin]  
+[bsin-ui-decision-erp]  
 type = tcp
 local_ip = 127.0.0.1
 # linux远程连接服务端口
-local_port = 5555
+local_port = 8005
 #远程的时候链接的端
-remote_port = 5555
+remote_port = 8005
 
-
-[bsin-ui-jiujiu-merchant]  
+[bsin-ui-merchant-bigan]  
 type = tcp
 local_ip = 127.0.0.1
 # linux远程连接服务端口
-local_port = 8012
+local_port = 8006
 #远程的时候链接的端
-remote_port = 8012
+remote_port = 8006
+
+[bsin-ui-dapp]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
+local_port = 8007
+#远程的时候链接的端
+remote_port = 8007
+
+
+[bsin-ui-bigan]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
+local_port = 8010
+#远程的时候链接的端
+remote_port = 8010
 
 
 [bsin-app-vuca]  
