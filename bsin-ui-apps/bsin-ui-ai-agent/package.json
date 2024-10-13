@@ -27,7 +27,7 @@
     "@umijs/plugins": "^4.1.0",
     "antd": "^5.4.7",
     "antd-style": "^3.6.3",
-    "bsin-agent-ui": "^1.0.3",
+    "bsin-agent-ui": "^1.0.5",
     "idb-keyval": "^6.2.1",
     "react": "18.1.0",
     "react-dom": "18.1.0",
