@@ -254,9 +254,9 @@ s11eDAO是一个专注于Web3.0商业构建的数字化社区。社区拥有NFT�
 注：非授权商用举报直接奖励10000元
 
 ## 企业开发者授权名单
-* [火源社区]()
+* [火源社区](https://eeihz6cbu0.feishu.cn/docx/HYYfdCmxEovMpix4GkDc5qlPnSe)
 * [上海某公司（匿名）]()
-* [元星牵引（深圳）互联网技术有限]()
+* [元星牵引（深圳）互联网技术有限](https://gitee.com/xt-justing)
 
 
 注：非授权商用举报直接奖励50000元
