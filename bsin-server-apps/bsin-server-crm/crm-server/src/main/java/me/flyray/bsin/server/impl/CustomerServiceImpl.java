@@ -230,7 +230,7 @@ public class CustomerServiceImpl implements CustomerService {
     String appId = MapUtils.getString(requestMap, "appId");
     CustomerBase customerBase = wxPortalController.authorizedLogin(appId, code);
     if (customerBase == null) {
-      throw new BusinessException("100000", "customerBase is null");
+      throw new BusinessException("100000", "获取openId失败！！！");
     }
     Map data = new HashMap<>();
     data.put("openId", customerBase.getCredential());

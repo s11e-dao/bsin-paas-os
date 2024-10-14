@@ -39,6 +39,7 @@ public class CustomerBase implements Serializable {
 
     /**
      * 0、手机号 1、邮箱 2、QQ 3、微信 4、用户名 5、微博
+     *@see me.flyray.bsin.enums.AuthMethod
      */
     private String authMethod;
 

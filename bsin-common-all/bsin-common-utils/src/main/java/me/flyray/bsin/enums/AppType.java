@@ -10,7 +10,7 @@ public enum AppType {
   /** mp(公众号服务订阅号) */
   INTERFACE("2", "bsin-paas接口"),
   /** mp(公众号服务订阅号) */
-  WX_MP("3", "公众号服务订阅号"),
+  WX_MP("3", "公众号"),
 
   /** miniapp(小程序) */
   WX_MINIAPP("4", "小程序"),

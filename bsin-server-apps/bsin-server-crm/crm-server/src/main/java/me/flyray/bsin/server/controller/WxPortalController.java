@@ -27,6 +27,7 @@ import me.flyray.bsin.enums.AppType;
 // import me.flyray.bsin.server.biz.WxMpMsgHandlerBiz;
 // import me.flyray.bsin.server.biz.WxMpSubscribeHandlerBiz;
 // import me.flyray.bsin.server.biz.WxMpViewHandlerBiz;
+import me.flyray.bsin.enums.AuthMethod;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.infrastructure.mapper.BizRoleAppMapper;
 import me.flyray.bsin.server.biz.CustomerBiz;
@@ -61,7 +62,7 @@ public class WxPortalController {
 
   @Autowired private CustomerBiz customerBiz;
 
-  @Autowired private BizRoleAppMapper merchantAppMapper;
+  @Autowired private BizRoleAppMapper bzRoleAppMapper;
 
   @Value("${bsin.crm.aesKey}")
   private String aesKey;
@@ -100,7 +101,7 @@ public class WxPortalController {
     if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
       throw new IllegalArgumentException("请求参数非法，请核实!");
     }
-    BizRoleApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
+    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(appid);
     if (merchantWxApp == null) {
       return "未找到微信平台配置信息";
     }
@@ -144,7 +145,7 @@ public class WxPortalController {
    */
   public CustomerBase authorizedLogin(String appid, String code)
       throws UnsupportedEncodingException {
-    BizRoleApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
+    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(appid);
     if (merchantWxApp == null) {
       throw new BusinessException("100000", "未找到对应appid");
     }
@@ -175,14 +176,19 @@ public class WxPortalController {
       // 根据openId查询 crm_customer_base 表, 如果不存在，初始化wx_user,并保存到数据库中, 如果存在，更新最后登录时间
       CustomerBase customerBase = customerBiz.getCustomerByOpenId(openId);
       if (customerBase == null) {
-        customerBase.setAuthMethod("3");
+        customerBase = new CustomerBase();
+        customerBase.setAuthMethod(AuthMethod.WECHAT.getType());
         customerBase.setSessionKey(sessionKey);
         customerBase.setCredential(openId);
-        customerBiz.register(customerBase);
+        customerBase = customerBiz.register(customerBase);
+      } else {
+        // 更新最后登录时间
+        customerBiz.updateCustomerBase(customerBase);
       }
       return customerBase;
+    } else {
+      throw new BusinessException("100000", "暂不支持该类型授权登录：" + merchantWxApp.getAppType() + "！！！");
     }
-    return null;
   }
 
   /**
@@ -195,7 +201,7 @@ public class WxPortalController {
    */
   public String bindingPhoneNumber(String openId, String appid, String encryptedData, String iv) {
     String phone = null;
-    BizRoleApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
+    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(appid);
     if (merchantWxApp == null) {
       throw new BusinessException("100000", "未找到对应appid");
     }
@@ -256,7 +262,7 @@ public class WxPortalController {
 
     String out = null;
 
-    BizRoleApp merchantWxApp = merchantAppMapper.selectByAppId(appid);
+    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(appid);
     if (merchantWxApp == null) {
       throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
     }
@@ -490,7 +496,7 @@ public class WxPortalController {
     if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
       throw new IllegalArgumentException("请求参数非法，请核实!");
     }
-    BizRoleApp merchantWxApp = merchantAppMapper.selectByCorpAgentId(corpId, agentId.toString());
+    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByCorpAgentId(corpId, agentId.toString());
     if (StringUtils.equals(merchantWxApp.getAppType(), AppType.WX_CP.getType())) {
       log.debug("微信企业号|企业微信请求验证");
       WxCpProperties.CpConfig config = new WxCpProperties.CpConfig();
@@ -536,7 +542,7 @@ public class WxPortalController {
         timestamp,
         nonce,
         requestBody);
-    BizRoleApp merchantWxApp = merchantAppMapper.selectByAppId(corpId + agentId.toString());
+    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(corpId + agentId.toString());
     WxCpProperties.CpConfig config = new WxCpProperties.CpConfig();
     config.setAesKey(merchantWxApp.getAesKey());
     config.setCorpId(corpId);

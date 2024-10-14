@@ -10,6 +10,8 @@ import java.util.Date;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
+import me.flyray.bsin.enums.AppType;
+import me.flyray.bsin.security.enums.BizRoleType;
 
 /**
  * 系统接入的产品应用信息表：平台和商户接入的应用
@@ -30,7 +32,8 @@ public class BizRoleApp implements Serializable {
     private String tenantId;
 
     /**
-     * 业务角色类型：见枚举
+     * 业务角色类型:
+     * @ BizRoleType
      */
     private String bizRoleType;
 
@@ -59,7 +62,9 @@ public class BizRoleApp implements Serializable {
 
     /**
      * 1: app应用 2：接口 3：小程序 4:mp(公众号服务订阅号) 5:miniapp(小程序) 6:cp(企业号|企业微信) 7:pay(微信支付) 8:open(微信开放平台) 9:wechat(个人微信) 10:menu(菜单模版)
+     * @see AppType
      */
+
     private String appType;
     /**
      * 应用密钥：自动生成

@@ -24,13 +24,13 @@
     </resultMap>
 
     <sql id="baseColumnList">
-        serial_no,tenant_id,merchant_no,app_name,app_id,corp_id,app_type,app_secret,aes_key
-        ,app_type,token,wx_type,app_description,status
+        serial_no,tenant_id,biz_role_type_no,app_name,app_id,corp_id,app_type,app_secret,aes_key
+        ,app_type,token,app_description,status
         ,create_time,update_time
     </sql>
 
     <update id="delete">
-        update crm_merchant_app
+        update crm_biz_role_app
         set del_flag = 1
         where serial_no = #{serialNo}
     </update>
@@ -38,7 +38,7 @@
     <select id="getPageList" resultMap="BaseResultMap">
         select serial_no,
         tenant_id,
-        merchant_no,
+        biz_role_type_no,
         app_name,
         app_id,
         app_type,
@@ -48,7 +48,7 @@
         update_time,
         del_flag,
         status
-        from crm_merchant_app
+        from crm_biz_role_app
         where del_flag = 0
         <if test="appName != null">
             and app_name like concat('%',#{appName},'%')
@@ -67,7 +67,7 @@
     <select id="getAppInfo" resultMap="BaseResultMap">
         select serial_no,
                tenant_id,
-               merchant_no,
+               biz_role_type_no,
                app_name,
                app_id,
                app_type,
@@ -77,15 +77,15 @@
                update_time,
                del_flag,
                status
-        from crm_merchant_app
+        from crm_biz_role_app
         where del_flag = 0 and
-            tenant_id = #{tenantId} and  merchant_no = #{merchantNo} and app_id = #{appId}
+            tenant_id = #{tenantId} and  biz_role_type_no = #{merchantNo} and app_id = #{appId}
     </select>
 
     <select id="getAppInfoByAppId" resultMap="BaseResultMap">
         select serial_no,
                tenant_id,
-               merchant_no,
+               biz_role_type_no,
                app_name,
                app_id,
                app_type,
@@ -95,14 +95,14 @@
                update_time,
                del_flag,
                status
-        from crm_merchant_app
+        from crm_biz_role_app
         where del_flag = 0 and app_id = #{appId}
     </select>
 
     <select id="selectByAppId" resultMap="BaseResultMap">
         select
         <include refid="baseColumnList"/>
-        from crm_merchant_app
+        from crm_biz_role_app
         where app_id = #{appId}
     </select>
 
@@ -110,7 +110,7 @@
     <select id="selectByCorpAgentId" resultMap="BaseResultMap">
         select
         <include refid="baseColumnList"/>
-        from crm_merchant_app
+        from crm_biz_role_app
         <where>
             <if test="corpId != null and corpId != ''">
                 corp_id = #{corpId}
