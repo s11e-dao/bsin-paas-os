@@ -201,7 +201,7 @@ shenyu:
     registerType: nacos #etcd #consul
     serverLists: localhost:8848 #http://localhost:2379 #localhost:8848
     props:
-      nacosNameSpace: shenyu
+      nacosNameSpace: public
       username: nacos
       password: nacos
   cross:
