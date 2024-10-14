@@ -1,6 +1,7 @@
 package org.apache.shenyu.plugin.rulesEngine;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import me.flyray.bsin.domain.request.ExecuteParams;
 import me.flyray.bsin.facade.service.DecisionEngineService;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -22,8 +23,8 @@ public class DubboService {
 
         DecisionEngineService r = reference.get();
         ExecuteParams executeParams = new ExecuteParams();
-        executeParams.setEventKey(eventKey);
-        executeParams.setJsonParams(JSON.toJSONString(params));
+        executeParams.setEventCode(eventKey);
+        executeParams.setJsonParams(JSONObject.from(params));
         return r.execute(executeParams);
     }
 
