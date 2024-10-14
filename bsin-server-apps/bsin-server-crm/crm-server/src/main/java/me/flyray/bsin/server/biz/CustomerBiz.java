@@ -2,6 +2,7 @@ package me.flyray.bsin.server.biz;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
+import me.flyray.bsin.security.enums.BizRoleType;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -92,16 +93,16 @@ public class CustomerBiz {
 
     customerBase.setCustomerNo(BsinSnowflake.getId());
     customerBase.setTenantId(customerBase.getTenantId());
-    customerBase.setType(CustomerType.MEMBER.getCode());
+    customerBase.setType(BizRoleType.CUSTORMER.getCode());
     customerBase.setInviteCode(UniqueInviteCodeGenerator.generateUniqueInviteCode(6));
     customerBaseMapper.insert(customerBase);
 
-    // 查询平台的邀请注册积分奖励规则
-    Map<String, Object> requestMap = new HashMap<>();
-    requestMap.put("tenantId", jiujiuTenantId);
-    requestMap.put("merchantNo", jiujiumerchantNo);
     // 根据 inviteCode 老用户mint积分
     if (inviteCode != null) {
+      // 查询平台的邀请注册积分奖励规则
+      Map<String, Object> requestMap = new HashMap<>();
+      requestMap.put("tenantId", jiujiuTenantId);
+      requestMap.put("merchantNo", jiujiumerchantNo);
       // 根据邀请码，找到邀请人,写入邀请关系
       CustomerBase parentCustomer =
           customerBaseMapper.selectOne(

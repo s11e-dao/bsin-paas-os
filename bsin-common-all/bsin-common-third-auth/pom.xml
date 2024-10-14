@@ -17,8 +17,8 @@
     <description>bsin-paas平台：第三方授权模块</description>
     <properties>
         <java.version>11</java.version>
-        <weixin-java-mp.version>4.3.0</weixin-java-mp.version>
-        <weixin-java-cp.version>4.5.0</weixin-java-cp.version>
+        <weixin-java-mp.version>4.6.0</weixin-java-mp.version>
+        <weixin-java-cp.version>4.6.0</weixin-java-cp.version>
         <weixin-java-miniapp.version>4.6.0</weixin-java-miniapp.version>
     </properties>
     <dependencies>

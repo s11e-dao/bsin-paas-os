@@ -107,7 +107,8 @@ public class CustomerBase implements Serializable {
     private String avatar;
 
     /**
-     * 客户类型 0、个人客户 1、企业客户 2、租户(dao)客户
+     * 客户角色类型，1.运营平台 2.租户平台 4.代理商 5.租户客户 6.门店 99.无
+     * @see me.flyray.bsin.security.enums.BizRoleType
      */
     private String type;
 

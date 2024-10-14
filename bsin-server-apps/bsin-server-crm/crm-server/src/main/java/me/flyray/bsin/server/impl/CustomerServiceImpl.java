@@ -228,6 +228,7 @@ public class CustomerServiceImpl implements CustomerService {
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     String code = MapUtils.getString(requestMap, "code");
     String appId = MapUtils.getString(requestMap, "appId");
+    log.info("code:{},appId:{}", code, appId);
     CustomerBase customerBase = wxPortalController.authorizedLogin(appId, code);
     if (customerBase == null) {
       throw new BusinessException("100000", "获取openId失败！！！");

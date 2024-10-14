@@ -177,6 +177,7 @@ public class WxPortalController {
       CustomerBase customerBase = customerBiz.getCustomerByOpenId(openId);
       if (customerBase == null) {
         customerBase = new CustomerBase();
+        customerBase.setTenantId(merchantWxApp.getTenantId());
         customerBase.setAuthMethod(AuthMethod.WECHAT.getType());
         customerBase.setSessionKey(sessionKey);
         customerBase.setCredential(openId);
