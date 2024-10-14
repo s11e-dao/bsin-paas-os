@@ -1,5 +1,6 @@
 package org.apache.shenyu.plugin.rulesEngine;
 
+import com.alibaba.fastjson2.JSONObject;
 import me.flyray.bsin.domain.request.ExecuteParams;
 import me.flyray.bsin.facade.service.DecisionEngineService;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -38,8 +39,8 @@ public class RulesEnginePlugin extends AbstractShenyuPlugin {
         String path = exchange.getRequest().getPath().toString();
         String body = exchange.getRequest().getBody().toString();
         ExecuteParams executeParams = new ExecuteParams();
-        executeParams.setEventKey(path);
-        executeParams.setJsonParams(body);
+        executeParams.setEventCode(path);
+        executeParams.setJsonParams(JSONObject.parseObject(body));
         Map<?, ?> result = decisionEngineService.execute(executeParams);
         Object o = result.get("pass");
         if (o == null) return responseError(exchange.getResponse(), "NOT_PASS");
