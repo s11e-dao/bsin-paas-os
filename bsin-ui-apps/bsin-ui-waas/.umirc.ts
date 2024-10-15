@@ -19,6 +19,7 @@ export default {
     'process.env.webScoketUrl': 'ws://192.168.1.6:8126/websocket',
     'process.env.contextPath_upms': '/upms',  // upms应用
     'process.env.contextPath_crm': '/crm',  // crm应用
+    'process.env.contextPath_oms': '/oms',  // oms应用
     'process.env.contextPath_waas': '/waas',  // 钱包应用
   },
   model: {},

@@ -33,7 +33,7 @@ public class BizRoleApp implements Serializable {
 
     /**
      * 业务角色类型:
-     * @ BizRoleType
+     * @see BizRoleType
      */
     private String bizRoleType;
 

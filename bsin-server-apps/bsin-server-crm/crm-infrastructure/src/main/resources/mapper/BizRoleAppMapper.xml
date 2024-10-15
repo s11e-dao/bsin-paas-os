@@ -79,7 +79,7 @@
                status
         from crm_biz_role_app
         where del_flag = 0 and
-            tenant_id = #{tenantId} and  biz_role_type_no = #{merchantNo} and app_id = #{appId}
+            tenant_id = #{tenantId} and  biz_role_type_no = #{bizRoleTypeNo} and app_id = #{appId}
     </select>
 
     <select id="getAppInfoByAppId" resultMap="BaseResultMap">

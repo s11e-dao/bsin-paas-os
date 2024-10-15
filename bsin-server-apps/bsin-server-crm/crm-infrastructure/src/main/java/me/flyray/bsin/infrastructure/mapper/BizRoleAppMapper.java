@@ -20,7 +20,9 @@ public interface BizRoleAppMapper extends BaseMapper<BizRoleApp> {
                                  @Param("appSecret")String appSecret
                               );
 
-    BizRoleApp getAppInfo(BizRoleApp bizRoleApp);
+    BizRoleApp getAppInfo(@Param("tenantId") String tenantId,
+                          @Param("bizRoleTypeNo")String bizRoleTypeNo,
+                          @Param("appId")String appId);
 
     BizRoleApp selectByAppId(@Param("appId")String appId);
     BizRoleApp selectByCorpAgentId(String corpId, String agentId);

@@ -11,14 +11,17 @@ import me.flyray.bsin.domain.entity.CustomerBase;
 import me.flyray.bsin.domain.entity.Grade;
 import me.flyray.bsin.domain.entity.Member;
 import me.flyray.bsin.domain.entity.TokenParam;
+import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MemberService;
 import me.flyray.bsin.facade.service.TokenParamService;
+import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberGradeMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -27,9 +30,13 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+
+import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_ERROR;
+import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_NO_NOT_ISNULL;
 
 /**
  * @author bolei
@@ -47,21 +54,36 @@ public class MemberServiceImpl implements MemberService {
 
   @Autowired private MemberMapper memberMapper;
 
+  @Autowired private CustomerBaseMapper customerBaseMapper;
+
   @DubboReference(version = "${dubbo.provider.version}")
   private TokenParamService tokenParamService;
 
   @ApiDoc(desc = "openMember")
   @ShenyuDubboClient("/openMember")
   @Override
-  public void openMember(Map<String, Object> requestMap) {
+  public Member openMember(Map<String, Object> requestMap) {
     Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
+    if (member.getCustomerNo() == null) {
+      throw new BusinessException(CUSTOMER_NO_NOT_ISNULL);
+    }
+    if (member.getTenantId() == null) {
+      member.setTenantId(LoginInfoContextHelper.getTenantId());
+    }
+    if (!customerBaseMapper.exists(
+            new LambdaUpdateWrapper<CustomerBase>()
+                    .eq(CustomerBase::getTenantId, member.getTenantId())
+                    .eq(CustomerBase::getCustomerNo, member.getCustomerNo()))) {
+      throw new BusinessException(CUSTOMER_ERROR);
+    }
     if (!memberMapper.exists(
         new LambdaUpdateWrapper<Member>()
             .eq(Member::getTenantId, member.getTenantId())
-            .eq(Member::getMerchantNo, member.getCustomerNo())
+            .eq(ObjectUtils.isNotEmpty(member.getMerchantNo()), Member::getMerchantNo, member.getMerchantNo())
             .eq(Member::getCustomerNo, member.getCustomerNo()))) {
       memberMapper.insert(member);
     }
+    return member;
 
   }
 
@@ -78,7 +100,7 @@ public class MemberServiceImpl implements MemberService {
     LambdaQueryWrapper<Member> warapper = new LambdaQueryWrapper<>();
     warapper.orderByDesc(Member::getCreateTime);
     warapper.eq(Member::getTenantId, loginUser.getTenantId());
-    warapper.eq(Member::getMerchantNo, loginUser.getMerchantNo());
+    warapper.eq(ObjectUtils.isNotEmpty(loginUser.getMerchantNo()),Member::getMerchantNo, loginUser.getMerchantNo());
     IPage<Member> pageList = memberMapper.selectPage(page, warapper);
     return pageList;
   }

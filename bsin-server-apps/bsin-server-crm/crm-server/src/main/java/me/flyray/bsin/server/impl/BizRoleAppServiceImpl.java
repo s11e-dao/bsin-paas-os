@@ -1,6 +1,7 @@
 package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -101,12 +102,10 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
     @Override
     public BizRoleApp getDetail(Map<String, Object> requestMap) {
         String tenantId = LoginInfoContextHelper.getTenantId();
+        String merchantNo = LoginInfoContextHelper.getMerchantNo();
         // 从当前token中获取appId
         String serialNo = (String) requestMap.get("serialNo");
-        BizRoleApp bizRoleApp = new BizRoleApp();
-        bizRoleApp.setTenantId(tenantId);
-        bizRoleApp.setAppId(serialNo);
-        BizRoleApp tenantAppResult = merchantAppMapper.getAppInfo(bizRoleApp);
+        BizRoleApp tenantAppResult = merchantAppMapper.getAppInfo(tenantId, merchantNo, serialNo);
         return tenantAppResult;
     }
 
@@ -129,7 +128,7 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
         LambdaUpdateWrapper<BizRoleApp> warapper = new LambdaUpdateWrapper<>();
         warapper.orderByDesc(BizRoleApp::getCreateTime);
         warapper.eq(BizRoleApp::getTenantId, tenantId);
-        warapper.eq(BizRoleApp::getBizRoleTypeNo, merchantNo);
+        warapper.eq(ObjectUtil.isNotNull(merchantNo),BizRoleApp::getBizRoleTypeNo, merchantNo);
         warapper.eq(StringUtils.isNotEmpty(appName), BizRoleApp::getAppName, appName);
         IPage<BizRoleApp> pageList = merchantAppMapper.selectPage(page,warapper);
         return pageList;

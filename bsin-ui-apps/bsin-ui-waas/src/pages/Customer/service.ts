@@ -1,5 +1,6 @@
 import { request } from '@umijs/max'
 let crmPath = process.env.contextPath_crm;
+let omsPath = process.env.contextPath_oms;
 
 // 分页查询
 export const getCustomerPageList = (params) => {
@@ -50,9 +51,9 @@ export const getCustomerDetail = (params) => {
   });
 };
 
-export const getCustomerAddressDetail = (params) => {
+export const getCustomerDeliveryAddress = (params) => {
   console.log('params', params);
-  return request(crmPath + '/customer/getList', {
+  return request(omsPath + '/deliveryAddress/getList', {
     serviceName: 'DeliveryAddressService',
     methodName: 'getList',
     version: '1.0',

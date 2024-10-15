@@ -23,7 +23,7 @@ import {
   addCustomer,
   deleteCustomer,
   getCustomerDetail,
-  getCustomerAddressDetail,
+  getCustomerDeliveryAddress,
 } from './service';
 import TableTitle from '../../components/TableTitle';
 
@@ -201,7 +201,8 @@ export default ({ addCurrentRecord }) => {
           // console.log(params);
           let res = await getCustomerPageList({
             ...params,
-            type: '0',
+            // 客户角色类型，1.运营平台 2.租户平台 4.代理商 5.租户客户 6.门店 99.无
+            type: '5',
           });
           console.log('😒', res);
           const result = {
@@ -339,7 +340,7 @@ export default ({ addCurrentRecord }) => {
           // 请求获取的数据
           request={async (params) => {
             // console.log(params);
-            let res = await getCustomerAddressDetail({
+            let res = await getCustomerDeliveryAddress({
               ...params,
               customerNo: isViewAddressRecord?.customerNo,
             });

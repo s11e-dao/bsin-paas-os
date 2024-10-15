@@ -19,7 +19,7 @@ public interface MemberService {
     /**
      * 开通会员
      */
-    public void openMember(Map<String, Object> requestMap);
+    public Member openMember(Map<String, Object> requestMap);
 
     /**
      * 租户下所有

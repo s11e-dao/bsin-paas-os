@@ -233,10 +233,29 @@ public class CustomerServiceImpl implements CustomerService {
     if (customerBase == null) {
       throw new BusinessException("100000", "获取openId失败！！！");
     }
-    Map data = new HashMap<>();
-    data.put("openId", customerBase.getCredential());
-    data.put("sessionKey", customerBase.getSessionKey());
-    return data;
+    Map res = new HashMap<>();
+    res.put("openId", customerBase.getCredential());
+    res.put("sessionKey", customerBase.getSessionKey());
+
+    LoginUser loginUser = new LoginUser();
+    loginUser.setTenantId(customerBase.getTenantId());
+    loginUser.setUsername(customerBase.getUsername());
+    loginUser.setPhone(customerBase.getPhone());
+    loginUser.setCustomerNo(customerBase.getCustomerNo());
+    loginUser.setBizRoleType(BizRoleType.CUSTORMER.getCode());
+    loginUser.setBizRoleTypeNo(customerBase.getCustomerNo());
+    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
+    res.put("customerInfo", customerBase);
+    // 查选是否是会员
+    Member member =
+            memberMapper.selectOne(
+                    new LambdaUpdateWrapper<Member>()
+                            .eq(ObjectUtil.isNotNull(customerBase.getTenantId()), Member::getTenantId, customerBase.getTenantId())
+                            .eq(ObjectUtil.isNotNull(merchantNo), Member::getMerchantNo, merchantNo)
+                            .eq(Member::getCustomerNo, customerBase.getCustomerNo()));
+    res.put("memberInfo", member);
+    res.put("token",token);
+    return res;
   }
 
   /**
