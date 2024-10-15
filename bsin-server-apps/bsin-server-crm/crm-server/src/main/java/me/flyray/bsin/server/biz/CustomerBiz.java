@@ -2,7 +2,9 @@ package me.flyray.bsin.server.biz;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
+import me.flyray.bsin.enums.AuthMethod;
 import me.flyray.bsin.security.enums.BizRoleType;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -81,12 +83,38 @@ public class CustomerBiz {
     // 客户用户名唯一，查询客户信息
     LambdaQueryWrapper<CustomerBase> warapper = new LambdaQueryWrapper<>();
     warapper.eq(CustomerBase::getTenantId, customerBase.getTenantId());
-    warapper.eq(CustomerBase::getUsername, customerBase.getUsername());
+
+    if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {
+      warapper.eq(CustomerBase::getCredential, customerBase.getCredential());
+
+    } else if (AuthMethod.QQ.getType().equals(customerBase.getAuthMethod())) {
+      warapper.eq(CustomerBase::getCredential, customerBase.getCredential());
+
+    } else if (AuthMethod.PHONE.getType().equals(customerBase.getAuthMethod())) {
+      warapper.eq(CustomerBase::getPhone, customerBase.getPhone());
+
+    } else if (AuthMethod.EMAIL.getType().equals(customerBase.getAuthMethod())) {
+      warapper.eq(CustomerBase::getEmail, customerBase.getEmail());
+
+    } else if (AuthMethod.USERNAME.getType().equals(customerBase.getAuthMethod())) {
+      warapper.eq(CustomerBase::getUsername, customerBase.getUsername());
+    }
+
     CustomerBase customerInfo = customerBaseMapper.selectOne(warapper);
 
     if (customerInfo != null) {
-      if (!customerBase.getPassword().equals(customerInfo.getPassword())) {
-        throw new BusinessException(ResponseCode.USERNAME_PASSWORD_ERROR);
+      if (ObjectUtils.isNotEmpty(customerBase.getPassword())) {
+        if (!customerBase.getPassword().equals(customerInfo.getPassword())) {
+          throw new BusinessException(ResponseCode.PASSWORD_ERROR);
+        }
+      } else {
+        if (ObjectUtils.isNotEmpty(customerBase.getSessionKey())) {
+          if (!customerBase.getSessionKey().equals(customerInfo.getSessionKey())) {
+            throw new BusinessException(ResponseCode.PASSWORD_ERROR);
+          }
+        } else {
+          throw new BusinessException(ResponseCode.PASSWORD_ERROR);
+        }
       }
       return customerInfo;
     }
@@ -94,6 +122,7 @@ public class CustomerBiz {
     customerBase.setCustomerNo(BsinSnowflake.getId());
     customerBase.setTenantId(customerBase.getTenantId());
     customerBase.setType(BizRoleType.CUSTORMER.getCode());
+    customerBase.setPassword(customerBase.getPassword());
     customerBase.setInviteCode(UniqueInviteCodeGenerator.generateUniqueInviteCode(6));
     customerBaseMapper.insert(customerBase);
 

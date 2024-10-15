@@ -15,7 +15,6 @@ import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.AccountCategory;
-import me.flyray.bsin.domain.enums.LoginMethod;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.response.CustomerAccountVO;
 import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
@@ -182,10 +181,11 @@ public class CustomerServiceImpl implements CustomerService {
       throws UnsupportedEncodingException {
     CustomerBase customerBase =
         BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap, AddGroup.class);
-    String loginType = MapUtils.getString(requestMap, "loginType");
-    String tenantId = MapUtils.getString(requestMap, "tenantId");
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    if (LoginMethod.PHONE.getCode().equals(loginType)) {}
+
+    if (ObjectUtil.isEmpty(customerBase.getTenantId())) {
+      throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
+    }
 
     CustomerBase customerBaseRegister = customerBiz.register(customerBase);
     // 查选是否是jiujiu的会员
@@ -237,24 +237,24 @@ public class CustomerServiceImpl implements CustomerService {
     res.put("openId", customerBase.getCredential());
     res.put("sessionKey", customerBase.getSessionKey());
 
-    LoginUser loginUser = new LoginUser();
-    loginUser.setTenantId(customerBase.getTenantId());
-    loginUser.setUsername(customerBase.getUsername());
-    loginUser.setPhone(customerBase.getPhone());
-    loginUser.setCustomerNo(customerBase.getCustomerNo());
-    loginUser.setBizRoleType(BizRoleType.CUSTORMER.getCode());
-    loginUser.setBizRoleTypeNo(customerBase.getCustomerNo());
-    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
-    res.put("customerInfo", customerBase);
-    // 查选是否是会员
-    Member member =
-            memberMapper.selectOne(
-                    new LambdaUpdateWrapper<Member>()
-                            .eq(ObjectUtil.isNotNull(customerBase.getTenantId()), Member::getTenantId, customerBase.getTenantId())
-                            .eq(ObjectUtil.isNotNull(merchantNo), Member::getMerchantNo, merchantNo)
-                            .eq(Member::getCustomerNo, customerBase.getCustomerNo()));
-    res.put("memberInfo", member);
-    res.put("token",token);
+//    LoginUser loginUser = new LoginUser();
+//    loginUser.setTenantId(customerBase.getTenantId());
+//    loginUser.setUsername(customerBase.getUsername());
+//    loginUser.setPhone(customerBase.getPhone());
+//    loginUser.setCustomerNo(customerBase.getCustomerNo());
+//    loginUser.setBizRoleType(BizRoleType.CUSTORMER.getCode());
+//    loginUser.setBizRoleTypeNo(customerBase.getCustomerNo());
+//    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
+//    res.put("customerInfo", customerBase);
+//    // 查选是否是会员
+//    Member member =
+//            memberMapper.selectOne(
+//                    new LambdaUpdateWrapper<Member>()
+//                            .eq(ObjectUtil.isNotNull(customerBase.getTenantId()), Member::getTenantId, customerBase.getTenantId())
+//                            .eq(ObjectUtil.isNotNull(merchantNo), Member::getMerchantNo, merchantNo)
+//                            .eq(Member::getCustomerNo, customerBase.getCustomerNo()));
+//    res.put("memberInfo", member);
+//    res.put("token",token);
     return res;
   }
 
