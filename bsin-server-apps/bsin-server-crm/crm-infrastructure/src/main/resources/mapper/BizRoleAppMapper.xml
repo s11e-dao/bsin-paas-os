@@ -78,8 +78,16 @@
                del_flag,
                status
         from crm_biz_role_app
-        where del_flag = 0 and
-            tenant_id = #{tenantId} and  biz_role_type_no = #{bizRoleTypeNo} and app_id = #{appId}
+        where del_flag = 0
+        <if test="tenantId != null">
+            and tenant_id = #{tenantId}
+        </if>
+        <if test="bizRoleTypeNo != null">
+            and biz_role_type_no = #{bizRoleTypeNo}
+        </if>
+        <if test="appId != null">
+            and app_id = #{appId}
+        </if>
     </select>
 
     <select id="getAppInfoByAppId" resultMap="BaseResultMap">

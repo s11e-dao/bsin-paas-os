@@ -30,6 +30,9 @@ import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
+import static me.flyray.bsin.constants.ResponseCode.EQUITY_NOT_EXISTS;
+import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
+
 /**
  * @author bolei
  * @date 2023/7/26 16:46
@@ -69,7 +72,9 @@ public class EquityServiceImpl implements EquityService {
   @Override
   public void delete(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
-    equityMapper.deleteById(serialNo);
+    if (equityMapper.deleteById(serialNo) ==0){
+      throw new BusinessException(EQUITY_NOT_EXISTS);
+    }
   }
 
   @ApiDoc(desc = "edit")
@@ -77,7 +82,9 @@ public class EquityServiceImpl implements EquityService {
   @Override
   public void edit(Map<String, Object> requestMap) {
     Equity equity = BsinServiceContext.getReqBodyDto(Equity.class, requestMap);
-    equityMapper.updateById(equity);
+    if (equityMapper.updateById(equity) ==0){
+      throw new BusinessException(EQUITY_NOT_EXISTS);
+    }
   }
 
   @ApiDoc(desc = "getDetail")
@@ -86,6 +93,9 @@ public class EquityServiceImpl implements EquityService {
   public Equity getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
     Equity equity = equityMapper.selectById(serialNo);
+    if (equity == null) {
+      throw new BusinessException(EQUITY_NOT_EXISTS);
+    }
     return equity;
   }
 

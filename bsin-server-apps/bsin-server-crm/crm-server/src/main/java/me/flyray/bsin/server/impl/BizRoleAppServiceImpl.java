@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.BizRoleApp;
+import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.BizRoleAppService;
 import me.flyray.bsin.infrastructure.mapper.BizRoleAppMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+import static me.flyray.bsin.constants.ResponseCode.*;
 
 
 @Slf4j
@@ -74,7 +76,9 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
     @Override
     public void delete(Map<String, Object> requestMap) {
         BizRoleApp bizRoleApp = BsinServiceContext.bisId(BizRoleApp.class, requestMap);
-        merchantAppMapper.deleteById(bizRoleApp.getSerialNo());
+        if (merchantAppMapper.deleteById(bizRoleApp.getSerialNo())==0) {
+            throw new BusinessException(APP_NOT_EXISTS);
+        }
     }
 
     /**
@@ -89,7 +93,9 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
         BizRoleApp bizRoleApp = BsinServiceContext.bisId(BizRoleApp.class, requestMap);
         String serialNo = (String) requestMap.get("serialNo");
         bizRoleApp.setAppId(serialNo);
-        merchantAppMapper.updateById(bizRoleApp);
+        if (merchantAppMapper.updateById(bizRoleApp)==0) {
+            throw new BusinessException(APP_NOT_EXISTS);
+        }
     }
 
     /**

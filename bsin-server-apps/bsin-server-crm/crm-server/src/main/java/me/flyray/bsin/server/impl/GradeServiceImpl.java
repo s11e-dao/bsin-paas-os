@@ -31,8 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static me.flyray.bsin.constants.ResponseCode.MERCHANT_NO_IS_NULL;
-import static me.flyray.bsin.constants.ResponseCode.TENANT_ID_NOT_ISNULL;
+import static me.flyray.bsin.constants.ResponseCode.*;
 
 /**
 * @author bolei
@@ -81,7 +80,9 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public void delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
-        gradeMapper.deleteById(serialNo);
+        if (gradeMapper.deleteById(serialNo) ==0){
+            throw new BusinessException(GRADE_NOT_EXISTS);
+        }
     }
 
     @ApiDoc(desc = "edit")
@@ -92,7 +93,9 @@ public class GradeServiceImpl implements GradeService {
         Grade grade = BsinServiceContext.getReqBodyDto(Grade.class, requestMap);
         grade.setTenantId(loginUser.getTenantId());
         grade.setMerchantNo(loginUser.getMerchantNo());
-        gradeMapper.updateById(grade);
+        if (gradeMapper.updateById(grade) ==0){
+            throw new BusinessException(GRADE_NOT_EXISTS);
+        }
         return grade;
     }
 
@@ -105,7 +108,7 @@ public class GradeServiceImpl implements GradeService {
         LambdaQueryWrapper<Grade> warapper = new LambdaQueryWrapper<>();
         warapper.orderByDesc(Grade::getCreateTime);
         warapper.eq(Grade::getTenantId, loginUser.getTenantId());
-        warapper.eq(Grade::getMerchantNo, loginUser.getMerchantNo());
+        warapper.eq(StringUtils.isNotEmpty(loginUser.getMerchantNo()),Grade::getMerchantNo, loginUser.getMerchantNo());
         List<Grade> gradeList = gradeMapper.selectList(warapper);
         return gradeList;
     }
@@ -123,7 +126,7 @@ public class GradeServiceImpl implements GradeService {
         LambdaQueryWrapper<Grade> warapper = new LambdaQueryWrapper<>();
         warapper.orderByDesc(Grade::getCreateTime);
         warapper.eq(Grade::getTenantId, loginUser.getTenantId());
-        warapper.eq(Grade::getMerchantNo, loginUser.getMerchantNo());
+        warapper.eq(StringUtils.isNotEmpty(loginUser.getMerchantNo()),Grade::getMerchantNo, loginUser.getMerchantNo());
         warapper.eq(
                 StringUtils.isNotEmpty(grade.getGradeNum()),
                 Grade::getGradeNum,
