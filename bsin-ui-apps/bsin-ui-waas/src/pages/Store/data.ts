@@ -16,7 +16,7 @@ export type columnsDataType = {
 const columnsData: ProColumns<columnsDataType>[] = [
   // 配置搜索框
   {
-    title: '店铺名称',
+    title: '门店名称',
     dataIndex: 'storeName',
     valueType: 'select',
     hideInTable: true,
@@ -32,14 +32,14 @@ const columnsData: ProColumns<columnsDataType>[] = [
 
   // table里面的内容
   {
-    title: '店铺ID',
+    title: '门店ID',
     width: 170,
     dataIndex: 'serialNo',
     fixed: 'left',
     hideInSearch: true,
   },
   {
-    title: '店铺名称',
+    title: '门店名称',
     width: 160,
     dataIndex: 'storeName',
     hideInSearch: true,
@@ -57,7 +57,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
   },
   {
-    title: '店铺logo',
+    title: '门店logo',
     width: 160,
     dataIndex: 'logo',
     hideInSearch: true,

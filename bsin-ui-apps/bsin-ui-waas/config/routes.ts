@@ -21,6 +21,16 @@ const routes = [
         path: '/uncontainer',
         component: '@/pages/uncontainer'
       },
+      // **************审核************
+      {
+        path: '/audit-center',
+        redirect: '/audit-center/app-audit',
+      },
+      // api费用配置（应用审核）
+      {
+        path: '/audit-center/app-audit',
+        component: '@/pages/ApiTxFeeConfig/index',
+      },
       // **************平台************
       {
         path: '/platform',
@@ -30,6 +40,16 @@ const routes = [
       {
         path: '/platform/platform-list',
         component: '@/pages/Platform/index',
+      },
+      // 平台接入应用
+      {
+        path: '/platform/platform-app',
+        component: '@/pages/BizRoleApp/index',
+      },
+      // 平台服务订阅
+      {
+        path: '/platform/platform-service-subscribe',
+        component: '@/pages/ServiceSubscribe/index',
       },
       // **************系统代理商************
       {
@@ -59,27 +79,17 @@ const routes = [
       // 商户账户
       {
         path: '/merchant/merchant-account',
-        component: '@/pages/Merchant/MerchantAccount/index',
+        component: '@/pages/BizRoleApp/index',
       },
-      // api费用配置（应用审核）
-      {
-        path: '/merchant/app-audit',
-        component: '@/pages/Merchant/ApiTxFeeConfig/index',
-      },
-      // 商户应用：小程序、公众号、app
+      // 商户接入应用：小程序、公众号、app
       {
         path: '/merchant/merchant-app',
-        component: '@/pages/Merchant/MerchantApp/index',
-      },
-      // 商户认证信息审核
-      {
-        path: '/merchant/merchant-audit',
-        component: '@/pages/Merchant/MerchantAudit/index',
+        component: '@/pages/BizRoleApp/index',
       },
       // 商户服务订阅
       {
         path: '/merchant/service-subscribe',
-        component: '@/pages/Merchant/ServiceSubscribe/index',
+        component: '@/pages/ServiceSubscribe/index',
       },
       // ******************线上商城********************
       {

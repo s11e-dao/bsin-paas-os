@@ -22,7 +22,7 @@ import {
   subscribeApps
 } from './service';
 
-import TableTitle from '../../../components/TableTitle';
+import TableTitle from '../../components/TableTitle';
 import { hex_md5 } from '@/utils/md5';
 import {
   getLocalStorageInfo,

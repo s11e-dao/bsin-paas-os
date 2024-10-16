@@ -18,7 +18,7 @@ import {
   getApiFeeConfigDetails,
   editApiFeeConfig,
 } from './service';
-import TableTitle from '../../../components/TableTitle';
+import TableTitle from '../../components/TableTitle';
 
 export default () => {
   const { TextArea } = Input;

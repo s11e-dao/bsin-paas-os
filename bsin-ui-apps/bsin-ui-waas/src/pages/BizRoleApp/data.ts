@@ -16,7 +16,7 @@ export type columnsDataType = {
 const columnsData: ProColumns<columnsDataType>[] = [
   // 配置搜索框
   {
-    title: '产品名',
+    title: '应用名称',
     dataIndex: 'merchantName',
     hideInTable: true,
     fieldProps: {
@@ -51,19 +51,19 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
   },
   {
-    title: '产品名称',
+    title: '应用名称',
     width: 170,
     dataIndex: 'productName',
     hideInSearch: true,
   },
   {
-    title: '产品ID',
+    title: '应用ID',
     width: 170,
     dataIndex: 'productId',
     hideInSearch: true,
   },
   {
-    title: '产品密钥',
+    title: '应用密钥',
     width: 170,
     dataIndex: 'productSecret',
     hideInSearch: true,
