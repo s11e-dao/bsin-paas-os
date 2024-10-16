@@ -93,8 +93,8 @@ const routes = [
       },
       // ******************线上商城********************
       {
-        path: '/merchant/shop-mall',
-        component: '@/pages/Store/index',
+        path: '/merchant/store-online',
+        component: '@/pages/StoreOnline/index',
       },
       // ******************门店********************
       // 门店列表
