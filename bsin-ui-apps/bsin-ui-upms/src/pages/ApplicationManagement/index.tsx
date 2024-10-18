@@ -33,6 +33,7 @@ import {
   Select,
   Radio,
   Row,
+  Avatar
 } from 'antd';
 import dayjs from 'dayjs';
 import type { FC } from 'react';
@@ -333,6 +334,14 @@ export const BasicList: FC = () => {
     postRun(method, values);
   };
 
+  // const [layoutMenudata, setLayoutMenudata] = useState([]);
+  const getAppLogo = (appLogo: any) => {
+    if(appLogo){
+      return <Avatar shape="square" src={appLogo} />
+    }
+    return <IdcardOutlined className={styles.appIcon} />;
+  }
+
   const getMenuIon = (icon: any) => {
     let menuIon = <UserOutlined className={styles.appIcon} />;
     // console.log(icon == null);
@@ -426,7 +435,7 @@ export const BasicList: FC = () => {
                 ]}
               >
                 <List.Item.Meta
-                  avatar={getMenuIon(item?.logo)}
+                  avatar={getAppLogo(item?.logo)}
                   title={<a href={item.appCode}>{item.appName}</a>}
                   description={item.remark}
                 />
