@@ -105,7 +105,7 @@ export default function () {
       });
     }
 
-    if (res?.code === 0) {
+    if (res && res.code == 0) {
       if (res.data?.sysUser) {
         setLocalStorageInfo('userInfo', res.data?.sysUser);
       }
@@ -114,9 +114,9 @@ export default function () {
       }
       setSessionStorageInfo('token', { token: res.data?.token });
       message.success('登录成功！');
-      setLoadings(false)
       history.push("/home")
     }
+    setLoadings(false);
   }
 
   // 切换登录页面
