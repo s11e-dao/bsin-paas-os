@@ -39,7 +39,7 @@ import {
   ConfigProvider,
   Divider,
   Dropdown,
-  Input,
+  Avatar,
   Popover,
   theme,
   Drawer,
@@ -48,6 +48,7 @@ import {
   FloatButton,
   message,
 } from 'antd'
+
 import React, { useState, useRef, useEffect } from 'react'
 import { Outlet, history, useLocation, SelectLang, setLocale } from 'umi'
 
@@ -288,6 +289,13 @@ export default () => {
   }
 
   // const [layoutMenudata, setLayoutMenudata] = useState([]);
+  const getAppLogo = (appLogo: any) => {
+    let appLogoImg = logoImg;
+    if(appLogo){
+      appLogoImg = appLogo
+    }
+    return <Avatar shape="square" src={appLogoImg} />
+  }
 
   const getTopMenuIon = (icon: any) => {
     let menuIon = <UserOutlined />
@@ -353,7 +361,7 @@ export default () => {
           return {
             name: item.appName,
             path: item.appCode,
-            icon: getTopMenuIon(item.logo),
+            icon: getAppLogo(item.logo),
             description: item.remark,
           }
         })
