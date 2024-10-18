@@ -138,6 +138,7 @@ body {
 .input_wrap {
     position: relative;
     height: 37px;
+    margin-top: 1.5rem;
     margin-bottom: 2rem;
     /* background-color: red; */
 }

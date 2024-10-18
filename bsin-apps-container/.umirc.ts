@@ -20,6 +20,7 @@ export default {
     // 'process.env.webScoketUrl': 'ws://127.0.0.1:8126/websocket',
     'process.env.webScoketUrl': 'ws://127.0.0.1:8126/websocket',
     'process.env.registerNotNeedAudit': true,  // 针对copilot微信分身产品，用户注册无需审核，可直接使用基础产品
+    'process.env.defaultTenantNo': '6345824413764157440',  // 默认商户号
     'process.env.defaultMerchantNo': '1737853502828482561',  // 默认商户号
     'process.env.contextPath_upms': '/upms',  // upms应用
     'process.env.contextPath_crm': '/crm',  // crm应用

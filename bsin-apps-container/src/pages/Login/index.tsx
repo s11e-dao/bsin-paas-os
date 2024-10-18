@@ -23,6 +23,8 @@ import { userLogin, getTenantList, nodeUserLogin, sysAgentLogin } from '../../se
 
 export default function () {
 
+  let defaultTenantNo = process.env.defaultTenantNo
+
   useEffect(() => {
     const token = getSessionStorageInfo("token");
     if (token) {
@@ -65,7 +67,7 @@ export default function () {
       ...rootLoginState,
       password: hex_md5(rootLoginState.password),
       // password: loginState.password,
-      tenantId: "6345824413764157440",
+      tenantId: defaultTenantNo,
     });
     console.log("-------------")
     console.log(res)
@@ -101,7 +103,7 @@ export default function () {
       res = await sysAgentLogin({
         ...nodeLoginState,
         password: hex_md5(nodeLoginState.password),
-        tenantId,
+        tenantId: defaultTenantNo,
       });
     }
 
@@ -204,7 +206,7 @@ export default function () {
                           <Radio.Group block options={options} defaultValue="2" optionType="button" onChange={handleBizRoleTypeChange} />
                         </Flex>
                       </div>
-                      <div className={styles.input_wrap}>
+                      {bizRoleType === '4' ? (null) : (<div className={styles.input_wrap}>
                         <Select
                           bordered={false}
                           style={{
@@ -236,6 +238,7 @@ export default function () {
                           })}
                         </Select>
                       </div>
+                      )}
                       <div className={styles.input_wrap}>
                         <input type="text" minLength="4" className={styles.input_field} autoComplete="off" required
                           name="username"
