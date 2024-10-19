@@ -71,7 +71,7 @@ export default ({ setCurrentContent }) => {
 
   const protocolCodeChange = (value) => {
     console.log(value);
-    contractProtocolList.map((contractProtocol) => {
+    contractProtocolList?.map((contractProtocol) => {
       if (contractProtocol?.protocolCode == value) {
         setContractProtocolChoosed(contractProtocol);
         FormRef.setFieldValue('contractProtocolNo', contractProtocol.serialNo);
@@ -124,7 +124,7 @@ export default ({ setCurrentContent }) => {
                 }}
               >
                 <Option value="1">请选择资产类型</Option>
-                {contractProtocolList.map((contractProtocol) => {
+                {contractProtocolList?.map((contractProtocol) => {
                   //筛选出ERC20的合约
                   if (contractProtocol?.protocolStandards == 'ERC20') {
                     return (
@@ -269,7 +269,7 @@ export default ({ setCurrentContent }) => {
               </Select>
             </Form.Item>
 
-            <Form.Item wrapperCol={{ offset: 5, span: 12 }}>
+            <Form.Item wrapperCol={{ offset: 7, span: 12 }}>
               <Button type="primary" htmlType="submit"
                 onClick={() => {
                   confirmIssue();

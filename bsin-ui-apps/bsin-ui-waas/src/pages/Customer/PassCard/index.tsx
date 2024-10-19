@@ -251,7 +251,7 @@ export default () => {
         title="查看合约协议"
         width={800}
         centered
-        visible={isViewTemplateModal}
+        open={isViewTemplateModal}
         onOk={() => setIsViewTemplateModal(false)}
         onCancel={() => setIsViewTemplateModal(false)}
       >

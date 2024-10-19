@@ -923,7 +923,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
               }}
             >
               <Option value="1">请选择会员卡资产</Option>
-              {merchantPassCardList.map((merchantPassCard) => {
+              {merchantPassCardList?.map((merchantPassCard) => {
                 return (
                   <Option value={merchantPassCard?.serialNo}>
                     {(merchantPassCard?.serialNo).slice(-4) +

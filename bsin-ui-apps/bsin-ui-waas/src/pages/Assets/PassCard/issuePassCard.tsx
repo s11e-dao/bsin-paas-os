@@ -221,7 +221,7 @@ export default ({ setCurrentContent }) => {
                   }}
                 >
                   <Option value="1">请选择profile编号</Option>
-                  {customerProfileList.map((customerProfile) => {
+                  {customerProfileList?.map((customerProfile) => {
                     return (
                       <Option value={customerProfile?.serialNo}>
                         {(customerProfile?.serialNo).slice(-4) +
@@ -278,7 +278,7 @@ export default ({ setCurrentContent }) => {
             >
               <Select style={{ width: '100%' }}>
                 <Option value="1">请选择元数据模板</Option>
-                {metadataTemplateList.map((metadataTemplate) => {
+                {metadataTemplateList?.map((metadataTemplate) => {
                   return (
                     <Option value={metadataTemplate?.serialNo}>
                       {metadataTemplate?.templateName}
@@ -294,7 +294,7 @@ export default ({ setCurrentContent }) => {
             >
               <Select style={{ width: '100%' }}>
                 <Option value="1">请选择元数据图片路径</Option>
-                {metadataFilePathList.map((metadataFilePath) => {
+                {metadataFilePathList?.map((metadataFilePath) => {
                   return (
                     <Option value={metadataFilePath?.serialNo}>
                       {metadataFilePath?.fileName}
@@ -374,7 +374,7 @@ export default ({ setCurrentContent }) => {
               </Select>
             </Form.Item>
 
-            <Form.Item label=" ">
+            <Form.Item wrapperCol={{ offset: 5, span: 12 }}>
               <Button
                 type="primary"
                 onClick={() => {
