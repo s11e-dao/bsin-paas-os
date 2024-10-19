@@ -25,6 +25,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { useModel } from 'umi'
 
 export default () => {
+  
   // 获取appId
   const { appId } = useModel('@@qiankunStateFromMaster')
   const { TextArea } = Input

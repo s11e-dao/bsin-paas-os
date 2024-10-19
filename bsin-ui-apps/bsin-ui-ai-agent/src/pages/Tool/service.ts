@@ -1,5 +1,5 @@
 import { request } from '@umijs/max'
-let aiPath = process.env.contextPath_ai;
+let aiPath = process.env.contextPath_aiAgent;
 
 // 列表数据请求
 export const getToolPageList = (params) => {

@@ -79,6 +79,7 @@ import type { UploadProps } from 'antd'
 const { Dragger } = Upload
 
 export default ({ routerChange }) => {
+
   let bsinFileUploadUrl = process.env.bsinFileUploadUrl
   let tenantAppType = process.env.tenantAppType
 
@@ -203,7 +204,7 @@ export default ({ routerChange }) => {
     setMerchantInfo(merchantInfoTmp)
 
     getCopilotList({}).then((res) => {
-      if (res.code == '000000') {
+      if (res.code == 0) {
         setCopilotList(res.data)
         console.log(res.data)
       } else {
@@ -228,7 +229,7 @@ export default ({ routerChange }) => {
       pageSize: '99',
     }
     getWxPlatformList(params).then((res) => {
-      if (res?.code == '000000') {
+      if (res?.code == 0) {
         setWxPlatformList(res?.data)
 
         res?.data.map((wxPlatform) => {
@@ -614,13 +615,6 @@ export default ({ routerChange }) => {
   const formItemComponent = () => {
     return (
       <>
-        <Form.Item
-          label="ID"
-          name="serialNo"
-          rules={[{ required: false, message: '请输入ID!' }]}
-        >
-          <Input disabled />
-        </Form.Item>
 
         <Form.Item
           label="名称"
@@ -695,7 +689,7 @@ export default ({ routerChange }) => {
 
         <Form.Item
           label="封面图"
-          name="coverImageUpload"
+          name="coverImage"
           tooltip="添加或修改上传应用封面图像"
         >
           <Dragger {...uploadProps} listType="picture">
@@ -704,9 +698,6 @@ export default ({ routerChange }) => {
             </p>
             <p className="ant-upload-text">点击上传封面</p>
           </Dragger>
-        </Form.Item>
-        <Form.Item label="封面地址" name="coverImage">
-          <Input disabled />
         </Form.Item>
         {/* 企业微信 */}
         {tabIndex == '3' ? (
@@ -942,27 +933,7 @@ export default ({ routerChange }) => {
             autoSize={{ minRows: 2, maxRows: 8 }}
           />
         </Form.Item>
-        <Form.Item
-          label="创建人"
-          name="createBy"
-          rules={[{ required: false, message: '请输入创建人!' }]}
-        >
-          <Input disabled />
-        </Form.Item>
-        <Form.Item
-          label="创建时间"
-          name="createTime"
-          rules={[{ required: false, message: '请输入创建时间!' }]}
-        >
-          <Input disabled />
-        </Form.Item>
-        <Form.Item
-          label="更新时间"
-          name="updateTime"
-          rules={[{ required: false, message: '请输入更新时间!' }]}
-        >
-          <Input disabled />
-        </Form.Item>
+        
       </>
     )
   }
