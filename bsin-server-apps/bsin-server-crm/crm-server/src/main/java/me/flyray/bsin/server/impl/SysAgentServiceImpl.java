@@ -56,12 +56,12 @@ public class SysAgentServiceImpl implements SysAgentService {
     @Override
     public Map<String, Object> login(Map<String, Object> requestMap) {
         String username = MapUtils.getString(requestMap, "username");
-        // 查询商户信息
+        // 查询代理商信息
         LambdaQueryWrapper<SysAgent> warapper = new LambdaQueryWrapper<>();
         warapper.eq(SysAgent::getUsername, username);
         SysAgent sysAgent = sysAgentMapper.selectOne(warapper);
 
-        // TODO 判断是否是商户员工
+        // TODO 判断是否是代理商员工
         if(sysAgent == null){
             throw new BusinessException(ResponseCode.MERCHANT_NOT_EXISTS);
         }
