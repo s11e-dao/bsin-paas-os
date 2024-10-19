@@ -362,6 +362,7 @@ export default () => {
             name: item.appName,
             path: item.appCode,
             icon: getAppLogo(item.logo),
+            logo: item.logo,
             description: item.remark,
           }
         })
@@ -425,7 +426,7 @@ export default () => {
 
   return (
     <div
-      id="test-pro-layout"
+      id="bsin-pro-layout"
       style={{
         height: '100vh',
         overflow: 'auto',
@@ -435,7 +436,7 @@ export default () => {
       <ProConfigProvider hashed={false}>
         <ConfigProvider
           getTargetContainer={() => {
-            return document.getElementById('test-pro-layout') || document.body
+            return document.getElementById('bsin-pro-layout') || document.body
           }}
         >
           <ProLayout

@@ -82,7 +82,7 @@ export default ({ userApps, getAppMenu }) => {
                   <div
                     onClick={(e) => {
                       // 根据当前登录的用户类型判断跳转不同的中心：租户个人中心，商户个人中心
-                      appClick(e,app)
+                      appClick(e, app)
                     }}
                     key={index}
                     className={css`
@@ -90,14 +90,17 @@ export default ({ userApps, getAppMenu }) => {
                         padding: 16px;
                         margin-top: 4px;
                         display: flex;
-                        min-width: 210px;
+                        width: 210px;
                         cursor: pointer;
                         &:hover {
                           background-color: ${token.colorBgTextHover};
                         }
                       `}
                   >
-                    <img src="https://gw.alipayobjects.com/zos/antfincdn/6FTGmLLmN/bianzu%25252013.svg" />
+                    <img className={css`
+                        width: 40px;
+                        height:40px;
+                      `} src={app.logo} />
                     <div
                       style={{
                         marginInlineStart: 14,
@@ -146,7 +149,7 @@ export default ({ userApps, getAppMenu }) => {
               }
             `}
         >
-          <span style={{ color: '#fff' }}> { appName || "企业应用中心"}</span>
+          <span style={{ color: '#fff' }}> {appName || "企业应用中心"}</span>
           <CaretDownFilled style={{ color: '#fff' }} />
         </div>
       </Popover>
