@@ -174,14 +174,23 @@ export default ({ addCurrentRecord }) => {
   const handleViewRecordOfType = () => {
     let { type } = isViewRecord;
     // 客户类型 0、个人客户 1、租户商家客户 2、租户(dao)客户 3、顶级平台商家客户
+    // 用户角色类型，1.运营平台 2.租户平台 4.代理商 5.租户客户 6.门店 99.无
     if (type == '0') {
-      return '个人客户';
+      return '未定义';
     } else if (type == '1') {
-      return '商户客户';
+      return '运营平台';
     } else if (type == '2') {
-      return '租户客户';
+      return '租户平台';
     } else if (type == '3') {
-      return '顶级平台商家客户';
+      return '代理商';
+    }  else if (type == '4') {
+      return '代理商';
+    } else if (type == '5') {
+      return '租户客户';
+    } else if (type == '6') {
+      return '门店';
+    } else if (type == '99') {
+      return '无';
     }
     return type;
   };

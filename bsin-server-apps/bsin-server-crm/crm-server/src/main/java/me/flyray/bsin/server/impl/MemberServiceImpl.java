@@ -14,6 +14,7 @@ import me.flyray.bsin.domain.entity.TokenParam;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MemberService;
 import me.flyray.bsin.facade.service.TokenParamService;
+import me.flyray.bsin.facade.service.UniflyOrderService;
 import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberGradeMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberMapper;
@@ -43,7 +44,6 @@ import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_NO_NOT_ISNULL;
  * @date 2023/8/6 10:12
  * @desc
  */
-
 @Slf4j
 @ShenyuDubboService(path = "/member", timeout = 6000)
 @ApiModule(value = "member")
@@ -59,6 +59,16 @@ public class MemberServiceImpl implements MemberService {
   @DubboReference(version = "${dubbo.provider.version}")
   private TokenParamService tokenParamService;
 
+  @DubboReference(version = "${dubbo.provider.version}")
+  private UniflyOrderService uniflyOrderService;
+
+  /**
+   * 根创建会员信息
+   *
+   * @param requestMap 包含会员信息的请求映射
+   * @return 会员对象
+   * @throws BusinessException 如果客户编号为空或客户信息不存在，则抛出业务异常
+   */
   @ApiDoc(desc = "openMember")
   @ShenyuDubboClient("/openMember")
   @Override
@@ -70,21 +80,38 @@ public class MemberServiceImpl implements MemberService {
     if (member.getTenantId() == null) {
       member.setTenantId(LoginInfoContextHelper.getTenantId());
     }
+    // 检查客户信息是否存在
     if (!customerBaseMapper.exists(
-            new LambdaUpdateWrapper<CustomerBase>()
-                    .eq(CustomerBase::getTenantId, member.getTenantId())
-                    .eq(CustomerBase::getCustomerNo, member.getCustomerNo()))) {
+        new LambdaUpdateWrapper<CustomerBase>()
+            .eq(CustomerBase::getTenantId, member.getTenantId())
+            .eq(CustomerBase::getCustomerNo, member.getCustomerNo()))) {
       throw new BusinessException(CUSTOMER_ERROR);
     }
     if (!memberMapper.exists(
         new LambdaUpdateWrapper<Member>()
             .eq(Member::getTenantId, member.getTenantId())
-            .eq(ObjectUtils.isNotEmpty(member.getMerchantNo()), Member::getMerchantNo, member.getMerchantNo())
+            .eq(
+                ObjectUtils.isNotEmpty(member.getMerchantNo()),
+                Member::getMerchantNo,
+                member.getMerchantNo())
             .eq(Member::getCustomerNo, member.getCustomerNo()))) {
-      memberMapper.insert(member);
+
+      // oms中创建一个会员订购支付订单
+//      uniflyOrderService.create(member);
+      // TODO： 支付成功回调插入会员数据
+      // memberMapper.insert(member);
+    } else {
+      member =
+          memberMapper.selectOne(
+              new LambdaUpdateWrapper<Member>()
+                  .eq(Member::getTenantId, member.getTenantId())
+                  .eq(
+                      ObjectUtils.isNotEmpty(member.getMerchantNo()),
+                      Member::getMerchantNo,
+                      member.getMerchantNo())
+                  .eq(Member::getCustomerNo, member.getCustomerNo()));
     }
     return member;
-
   }
 
   @ApiDoc(desc = "getPageList")
@@ -93,14 +120,17 @@ public class MemberServiceImpl implements MemberService {
   public IPage<?> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
-    Object paginationObj =  requestMap.get("pagination");
+    Object paginationObj = requestMap.get("pagination");
     Pagination pagination = new Pagination();
-    BeanUtil.copyProperties(paginationObj,pagination);
+    BeanUtil.copyProperties(paginationObj, pagination);
     Page<Member> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaQueryWrapper<Member> warapper = new LambdaQueryWrapper<>();
     warapper.orderByDesc(Member::getCreateTime);
     warapper.eq(Member::getTenantId, loginUser.getTenantId());
-    warapper.eq(ObjectUtils.isNotEmpty(loginUser.getMerchantNo()),Member::getMerchantNo, loginUser.getMerchantNo());
+    warapper.eq(
+        ObjectUtils.isNotEmpty(loginUser.getMerchantNo()),
+        Member::getMerchantNo,
+        loginUser.getMerchantNo());
     IPage<Member> pageList = memberMapper.selectPage(page, warapper);
     return pageList;
   }
@@ -116,17 +146,16 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public List<?> getGradeMemberList(Map<String, Object> requestMap) {
     String gradeNo = MapUtils.getString(requestMap, "gradeNo");
-    if ((String)requestMap.get("merchantNo") == null) {
-      requestMap.put("merchantNo",LoginInfoContextHelper.getMerchantNo());
+    if ((String) requestMap.get("merchantNo") == null) {
+      requestMap.put("merchantNo", LoginInfoContextHelper.getMerchantNo());
     }
     // 1.商户发行的数字积分(查询tokenParam)
     TokenParam tokenParamMap = tokenParamService.getDetailByMerchantNo(requestMap);
     String ccy = tokenParamMap.getSymbol();
 
-    List<CustomerBase> memberList = memberGradeMapper.selectMemberListByGrade(gradeNo,ccy);
-    for (CustomerBase customer : memberList) {
+    List<CustomerBase> memberList = memberGradeMapper.selectMemberListByGrade(gradeNo, ccy);
+    for (CustomerBase customer : memberList) {}
 
-    }
     return memberList;
   }
 
@@ -167,5 +196,4 @@ public class MemberServiceImpl implements MemberService {
     Grade memberGrade = memberGradeMapper.selectMemberGrade(customerNo);
     return memberGrade;
   }
-
 }

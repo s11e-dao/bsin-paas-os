@@ -63,7 +63,7 @@ public class SysAgentServiceImpl implements SysAgentService {
 
         // TODO 判断是否是代理商员工
         if(sysAgent == null){
-            throw new BusinessException(ResponseCode.MERCHANT_NOT_EXISTS);
+            throw new BusinessException(ResponseCode.SYS_AGENT_NOT_EXISTS);
         }
         LoginUser loginUser = new LoginUser();
         BeanUtil.copyProperties(sysAgent, loginUser);
