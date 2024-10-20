@@ -16,6 +16,9 @@ bsin-server-Intelligent-decision是基于drools和antv的自主研发的可视�
 * 高并发、低延迟、高稳定性
 * 可视化规则配置
 
+### 关键设计点
+* 一个事件对应多个模型：对于流程模型 规则模型 AI推理模型 表单模型等
+
 #### 软件架构
 
 ![avatar](./doc/images/业务架构图.png)
