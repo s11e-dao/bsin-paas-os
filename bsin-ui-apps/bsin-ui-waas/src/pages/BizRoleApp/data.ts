@@ -75,7 +75,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
   },
   {
-    title: '产品状态',
+    title: '应用状态',
     width: 160,
     dataIndex: 'status',
     hideInSearch: true,
@@ -89,7 +89,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     },
   },
   {
-    title: '产品描述',
+    title: '应用描述',
     width: 160,
     dataIndex: 'productDescription',
     hideInSearch: true,
