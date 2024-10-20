@@ -14,7 +14,6 @@ import me.flyray.bsin.domain.entity.TokenParam;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MemberService;
 import me.flyray.bsin.facade.service.TokenParamService;
-import me.flyray.bsin.facade.service.UniflyOrderService;
 import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberGradeMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberMapper;
@@ -59,9 +58,6 @@ public class MemberServiceImpl implements MemberService {
   @DubboReference(version = "${dubbo.provider.version}")
   private TokenParamService tokenParamService;
 
-  @DubboReference(version = "${dubbo.provider.version}")
-  private UniflyOrderService uniflyOrderService;
-
   /**
    * 根创建会员信息
    *
@@ -96,8 +92,6 @@ public class MemberServiceImpl implements MemberService {
                 member.getMerchantNo())
             .eq(Member::getCustomerNo, member.getCustomerNo()))) {
 
-      // oms中创建一个会员订购支付订单
-//      uniflyOrderService.create(member);
       // TODO： 支付成功回调插入会员数据
       // memberMapper.insert(member);
     } else {
