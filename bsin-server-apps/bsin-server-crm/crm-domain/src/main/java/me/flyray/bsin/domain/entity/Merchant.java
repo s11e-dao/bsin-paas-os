@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import lombok.Data;
+import me.flyray.bsin.domain.enums.AuthenticationStatus;
 
 /**
  * 
@@ -112,11 +113,13 @@ public class Merchant implements Serializable {
 
     /**
      * 认证状态   1: 待认证  2：认证成功  3：认证失败
+     * @see AuthenticationStatus
      */
     private String authenticationStatus;
 
     /**
      * 业态
+     * @see sys_dict_item 表
      */
     private String businessType;
 

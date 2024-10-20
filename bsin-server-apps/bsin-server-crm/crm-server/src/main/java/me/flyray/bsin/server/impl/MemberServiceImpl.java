@@ -7,13 +7,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.CustomerBase;
-import me.flyray.bsin.domain.entity.Grade;
-import me.flyray.bsin.domain.entity.Member;
-import me.flyray.bsin.domain.entity.TokenParam;
+import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MemberService;
 import me.flyray.bsin.facade.service.TokenParamService;
+import me.flyray.bsin.facade.service.UniflyOrderService;
 import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberGradeMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberMapper;
@@ -30,8 +28,6 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotEmpty;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -58,8 +54,25 @@ public class MemberServiceImpl implements MemberService {
   @DubboReference(version = "${dubbo.provider.version}")
   private TokenParamService tokenParamService;
 
+  @DubboReference(version = "${dubbo.provider.version}")
+  private UniflyOrderService uniflyOrderService;
+
+
   /**
-   * 根创建会员信息
+   * 创建开通会员支付订单
+   *
+   * @param requestMap
+   * @return 订单信息
+   */
+  @ApiDoc(desc = "createOpenMemberOrder")
+  @ShenyuDubboClient("/createOpenMemberOrder")
+  @Override
+  public UniflyOrder createOpenMemberOrder(Map<String, Object> requestMap) {
+    UniflyOrder uniflyOrder = uniflyOrderService.create(requestMap);
+    return uniflyOrder;
+  }
+  /**
+   * 创建会员信息
    *
    * @param requestMap 包含会员信息的请求映射
    * @return 会员对象

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import me.flyray.bsin.domain.enums.BusinessModel;
+import me.flyray.bsin.domain.enums.StoreType;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -71,6 +73,18 @@ public class Store implements Serializable {
      * 租户id
      */
     private String tenantId;
+
+    /**
+     * 类型：0：总店 1：非总店
+     * @see StoreType
+     */
+    private String type;
+
+    /**
+     * 经营模式  1、直营，2、加盟
+     * @see BusinessModel
+     */
+    private String businessModel;
 
     /**
      * 逻辑删除 0、未删除 1、已删除

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.CustomerBase;
 import me.flyray.bsin.domain.entity.Grade;
 import me.flyray.bsin.domain.entity.Member;
+import me.flyray.bsin.domain.entity.UniflyOrder;
 
 import java.util.List;
 import java.util.Map;
@@ -17,12 +18,16 @@ import java.util.Map;
 public interface MemberService {
 
     /**
+     * 创建开通会员订单
+     */
+    public UniflyOrder createOpenMemberOrder(Map<String, Object> requestMap);
+    /**
      * 开通会员
      */
     public Member openMember(Map<String, Object> requestMap);
 
     /**
-     * 租户下所有
+     * 商户下所有会员：会员挂在商户下
      */
     public IPage<?> getPageList(Map<String, Object> requestMap);
 

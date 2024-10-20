@@ -16,13 +16,15 @@
             <result property="logo" column="logo" jdbcType="INTEGER"/>
             <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="businessModel" column="business_model" jdbcType="VARCHAR"/>
             <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         serial_no,store_name,password,address,
         longitude,latitude,business_hours,
-        description,logo,merchant_no,
+        description,logo,merchant_no,business_model,type,
         tenant_id,del_flag
     </sql>
 </mapper>

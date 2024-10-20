@@ -18,16 +18,27 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '商户名称',
     dataIndex: 'merchantName',
-    valueType: 'select',
+    // valueType: 'select',
     hideInTable: true,
   },
   {
-    title: '客户号',
-    dataIndex: 'customerNo',
+    title: '商户审核状态',
+    dataIndex: 'authenticationStatus',
+    valueType: 'select',
+    valueEnum: {
+      0: { text: '待认证' },
+      1: { text: '认证成功' },
+      2: { text: '认证失败' },
+    },
     hideInTable: true,
     fieldProps: {
       maxLength: 20,
     },
+  },
+  {
+    title: '业态',
+    dataIndex: 'businessType',
+    hideInTable: true,
   },
 
   // table里面的内容

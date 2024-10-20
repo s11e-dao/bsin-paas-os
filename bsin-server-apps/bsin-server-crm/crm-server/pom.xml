@@ -101,6 +101,12 @@
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>me.flyray.bsin</groupId>
+            <artifactId>oms-facade</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+
         <!--单个引入需要的中间件服务-->
         <dependency>
             <groupId>me.flyray.bsin</groupId>

@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.enums.WalletCategory;
+import me.flyray.bsin.domain.enums.WalletStatus;
+import me.flyray.bsin.domain.enums.WalletType;
 import me.flyray.bsin.domain.request.PlatformDTO;
 import me.flyray.bsin.domain.request.SysTenantDTO;
 import me.flyray.bsin.domain.response.SysUserVO;
@@ -113,10 +116,10 @@ public class PlatformServiceImpl implements PlatformService {
         wallet.setWalletName(platformDTO.getPlatformName());  // 默认钱包名称
         wallet.setBizRoleType(BizRoleType.TENANT.getCode());   // 客户类型：1、平台
         wallet.setBizRoleTypeNo(platformNo);
-        wallet.setType(1);  // 1、默认钱包
+        wallet.setType(WalletType.DEFAULT.getCode());  // 1、默认钱包
         wallet.setWalletTag("GATHER");
-        wallet.setStatus(1);    // 正常
-        wallet.setCategory(1);  // 钱包分类 1、MVP 2、多签
+        wallet.setStatus(WalletStatus.NORMAL.getCode());    // 正常
+        wallet.setCategory(WalletCategory.MPC.getCode());
         wallet.setEnv("EVM");
         wallet.setTenantId(tenantId);
         wallet.setCreateBy(user.getUserId());
