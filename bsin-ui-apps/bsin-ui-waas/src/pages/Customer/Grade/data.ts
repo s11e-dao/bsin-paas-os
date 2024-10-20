@@ -18,14 +18,17 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '等级Id',
     dataIndex: 'gradeNo',
+    hideInTable: true,
   },
   {
     title: '等级编号',
     dataIndex: 'gradeNum',
+    hideInTable: true,
   },
   {
     title: '等级名称',
     dataIndex: 'name',
+    hideInTable: true,
   },
   // table里面的内容
   {

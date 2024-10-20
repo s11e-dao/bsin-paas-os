@@ -157,14 +157,15 @@ const routes = [
         path: '/customer/account-journal',
         component: '@/pages/Customer/AccountJournal/index',
       },
+      // **************************权益条件管理**************************
       // 权益管理
       {
-        path: '/customer/equity-list',
+        path: '/equity-list',
         component: '@/pages/Customer/EquityList/index',
       },
       // 条件管理
       {
-        path: '/customer/condition-list',
+        path: '/condition-list',
         component: '@/pages/Customer/ConditionList/index',
       },
       // 事件配置

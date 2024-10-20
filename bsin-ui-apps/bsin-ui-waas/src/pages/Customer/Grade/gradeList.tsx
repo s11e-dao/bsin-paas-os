@@ -92,7 +92,7 @@ export default ({ setCurrentContent, configGrade }) => {
           }
         });
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   /**
@@ -117,7 +117,7 @@ export default ({ setCurrentContent, configGrade }) => {
           }
         });
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   /**
@@ -186,7 +186,7 @@ export default ({ setCurrentContent, configGrade }) => {
       title: '等级ID',
       width: 190,
       dataIndex: 'serialNo',
-    fixed: 'left',
+      fixed: 'left',
     },
     {
       title: '等级名称',
