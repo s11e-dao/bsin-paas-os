@@ -4,8 +4,10 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.Condition;
+import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.ConditionService;
 import me.flyray.bsin.infrastructure.mapper.ConditionMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
@@ -43,8 +45,18 @@ public class ConditionServiceImpl implements ConditionService {
     public Condition add(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Condition condition = BsinServiceContext.getReqBodyDto(Condition.class, requestMap);
-        condition.setTenantId(loginUser.getTenantId());
-        condition.setMerchantNo(loginUser.getMerchantNo());
+        if (condition.getTenantId() == null) {
+            condition.setTenantId(loginUser.getTenantId());
+            if (condition.getTenantId() == null) {
+                throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
+            }
+        }
+        if (condition.getMerchantNo() == null) {
+            condition.setMerchantNo(loginUser.getMerchantNo());
+            if (condition.getMerchantNo() == null) {
+                throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
+            }
+        }
         // TODO 条件的币种账户根据需要商户发行的数字积分的符号来添加，不能直接写死币种
         // typeNo 是数字资产编号 ccyType 不同类型找商户发行的不同币种
         conditionMapper.insert(condition);

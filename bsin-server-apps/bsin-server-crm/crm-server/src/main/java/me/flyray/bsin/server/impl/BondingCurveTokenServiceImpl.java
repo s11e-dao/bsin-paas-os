@@ -58,7 +58,6 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
   @Autowired private TokenReleaseBiz tokenReleaseBiz;
 
   /**
-   * TODO: 1个商户只能插入一条// TODO: 1个商户只能插入一条
    * @param requestMap
    * @return
    */
@@ -98,6 +97,7 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
         BondingCurveTokenParam::getSerialNo,
         bondingCurveTokenParam.getSerialNo());
     BondingCurveTokenParam bondingCurveToken = bondingCurveTokenParamMapper.selectOne(warapper);
+    //    1个商户只能插入一条
     if (bondingCurveToken != null) {
       throw new BusinessException(BC_POINTS_EXISTS);
     }
@@ -151,7 +151,6 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
   @ShenyuDubboClient("/getCurvePageList")
   @Override
   public IPage<?> getCurvePageList(Map<String, Object> requestMap) {
-
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = loginUser.getTenantId();
     String merchantNo = loginUser.getMerchantNo();

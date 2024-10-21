@@ -79,6 +79,7 @@ export default function () {
       history.push("/home")
     }
   }
+  //@see me.flyray.bsin.security.enums.bizRoleType  用户角色类型，1.运营平台 2.租户平台 3.租户商户 4.代理商 5.租户客户 6.门店 99.无
   const [bizRoleType, setBizRoleType] = useState('2');
 
   const handleBizRoleTypeChange = (e: RadioChangeEvent) => {
@@ -88,7 +89,7 @@ export default function () {
   // 节点登录
   async function nodeLogin(event: MouseEvent) {
     event.preventDefault();
-    if (!tenantId) return message.info('请选择节点');
+    if (bizRoleType == "2" && !tenantId) return message.info('请选择节点');
     if (!nodeLoginState.username) return message.info('请输入用户名');
     if (!nodeLoginState.password) return message.info('请输入密码');
     setLoadings(true);

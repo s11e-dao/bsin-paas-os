@@ -16,7 +16,7 @@ public interface StoreService {
     /**
      * 商户开通店铺
      */
-    public void openStore(Map<String, Object> requestMap);
+    public Store openStore(Map<String, Object> requestMap);
 
     /**
      * 删除店铺
@@ -27,6 +27,11 @@ public interface StoreService {
      * 修改店铺
      */
     public void edit(Map<String, Object> requestMap);
+
+    /**
+     * 设置为总店
+     */
+    public Store setMainStore(Map<String, Object> requestMap);
 
 
     /**
