@@ -8,6 +8,10 @@ public enum ResponseCode implements ReturnCode {
     OK("0", "请求成功"),
     FAIL("500", "请求失败"),
 
+
+    // 数据库操作 100000
+    DATA_BASE_UPDATE_FAILED("100001", "数据库更新失败"),
+
     // 用户 100100
     USER_NAME_ISNULL("100101", "用户名为空值"),
     USER_DELETE_EXCEPTION("100102", "用户删除异常"),
@@ -126,6 +130,18 @@ public enum ResponseCode implements ReturnCode {
     METADATA_FORMAT_NOT_RIGHT("100833", "元数据格式不正确"),
     CUSTOMER_USERNAME_IS_EXISTS("100901", "用户名已经存在"),
     CUSTOMER_DAO_IS_EXISTS("100901", "您已经加入"),
+
+
+    /***********************************支付类 100900 开头*****************************************/
+    PAYMENT_NOT_EXISTS("100900", "支付信息不存在"),
+    PAYMENT_STATUS_ERROR("100901", "支付状态错误"),
+    PAYMENT_AMOUNT_ERROR("100902", "支付金额错误"),
+    PAYMENT_METHOD_ERROR("100903", "支付方式错误"),
+    PAYMENT_ORDER_ERROR("100904", "支付订单错误"),
+    PAYMENT_ORDER_NOT_EXISTS("100905", "支付订单不存在"),
+    PAYMENT_ORDER_STATUS_ERROR("100906", "支付订单状态错误"),
+    PAYMENT_WECHAT_PARSE_CALLBACK_ERROR("100907", "微信支付解析回调请求"),
+
 
 
     /***********************************区块链服务类 200000 开头*****************************************/

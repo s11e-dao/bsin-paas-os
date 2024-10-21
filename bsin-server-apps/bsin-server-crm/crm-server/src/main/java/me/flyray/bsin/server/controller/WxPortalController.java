@@ -67,13 +67,13 @@ public class WxPortalController {
   @Value("${bsin.crm.aesKey}")
   private String aesKey;
 
-  @Value("${wx.mp.config-storage.redis.host}")
+  @Value("${wx.config-storage.redis.host}")
   private String wxRedisHost;
 
-  @Value("${wx.mp.config-storage.redis.port}")
+  @Value("${wx.config-storage.redis.port}")
   private Integer wxRedisPort;
 
-  @Value("${wx.mp.config-storage.redis.password}")
+  @Value("${wx.config-storage.redis.password}")
   private String wxRedisPassword;
 
   private static WxRedisConfig wxRedisConfig;

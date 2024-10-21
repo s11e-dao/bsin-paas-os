@@ -29,7 +29,7 @@ public class BsinWxMaServiceUtil {
     final List<WxMaProperties.MaConfig> configs = new ArrayList<>();
     configs.add(maConfig);
     if (configs == null) {
-      throw new RuntimeException("配资文件未生效！");
+      throw new RuntimeException("配置文件未生效！");
     }
     wxMaService = new WxMaServiceImpl();
     wxMaService.setMultiConfigs(

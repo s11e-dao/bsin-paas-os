@@ -18,7 +18,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '门店名称',
     dataIndex: 'storeName',
-    valueType: 'select',
+    // valueType: 'select',
     hideInTable: true,
   },
   {
