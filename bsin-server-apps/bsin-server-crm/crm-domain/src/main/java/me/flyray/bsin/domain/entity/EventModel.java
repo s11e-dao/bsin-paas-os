@@ -1,45 +1,47 @@
 package me.flyray.bsin.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
 
 /**
- * @author ：bolei
- * @date ：Created in 2023/04/12 16:23
- * @description：规则实体类
- * @modified By：
+ * 
+ * @TableName crm_event_model
  */
 
 @Data
-public class EventModel {
-
+@TableName(value ="crm_event_model")
+public class EventModel implements Serializable {
     /**
-     * 规则ID
+     * 
      */
     @TableId
     private String serialNo;
 
     /**
-     * kbase的名字
+     * 
      */
     private String tenantId;
 
     /**
-     * kbase的名字
+     * 事件编码
      */
     private String eventCode;
-
-
-    /**
-     * 1、流程模型 2、表单模型 3、规则模型 4、推理模型
-     * @see  me.flyray.bsin.domain.enums.ModelType
-     */
-    private String modelType;
 
     /**
      * 事件模型
      */
     private String modelNo;
+
+    /**
+     * 1、流程模型 2、表单模型 3、规则模型 4、推理模型
+     */
+    private String modelType;
+
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
 
 }

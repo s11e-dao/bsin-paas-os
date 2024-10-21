@@ -1,6 +1,5 @@
 package me.flyray.bsin.facade.service;
 
-import me.flyray.bsin.domain.entity.Equity;
 import me.flyray.bsin.domain.entity.EventModel;
 
 import java.util.Map;

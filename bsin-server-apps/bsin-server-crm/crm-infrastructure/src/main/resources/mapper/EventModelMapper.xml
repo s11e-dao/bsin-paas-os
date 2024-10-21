@@ -6,26 +6,14 @@
 
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.EventModel">
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
-            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <id property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="eventCode" column="event_code" jdbcType="VARCHAR"/>
-            <result property="modelType" column="model_type" jdbcType="VARCHAR"/>
             <result property="modelNo" column="model_no" jdbcType="VARCHAR"/>
+            <result property="modelType" column="model_type" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        serial_no,tenant_id,event_code,model_type,model_no
+        serial_no,tenant_id,event_code,
+        model_no,model_type
     </sql>
-
-    <select id="getDecisionRuleList" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"></include>
-        from decision_rule
-        <where>
-            <if test="tenantId != null and tenantId != ''">
-                tenant_id = #{tenantId,jdbcType=VARCHAR}
-            </if>
-        </where>
-    </select>
-
-
 </mapper>
