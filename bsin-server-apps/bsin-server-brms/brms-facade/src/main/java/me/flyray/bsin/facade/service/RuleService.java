@@ -33,11 +33,9 @@ import java.util.Map;
 @Validated
 public interface RuleService {
 
-    BsinResultEntity<DubboTest> add(@Valid DubboTest bean);
-
     public BsinResultEntity<DubboTest> sendMq(DubboTest bean);
 
-    public DecisionRule addRule(final DecisionRule decisionRule) throws IOException;
+    public DecisionRule add(final DecisionRule decisionRule) throws IOException;
 
     /**
      * find by id.

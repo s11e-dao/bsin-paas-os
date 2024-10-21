@@ -11,7 +11,6 @@ import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MemberService;
 import me.flyray.bsin.facade.service.TokenParamService;
-import me.flyray.bsin.facade.service.UniflyOrderService;
 import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberGradeMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberMapper;
@@ -54,23 +53,6 @@ public class MemberServiceImpl implements MemberService {
   @DubboReference(version = "${dubbo.provider.version}")
   private TokenParamService tokenParamService;
 
-  @DubboReference(version = "${dubbo.provider.version}")
-  private UniflyOrderService uniflyOrderService;
-
-
-  /**
-   * 创建开通会员支付订单
-   *
-   * @param requestMap
-   * @return 订单信息
-   */
-  @ApiDoc(desc = "createOpenMemberOrder")
-  @ShenyuDubboClient("/createOpenMemberOrder")
-  @Override
-  public UniflyOrder createOpenMemberOrder(Map<String, Object> requestMap) {
-    UniflyOrder uniflyOrder = uniflyOrderService.create(requestMap);
-    return uniflyOrder;
-  }
   /**
    * 创建会员信息
    *

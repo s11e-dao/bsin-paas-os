@@ -8,12 +8,13 @@ import me.flyray.bsin.domain.entity.EventModel;
 import me.flyray.bsin.domain.request.ExecuteParams;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DecisionEngineService;
+import me.flyray.bsin.facade.service.EventModelService;
 import me.flyray.bsin.infrastructure.mapper.DecisionRuleMapper;
-import me.flyray.bsin.infrastructure.mapper.EventModelMapper;
 import me.flyray.bsin.server.context.DubboHelper;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 import java.util.HashMap;
@@ -33,8 +34,9 @@ public class DecisionEngineServiceImpl implements DecisionEngineService {
     private final DubboHelper dubboHelper;
     @Autowired
     private DecisionRuleMapper decisionRuleMapper;
-    @Autowired
-    private EventModelMapper eventModelMapper;
+
+    @DubboReference(version = "${dubbo.provider.version}")
+    private EventModelService eventModelService;
 
     /**
      * 智能决策引擎执行入口
@@ -50,9 +52,9 @@ public class DecisionEngineServiceImpl implements DecisionEngineService {
     @ShenyuDubboClient("/execute")
     public Map<?, ?> execute(ExecuteParams executeParams) {
         String eventCode = executeParams.getEventCode();
-        LambdaQueryWrapper<EventModel> warapper = new LambdaQueryWrapper<>();
-        warapper.eq(EventModel::getEventCode, eventCode);
-        EventModel eventModel = eventModelMapper.selectOne(warapper);
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("eventCode", eventCode);
+        EventModel eventModel = eventModelService.getDetail(requestMap);
         DecisionRule decisionRule = decisionRuleMapper.selectById(eventModel.getModelNo());
         if(decisionRule == null){
             throw new BusinessException("事件模型不存在");

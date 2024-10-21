@@ -1,11 +1,7 @@
 package me.flyray.bsin.domain.entity;
 
-import com.alibaba.fastjson2.JSONObject;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
-
-import java.util.Date;
 
 
 /**
@@ -36,7 +32,8 @@ public class EventModel {
 
 
     /**
-     * 1、规则模型 2、流程模型
+     * 1、流程模型 2、表单模型 3、规则模型 4、推理模型
+     * @see  me.flyray.bsin.domain.enums.ModelType
      */
     private String modelType;
 

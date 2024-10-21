@@ -18,14 +18,14 @@
 package me.flyray.bsin.server.impl;
 
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import me.flyray.bsin.domain.entity.DecisionRule;
 import me.flyray.bsin.domain.entity.EventModel;
+import me.flyray.bsin.facade.service.EventModelService;
 import me.flyray.bsin.infrastructure.mapper.DecisionRuleMapper;
-import me.flyray.bsin.infrastructure.mapper.EventModelMapper;
 import me.flyray.bsin.server.context.DecisionEngineContextBuilder;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
 import org.apache.rocketmq.client.producer.SendCallback;
@@ -65,18 +65,10 @@ public class RuleServiceImpl implements RuleService {
     @Autowired
     private DecisionRuleMapper decisionRuleMapper;
     @Autowired
-    private EventModelMapper eventModelMapper;
-    @Autowired
     private DecisionEngineContextBuilder decisionEngineContextBuilder;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleServiceImpl.class);
-
-    @ShenyuDubboClient("/add")
-    @ApiDoc(desc = "add")
-    @Override
-    public BsinResultEntity<DubboTest> add(DubboTest bean) {
-        return BsinResultEntity.ok(bean);
-    }
+    @DubboReference(version = "${dubbo.provider.version}")
+    private EventModelService eventModelService;
 
     @ShenyuDubboClient("/sendMq")
     @ApiDoc(desc = "sendMq")
@@ -102,10 +94,10 @@ public class RuleServiceImpl implements RuleService {
     }
 
     @Override
-    @ShenyuDubboClient("/addRule")
-    @ApiDoc(desc = "addRule")
+    @ShenyuDubboClient("/add")
+    @ApiDoc(desc = "add")
     // @GlobalTransactional
-    public DecisionRule addRule(final DecisionRule decisionRule) throws IOException {
+    public DecisionRule add(final DecisionRule decisionRule) throws IOException {
         // 模型转换
         JSONObject ruleJson = decisionRule.getRuleJson();
         // json 转换成drl字符串文件
@@ -123,12 +115,11 @@ public class RuleServiceImpl implements RuleService {
     // @GlobalTransactional
     public DubboTest testRule(Map<String, Object> requestMap) {
 
+        String eventCode = MapUtils.getString(requestMap, "eventCode");
         // 根据事件查询对应规则
-        String eventCode = (String) requestMap.get("eventCode");
-        LambdaQueryWrapper<EventModel> warapper = new LambdaQueryWrapper<>();
-        warapper.eq(EventModel::getEventCode, eventCode);
-        EventModel eventModel = eventModelMapper.selectOne(warapper);
+        EventModel eventModel = eventModelService.getDetail(requestMap);
         DecisionRule decisionRule = decisionRuleMapper.selectById(eventModel.getModelNo());
+
         // 1、构建决策引擎环境
         KieSession kieSession = decisionEngineContextBuilder.buildDecisionEngine(decisionRule,
                 decisionRule.getKieBaseName() + "-session");
