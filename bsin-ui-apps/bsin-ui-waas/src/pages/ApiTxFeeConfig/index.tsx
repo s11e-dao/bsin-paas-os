@@ -75,7 +75,7 @@ export default () => {
         console.log(response);
         editApiFeeConfig(response).then((res) => {
           console.log('add', res);
-          if (res.code === '000000') {
+          if (res.code === '000000' || res.code === 0) {
             // 重置输入的表单
             editFormRef.resetFields();
             // 刷新proTable

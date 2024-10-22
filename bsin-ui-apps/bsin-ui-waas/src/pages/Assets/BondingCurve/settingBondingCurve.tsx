@@ -131,7 +131,7 @@ export default () => {
         console.log(response);
         addCurve(response).then((res) => {
           console.log('add', res);
-          if (res.code === '000000') {
+          if (res.code === '000000' || res.code === 0) {
             // 重置输入的表单
             FormRef.resetFields();
             // 刷新proTable
@@ -207,7 +207,7 @@ export default () => {
     let { serialNo } = record;
     let res = await deleteCurve({ serialNo });
     console.log('res', res);
-    if (res.code === '000000') {
+    if (res.code === '000000' || res.code === 0) {
       message.success('删除成功');
     } else {
       message.error('删除成功');

@@ -47,25 +47,25 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '商户号',
     width: 170,
-    dataIndex: 'merchantNo',
+    dataIndex: 'bizRoleTypeNo',
     hideInSearch: true,
   },
   {
     title: '应用名称',
     width: 170,
-    dataIndex: 'productName',
+    dataIndex: 'appName',
     hideInSearch: true,
   },
   {
     title: '应用ID',
     width: 170,
-    dataIndex: 'productId',
+    dataIndex: 'appId',
     hideInSearch: true,
   },
   {
     title: '应用密钥',
     width: 170,
-    dataIndex: 'productSecret',
+    dataIndex: 'appSecret',
     hideInSearch: true,
   },
   {
@@ -91,7 +91,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '应用描述',
     width: 160,
-    dataIndex: 'productDescription',
+    dataIndex: 'appDescription',
     hideInSearch: true,
   },
   {

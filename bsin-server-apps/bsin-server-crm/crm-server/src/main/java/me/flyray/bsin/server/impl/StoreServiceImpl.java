@@ -15,6 +15,7 @@ import me.flyray.bsin.infrastructure.mapper.StoreMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
+import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -57,6 +58,7 @@ public class StoreServiceImpl implements StoreService {
         throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
       }
     }
+    store.setSerialNo(BsinSnowflake.getId());
     storeMapper.insert(store);
     if (StoreType.MAIN_STORE.getCode().equals(store.getType())) {
       setMainStore(requestMap);

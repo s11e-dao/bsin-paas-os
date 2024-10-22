@@ -21,8 +21,8 @@ public class Store implements Serializable {
     /**
      * 店铺ID
      */
-    @TableId(type = IdType.AUTO)
-    private Integer serialNo;
+    @TableId(value = "serial_no", type = IdType.ASSIGN_ID)
+    private String serialNo;
 
     /**
      * 店铺名称

@@ -47,7 +47,7 @@ export default () => {
       <li>
         <a
           onClick={() => {
-            toViewContractTemplate(record);
+            toViewStore(record);
           }}
         >
           查看
@@ -60,7 +60,7 @@ export default () => {
           okText="是"
           cancelText="否"
           onConfirm={() => {
-            toDelContractTemplate(record);
+            toDelStore(record);
           }}
           // onCancel={cancel}
         >
@@ -100,7 +100,7 @@ export default () => {
         openStore(response).then((res) => {
           console.log('add', res);
 
-          if (res.code === '000000') {
+          if (res.code === '000000' || res.code === 0) {
             // 重置输入的表单
             FormRef.resetFields();
             // 刷新proTable
@@ -126,12 +126,12 @@ export default () => {
   /**
    * 删除模板
    */
-  const toDelContractTemplate = async (record) => {
+  const toDelStore = async (record) => {
     console.log('record', record);
     let { serialNo } = record;
     let delRes = await deleteStore({ serialNo });
     console.log('delRes', delRes);
-    if (delRes.code === '000000') {
+    if (delRes.code === '000000' || delRes.code === 0) {
       // 删除成功刷新表单
       actionRef.current?.reload();
     }
@@ -140,7 +140,7 @@ export default () => {
   /**
    * 查看详情
    */
-  const toViewContractTemplate = async (record) => {
+  const toViewStore = async (record) => {
     let { serialNo } = record;
     let viewRes = await getStoreDetail({ serialNo });
     setIsViewTemplateModal(true);
@@ -149,14 +149,32 @@ export default () => {
   };
 
   /**
-   * 详情，模板类型对应
+   * 详情，店鋪類型
    */
   const handleViewRecordOfType = () => {
-    let { type } = isViewRecord;
-    let typeText = type;
-    return typeText;
+    let { type } = isViewRecord;    
+    if (type == '0') {
+      return '总店';
+    } else if (type == '1') {
+      return '非总店';
+    } else {
+      return type;
+    }
   };
 
+  /**
+   * 详情，经营模式  1、直营，2、加盟
+   */
+  const handleViewRecordOfBusinessModel = () => {
+    let { businessModel } = isViewRecord;    
+    if (businessModel == '1') {
+      return '直营';
+    } else if (type == '2') {
+      return '加盟';
+    } else {
+      return businessModel;
+    }
+  };
   return (
     <div>
       {/* Pro表格 */}
@@ -206,7 +224,7 @@ export default () => {
           </Button>,
         ]}
       />
-      {/* 新增合约模板模态框 */}
+      {/* 新增店铺模板模态框 */}
       <Modal
         title="新增"
         centered
@@ -266,7 +284,7 @@ export default () => {
           <Form.Item
             label="店铺描述"
             name="description"
-            rules={[{ required: true, message: '请输入协议描述!' }]}
+            rules={[{ required: true, message: '请输入店铺描述!' }]}
           >
             <TextArea />
           </Form.Item>
@@ -282,24 +300,21 @@ export default () => {
         onCancel={() => setIsViewTemplateModal(false)}
       >
         {/* 详情信息 */}
-        <Descriptions title="合约协议信息">
+        <Descriptions title="店鋪信息">
           <Descriptions.Item label="租户ID">
             {isViewRecord?.tenantId}
           </Descriptions.Item>
-          <Descriptions.Item label="协议编号">
+          <Descriptions.Item label="店铺编号">
             {isViewRecord?.serialNo}
           </Descriptions.Item>
-          <Descriptions.Item label="合约协议类型">
+          <Descriptions.Item label="店铺类型">
             {handleViewRecordOfType()}
           </Descriptions.Item>
-          <Descriptions.Item label="协议名称">
-            {isViewRecord?.templateName}
+          <Descriptions.Item label="经营模式">
+            {handleViewRecordOfType()}
           </Descriptions.Item>
-          <Descriptions.Item label="合约协议bytecode">
-            {isViewRecord?.templateBytecode}
-          </Descriptions.Item>
-          <Descriptions.Item label="合约协议abi字符">
-            {isViewRecord?.templateAbi}
+          <Descriptions.Item label="店铺名称">
+            {isViewRecord?.storeName}
           </Descriptions.Item>
           <Descriptions.Item label="创建者">
             {isViewRecord?.createBy}
@@ -307,7 +322,7 @@ export default () => {
           <Descriptions.Item label="创建时间">
             {isViewRecord?.createTime}
           </Descriptions.Item>
-          <Descriptions.Item label="协议描述">
+          <Descriptions.Item label="店铺描述">
             {isViewRecord?.description}
           </Descriptions.Item>
         </Descriptions>

@@ -24,6 +24,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+import static me.flyray.bsin.constants.ResponseCode.CONDITION_NOT_EXISTS;
+import static me.flyray.bsin.constants.ResponseCode.EQUITY_NOT_EXISTS;
+
 /**
  * @author bolei
  * @date 2023/9/10
@@ -85,6 +88,9 @@ public class ConditionServiceImpl implements ConditionService {
     public Condition getDetail(Map<String, Object> requestMap){
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         Condition condition = conditionMapper.selectById(serialNo);
+        if (condition == null) {
+            throw new BusinessException(CONDITION_NOT_EXISTS);
+        }
         return condition;
     }
 

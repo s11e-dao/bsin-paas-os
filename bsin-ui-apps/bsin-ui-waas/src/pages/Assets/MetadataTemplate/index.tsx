@@ -141,7 +141,7 @@ export default () => {
       // metadataImage: ipfsGatewayUrl + metaDataImagePath,
     });
     console.log(res);
-    if (res.code === '000000') {
+    if (res.code === '000000' || res.code === 0) {
       message.success('添加元数据成功');
       addFormRef.resetFields();
       setMetaDataImagePath(null);
