@@ -77,16 +77,6 @@ public enum ResponseCode implements ReturnCode {
     // 分页 100900
     PAGE_NUM_ISNULL("100901", "分页参数为空"),
 
-    HAS_CHANGE("400300", "已兑换"),
-    ACCOUNT_NOT_EXISTS("400201", "账户不存在或已被冻结"),
-    ACCOUNT_BALANCE_INSUFFICIENT("400204", "账户余额不足"),
-    ACCOUNT_TYPE_FALSE("400205", "账户类型错误"),
-    AMOUNT_MUST_GREATER_THAN_ZERO("400206", "金额必须大于0"),
-    POINT_RULE_FINISH("400207", "积分规则已完成"),
-    TYPE_NOT_EXISTS("400208", "类型不存在"),
-    STATUS_NOT_EXISTS("400209", "状态不存在"),
-    CODE_EXISTS("400210", "名称对应的编号存在"),
-    FEE_NOT_CONFIG("400211", "交易手续费未配置"),
 
     NO_NOT_ISNULL("100801", "编号不能为空"),
     DISTRIBUTION_NOT_ISNULL("100802", "分配参数不能为空"),
@@ -183,17 +173,33 @@ public enum ResponseCode implements ReturnCode {
     CUSTOMER_IS_NOT_NULL("300006", "至少选择一位会员！"),
     MERCHANT_WALLET_PRIVATEKEY_ERROR("300007", "商户钱包私钥错误！"),
     CUSTOMER_WALLET_ADDRESS_ERROR("300008", "商户钱包地址错误！"),
+
     MERCHANT_NO_IS_NULL("300009", "商户号不能为空！"),
     MERCHANT_NOT_EXISTS("300010", "商户账号不存在！"),
     GRADE_NOT_EXISTS("300011", "等级不存在~"),
     EQUITY_NOT_EXISTS("300012", "权益不存在~"),
     SYS_AGENT_NOT_EXISTS("300013", "代理商账号不存在！"),
+    CONDITION_NOT_EXISTS("300013", "条件不存在！"),
+    MEMBER_NOT_EXISTS("300006", "会员账号不存在！"),
 
     /***********************************账户类 400000 开头*****************************************/
     API_CONSUMING_FAIL("400000", "账户余额不足或是计费异常！"),
     ACCOUNT_BALANCE_ANNORMAL("400001", "账户余额异常！"),
     API_LIMITING("400002", "请勿频繁调用!"),
     CUSTOMER_ACCOUNT_IS_NULL("400003", "客户账户不存在!"),
+
+
+
+    HAS_CHANGE("400300", "已兑换"),
+    ACCOUNT_NOT_EXISTS("400201", "账户不存在或已被冻结"),
+    ACCOUNT_BALANCE_INSUFFICIENT("400204", "账户余额不足"),
+    ACCOUNT_TYPE_FALSE("400205", "账户类型错误"),
+    AMOUNT_MUST_GREATER_THAN_ZERO("400206", "金额必须大于0"),
+    POINT_RULE_FINISH("400207", "积分规则已完成"),
+    TYPE_NOT_EXISTS("400208", "类型不存在"),
+    STATUS_NOT_EXISTS("400209", "状态不存在"),
+    CODE_EXISTS("400210", "名称对应的编号存在"),
+    FEE_NOT_CONFIG("400211", "交易手续费未配置"),
 
 
     /***********************************数字资产类 500000 开头*****************************************/

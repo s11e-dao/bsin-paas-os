@@ -54,7 +54,7 @@ public class MemberServiceImpl implements MemberService {
   private TokenParamService tokenParamService;
 
   /**
-   * 创建会员信息
+   * 开通会员，支付成功后回调
    *
    * @param requestMap 包含会员信息的请求映射
    * @return 会员对象
