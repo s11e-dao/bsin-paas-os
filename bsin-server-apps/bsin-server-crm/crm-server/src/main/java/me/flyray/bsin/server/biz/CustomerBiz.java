@@ -85,17 +85,30 @@ public class CustomerBiz {
     warapper.eq(CustomerBase::getTenantId, customerBase.getTenantId());
 
     if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {
+      if (customerBase.getCredential() == null) {
+        customerBase.setCredential(customerBase.getOpenId());
+      }
       warapper.eq(CustomerBase::getCredential, customerBase.getCredential());
-
+      if (customerBase.getUsername() != null) {
+        customerBase.setUsername(customerBase.getCredential());
+      }
     } else if (AuthMethod.QQ.getType().equals(customerBase.getAuthMethod())) {
       warapper.eq(CustomerBase::getCredential, customerBase.getCredential());
+      if (customerBase.getUsername() != null) {
+        customerBase.setUsername(customerBase.getCredential());
+      }
 
     } else if (AuthMethod.PHONE.getType().equals(customerBase.getAuthMethod())) {
       warapper.eq(CustomerBase::getPhone, customerBase.getPhone());
+      if (customerBase.getUsername() != null) {
+        customerBase.setUsername(customerBase.getPhone());
+      }
 
     } else if (AuthMethod.EMAIL.getType().equals(customerBase.getAuthMethod())) {
       warapper.eq(CustomerBase::getEmail, customerBase.getEmail());
-
+      if (customerBase.getUsername() != null) {
+        customerBase.setUsername(customerBase.getEmail());
+      }
     } else if (AuthMethod.USERNAME.getType().equals(customerBase.getAuthMethod())) {
       warapper.eq(CustomerBase::getUsername, customerBase.getUsername());
     }

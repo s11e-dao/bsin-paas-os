@@ -48,6 +48,12 @@ public class CustomerBase implements Serializable {
      */
     private String credential;
 
+    /**
+     * 凭据，第三方标识，微信平台的openId
+     */
+    @TableField(exist = false)
+    private String openId;
+
 
     /**
      * 微信平台：登录请求会话key

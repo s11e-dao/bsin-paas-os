@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 import static me.flyray.bsin.constants.ResponseCode.CONDITION_NOT_EXISTS;
-import static me.flyray.bsin.constants.ResponseCode.EQUITY_NOT_EXISTS;
 
 /**
  * @author bolei
