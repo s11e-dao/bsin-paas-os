@@ -168,10 +168,11 @@ const routes = [
         path: '/condition-list',
         component: '@/pages/Customer/ConditionList/index',
       },
+      // **************************事件、事件模型**************************
       // 事件配置
       {
-        path: '/customer/event',
-        component: '@/pages/Customer/Event/index',
+        path: '/event',
+        component: '@/pages/Event/index',
       },
       // **************************钱包**************************
       {

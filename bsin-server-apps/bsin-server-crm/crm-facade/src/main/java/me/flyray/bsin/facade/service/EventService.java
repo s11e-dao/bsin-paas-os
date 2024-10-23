@@ -1,5 +1,6 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.Event;
 
 import java.util.Map;
@@ -23,12 +24,17 @@ public interface EventService {
     /**
      * 编辑
      */
-    public void edit(Map<String, Object> requestMap);
+    public Event edit(Map<String, Object> requestMap);
 
 
     /**
      * 详情
      */
     public Event getDetail(Map<String, Object> requestMap);
+
+    /**
+     * 租户下所有
+     */
+    public IPage<?> getPageList(Map<String, Object> requestMap);
 
 }

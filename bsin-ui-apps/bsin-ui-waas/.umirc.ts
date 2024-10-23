@@ -21,6 +21,8 @@ export default {
     'process.env.contextPath_crm': '/crm',  // crm应用
     'process.env.contextPath_oms': '/oms',  // oms应用
     'process.env.contextPath_waas': '/waas',  // 钱包应用
+    'process.env.contextPath_brms': '/brms',  // 规则引擎应用
+    'process.env.contextPath_aiAgent': '/ai-agent',  // 智能知识库
   },
   model: {},
   qiankun: {

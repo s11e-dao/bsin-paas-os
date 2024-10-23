@@ -7,7 +7,6 @@
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.Event">
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
-            <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
             <result property="eventName" column="event_name" jdbcType="VARCHAR"/>
             <result property="eventCode" column="event_code" jdbcType="VARCHAR"/>
             <result property="eventLevel" column="event_level" jdbcType="VARCHAR"/>
@@ -20,7 +19,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        serial_no,tenant_id,merchant_no,
+        serial_no,tenant_id,
         event_name,event_code,event_level,
         remark,del_flag,update_time,
         update_by,create_time,create_by

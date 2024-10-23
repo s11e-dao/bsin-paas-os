@@ -22,6 +22,7 @@ import { getMetadataFileList } from './../MetadataList/service';
 import styles from './index.css';
 
 export default ({ setCurrentContent }) => {
+  
   const [contractProtocolList, setContractProtocolList] = useState([]);
 
   const [contractProtocolChoosed, setContractProtocolChoosed] = useState({});

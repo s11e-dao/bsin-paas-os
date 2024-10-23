@@ -25,6 +25,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,6 +37,11 @@ public interface RuleService {
     public BsinResultEntity<DubboTest> sendMq(DubboTest bean);
 
     public DecisionRule add(final DecisionRule decisionRule) throws IOException;
+
+    /**
+     * 商户下所有
+     */
+    public List<DecisionRule> getList(Map<String, Object> requestMap);
 
     /**
      * find by id.

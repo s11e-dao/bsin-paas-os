@@ -28,11 +28,6 @@ public class Event implements Serializable {
     private String tenantId;
 
     /**
-     * 商户编码
-     */
-    private String merchantNo;
-
-    /**
      * 事件名称
      */
     private String eventName;
