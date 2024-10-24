@@ -18,10 +18,7 @@ import me.flyray.bsin.domain.request.WalletDTO;
 import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.*;
-import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
-import me.flyray.bsin.infrastructure.mapper.MemberMapper;
-import me.flyray.bsin.infrastructure.mapper.MerchantMapper;
-import me.flyray.bsin.infrastructure.mapper.MerchantSubscribeJournalMapper;
+import me.flyray.bsin.infrastructure.mapper.*;
 import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
@@ -46,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static ch.qos.logback.core.joran.action.ActionConst.NULL;
 import static me.flyray.bsin.constants.ResponseCode.*;
 
 /**
@@ -65,8 +63,8 @@ public class MerchantServiceImpl implements MerchantService {
   @Value("${bsin.security.authentication-expiration}")
   private int authExpiration;
 
-  @Autowired private CustomerBaseMapper customerBaseMapper;
   @Autowired public MerchantMapper merchantMapper;
+  @Autowired private CustomerIdentityMapper customerIdentityMapper;
   @Autowired public MerchantSubscribeJournalMapper merchantSubscribeJournalMapper;
   @Autowired private MemberMapper memberMapper;
 
@@ -119,7 +117,7 @@ public class MerchantServiceImpl implements MerchantService {
     if (registerNotNeedAuditStr != null) {
       registerNotNeedAudit = Boolean.parseBoolean(registerNotNeedAuditStr);
     }
-    addMerchant(merchant, registerNotNeedAudit);
+    addMerchant(merchant, registerNotNeedAudit, NULL);
   }
 
   /**
@@ -277,21 +275,25 @@ public class MerchantServiceImpl implements MerchantService {
         throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
       }
     }
-    // 查询当前客户是否是该商户下的
     String customerNo = (String) requestMap.get("customerNo");
     if (customerNo == null) {
       customerNo = loginUser.getCustomerNo();
+      if (customerNo == null) {
+        throw new BusinessException(CUSTOMER_NO_IS_NULL);
+      }
     }
-
-    //    String merchantNo = (String) requestMap.get("merchantNo");
-    //    if (merchantNo == null) {
-    //      merchantNo = loginUser.getMerchantNo();
-    //    }
+    String merchantNo = (String) requestMap.get("merchantNo");
+    if (merchantNo == null) {
+      merchantNo = loginUser.getMerchantNo();
+      if (customerNo == null) {
+        throw new BusinessException(MERCHANT_NO_IS_NULL);
+      }
+    }
     // TODO: 会员挂在商户下，会员
     Member member =
         memberMapper.selectOne(
             new LambdaUpdateWrapper<Member>()
-                //                            .eq(Member::getMerchantNo, merchantNo)
+                .eq(Member::getMerchantNo, merchantNo)
                 .eq(Member::getCustomerNo, customerNo));
     if (member == null) {
       throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);
@@ -303,7 +305,7 @@ public class MerchantServiceImpl implements MerchantService {
     if (merchant.getMerchantName() == null) {
       merchant.setMerchantName("admin");
     }
-    merchant = addMerchant(merchant, true);
+    merchant = addMerchant(merchant, true, customerNo);
     return merchant;
   }
 
@@ -319,7 +321,7 @@ public class MerchantServiceImpl implements MerchantService {
         throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
       }
     }
-    merchant = addMerchant(merchant, true);
+    merchant = addMerchant(merchant, true, NULL);
     return merchant;
   }
 
@@ -440,7 +442,7 @@ public class MerchantServiceImpl implements MerchantService {
     return merchantList;
   }
 
-  private Merchant addMerchant(Merchant merchant, boolean registerNotNeedAudit) {
+  private Merchant addMerchant(Merchant merchant, boolean registerNotNeedAudit, String customerNo) {
     Map<String, Object> requestMap = new HashMap<>();
     merchant.setSerialNo(BsinSnowflake.getId());
     if (merchant.getUsername() == null) {
@@ -470,6 +472,19 @@ public class MerchantServiceImpl implements MerchantService {
     }
     if (merchantMapper.insert(merchant) == 0) {
       throw new BusinessException(ResponseCode.DATA_BASE_UPDATE_FAILED);
+    }
+    // 客户号不为空，则表示是会员申请成为商户(团长)，需要插入客户身份表
+    if (StringUtils.isNotEmpty(customerNo)) {
+      // 身份表: crm_customer_identity插入数据
+      CustomerIdentity customerIdentity = new CustomerIdentity();
+      customerIdentity.setCustomerNo(customerNo);
+      customerIdentity.setTenantId(merchant.getTenantId());
+      //      // 默认商户号??
+      //      customerIdentity.setMerchantNo(customerBase.getTenantId());
+      customerIdentity.setName(merchant.getUsername());
+      customerIdentity.setType(BizRoleType.MERCHANT.getCode());
+      customerIdentity.setIdentityTypeNo(merchant.getSerialNo());
+      customerIdentityMapper.insert(customerIdentity);
     }
     return merchant;
   }

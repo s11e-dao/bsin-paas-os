@@ -2,9 +2,13 @@ package me.flyray.bsin.server.biz;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import me.flyray.bsin.domain.entity.CustomerIdentity;
 import me.flyray.bsin.enums.AuthMethod;
+import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
 import me.flyray.bsin.security.enums.BizRoleType;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +40,7 @@ import me.flyray.bsin.utils.UniqueInviteCodeGenerator;
 public class CustomerBiz {
 
   @Autowired private CustomerBaseMapper customerBaseMapper;
+  @Autowired private CustomerIdentityMapper customerIdentityMapper;
 
   @Value("${bsin.jiujiu.tenantId}")
   private String jiujiuTenantId;
@@ -61,7 +66,6 @@ public class CustomerBiz {
     return customerInfo;
   }
 
-
   public CustomerBase getCustomerByOpenId(String openId) {
     // 客户用户名唯一，查询客户信息
     LambdaQueryWrapper<CustomerBase> warapper = new LambdaQueryWrapper<>();
@@ -69,8 +73,7 @@ public class CustomerBiz {
     return customerBaseMapper.selectOne(warapper);
   }
 
-
-  public  void updateCustomerBase(CustomerBase customerBase) {
+  public void updateCustomerBase(CustomerBase customerBase) {
     customerBaseMapper.updateById(customerBase);
   }
 
@@ -80,7 +83,7 @@ public class CustomerBiz {
    */
   public CustomerBase register(CustomerBase customerBase) throws UnsupportedEncodingException {
     String inviteCode = customerBase.getInviteCode();
-    // 客户用户名唯一，查询客户信息
+    // 客户用户名在商户下唯一，查询客户信息
     LambdaQueryWrapper<CustomerBase> warapper = new LambdaQueryWrapper<>();
     warapper.eq(CustomerBase::getTenantId, customerBase.getTenantId());
 
@@ -134,10 +137,21 @@ public class CustomerBiz {
 
     customerBase.setCustomerNo(BsinSnowflake.getId());
     customerBase.setTenantId(customerBase.getTenantId());
-    customerBase.setType(BizRoleType.CUSTORMER.getCode());
+    customerBase.setType(BizRoleType.CUSTOMER.getCode());
     customerBase.setPassword(customerBase.getPassword());
     customerBase.setInviteCode(UniqueInviteCodeGenerator.generateUniqueInviteCode(6));
     customerBaseMapper.insert(customerBase);
+
+    // 身份表: crm_customer_identity插入数据
+    CustomerIdentity customerIdentity = new CustomerIdentity();
+    customerIdentity.setCustomerNo(customerBase.getCustomerNo());
+    customerIdentity.setTenantId(customerBase.getTenantId());
+    //    // 默认商户号??
+    //    customerIdentity.setMerchantNo(customerBase.getTenantId());
+    customerIdentity.setName(customerBase.getUsername());
+    customerIdentity.setType(BizRoleType.CUSTOMER.getCode());
+    customerIdentity.setIdentityTypeNo(customerBase.getCustomerNo());
+    customerIdentityMapper.insert(customerIdentity);
 
     // 根据 inviteCode 老用户mint积分
     if (inviteCode != null) {
@@ -172,6 +186,17 @@ public class CustomerBiz {
       }
     }
     return customerBase;
+  }
+
+  /**
+   * @param customerNo
+   * @return
+   */
+  public List<CustomerIdentity> getCustomerIdentityList(String customerNo) {
+    LambdaUpdateWrapper<CustomerIdentity> wrapper = new LambdaUpdateWrapper<>();
+    wrapper.eq(CustomerIdentity::getCustomerNo, customerNo);
+    wrapper.eq(CustomerIdentity::getStatus, "1");
+    return customerIdentityMapper.selectList(wrapper);
   }
 
   public void addInviteRelation(CustomerInviteRelation customerInviteRelation) {

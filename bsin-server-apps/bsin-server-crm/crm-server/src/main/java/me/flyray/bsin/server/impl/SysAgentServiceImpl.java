@@ -2,20 +2,21 @@ package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.Merchant;
-import me.flyray.bsin.domain.entity.SysAgent;
-import me.flyray.bsin.domain.entity.SysUser;
+import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.AuthenticationStatus;
 import me.flyray.bsin.domain.enums.MerchantStatus;
 import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.SysAgentService;
+import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
+import me.flyray.bsin.infrastructure.mapper.MemberMapper;
 import me.flyray.bsin.infrastructure.mapper.SysAgentMapper;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
+import static ch.qos.logback.core.joran.action.ActionConst.NULL;
 import static me.flyray.bsin.constants.ResponseCode.*;
 
 /** 系统代理商服务 */
@@ -52,6 +54,8 @@ public class SysAgentServiceImpl implements SysAgentService {
   private int authExpiration;
 
   @Autowired SysAgentMapper sysAgentMapper;
+  @Autowired private MemberMapper memberMapper;
+  @Autowired private CustomerIdentityMapper customerIdentityMapper;
 
   @ApiDoc(desc = "login")
   @ShenyuDubboClient("/login")
@@ -83,15 +87,50 @@ public class SysAgentServiceImpl implements SysAgentService {
     return res;
   }
 
+  /** 开通代理商 */
   @ApiDoc(desc = "openSysAgent")
   @ShenyuDubboClient("/openSysAgent")
   @Override
   public SysAgent openSysAgent(Map<String, Object> requestMap) {
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
-    String tenantId = LoginInfoContextHelper.getTenantId();
-    // TODO: 校验开通条件
-    sysAgent.setTenantId(tenantId);
-    sysAgent = addSysAgent(sysAgent);
+    if (sysAgent.getTenantId() == null) {
+      sysAgent.setTenantId(loginUser.getTenantId());
+      if (sysAgent.getTenantId() == null) {
+        throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
+      }
+    }
+    String customerNo = (String) requestMap.get("customerNo");
+    if (customerNo == null) {
+      customerNo = loginUser.getCustomerNo();
+      if (customerNo == null) {
+        throw new BusinessException(CUSTOMER_NO_IS_NULL);
+      }
+    }
+    String merchantNo = (String) requestMap.get("merchantNo");
+    if (merchantNo == null) {
+      merchantNo = loginUser.getMerchantNo();
+      if (customerNo == null) {
+        throw new BusinessException(MERCHANT_NO_IS_NULL);
+      }
+    }
+    // TODO: 会员挂在商户下，会员
+    Member member =
+        memberMapper.selectOne(
+            new LambdaUpdateWrapper<Member>()
+                .eq(Member::getMerchantNo, merchantNo)
+                .eq(Member::getCustomerNo, customerNo));
+    if (member == null) {
+      throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);
+    }
+
+    if (sysAgent.getPassword() == null) {
+      sysAgent.setPassword("123456");
+    }
+    if (sysAgent.getAgentName() == null) {
+      sysAgent.setAgentName("admin");
+    }
+    sysAgent = addSysAgent(sysAgent, customerNo);
     return sysAgent;
   }
 
@@ -102,7 +141,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
     String tenantId = LoginInfoContextHelper.getTenantId();
     sysAgent.setTenantId(tenantId);
-    sysAgent = addSysAgent(sysAgent);
+    sysAgent = addSysAgent(sysAgent, NULL);
     return sysAgent;
   }
 
@@ -166,7 +205,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     return sysAgent;
   }
 
-  private SysAgent addSysAgent(SysAgent sysAgent) {
+  private SysAgent addSysAgent(SysAgent sysAgent, String customerNo) {
     Map<String, Object> requestMap = new HashMap<>();
     sysAgent.setSerialNo(BsinSnowflake.getId());
     if (sysAgent.getUsername() == null) {
@@ -176,7 +215,23 @@ public class SysAgentServiceImpl implements SysAgentService {
       throw new BusinessException(PASSWORD_EXISTS);
     }
     sysAgent.setSerialNo(BsinSnowflake.getId());
-    sysAgentMapper.insert(sysAgent);
+
+    if (sysAgentMapper.insert(sysAgent) == 0) {
+      throw new BusinessException(ResponseCode.DATA_BASE_UPDATE_FAILED);
+    }
+    // 客户号不为空，则表示是会员申请成为商户(团长)，需要插入客户身份表
+    if (StringUtils.isNotEmpty(customerNo)) {
+      // 身份表: crm_customer_identity插入数据
+      CustomerIdentity customerIdentity = new CustomerIdentity();
+      customerIdentity.setCustomerNo(customerNo);
+      customerIdentity.setTenantId(sysAgent.getTenantId());
+      //      // 默认商户号??
+      //      customerIdentity.setMerchantNo(customerBase.getTenantId());
+      customerIdentity.setName(sysAgent.getUsername());
+      customerIdentity.setType(BizRoleType.SYS_AGENT.getCode());
+      customerIdentity.setIdentityTypeNo(sysAgent.getSerialNo());
+      customerIdentityMapper.insert(customerIdentity);
+    }
     return sysAgent;
   }
 }

@@ -179,8 +179,11 @@ public enum ResponseCode implements ReturnCode {
     GRADE_NOT_EXISTS("300011", "等级不存在~"),
     EQUITY_NOT_EXISTS("300012", "权益不存在~"),
     SYS_AGENT_NOT_EXISTS("300013", "代理商账号不存在！"),
-    CONDITION_NOT_EXISTS("300013", "条件不存在！"),
-    MEMBER_NOT_EXISTS("300006", "会员账号不存在！"),
+    CONDITION_NOT_EXISTS("300014", "条件不存在！"),
+    MEMBER_NOT_EXISTS("300015", "会员账号不存在！"),
+    CUSTOMER_NO_IS_NULL("300016", "客户号不能为空！"),
+
+
 
     /***********************************账户类 400000 开头*****************************************/
     API_CONSUMING_FAIL("400000", "账户余额不足或是计费异常！"),

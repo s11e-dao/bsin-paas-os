@@ -31,7 +31,7 @@ public enum BizRoleType {
     /**
      * 客户
      */
-    CUSTORMER("5", "租户客户"),
+    CUSTOMER("5", "租户客户"),
 
     /**
      * 门店
