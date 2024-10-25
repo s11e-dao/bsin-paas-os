@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.DisBrokeragePolicyMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.DisBrokeragePolicy">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="brokeragePoint" column="brokerage_point" jdbcType="VARCHAR"/>
+            <result property="policyName" column="policy_name" jdbcType="VARCHAR"/>
+            <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+            <result property="excludeFeeType" column="exclude_fee_type" jdbcType="VARCHAR"/>
+            <result property="excludeCustomPer" column="exclude_custom_per" jdbcType="DECIMAL"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,tenant_id,brokerage_point,
+        policy_name,start_time,end_time,
+        exclude_fee_type,exclude_custom_per,remark,
+        status,del_flag,create_time,
+        update_time
+    </sql>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.DisBrokerageJournalMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.DisBrokerageJournal">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
+            <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+            <result property="goodNo" column="good_no" jdbcType="VARCHAR"/>
+            <result property="policyNo" column="policy_no" jdbcType="VARCHAR"/>
+            <result property="ruleNo" column="rule_no" jdbcType="VARCHAR"/>
+            <result property="disAmount" column="dis_amount" jdbcType="DECIMAL"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="brokeragePoint" column="brokerage_point" jdbcType="VARCHAR"/>
+            <result property="excludeFeeType" column="exclude_fee_type" jdbcType="VARCHAR"/>
+            <result property="excludeCustomPer" column="exclude_custom_per" jdbcType="VARCHAR"/>
+            <result property="disLevel" column="dis_level" jdbcType="INTEGER"/>
+            <result property="sysAgentNo" column="sys_agent_no" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="payAmount" column="pay_amount" jdbcType="DECIMAL"/>
+            <result property="sysAgentRate" column="sys_agent_rate" jdbcType="DECIMAL"/>
+            <result property="pointDays" column="point_days" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,order_id,merchant_no,
+        good_no,policy_no,rule_no,
+        dis_amount,create_time,brokerage_point,
+        exclude_fee_type,exclude_custom_per,dis_level,
+        sys_agent_no,status,pay_amount,
+        sys_agent_rate,point_days
+    </sql>
+</mapper>
