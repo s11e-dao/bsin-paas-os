@@ -4,6 +4,7 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaMessage;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
+import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import cn.binarywang.wx.miniapp.constant.WxMaConstants;
 import cn.binarywang.wx.miniapp.message.WxMaMessageRouter;
 import cn.binarywang.wx.miniapp.message.WxMaXmlOutMessage;
@@ -222,9 +223,58 @@ public class WxPortalController {
         throw new BusinessException("100000", "绑定手机号码失败,获取微信绑定的手机号码出错:" + e.toString());
       }
       phone = phoneNumberInfo.getPhoneNumber();
+      WxMaUserInfo wxMaUserInfo = null;
+      try {
+        wxMaUserInfo =
+                wxService
+                        .getUserService()
+                        .getUserInfo(customerBase.getSessionKey(), encryptedData, iv);
+      } catch (Exception e) {
+        log.error("获取微信个人信息失败：{}", e.toString());
+        e.printStackTrace();
+        throw new BusinessException("100000", "获取微信个人信息失败:" + e.toString());
+      }
+      phone = phoneNumberInfo.getPhoneNumber();
+
       customerBiz.updateCustomerBase(customerBase);
     }
     return phone;
+  }
+
+  /**
+   * 绑定微信平台用户个人信息
+   *
+   * @param appId
+   * @param encryptedData
+   * @param iv
+   * @return
+   */
+  public WxMaUserInfo bindingUserInfo(String openId, String appId, String encryptedData, String iv) {
+    WxMaUserInfo wxMaUserInfo = null;
+    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(appId);
+    if (merchantWxApp == null) {
+      throw new BusinessException("100000", "未找到对应appid");
+    }
+    if (StringUtils.equals(merchantWxApp.getAppType(), AppType.WX_MINIAPP.getType())) {
+      WxMaService wxService = (WxMaService) getWxService(merchantWxApp);
+
+      CustomerBase customerBase = customerBiz.getCustomerByOpenId(openId);
+      try {
+        wxMaUserInfo =
+                wxService
+                        .getUserService()
+                        .getUserInfo(customerBase.getSessionKey(), encryptedData, iv);
+      } catch (Exception e) {
+        log.error("获取微信个人信息失败：{}", e.toString());
+        e.printStackTrace();
+        throw new BusinessException("100000", "获取微信个人信息失败:" + e.toString());
+      }
+      customerBase.setAvatar(wxMaUserInfo.getAvatarUrl());
+      customerBase.setNickname(wxMaUserInfo.getNickName());
+      customerBase.setSex(wxMaUserInfo.getGender());
+      customerBiz.updateCustomerBase(customerBase);
+    }
+    return wxMaUserInfo;
   }
 
   /**

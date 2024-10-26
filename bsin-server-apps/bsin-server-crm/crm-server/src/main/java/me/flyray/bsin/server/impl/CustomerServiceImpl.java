@@ -15,6 +15,7 @@ import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.AccountCategory;
+import me.flyray.bsin.enums.AuthMethod;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.response.CustomerAccountVO;
 import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
@@ -217,12 +218,16 @@ public class CustomerServiceImpl implements CustomerService {
     loginUser.setBizRoleType(BizRoleType.CUSTOMER.getCode());
     loginUser.setBizRoleTypeNo(customerBaseRegister.getCustomerNo());
     String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
-
-    // 获取手机号
-    if (ObjectUtil.isEmpty(customerBaseRegister.getPhone())) {
-      wxPortalController.bindingPhoneNumber(openId, appId, encryptedData, iv);
+    if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {
+      // 获取手机号
+      if (ObjectUtil.isEmpty(customerBaseRegister.getPhone())) {
+        wxPortalController.bindingPhoneNumber(openId, appId, encryptedData, iv);
+      }
+      // 获取微信用户信息
+      if (ObjectUtil.isNotEmpty(customerBaseRegister.getNickname())) {
+        wxPortalController.bindingUserInfo(openId, appId, encryptedData, iv);
+      }
     }
-
     // 查新询客户身份信息
     List<CustomerIdentity> identityList =
         customerBiz.getCustomerIdentityList(customerBaseRegister.getCustomerNo());
