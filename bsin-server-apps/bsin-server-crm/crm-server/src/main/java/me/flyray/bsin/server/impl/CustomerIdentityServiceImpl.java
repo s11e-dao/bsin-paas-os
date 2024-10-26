@@ -88,17 +88,10 @@ public class CustomerIdentityServiceImpl implements CustomerIdentityService {
   @Override
   public List<CustomerIdentity> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-    CustomerIdentity customerIdentity =
-        BsinServiceContext.getReqBodyDto(CustomerIdentity.class, requestMap);
     LambdaQueryWrapper<CustomerIdentity> warapper = new LambdaQueryWrapper<>();
     warapper.orderByDesc(CustomerIdentity::getCreateTime);
     warapper.eq(CustomerIdentity::getTenantId, loginUser.getTenantId());
-    warapper.eq(
-        StringUtils.isNotEmpty(loginUser.getMerchantNo()),
-        CustomerIdentity::getMerchantNo,
-        loginUser.getMerchantNo());
-    warapper.eq(CustomerIdentity::getCustomerNo, customerIdentity.getCustomerNo());
-
+    warapper.eq(CustomerIdentity::getCustomerNo, loginUser.getCustomerNo());
     List<CustomerIdentity> gradeList = customerIdentityMapper.selectList(warapper);
     return gradeList;
   }

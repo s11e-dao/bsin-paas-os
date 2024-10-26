@@ -145,7 +145,7 @@ public class CustomerBiz {
     customerIdentity.setTenantId(customerBase.getTenantId());
     //    // 默认商户号??
     //    customerIdentity.setMerchantNo(customerBase.getTenantId());
-    customerIdentity.setName(customerBase.getUsername());
+    customerIdentity.setName(BizRoleType.CUSTOMER.getDesc());
     customerIdentity.setType(BizRoleType.CUSTOMER.getCode());
     customerIdentity.setIdentityTypeNo(customerBase.getCustomerNo());
     customerIdentityMapper.insert(customerIdentity);

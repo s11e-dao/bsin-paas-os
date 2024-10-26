@@ -19,19 +19,19 @@ public enum BizRoleType {
     TENANT("2", "平台租户"),
 
     /**
-     * 平台租户
+     * 租户商户
      */
-    MERCHANT("3", "租户商户"),
+    MERCHANT("3", "商户"),
 
     /**
      * 系统代理商
      */
-    SYS_AGENT("4", "系统代理商"),
+    SYS_AGENT("4", "代理商"),
 
     /**
-     * 客户
+     * 租户客户
      */
-    CUSTOMER("5", "租户客户"),
+    CUSTOMER("5", "客户"),
 
     /**
      * 门店
