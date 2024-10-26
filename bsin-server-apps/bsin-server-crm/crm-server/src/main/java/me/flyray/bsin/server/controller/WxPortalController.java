@@ -195,14 +195,14 @@ public class WxPortalController {
   /**
    * 绑定微信平台用户手机号
    *
-   * @param appid
+   * @param appId
    * @param encryptedData
    * @param iv
    * @return
    */
-  public String bindingPhoneNumber(String openId, String appid, String encryptedData, String iv) {
+  public String bindingPhoneNumber(String openId, String appId, String encryptedData, String iv) {
     String phone = null;
-    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(appid);
+    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(appId);
     if (merchantWxApp == null) {
       throw new BusinessException("100000", "未找到对应appid");
     }

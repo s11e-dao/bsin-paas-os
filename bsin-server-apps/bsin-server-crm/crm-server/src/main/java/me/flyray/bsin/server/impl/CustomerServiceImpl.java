@@ -193,6 +193,9 @@ public class CustomerServiceImpl implements CustomerService {
         BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap, AddGroup.class);
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     String openId = MapUtils.getString(requestMap, "openId");
+    String appId = MapUtils.getString(requestMap, "appId");
+    String encryptedData = MapUtils.getString(requestMap, "encryptedData");
+    String iv = MapUtils.getString(requestMap, "iv");
     if (ObjectUtil.isEmpty(customerBase.getTenantId())) {
       throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
     }
@@ -214,6 +217,11 @@ public class CustomerServiceImpl implements CustomerService {
     loginUser.setBizRoleType(BizRoleType.CUSTOMER.getCode());
     loginUser.setBizRoleTypeNo(customerBaseRegister.getCustomerNo());
     String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
+
+    // 获取手机号
+    if (ObjectUtil.isEmpty(customerBaseRegister.getPhone())) {
+      wxPortalController.bindingPhoneNumber(openId, appId, encryptedData, iv);
+    }
 
     // 查新询客户身份信息
     List<CustomerIdentity> identityList =
@@ -334,9 +342,7 @@ public class CustomerServiceImpl implements CustomerService {
     return data;
   }
 
-  /**
-   * 身份认证
-   * */
+  /** 身份认证 */
   @ApiDoc(desc = "identityVerification")
   @ShenyuDubboClient("/identityVerification")
   /** 身份认证 */
@@ -431,9 +437,7 @@ public class CustomerServiceImpl implements CustomerService {
     return customerBaseList;
   }
 
-  /**
-   * 实名认证
-   * */
+  /** 实名认证 */
   @ApiDoc(desc = "certification")
   @ShenyuDubboClient("/certification")
   @Override
