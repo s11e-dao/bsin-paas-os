@@ -16,82 +16,51 @@ export type columnsDataType = {
 const columnsData: ProColumns<columnsDataType>[] = [
   // 配置搜索框
   {
-    title: '应用名称',
-    dataIndex: 'merchantName',
+    title: '币种名称',
+    dataIndex: 'agentName',
     hideInTable: true,
     fieldProps: {
       maxLength: 20,
     },
   },
   {
-    title: '状态',
-    dataIndex: 'status',
-    valueType: 'select',
+    title: '币种符号',
+    dataIndex: 'tenantId',
     hideInTable: true,
+    fieldProps: {
+      maxLength: 20,
+    },
   },
 
   // table里面的内容
   {
     title: 'ID',
-    width: 170,
+    width: 190,
     dataIndex: 'serialNo',
-    fixed: 'left',
     hideInSearch: true,
   },
   {
-    title: '租户号',
-    width: 170,
-    dataIndex: 'tenantId',
-    hideInSearch: true,
-  },
-  {
-    title: '商户号',
-    width: 170,
-    dataIndex: 'bizRoleTypeNo',
-    hideInSearch: true,
-  },
-  {
-    title: '应用名称',
-    width: 170,
-    dataIndex: 'appName',
-    hideInSearch: true,
-  },
-  {
-    title: '应用ID',
-    width: 170,
-    dataIndex: 'appId',
-    hideInSearch: true,
-  },
-  {
-    title: '应用密钥',
-    width: 170,
-    dataIndex: 'appSecret',
-    hideInSearch: true,
-  },
-  {
-    title: '通知地址',
-    width: 260,
-    dataIndex: 'notifyUrl',
-    hideInSearch: true,
-  },
-  {
-    title: '应用状态',
+    title: '币种名称',
     width: 160,
-    dataIndex: 'status',
+    dataIndex: 'agentName',
     hideInSearch: true,
-    valueEnum: {
-      '0': {
-        text: '正常',
-      },
-      '1': {
-        text: '冻结',
-      },
-    },
   },
   {
-    title: '应用描述',
+    title: '币种符号',
     width: 160,
-    dataIndex: 'appDescription',
+    dataIndex: 'username',
+    hideInSearch: true,
+  },
+  {
+    title: '币种描述',
+    width: 160,
+    dataIndex: 'description',
+    hideInSearch: true,
+  },
+  {
+    title: '创建者',
+    width: 160,
+    dataIndex: 'createBy',
     hideInSearch: true,
   },
   {
@@ -102,7 +71,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '操作',
-    width: 280,
+    width: 100,
     hideInSearch: true,
     dataIndex: 'action',
     fixed: 'right',

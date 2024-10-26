@@ -76,6 +76,22 @@ export default () => {
         编辑
       </a>
       <Divider type="vertical" />
+      <a
+        onClick={() => {
+          handleEditModel(record);
+        }}
+      >
+        支付配置
+      </a>
+      <Divider type="vertical" />
+      <a
+        onClick={() => {
+          handleEditModel(record);
+        }}
+      >
+        应用配置
+      </a>
+      <Divider type="vertical" />
       <Popconfirm
         title="确定删除此条数据？?"
         onConfirm={() => toDelContractTemplate(record.id)}

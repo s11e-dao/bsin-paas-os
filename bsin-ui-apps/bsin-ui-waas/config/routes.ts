@@ -274,6 +274,21 @@ const routes = [
         path: '/assets/contract-list',
         component: '@/pages/Assets/Contract/index',
       },
+      // **************************支付*************************
+      {
+        path: '/pay',
+        redirect: '/pay/pay-channel-interface',
+      },
+      // 支付接口
+      {
+        path: '/pay/pay-channel-interface',
+        component: '@/pages/pay/PayChannelInterface/index',
+      },
+      // 支付方式
+      {
+        path: '/pay/pay-way',
+        component: '@/pages/pay/PayWay/index',
+      },
       // **************************交易*************************
       {
         path: '/transaction',
