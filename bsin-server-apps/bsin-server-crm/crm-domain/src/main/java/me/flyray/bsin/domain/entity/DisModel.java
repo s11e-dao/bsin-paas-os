@@ -15,19 +15,16 @@ import java.io.Serializable;
 @Data
 @TableName(value ="crm_dis_model")
 public class DisModel implements Serializable {
-    /**
-     * 
-     */
-    @TableId
-    private Integer serialNo;
+
 
     /**
      * 租户CODE
      */
+    @TableId
     private String tenantId;
 
     /**
-     * 模型类型:一级分销:leave1, 二级分销:leave2, 链路2+1: leave2_1
+     * 模型类型:一级分销:level1, 二级分销:level2, 链路2+1: level2_1
      */
     private String model;
 
@@ -46,7 +43,6 @@ public class DisModel implements Serializable {
      */
     private Integer secondInviteBrokerage;
 
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+
 
 }

@@ -1,7 +1,9 @@
 package me.flyray.bsin.infrastructure.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import me.flyray.bsin.domain.entity.DisModel;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author rednet
@@ -11,6 +13,9 @@ import me.flyray.bsin.domain.entity.DisModel;
 */
 public interface DisModelMapper extends BaseMapper<DisModel> {
 
+
+
+    void update(DisModel user, UpdateWrapper dismodel);
 }
 
 
