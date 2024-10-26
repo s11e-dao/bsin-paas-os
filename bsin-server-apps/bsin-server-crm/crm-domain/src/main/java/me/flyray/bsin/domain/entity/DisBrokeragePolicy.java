@@ -83,6 +83,11 @@ public class DisBrokeragePolicy implements Serializable {
      */
     private Date updateTime;
 
+    /**
+     * 创建用户
+     * **/
+    private String CreateUserId;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

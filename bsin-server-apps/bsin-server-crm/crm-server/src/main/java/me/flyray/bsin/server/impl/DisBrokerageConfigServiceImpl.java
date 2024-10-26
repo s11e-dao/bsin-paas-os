@@ -7,11 +7,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.DisBrokerageConfig;
-import me.flyray.bsin.domain.entity.PayChannelConfig;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisBrokerageConfigService;
 import me.flyray.bsin.infrastructure.mapper.DisBrokerageConfigMapper;
-import me.flyray.bsin.infrastructure.mapper.DisModelMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
@@ -103,10 +101,41 @@ public class DisBrokerageConfigServiceImpl implements DisBrokerageConfigService 
     @ShenyuDubboClient("/getDetail")
     @Override
     public DisBrokerageConfig getDetail(Map<String, Object> requestMap){
-        String serialNo = MapUtils.getString(requestMap, "serialNo");
-        DisBrokerageConfig disBrokerageConfig = disBrokerageConfigMapper.selectById(serialNo);
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        String tenantId = loginUser.getTenantId();
+        DisBrokerageConfig disBrokerageConfig = disBrokerageConfigMapper.selectById(tenantId);
         return disBrokerageConfig;
     }
+
+
+    @Override
+    @ApiDoc(desc = "update")
+    @ShenyuDubboClient("/update")
+    public DisBrokerageConfig update(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        // 将请求参数转换为 DisModel 对象
+        DisBrokerageConfig disbrokerageconfig = BsinServiceContext.getReqBodyDto(DisBrokerageConfig.class, requestMap);
+        disbrokerageconfig.setTenantId(loginUser.getTenantId());
+        // 构建查询条件
+        LambdaQueryWrapper<DisBrokerageConfig> wrapper = new LambdaQueryWrapper<DisBrokerageConfig>()
+                .eq(DisBrokerageConfig::getTenantId, loginUser.getTenantId());
+        // 查询记录
+        DisBrokerageConfig existingModel = disBrokerageConfigMapper.selectOne(wrapper);
+
+        if (existingModel == null) {
+            // 记录不存在，插入新记录
+            disBrokerageConfigMapper.insert(disbrokerageconfig);
+        } else {
+            // 记录存在，更新记录
+            disbrokerageconfig.setTenantId(existingModel.getTenantId());
+            disBrokerageConfigMapper.updateById(disbrokerageconfig);
+        }
+        return disbrokerageconfig;
+    }
+
+
+
+
 }
 
 

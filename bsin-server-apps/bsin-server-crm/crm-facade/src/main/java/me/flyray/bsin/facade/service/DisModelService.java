@@ -39,4 +39,6 @@ public interface DisModelService {
      */
     public IPage<?> getPageList(Map<String, Object> requestMap);
 
+
+    DisModel update(Map<String, Object> requestMap);
 }

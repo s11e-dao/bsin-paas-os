@@ -7,11 +7,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.DisBrokerageJournal;
-import me.flyray.bsin.domain.entity.PayChannelConfig;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisBrokerageJournalService;
 import me.flyray.bsin.infrastructure.mapper.DisBrokerageJournalMapper;
-import me.flyray.bsin.infrastructure.mapper.DisModelMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
@@ -94,6 +92,17 @@ public class DisBrokerageJournalServiceImpl implements DisBrokerageJournalServic
         return disBrokerageJournal;
     }
 
+    @Override
+    @ApiDoc(desc = "分佣")
+    @ShenyuDubboClient("/brokerage")
+    public DisBrokerageJournal brokerage(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        System.out.println(requestMap);
+        DisBrokerageJournal journal = BsinServiceContext.getReqBodyDto(DisBrokerageJournal.class, requestMap);
+
+
+        return journal;
+    }
 }
 
 
