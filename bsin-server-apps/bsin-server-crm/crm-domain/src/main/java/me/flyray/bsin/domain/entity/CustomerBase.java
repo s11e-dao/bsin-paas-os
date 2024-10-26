@@ -49,13 +49,6 @@ public class CustomerBase implements Serializable {
     private String credential;
 
     /**
-     * 凭据，第三方标识，微信平台的openId
-     */
-    @TableField(exist = false)
-    private String openId;
-
-
-    /**
      * 微信平台：登录请求会话key
      */
     private String sessionKey;
@@ -113,7 +106,7 @@ public class CustomerBase implements Serializable {
     private String avatar;
 
     /**
-     * 客户角色类型，1.运营平台 2.租户平台 4.代理商 5.租户客户 6.门店 99.无
+     * 客户角色类型，客户类型 0、个人客户 1、企业客户
      * @see me.flyray.bsin.security.enums.BizRoleType
      */
     private String type;

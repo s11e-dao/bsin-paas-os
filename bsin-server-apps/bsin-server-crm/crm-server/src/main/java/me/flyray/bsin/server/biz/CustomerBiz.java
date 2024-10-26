@@ -88,28 +88,25 @@ public class CustomerBiz {
     warapper.eq(CustomerBase::getTenantId, customerBase.getTenantId());
 
     if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {
-      if (customerBase.getCredential() == null) {
-        customerBase.setCredential(customerBase.getOpenId());
-      }
       warapper.eq(CustomerBase::getCredential, customerBase.getCredential());
-      if (customerBase.getUsername() != null) {
+      if (customerBase.getUsername() == null) {
         customerBase.setUsername(customerBase.getCredential());
       }
     } else if (AuthMethod.QQ.getType().equals(customerBase.getAuthMethod())) {
       warapper.eq(CustomerBase::getCredential, customerBase.getCredential());
-      if (customerBase.getUsername() != null) {
+      if (customerBase.getUsername() == null) {
         customerBase.setUsername(customerBase.getCredential());
       }
 
     } else if (AuthMethod.PHONE.getType().equals(customerBase.getAuthMethod())) {
       warapper.eq(CustomerBase::getPhone, customerBase.getPhone());
-      if (customerBase.getUsername() != null) {
+      if (customerBase.getUsername() == null) {
         customerBase.setUsername(customerBase.getPhone());
       }
 
     } else if (AuthMethod.EMAIL.getType().equals(customerBase.getAuthMethod())) {
       warapper.eq(CustomerBase::getEmail, customerBase.getEmail());
-      if (customerBase.getUsername() != null) {
+      if (customerBase.getUsername() == null) {
         customerBase.setUsername(customerBase.getEmail());
       }
     } else if (AuthMethod.USERNAME.getType().equals(customerBase.getAuthMethod())) {
@@ -118,17 +115,17 @@ public class CustomerBiz {
 
     CustomerBase customerInfo = customerBaseMapper.selectOne(warapper);
 
+
     if (customerInfo != null) {
       if (ObjectUtils.isNotEmpty(customerBase.getPassword())) {
         if (!customerBase.getPassword().equals(customerInfo.getPassword())) {
           throw new BusinessException(ResponseCode.PASSWORD_ERROR);
         }
       } else {
-        if (ObjectUtils.isNotEmpty(customerBase.getSessionKey())) {
-          if (!customerBase.getSessionKey().equals(customerInfo.getSessionKey())) {
-            throw new BusinessException(ResponseCode.PASSWORD_ERROR);
-          }
-        } else {
+        if(!ObjectUtils.isNotEmpty(customerBase.getSessionKey())){
+          throw new BusinessException(ResponseCode.PASSWORD_ERROR);
+        }
+        if (!customerBase.getSessionKey().equals(customerInfo.getSessionKey())) {
           throw new BusinessException(ResponseCode.PASSWORD_ERROR);
         }
       }
@@ -137,7 +134,7 @@ public class CustomerBiz {
 
     customerBase.setCustomerNo(BsinSnowflake.getId());
     customerBase.setTenantId(customerBase.getTenantId());
-    customerBase.setType(BizRoleType.CUSTOMER.getCode());
+    customerBase.setType("0");
     customerBase.setPassword(customerBase.getPassword());
     customerBase.setInviteCode(UniqueInviteCodeGenerator.generateUniqueInviteCode(6));
     customerBaseMapper.insert(customerBase);

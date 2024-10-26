@@ -192,13 +192,13 @@ public class CustomerServiceImpl implements CustomerService {
     CustomerBase customerBase =
         BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap, AddGroup.class);
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-
+    String openId = MapUtils.getString(requestMap, "openId");
     if (ObjectUtil.isEmpty(customerBase.getTenantId())) {
       throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
     }
-
+    customerBase.setCredential(openId);
     CustomerBase customerBaseRegister = customerBiz.register(customerBase);
-    // 查选是否是jiujiu的会员 ??????
+    // 查询是否是jiujiu的会员 ??????
     Member member =
         memberMapper.selectOne(
             new LambdaUpdateWrapper<Member>()
