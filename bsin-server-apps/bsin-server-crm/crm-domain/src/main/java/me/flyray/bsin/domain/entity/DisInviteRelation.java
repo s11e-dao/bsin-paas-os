@@ -23,6 +23,11 @@ public class DisInviteRelation implements Serializable {
     private String serialNo;
 
     /**
+     * 租户号
+     */
+    private String tenantId;
+
+    /**
      * 被邀请人序列号
      */
     private String customerNo;

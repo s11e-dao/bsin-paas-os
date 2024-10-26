@@ -20,7 +20,7 @@ public class DisBrokerageGoods implements Serializable {
      * 
      */
     @TableId
-    private Integer serialNo;
+    private String serialNo;
 
     /**
      * 商品类型

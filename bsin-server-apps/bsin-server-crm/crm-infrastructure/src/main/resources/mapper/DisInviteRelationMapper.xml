@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.DisInviteRelation">
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <id property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
             <result property="parentNo" column="parent_no" jdbcType="VARCHAR"/>
             <result property="inviteLevel" column="invite_level" jdbcType="INTEGER"/>
@@ -13,7 +14,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        serial_no,customer_no,parent_no,
+        serial_no,tenant_id,customer_no,parent_no,
         invite_level,create_time
     </sql>
 </mapper>

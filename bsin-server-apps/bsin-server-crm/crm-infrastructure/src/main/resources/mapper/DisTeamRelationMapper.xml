@@ -6,11 +6,12 @@
 
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.DisTeamRelation">
             <id property="serialNo" column="serial_no" jdbcType="INTEGER"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="prarentSysAgentNo" column="prarent_sys_agent_no" jdbcType="VARCHAR"/>
             <result property="sysAgentNo" column="sys_agent_no" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        serial_no,prarent_sys_agent_no,sys_agent_no
+        serial_no,tenant_id,prarent_sys_agent_no,sys_agent_no
     </sql>
 </mapper>

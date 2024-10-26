@@ -19,7 +19,12 @@ public class DisTeamRelation implements Serializable {
      * 
      */
     @TableId
-    private Integer serialNo;
+    private String serialNo;
+
+    /**
+     * 上级分销员ID
+     */
+    private String tenantId;
 
     /**
      * 上级分销员ID

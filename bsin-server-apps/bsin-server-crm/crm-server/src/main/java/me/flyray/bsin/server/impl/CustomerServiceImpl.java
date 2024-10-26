@@ -220,9 +220,9 @@ public class CustomerServiceImpl implements CustomerService {
     String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
     if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {
       // 获取手机号
-      if (ObjectUtil.isEmpty(customerBaseRegister.getPhone())) {
-        wxPortalController.bindingPhoneNumber(openId, appId, encryptedData, iv);
-      }
+//      if (ObjectUtil.isEmpty(customerBaseRegister.getPhone())) {
+//        wxPortalController.bindingPhoneNumber(openId, appId, encryptedData, iv);
+//      }
       // 获取微信用户信息
       if (ObjectUtil.isNotEmpty(customerBaseRegister.getNickname())) {
         wxPortalController.bindingUserInfo(openId, appId, encryptedData, iv);
