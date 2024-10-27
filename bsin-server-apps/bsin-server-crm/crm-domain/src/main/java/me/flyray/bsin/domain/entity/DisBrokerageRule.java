@@ -41,7 +41,7 @@ public class DisBrokerageRule implements Serializable {
     /**
      * 二级分佣比例
      */
-    private BigDecimal secondSalePer;
+    private Integer secondSalePer;
 
     /**
      * 商品类型

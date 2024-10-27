@@ -8,8 +8,8 @@
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="brokeragePolicyNo" column="brokerage_policy_no" jdbcType="VARCHAR"/>
-            <result property="firstSalePer" column="first_sale_per" jdbcType="DECIMAL"/>
-            <result property="secondSalePer" column="second_sale_per" jdbcType="DECIMAL"/>
+            <result property="firstSalePer" column="first_sale_per" jdbcType="INTEGER"/>
+            <result property="secondSalePer" column="second_sale_per" jdbcType="INTEGER"/>
             <result property="goodsCategoryNo" column="goods_category_no" jdbcType="VARCHAR"/>
             <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
             <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>

@@ -98,7 +98,7 @@ public class DisBrokerageJournal implements Serializable {
     /**
      * 代理商分佣比例
      */
-    private Integer sysAgentRate;
+    private BigDecimal sysAgentRate;
 
     /**
      * 分佣条件达成后隔几天结算佣金
