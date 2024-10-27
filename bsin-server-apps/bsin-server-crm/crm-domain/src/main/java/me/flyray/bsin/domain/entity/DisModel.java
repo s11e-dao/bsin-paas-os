@@ -31,7 +31,7 @@ public class DisModel implements Serializable {
     /**
      * 退出团队机制
      */
-    private String quitCurrentLimit;
+    private Integer quitCurrentLimit;
 
     /**
      * 一级推荐奖励

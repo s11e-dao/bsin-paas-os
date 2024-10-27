@@ -48,6 +48,12 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
     private DisInviteRelationMapper DisInviteRelationMapper;
     @Autowired
     private DisBrokerageConfigMapper disBrokerageConfigMapper;
+    @Autowired
+    private DisModelMapper disModelMapper;
+
+
+
+
     /**
      * 添加分销团队关系
      *
@@ -64,7 +70,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         // 生成crm_sys_agent 数据后调用,requestMap ->{"sysAgentNo": 成为分销后的serial_no, "tenantId":租户ID}
         String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
         String tenantId = MapUtils.getString(requestMap, "tenantId");
-
+        DisModel model = disModelMapper.selectById(tenantId);
         // 查询分销配置信息
         DisBrokerageConfig config = disBrokerageConfigMapper.selectOne(
                 new LambdaQueryWrapper<DisBrokerageConfig>()
@@ -97,7 +103,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
 
         // 创建分销团队关系对象
         DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
-        if (parentIdentity.getIdentityTypeNo() != null){
+        if (parentIdentity.getIdentityTypeNo() != null || model.getModel() == "level1"){
             disTeamRelation.setPrarentSysAgentNo(parentIdentity.getIdentityTypeNo());
             disTeamRelation.setAgentType(0);
         }
@@ -109,6 +115,31 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         disTeamRelation.setTenantId(tenantId);
         // 插入分销团队关系到数据库
         disTeamRelationMapper.insert(disTeamRelation);
+        if (model.getModel() == "level2_1" && parentIdentity.getIdentityTypeNo() != null){
+            DisTeamRelation parantDisTeamRelation = disTeamRelationMapper.selectOne(
+                    new LambdaQueryWrapper<DisTeamRelation>()
+                    .eq(DisTeamRelation::getSysAgentNo, parentIdentity.getIdentityTypeNo())
+            );
+            if (parantDisTeamRelation.getAgentType() != 1){
+                // 查询该用户的上级是否已经有两个下级
+                Page<DisTeamRelation> page = new Page<>(1,1);
+                LambdaQueryWrapper<DisTeamRelation> warapper = new LambdaQueryWrapper<>();
+                warapper.eq(DisTeamRelation::getPrarentSysAgentNo, parentIdentity.getIdentityTypeNo());
+                IPage<DisTeamRelation> pageList = disTeamRelationMapper.selectPage(page, warapper);
+                if (pageList.getSize() >=model.getQuitCurrentLimit() ){
+                    DisTeamRelation topDisTeamRelation = disTeamRelationMapper.selectOne(
+                            new LambdaQueryWrapper<DisTeamRelation>()
+                                    .eq(DisTeamRelation::getPrarentSysAgentNo, parantDisTeamRelation.getPrarentSysAgentNo())
+                    );
+                   for (DisTeamRelation item : pageList.getRecords()){
+                       item.setPrarentSysAgentNo(topDisTeamRelation.getSysAgentNo());
+                       disTeamRelationMapper.updateById(item);
+                   }
+                    // 该用户改为老板身份,对应的下级改为上级的下级
+                }
+            }
+
+        }
         return disTeamRelation;
     }
     @ApiDoc(desc = "delete")

@@ -8,7 +8,7 @@
             <id property="serialNo" column="serial_no" jdbcType="INTEGER"/>
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="model" column="model" jdbcType="VARCHAR"/>
-            <result property="quitCurrentLimit" column="quit_current_limit" jdbcType="VARCHAR"/>
+            <result property="quitCurrentLimit" column="quit_current_limit" jdbcType="INTEGER"/>
             <result property="firstInviteBrokerage" column="first_invite_brokerage" jdbcType="INTEGER"/>
             <result property="secondInviteBrokerage" column="second_invite_brokerage" jdbcType="INTEGER"/>
     </resultMap>
