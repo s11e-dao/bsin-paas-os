@@ -94,7 +94,6 @@ public class DisBrokerageRuleServiceImpl implements DisBrokerageRuleService {
         return pageList;
     }
 
-
     /**
      * 事件详情
      * @param requestMap

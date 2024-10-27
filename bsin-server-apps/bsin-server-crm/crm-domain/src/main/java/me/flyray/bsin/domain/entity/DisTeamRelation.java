@@ -36,6 +36,12 @@ public class DisTeamRelation implements Serializable {
      */
     private String sysAgentNo;
 
+
+    private Integer agentType;
+
+
+
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
