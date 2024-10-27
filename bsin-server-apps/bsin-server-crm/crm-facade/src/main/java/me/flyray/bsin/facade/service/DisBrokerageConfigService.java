@@ -2,6 +2,7 @@ package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.DisBrokerageConfig;
+import me.flyray.bsin.domain.entity.DisModel;
 
 import java.util.Map;
 
@@ -38,4 +39,6 @@ public interface DisBrokerageConfigService {
      */
     public IPage<?> getPageList(Map<String, Object> requestMap);
 
+
+    DisBrokerageConfig update(Map<String, Object> requestMap);
 }

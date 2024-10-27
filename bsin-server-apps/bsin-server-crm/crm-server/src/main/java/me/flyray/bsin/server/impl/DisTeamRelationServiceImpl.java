@@ -6,12 +6,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.DisTeamRelation;
-import me.flyray.bsin.domain.entity.PayChannelConfig;
+import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisTeamRelationService;
-import me.flyray.bsin.infrastructure.mapper.DisModelMapper;
+import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
+import me.flyray.bsin.infrastructure.mapper.DisInviteRelationMapper;
 import me.flyray.bsin.infrastructure.mapper.DisTeamRelationMapper;
+import me.flyray.bsin.infrastructure.mapper.SysAgentMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
+import static me.flyray.bsin.constants.ResponseCode.ACCOUNT_EXISTS;
 
 /**
 * @author bolei
@@ -41,16 +43,47 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
 
     @Autowired
     private DisTeamRelationMapper disTeamRelationMapper;
+    @Autowired
+    private SysAgentMapper SysAgentMapper;
+    @Autowired
+    private CustomerIdentityMapper CustomerIdentityMapper;
+    @Autowired
+    private DisInviteRelationMapper DisInviteRelationMapper;
 
-    @ApiDoc(desc = "add")
-    @ShenyuDubboClient("/add")
+//    @ApiDoc(desc = "add")
+//    @ShenyuDubboClient("/add")
     @Override
     public DisTeamRelation add(Map<String, Object> requestMap) {
-        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
+        SysAgent agent = SysAgentMapper.selectById(sysAgentNo);
+        CustomerIdentity identity = CustomerIdentityMapper.selectOne(
+                new LambdaQueryWrapper<CustomerIdentity>()
+                .eq(CustomerIdentity::getIdentityTypeNo, agent.getSerialNo()
+                )
+        );
+        DisInviteRelation relation  = DisInviteRelationMapper.selectOne(new LambdaQueryWrapper<DisInviteRelation>()
+                .eq(DisInviteRelation::getCustomerNo, identity.getCustomerNo()
+                )
+        );
+        String parentNo = relation.getParentNo();
+        CustomerIdentity parentIdentity = CustomerIdentityMapper.selectOne(new LambdaQueryWrapper<CustomerIdentity>()
+                .eq(CustomerIdentity::getCustomerNo, parentNo
+                )
+        );
+//        SysAgent parentAgent =  SysAgentMapper.selectById(parentIdentity.getIdentityTypeNo());
+//        System.out.println(parentIdentity.getIdentityTypeNo());
         DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
-        disTeamRelation.setTenantId(loginUser.getTenantId());
+        if (parentIdentity.getIdentityTypeNo() != null){
+            disTeamRelation.setPrarentSysAgentNo(parentIdentity.getIdentityTypeNo());
+            disTeamRelation.setAgentType(0);
+        }
+        else{
+            disTeamRelation.setAgentType(1);
+        }
+        disTeamRelation.setSysAgentNo(agent.getSerialNo());
         disTeamRelation.setSerialNo(BsinSnowflake.getId());
         disTeamRelationMapper.insert(disTeamRelation);
+
         return disTeamRelation;
     }
 
@@ -107,6 +140,14 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         DisTeamRelation disTeamRelation = disTeamRelationMapper.selectById(serialNo);
         return disTeamRelation;
     }
+
+
+
+
+
+
+
+
 
 }
 

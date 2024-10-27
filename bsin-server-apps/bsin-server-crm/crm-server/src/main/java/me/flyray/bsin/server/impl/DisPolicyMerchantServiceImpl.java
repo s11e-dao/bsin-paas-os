@@ -7,10 +7,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.DisPolicyMerchant;
-import me.flyray.bsin.domain.entity.PayChannelConfig;
+import me.flyray.bsin.domain.entity.Grade;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisPolicyMerchantService;
-import me.flyray.bsin.infrastructure.mapper.DisModelMapper;
 import me.flyray.bsin.infrastructure.mapper.DisPolicyMerchantMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
@@ -88,7 +87,7 @@ public class DisPolicyMerchantServiceImpl implements DisPolicyMerchantService {
         Page<DisPolicyMerchant> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
         DisPolicyMerchant disPolicyMerchant = BsinServiceContext.getReqBodyDto(DisPolicyMerchant.class, requestMap);
         LambdaQueryWrapper<DisPolicyMerchant> warapper = new LambdaQueryWrapper<>();
-        warapper.eq(DisPolicyMerchant::getTenantId, loginUser.getTenantId());
+        warapper.eq(DisPolicyMerchant::getBrokeragePolicyNo, MapUtils.getString(requestMap, "BrokeragePolicyNo"));
         IPage<DisPolicyMerchant> pageList = disPolicyMerchantMapper.selectPage(page, warapper);
         return pageList;
     }
@@ -108,6 +107,27 @@ public class DisPolicyMerchantServiceImpl implements DisPolicyMerchantService {
         return disPolicyMerchant;
     }
 
+    @ApiDoc(desc = "update")
+    @ShenyuDubboClient("/update")
+    @Override
+    public void update(Map<String, Object> requestMap){
+        String merchant_nos = MapUtils.getString(requestMap,"merchantNos");
+        System.out.println(merchant_nos);
+        // 检查是否为数组
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        String[] array = merchant_nos.split(",");
+        LambdaQueryWrapper<DisPolicyMerchant> warapper = new LambdaQueryWrapper<>();
+        warapper.eq(DisPolicyMerchant::getBrokeragePolicyNo, MapUtils.getString(requestMap, "brokeragePolicyNo"));
+        disPolicyMerchantMapper.delete(warapper);
+        for(String merchantNo:array){
+            DisPolicyMerchant disPolicyMerchant = new DisPolicyMerchant();
+            disPolicyMerchant.setBrokeragePolicyNo(MapUtils.getString(requestMap, "brokeragePolicyNo"));
+            disPolicyMerchant.setMerchantNo(merchantNo);
+            disPolicyMerchant.setSerialNo(BsinSnowflake.getId());
+            disPolicyMerchant.setTenantId(loginUser.getTenantId());
+            disPolicyMerchantMapper.insert(disPolicyMerchant);
+        }
+    }
 }
 
 

@@ -5,6 +5,10 @@ import me.flyray.bsin.domain.entity.DisBrokerageJournal;
 
 import java.util.Map;
 
+import me.flyray.bsin.domain.entity.DisBrokerageJournal;
+
+import java.util.Map;
+
 /**
 * @author bolei
 * @description 针对表【crm_dis_brokerage_journal】的数据库操作Service
@@ -33,4 +37,6 @@ public interface DisBrokerageJournalService {
      */
     public IPage<?> getPageList(Map<String, Object> requestMap);
 
+
+    void brokerage(Map<String, Object> requestMap);
 }

@@ -38,4 +38,6 @@ public interface DisPolicyMerchantService {
      */
     public IPage<?> getPageList(Map<String, Object> requestMap);
 
+
+    void update(Map<String, Object> requestMap);
 }

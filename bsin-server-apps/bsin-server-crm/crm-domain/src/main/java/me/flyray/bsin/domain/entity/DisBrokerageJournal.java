@@ -26,7 +26,7 @@ public class DisBrokerageJournal implements Serializable {
     /**
      * 订单ID
      */
-    private String orderId;
+    private String orderNo;
 
     /**
      * 门店ID
@@ -73,7 +73,7 @@ public class DisBrokerageJournal implements Serializable {
     /**
      * 自定义扣除费用比例
      */
-    private String excludeCustomPer;
+    private BigDecimal excludeCustomPer;
 
     /**
      * 几级分佣一级分佣:1, 二级分佣:2
@@ -104,6 +104,10 @@ public class DisBrokerageJournal implements Serializable {
      * 分佣条件达成后隔几天结算佣金
      */
     private Integer pointDays;
+
+    private String goodSkuNo;
+
+    private BigDecimal goodsSkuAmount;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

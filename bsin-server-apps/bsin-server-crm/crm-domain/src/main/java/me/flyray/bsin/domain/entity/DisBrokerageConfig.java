@@ -19,12 +19,13 @@ public class DisBrokerageConfig implements Serializable {
     /**
      * 
      */
-    @TableId
+
     private String serialNo;
 
     /**
      * 设置规则的租户
      */
+    @TableId
     private String tenantId;
 
     /**
@@ -52,7 +53,7 @@ public class DisBrokerageConfig implements Serializable {
      */
     private String merchantNo;
 
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+//    @TableField(exist = false)
+//    private static final long serialVersionUID = 1L;
 
 }

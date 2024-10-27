@@ -2,9 +2,7 @@ package me.flyray.bsin.server.impl;
 
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +13,6 @@ import me.flyray.bsin.infrastructure.mapper.*;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -103,9 +100,40 @@ public class DisModelServiceImpl implements DisModelService {
     @ShenyuDubboClient("/getDetail")
     @Override
     public DisModel getDetail(Map<String, Object> requestMap){
-        String serialNo = MapUtils.getString(requestMap, "serialNo");
-        DisModel disModel = disModelMapper.selectById(serialNo);
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        DisModel disModel = disModelMapper.selectById(loginUser.getTenantId());
         return disModel;
     }
+
+
+
+    @Override
+    @ApiDoc(desc = "update")
+    @ShenyuDubboClient("/update")
+    public DisModel update(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        System.out.println(requestMap);
+
+        // 将请求参数转换为 DisModel 对象
+        DisModel dismodel = BsinServiceContext.getReqBodyDto(DisModel.class, requestMap);
+        dismodel.setTenantId(loginUser.getTenantId());
+        // 构建查询条件
+        LambdaQueryWrapper<DisModel> wrapper = new LambdaQueryWrapper<DisModel>()
+                .eq(DisModel::getTenantId, loginUser.getTenantId());
+        // 查询记录
+        DisModel existingModel = disModelMapper.selectOne(wrapper);
+
+        if (existingModel == null) {
+            // 记录不存在，插入新记录
+            disModelMapper.insert(dismodel);
+        } else {
+            // 记录存在，更新记录
+            dismodel.setTenantId(existingModel.getTenantId());
+            disModelMapper.updateById(dismodel);
+        }
+        return dismodel;
+    }
+
+
 }
 
