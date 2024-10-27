@@ -66,16 +66,6 @@ export default () => {
   // 操作行数据 自定义操作行
   const actionRender: any = (text: any, record: any, index: number) => (
     <div key={record.dictType}>
-      <a onClick={() => toViewContractTemplate(record)}>查看</a>
-      <Divider type="vertical" />
-      <a
-        onClick={() => {
-          handleEditModel(record);
-        }}
-      >
-        编辑
-      </a>
-      <Divider type="vertical" />
       <a
         onClick={() => {
           handleEditModel(record);
@@ -90,6 +80,16 @@ export default () => {
         }}
       >
         应用配置
+      </a>
+      <Divider type="vertical" />
+      <a onClick={() => toViewContractTemplate(record)}>查看</a>
+      <Divider type="vertical" />
+      <a
+        onClick={() => {
+          handleEditModel(record);
+        }}
+      >
+        编辑
       </a>
       <Divider type="vertical" />
       <Popconfirm
