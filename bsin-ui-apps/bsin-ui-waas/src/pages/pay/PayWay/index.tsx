@@ -208,7 +208,7 @@ export default () => {
       />
       {/* 新增合约模板模态框 */}
       <Modal
-        title="添加代理商"
+        title="添加"
         centered
         open={isTemplateModal}
         onOk={confirmTemplate}
@@ -223,28 +223,21 @@ export default () => {
           initialValues={{ productCode: '0' }}
         >
           <Form.Item
-            label="代理商名称"
-            name="agentName"
-            rules={[{ required: true, message: '请输入代理商名称!' }]}
+            label="支付方式名称"
+            name="payWayName"
+            rules={[{ required: true, message: '请输入支付方式名称!' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="登录名称"
-            name="username"
-            rules={[{ required: true, message: '请输入登录名称!' }]}
+            label="支付方式编码"
+            name="payWayCode"
+            rules={[{ required: true, message: '请输入支付方式编码!' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="登录密码"
-            name="password"
-            rules={[{ required: true, message: '请输入登录密码!' }]}
-          >
-            <Input.Password placeholder="请输入登录密码" />
-          </Form.Item>
-          <Form.Item
-            label="节点描述"
+            label="描述"
             name="description"
           >
             <TextArea />
