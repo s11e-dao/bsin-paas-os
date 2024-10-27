@@ -228,8 +228,8 @@ public class SysAgentServiceImpl implements SysAgentService {
       //      // 默认商户号??
       //      customerIdentity.setMerchantNo(customerBase.getTenantId());
       customerIdentity.setName(sysAgent.getUsername());
-      customerIdentity.setType(BizRoleType.SYS_AGENT.getCode());
-      customerIdentity.setIdentityTypeNo(sysAgent.getSerialNo());
+      customerIdentity.setBizRoleType(BizRoleType.SYS_AGENT.getCode());
+      customerIdentity.setBizRoleTypeNo(sysAgent.getSerialNo());
       customerIdentityMapper.insert(customerIdentity);
     }
     return sysAgent;

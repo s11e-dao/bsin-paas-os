@@ -1,9 +1,7 @@
 package me.flyray.bsin.infrastructure.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import me.flyray.bsin.domain.entity.CustomerIdentity;
-import me.flyray.bsin.domain.entity.Member;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

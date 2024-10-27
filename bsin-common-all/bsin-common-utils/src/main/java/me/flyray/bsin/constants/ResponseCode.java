@@ -182,6 +182,7 @@ public enum ResponseCode implements ReturnCode {
     CONDITION_NOT_EXISTS("300014", "条件不存在！"),
     MEMBER_NOT_EXISTS("300015", "会员账号不存在！"),
     CUSTOMER_NO_IS_NULL("300016", "客户号不能为空！"),
+    BIZ_ROLE_TYPE_ERROR("300017", "业务角色类型错误！"),
 
 
 
