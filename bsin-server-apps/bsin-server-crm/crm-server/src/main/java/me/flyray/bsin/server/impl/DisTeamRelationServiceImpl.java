@@ -9,10 +9,7 @@ import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisTeamRelationService;
-import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
-import me.flyray.bsin.infrastructure.mapper.DisInviteRelationMapper;
-import me.flyray.bsin.infrastructure.mapper.DisTeamRelationMapper;
-import me.flyray.bsin.infrastructure.mapper.SysAgentMapper;
+import me.flyray.bsin.infrastructure.mapper.*;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
@@ -49,12 +46,21 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
     private CustomerIdentityMapper CustomerIdentityMapper;
     @Autowired
     private DisInviteRelationMapper DisInviteRelationMapper;
-
-//    @ApiDoc(desc = "add")
-//    @ShenyuDubboClient("/add")
+    @Autowired
+    private DisBrokerageConfigMapper disBrokerageConfigMapper;
+    @ApiDoc(desc = "add")
+    @ShenyuDubboClient("/add")
     @Override
     public DisTeamRelation add(Map<String, Object> requestMap) {
         String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
+        String tenantId = MapUtils.getString(requestMap, "tenantId");
+        DisBrokerageConfig config = disBrokerageConfigMapper.selectOne(
+                new LambdaQueryWrapper<DisBrokerageConfig>()
+                        .eq(DisBrokerageConfig::getTenantId,  MapUtils.getString(requestMap, "tenantId"))
+        );
+        if (config == null){
+            return null;
+        }
         SysAgent agent = SysAgentMapper.selectById(sysAgentNo);
         CustomerIdentity identity = CustomerIdentityMapper.selectOne(
                 new LambdaQueryWrapper<CustomerIdentity>()
