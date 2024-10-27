@@ -134,7 +134,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
 
 
     /**
-     * 事件详情
+     * 分销团队关系详情
      * @param requestMap
      * @return
      */

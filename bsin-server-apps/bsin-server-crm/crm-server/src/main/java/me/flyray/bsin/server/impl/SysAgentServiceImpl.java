@@ -15,7 +15,9 @@ import me.flyray.bsin.domain.enums.MerchantStatus;
 import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.service.DisTeamRelationService;
 import me.flyray.bsin.facade.service.SysAgentService;
+import me.flyray.bsin.facade.service.WalletService;
 import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberMapper;
 import me.flyray.bsin.infrastructure.mapper.SysAgentMapper;
@@ -27,6 +29,7 @@ import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
@@ -57,6 +60,9 @@ public class SysAgentServiceImpl implements SysAgentService {
   @Autowired SysAgentMapper sysAgentMapper;
   @Autowired private MemberMapper memberMapper;
   @Autowired private CustomerIdentityMapper customerIdentityMapper;
+
+  @DubboReference(version = "${dubbo.provider.version}")
+  private DisTeamRelationService disTeamRelationService;
 
   @ApiDoc(desc = "login")
   @ShenyuDubboClient("/login")
@@ -222,7 +228,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     if (sysAgentMapper.insert(sysAgent) == 0) {
       throw new BusinessException(ResponseCode.DATA_BASE_UPDATE_FAILED);
     }
-    // 客户号不为空，则表示是会员申请成为商户(团长)，需要插入客户身份表
+    // 客户号不为空，则表示是会员申请成为代理商，需要插入客户身份表
     if (StringUtils.isNotEmpty(customerNo)) {
       // 身份表: crm_customer_identity插入数据
       CustomerIdentity customerIdentity = new CustomerIdentity();
@@ -235,6 +241,12 @@ public class SysAgentServiceImpl implements SysAgentService {
       customerIdentity.setBizRoleTypeNo(sysAgent.getSerialNo());
       customerIdentityMapper.insert(customerIdentity);
     }
+
+    // 加入分销团队
+    requestMap.put("sysAgentNo", sysAgent.getSerialNo());
+    requestMap.put("tenantId", sysAgent.getTenantId());
+    DisTeamRelation disTeamRelation = disTeamRelationService.add(requestMap);
+
     return sysAgent;
   }
 }

@@ -7,11 +7,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.DisInviteRelation;
-import me.flyray.bsin.domain.entity.PayChannelConfig;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisInviteRelationService;
 import me.flyray.bsin.infrastructure.mapper.DisInviteRelationMapper;
-import me.flyray.bsin.infrastructure.mapper.DisModelMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
@@ -26,7 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
+import static me.flyray.bsin.constants.ResponseCode.*;
 
 /**
 * @author bolei
@@ -60,7 +58,7 @@ public class DisInviteRelationServiceImpl implements DisInviteRelationService {
     public void delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         if (disInviteRelationMapper.deleteById(serialNo) == 0){
-            throw new BusinessException(GRADE_NOT_EXISTS);
+            throw new BusinessException(INVITE_RELATION_NOT_EXISTS);
         }
     }
 
@@ -72,7 +70,7 @@ public class DisInviteRelationServiceImpl implements DisInviteRelationService {
         DisInviteRelation disInviteRelation = BsinServiceContext.getReqBodyDto(DisInviteRelation.class, requestMap);
         disInviteRelation.setTenantId(loginUser.getTenantId());
         if (disInviteRelationMapper.updateById(disInviteRelation) == 0){
-            throw new BusinessException(GRADE_NOT_EXISTS);
+            throw new BusinessException(INVITE_RELATION_NOT_EXISTS);
         }
         return disInviteRelation;
     }

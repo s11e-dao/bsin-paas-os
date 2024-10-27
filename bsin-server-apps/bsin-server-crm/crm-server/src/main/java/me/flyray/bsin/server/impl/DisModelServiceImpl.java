@@ -24,7 +24,7 @@ import me.flyray.bsin.facade.service.DisModelService;
 
 import java.util.Map;
 
-import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
+import static me.flyray.bsin.constants.ResponseCode.*;
 
 /**
 * @author bolei
@@ -57,7 +57,7 @@ public class DisModelServiceImpl implements DisModelService {
     public void delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         if (disModelMapper.deleteById(serialNo) == 0){
-            throw new BusinessException(GRADE_NOT_EXISTS);
+            throw new BusinessException(DIS_MODEL_NOT_EXISTS);
         }
     }
 
@@ -69,7 +69,7 @@ public class DisModelServiceImpl implements DisModelService {
         DisModel disModel = BsinServiceContext.getReqBodyDto(DisModel.class, requestMap);
         disModel.setTenantId(loginUser.getTenantId());
         if (disModelMapper.updateById(disModel) == 0){
-            throw new BusinessException(GRADE_NOT_EXISTS);
+            throw new BusinessException(DIS_MODEL_NOT_EXISTS);
         }
         return disModel;
     }

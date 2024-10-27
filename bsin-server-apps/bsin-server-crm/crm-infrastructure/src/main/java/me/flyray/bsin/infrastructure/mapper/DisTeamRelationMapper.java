@@ -2,6 +2,8 @@ package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import me.flyray.bsin.domain.entity.DisTeamRelation;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author rednet
@@ -9,6 +11,8 @@ import me.flyray.bsin.domain.entity.DisTeamRelation;
 * @createDate 2024-10-25 17:14:20
 * @Entity generator.domain.DisTeamRelation
 */
+@Repository
+@Mapper
 public interface DisTeamRelationMapper extends BaseMapper<DisTeamRelation> {
 
 }

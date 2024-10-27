@@ -36,7 +36,9 @@ public class DisTeamRelation implements Serializable {
      */
     private String sysAgentNo;
 
-
+    /**
+     * 分销商类型 1(老板), 0(分销员)
+     */
     private Integer agentType;
 
 

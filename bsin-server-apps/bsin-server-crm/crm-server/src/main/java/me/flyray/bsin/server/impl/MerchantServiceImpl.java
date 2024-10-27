@@ -11,7 +11,6 @@ import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.*;
 import me.flyray.bsin.domain.request.SysUserDTO;
-import me.flyray.bsin.domain.request.WalletDTO;
 import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.*;
