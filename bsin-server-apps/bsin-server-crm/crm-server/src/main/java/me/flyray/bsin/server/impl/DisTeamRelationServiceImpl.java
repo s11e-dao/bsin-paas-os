@@ -88,7 +88,8 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         // 查询客户身份信息
         CustomerIdentity identity = CustomerIdentityMapper.selectOne(
                 new LambdaQueryWrapper<CustomerIdentity>()
-                        .eq(CustomerIdentity::getIdentityTypeNo, agent.getSerialNo())
+                .eq(CustomerIdentity::getBizRoleTypeNo, agent.getSerialNo()
+                )
         );
         System.out.println(identity);
         if (identity == null) {
@@ -125,8 +126,8 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
 
         // 创建分销团队关系对象
         DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
-        if (parentIdentity.getIdentityTypeNo() != null || model.getModel().equals("level1")) {
-            disTeamRelation.setPrarentSysAgentNo(parentIdentity.getIdentityTypeNo());
+        if (parentIdentity.getBizRoleTypeNo() != null){
+            disTeamRelation.setPrarentSysAgentNo(parentIdentity.getBizRoleTypeNo());
             disTeamRelation.setAgentType(0);
         } else {
             disTeamRelation.setAgentType(1);

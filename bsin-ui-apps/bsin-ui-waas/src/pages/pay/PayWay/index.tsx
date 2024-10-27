@@ -15,10 +15,10 @@ import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './data';
 import {
-  getSysAgentPageList,
-  addSysAgent,
-  deleteSysAgent,
-  getSysAgentDetail,
+  getPayWayPageList,
+  addPayWay,
+  deletePayWay,
+  getPayWayDetail,
 } from './service';
 import TableTitle from '../../../components/TableTitle';
 import { hex_md5 } from '../../../utils/md5';
@@ -89,7 +89,7 @@ export default () => {
           ...response,
           password: hex_md5(response.password),
         };
-        addSysAgent(reqParam).then((res) => {
+        addPayWay(reqParam).then((res) => {
           console.log('add', res);
           if (res.code === 0) {
             message.success('添加成功');
@@ -120,7 +120,7 @@ export default () => {
   const toDelContractTemplate = async (record) => {
     console.log('record', record);
     let { customerNo } = record;
-    let delRes = await deleteSysAgent({ customerNo });
+    let delRes = await deletePayWay({ customerNo });
     console.log('delRes', delRes);
     if (delRes.code === '000000') {
       // 删除成功刷新表单
@@ -134,7 +134,7 @@ export default () => {
   const toViewContractTemplate = async (record) => {
     console.log(record);
     let { serialNo } = record;
-    let viewRes = await getSysAgentDetail({ serialNo });
+    let viewRes = await getPayWayDetail({ serialNo });
     setIsViewTemplateModal(true);
     console.log('viewRes', viewRes);
     setIsViewRecord(viewRes.data);
@@ -169,7 +169,7 @@ export default () => {
         // 请求获取的数据
         request={async (params) => {
           // console.log(params);
-          let res = await getSysAgentPageList({
+          let res = await getPayWayPageList({
             ...params,
             // 租户客户类型
             type: '3',
@@ -208,7 +208,7 @@ export default () => {
       />
       {/* 新增合约模板模态框 */}
       <Modal
-        title="添加代理商"
+        title="添加"
         centered
         open={isTemplateModal}
         onOk={confirmTemplate}
@@ -223,28 +223,21 @@ export default () => {
           initialValues={{ productCode: '0' }}
         >
           <Form.Item
-            label="代理商名称"
-            name="agentName"
-            rules={[{ required: true, message: '请输入代理商名称!' }]}
+            label="支付方式名称"
+            name="payWayName"
+            rules={[{ required: true, message: '请输入支付方式名称!' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="登录名称"
-            name="username"
-            rules={[{ required: true, message: '请输入登录名称!' }]}
+            label="支付方式编码"
+            name="payWayCode"
+            rules={[{ required: true, message: '请输入支付方式编码!' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="登录密码"
-            name="password"
-            rules={[{ required: true, message: '请输入登录密码!' }]}
-          >
-            <Input.Password placeholder="请输入登录密码" />
-          </Form.Item>
-          <Form.Item
-            label="节点描述"
+            label="描述"
             name="description"
           >
             <TextArea />

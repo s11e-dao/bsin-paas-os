@@ -1,11 +1,10 @@
 import { request } from '@umijs/max'
-let crmPath = process.env.contextPath_crm;
-let upmsPath = process.env.contextPath_upms;
+let waasPath = process.env.contextPath_waas;
 
 // 分页查询
-export const getSysAgentPageList = (params) => {
-  return request(crmPath + '/sysAgent/getPageList', {
-    serviceName: 'SysAgentService',
+export const getPayInterfacePageList = (params) => {
+  return request(waasPath + '/payChannelInterface/getPageList', {
+    serviceName: 'PayChannelInterfaceService',
     methodName: 'getPageList',
     version: '1.0',
     bizParams: {
@@ -15,9 +14,9 @@ export const getSysAgentPageList = (params) => {
 };
 
 // 添加平台
-export const addSysAgent = (params) => {
-  return request(crmPath + '/sysAgent/add', {
-    serviceName: 'SysAgentService',
+export const addPayInterface = (params) => {
+  return request(waasPath + '/payChannelInterface/add', {
+    serviceName: 'PayChannelInterfaceService',
     methodName: 'add',
     version: '1.0',
     bizParams: {
@@ -27,9 +26,9 @@ export const addSysAgent = (params) => {
 };
 
 // 删除
-export const deleteSysAgent = (params) => {
-  return request(crmPath + '/sysAgent/delete', {
-    serviceName: 'SysAgentService',
+export const deletePayInterface = (params) => {
+  return request(waasPath + '/payChannelInterface/delete', {
+    serviceName: 'PayChannelInterfaceService',
     methodName: 'delete',
     version: '1.0',
     bizParams: {
@@ -39,10 +38,10 @@ export const deleteSysAgent = (params) => {
 };
 
 // 查询详情
-export const getSysAgentDetail = (params) => {
+export const getPayInterfaceDetail = (params) => {
   console.log('params', params);
-  return request(crmPath + '/sysAgent/getDetail', {
-    serviceName: 'SysAgentService',
+  return request(waasPath + '/payChannelInterface/getDetail', {
+    serviceName: 'PayChannelInterfaceService',
     methodName: 'getDetail',
     version: '1.0',
     bizParams: {

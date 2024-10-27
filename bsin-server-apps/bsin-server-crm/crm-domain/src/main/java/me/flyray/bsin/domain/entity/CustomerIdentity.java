@@ -25,15 +25,18 @@ public class CustomerIdentity implements Serializable {
   /** 身份名称 */
   private String name;
 
+  /** 身份用户名 */
+  private String username;
+
   /**
    * 身份类型：商户|客户|代理商
    *
    * @see me.flyray.bsin.security.enums.BizRoleType
    */
-  private String type;
+  private String bizRoleType;
 
   /** 身份类型编号：商户号|代理商号 */
-  private String identityTypeNo;
+  private String bizRoleTypeNo;
 
   /** 逻辑删除 0、未删除 1、已删除 */
   @TableLogic(value = "0", delval = "1")

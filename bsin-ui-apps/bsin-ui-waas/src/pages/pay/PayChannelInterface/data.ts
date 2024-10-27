@@ -16,16 +16,16 @@ export type columnsDataType = {
 const columnsData: ProColumns<columnsDataType>[] = [
   // 配置搜索框
   {
-    title: '币种名称',
-    dataIndex: 'agentName',
+    title: '接口名称',
+    dataIndex: 'payInterfaceName',
     hideInTable: true,
     fieldProps: {
       maxLength: 20,
     },
   },
   {
-    title: '币种符号',
-    dataIndex: 'tenantId',
+    title: '接口代码',
+    dataIndex: 'payInterfaceCode',
     hideInTable: true,
     fieldProps: {
       maxLength: 20,
@@ -40,21 +40,21 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
   },
   {
-    title: '币种名称',
+    title: '接口代码',
     width: 160,
-    dataIndex: 'agentName',
+    dataIndex: 'payInterfaceCode',
     hideInSearch: true,
   },
   {
-    title: '币种符号',
+    title: '接口名称',
     width: 160,
-    dataIndex: 'username',
+    dataIndex: 'payInterfaceName',
     hideInSearch: true,
   },
   {
-    title: '币种描述',
+    title: '支付方式',
     width: 160,
-    dataIndex: 'description',
+    dataIndex: 'wayCode',
     hideInSearch: true,
   },
   {

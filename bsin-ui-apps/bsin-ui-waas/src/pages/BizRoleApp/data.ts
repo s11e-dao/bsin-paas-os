@@ -102,7 +102,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '操作',
-    width: 280,
+    width: 290,
     hideInSearch: true,
     dataIndex: 'action',
     fixed: 'right',
