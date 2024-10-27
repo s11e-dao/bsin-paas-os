@@ -15,10 +15,10 @@ import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './data';
 import {
-  getSysAgentPageList,
-  addSysAgent,
-  deleteSysAgent,
-  getSysAgentDetail,
+  getPayWayPageList,
+  addPayWay,
+  deletePayWay,
+  getPayWayDetail,
 } from './service';
 import TableTitle from '../../../components/TableTitle';
 import { hex_md5 } from '../../../utils/md5';
@@ -89,7 +89,7 @@ export default () => {
           ...response,
           password: hex_md5(response.password),
         };
-        addSysAgent(reqParam).then((res) => {
+        addPayWay(reqParam).then((res) => {
           console.log('add', res);
           if (res.code === 0) {
             message.success('添加成功');
@@ -120,7 +120,7 @@ export default () => {
   const toDelContractTemplate = async (record) => {
     console.log('record', record);
     let { customerNo } = record;
-    let delRes = await deleteSysAgent({ customerNo });
+    let delRes = await deletePayWay({ customerNo });
     console.log('delRes', delRes);
     if (delRes.code === '000000') {
       // 删除成功刷新表单
@@ -134,7 +134,7 @@ export default () => {
   const toViewContractTemplate = async (record) => {
     console.log(record);
     let { serialNo } = record;
-    let viewRes = await getSysAgentDetail({ serialNo });
+    let viewRes = await getPayWayDetail({ serialNo });
     setIsViewTemplateModal(true);
     console.log('viewRes', viewRes);
     setIsViewRecord(viewRes.data);
@@ -169,7 +169,7 @@ export default () => {
         // 请求获取的数据
         request={async (params) => {
           // console.log(params);
-          let res = await getSysAgentPageList({
+          let res = await getPayWayPageList({
             ...params,
             // 租户客户类型
             type: '3',
