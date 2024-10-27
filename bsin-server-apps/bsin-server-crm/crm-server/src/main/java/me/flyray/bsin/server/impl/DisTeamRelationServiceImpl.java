@@ -64,7 +64,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         SysAgent agent = SysAgentMapper.selectById(sysAgentNo);
         CustomerIdentity identity = CustomerIdentityMapper.selectOne(
                 new LambdaQueryWrapper<CustomerIdentity>()
-                .eq(CustomerIdentity::getIdentityTypeNo, agent.getSerialNo()
+                .eq(CustomerIdentity::getBizRoleTypeNo, agent.getSerialNo()
                 )
         );
         DisInviteRelation relation  = DisInviteRelationMapper.selectOne(new LambdaQueryWrapper<DisInviteRelation>()
@@ -79,8 +79,8 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
 //        SysAgent parentAgent =  SysAgentMapper.selectById(parentIdentity.getIdentityTypeNo());
 //        System.out.println(parentIdentity.getIdentityTypeNo());
         DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
-        if (parentIdentity.getIdentityTypeNo() != null){
-            disTeamRelation.setPrarentSysAgentNo(parentIdentity.getIdentityTypeNo());
+        if (parentIdentity.getBizRoleTypeNo() != null){
+            disTeamRelation.setPrarentSysAgentNo(parentIdentity.getBizRoleTypeNo());
             disTeamRelation.setAgentType(0);
         }
         else{

@@ -3,6 +3,7 @@ package me.flyray.bsin.security.domain;
 import java.io.Serializable;
 
 import lombok.Data;
+import me.flyray.bsin.security.enums.BizRoleType;
 
 /**
  * @author HLW
@@ -106,6 +107,7 @@ public class LoginUser implements Serializable {
 
     /**
      * 用户业务角色类型
+     * @see BizRoleType
      */
     private String bizRoleType;
 

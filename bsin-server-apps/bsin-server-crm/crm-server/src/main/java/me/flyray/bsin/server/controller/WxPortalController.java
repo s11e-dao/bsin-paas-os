@@ -223,19 +223,6 @@ public class WxPortalController {
         throw new BusinessException("100000", "绑定手机号码失败,获取微信绑定的手机号码出错:" + e.toString());
       }
       phone = phoneNumberInfo.getPhoneNumber();
-      WxMaUserInfo wxMaUserInfo = null;
-      try {
-        wxMaUserInfo =
-                wxService
-                        .getUserService()
-                        .getUserInfo(customerBase.getSessionKey(), encryptedData, iv);
-      } catch (Exception e) {
-        log.error("获取微信个人信息失败：{}", e.toString());
-        e.printStackTrace();
-        throw new BusinessException("100000", "获取微信个人信息失败:" + e.toString());
-      }
-      phone = phoneNumberInfo.getPhoneNumber();
-
       customerBiz.updateCustomerBase(customerBase);
     }
     return phone;

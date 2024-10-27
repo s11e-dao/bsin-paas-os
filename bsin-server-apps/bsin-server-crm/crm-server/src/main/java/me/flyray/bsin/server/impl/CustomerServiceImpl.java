@@ -21,10 +21,7 @@ import me.flyray.bsin.facade.response.CustomerAccountVO;
 import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
 import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
 import me.flyray.bsin.facade.service.*;
-import me.flyray.bsin.infrastructure.mapper.BondingCurveTokenParamMapper;
-import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
-import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
-import me.flyray.bsin.infrastructure.mapper.MemberMapper;
+import me.flyray.bsin.infrastructure.mapper.*;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
@@ -80,6 +77,8 @@ public class CustomerServiceImpl implements CustomerService {
   private String aesKey;
 
   @Autowired private CustomerBaseMapper customerBaseMapper;
+  @Autowired public MerchantMapper merchantMapper;
+  @Autowired SysAgentMapper sysAgentMapper;
   @Autowired private CustomerBiz customerBiz;
   @Autowired private MemberMapper memberMapper;
   @Autowired private AccountBiz customerAccountBiz;
@@ -138,6 +137,88 @@ public class CustomerServiceImpl implements CustomerService {
     log.info("identityList: " + identityList.toString());
     Map res = new HashMap<>();
     res.put("customerInfo", customerInfo);
+    res.put("memberInfo", member);
+    res.put("token", token);
+    res.put("identityList", identityList);
+
+    return res;
+  }
+
+  /**
+   * 登录切换，根据 type: @see BizRoleType 来切换登录角色，返回token
+   *
+   * @param requestMap
+   * @return
+   */
+  @ApiDoc(desc = "loginSwitch")
+  @ShenyuDubboClient("/loginSwitch")
+  @Override
+  public Map<String, Object> loginSwitch(Map<String, Object> requestMap) {
+    LoginUser loginOrinUser = LoginInfoContextHelper.getLoginUser();
+    String bizRoleType = MapUtils.getString(requestMap, "bizRoleType");
+    String username = MapUtils.getString(requestMap, "username");
+    String customerNo = MapUtils.getString(requestMap, "customerNo");
+
+    LoginUser loginUser = new LoginUser();
+    if (BizRoleType.CUSTOMER.getCode().equals(bizRoleType)) {}
+
+    String phone = null;
+    String bizRoleTypeNo = null;
+
+    Map res = new HashMap<>();
+    if (BizRoleType.CUSTOMER.getCode().equals(bizRoleType)) {
+      // 查询客户信息
+      LambdaQueryWrapper<CustomerBase> wrapperCustomerBase = new LambdaQueryWrapper<>();
+      wrapperCustomerBase.eq(CustomerBase::getUsername, username);
+      CustomerBase customerInfo = customerBaseMapper.selectOne(wrapperCustomerBase);
+      if (customerInfo == null) {
+        throw new BusinessException(ResponseCode.CUSTOMER_ERROR);
+      }
+      res.put("customerInfo", customerInfo);
+      phone = customerInfo.getPhone();
+      bizRoleTypeNo = customerInfo.getCustomerNo();
+    } else if (BizRoleType.MERCHANT.getCode().equals(bizRoleType)) {
+      // 查询商户信息
+      LambdaQueryWrapper<Merchant> wrapperMerchant = new LambdaQueryWrapper<>();
+      wrapperMerchant.eq(Merchant::getUsername, username);
+      Merchant merchantInfo = merchantMapper.selectOne(wrapperMerchant);
+      if (merchantInfo == null) {
+        throw new BusinessException(ResponseCode.MERCHANT_NOT_EXISTS);
+      }
+      res.put("merchantInfo", merchantInfo);
+      phone = merchantInfo.getPhone();
+      bizRoleTypeNo = merchantInfo.getSerialNo();
+    } else if (BizRoleType.SYS_AGENT.getCode().equals(bizRoleType)) {
+      // 查询代理商信息
+      LambdaQueryWrapper<SysAgent> wrapperSysAgent = new LambdaQueryWrapper<>();
+      wrapperSysAgent.eq(SysAgent::getUsername, username);
+      SysAgent sysAgentInfo = sysAgentMapper.selectOne(wrapperSysAgent);
+      if (sysAgentInfo == null) {
+        throw new BusinessException(ResponseCode.SYS_AGENT_NOT_EXISTS);
+      }
+      res.put("sysAgentInfo", sysAgentInfo);
+      phone = sysAgentInfo.getPhone();
+      bizRoleTypeNo = sysAgentInfo.getSerialNo();
+    } else {
+      throw new BusinessException(ResponseCode.BIZ_ROLE_TYPE_ERROR);
+    }
+
+    loginUser.setTenantId(loginOrinUser.getTenantId());
+    loginUser.setUsername(username);
+    loginUser.setPhone(phone);
+    loginUser.setCustomerNo(customerNo);
+    loginUser.setBizRoleType(bizRoleType);
+    loginUser.setBizRoleTypeNo(bizRoleTypeNo);
+    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
+
+    Member member =
+        memberMapper.selectOne(
+            new LambdaUpdateWrapper<Member>()
+                .eq(Member::getTenantId, loginOrinUser.getTenantId())
+                .eq(Member::getCustomerNo, loginOrinUser.getCustomerNo()));
+    // 查新询客户身份信息
+    List<CustomerIdentity> identityList = customerBiz.getCustomerIdentityList(customerNo);
+    log.info("identityList: " + identityList.toString());
     res.put("memberInfo", member);
     res.put("token", token);
     res.put("identityList", identityList);
@@ -220,9 +301,9 @@ public class CustomerServiceImpl implements CustomerService {
     String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
     if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {
       // 获取手机号
-//      if (ObjectUtil.isEmpty(customerBaseRegister.getPhone())) {
-//        wxPortalController.bindingPhoneNumber(openId, appId, encryptedData, iv);
-//      }
+      //      if (ObjectUtil.isEmpty(customerBaseRegister.getPhone())) {
+      //        wxPortalController.bindingPhoneNumber(openId, appId, encryptedData, iv);
+      //      }
       // 获取微信用户信息
       if (ObjectUtil.isNotEmpty(customerBaseRegister.getNickname())) {
         wxPortalController.bindingUserInfo(openId, appId, encryptedData, iv);

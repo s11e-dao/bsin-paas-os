@@ -185,7 +185,7 @@ public class DisBrokerageJournalServiceImpl implements DisBrokerageJournalServic
     public String getCustomerNo(String sysAgentNo){
         return CustomerIdentityMapper.selectOne(
                 new LambdaQueryWrapper<CustomerIdentity>()
-                        .eq(CustomerIdentity::getIdentityTypeNo, sysAgentNo)
+                        .eq(CustomerIdentity::getBizRoleTypeNo, sysAgentNo)
         ).getCustomerNo();
     }
 

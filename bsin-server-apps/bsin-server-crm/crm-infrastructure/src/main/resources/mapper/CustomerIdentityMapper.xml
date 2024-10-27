@@ -12,16 +12,17 @@
         <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
         <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
-        <result property="type" column="type" jdbcType="TINYINT"/>
-        <result property="identityTypeNo" column="identity_type_no" jdbcType="VARCHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="bizRoleType" column="biz_role_type" jdbcType="TINYINT"/>
+        <result property="bizRoleTypeNo" column="biz_role_type_no" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         serial_no
         ,create_by,create_time,
         customer_no,update_time,del_flag,
-        tenant_id,merchant_no,name,
-        type,identity_type_no
+        tenant_id,merchant_no,name,username,
+        biz_role_type,biz_role_type_no
     </sql>
 
 

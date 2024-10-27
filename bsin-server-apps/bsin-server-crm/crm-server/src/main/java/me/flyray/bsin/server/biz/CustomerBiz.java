@@ -146,8 +146,8 @@ public class CustomerBiz {
     //    // 默认商户号??
     //    customerIdentity.setMerchantNo(customerBase.getTenantId());
     customerIdentity.setName(BizRoleType.CUSTOMER.getDesc());
-    customerIdentity.setType(BizRoleType.CUSTOMER.getCode());
-    customerIdentity.setIdentityTypeNo(customerBase.getCustomerNo());
+    customerIdentity.setBizRoleType(BizRoleType.CUSTOMER.getCode());
+    customerIdentity.setBizRoleTypeNo(customerBase.getCustomerNo());
     customerIdentityMapper.insert(customerIdentity);
 
     // 根据 inviteCode 老用户mint积分
