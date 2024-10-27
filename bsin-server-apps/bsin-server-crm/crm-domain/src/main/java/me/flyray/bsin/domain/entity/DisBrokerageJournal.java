@@ -109,6 +109,8 @@ public class DisBrokerageJournal implements Serializable {
 
     private BigDecimal goodsSkuAmount;
 
+    private String goodsCategoryNo;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

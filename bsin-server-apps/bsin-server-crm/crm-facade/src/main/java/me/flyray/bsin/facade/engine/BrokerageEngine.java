@@ -11,6 +11,8 @@ public interface BrokerageEngine {
     /**
      * 1、分销分佣引擎
      */
-    public void excute(Map<String, Object> requestMap);
 
+
+
+    void execute(Map<String, Object> requestMap);
 }

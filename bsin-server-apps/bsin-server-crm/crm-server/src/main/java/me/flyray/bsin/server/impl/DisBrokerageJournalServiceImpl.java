@@ -15,7 +15,6 @@ import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.math3.util.Decimal64;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
@@ -23,9 +22,11 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
-
+import com.alibaba.fastjson.JSON;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
 
@@ -108,86 +109,134 @@ public class DisBrokerageJournalServiceImpl implements DisBrokerageJournalServic
         DisBrokerageJournal disBrokerageJournal = disBrokerageJournalMapper.selectById(serialNo);
         return disBrokerageJournal;
     }
+    @Override
+    @ApiDoc(desc = "分佣")
+    @ShenyuDubboClient("/brokerage/all")
+    public void execute(Map<String, Object> requestMap) {
+
+            // 检查 goodsSkuList 是否为 null 或者不是 List 类型
+        List<Map<String, Object>> goodsSkuListObj = (List<Map<String, Object>>) requestMap.get("goodsSkuList");
+            if (goodsSkuListObj != null) {
+                for (Map<String, Object> skuMap : goodsSkuListObj) {
+                    skuMap.putAll(requestMap);
+
+                    brokerage(skuMap);
+                }
+            } else {
+                System.out.println("goodsSkuList 不是 List 类型");
+            }
+        }
 
     @Override
     @ApiDoc(desc = "分佣")
     @ShenyuDubboClient("/brokerage")
     public void brokerage(Map<String, Object> requestMap) {
-        String orderNo = MapUtils.getString(requestMap, "orderNo");
-        String goodSkuNo = MapUtils.getString(requestMap, "goodSkuNo");
-        String goodsSkuAmount = MapUtils.getString(requestMap, "goodsSkuAmount");
-        String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
-        String goodNo = MapUtils.getString(requestMap, "goodNo");
-        String goodsCategoryNo = MapUtils.getString(requestMap, "goodsCategoryNo");
-        String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-        DisBrokerageConfig config = disBrokerageConfigMapper.selectOne(
-                new LambdaQueryWrapper<DisBrokerageConfig>()
-                        .eq(DisBrokerageConfig::getTenantId,  MapUtils.getString(requestMap, "tenantId"))
-        );
-        if (config == null){
-            return;
+        try {
+            // 获取请求参数
+            String orderNo = MapUtils.getString(requestMap, "orderNo");
+            String goodsSkuNo = MapUtils.getString(requestMap, "goodsSkuNo");
+            String goodsSkuAmount = MapUtils.getString(requestMap, "goodsSkuAmount");
+            String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
+            String goodsCategoryNo = MapUtils.getString(requestMap, "goodsCategoryNo");
+            String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+
+            // 获取配置
+            DisBrokerageConfig config = getConfig(requestMap);
+            if (config == null ) {
+                System.out.println("配置未找到，tenantId: {}");
+                return;
+            }
+
+            // 获取分佣规则
+            DisBrokerageRule disBrokerageRule = getBrokerageRule(goodsCategoryNo, merchantNo);
+            if (disBrokerageRule == null) {
+                System.out.println("分佣规则未找到，goodsCategoryNo: {}, merchantNo: {}");
+                return;
+            }
+
+            // 获取分佣策略
+            DisBrokeragePolicy disBrokeragePolicy = getBrokeragePolicy(disBrokerageRule.getBrokeragePolicyNo());
+
+            if (disBrokeragePolicy == null || disBrokeragePolicy.getStatus() == 0 || disBrokeragePolicy.getStartTime().after(new java.util.Date()) || disBrokeragePolicy.getEndTime().before(new java.util.Date()) ) {
+                System.out.println("过期规则不处理");
+                return;
+            }
+
+            // 处理一级分佣
+            handleFirstLevelBrokerage(disBrokeragePolicy, disBrokerageRule, config, goodsSkuAmount, sysAgentNo, requestMap);
+
+            // 处理二级分佣
+            handleSecondLevelBrokerage(disBrokeragePolicy, disBrokerageRule, config, goodsSkuAmount, sysAgentNo, requestMap);
+
+            System.out.println("分佣接口调用成功");
+        } catch (Exception e) {
+            System.out.println("分佣接口调用失败");
         }
-        DisBrokerageRule disBrokerageRule = disBrokerageRuleMapper.selectOne(
+    }
+
+    private DisBrokerageConfig getConfig(Map<String, Object> requestMap) {
+        return disBrokerageConfigMapper.selectOne(
+                new LambdaQueryWrapper<DisBrokerageConfig>()
+                        .eq(DisBrokerageConfig::getTenantId, MapUtils.getString(requestMap, "tenantId"))
+        );
+    }
+
+    private DisBrokerageRule getBrokerageRule(String goodsCategoryNo, String merchantNo) {
+        return disBrokerageRuleMapper.selectOne(
                 new LambdaQueryWrapper<DisBrokerageRule>()
                         .eq(DisBrokerageRule::getGoodsCategoryNo, goodsCategoryNo)
                         .eq(DisBrokerageRule::getMerchantNo, merchantNo)
         );
-        if (disBrokerageRule == null){
-            return;
-        }else{
-            DisBrokeragePolicy disBrokeragePolicy = disBrokeragePolicyMapper.selectOne(
-                    new LambdaQueryWrapper<DisBrokeragePolicy>()
-                            .eq(DisBrokeragePolicy::getSerialNo, disBrokerageRule.getBrokeragePolicyNo())
-
-            );
-            Integer firstSalePer = disBrokerageRule.getFirstSalePer();
-            Integer secondSalePer = disBrokerageRule.getSecondSalePer();
-            String customerNo1 = getCustomerNo(sysAgentNo);
-            String parentAgentNo = disTeamRelationMapper.selectOne(
-                    new LambdaQueryWrapper<DisTeamRelation>()
-                            .eq(DisTeamRelation::getSysAgentNo, sysAgentNo)
-            ).getPrarentSysAgentNo();
-            DisBrokerageJournal disBrokerageJournal = BsinServiceContext.getReqBodyDto(DisBrokerageJournal.class, requestMap);
-            disBrokerageJournal.setSerialNo(BsinSnowflake.getId());
-            disBrokerageJournal.setBrokeragePoint(disBrokeragePolicy.getBrokeragePoint());
-            disBrokerageJournal.setRuleNo(disBrokerageRule.getSerialNo());
-            disBrokerageJournal.setPolicyNo(disBrokerageRule.getBrokeragePolicyNo());
-            disBrokerageJournal.setExcludeFeeType(disBrokeragePolicy.getExcludeFeeType());
-            disBrokerageJournal.setExcludeCustomPer(disBrokeragePolicy.getExcludeCustomPer());
-            disBrokerageJournal.setDisLevel(1);
-            disBrokerageJournal.setSysAgentRate(config.getSysAgentRate());
-            disBrokerageJournal.setDisAmount(new BigDecimal(goodsSkuAmount).multiply(config.getSysAgentRate()).multiply(new BigDecimal(firstSalePer)).divide(new BigDecimal(100)).divide(new BigDecimal(100)) );
-//            disBrokerageJournal.setSysAgentNo(sysAgentNo);
-            disBrokerageJournalMapper.insert(disBrokerageJournal);
-            if (secondSalePer != null && parentAgentNo != null){
-                DisBrokerageJournal disBrokerageJournal2 = BsinServiceContext.getReqBodyDto(DisBrokerageJournal.class, requestMap);
-                disBrokerageJournal2.setSerialNo(BsinSnowflake.getId());
-                disBrokerageJournal2.setBrokeragePoint(disBrokeragePolicy.getBrokeragePoint());
-                disBrokerageJournal2.setRuleNo(disBrokerageRule.getSerialNo());
-                disBrokerageJournal2.setPolicyNo(disBrokerageRule.getBrokeragePolicyNo());
-                disBrokerageJournal2.setExcludeFeeType(disBrokeragePolicy.getExcludeFeeType());
-                disBrokerageJournal2.setExcludeCustomPer(disBrokeragePolicy.getExcludeCustomPer());
-                disBrokerageJournal2.setDisLevel(2);
-                disBrokerageJournal2.setSysAgentRate(config.getSysAgentRate());
-                disBrokerageJournal2.setDisAmount(new BigDecimal(goodsSkuAmount).multiply(config.getSysAgentRate()).multiply(new BigDecimal(secondSalePer)).divide(new BigDecimal(100)).divide(new BigDecimal(100)) );
-                disBrokerageJournalMapper.insert(disBrokerageJournal2);
-            }
-
-
-
-
-
-        }
-        System.out.println("分佣接口调用成功");
-
-
-    };
-    public String getCustomerNo(String sysAgentNo){
-        return CustomerIdentityMapper.selectOne(
-                new LambdaQueryWrapper<CustomerIdentity>()
-                        .eq(CustomerIdentity::getBizRoleTypeNo, sysAgentNo)
-        ).getCustomerNo();
     }
+
+    private DisBrokeragePolicy getBrokeragePolicy(String brokeragePolicyNo) {
+        return disBrokeragePolicyMapper.selectOne(
+                new LambdaQueryWrapper<DisBrokeragePolicy>()
+                        .eq(DisBrokeragePolicy::getSerialNo, brokeragePolicyNo)
+        );
+    }
+
+    private void handleFirstLevelBrokerage(DisBrokeragePolicy disBrokeragePolicy, DisBrokerageRule disBrokerageRule, DisBrokerageConfig config, String goodsSkuAmount, String sysAgentNo, Map<String, Object> requestMap) {
+        Integer firstSalePer = disBrokerageRule.getFirstSalePer();
+        String parentAgentNo = getParentAgentNo(sysAgentNo);
+
+        DisBrokerageJournal disBrokerageJournal = createBrokerageJournal(disBrokeragePolicy, disBrokerageRule, config, goodsSkuAmount, 1, firstSalePer, sysAgentNo, requestMap);
+        disBrokerageJournalMapper.insert(disBrokerageJournal);
+    }
+
+    private void handleSecondLevelBrokerage(DisBrokeragePolicy disBrokeragePolicy, DisBrokerageRule disBrokerageRule, DisBrokerageConfig config, String goodsSkuAmount, String sysAgentNo, Map<String, Object> requestMap) {
+        Integer secondSalePer = disBrokerageRule.getSecondSalePer();
+        String parentAgentNo = getParentAgentNo(sysAgentNo);
+
+        if (secondSalePer != null && parentAgentNo != null) {
+            DisBrokerageJournal disBrokerageJournal2 = createBrokerageJournal(disBrokeragePolicy, disBrokerageRule, config, goodsSkuAmount, 2, secondSalePer, parentAgentNo, requestMap);
+            disBrokerageJournalMapper.insert(disBrokerageJournal2);
+        }
+    }
+
+    private DisBrokerageJournal createBrokerageJournal(DisBrokeragePolicy disBrokeragePolicy, DisBrokerageRule disBrokerageRule, DisBrokerageConfig config, String goodsSkuAmount, int disLevel, Integer salePer, String sysAgentNo, Map<String, Object> requestMap) {
+        DisBrokerageJournal disBrokerageJournal = BsinServiceContext.getReqBodyDto(DisBrokerageJournal.class, requestMap);
+        disBrokerageJournal.setSerialNo(BsinSnowflake.getId());
+        disBrokerageJournal.setBrokeragePoint(disBrokeragePolicy.getBrokeragePoint());
+        disBrokerageJournal.setRuleNo(disBrokerageRule.getSerialNo());
+        disBrokerageJournal.setPolicyNo(disBrokerageRule.getBrokeragePolicyNo());
+        disBrokerageJournal.setExcludeFeeType(disBrokeragePolicy.getExcludeFeeType());
+        disBrokerageJournal.setExcludeCustomPer(disBrokeragePolicy.getExcludeCustomPer());
+        disBrokerageJournal.setDisLevel(disLevel);
+        disBrokerageJournal.setSysAgentRate(config.getSysAgentRate());
+        disBrokerageJournal.setDisAmount(new BigDecimal(goodsSkuAmount).multiply(config.getSysAgentRate()).multiply(new BigDecimal(salePer)).divide(new BigDecimal(100)).divide(new BigDecimal(100)));
+        disBrokerageJournal.setSysAgentNo(sysAgentNo);
+        return disBrokerageJournal;
+    }
+
+    private String getParentAgentNo(String sysAgentNo) {
+        DisTeamRelation teamRelation = disTeamRelationMapper.selectOne(
+                new LambdaQueryWrapper<DisTeamRelation>()
+                        .eq(DisTeamRelation::getSysAgentNo, sysAgentNo)
+        );
+        return teamRelation != null ? teamRelation.getPrarentSysAgentNo() : null;
+    }
+
 
 
 

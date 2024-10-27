@@ -139,10 +139,10 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         // 插入分销团队关系到数据库
         disTeamRelationMapper.insert(disTeamRelation);
 
-        if (model.getModel().equals("level2_1") && parentIdentity.getIdentityTypeNo() != null) {
+        if (model.getModel().equals("level2_1") && parentIdentity.getBizRoleTypeNo() != null) {
             DisTeamRelation parantDisTeamRelation = disTeamRelationMapper.selectOne(
                     new LambdaQueryWrapper<DisTeamRelation>()
-                            .eq(DisTeamRelation::getSysAgentNo, parentIdentity.getIdentityTypeNo())
+                            .eq(DisTeamRelation::getSysAgentNo, parentIdentity.getBizRoleTypeNo())
             );
             if (parantDisTeamRelation == null) {
                 return disTeamRelation;
@@ -151,7 +151,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
                 // 查询该用户的上级是否已经有两个下级
                 Page<DisTeamRelation> page = new Page<>(1, 1);
                 LambdaQueryWrapper<DisTeamRelation> wrapper = new LambdaQueryWrapper<>();
-                wrapper.eq(DisTeamRelation::getPrarentSysAgentNo, parentIdentity.getIdentityTypeNo());
+                wrapper.eq(DisTeamRelation::getPrarentSysAgentNo, parentIdentity.getBizRoleTypeNo());
                 IPage<DisTeamRelation> pageList = disTeamRelationMapper.selectPage(page, wrapper);
                 if (pageList.getSize() >= model.getQuitCurrentLimit()) {
                     DisTeamRelation topDisTeamRelation = disTeamRelationMapper.selectOne(
