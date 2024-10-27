@@ -184,6 +184,8 @@ public enum ResponseCode implements ReturnCode {
     CUSTOMER_NO_IS_NULL("300016", "客户号不能为空！"),
     BIZ_ROLE_TYPE_ERROR("300017", "业务角色类型错误！"),
 
+    INVITE_CODE_ERROR("300018", "邀请码错误！"),
+
 
 
     /***********************************账户类 400000 开头*****************************************/

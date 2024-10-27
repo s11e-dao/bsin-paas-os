@@ -11,6 +11,7 @@ import java.util.Date;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
+import me.flyray.bsin.domain.enums.CustomerType;
 import me.flyray.bsin.validate.AddGroup;
 
 /**
@@ -106,8 +107,8 @@ public class CustomerBase implements Serializable {
     private String avatar;
 
     /**
-     * 客户角色类型，客户类型 0、个人客户 1、企业客户
-     * @see me.flyray.bsin.security.enums.BizRoleType
+     * 客户|租户|商户|代理商类型 0、个人客户 1、企业客户
+     * @see CustomerType
      */
     private String type;
 

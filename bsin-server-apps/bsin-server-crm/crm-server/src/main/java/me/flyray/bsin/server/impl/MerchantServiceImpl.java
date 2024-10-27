@@ -9,10 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
-import me.flyray.bsin.domain.enums.AuthenticationStatus;
-import me.flyray.bsin.domain.enums.BusinessModel;
-import me.flyray.bsin.domain.enums.MerchantStatus;
-import me.flyray.bsin.domain.enums.StoreType;
+import me.flyray.bsin.domain.enums.*;
 import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.domain.request.WalletDTO;
 import me.flyray.bsin.domain.response.UserResp;
@@ -117,6 +114,8 @@ public class MerchantServiceImpl implements MerchantService {
     if (registerNotNeedAuditStr != null) {
       registerNotNeedAudit = Boolean.parseBoolean(registerNotNeedAuditStr);
     }
+
+    merchant.setType(CustomerType.PERSONAL.getCode());
     addMerchant(merchant, registerNotNeedAudit, NULL);
   }
 
@@ -305,6 +304,7 @@ public class MerchantServiceImpl implements MerchantService {
     if (merchant.getMerchantName() == null) {
       merchant.setMerchantName("admin");
     }
+    merchant.setType(CustomerType.PERSONAL.getCode());
     merchant = addMerchant(merchant, true, customerNo);
     return merchant;
   }
@@ -321,6 +321,7 @@ public class MerchantServiceImpl implements MerchantService {
         throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
       }
     }
+    merchant.setType(CustomerType.PERSONAL.getCode());
     merchant = addMerchant(merchant, true, NULL);
     return merchant;
   }

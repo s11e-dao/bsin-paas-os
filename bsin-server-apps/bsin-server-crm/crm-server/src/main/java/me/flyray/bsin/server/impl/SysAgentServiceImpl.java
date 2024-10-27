@@ -10,6 +10,7 @@ import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.AuthenticationStatus;
+import me.flyray.bsin.domain.enums.CustomerType;
 import me.flyray.bsin.domain.enums.MerchantStatus;
 import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.domain.response.UserResp;
@@ -130,6 +131,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     if (sysAgent.getAgentName() == null) {
       sysAgent.setAgentName("admin");
     }
+    sysAgent.setType(CustomerType.PERSONAL.getCode());
     sysAgent = addSysAgent(sysAgent, customerNo);
     return sysAgent;
   }
@@ -141,6 +143,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
     String tenantId = LoginInfoContextHelper.getTenantId();
     sysAgent.setTenantId(tenantId);
+    sysAgent.setType(CustomerType.PERSONAL.getCode());
     sysAgent = addSysAgent(sysAgent, NULL);
     return sysAgent;
   }

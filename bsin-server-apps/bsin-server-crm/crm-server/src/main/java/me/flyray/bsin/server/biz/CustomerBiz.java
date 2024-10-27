@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import me.flyray.bsin.domain.entity.CustomerIdentity;
+import me.flyray.bsin.domain.entity.DisInviteRelation;
 import me.flyray.bsin.enums.AuthMethod;
 import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
+import me.flyray.bsin.infrastructure.mapper.DisInviteRelationMapper;
 import me.flyray.bsin.security.enums.BizRoleType;
+import me.flyray.bsin.domain.enums.CustomerType;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,20 +18,17 @@ import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.domain.entity.CustomerBase;
-import me.flyray.bsin.domain.entity.CustomerInviteRelation;
-import me.flyray.bsin.enums.CustomerType;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.EquityService;
 import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
-import me.flyray.bsin.infrastructure.mapper.CustomerInviteRelationMapper;
 import me.flyray.bsin.utils.BsinSnowflake;
 import me.flyray.bsin.utils.UniqueInviteCodeGenerator;
+
+import static me.flyray.bsin.constants.ResponseCode.INVITE_CODE_ERROR;
 
 /**
  * @author bolei
@@ -48,7 +47,7 @@ public class CustomerBiz {
   @Value("${bsin.jiujiu.merchantNo}")
   private String jiujiumerchantNo;
 
-  @Autowired private CustomerInviteRelationMapper inviteRelationMapper;
+  @Autowired private DisInviteRelationMapper disInviteRelationMapper;
 
   @DubboReference(version = "dev")
   private EquityService equityService;
@@ -115,14 +114,13 @@ public class CustomerBiz {
 
     CustomerBase customerInfo = customerBaseMapper.selectOne(warapper);
 
-
     if (customerInfo != null) {
       if (ObjectUtils.isNotEmpty(customerBase.getPassword())) {
         if (!customerBase.getPassword().equals(customerInfo.getPassword())) {
           throw new BusinessException(ResponseCode.PASSWORD_ERROR);
         }
       } else {
-        if(!ObjectUtils.isNotEmpty(customerBase.getSessionKey())){
+        if (!ObjectUtils.isNotEmpty(customerBase.getSessionKey())) {
           throw new BusinessException(ResponseCode.PASSWORD_ERROR);
         }
         if (!customerBase.getSessionKey().equals(customerInfo.getSessionKey())) {
@@ -134,7 +132,7 @@ public class CustomerBiz {
 
     customerBase.setCustomerNo(BsinSnowflake.getId());
     customerBase.setTenantId(customerBase.getTenantId());
-    customerBase.setType("0");
+    customerBase.setType(CustomerType.PERSONAL.getCode());
     customerBase.setPassword(customerBase.getPassword());
     customerBase.setInviteCode(UniqueInviteCodeGenerator.generateUniqueInviteCode(6));
     customerBaseMapper.insert(customerBase);
@@ -143,44 +141,48 @@ public class CustomerBiz {
     CustomerIdentity customerIdentity = new CustomerIdentity();
     customerIdentity.setCustomerNo(customerBase.getCustomerNo());
     customerIdentity.setTenantId(customerBase.getTenantId());
-    //    // 默认商户号??
-    //    customerIdentity.setMerchantNo(customerBase.getTenantId());
+    //    customerIdentity.setMerchantNo(customerBase.getMerchantNo());
     customerIdentity.setName(BizRoleType.CUSTOMER.getDesc());
     customerIdentity.setBizRoleType(BizRoleType.CUSTOMER.getCode());
     customerIdentity.setBizRoleTypeNo(customerBase.getCustomerNo());
     customerIdentityMapper.insert(customerIdentity);
 
-    // 根据 inviteCode 老用户mint积分
+    // 根据 inviteCode 插入邀请关系
     if (inviteCode != null) {
-      // 查询平台的邀请注册积分奖励规则
-      Map<String, Object> requestMap = new HashMap<>();
-      requestMap.put("tenantId", jiujiuTenantId);
-      requestMap.put("merchantNo", jiujiumerchantNo);
       // 根据邀请码，找到邀请人,写入邀请关系
       CustomerBase parentCustomer =
           customerBaseMapper.selectOne(
-              new LambdaQueryWrapper<CustomerBase>().eq(CustomerBase::getInviteCode, inviteCode));
+              new LambdaQueryWrapper<CustomerBase>()
+                  .eq(CustomerBase::getTenantId, customerBase.getTenantId())
+                  .eq(CustomerBase::getInviteCode, inviteCode));
       if (parentCustomer == null) {
-        throw new BusinessException("800000", "邀请码错误！");
+        throw new BusinessException(INVITE_CODE_ERROR);
       }
       // 添加邀请关系
-      CustomerInviteRelation customerInviteRelation = new CustomerInviteRelation();
-      customerInviteRelation.setCustomerNo(customerBase.getCustomerNo());
-      customerInviteRelation.setParentNo(String.valueOf(parentCustomer.getCustomerNo()));
-      customerInviteRelation.setInviteLevel(1);
-      addInviteRelation(customerInviteRelation);
+      DisInviteRelation disInviteRelation = new DisInviteRelation();
+      disInviteRelation.setTenantId(customerBase.getCustomerNo());
+      // 被邀请人序列号
+      disInviteRelation.setCustomerNo(customerBase.getCustomerNo());
+      // 父级邀请人序列号
+      disInviteRelation.setParentNo(parentCustomer.getCustomerNo());
+      disInviteRelation.setInviteLevel(1);
+      addInviteRelation(disInviteRelation);
 
-      // 找到老用户
-      LambdaQueryWrapper<CustomerBase> warapperOldCustomer = new LambdaQueryWrapper<>();
-      warapperOldCustomer.eq(CustomerBase::getTenantId, customerBase.getTenantId());
-      warapperOldCustomer.eq(CustomerBase::getInviteCode, inviteCode);
-      CustomerBase oldCustomerInfo = customerBaseMapper.selectOne(warapperOldCustomer);
-      if (oldCustomerInfo != null) {
-        requestMap.put("customerNo", oldCustomerInfo.getCustomerNo());
-        equityService.grant(requestMap);
-      } else {
-        // TODO: warning
-      }
+      //      // 查询平台的邀请注册积分奖励规则
+      //      Map<String, Object> requestMap = new HashMap<>();
+      //      requestMap.put("tenantId", jiujiuTenantId);
+      //      requestMap.put("merchantNo", jiujiumerchantNo);
+      //      // 找到老用户
+      //      LambdaQueryWrapper<CustomerBase> warapperOldCustomer = new LambdaQueryWrapper<>();
+      //      warapperOldCustomer.eq(CustomerBase::getTenantId, customerBase.getTenantId());
+      //      warapperOldCustomer.eq(CustomerBase::getInviteCode, inviteCode);
+      //      CustomerBase oldCustomerInfo = customerBaseMapper.selectOne(warapperOldCustomer);
+      //      if (oldCustomerInfo != null) {
+      //        requestMap.put("customerNo", oldCustomerInfo.getCustomerNo());
+      //        equityService.grant(requestMap);
+      //      } else {
+      //        // TODO: warning
+      //      }
     }
     return customerBase;
   }
@@ -196,30 +198,30 @@ public class CustomerBiz {
     return customerIdentityMapper.selectList(wrapper);
   }
 
-  public void addInviteRelation(CustomerInviteRelation customerInviteRelation) {
+  public void addInviteRelation(DisInviteRelation disInviteRelation) {
     // 查看当前邀请人是否还有父级邀请人
-    LambdaQueryWrapper<CustomerInviteRelation> queryWrapper = new LambdaQueryWrapper<>();
-    queryWrapper.eq(CustomerInviteRelation::getCustomerNo, customerInviteRelation.getParentNo());
+    LambdaQueryWrapper<DisInviteRelation> queryWrapper = new LambdaQueryWrapper<>();
+    queryWrapper.eq(DisInviteRelation::getCustomerNo, disInviteRelation.getParentNo());
     // 根据时间排序，确保查出来的第一个是第一父级
-    queryWrapper.orderByDesc(CustomerInviteRelation::getCreateTime);
-    List<CustomerInviteRelation> inviteRelations = inviteRelationMapper.selectList(queryWrapper);
+    queryWrapper.orderByDesc(DisInviteRelation::getCreateTime);
+    List<DisInviteRelation> inviteRelations = disInviteRelationMapper.selectList(queryWrapper);
     // 如果没有就直接将邀请关系存入
     if (inviteRelations.isEmpty()) {
-      inviteRelationMapper.insert(customerInviteRelation);
+      disInviteRelationMapper.insert(disInviteRelation);
     } else {
-      inviteRelationMapper.insert(customerInviteRelation);
+      disInviteRelationMapper.insert(disInviteRelation);
       // 添加第二、第三父级 (只有三级，所以最多只取前面2个)
       int count = 2;
-      for (CustomerInviteRelation inviteRelation : inviteRelations) {
+      for (DisInviteRelation inviteRelation : inviteRelations) {
         if (count > 3) {
           return;
         }
-        inviteRelation.setCustomerNo(customerInviteRelation.getCustomerNo());
+        inviteRelation.setCustomerNo(disInviteRelation.getCustomerNo());
         // 针对当前被邀请人父级等级上升
         inviteRelation.setInviteLevel(count);
         inviteRelation.setSerialNo(BsinSnowflake.getId());
         inviteRelation.setCreateTime(new Date());
-        inviteRelationMapper.insert(inviteRelation);
+        disInviteRelationMapper.insert(inviteRelation);
         count++;
       }
     }

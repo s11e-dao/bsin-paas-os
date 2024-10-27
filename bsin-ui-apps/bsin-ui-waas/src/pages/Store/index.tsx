@@ -28,7 +28,7 @@ export default () => {
   // 控制新增模态框
   const [addStoreModal, setAddStoreModal] = useState(false);
   // 查看模态框
-  const [isViewTemplateModal, setIsViewTemplateModal] = useState(false);
+  const [isViewStoreModal, setIsViewStoreModal] = useState(false);
   // 查看
   const [isViewRecord, setIsViewRecord] = useState({});
   // 获取表单
@@ -143,7 +143,7 @@ export default () => {
   const toViewStore = async (record) => {
     let { serialNo } = record;
     let viewRes = await getStoreDetail({ serialNo });
-    setIsViewTemplateModal(true);
+    setIsViewStoreModal(true);
     console.log('viewRes', viewRes);
     setIsViewRecord(viewRes.data);
   };
@@ -295,9 +295,9 @@ export default () => {
         title="详情"
         width={800}
         centered
-        open={isViewTemplateModal}
-        onOk={() => setIsViewTemplateModal(false)}
-        onCancel={() => setIsViewTemplateModal(false)}
+        open={isViewStoreModal}
+        onOk={() => setIsViewStoreModal(false)}
+        onCancel={() => setIsViewStoreModal(false)}
       >
         {/* 详情信息 */}
         <Descriptions title="店鋪信息">
@@ -311,7 +311,7 @@ export default () => {
             {handleViewRecordOfType()}
           </Descriptions.Item>
           <Descriptions.Item label="经营模式">
-            {handleViewRecordOfType()}
+            {handleViewRecordOfBusinessModel()}
           </Descriptions.Item>
           <Descriptions.Item label="店铺名称">
             {isViewRecord?.storeName}
