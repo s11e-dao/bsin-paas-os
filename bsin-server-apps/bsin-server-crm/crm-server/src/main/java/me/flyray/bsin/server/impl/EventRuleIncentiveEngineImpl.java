@@ -1,7 +1,7 @@
 package me.flyray.bsin.server.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.facade.engine.CustomerBehaviorIncentiveEngine;
+import me.flyray.bsin.facade.engine.EventRuleIncentiveEngine;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * @author bolei
  * @date 2023/8/23
- * @desc
+ * @desc 根据事件模型规则配置执行激励
  */
 
 
@@ -19,7 +19,7 @@ import java.util.Map;
 @ShenyuDubboService(path = "/customerBehaviorIncentiveEngine", timeout = 6000)
 @ApiModule(value = "customerBehaviorIncentiveEngine")
 @Service
-public class CustomerBehaviorIncentiveEngineImpl implements CustomerBehaviorIncentiveEngine {
+public class EventRuleIncentiveEngineImpl implements EventRuleIncentiveEngine {
 
 
     /**

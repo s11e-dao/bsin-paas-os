@@ -3,12 +3,14 @@ package me.flyray.bsin.facade.engine;
 import java.util.Map;
 
 /**
- * @author bolei
- * @date 2023/8/21
- * @desc
+ * 分佣引擎
  */
-public interface CustomerBehaviorIncentiveEngine {
 
+public interface BrokerageEngine {
+
+    /**
+     * 1、分销分佣引擎
+     */
     public void excute(Map<String, Object> requestMap);
 
 }
