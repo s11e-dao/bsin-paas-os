@@ -48,12 +48,24 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
     private DisInviteRelationMapper DisInviteRelationMapper;
     @Autowired
     private DisBrokerageConfigMapper disBrokerageConfigMapper;
+    /**
+     * 添加分销团队关系
+     *
+     * 该方法主要用于处理分销团队关系的添加请求它首先检查请求中的参数，
+     * 然后根据这些参数查询相关的配置和实体信息，最后在数据库中创建一个新的分销团队关系
+     *
+     * @param requestMap 包含请求参数的映射，包括"sysAgentNo"和"tenantId"等关键信息
+     * @return 返回新创建的DisTeamRelation对象，如果请求失败或数据不合法则可能返回null
+     */
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
     @Override
     public DisTeamRelation add(Map<String, Object> requestMap) {
+        // 生成crm_sys_agent 数据后调用,requestMap ->{"sysAgentNo": 成为分销后的serial_no, "tenantId":租户ID}
         String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
         String tenantId = MapUtils.getString(requestMap, "tenantId");
+
+        // 查询分销配置信息
         DisBrokerageConfig config = disBrokerageConfigMapper.selectOne(
                 new LambdaQueryWrapper<DisBrokerageConfig>()
                         .eq(DisBrokerageConfig::getTenantId,  MapUtils.getString(requestMap, "tenantId"))
@@ -61,23 +73,29 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         if (config == null){
             return null;
         }
+        // 根据sysAgentNo查询代理信息
         SysAgent agent = SysAgentMapper.selectById(sysAgentNo);
+        // 查询客户身份信息
         CustomerIdentity identity = CustomerIdentityMapper.selectOne(
                 new LambdaQueryWrapper<CustomerIdentity>()
-                .eq(CustomerIdentity::getIdentityTypeNo, agent.getSerialNo()
-                )
+                        .eq(CustomerIdentity::getIdentityTypeNo, agent.getSerialNo()
+                        )
         );
+
+        // 查询邀请关系信息
         DisInviteRelation relation  = DisInviteRelationMapper.selectOne(new LambdaQueryWrapper<DisInviteRelation>()
                 .eq(DisInviteRelation::getCustomerNo, identity.getCustomerNo()
                 )
         );
         String parentNo = relation.getParentNo();
+
+        // 查询父级客户身份信息
         CustomerIdentity parentIdentity = CustomerIdentityMapper.selectOne(new LambdaQueryWrapper<CustomerIdentity>()
                 .eq(CustomerIdentity::getCustomerNo, parentNo
                 )
         );
-//        SysAgent parentAgent =  SysAgentMapper.selectById(parentIdentity.getIdentityTypeNo());
-//        System.out.println(parentIdentity.getIdentityTypeNo());
+
+        // 创建分销团队关系对象
         DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
         if (parentIdentity.getIdentityTypeNo() != null){
             disTeamRelation.setPrarentSysAgentNo(parentIdentity.getIdentityTypeNo());
@@ -88,11 +106,11 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         }
         disTeamRelation.setSysAgentNo(agent.getSerialNo());
         disTeamRelation.setSerialNo(BsinSnowflake.getId());
+        disTeamRelation.setTenantId(tenantId);
+        // 插入分销团队关系到数据库
         disTeamRelationMapper.insert(disTeamRelation);
-
         return disTeamRelation;
     }
-
     @ApiDoc(desc = "delete")
     @ShenyuDubboClient("/delete")
     @Override
