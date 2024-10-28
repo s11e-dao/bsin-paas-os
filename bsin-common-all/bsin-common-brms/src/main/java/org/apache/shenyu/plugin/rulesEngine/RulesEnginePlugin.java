@@ -2,7 +2,7 @@ package org.apache.shenyu.plugin.rulesEngine;
 
 import com.alibaba.fastjson2.JSONObject;
 import me.flyray.bsin.domain.request.ExecuteParams;
-import me.flyray.bsin.facade.service.DecisionEngineService;
+import me.flyray.bsin.facade.engine.DecisionEngine;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
@@ -21,11 +21,11 @@ import java.util.Map;
 @Component
 public class RulesEnginePlugin extends AbstractShenyuPlugin {
 
-    private static final DecisionEngineService decisionEngineService;
+    private static final DecisionEngine decisionEngineService;
 
     static {
-        ReferenceConfig<DecisionEngineService> reference = new ReferenceConfig<>();
-        reference.setInterface(DecisionEngineService.class);
+        ReferenceConfig<DecisionEngine> reference = new ReferenceConfig<>();
+        reference.setInterface(DecisionEngine.class);
         DubboBootstrap instance = DubboBootstrap.getInstance();
         instance.application("first-dubbo-consumer");
         instance.registry(new RegistryConfig("nacos://localhost:8848"));
