@@ -29,8 +29,9 @@ public class CustomerBase implements Serializable {
 
     /**
      * 登录名称
+     * 微信等第三方授权等于，用户名可以为空
      */
-    @NotBlank(message = "用户名不能为空！", groups = {AddGroup.class})
+//    @NotBlank(message = "用户名不能为空！", groups = {AddGroup.class})
     private String username;
 
     /**

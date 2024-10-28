@@ -143,6 +143,7 @@ public class CustomerBiz {
     customerIdentity.setTenantId(customerBase.getTenantId());
     //    customerIdentity.setMerchantNo(customerBase.getMerchantNo());
     customerIdentity.setName(BizRoleType.CUSTOMER.getDesc());
+    customerIdentity.setUsername(customerBase.getUsername());
     customerIdentity.setBizRoleType(BizRoleType.CUSTOMER.getCode());
     customerIdentity.setBizRoleTypeNo(customerBase.getCustomerNo());
     customerIdentityMapper.insert(customerIdentity);

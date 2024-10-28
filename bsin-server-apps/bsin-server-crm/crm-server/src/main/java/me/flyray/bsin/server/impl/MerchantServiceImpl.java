@@ -482,6 +482,7 @@ public class MerchantServiceImpl implements MerchantService {
       //      // 默认商户号??
       //      customerIdentity.setMerchantNo(customerBase.getTenantId());
       customerIdentity.setName(merchant.getUsername());
+      customerIdentity.setUsername(merchant.getUsername());
       customerIdentity.setBizRoleType(BizRoleType.MERCHANT.getCode());
       customerIdentity.setBizRoleTypeNo(merchant.getSerialNo());
       customerIdentityMapper.insert(customerIdentity);
