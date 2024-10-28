@@ -55,6 +55,7 @@ import java.util.Map;
 
 import static java.math.BigDecimal.ROUND_HALF_UP;
 import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_NO_NOT_ISNULL;
+import static me.flyray.bsin.constants.ResponseCode.DATA_BASE_UPDATE_FAILED;
 
 /**
  * @author bolei
@@ -578,7 +579,7 @@ public class CustomerServiceImpl implements CustomerService {
   @ApiDoc(desc = "settingProfile")
   @ShenyuDubboClient("/settingProfile")
   @Override
-  public void settingProfile(Map<String, Object> requestMap) {
+  public CustomerBase settingProfile(Map<String, Object> requestMap) {
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
     if (customerBase.getCustomerNo() == null) {
       customerBase.setCustomerNo(LoginInfoContextHelper.getCustomerNo());
@@ -586,7 +587,11 @@ public class CustomerServiceImpl implements CustomerService {
         throw new BusinessException(CUSTOMER_NO_NOT_ISNULL);
       }
     }
-    customerBaseMapper.updateById(customerBase);
+    if (customerBaseMapper.updateById(customerBase) <= 0) {
+      throw new BusinessException(DATA_BASE_UPDATE_FAILED);
+    }
+
+    return customerBase;
   }
 
   /**

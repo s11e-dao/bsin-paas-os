@@ -280,28 +280,31 @@ public class MerchantServiceImpl implements MerchantService {
         throw new BusinessException(CUSTOMER_NO_IS_NULL);
       }
     }
-    String merchantNo = (String) requestMap.get("merchantNo");
-    if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-      if (customerNo == null) {
-        throw new BusinessException(MERCHANT_NO_IS_NULL);
-      }
-    }
-    // TODO: 会员挂在商户下，会员
+    // TODO: 如何获取客户的会员的商户 ID????
+    //    String merchantNo = (String) requestMap.get("merchantNo");
+    //    if (merchantNo == null) {
+    //      merchantNo = loginUser.getMerchantNo();
+    //      if (merchantNo == null) {
+    //        throw new BusinessException(MERCHANT_NO_IS_NULL);
+    //      }
+    //    }
+    // TODO: 会员挂在默认商户下： jiujiu 商户 会员
     Member member =
         memberMapper.selectOne(
             new LambdaUpdateWrapper<Member>()
-                .eq(Member::getMerchantNo, merchantNo)
+                //                .eq(Member::getMerchantNo, merchantNo)
                 .eq(Member::getCustomerNo, customerNo));
     if (member == null) {
       throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);
     }
 
-    if (merchant.getPassword() == null) {
-      merchant.setMerchantName("123456");
-    }
-    if (merchant.getMerchantName() == null) {
-      merchant.setMerchantName("admin");
+    // 默认密码 = 空
+    //    if (merchant.getPassword() == null) {
+    //      merchant.setMerchantName("123456");
+    //    }
+    // 默认用户名 = admin
+    if (merchant.getUsername() == null) {
+      merchant.setUsername("admin");
     }
     merchant.setType(CustomerType.PERSONAL.getCode());
     merchant = addMerchant(merchant, true, customerNo);

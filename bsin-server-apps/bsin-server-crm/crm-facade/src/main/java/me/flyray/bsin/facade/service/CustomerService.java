@@ -17,13 +17,13 @@ import java.util.Map;
  */
 public interface CustomerService {
 
-  /** 会员客户登录 */
+  /** 客户登录 */
   public Map<String, Object> login(Map<String, Object> requestMap);
 
   /** 登录切换 */
   public Map<String, Object> loginSwitch(Map<String, Object> requestMap) ;
 
-  /** 会员客户注册 */
+  /** 客户注册 */
   public CustomerBase register(Map<String, Object> requestMap)throws UnsupportedEncodingException ;
 
 
@@ -66,7 +66,7 @@ public interface CustomerService {
   /**
    * 设置Profile信息
    * */
-  public void settingProfile(Map<String, Object> requestMap);
+  public CustomerBase settingProfile(Map<String, Object> requestMap);
 
 
   /**

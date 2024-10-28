@@ -131,11 +131,13 @@ public class SysAgentServiceImpl implements SysAgentService {
       throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);
     }
 
-    if (sysAgent.getPassword() == null) {
-      sysAgent.setPassword("123456");
-    }
-    if (sysAgent.getAgentName() == null) {
-      sysAgent.setAgentName("admin");
+    // 默认密码 = 空
+    //    if (merchant.getPassword() == null) {
+    //      merchant.setMerchantName("123456");
+    //    }
+    // 默认用户名 = admin
+    if (sysAgent.getUsername() == null) {
+      sysAgent.setUsername("admin");
     }
     sysAgent.setType(CustomerType.PERSONAL.getCode());
     sysAgent = addSysAgent(sysAgent, customerNo);

@@ -57,10 +57,12 @@ public class CustomerBiz {
     LambdaQueryWrapper<CustomerBase> warapper = new LambdaQueryWrapper<>();
     warapper.eq(CustomerBase::getTenantId, customerBase.getTenantId());
     warapper.eq(CustomerBase::getUsername, customerBase.getUsername());
-    warapper.eq(CustomerBase::getPassword, customerBase.getPassword());
     CustomerBase customerInfo = customerBaseMapper.selectOne(warapper);
     if (customerInfo == null) {
       throw new BusinessException(ResponseCode.CUSTOMER_ERROR);
+    }
+    if (!customerInfo.getPassword().equals(customerBase.getPassword())) {
+      throw new BusinessException(ResponseCode.USERNAME_PASSWORD_ERROR);
     }
     return customerInfo;
   }
