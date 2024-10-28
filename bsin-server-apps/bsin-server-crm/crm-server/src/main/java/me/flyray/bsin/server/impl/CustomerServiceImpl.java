@@ -273,6 +273,7 @@ public class CustomerServiceImpl implements CustomerService {
       throws UnsupportedEncodingException {
     CustomerBase customerBase =
         BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap, AddGroup.class);
+    String tenantId = MapUtils.getString(requestMap, "tenantId");
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     String openId = MapUtils.getString(requestMap, "openId");
     String appId = MapUtils.getString(requestMap, "appId");
@@ -301,12 +302,14 @@ public class CustomerServiceImpl implements CustomerService {
     String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
     if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {
       // 获取手机号
-      //      if (ObjectUtil.isEmpty(customerBaseRegister.getPhone())) {
-      //        wxPortalController.bindingPhoneNumber(openId, appId, encryptedData, iv);
-      //      }
+      if (ObjectUtil.isEmpty(customerBaseRegister.getPhone())) {
+        customerBaseRegister =
+            wxPortalController.bindingPhoneNumber(tenantId, openId, appId, encryptedData, iv);
+      }
       // 获取微信用户信息
-      if (ObjectUtil.isNotEmpty(customerBaseRegister.getNickname())) {
-        wxPortalController.bindingUserInfo(openId, appId, encryptedData, iv);
+      if (ObjectUtil.isEmpty(customerBaseRegister.getNickname())) {
+        customerBaseRegister =
+            wxPortalController.bindingUserInfo(tenantId, openId, appId, encryptedData, iv);
       }
     }
     // 查新询客户身份信息
@@ -339,7 +342,7 @@ public class CustomerServiceImpl implements CustomerService {
     String code = MapUtils.getString(requestMap, "code");
     String appId = MapUtils.getString(requestMap, "appId");
     log.info("code:{},appId:{}", code, appId);
-    CustomerBase customerBase = wxPortalController.authorizedLogin(appId, code);
+    CustomerBase customerBase = wxPortalController.authorizedLogin(tenantId, appId, code);
     if (customerBase == null) {
       throw new BusinessException("100000", "获取openId失败！！！");
     }

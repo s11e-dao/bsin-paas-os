@@ -79,10 +79,10 @@
                status
         from crm_biz_role_app
         where del_flag = 0
-        <if test="tenantId != null">
+        <if test="tenantId != null and tenantId != ''">
             and tenant_id = #{tenantId}
         </if>
-        <if test="bizRoleTypeNo != null">
+        <if test="bizRoleTypeNo != null and bizRoleTypeNo != ''">
             and biz_role_type_no = #{bizRoleTypeNo}
         </if>
         <if test="appId != null">
@@ -111,7 +111,9 @@
         select
         <include refid="baseColumnList"/>
         from crm_biz_role_app
-        where app_id = #{appId}
+        where del_flag = 0 and
+        app_id = #{appId} and
+        tenant_id = #{tenantId}
     </select>
 
 

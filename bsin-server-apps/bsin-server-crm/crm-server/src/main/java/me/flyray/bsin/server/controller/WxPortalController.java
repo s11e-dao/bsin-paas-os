@@ -45,6 +45,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
+import static me.flyray.bsin.constants.ResponseCode.APP_ID_NOT_EXISTS;
+
 /**
  * @author <a href="https://github.com/binarywang">Binary Wang</a>
  */
@@ -96,13 +98,14 @@ public class WxPortalController {
       @RequestParam(name = "signature", required = false) String signature,
       @RequestParam(name = "timestamp", required = false) String timestamp,
       @RequestParam(name = "nonce", required = false) String nonce,
-      @RequestParam(name = "echostr", required = false) String echostr) {
+      @RequestParam(name = "echostr", required = false) String echostr,
+      @RequestParam("tenantId") String tenantId) {
 
     log.info("\n接收到来自微信服务器的认证消息：[{}, {}, {}, {}]", signature, timestamp, nonce, echostr);
     if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
       throw new IllegalArgumentException("请求参数非法，请核实!");
     }
-    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(appid);
+    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(tenantId, appid);
     if (merchantWxApp == null) {
       return "未找到微信平台配置信息";
     }
@@ -144,9 +147,9 @@ public class WxPortalController {
    * @param code
    * @return
    */
-  public CustomerBase authorizedLogin(String appid, String code)
+  public CustomerBase authorizedLogin(String tenantId, String appid, String code)
       throws UnsupportedEncodingException {
-    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(appid);
+    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(tenantId, appid);
     if (merchantWxApp == null) {
       throw new BusinessException("100000", "未找到对应appid");
     }
@@ -201,16 +204,15 @@ public class WxPortalController {
    * @param iv
    * @return
    */
-  public String bindingPhoneNumber(String openId, String appId, String encryptedData, String iv) {
-    String phone = null;
-    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(appId);
+  public CustomerBase bindingPhoneNumber(
+      String tenantId, String openId, String appId, String encryptedData, String iv) {
+    CustomerBase customerBase = customerBiz.getCustomerByOpenId(openId);
+    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(tenantId, appId);
     if (merchantWxApp == null) {
-      throw new BusinessException("100000", "未找到对应appid");
+      throw new BusinessException(APP_ID_NOT_EXISTS);
     }
     if (StringUtils.equals(merchantWxApp.getAppType(), AppType.WX_MINIAPP.getType())) {
       WxMaService wxService = (WxMaService) getWxService(merchantWxApp);
-
-      CustomerBase customerBase = customerBiz.getCustomerByOpenId(openId);
       WxMaPhoneNumberInfo phoneNumberInfo = null;
       try {
         phoneNumberInfo =
@@ -222,10 +224,10 @@ public class WxPortalController {
         e.printStackTrace();
         throw new BusinessException("100000", "绑定手机号码失败,获取微信绑定的手机号码出错:" + e.toString());
       }
-      phone = phoneNumberInfo.getPhoneNumber();
+      customerBase.setPhone(phoneNumberInfo.getPhoneNumber());
       customerBiz.updateCustomerBase(customerBase);
     }
-    return phone;
+    return customerBase;
   }
 
   /**
@@ -236,32 +238,42 @@ public class WxPortalController {
    * @param iv
    * @return
    */
-  public WxMaUserInfo bindingUserInfo(String openId, String appId, String encryptedData, String iv) {
+  public CustomerBase bindingUserInfo(
+      String tenantId, String openId, String appId, String encryptedData, String iv) {
     WxMaUserInfo wxMaUserInfo = null;
-    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(appId);
+    CustomerBase customerBase = customerBiz.getCustomerByOpenId(openId);
+    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(tenantId, appId);
     if (merchantWxApp == null) {
-      throw new BusinessException("100000", "未找到对应appid");
+      throw new BusinessException(APP_ID_NOT_EXISTS);
     }
     if (StringUtils.equals(merchantWxApp.getAppType(), AppType.WX_MINIAPP.getType())) {
       WxMaService wxService = (WxMaService) getWxService(merchantWxApp);
-
-      CustomerBase customerBase = customerBiz.getCustomerByOpenId(openId);
       try {
         wxMaUserInfo =
-                wxService
-                        .getUserService()
-                        .getUserInfo(customerBase.getSessionKey(), encryptedData, iv);
+            wxService.getUserService().getUserInfo(customerBase.getSessionKey(), encryptedData, iv);
       } catch (Exception e) {
         log.error("获取微信个人信息失败：{}", e.toString());
         e.printStackTrace();
         throw new BusinessException("100000", "获取微信个人信息失败:" + e.toString());
       }
-      customerBase.setAvatar(wxMaUserInfo.getAvatarUrl());
-      customerBase.setNickname(wxMaUserInfo.getNickName());
-      customerBase.setSex(wxMaUserInfo.getGender());
-      customerBiz.updateCustomerBase(customerBase);
+      boolean updateFlag = false;
+      if (wxMaUserInfo.getAvatarUrl() != null) {
+        updateFlag = true;
+        customerBase.setAvatar(wxMaUserInfo.getAvatarUrl());
+      }
+      if (wxMaUserInfo.getNickName() != null) {
+        updateFlag = true;
+        customerBase.setNickname(wxMaUserInfo.getNickName());
+      }
+      if (wxMaUserInfo.getGender() != null) {
+        updateFlag = true;
+        customerBase.setSex(wxMaUserInfo.getGender());
+      }
+      if (updateFlag) {
+        customerBiz.updateCustomerBase(customerBase);
+      }
     }
-    return wxMaUserInfo;
+    return customerBase;
   }
 
   /**
@@ -285,6 +297,7 @@ public class WxPortalController {
       @RequestParam("timestamp") String timestamp,
       @RequestParam("nonce") String nonce,
       @RequestParam("openid") String openid,
+      @RequestParam("tenantId") String tenantId,
       @RequestParam(name = "encrypt_type", required = false) String encType,
       @RequestParam(name = "msg_signature", required = false) String msgSignature) {
     log.debug(
@@ -300,7 +313,7 @@ public class WxPortalController {
 
     String out = null;
 
-    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(appid);
+    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(tenantId, appid);
     if (merchantWxApp == null) {
       throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
     }
@@ -573,6 +586,7 @@ public class WxPortalController {
       @RequestBody String requestBody,
       @RequestParam("msg_signature") String signature,
       @RequestParam("timestamp") String timestamp,
+      @RequestParam("tenantId") String tenantId,
       @RequestParam("nonce") String nonce) {
     log.info(
         "\n接收微信请求：[signature=[{}], timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
@@ -580,7 +594,7 @@ public class WxPortalController {
         timestamp,
         nonce,
         requestBody);
-    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(corpId + agentId.toString());
+    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(tenantId, corpId + agentId.toString());
     WxCpProperties.CpConfig config = new WxCpProperties.CpConfig();
     config.setAesKey(merchantWxApp.getAesKey());
     config.setCorpId(corpId);
@@ -636,8 +650,9 @@ public class WxPortalController {
       WxMaProperties.MaConfig config = new WxMaProperties.MaConfig();
       config.setAesKey(merchantWxApp.getAesKey());
       config.setAppId(merchantWxApp.getAppId());
-//      SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
-//      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
+      //      SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
+      //      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(),
+      // CharsetUtil.CHARSET_UTF_8));
       config.setSecret(merchantWxApp.getAppSecret());
       config.setToken(merchantWxApp.getToken());
       config.setMsgDataFormat("JSON");
