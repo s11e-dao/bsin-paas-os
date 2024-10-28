@@ -176,8 +176,8 @@ public enum ResponseCode implements ReturnCode {
 
     MERCHANT_NO_IS_NULL("300009", "商户号不能为空！"),
     MERCHANT_NOT_EXISTS("300010", "商户账号不存在！"),
-    GRADE_NOT_EXISTS("300011", "等级不存在~"),
-    EQUITY_NOT_EXISTS("300012", "权益不存在~"),
+    GRADE_NOT_EXISTS("300011", "等级不存在！"),
+    EQUITY_NOT_EXISTS("300012", "权益不存在！"),
     SYS_AGENT_NOT_EXISTS("300013", "代理商账号不存在！"),
     CONDITION_NOT_EXISTS("300014", "条件不存在！"),
     MEMBER_NOT_EXISTS("300015", "会员账号不存在！"),
@@ -185,8 +185,12 @@ public enum ResponseCode implements ReturnCode {
     BIZ_ROLE_TYPE_ERROR("300017", "业务角色类型错误！"),
 
     INVITE_CODE_ERROR("300018", "邀请码错误！"),
+    INVITE_RELATION_NOT_EXISTS("300019", "邀请关系不存在！"),
 
 
+
+    /***********************************分销类 310000 开头*****************************************/
+    DIS_MODEL_NOT_EXISTS("310001", "分销模型不存在~"),
 
     /***********************************账户类 400000 开头*****************************************/
     API_CONSUMING_FAIL("400000", "账户余额不足或是计费异常！"),
