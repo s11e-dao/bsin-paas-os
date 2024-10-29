@@ -67,6 +67,8 @@ public enum ResponseCode implements ReturnCode {
     APP_NOT_EXISTS("1006005", "该应用不存在"),
     UPMS_NOT_ADD("1006006", "权限管理不能添加"),
 
+    APP_ID_NOT_EXISTS("1006006", "未找到对应appid!!"),
+
     // 租户 100700
     TENANT_CODE_EXISTS("100701", "租户编码已存在"),
     SUB_TENANT_NOT_AUTH("100702", "超级租户不能授权"),
@@ -176,6 +178,7 @@ public enum ResponseCode implements ReturnCode {
 
     MERCHANT_NO_IS_NULL("300009", "商户号不能为空！"),
     MERCHANT_NOT_EXISTS("300010", "商户账号不存在！"),
+
     GRADE_NOT_EXISTS("300011", "等级不存在！"),
     EQUITY_NOT_EXISTS("300012", "权益不存在！"),
     SYS_AGENT_NOT_EXISTS("300013", "代理商账号不存在！"),

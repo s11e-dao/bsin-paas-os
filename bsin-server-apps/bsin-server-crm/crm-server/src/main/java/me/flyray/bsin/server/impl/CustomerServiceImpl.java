@@ -106,7 +106,7 @@ public class CustomerServiceImpl implements CustomerService {
   private CustomerPassCardService customerPassCardService;
 
   /**
-   * 不对外暴露接口调用，作为rpc服务对内提供
+   *
    *
    * @param requestMap
    * @return
@@ -167,15 +167,16 @@ public class CustomerServiceImpl implements CustomerService {
     String bizRoleTypeNo = null;
 
     Map res = new HashMap<>();
+
+    // 查询客户信息
+    LambdaQueryWrapper<CustomerBase> wrapperCustomerBase = new LambdaQueryWrapper<>();
+    wrapperCustomerBase.eq(CustomerBase::getUsername, username);
+    CustomerBase customerInfo = customerBaseMapper.selectOne(wrapperCustomerBase);
+    if (customerInfo == null) {
+      throw new BusinessException(ResponseCode.CUSTOMER_ERROR);
+    }
+    res.put("customerInfo", customerInfo);
     if (BizRoleType.CUSTOMER.getCode().equals(bizRoleType)) {
-      // 查询客户信息
-      LambdaQueryWrapper<CustomerBase> wrapperCustomerBase = new LambdaQueryWrapper<>();
-      wrapperCustomerBase.eq(CustomerBase::getUsername, username);
-      CustomerBase customerInfo = customerBaseMapper.selectOne(wrapperCustomerBase);
-      if (customerInfo == null) {
-        throw new BusinessException(ResponseCode.CUSTOMER_ERROR);
-      }
-      res.put("customerInfo", customerInfo);
       phone = customerInfo.getPhone();
       bizRoleTypeNo = customerInfo.getCustomerNo();
     } else if (BizRoleType.MERCHANT.getCode().equals(bizRoleType)) {
