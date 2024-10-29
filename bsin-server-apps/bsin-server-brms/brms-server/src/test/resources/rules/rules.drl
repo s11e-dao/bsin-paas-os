@@ -1,5 +1,6 @@
 package rules
 
+import java.util.HashMap;
 global java.util.Map globalMap
 
 rule "decision_rule_1_11"
