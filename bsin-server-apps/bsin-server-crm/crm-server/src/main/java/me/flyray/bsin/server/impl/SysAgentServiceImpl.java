@@ -2,17 +2,24 @@ package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.Merchant;
-import me.flyray.bsin.domain.entity.SysAgent;
-import me.flyray.bsin.domain.entity.SysUser;
+import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.enums.AuthenticationStatus;
+import me.flyray.bsin.domain.enums.CustomerType;
+import me.flyray.bsin.domain.enums.MerchantStatus;
+import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.service.DisTeamRelationService;
 import me.flyray.bsin.facade.service.SysAgentService;
+import me.flyray.bsin.facade.service.WalletService;
+import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
+import me.flyray.bsin.infrastructure.mapper.MemberMapper;
 import me.flyray.bsin.infrastructure.mapper.SysAgentMapper;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
@@ -22,6 +29,7 @@ import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
@@ -33,111 +41,215 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * 系统代理商服务
- */
+import static ch.qos.logback.core.joran.action.ActionConst.NULL;
+import static me.flyray.bsin.constants.ResponseCode.*;
 
+/** 系统代理商服务 */
 @Slf4j
-@ShenyuDubboService(path = "/sysAgent",timeout = 15000)
+@ShenyuDubboService(path = "/sysAgent", timeout = 15000)
 @ApiModule(value = "sysAgent")
 @Service
 public class SysAgentServiceImpl implements SysAgentService {
 
-    @Value("${bsin.security.authentication-secretKey}")
-    private String authSecretKey;
-    @Value("${bsin.security.authentication-expiration}")
-    private int authExpiration;
+  @Value("${bsin.security.authentication-secretKey}")
+  private String authSecretKey;
 
-    @Autowired
-    SysAgentMapper sysAgentMapper;
+  @Value("${bsin.security.authentication-expiration}")
+  private int authExpiration;
 
-    @ApiDoc(desc = "login")
-    @ShenyuDubboClient("/login")
-    @Override
-    public Map<String, Object> login(Map<String, Object> requestMap) {
-        String username = MapUtils.getString(requestMap, "username");
-        // 查询代理商信息
-        LambdaQueryWrapper<SysAgent> warapper = new LambdaQueryWrapper<>();
-        warapper.eq(SysAgent::getUsername, username);
-        SysAgent sysAgent = sysAgentMapper.selectOne(warapper);
+  @Autowired SysAgentMapper sysAgentMapper;
+  @Autowired private MemberMapper memberMapper;
+  @Autowired private CustomerIdentityMapper customerIdentityMapper;
 
-        // TODO 判断是否是代理商员工
-        if(sysAgent == null){
-            throw new BusinessException(ResponseCode.SYS_AGENT_NOT_EXISTS);
-        }
-        LoginUser loginUser = new LoginUser();
-        BeanUtil.copyProperties(sysAgent, loginUser);
+  @DubboReference(version = "${dubbo.provider.version}")
+  private DisTeamRelationService disTeamRelationService;
 
-        // 查询upms用户
-        Map res = new HashMap<>();
-        loginUser.setUsername(sysAgent.getUsername());
-        loginUser.setPhone(sysAgent.getPhone());
-        loginUser.setBizRoleTypeNo(sysAgent.getSerialNo());
-        loginUser.setBizRoleType(BizRoleType.SYS_AGENT.getCode());
-        String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
-        res.put("sysAgentInfo",sysAgent);
-        res.put("token",token);
-        // 查询商户信息
-        return res;
+  @ApiDoc(desc = "login")
+  @ShenyuDubboClient("/login")
+  @Override
+  public Map<String, Object> login(Map<String, Object> requestMap) {
+    String username = MapUtils.getString(requestMap, "username");
+    // 查询代理商信息
+    LambdaQueryWrapper<SysAgent> warapper = new LambdaQueryWrapper<>();
+    warapper.eq(SysAgent::getUsername, username);
+    SysAgent sysAgent = sysAgentMapper.selectOne(warapper);
+
+    // TODO 判断是否是代理商员工
+    if (sysAgent == null) {
+      throw new BusinessException(ResponseCode.SYS_AGENT_NOT_EXISTS);
+    }
+    LoginUser loginUser = new LoginUser();
+    BeanUtil.copyProperties(sysAgent, loginUser);
+
+    // 查询upms用户
+    Map res = new HashMap<>();
+    loginUser.setUsername(sysAgent.getUsername());
+    loginUser.setPhone(sysAgent.getPhone());
+    loginUser.setBizRoleTypeNo(sysAgent.getSerialNo());
+    loginUser.setBizRoleType(BizRoleType.SYS_AGENT.getCode());
+    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
+    res.put("sysAgentInfo", sysAgent);
+    res.put("token", token);
+    // 查询商户信息
+    return res;
+  }
+
+  /** 开通代理商 */
+  @ApiDoc(desc = "openSysAgent")
+  @ShenyuDubboClient("/openSysAgent")
+  @Override
+  public SysAgent openSysAgent(Map<String, Object> requestMap) {
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+    SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
+    if (sysAgent.getTenantId() == null) {
+      sysAgent.setTenantId(loginUser.getTenantId());
+      if (sysAgent.getTenantId() == null) {
+        throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
+      }
+    }
+    String customerNo = (String) requestMap.get("customerNo");
+    if (customerNo == null) {
+      customerNo = loginUser.getCustomerNo();
+      if (customerNo == null) {
+        throw new BusinessException(CUSTOMER_NO_IS_NULL);
+      }
+    }
+    String merchantNo = (String) requestMap.get("merchantNo");
+    if (merchantNo == null) {
+      merchantNo = loginUser.getMerchantNo();
+      if (customerNo == null) {
+        throw new BusinessException(MERCHANT_NO_IS_NULL);
+      }
+    }
+    // TODO: 会员挂在商户下，会员
+    Member member =
+        memberMapper.selectOne(
+            new LambdaUpdateWrapper<Member>()
+                .eq(Member::getMerchantNo, merchantNo)
+                .eq(Member::getCustomerNo, customerNo));
+    if (member == null) {
+      throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);
     }
 
-    @ApiDoc(desc = "add")
-    @ShenyuDubboClient("/add")
-    @Override
-    public SysAgent add(Map<String, Object> requestMap) {
-        SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
-        String tenantId = LoginInfoContextHelper.getTenantId();
-        sysAgent.setSerialNo(BsinSnowflake.getId());
-        sysAgent.setTenantId(tenantId);
-        sysAgentMapper.insert(sysAgent);
-        return sysAgent;
+    // 默认密码 = 空
+    //    if (merchant.getPassword() == null) {
+    //      merchant.setMerchantName("123456");
+    //    }
+    // 默认用户名 = admin
+    if (sysAgent.getUsername() == null) {
+      sysAgent.setUsername("admin");
+    }
+    sysAgent.setType(CustomerType.PERSONAL.getCode());
+    sysAgent = addSysAgent(sysAgent, customerNo);
+    return sysAgent;
+  }
+
+  @ApiDoc(desc = "add")
+  @ShenyuDubboClient("/add")
+  @Override
+  public SysAgent add(Map<String, Object> requestMap) {
+    SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
+    String tenantId = LoginInfoContextHelper.getTenantId();
+    sysAgent.setTenantId(tenantId);
+    sysAgent.setType(CustomerType.PERSONAL.getCode());
+    sysAgent = addSysAgent(sysAgent, NULL);
+    return sysAgent;
+  }
+
+  @ApiDoc(desc = "delete")
+  @ShenyuDubboClient("/delete")
+  @Override
+  public void delete(Map<String, Object> requestMap) {
+    String serialNo = MapUtils.getString(requestMap, "serialNo");
+    if (sysAgentMapper.deleteById(serialNo) == 0) {
+      throw new BusinessException(DATA_BASE_UPDATE_FAILED);
+    }
+  }
+
+  @ApiDoc(desc = "edit")
+  @ShenyuDubboClient("/edit")
+  @Override
+  public SysAgent edit(Map<String, Object> requestMap) {
+    SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
+    if (sysAgentMapper.updateById(sysAgent) == 0) {
+      throw new BusinessException(DATA_BASE_UPDATE_FAILED);
+    }
+    return sysAgent;
+  }
+
+  @ApiDoc(desc = "getPageList")
+  @ShenyuDubboClient("/getPageList")
+  @Override
+  public IPage<?> getPageList(Map<String, Object> requestMap) {
+    SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
+    String tenantId = sysAgent.getTenantId();
+    String merchantNo = LoginInfoContextHelper.getMerchantNo();
+    if (tenantId == null) {
+      tenantId = LoginInfoContextHelper.getTenantId();
+    }
+    Object paginationObj = requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj, pagination);
+    Page<SysAgent> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+    LambdaQueryWrapper<SysAgent> warapper = new LambdaQueryWrapper<>();
+    warapper.orderByDesc(SysAgent::getCreateTime);
+    warapper.eq(StringUtils.isNotEmpty(tenantId), SysAgent::getTenantId, tenantId);
+    warapper.eq(
+        StringUtils.isNotEmpty(sysAgent.getBusinessType()),
+        SysAgent::getBusinessType,
+        sysAgent.getBusinessType());
+    warapper.eq(
+        StringUtils.isNotEmpty(sysAgent.getStatus()), SysAgent::getStatus, sysAgent.getStatus());
+    IPage<SysAgent> pageList = sysAgentMapper.selectPage(page, warapper);
+    return pageList;
+  }
+
+  @ApiDoc(desc = "getDetail")
+  @ShenyuDubboClient("/getDetail")
+  @Override
+  public SysAgent getDetail(Map<String, Object> requestMap) {
+    String serialNo = MapUtils.getString(requestMap, "serialNo");
+    SysAgent sysAgent = sysAgentMapper.selectById(serialNo);
+    if (sysAgent == null) {
+      throw new BusinessException(SYS_AGENT_NOT_EXISTS);
+    }
+    return sysAgent;
+  }
+
+  private SysAgent addSysAgent(SysAgent sysAgent, String customerNo) {
+    Map<String, Object> requestMap = new HashMap<>();
+    sysAgent.setSerialNo(BsinSnowflake.getId());
+    if (sysAgent.getUsername() == null) {
+      throw new BusinessException(USER_NAME_ISNULL);
+    }
+    if (sysAgent.getPassword() == null) {
+      throw new BusinessException(PASSWORD_EXISTS);
+    }
+    sysAgent.setSerialNo(BsinSnowflake.getId());
+
+    if (sysAgentMapper.insert(sysAgent) == 0) {
+      throw new BusinessException(ResponseCode.DATA_BASE_UPDATE_FAILED);
+    }
+    // 客户号不为空，则表示是会员申请成为代理商，需要插入客户身份表
+    if (StringUtils.isNotEmpty(customerNo)) {
+      // 身份表: crm_customer_identity插入数据
+      CustomerIdentity customerIdentity = new CustomerIdentity();
+      customerIdentity.setCustomerNo(customerNo);
+      customerIdentity.setTenantId(sysAgent.getTenantId());
+      //      // 默认商户号??
+      //      customerIdentity.setMerchantNo(customerBase.getTenantId());
+      customerIdentity.setName(sysAgent.getUsername());
+      customerIdentity.setUsername(sysAgent.getUsername());
+      customerIdentity.setBizRoleType(BizRoleType.SYS_AGENT.getCode());
+      customerIdentity.setBizRoleTypeNo(sysAgent.getSerialNo());
+      customerIdentityMapper.insert(customerIdentity);
     }
 
-    @ApiDoc(desc = "delete")
-    @ShenyuDubboClient("/delete")
-    @Override
-    public void delete(Map<String, Object> requestMap) {
-        String serialNo = MapUtils.getString(requestMap, "serialNo");
-        sysAgentMapper.deleteById(serialNo);
-    }
+    // 加入分销团队
+    requestMap.put("sysAgentNo", sysAgent.getSerialNo());
+    requestMap.put("tenantId", sysAgent.getTenantId());
+    DisTeamRelation disTeamRelation = disTeamRelationService.add(requestMap);
 
-    @ApiDoc(desc = "edit")
-    @ShenyuDubboClient("/edit")
-    @Override
-    public SysAgent edit(Map<String, Object> requestMap) {
-        return null;
-    }
-
-    @ApiDoc(desc = "getPageList")
-    @ShenyuDubboClient("/getPageList")
-    @Override
-    public IPage<?> getPageList(Map<String, Object> requestMap) {
-        SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
-        String tenantId = sysAgent.getTenantId();
-        String merchantNo = LoginInfoContextHelper.getMerchantNo();
-        if(tenantId == null){
-            tenantId = LoginInfoContextHelper.getTenantId();
-        }
-        Object paginationObj =  requestMap.get("pagination");
-        Pagination pagination = new Pagination();
-        BeanUtil.copyProperties(paginationObj,pagination);
-        Page<SysAgent> page = new Page<>(pagination.getPageNum(),pagination.getPageSize());
-        LambdaQueryWrapper<SysAgent> warapper = new LambdaQueryWrapper<>();
-        warapper.orderByDesc(SysAgent::getCreateTime);
-        warapper.eq(SysAgent::getTenantId, tenantId);
-        warapper.eq(StringUtils.isNotEmpty(sysAgent.getBusinessType()),SysAgent::getBusinessType, sysAgent.getBusinessType());
-        warapper.eq(StringUtils.isNotEmpty(sysAgent.getStatus()),SysAgent::getStatus, sysAgent.getStatus());
-        warapper.eq(StringUtils.isNotEmpty(merchantNo),SysAgent::getSerialNo, merchantNo);
-        IPage<SysAgent> pageList = sysAgentMapper.selectPage(page,warapper);
-        return pageList;
-    }
-
-    @ApiDoc(desc = "getDetail")
-    @ShenyuDubboClient("/getDetail")
-    @Override
-    public SysAgent getDetail(Map<String, Object> requestMap) {
-        String serialNo = MapUtils.getString(requestMap, "serialNo");
-        SysAgent sysAgent = sysAgentMapper.selectById(serialNo);
-        return sysAgent;
-    }
+    return sysAgent;
+  }
 }

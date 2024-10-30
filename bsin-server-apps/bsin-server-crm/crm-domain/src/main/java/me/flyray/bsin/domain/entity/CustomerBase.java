@@ -11,6 +11,7 @@ import java.util.Date;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
+import me.flyray.bsin.domain.enums.CustomerType;
 import me.flyray.bsin.validate.AddGroup;
 
 /**
@@ -28,8 +29,9 @@ public class CustomerBase implements Serializable {
 
     /**
      * 登录名称
+     * 微信等第三方授权等于，用户名可以为空
      */
-    @NotBlank(message = "用户名不能为空！", groups = {AddGroup.class})
+//    @NotBlank(message = "用户名不能为空！", groups = {AddGroup.class})
     private String username;
 
     /**
@@ -47,7 +49,6 @@ public class CustomerBase implements Serializable {
      * 凭据，第三方标识，微信平台的openId
      */
     private String credential;
-
 
     /**
      * 微信平台：登录请求会话key
@@ -107,8 +108,8 @@ public class CustomerBase implements Serializable {
     private String avatar;
 
     /**
-     * 客户角色类型，1.运营平台 2.租户平台 4.代理商 5.租户客户 6.门店 99.无
-     * @see me.flyray.bsin.security.enums.BizRoleType
+     * 客户|租户|商户|代理商类型 0、个人客户 1、企业客户
+     * @see CustomerType
      */
     private String type;
 

@@ -20,5 +20,4 @@ public interface WxPlatformUserTagMapper extends BaseMapper<WxPlatformUserTag> {
 
     List<WxPlatformUserTag> selectByOpenId(String openId);
 
-
 }

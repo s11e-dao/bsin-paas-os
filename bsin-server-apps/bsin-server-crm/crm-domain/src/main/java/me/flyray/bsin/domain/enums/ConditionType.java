@@ -1,34 +1,35 @@
-package me.flyray.bsin.enums;
+package me.flyray.bsin.domain.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * @author bolei
- * @date 2023/8/19
- * @desc 客户类型 0、个人客户 1、商家客户 2、租户(dao)客户
+ * @date 2023/10/18
+ * @desc 1 资产类别；2 成员等级；3 账户
  */
-public enum CustomerType {
+public enum ConditionType {
 
     /**
-     * 个人客户
+     * 资产类别
      */
-    MEMBER("0", "个人客户"),
+    ASSETS("1","资产类别"),
 
     /**
-     * 商家客户
+     * 成员等级
      */
-    MERCHANT("1", "商家客户"),
+    MEMBER_GRADE("2","成员等级"),
 
     /**
-     * 租户(dao)客户
+     * 账户
      */
-    TENANT("2", "租户(dao)客户");
+    ACCOUNT("3","账户");
 
+    // 状态码
     private String code;
-
+    // 状态信息
     private String desc;
 
-    CustomerType(String code, String desc) {
+    ConditionType(String code, String desc) {
         this.code = code;
         this.desc = desc;
     }
@@ -45,11 +46,11 @@ public enum CustomerType {
      * Json 枚举序列化
      */
     @JsonCreator
-    public static CustomerType getInstanceById(String id) {
+    public static ConditionType getInstanceById(String id) {
         if (id == null) {
             return null;
         }
-        for (CustomerType status : values()) {
+        for (ConditionType status : values()) {
             if (id.equals(status.getCode())) {
                 return status;
             }

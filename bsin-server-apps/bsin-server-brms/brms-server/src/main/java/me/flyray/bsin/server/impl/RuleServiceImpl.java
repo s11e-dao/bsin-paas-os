@@ -19,6 +19,7 @@ package me.flyray.bsin.server.impl;
 
 
 import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import me.flyray.bsin.domain.entity.DecisionRule;
 import me.flyray.bsin.domain.entity.EventModel;
 import me.flyray.bsin.facade.service.EventModelService;
@@ -30,6 +31,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
@@ -41,6 +43,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.kie.api.runtime.KieSession;
@@ -50,12 +53,14 @@ import me.flyray.bsin.domain.entity.DubboTest;
 import me.flyray.bsin.facade.service.RuleService;
 import me.flyray.bsin.mq.producer.RocketMQProducer;
 import me.flyray.bsin.utils.BsinResultEntity;
+import org.springframework.stereotype.Service;
 
 /**
  * 规则管理
  */
-@DubboService
-@ApiModule(value = "dubboTestService")
+@ShenyuDubboService(path = "/rule", timeout = 6000)
+@ApiModule(value = "rule")
+@Service
 public class RuleServiceImpl implements RuleService {
 
     @Autowired
@@ -110,6 +115,15 @@ public class RuleServiceImpl implements RuleService {
     }
 
     @Override
+    @ShenyuDubboClient("/getList")
+    @ApiDoc(desc = "getList")
+    public List<DecisionRule> getList(Map<String, Object> requestMap) {
+        String tenantId = MapUtils.getString(requestMap, "tenantId");
+        List<DecisionRule> decisionRuleList = decisionRuleMapper.getDecisionRuleList(tenantId);
+        return decisionRuleList;
+    }
+
+    @Override
     @ShenyuDubboClient("/testRule")
     @ApiDoc(desc = "testRule")
     // @GlobalTransactional
@@ -156,5 +170,7 @@ public class RuleServiceImpl implements RuleService {
 
         return new DubboTest(eventCode, "hello world shenyu Apache, findById");
     }
+
+
 
 }

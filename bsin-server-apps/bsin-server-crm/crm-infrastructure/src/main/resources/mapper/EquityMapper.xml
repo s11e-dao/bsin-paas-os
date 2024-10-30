@@ -19,7 +19,7 @@
             <result property="totalAmount" column="total_amount" jdbcType="DECIMAL"/>
             <result property="amount" column="amount" jdbcType="DECIMAL"/>
             <result property="equityRelationshipNo" column="equity_relationship_no" jdbcType="VARCHAR"/>
-            <result property="overFlag" column="over_flag" jdbcType="TINYINT"/>
+            <result property="overFlag" column="over_flag" jdbcType="VARCHAR"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 

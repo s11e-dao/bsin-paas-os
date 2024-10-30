@@ -2,26 +2,19 @@ package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.Merchant;
-import me.flyray.bsin.domain.entity.BizRoleSubscribeJournal;
-import me.flyray.bsin.domain.entity.SysUser;
-import me.flyray.bsin.domain.enums.AuthenticationStatus;
-import me.flyray.bsin.domain.enums.BusinessModel;
-import me.flyray.bsin.domain.enums.MerchantStatus;
-import me.flyray.bsin.domain.enums.StoreType;
+import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.enums.*;
 import me.flyray.bsin.domain.request.SysUserDTO;
-import me.flyray.bsin.domain.request.WalletDTO;
 import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.*;
-import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
-import me.flyray.bsin.infrastructure.mapper.MerchantMapper;
-import me.flyray.bsin.infrastructure.mapper.MerchantSubscribeJournalMapper;
+import me.flyray.bsin.infrastructure.mapper.*;
 import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
@@ -46,6 +39,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static ch.qos.logback.core.joran.action.ActionConst.NULL;
+import static me.flyray.bsin.constants.ResponseCode.*;
+
 /**
  * @author bolei
  * @date 2023/6/28 16:41
@@ -63,9 +59,10 @@ public class MerchantServiceImpl implements MerchantService {
   @Value("${bsin.security.authentication-expiration}")
   private int authExpiration;
 
-  @Autowired private CustomerBaseMapper customerBaseMapper;
   @Autowired public MerchantMapper merchantMapper;
+  @Autowired private CustomerIdentityMapper customerIdentityMapper;
   @Autowired public MerchantSubscribeJournalMapper merchantSubscribeJournalMapper;
+  @Autowired private MemberMapper memberMapper;
 
   @DubboReference(version = "${dubbo.provider.version}")
   private CustomerService customerService;
@@ -117,27 +114,8 @@ public class MerchantServiceImpl implements MerchantService {
       registerNotNeedAudit = Boolean.parseBoolean(registerNotNeedAuditStr);
     }
 
-    merchant.setSerialNo(BsinSnowflake.getId());
-    // 调用upms的商户授权功能，添加权限用户同时开通基础功能, 审核需传商户使用的产品ID
-    // 查询出商户信息
-    // TODO 先检查支付订单是否存在
-    requestMap.put("tenantId", merchant.getTenantId());
-    requestMap.put("username", merchant.getUsername());
-    requestMap.put("merchantName", merchant.getMerchantName());
-    requestMap.put("merchantNo", merchant.getSerialNo());
-    SysUserDTO sysUserDTO = new SysUserDTO();
-    BeanUtil.copyProperties(requestMap, sysUserDTO);
-    userService.addMerchantOrStoreUser(sysUserDTO);
-    if (registerNotNeedAudit) {
-      merchant.setAuthenticationStatus(AuthenticationStatus.CERTIFIED.getCode());
-      merchant.setStatus(MerchantStatus.NORMAL.getCode());
-    }
-    // 普通注册逻辑
-    else {
-      merchant.setAuthenticationStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
-      merchant.setStatus(MerchantStatus.TOBE_CERTIFIED.getCode());
-    }
-    merchantMapper.insert(merchant);
+    merchant.setType(CustomerType.PERSONAL.getCode());
+    addMerchant(merchant, registerNotNeedAudit, NULL);
   }
 
   /**
@@ -208,10 +186,10 @@ public class MerchantServiceImpl implements MerchantService {
     Merchant merchantReq = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
     Merchant merchant = merchantMapper.selectById(merchantNo);
     // 更新商户状态
-    merchantReq.setAuthenticationStatus("1");
+    merchantReq.setAuthenticationStatus(AuthenticationStatus.CERTIFIED.getCode());
     merchantReq.setDelFlag("0");
     merchantReq.setCreateTime(new Date());
-    merchantReq.setStatus("2");
+    merchantReq.setStatus(MerchantStatus.NORMAL.getCode());
     merchantReq.setSerialNo(merchant.getSerialNo());
     merchantMapper.updateById(merchantReq);
   }
@@ -282,6 +260,74 @@ public class MerchantServiceImpl implements MerchantService {
     }
   }
 
+  /** 会员申请入住商户 */
+  @ApiDoc(desc = "openMerchant")
+  @ShenyuDubboClient("/openMerchant")
+  @Override
+  public Merchant openMerchant(Map<String, Object> requestMap) {
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+    Merchant merchant = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
+    if (merchant.getTenantId() == null) {
+      merchant.setTenantId(loginUser.getTenantId());
+      if (merchant.getTenantId() == null) {
+        throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
+      }
+    }
+    String customerNo = (String) requestMap.get("customerNo");
+    if (customerNo == null) {
+      customerNo = loginUser.getCustomerNo();
+      if (customerNo == null) {
+        throw new BusinessException(CUSTOMER_NO_IS_NULL);
+      }
+    }
+    // TODO: 如何获取客户的会员的商户 ID????
+    //    String merchantNo = (String) requestMap.get("merchantNo");
+    //    if (merchantNo == null) {
+    //      merchantNo = loginUser.getMerchantNo();
+    //      if (merchantNo == null) {
+    //        throw new BusinessException(MERCHANT_NO_IS_NULL);
+    //      }
+    //    }
+    // TODO: 会员挂在默认商户下： jiujiu 商户 会员
+    Member member =
+        memberMapper.selectOne(
+            new LambdaUpdateWrapper<Member>()
+                //                .eq(Member::getMerchantNo, merchantNo)
+                .eq(Member::getCustomerNo, customerNo));
+    if (member == null) {
+      throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);
+    }
+
+    // 默认密码 = 空
+    //    if (merchant.getPassword() == null) {
+    //      merchant.setMerchantName("123456");
+    //    }
+    // 默认用户名 = admin
+    if (merchant.getUsername() == null) {
+      merchant.setUsername("admin");
+    }
+    merchant.setType(CustomerType.PERSONAL.getCode());
+    merchant = addMerchant(merchant, true, customerNo);
+    return merchant;
+  }
+
+  @ApiDoc(desc = "add")
+  @ShenyuDubboClient("/add")
+  @Override
+  public Merchant add(Map<String, Object> requestMap) {
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+    Merchant merchant = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
+    if (merchant.getTenantId() == null) {
+      merchant.setTenantId(loginUser.getTenantId());
+      if (merchant.getTenantId() == null) {
+        throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
+      }
+    }
+    merchant.setType(CustomerType.PERSONAL.getCode());
+    merchant = addMerchant(merchant, true, NULL);
+    return merchant;
+  }
+
   @ApiDoc(desc = "delete")
   @ShenyuDubboClient("/delete")
   @Override
@@ -293,8 +339,17 @@ public class MerchantServiceImpl implements MerchantService {
   @ApiDoc(desc = "edit")
   @ShenyuDubboClient("/edit")
   @Override
-  public Map<String, Object> edit(Map<String, Object> requestMap) {
-    return null;
+  public Merchant edit(Map<String, Object> requestMap) {
+    String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+    Merchant merchant = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
+    if (merchantNo == null) {
+      merchantNo = LoginInfoContextHelper.getCustomerNo();
+      if (merchantNo == null) {
+        throw new BusinessException(MERCHANT_NOT_EXISTS);
+      }
+    }
+    merchantMapper.updateById(merchant);
+    return merchant;
   }
 
   /**
@@ -388,5 +443,53 @@ public class MerchantServiceImpl implements MerchantService {
     }
     List<Merchant> merchantList = merchantMapper.selectBatchIds(merchantNos);
     return merchantList;
+  }
+
+  private Merchant addMerchant(Merchant merchant, boolean registerNotNeedAudit, String customerNo) {
+    Map<String, Object> requestMap = new HashMap<>();
+    merchant.setSerialNo(BsinSnowflake.getId());
+    if (merchant.getUsername() == null) {
+      throw new BusinessException(USER_NAME_ISNULL);
+    }
+    if (merchant.getPassword() == null) {
+      throw new BusinessException(PASSWORD_EXISTS);
+    }
+    // 调用upms的商户授权功能，添加权限用户同时开通基础功能, 审核需传商户使用的产品ID
+    // 查询出商户信息
+    // TODO 先检查支付订单是否存在
+    requestMap.put("tenantId", merchant.getTenantId());
+    requestMap.put("username", merchant.getUsername());
+    requestMap.put("merchantName", merchant.getMerchantName());
+    requestMap.put("merchantNo", merchant.getSerialNo());
+    SysUserDTO sysUserDTO = new SysUserDTO();
+    BeanUtil.copyProperties(requestMap, sysUserDTO);
+    userService.addMerchantOrStoreUser(sysUserDTO);
+    if (registerNotNeedAudit) {
+      merchant.setAuthenticationStatus(AuthenticationStatus.CERTIFIED.getCode());
+      merchant.setStatus(MerchantStatus.NORMAL.getCode());
+    }
+    // 普通注册逻辑
+    else {
+      merchant.setAuthenticationStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
+      merchant.setStatus(MerchantStatus.TOBE_CERTIFIED.getCode());
+    }
+    if (merchantMapper.insert(merchant) == 0) {
+      throw new BusinessException(ResponseCode.DATA_BASE_UPDATE_FAILED);
+    }
+    // 客户号不为空，则表示是会员申请成为商户(团长)，需要插入客户身份表
+    if (StringUtils.isNotEmpty(customerNo)) {
+      // 身份表: crm_customer_identity插入数据
+      CustomerIdentity customerIdentity = new CustomerIdentity();
+      customerIdentity.setCustomerNo(customerNo);
+      customerIdentity.setTenantId(merchant.getTenantId());
+      //      // 默认商户号??
+      //      customerIdentity.setMerchantNo(customerBase.getTenantId());
+      customerIdentity.setName(merchant.getUsername());
+      customerIdentity.setUsername(merchant.getUsername());
+      customerIdentity.setBizRoleType(BizRoleType.MERCHANT.getCode());
+      customerIdentity.setBizRoleTypeNo(merchant.getSerialNo());
+      customerIdentityMapper.insert(customerIdentity);
+    }
+    return merchant;
   }
 }

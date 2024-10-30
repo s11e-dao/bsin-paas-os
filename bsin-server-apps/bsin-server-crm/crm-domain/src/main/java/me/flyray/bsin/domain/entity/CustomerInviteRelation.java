@@ -19,6 +19,8 @@ public class CustomerInviteRelation {
     @TableId(type = IdType.ASSIGN_ID)
     private String serialNo;
 
+    private String tenantId;
+
     /**
      * 被邀请的客户号
      */

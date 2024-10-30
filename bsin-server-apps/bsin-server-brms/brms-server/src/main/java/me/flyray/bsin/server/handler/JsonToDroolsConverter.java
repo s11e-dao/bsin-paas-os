@@ -76,7 +76,7 @@ public class JsonToDroolsConverter {
                     droolsContent.append("    System.out.println(\"").append(message).append("\");\n");
                 } else if (actionType.equals("dubboInvoke")) {
                     // TODO dubbo泛化调用，处理命中后逻辑
-
+                    // 当前的设计无需将执行的动作解析为drools的执行文件
                 }
             }
 

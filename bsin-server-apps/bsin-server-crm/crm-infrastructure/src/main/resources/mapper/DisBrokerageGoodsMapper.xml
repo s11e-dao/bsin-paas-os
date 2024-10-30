@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.DisBrokerageGoodsMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.DisBrokerageGoods">
+            <id property="serialNo" column="serial_no" jdbcType="INTEGER"/>
+            <result property="goodsCategoryNo" column="goods_category_no" jdbcType="VARCHAR"/>
+            <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+            <result property="brokerageRuleNo" column="brokerage_rule_no" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,goods_category_no,merchant_no,
+        brokerage_rule_no,del_flag,create_time,
+        update_time
+    </sql>
+</mapper>

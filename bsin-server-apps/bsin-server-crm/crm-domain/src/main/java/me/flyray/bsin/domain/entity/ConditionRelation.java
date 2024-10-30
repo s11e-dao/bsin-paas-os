@@ -34,6 +34,7 @@ public class ConditionRelation implements Serializable {
 
     /**
      * 条件类型：1 资产类别；2 成员等级；3 账户
+     * @see ConditionType
      */
     private String type;
 

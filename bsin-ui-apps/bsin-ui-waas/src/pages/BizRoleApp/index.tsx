@@ -66,6 +66,22 @@ export default () => {
   // 操作行数据 自定义操作行
   const actionRender: any = (text: any, record: any, index: number) => (
     <div key={record.dictType}>
+      <a
+        onClick={() => {
+          handleEditModel(record);
+        }}
+      >
+        支付配置
+      </a>
+      <Divider type="vertical" />
+      <a
+        onClick={() => {
+          handleEditModel(record);
+        }}
+      >
+        应用配置
+      </a>
+      <Divider type="vertical" />
       <a onClick={() => toViewContractTemplate(record)}>查看</a>
       <Divider type="vertical" />
       <a
@@ -126,7 +142,7 @@ export default () => {
         if (addModalTitle === '新增') {
           addBizRoleApp(reqParam).then((res) => {
             console.log('add', res);
-            if (res.code === '000000') {
+            if (res.code === '000000' || res.code === 0) {
               message.success('添加成功');
               // 重置输入的表单
               FormRef.resetFields();
@@ -141,7 +157,7 @@ export default () => {
           reqParam.serialNo = checkItem.serialNo;
           addBizRoleApp(reqParam).then((res) => {
             console.log('add', res);
-            if (res.code === '000000') {
+            if (res.code === '000000' || res.code === 0) {
               message.success('修改成功');
               // 重置输入的表单
               FormRef.resetFields();
@@ -183,7 +199,7 @@ export default () => {
     let { serialNo } = record;
     let delRes = await deleteBizRoleApp({ serialNo });
     console.log('delRes', delRes);
-    if (delRes.code === '000000') {
+    if (delRes.code === '000000' || delRes.code === 0) {
       // 删除成功刷新表单
       actionRef.current?.reload();
     }
@@ -368,9 +384,9 @@ export default () => {
           </Form.Item>
 
           <Form.Item
-              label="toeken"
-              name="toeken"
-              rules={[{ required: true, message: '请输入toeken!' }]}
+              label="token"
+              name="token"
+              rules={[{ required: true, message: '请输入token!' }]}
           >
             <Input />
           </Form.Item>
@@ -425,7 +441,7 @@ export default () => {
             {isViewRecord?.tenantId}
           </Descriptions.Item>
           <Descriptions.Item label="商户号">
-            {isViewRecord?.merchantNo}
+            {isViewRecord?.bizRoleTypeNo}
           </Descriptions.Item>
           <Descriptions.Item label="应用名称">
             {isViewRecord?.appName}

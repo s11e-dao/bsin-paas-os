@@ -112,7 +112,7 @@ export default ({ setCurrentContent, record }) => {
         response.category = conditionCategory;
         configCondition(response).then((res) => {
           console.log('add', res);
-          if (res.code === '000000') {
+          if (res.code === '000000' || res.code === 0) {
             // 重置输入的表单
             FormRef.resetFields();
             // 刷新proTable

@@ -92,7 +92,7 @@ public class Equity implements Serializable {
     /**
      * 叠加使用标识(1:是,2:否)
      */
-    private Integer overFlag;
+    private String overFlag;
 
     /**
      * 备注

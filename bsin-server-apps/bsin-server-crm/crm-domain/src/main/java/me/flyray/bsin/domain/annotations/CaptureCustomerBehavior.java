@@ -12,7 +12,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import me.flyray.bsin.domain.enums.BehaviorCode;
-import me.flyray.bsin.enums.CustomerType;
+import me.flyray.bsin.domain.enums.CustomerType;
 
 /**
  * 记录操作日志注解
@@ -27,7 +27,7 @@ public @interface CaptureCustomerBehavior {
      * 客户类型
      * @return
      */
-    CustomerType customerType() default CustomerType.MEMBER;
+    CustomerType customerType() default CustomerType.ENTERPRISE;
 
     /**
      * 行为编号

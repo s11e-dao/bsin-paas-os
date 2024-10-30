@@ -13,7 +13,7 @@ shenyu:
     serverLists: http://127.0.0.1:9095 #localhost:2181 #http://localhost:2379 #localhost:8848
     props:
       username: admin
-      password: 123456
+      password: 123456_Aa
   client:
     dubbo:
       props:
@@ -57,7 +57,11 @@ wx:
         secret: 1111
         token: 111
         aesKey: 111
-
+  config-storage:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: 123456
 --- # redis 单机配置(单机与集群只能开启一个另一个需要注释掉)
 spring:
   redis:

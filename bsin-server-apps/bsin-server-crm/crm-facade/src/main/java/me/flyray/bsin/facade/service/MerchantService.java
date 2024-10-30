@@ -48,6 +48,16 @@ public interface MerchantService {
     public void subscribeFunction(Map<String, Object> requestMap);
 
     /**
+     * 会员申请入住商户
+     */
+    public Merchant openMerchant(Map<String, Object> requestMap);
+
+    /**
+     * 添加商户
+     */
+    public Merchant add(Map<String, Object> requestMap);
+
+    /**
      * 删除商户
      */
     public void delete(Map<String, Object> requestMap);
@@ -55,7 +65,7 @@ public interface MerchantService {
     /**
      * 修改商户
      */
-    public Map<String, Object> edit(Map<String, Object> requestMap);
+    public Merchant edit(Map<String, Object> requestMap);
 
     /**
      * PC 管理后台查询

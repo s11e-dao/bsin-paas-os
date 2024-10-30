@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.DisInviteRelationMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.DisInviteRelation">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <id property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+            <result property="parentNo" column="parent_no" jdbcType="VARCHAR"/>
+            <result property="inviteLevel" column="invite_level" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,tenant_id,customer_no,parent_no,
+        invite_level,create_time
+    </sql>
+</mapper>

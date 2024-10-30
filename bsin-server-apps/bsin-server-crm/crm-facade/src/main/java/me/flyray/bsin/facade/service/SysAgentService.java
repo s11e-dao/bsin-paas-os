@@ -21,6 +21,11 @@ public interface SysAgentService {
     public Map<String, Object> login(Map<String, Object> requestMap);
 
     /**
+     * 开通代理商
+     */
+    public SysAgent openSysAgent(Map<String, Object> requestMap);
+
+    /**
      * 添加
      */
     public SysAgent add(Map<String, Object> requestMap);

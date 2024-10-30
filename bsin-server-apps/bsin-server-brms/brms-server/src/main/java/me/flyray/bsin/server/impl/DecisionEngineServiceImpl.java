@@ -6,7 +6,7 @@ import me.flyray.bsin.domain.entity.DecisionRule;
 import me.flyray.bsin.domain.entity.EventModel;
 import me.flyray.bsin.domain.request.ExecuteParams;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.DecisionEngineService;
+import me.flyray.bsin.facade.engine.DecisionEngine;
 import me.flyray.bsin.facade.service.EventModelService;
 import me.flyray.bsin.infrastructure.mapper.DecisionRuleMapper;
 import me.flyray.bsin.server.context.DubboHelper;
@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ShenyuDubboService(value = "/decisionEngine",timeout = 20000)
-public class DecisionEngineServiceImpl implements DecisionEngineService {
+public class DecisionEngineServiceImpl implements DecisionEngine {
 
     @Autowired
     private DecisionEngineContextBuilder decisionEngineContextBuilder;

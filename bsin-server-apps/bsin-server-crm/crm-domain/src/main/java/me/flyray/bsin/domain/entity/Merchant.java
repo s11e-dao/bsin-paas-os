@@ -10,6 +10,8 @@ import java.util.Date;
 
 import lombok.Data;
 import me.flyray.bsin.domain.enums.AuthenticationStatus;
+import me.flyray.bsin.domain.enums.CustomerType;
+import me.flyray.bsin.domain.enums.MerchantStatus;
 
 /**
  * 
@@ -88,11 +90,14 @@ public class Merchant implements Serializable {
 
     /**
      * 状态：0 正常 1 冻结 2 待审核
+     * @see MerchantStatus
      */
     private String status;
 
+
     /**
-     *  商户类型：1、个人客户 2、企业客户
+     * 客户|租户|商户|代理商类型 0、个人客户 1、企业客户
+     * @see CustomerType
      */
     private String type;
 
