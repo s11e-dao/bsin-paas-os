@@ -44,12 +44,10 @@ public class LoginInfoContextHelper {
     }
 
     public static String getTenantId() {
-        Assert.notNull(getLoginUser().getTenantId(), "tenantId is null");
         return getLoginUser().getTenantId();
     }
 
     public static String getBizRoleType() {
-        Assert.notNull(getLoginUser().getBizRoleType(), "bizRoleType is null");
         return getLoginUser().getBizRoleType();
     }
 
@@ -62,11 +60,9 @@ public class LoginInfoContextHelper {
     }
 
     public static String getCustomerType() {
-        Assert.notNull(getLoginUser().getCustomerType(), "customerType is null");
         return getLoginUser().getCustomerType();
     }
     public static String getStoreNo(){
-        Assert.notNull(getLoginUser().getStoreNo(), "storeNo is null");
         return getLoginUser().getStoreNo();
     }
 
@@ -80,7 +76,6 @@ public class LoginInfoContextHelper {
     }
 
     public static String getAppId() {
-        Assert.notNull(getLoginUser().getAppId(), "appId is null");
         return getLoginUser().getAppId();
     }
 
