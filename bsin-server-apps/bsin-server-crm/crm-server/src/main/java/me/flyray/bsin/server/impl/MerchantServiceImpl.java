@@ -195,9 +195,11 @@ public class MerchantServiceImpl implements MerchantService {
   }
 
   /**
+   * 
    * 1、更新商户信息
    * 2、开通商户钱包（开通钱包标识）
    * 3、默认开通总店
+   *
    * @param requestMap
    * @return
    */
@@ -281,19 +283,12 @@ public class MerchantServiceImpl implements MerchantService {
         throw new BusinessException(CUSTOMER_NO_IS_NULL);
       }
     }
-    // TODO: 如何获取客户的会员的商户 ID????
-    //    String merchantNo = (String) requestMap.get("merchantNo");
-    //    if (merchantNo == null) {
-    //      merchantNo = loginUser.getMerchantNo();
-    //      if (merchantNo == null) {
-    //        throw new BusinessException(MERCHANT_NO_IS_NULL);
-    //      }
-    //    }
-    // TODO: 会员挂在默认商户下： jiujiu 商户 会员
+    // 会员所属商户包含在 loginUser.getMerchantNo
     Member member =
         memberMapper.selectOne(
             new LambdaUpdateWrapper<Member>()
-                //                .eq(Member::getMerchantNo, merchantNo)
+                .eq(Member::getTenantId, loginUser.getTenantId())
+                .eq(Member::getMerchantNo, loginUser.getMerchantNo())
                 .eq(Member::getCustomerNo, customerNo));
     if (member == null) {
       throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);

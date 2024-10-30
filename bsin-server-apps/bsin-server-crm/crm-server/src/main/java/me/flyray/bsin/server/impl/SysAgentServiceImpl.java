@@ -121,11 +121,12 @@ public class SysAgentServiceImpl implements SysAgentService {
         throw new BusinessException(MERCHANT_NO_IS_NULL);
       }
     }
-    // TODO: 会员挂在商户下，会员
+    // 会员所属商户包含在 loginUser.getMerchantNo
     Member member =
         memberMapper.selectOne(
             new LambdaUpdateWrapper<Member>()
-                .eq(Member::getMerchantNo, merchantNo)
+                .eq(Member::getTenantId, loginUser.getTenantId())
+                .eq(Member::getMerchantNo, loginUser.getMerchantNo())
                 .eq(Member::getCustomerNo, customerNo));
     if (member == null) {
       throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);

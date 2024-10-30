@@ -64,6 +64,7 @@ public class MemberServiceImpl implements MemberService {
   @ShenyuDubboClient("/openMember")
   @Override
   public Member openMember(Map<String, Object> requestMap) {
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
     if (member.getCustomerNo() == null) {
       throw new BusinessException(CUSTOMER_NO_NOT_ISNULL);
@@ -81,23 +82,15 @@ public class MemberServiceImpl implements MemberService {
     if (!memberMapper.exists(
         new LambdaUpdateWrapper<Member>()
             .eq(Member::getTenantId, member.getTenantId())
-            .eq(
-                ObjectUtils.isNotEmpty(member.getMerchantNo()),
-                Member::getMerchantNo,
-                member.getMerchantNo())
+            .eq(Member::getMerchantNo, loginUser.getMerchantNo())
             .eq(Member::getCustomerNo, member.getCustomerNo()))) {
-
-      // TODO： 支付成功回调插入会员数据
-      // memberMapper.insert(member);
+      memberMapper.insert(member);
     } else {
       member =
           memberMapper.selectOne(
               new LambdaUpdateWrapper<Member>()
                   .eq(Member::getTenantId, member.getTenantId())
-                  .eq(
-                      ObjectUtils.isNotEmpty(member.getMerchantNo()),
-                      Member::getMerchantNo,
-                      member.getMerchantNo())
+                  .eq(Member::getMerchantNo, loginUser.getMerchantNo())
                   .eq(Member::getCustomerNo, member.getCustomerNo()));
     }
     return member;

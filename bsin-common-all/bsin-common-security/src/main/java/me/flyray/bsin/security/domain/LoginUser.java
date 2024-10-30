@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import lombok.Data;
 import me.flyray.bsin.security.enums.BizRoleType;
+import me.flyray.bsin.security.enums.TenantMemberModel;
 
 /**
  * @author HLW
@@ -49,6 +50,7 @@ public class LoginUser implements Serializable {
 
     /**
      * platform: 接入平台的会员模型：1 租户直属会员 2 商户直属会员
+     * @see TenantMemberModel
      */
     private String memberModel;
 

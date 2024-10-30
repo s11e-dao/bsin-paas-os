@@ -15,6 +15,7 @@ import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.AccountCategory;
+import me.flyray.bsin.domain.enums.CustomerType;
 import me.flyray.bsin.enums.AuthMethod;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.response.CustomerAccountVO;
@@ -26,6 +27,7 @@ import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.security.enums.BizRoleType;
+import me.flyray.bsin.security.enums.TenantMemberModel;
 import me.flyray.bsin.server.biz.AccountBiz;
 import me.flyray.bsin.server.biz.CustomerBiz;
 import me.flyray.bsin.server.controller.WxPortalController;
@@ -107,7 +109,6 @@ public class CustomerServiceImpl implements CustomerService {
   private CustomerPassCardService customerPassCardService;
 
   /**
-   *
    * @param requestMap
    * @return
    */
@@ -117,11 +118,8 @@ public class CustomerServiceImpl implements CustomerService {
   public Map<String, Object> login(Map<String, Object> requestMap) {
     CustomerBase customerBaseReq = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
     CustomerBase customerInfo = customerBiz.login(customerBaseReq);
-    Member member = memberMapper.selectOne(
-            new LambdaQueryWrapper<Member>()
-                .eq(Member::getTenantId, customerInfo.getTenantId())
-                .eq(Member::getCustomerNo, customerInfo.getCustomerNo()));
-
+    // 非平台直属商户会员模型登录需要  merchantNo 字段
+    String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     LoginUser loginUser = new LoginUser();
     loginUser.setTenantId(customerInfo.getTenantId());
     loginUser.setUsername(customerInfo.getUsername());
@@ -130,18 +128,33 @@ public class CustomerServiceImpl implements CustomerService {
     loginUser.setBizRoleType(BizRoleType.CUSTOMER.getCode());
     loginUser.setBizRoleTypeNo(customerInfo.getCustomerNo());
     // 平台会员模型
-    Platform platform = platformMapper.selectOne(
+    Platform platform =
+        platformMapper.selectOne(
             new LambdaQueryWrapper<Platform>()
-                    .eq(Platform::getTenantId, customerInfo.getTenantId()));
+                .eq(Platform::getTenantId, customerInfo.getTenantId()));
     loginUser.setMemberModel(platform.getMemberModel());
     // 查询租户的默认直属商户号
-    Merchant merchant = merchantMapper.selectOne(
-                    new LambdaQueryWrapper<Merchant>()
-                            .eq(Merchant::getTenantId, customerInfo.getTenantId())
-                            .eq(Merchant::getType, 99));
+    Merchant merchant =
+        merchantMapper.selectOne(
+            new LambdaQueryWrapper<Merchant>()
+                .eq(Merchant::getTenantId, customerInfo.getTenantId())
+                .eq(Merchant::getType, CustomerType.UNDER_TENANT_MEMBER.getCode()));
     loginUser.setTenantMerchantNo(merchant.getSerialNo());
-    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
 
+    if (TenantMemberModel.UNDER_TENANT.getCode().equals(platform.getMemberModel())) {
+      loginUser.setMerchantNo(merchant.getSerialNo());
+    } else {
+      loginUser.setMerchantNo(merchantNo);
+    }
+
+    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
+    // 查询会员信息
+    Member member =
+        memberMapper.selectOne(
+            new LambdaQueryWrapper<Member>()
+                .eq(Member::getTenantId, customerInfo.getTenantId())
+                .eq(Member::getMerchantNo, loginUser.getMerchantNo())
+                .eq(Member::getCustomerNo, customerInfo.getCustomerNo()));
     // 查新询客户身份信息
     List<CustomerIdentity> identityList =
         customerBiz.getCustomerIdentityList(customerInfo.getCustomerNo());
@@ -169,6 +182,8 @@ public class CustomerServiceImpl implements CustomerService {
     String bizRoleType = MapUtils.getString(requestMap, "bizRoleType");
     String username = MapUtils.getString(requestMap, "username");
     String customerNo = MapUtils.getString(requestMap, "customerNo");
+    // 非平台直属商户会员模型登录需要  merchantNo 字段
+    String merchantNo = MapUtils.getString(requestMap, "merchantNo");
 
     LoginUser loginUser = new LoginUser();
     if (BizRoleType.CUSTOMER.getCode().equals(bizRoleType)) {}
@@ -222,22 +237,31 @@ public class CustomerServiceImpl implements CustomerService {
     loginUser.setBizRoleType(bizRoleType);
     loginUser.setBizRoleTypeNo(bizRoleTypeNo);
     // 平台会员模型
-    Platform platform = platformMapper.selectOne(
+    Platform platform =
+        platformMapper.selectOne(
             new LambdaQueryWrapper<Platform>()
-                    .eq(Platform::getTenantId, customerInfo.getTenantId()));
+                .eq(Platform::getTenantId, customerInfo.getTenantId()));
     loginUser.setMemberModel(platform.getMemberModel());
     // 查询租户的默认直属商户号
-    Merchant merchant = merchantMapper.selectOne(
+    Merchant merchant =
+        merchantMapper.selectOne(
             new LambdaQueryWrapper<Merchant>()
-                    .eq(Merchant::getTenantId, customerInfo.getTenantId())
-                    .eq(Merchant::getType, 99));
+                .eq(Merchant::getTenantId, customerInfo.getTenantId())
+                .eq(Merchant::getType, CustomerType.UNDER_TENANT_MEMBER.getCode()));
     loginUser.setTenantMerchantNo(merchant.getSerialNo());
+    if (TenantMemberModel.UNDER_TENANT.getCode().equals(platform.getMemberModel())) {
+      loginUser.setMerchantNo(merchant.getSerialNo());
+    } else {
+      loginUser.setMerchantNo(merchantNo);
+    }
     String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
 
+    // 查询会员信息
     Member member =
         memberMapper.selectOne(
             new LambdaUpdateWrapper<Member>()
                 .eq(Member::getTenantId, loginOrinUser.getTenantId())
+                .eq(Member::getMerchantNo, loginUser.getMerchantNo())
                 .eq(Member::getCustomerNo, loginOrinUser.getCustomerNo()));
     // 查新询客户身份信息
     List<CustomerIdentity> identityList = customerBiz.getCustomerIdentityList(customerNo);
@@ -307,13 +331,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
     customerBase.setCredential(openId);
     CustomerBase customerBaseRegister = customerBiz.register(customerBase);
-    // 查询是否是jiujiu的会员 ??????
-    Member member =
-        memberMapper.selectOne(
-            new LambdaUpdateWrapper<Member>()
-                .eq(Member::getTenantId, customerBaseRegister.getTenantId())
-                .eq(Member::getMerchantNo, merchantNo)
-                .eq(Member::getCustomerNo, customerBaseRegister.getCustomerNo()));
 
     LoginUser loginUser = new LoginUser();
     loginUser.setTenantId(customerBaseRegister.getTenantId());
@@ -322,6 +339,24 @@ public class CustomerServiceImpl implements CustomerService {
     loginUser.setCustomerNo(customerBaseRegister.getCustomerNo());
     loginUser.setBizRoleType(BizRoleType.CUSTOMER.getCode());
     loginUser.setBizRoleTypeNo(customerBaseRegister.getCustomerNo());
+    // 平台会员模型
+    Platform platform =
+        platformMapper.selectOne(
+            new LambdaQueryWrapper<Platform>()
+                .eq(Platform::getTenantId, customerBaseRegister.getTenantId()));
+    loginUser.setMemberModel(platform.getMemberModel());
+    // 查询租户的默认直属商户号
+    Merchant merchant =
+        merchantMapper.selectOne(
+            new LambdaQueryWrapper<Merchant>()
+                .eq(Merchant::getTenantId, customerBaseRegister.getTenantId())
+                .eq(Merchant::getType, CustomerType.UNDER_TENANT_MEMBER.getCode()));
+    loginUser.setTenantMerchantNo(merchant.getSerialNo());
+    if (TenantMemberModel.UNDER_TENANT.getCode().equals(platform.getMemberModel())) {
+      loginUser.setMerchantNo(merchant.getSerialNo());
+    } else {
+      loginUser.setMerchantNo(merchantNo);
+    }
     String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
     if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {
       // 获取手机号
@@ -335,6 +370,14 @@ public class CustomerServiceImpl implements CustomerService {
             wxPortalController.bindingUserInfo(tenantId, openId, appId, encryptedData, iv);
       }
     }
+    // 查询会员信息
+    Member member =
+        memberMapper.selectOne(
+            new LambdaUpdateWrapper<Member>()
+                .eq(Member::getTenantId, customerBaseRegister.getTenantId())
+                .eq(Member::getMerchantNo, loginUser.getMerchantNo())
+                .eq(Member::getCustomerNo, customerBaseRegister.getCustomerNo()));
+
     // 查新询客户身份信息
     List<CustomerIdentity> identityList =
         customerBiz.getCustomerIdentityList(customerBaseRegister.getCustomerNo());

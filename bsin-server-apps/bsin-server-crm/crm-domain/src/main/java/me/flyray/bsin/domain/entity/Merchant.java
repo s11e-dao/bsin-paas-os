@@ -96,7 +96,7 @@ public class Merchant implements Serializable {
 
 
     /**
-     * 客户|租户|商户|代理商类型 0、个人客户 1、企业客户
+     * 客户|租户|商户|代理商类型 0、个人客户 1、企业客户   99: 租户的默认直属商户号
      * @see CustomerType
      */
     private String type;
