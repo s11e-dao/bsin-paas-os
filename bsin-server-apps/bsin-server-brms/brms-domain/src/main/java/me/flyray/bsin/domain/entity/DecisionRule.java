@@ -34,7 +34,7 @@ public class DecisionRule {
     private String tenantId;
 
     /**
-     * kbase的名字
+     * kbase的名字: 规则编号
      */
     private String kieBaseName;
 

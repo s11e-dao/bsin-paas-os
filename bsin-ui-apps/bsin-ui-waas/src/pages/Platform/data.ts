@@ -52,6 +52,20 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
   },
   {
+    title: '平台会员模式',
+    width: 160,
+    dataIndex: 'memberModel',
+    hideInSearch: true,
+    valueEnum: {
+      '1': {
+        text: '平台直属',
+      },
+      '2': {
+        text: '商户直属',
+      },
+    },
+  },
+  {
     title: '节点描述',
     width: 160,
     dataIndex: 'description',

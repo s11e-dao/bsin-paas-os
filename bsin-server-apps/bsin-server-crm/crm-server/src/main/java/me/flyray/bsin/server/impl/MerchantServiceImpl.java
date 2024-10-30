@@ -195,8 +195,9 @@ public class MerchantServiceImpl implements MerchantService {
   }
 
   /**
-   * 1、更新商户信息 2、开通商户钱包（开通钱包标识）3、开通总店
-   *
+   * 1、更新商户信息
+   * 2、开通商户钱包（开通钱包标识）
+   * 3、默认开通总店
    * @param requestMap
    * @return
    */

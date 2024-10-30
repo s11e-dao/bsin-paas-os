@@ -77,6 +77,7 @@ public class CustomerServiceImpl implements CustomerService {
   @Value("${bsin.jiujiu.aesKey}")
   private String aesKey;
 
+  @Autowired PlatformMapper platformMapper;
   @Autowired private CustomerBaseMapper customerBaseMapper;
   @Autowired public MerchantMapper merchantMapper;
   @Autowired SysAgentMapper sysAgentMapper;
@@ -107,7 +108,6 @@ public class CustomerServiceImpl implements CustomerService {
 
   /**
    *
-   *
    * @param requestMap
    * @return
    */
@@ -117,9 +117,8 @@ public class CustomerServiceImpl implements CustomerService {
   public Map<String, Object> login(Map<String, Object> requestMap) {
     CustomerBase customerBaseReq = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
     CustomerBase customerInfo = customerBiz.login(customerBaseReq);
-    Member member =
-        memberMapper.selectOne(
-            new LambdaUpdateWrapper<Member>()
+    Member member = memberMapper.selectOne(
+            new LambdaQueryWrapper<Member>()
                 .eq(Member::getTenantId, customerInfo.getTenantId())
                 .eq(Member::getCustomerNo, customerInfo.getCustomerNo()));
 
@@ -130,6 +129,17 @@ public class CustomerServiceImpl implements CustomerService {
     loginUser.setCustomerNo(customerInfo.getCustomerNo());
     loginUser.setBizRoleType(BizRoleType.CUSTOMER.getCode());
     loginUser.setBizRoleTypeNo(customerInfo.getCustomerNo());
+    // 平台会员模型
+    Platform platform = platformMapper.selectOne(
+            new LambdaQueryWrapper<Platform>()
+                    .eq(Platform::getTenantId, customerInfo.getTenantId()));
+    loginUser.setMemberModel(platform.getMemberModel());
+    // 查询租户的默认直属商户号
+    Merchant merchant = merchantMapper.selectOne(
+                    new LambdaQueryWrapper<Merchant>()
+                            .eq(Merchant::getTenantId, customerInfo.getTenantId())
+                            .eq(Merchant::getType, 99));
+    loginUser.setTenantMerchantNo(merchant.getSerialNo());
     String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
 
     // 查新询客户身份信息
@@ -211,6 +221,17 @@ public class CustomerServiceImpl implements CustomerService {
     loginUser.setCustomerNo(customerNo);
     loginUser.setBizRoleType(bizRoleType);
     loginUser.setBizRoleTypeNo(bizRoleTypeNo);
+    // 平台会员模型
+    Platform platform = platformMapper.selectOne(
+            new LambdaQueryWrapper<Platform>()
+                    .eq(Platform::getTenantId, customerInfo.getTenantId()));
+    loginUser.setMemberModel(platform.getMemberModel());
+    // 查询租户的默认直属商户号
+    Merchant merchant = merchantMapper.selectOne(
+            new LambdaQueryWrapper<Merchant>()
+                    .eq(Merchant::getTenantId, customerInfo.getTenantId())
+                    .eq(Merchant::getType, 99));
+    loginUser.setTenantMerchantNo(merchant.getSerialNo());
     String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
 
     Member member =

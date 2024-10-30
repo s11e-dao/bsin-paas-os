@@ -47,8 +47,16 @@ public class LoginInfoContextHelper {
         return getLoginUser().getTenantId();
     }
 
+    public static String getTenantMerchantNo() {
+        return getLoginUser().getTenantMerchantNo();
+    }
+
     public static String getBizRoleType() {
         return getLoginUser().getBizRoleType();
+    }
+
+    public static String getMerchantStoreNo() {
+        return getLoginUser().getMerchantStoreNo();
     }
 
     public static String getMerchantNo() {

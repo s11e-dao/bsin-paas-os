@@ -69,6 +69,7 @@ public class PlatformServiceImpl implements PlatformService {
      * 2、添加租户信息
      * 3、保存平台信息
      * 4、创建钱包
+     * 5、为平台添加一个默认商户
      * @param platformDTO
      */
     @Override
@@ -102,7 +103,7 @@ public class PlatformServiceImpl implements PlatformService {
         BeanUtils.copyProperties(platformDTO, platform);
         platform.setSerialNo(platformNo); // 序列号
         platform.setStatus(1); // 正常
-        platform.setType(platform.getType()==null?1:platform.getType());
+        platform.setType(platform.getType() == null? 1 :platform.getType());
         platform.setTxPasswordStatus(0);    // 0、未设置支付密码
         platform.setTenantId(tenantId);
         platform.setCreateBy(user.getUserId());
@@ -146,6 +147,7 @@ public class PlatformServiceImpl implements PlatformService {
 //                // 6、创建钱包账户（以平台上架币种为准）
 //                // walletAccountBiz.createWalletAccount(wallet,chainCoin.getSerialNo());
 //            }
+        // 5、为平台添加一个默认商户
 
     }
 

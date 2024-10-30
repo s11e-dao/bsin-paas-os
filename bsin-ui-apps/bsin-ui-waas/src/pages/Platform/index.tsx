@@ -225,7 +225,7 @@ export default () => {
           labelCol={{ span: 7 }}
           wrapperCol={{ span: 14 }}
           // 表单默认值
-          initialValues={{ productCode: '0' }}
+          initialValues={{ productCode: '0', memberModel: '0' }}
         >
           <Form.Item
             label="节点产品"
@@ -241,6 +241,17 @@ export default () => {
                   </Option>
                 );
               })}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="会员模式"
+            name="memberModel"
+            rules={[{ required: true, message: '请选择会员模式!' }]}
+          >
+            <Select style={{ width: '100%' }}>
+              <Option value="0">请选择会员模式</Option>
+              <Option value="1">平台直属</Option>
+              <Option value="2">商户直属</Option>
             </Select>
           </Form.Item>
           <Form.Item

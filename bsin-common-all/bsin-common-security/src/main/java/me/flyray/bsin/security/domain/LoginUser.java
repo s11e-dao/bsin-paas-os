@@ -48,6 +48,11 @@ public class LoginUser implements Serializable {
     private String tenantId;
 
     /**
+     * platform: 接入平台的会员模型：1 租户直属会员 2 商户直属会员
+     */
+    private String memberModel;
+
+    /**
      * 租户ID
      */
     private String orgId;
@@ -57,11 +62,20 @@ public class LoginUser implements Serializable {
      */
     private String appId;
 
+    /**
+     * 租户直属商户ID
+     */
+    private String tenantMerchantNo;
 
     /**
      * 商户ID
      */
     private String merchantNo;
+
+    /**
+     * 商户总店ID
+     */
+    private String merchantStoreNo;
 
     /**
      * 店铺ID
