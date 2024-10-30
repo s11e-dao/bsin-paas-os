@@ -123,8 +123,7 @@ bsin-paas-os
 ├── bsin-ui-apps -- 子应用前端（不同业务系统应用集）
 |    ├── bsin-ui-upms -- 通用权限管理
 |    ├── bsin-ui-waas -- 钱包即服务
-|    ├── bsin-ui-workflow-admin -- 工作流引擎管理
-|    ├── bsin-ui-decision-admin -- 智能决策引擎
+|    ├── bsin-ui-decision-admin -- 智能决策引擎：流程、规则、表单
 |    ├── bsin-ui-ai-agent -- AI引擎
 |    └── bsin-ui-orchestration -- 服务编排
 ├── bsin-app-scaffold --  c端应用脚手架
