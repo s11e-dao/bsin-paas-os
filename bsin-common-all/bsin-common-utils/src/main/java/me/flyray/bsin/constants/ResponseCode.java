@@ -9,6 +9,9 @@ public enum ResponseCode implements ReturnCode {
     FAIL("500", "请求失败"),
     DATA_NOT_EXIST("100","该数据不存在"),
 
+    // 参数错误 400000
+    PARAM_ERROR("1000", "参数错误"),
+
 
     // 数据库操作 100000
     DATA_BASE_UPDATE_FAILED("100001", "数据库更新失败"),
