@@ -7,6 +7,7 @@ public enum ResponseCode implements ReturnCode {
     /***********************************通用错误码*****************************************/
     OK("0", "请求成功"),
     FAIL("500", "请求失败"),
+    DATA_NOT_EXIST("100","该数据不存在"),
 
 
     // 数据库操作 100000
@@ -275,6 +276,10 @@ public enum ResponseCode implements ReturnCode {
     APP_INFO_ERROR("110001", "获取应用信息失败！"),
 
 
+    /*********************************** oms 120000*****************************************/
+    CATEGORY_EXIST("120001", "该分类已存在"),
+    CATEGORY_HAD_USED("120002","分类已绑定商品"),
+    CATEGORY_HAD_CHILD("120003","分类下存在子集")
     ;
 
     private String code;
