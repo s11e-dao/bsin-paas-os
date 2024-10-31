@@ -47,7 +47,7 @@ public class DecisionEngineContextBuilder {
     @Autowired
     private DecisionRuleMapper decisionRuleMapper;
     @Autowired
-    private BsinServiceInvoke bsinServiceInvokeUtil;
+    private BsinServiceInvoke bsinServiceInvoke;
 
     @PreDestroy
     public void destroy() {

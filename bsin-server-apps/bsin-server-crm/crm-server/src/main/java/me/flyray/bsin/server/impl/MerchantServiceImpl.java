@@ -319,7 +319,6 @@ public class MerchantServiceImpl implements MerchantService {
         throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
       }
     }
-    merchant.setType(CustomerType.PERSONAL.getCode());
     merchant = addMerchant(merchant, true, NULL);
     return merchant;
   }
@@ -463,9 +462,8 @@ public class MerchantServiceImpl implements MerchantService {
     if (registerNotNeedAudit) {
       merchant.setAuthenticationStatus(AuthenticationStatus.CERTIFIED.getCode());
       merchant.setStatus(MerchantStatus.NORMAL.getCode());
-    }
-    // 普通注册逻辑
-    else {
+    }else {
+      // 普通注册逻辑
       merchant.setAuthenticationStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
       merchant.setStatus(MerchantStatus.TOBE_CERTIFIED.getCode());
     }

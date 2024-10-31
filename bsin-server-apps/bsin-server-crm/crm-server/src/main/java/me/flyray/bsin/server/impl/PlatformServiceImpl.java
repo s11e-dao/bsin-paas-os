@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.enums.CustomerType;
 import me.flyray.bsin.domain.enums.WalletCategory;
 import me.flyray.bsin.domain.enums.WalletStatus;
 import me.flyray.bsin.domain.enums.WalletType;
@@ -16,6 +17,7 @@ import me.flyray.bsin.domain.request.PlatformDTO;
 import me.flyray.bsin.domain.request.SysTenantDTO;
 import me.flyray.bsin.domain.response.SysUserVO;
 import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.service.MerchantService;
 import me.flyray.bsin.facade.service.PlatformService;
 import me.flyray.bsin.facade.service.TenantService;
 import me.flyray.bsin.facade.service.UserService;
@@ -63,6 +65,9 @@ public class PlatformServiceImpl implements PlatformService {
     private TenantService tenantService;
     @DubboReference(version = "dev")
     private UserService userService;
+    @Autowired
+    private MerchantService merchantService;
+
 
     /**
      * 1、校验平台信息是否重复
@@ -148,6 +153,11 @@ public class PlatformServiceImpl implements PlatformService {
 //                // walletAccountBiz.createWalletAccount(wallet,chainCoin.getSerialNo());
 //            }
         // 5、为平台添加一个默认商户
+        Map<String, Object> requestMap = new HashMap<>();
+        BeanUtils.copyProperties(platformDTO, requestMap);
+        requestMap.put("type", CustomerType.UNDER_TENANT_MEMBER.getCode());
+        requestMap.put("merchantName", platformDTO.getPlatformName());
+        merchantService.add(requestMap);
 
     }
 

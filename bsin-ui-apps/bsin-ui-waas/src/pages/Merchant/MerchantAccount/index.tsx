@@ -127,10 +127,10 @@ export default () => {
       </Row>
       <Card bordered={false} >
         <Tabs defaultActiveKey="1">
-          <Tabs.TabPane tab="交易订单" key="1">
+          <Tabs.TabPane tab="收入流水" key="1">
             <Table columns={columns} dataSource={data} />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="退款订单" key="2">
+          <Tabs.TabPane tab="支出流水" key="2">
             <Table columns={columns} dataSource={data} />
           </Tabs.TabPane>
         </Tabs>

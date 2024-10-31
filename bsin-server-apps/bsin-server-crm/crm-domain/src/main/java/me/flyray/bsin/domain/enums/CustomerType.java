@@ -15,7 +15,7 @@ public enum CustomerType {
   /** 企业客户 */
   ENTERPRISE("1", "企业客户"),
   /** 平台直属商户会员模型 */
-  UNDER_TENANT_MEMBER("99", "平台直属商户会员模型");
+  UNDER_TENANT_MEMBER("99", "平台直属商户");
 
   private String code;
 

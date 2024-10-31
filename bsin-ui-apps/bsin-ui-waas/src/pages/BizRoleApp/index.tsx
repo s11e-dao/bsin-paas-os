@@ -2,33 +2,27 @@ import React, { useState } from 'react';
 import List from './list';
 import AppConfig from './appConfig';
 
+const CONTENT_COMPONENTS = {
+  list: List,
+  appConfig: AppConfig,
+};
+
 export default () => {
-
   const [currentContent, setCurrentContent] = useState('list');
-
-  const [assetsCollectionRecord, setAssetsCollectionRecord] = useState(null);
   const [record, setRecord] = useState(null);
-  
+
   const configAssetsItem = (record, value) => {
     setRecord(record);
     setCurrentContent(value);
   };
 
-  const Conent = () => {
-    let conentComp = (
-      <List
-        setCurrentContent={setCurrentContent}
-      />
-    );
-    if (currentContent == 'appConfig') {
-      conentComp = <AppConfig setCurrentContent={setCurrentContent} />;
-    }
-    return <>{conentComp}</>;
-  };
+  const CurrentComponent = CONTENT_COMPONENTS[currentContent];
 
   return (
     <div>
-      <Conent />
+      {CurrentComponent && (
+        <CurrentComponent setCurrentContent={setCurrentContent} record={record} />
+      )}
     </div>
   );
 };

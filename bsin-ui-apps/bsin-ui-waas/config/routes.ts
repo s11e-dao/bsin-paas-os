@@ -79,7 +79,7 @@ const routes = [
       // 商户账户
       {
         path: '/merchant/merchant-account',
-        component: '@/pages/BizRoleApp/index',
+        component: '@/pages/Merchant/MerchantAccount/index',
       },
       // 商户接入应用：小程序、公众号、app
       {

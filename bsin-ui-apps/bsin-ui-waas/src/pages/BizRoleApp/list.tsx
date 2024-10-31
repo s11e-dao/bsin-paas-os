@@ -282,7 +282,7 @@ export default ({ setCurrentContent }) => {
     <div>
       {/* Pro表格 */}
       <ProTable<columnsDataType>
-        headerTitle={<TableTitle title="应用列表" />}
+        headerTitle={<TableTitle title="接入应用列表" />}
         scroll={{ x: 900 }}
         bordered
         // 表头
