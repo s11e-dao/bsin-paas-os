@@ -76,10 +76,17 @@ export default () => {
   /**
    * 详情，模板类型对应
    */
-  const handleViewRecordOfType = () => {
-    let { type } = isViewRecord;
-    let typeText = type;
-    return typeText;
+  const handleViewRecordOfStatus = () => {
+    let { status } = isViewRecord;
+    let statusText = status;
+    //  会员状态: 0：禁用 1:正常
+    if (status == '0') {
+      return '禁用';
+    } else if (status == '1') {
+      return '正常';
+    }   else {
+      return statusText;
+    }
   };
 
   return (
@@ -141,72 +148,30 @@ export default () => {
         onCancel={() => setIsViewMemberModal(false)}
       >
         {/* 详情信息 */}
-        <Descriptions title="客户信息">
+        <Descriptions title="会员信息">
+          <Descriptions.Item label="会员ID">
+            {isViewRecord?.serialNo}
+          </Descriptions.Item>
           <Descriptions.Item label="租户ID">
             {isViewRecord?.tenantId}
           </Descriptions.Item>
           <Descriptions.Item label="客户编号">
             {isViewRecord?.customerNo}
           </Descriptions.Item>
-          <Descriptions.Item label="客户类型">
-            {handleViewRecordOfType()}
-          </Descriptions.Item>
-          <Descriptions.Item label="登录方式">
-            {isViewRecord?.authMethod}
-          </Descriptions.Item>
-          <Descriptions.Item label="三方标识">
-            {isViewRecord?.credential}
+          <Descriptions.Item label="商户编号">
+            {isViewRecord?.merchantNo}
           </Descriptions.Item>
           <Descriptions.Item label="身份证号">
-            {isViewRecord?.idNumber}
-          </Descriptions.Item>
-          <Descriptions.Item label="登录用户名">
-            {isViewRecord?.username}
-          </Descriptions.Item>
-          <Descriptions.Item label="登录密码">
-            {isViewRecord?.password}
-          </Descriptions.Item>
-          <Descriptions.Item label="真实姓名">
-            {isViewRecord?.realName}
+            {isViewRecord?.idCard}
           </Descriptions.Item>
           <Descriptions.Item label="昵称">
             {isViewRecord?.nickname}
           </Descriptions.Item>
-          <Descriptions.Item label="支付密码">
-            {isViewRecord?.txPassword}
-          </Descriptions.Item>
-          <Descriptions.Item label="支付密码状态 ">
-            {isViewRecord?.txPasswordStatus}
-          </Descriptions.Item>
-          <Descriptions.Item label="手机号">
-            {isViewRecord?.phone}
-          </Descriptions.Item>
-          <Descriptions.Item label="邮箱">
-            {isViewRecord?.email}
-          </Descriptions.Item>
-          <Descriptions.Item label="头像">
-            {isViewRecord?.avatar}
-          </Descriptions.Item>
-          <Descriptions.Item label="VIP">
-            {isViewRecord?.vipFlag}
-          </Descriptions.Item>
-          <Descriptions.Item label="实名认证标识">
-            {isViewRecord?.certificationFlag}
-          </Descriptions.Item>
-          <Descriptions.Item label="链上钱包地址">
-            {isViewRecord?.walletAddress}
-          </Descriptions.Item>
-          <Descriptions.Item label="链上钱包密码">
-            {isViewRecord?.walletPrivateKey}
-          </Descriptions.Item>
-          <Descriptions.Item label="创建者">
-            {isViewRecord?.createBy}
+          <Descriptions.Item label="状态">
+            {handleViewRecordOfStatus()}
           </Descriptions.Item>
           <Descriptions.Item label="创建时间">
             {isViewRecord?.createTime}
-          </Descriptions.Item>
-          <Descriptions.Item label="客户描述">
-            {isViewRecord?.description}
           </Descriptions.Item>
         </Descriptions>
       </Modal>

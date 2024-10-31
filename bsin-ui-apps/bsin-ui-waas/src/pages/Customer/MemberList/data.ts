@@ -20,54 +20,12 @@ const columnsData: ProColumns<columnsDataType>[] = [
     dataIndex: 'type',
     hideInTable: true,
   },
-  // 客户类型 0、个人客户 1、租户商家客户 2、租户(dao)客户 3、顶级平台商家客户
-  {
-    title: '客户类型',
-    dataIndex: 'type',
-    hideInTable: true,
-    valueType: 'select',
-    valueEnum: {
-      '0': {
-        text: '个人客户',
-      },
-      '1': {
-        text: '租户商家客户',
-      },
-      '2': {
-        text: '租户(dao)客户',
-      },
-      '3': {
-        text: '顶级平台商家客户',
-      },
-    },
-    fieldProps: {
-      maxLength: 20,
-    },
-  },
-  //是否是白名单 0、否 1、是
-  {
-    title: 'VIP',
-    dataIndex: 'vipFlag',
-    hideInTable: true,
-    valueType: 'select',
-    valueEnum: {
-      '0': {
-        text: '否',
-      },
-      '1': {
-        text: '是',
-      },
-    },
-    fieldProps: {
-      maxLength: 20,
-    },
-  },
 
   // table里面的内容
   {
-    title: '客户号',
+    title: '会员号',
     width: 170,
-    dataIndex: 'customerNo',
+    dataIndex: 'serialNo',
     hideInSearch: true,
   },
   {
@@ -75,6 +33,37 @@ const columnsData: ProColumns<columnsDataType>[] = [
     width: 170,
     dataIndex: 'tenantId',
     hideInSearch: true,
+  },
+  {
+    title: '所属商户',
+    width: 170,
+    dataIndex: 'merchantNo',
+    // hideInSearch: true,
+  },
+  {
+    title: '客户号',
+    width: 170,
+    dataIndex: 'customerNo',
+    hideInSearch: true,
+  },
+  // 会员状态: 0：禁用 1:正常
+  {
+    title: '状态',
+    dataIndex: 'type',
+    width: 80,
+    // hideInSearch: true,
+    valueType: 'select',
+    valueEnum: {
+      '0': {
+        text: '禁用',
+      },
+      '1': {
+        text: '正常',
+      },
+    },
+    fieldProps: {
+      maxLength: 20,
+    },
   },
   {
     title: '昵称',

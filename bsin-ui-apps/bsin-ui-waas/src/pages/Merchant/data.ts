@@ -126,15 +126,18 @@ const columnsData: ProColumns<columnsDataType>[] = [
     width: 160,
     dataIndex: 'type',
     hideInSearch: true,
-    // 商户类型：1、品牌商户 2、社区商户（供销社）
+    // 商户类型：1、企业商户 2、个人商户  99、平台直属商户
     valueEnum: {
       '1': {
-        text: '品牌商户',
+        text: '企业商户',
       },
       '2': {
-        text: '社区商户',
+        text: '个人商户',
       },
-    },
+      '99': {
+        text: '平台直属商户',
+      },
+  },
   },
   {
     title: '创建时间',

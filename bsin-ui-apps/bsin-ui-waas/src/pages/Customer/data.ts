@@ -75,6 +75,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     valueType: 'image',
     hideInSearch: true,
   },
+  //   客户类型 0、个人客户 1、企业客户
   {
     title: '客户类型',
     width: 100,
@@ -86,13 +87,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
         text: '个人客户',
       },
       '1': {
-        text: '商户客户',
-      },
-      '2': {
-        text: '租户客户',
-      },
-      '3': {
-        text: '顶级平台商家客户',
+        text: '企业客户',
       },
     },
   },

@@ -30,6 +30,43 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInTable: true,
   },
 
+  // 应用类型  1: 应用 2：接口 3:mp(公众号服务订阅号)、4.miniapp(小程序)、 5.cp(企业号|企业微信)、6.pay(微信支付)、7.open(微信开放平台) 8wechat(个人微信) 9.menu(菜单模版)
+  {
+    title: '应用类型',
+    width: 120,
+    dataIndex: 'appType',
+    valueType: 'select',
+    valueEnum: {
+      '1': {
+        text: '应用',
+      },
+      '2': {
+        text: '接口',
+      },
+      '3': {
+        text: '微信公众号',
+      },
+      '4': {
+        text: '微信小程序',
+      },
+      '5': {
+        text: '企业号',
+      },
+      '6': {
+        text: '微信支付',
+      },
+      '7': {
+        text: '微信开发平台',
+      },
+      '8': {
+        text: '个人微信',
+      },
+      '9': {
+        text: '微信菜单',
+      },
+    },
+  },
+
   // table里面的内容
   {
     title: 'ID',
@@ -56,6 +93,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     dataIndex: 'appName',
     hideInSearch: true,
   },
+  //
   {
     title: '应用ID',
     width: 170,
