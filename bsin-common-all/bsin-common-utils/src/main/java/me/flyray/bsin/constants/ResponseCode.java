@@ -7,7 +7,7 @@ public enum ResponseCode implements ReturnCode {
     /***********************************通用错误码*****************************************/
     OK("0", "请求成功"),
     FAIL("500", "请求失败"),
-    DATA_NOT_EXIST("100","该数据不存在"),
+    DATA_NOT_EXIST("100", "该数据不存在"),
 
     // 参数错误 400000
     PARAM_ERROR("1000", "参数错误"),
@@ -139,7 +139,6 @@ public enum ResponseCode implements ReturnCode {
     PAYMENT_WECHAT_PARSE_CALLBACK_ERROR("100907", "微信支付解析回调请求"),
 
 
-
     /***********************************区块链服务类 200000 开头*****************************************/
     WALLET_CREATE_FAIL("200000", "创建链钱包失败~"),
     NOT_SUPPORTED_ChAIN_TYPE("200001", "不支持的链类型！"),
@@ -195,7 +194,6 @@ public enum ResponseCode implements ReturnCode {
     INVITE_RELATION_NOT_EXISTS("300019", "邀请关系不存在！"),
 
 
-
     /***********************************分销类 310000 开头*****************************************/
     DIS_MODEL_NOT_EXISTS("310001", "分销模型不存在~"),
 
@@ -204,7 +202,6 @@ public enum ResponseCode implements ReturnCode {
     ACCOUNT_BALANCE_ANNORMAL("400001", "账户余额异常！"),
     API_LIMITING("400002", "请勿频繁调用!"),
     CUSTOMER_ACCOUNT_IS_NULL("400003", "客户账户不存在!"),
-
 
 
     HAS_CHANGE("400300", "已兑换"),
@@ -281,8 +278,15 @@ public enum ResponseCode implements ReturnCode {
 
     /*********************************** oms 120000*****************************************/
     CATEGORY_EXIST("120001", "该分类已存在"),
-    CATEGORY_HAD_USED("120002","分类已绑定商品"),
-    CATEGORY_HAD_CHILD("120003","分类下存在子集")
+    CATEGORY_HAD_USED("120002", "分类已绑定商品"),
+    CATEGORY_HAD_CHILD("120003", "分类下存在子集"),
+    ORDER_TYPE_NOT_TRUE("120004", "订单类型不正确"),
+    GOODS_NOT_EXIST("120005", "商品不存在"),
+    GOODS_STATUS_NOT_SALE("120006", "商品已下架"),
+    GOODS_SPEC_NOT_EXIST("120007", "商品规格不存在"),
+    GOODS_UNDER_STOCK("120008", "库存不足"),
+    GOODS_SPEC_ID_ISNULL("120009", "规格ID为空"),
+
     ;
 
     private String code;
