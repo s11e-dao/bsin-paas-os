@@ -186,13 +186,15 @@ export default () => {
    */
   const handleViewRecordOfType = () => {
     let { type } = isViewRecord;
-    // 商户类型：1、品牌商户 2、社区商户（供销社）
+    // 商户类型：1、企业商户 2、个人商户  99、平台直属商户
     if (type == '1') {
-      return '品牌商户';
+      return '企业商户';
     } else if (type == '2') {
-      return '社区商户（供销社）';
+      return '个人商户';
+    } else if (type == '99') {
+      return '平台直属商户';
     } else {
-      return status;
+      return type;
     }
   };
 

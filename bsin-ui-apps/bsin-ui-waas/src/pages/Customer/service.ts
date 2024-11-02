@@ -62,3 +62,15 @@ export const getCustomerDeliveryAddress = (params) => {
     },
   });
 };
+
+export const getCustomerIdentity = (params) => {
+  console.log('params', params);
+  return request(crmPath + '/customerIdentity/getList', {
+    serviceName: 'CustomerIdentityService',
+    methodName: 'getList',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
