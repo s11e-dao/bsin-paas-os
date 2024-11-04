@@ -54,13 +54,13 @@ public class DecisionEngineServiceImpl implements DecisionEngine {
         requestMap.put("eventCode", eventCode);
         EventModel eventModel = eventModelService.getDetail(requestMap);
         DecisionRule decisionRule = decisionRuleMapper.selectById(eventModel.getModelNo());
+        Map<String, Object> globalMap = new LinkedHashMap<>();
         if(decisionRule == null){
-            throw new BusinessException("事件模型不存在");
+            return globalMap;
         }
         // 1、构建决策引擎环境
         KieSession kieSession = decisionEngineContextBuilder.buildDecisionEngine(decisionRule,
                 decisionRule.getKieBaseName() + "-session");
-        Map<String, Object> globalMap = new LinkedHashMap<>();
         kieSession.setGlobal("globalMap", globalMap);
 
         // 2、处理fact（事实对象，接收数据的对象实体类）
