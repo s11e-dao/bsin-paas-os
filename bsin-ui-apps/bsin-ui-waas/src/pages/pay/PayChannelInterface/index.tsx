@@ -86,12 +86,11 @@ export default () => {
         let response = FormRef.getFieldsValue();
         console.log(response);
         let reqParam = {
-          ...response,
-          password: hex_md5(response.password),
+          ...response
         };
         addPayInterface(reqParam).then((res) => {
           console.log('add', res);
-          if (res.code === 0) {
+          if (res.code === 0 || res.code === "000000") {
             message.success('添加成功');
             // 重置输入的表单
             FormRef.resetFields();
@@ -143,14 +142,14 @@ export default () => {
   /**
    * 详情，模板类型对应
    */
-  const handleViewRecordOfType = () => {
-    let { type } = isViewRecord;
-    // 客户类型 0、个人客户 1、租户商家客户 2、租户(dao)客户 3、顶级平台商家客户
-    let typeText = type;
-    if (typeText == '4') {
-      return '超级节点';
+  const handleViewRecordOfConfigPageType = () => {
+    let { configPageType } = isViewRecord;
+    // 支付参数配置页面类型:1-JSON渲染,2-自定义
+    let typeText = configPageType;
+    if (typeText == '1') {
+      return 'JSON渲染';
     } else if (typeText == '2') {
-      return '普通节点';
+      return '自定义';
     } else {
       return typeText;
     }
@@ -171,8 +170,6 @@ export default () => {
           // console.log(params);
           let res = await getPayInterfacePageList({
             ...params,
-            // 租户客户类型
-            type: '3',
           });
           console.log('😒', res);
           const result = {
@@ -220,7 +217,7 @@ export default () => {
           labelCol={{ span: 7 }}
           wrapperCol={{ span: 14 }}
           // 表单默认值
-          initialValues={{ productCode: '0' }}
+          initialValues={{ wayCode: 'WX_JSAPI' }}
         >
           <Form.Item
             label="接口名称"
@@ -236,9 +233,26 @@ export default () => {
           >
             <Input />
           </Form.Item>
+
+          {/* 支持的支付方式 ["WX_JSAPI", "WX_H5", "WX_APP", "ALI_BAR", "ALI_APP", "ALI_WAP"] ???? json*/}
           <Form.Item
-            label="描述"
-            name="description"
+            label="支付方式"
+            name="wayCode"
+            rules={[{ required: true, message: '请选择支付方式!' }]}
+          >
+            <Select style={{ width: '100%' }}>
+              <Option value="WX_JSAPI">微信JSAPI支付</Option>
+              <Option value="WX_H5">微信H5支付</Option>
+              <Option value="WX_APP">微信APP支付</Option>
+              <Option value="ALI_BAR">支付宝条码支付</Option>
+              <Option value="ALI_APP">支付宝APP支付</Option>
+              <Option value="ALI_WAP">支付宝WAP支付</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="备注"
+            name="remark"
           >
             <TextArea />
           </Form.Item>
@@ -254,18 +268,19 @@ export default () => {
         onCancel={() => setIsViewTemplateModal(false)}
       >
         {/* 详情信息 */}
-        <Descriptions title="节点信息">
-          <Descriptions.Item label="节点号">
+        <Descriptions title="支付接口详情">
+          <Descriptions.Item label="租户号">
             {isViewRecord?.tenantId}
           </Descriptions.Item>
-          <Descriptions.Item label="节点名称">
-            {isViewRecord?.PlatformName}
+          <Descriptions.Item label="接口名称">
+            {isViewRecord?.payInterfaceName}
           </Descriptions.Item>
-          <Descriptions.Item label="节点类型">
-            {handleViewRecordOfType()}
+          <Descriptions.Item label="支付参数配置页面类型">
+            {/* 支付参数配置页面类型:1-JSON渲染,2-自定义 */}
+            {handleViewRecordOfConfigPageType()}
           </Descriptions.Item>
-          <Descriptions.Item label="节点描述">
-            {isViewRecord?.description}
+          <Descriptions.Item label="接口备注">
+            {isViewRecord?.remark}
           </Descriptions.Item>
           <Descriptions.Item label="创建者">
             {isViewRecord?.createBy}

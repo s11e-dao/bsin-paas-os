@@ -1,5 +1,6 @@
 import { request } from '@umijs/max'
 let crmPath = process.env.contextPath_crm;
+let waasPath = process.env.contextPath_waas;
 
 // 分页查询
 export const getBizRoleAppPageList = (params) => {
@@ -61,4 +62,30 @@ export const getBizRoleAppDetail = (params) => {
     },
   });
 };
+
+
+//查询支付接口列表数据请求
+export const getPayChannelInterfaceList = (params) => {
+  return request(waasPath + '/payChannelInterface/getList', {
+    serviceName: 'payChannelInterfaceService',
+    methodName: 'getList',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  })
+}
+
+
+//查询应用支付配置数据请求
+export const getBizRoleAppPayChannelConfig = (params) => {
+  return request(waasPath + '/payChannelConfig/getBizRoleAppPayChannelConfig', {
+    serviceName: 'PayChannelConfigService',
+    methodName: 'getBizRoleAppPayChannelConfig',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  })
+}
 

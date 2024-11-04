@@ -51,12 +51,12 @@ const columnsData: ProColumns<columnsDataType>[] = [
     dataIndex: 'payWayCode',
     hideInSearch: true,
   },
-  {
-    title: '描述',
-    width: 160,
-    dataIndex: 'description',
-    hideInSearch: true,
-  },
+  // {
+  //   title: '描述',
+  //   width: 160,
+  //   dataIndex: 'description',
+  //   hideInSearch: true,
+  // },
   {
     title: '创建者',
     width: 160,

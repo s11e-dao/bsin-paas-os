@@ -28,9 +28,9 @@ export default () => {
   const { TextArea } = Input;
   const { Option } = Select;
   // 控制新增模态框
-  const [isTemplateModal, setIsTemplateModal] = useState(false);
+  const [isPayWayModal, setIsPayWayModal] = useState(false);
   // 查看模态框
-  const [isViewTemplateModal, setIsViewTemplateModal] = useState(false);
+  const [isViewPayWayModal, setIsViewPayWayModal] = useState(false);
   // 查看
   const [isViewRecord, setIsViewRecord] = useState({});
   // 获取表单
@@ -46,20 +46,20 @@ export default () => {
   // 操作行数据 自定义操作行
   const actionRender: any = (text: any, record: any, index: number) => (
     <div key={record.dictType}>
-        <a onClick={() => toViewContractTemplate(record)}>查看</a>
-        <Divider type="vertical" />
-        <Popconfirm
-          title="是否删除此条数据?"
-          onConfirm={() => toDelContractTemplate(record.id)}
-          onCancel={() => {
-            message.warning(`取消删除`);
-          }}
-          okText="是"
-          cancelText="否"
-        >
-          <a>删除</a>
-        </Popconfirm>
-      </div>
+      <a onClick={() => toViewPayWay(record)}>查看</a>
+      <Divider type="vertical" />
+      <Popconfirm
+        title="是否删除此条数据?"
+        onConfirm={() => toDelPayWay(record.id)}
+        onCancel={() => {
+          message.warning(`取消删除`);
+        }}
+        okText="是"
+        cancelText="否"
+      >
+        <a>删除</a>
+      </Popconfirm>
+    </div>
   );
 
   // 自定义数据的表格头部数据
@@ -71,14 +71,14 @@ export default () => {
   const actionRef = React.useRef<ActionType>();
 
   // 新增模板
-  const increaseTemplate = () => {
-    setIsTemplateModal(true);
+  const increasePayWay = () => {
+    setIsPayWayModal(true);
   };
 
   /**
    * 确认添加模板
    */
-  const confirmTemplate = () => {
+  const confirmPayWay = () => {
     // 获取输入的表单值
     FormRef.validateFields()
       .then(async () => {
@@ -86,38 +86,37 @@ export default () => {
         let response = FormRef.getFieldsValue();
         console.log(response);
         let reqParam = {
-          ...response,
-          password: hex_md5(response.password),
+          ...response
         };
         addPayWay(reqParam).then((res) => {
           console.log('add', res);
-          if (res.code === 0) {
+          if (res.code === 0 || res.code === "000000") {
             message.success('添加成功');
             // 重置输入的表单
             FormRef.resetFields();
-            setIsTemplateModal(false);
+            setIsPayWayModal(false);
             actionRef.current?.reload();
           } else {
             message.error(`失败： ${res?.message}`);
           }
         });
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   /**
    * 取消添加模板
    */
-  const onCancelTemplate = () => {
+  const onCancelPayWay = () => {
     // 重置输入的表单
     FormRef.resetFields();
-    setIsTemplateModal(false);
+    setIsPayWayModal(false);
   };
 
   /**
    * 删除模板
    */
-  const toDelContractTemplate = async (record) => {
+  const toDelPayWay = async (record) => {
     console.log('record', record);
     let { customerNo } = record;
     let delRes = await deletePayWay({ customerNo });
@@ -131,11 +130,11 @@ export default () => {
   /**
    * 查看详情
    */
-  const toViewContractTemplate = async (record) => {
+  const toViewPayWay = async (record) => {
     console.log(record);
     let { serialNo } = record;
     let viewRes = await getPayWayDetail({ serialNo });
-    setIsViewTemplateModal(true);
+    setIsViewPayWayModal(true);
     console.log('viewRes', viewRes);
     setIsViewRecord(viewRes.data);
   };
@@ -171,8 +170,6 @@ export default () => {
           // console.log(params);
           let res = await getPayWayPageList({
             ...params,
-            // 租户客户类型
-            type: '3',
           });
           console.log('😒', res);
           const result = {
@@ -196,7 +193,7 @@ export default () => {
         toolBarRender={() => [
           <Button
             onClick={() => {
-              increaseTemplate();
+              increasePayWay();
             }}
             key="button"
             icon={<PlusOutlined />}
@@ -208,11 +205,11 @@ export default () => {
       />
       {/* 新增合约模板模态框 */}
       <Modal
-        title="添加"
+        title="添加支付渠道"
         centered
-        open={isTemplateModal}
-        onOk={confirmTemplate}
-        onCancel={onCancelTemplate}
+        open={isPayWayModal}
+        onOk={confirmPayWay}
+        onCancel={onCancelPayWay}
       >
         <Form
           name="basic"
@@ -220,7 +217,7 @@ export default () => {
           labelCol={{ span: 7 }}
           wrapperCol={{ span: 14 }}
           // 表单默认值
-          initialValues={{ productCode: '0' }}
+          initialValues={{}}
         >
           <Form.Item
             label="支付方式名称"
@@ -230,17 +227,11 @@ export default () => {
             <Input />
           </Form.Item>
           <Form.Item
-            label="支付方式编码"
+            label="支付方式代码"
             name="payWayCode"
             rules={[{ required: true, message: '请输入支付方式编码!' }]}
           >
             <Input />
-          </Form.Item>
-          <Form.Item
-            label="描述"
-            name="description"
-          >
-            <TextArea />
           </Form.Item>
         </Form>
       </Modal>
@@ -249,29 +240,27 @@ export default () => {
         title="详情"
         width={800}
         centered
-        open={isViewTemplateModal}
-        onOk={() => setIsViewTemplateModal(false)}
-        onCancel={() => setIsViewTemplateModal(false)}
+        open={isViewPayWayModal}
+        onOk={() => setIsViewPayWayModal(false)}
+        onCancel={() => setIsViewPayWayModal(false)}
       >
         {/* 详情信息 */}
         <Descriptions title="节点信息">
           <Descriptions.Item label="节点号">
             {isViewRecord?.tenantId}
           </Descriptions.Item>
-          <Descriptions.Item label="节点名称">
-            {isViewRecord?.PlatformName}
+          <Descriptions.Item label="支付渠道名称">
+            {isViewRecord?.payWayName}
           </Descriptions.Item>
-          <Descriptions.Item label="节点类型">
-            {handleViewRecordOfType()}
-          </Descriptions.Item>
-          <Descriptions.Item label="节点描述">
-            {isViewRecord?.description}
-          </Descriptions.Item>
-          <Descriptions.Item label="创建者">
-            {isViewRecord?.createBy}
+          <Descriptions.Item label="支付方式代码">
+            {/* 例如： WX_JSAPI", "WX_H5", "WX_APP", "ALI_BAR", "ALI_APP", "ALI_WAP“ */}
+            {isViewRecord?.payWayCode}
           </Descriptions.Item>
           <Descriptions.Item label="创建时间">
             {isViewRecord?.createTime}
+          </Descriptions.Item>
+          <Descriptions.Item label="更新时间">
+            {isViewRecord?.updateTime}
           </Descriptions.Item>
         </Descriptions>
       </Modal>

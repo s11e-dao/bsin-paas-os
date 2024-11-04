@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Form,
   Input,
@@ -22,6 +22,8 @@ import {
   editBizRoleApp,
   deleteBizRoleApp,
   getBizRoleAppDetail,
+  getPayChannelInterfaceList,
+  getBizRoleAppPayChannelConfig,
 } from './service';
 import TableTitle from '../../components/TableTitle';
 import { hex_md5 } from '@/utils/md5';
@@ -29,6 +31,7 @@ import {
   getLocalStorageInfo,
   getSessionStorageInfo,
 } from '@/utils/localStorageInfo';
+import BizRoleApp from '.';
 
 export default ({ setCurrentContent }) => {
 
@@ -42,16 +45,21 @@ export default ({ setCurrentContent }) => {
 
   const { TextArea } = Input;
   const { Option } = Select;
+  const [loading, setLoading] = useState(true)
   // 控制新增、编辑模态框title
   const [addModalTitle, setAddModalTitle] = React.useState('添加');
   // 控制新增模态框
-  const [registerMerchantModal, setRegisterMerchantModal] = useState(false);
+  const [isAddBizRoleAppModal, setIsAddBizRoleAppModal] = useState(false);
+  // 控制支付配置模态框
+  const [payConfigModal, setPayConfigModal] = useState(false);
   // 查看模态框
-  const [isViewTemplateModal, setIsViewTemplateModal] = useState(false);
+  const [isViewBizRoleAppModal, setIsViewBizRoleAppModal] = useState(false);
   // 查看
   const [isViewRecord, setIsViewRecord] = useState({});
   // 选择的数据
   const [checkItem, setCheckItem] = useState({});
+
+  const [payChannelInterfaceList, setPayChannelInterfaceList] = useState([])
 
   const [logoUrl, setLogoUrl] = useState('');
   // 获取表单
@@ -69,7 +77,7 @@ export default ({ setCurrentContent }) => {
     <div key={record.dictType}>
       <a
         onClick={() => {
-          handleEditModel(record);
+          handlePayConfigModel(record);
         }}
       >
         支付配置
@@ -84,7 +92,7 @@ export default ({ setCurrentContent }) => {
         应用配置
       </a>
       <Divider type="vertical" />
-      <a onClick={() => toViewContractTemplate(record)}>查看</a>
+      <a onClick={() => toViewBizRoleApp(record)}>查看</a>
       <Divider type="vertical" />
       <a
         onClick={() => {
@@ -96,7 +104,7 @@ export default ({ setCurrentContent }) => {
       <Divider type="vertical" />
       <Popconfirm
         title="确定删除此条数据？?"
-        onConfirm={() => toDelContractTemplate(record.id)}
+        onConfirm={() => toDelBizRoleApp(record.id)}
         onCancel={() => {
           message.warning(`取消删除`);
         }}
@@ -116,19 +124,35 @@ export default ({ setCurrentContent }) => {
   // Table action 的引用，便于自定义触发
   const actionRef = React.useRef<ActionType>();
 
+
+  useEffect(() => {
+    // 查询支付接口
+    let params = {
+      current: '1',
+      pageSize: '99',
+    }
+    getPayChannelInterfaceList(params).then((res) => {
+      if (res?.code == '000000' || res?.code == 0) {
+        setPayChannelInterfaceList(res?.data)
+        console.log(payChannelInterfaceList)
+        setLoading(false)
+      }
+    })
+  }, [])
+
   /**
    * 以下内容为操作相关
    */
 
   // 新增模板
-  const openRegisterMerchantModal = () => {
-    setRegisterMerchantModal(true);
+  const addBizRoleAppModal = () => {
+    setIsAddBizRoleAppModal(true);
   };
 
   /**
    * 确认添加模板
    */
-  const confirmRegisterMerchant = () => {
+  const confirmAddBizRoleApp = () => {
     // 获取输入的表单值
     FormRef.validateFields()
       .then(async () => {
@@ -150,7 +174,7 @@ export default ({ setCurrentContent }) => {
               FormRef.resetFields();
               // 刷新proTable
               actionRef.current?.reload();
-              setRegisterMerchantModal(false);
+              setIsAddBizRoleAppModal(false);
             } else {
               message.error(`失败： ${res?.message}`);
             }
@@ -165,7 +189,7 @@ export default ({ setCurrentContent }) => {
               FormRef.resetFields();
               // 刷新proTable
               actionRef.current?.reload();
-              setRegisterMerchantModal(false);
+              setIsAddBizRoleAppModal(false);
             } else {
               message.error(`失败： ${res?.message}`);
             }
@@ -178,10 +202,10 @@ export default ({ setCurrentContent }) => {
   /**
    * 取消添加模板
    */
-  const onCancelTemplate = () => {
+  const onCancelBizRoleApp = () => {
     // 重置输入的表单
     FormRef.resetFields();
-    setRegisterMerchantModal(false);
+    setIsAddBizRoleAppModal(false);
   };
 
   // 点击编辑
@@ -190,13 +214,32 @@ export default ({ setCurrentContent }) => {
     FormRef.setFieldsValue(record);
     setAddModalTitle('编辑');
     setCheckItem(record);
-    setRegisterMerchantModal(true);
+    setIsAddBizRoleAppModal(true);
+  };
+
+  // 点击支付配置
+  const handlePayConfigModel = (record: DictColumnsItem) => {
+    console.log('handlePayConfigModel', record);
+    FormRef.setFieldsValue(record);
+    let reqParam = {
+      bizRoleAppId: record.serialNo,
+    };
+    getBizRoleAppPayChannelConfig(reqParam).then((res) => {
+      console.log('getBizRoleAppPayChannelConfig', res);
+      if (res.code === '000000' || res.code === 0) {
+        setCheckItem(res.data);
+        setPayConfigModal(true);
+      } else {
+        message.error(`失败： ${res?.message}`);
+      }
+    });
+
   };
 
   /**
    * 删除模板
    */
-  const toDelContractTemplate = async (record) => {
+  const toDelBizRoleApp = async (record) => {
     console.log('record', record);
     let { serialNo } = record;
     let delRes = await deleteBizRoleApp({ serialNo });
@@ -210,10 +253,10 @@ export default ({ setCurrentContent }) => {
   /**
    * 查看详情
    */
-  const toViewContractTemplate = async (record) => {
+  const toViewBizRoleApp = async (record) => {
     let { serialNo } = record;
     let viewRes = await getBizRoleAppDetail({ serialNo });
-    setIsViewTemplateModal(true);
+    setIsViewBizRoleAppModal(true);
     console.log('viewRes', viewRes);
     setIsViewRecord(record);
   };
@@ -317,7 +360,7 @@ export default ({ setCurrentContent }) => {
         toolBarRender={() => [
           <Button
             onClick={() => {
-              openRegisterMerchantModal();
+              addBizRoleAppModal();
             }}
             key="button"
             icon={<PlusOutlined />}
@@ -327,13 +370,13 @@ export default ({ setCurrentContent }) => {
           </Button>,
         ]}
       />
-      {/* 新增合约模板模态框 */}
+      {/* 新增|编辑模态框 */}
       <Modal
         title={addModalTitle}
         centered
-        open={registerMerchantModal}
-        onOk={confirmRegisterMerchant}
-        onCancel={onCancelTemplate}
+        open={isAddBizRoleAppModal}
+        onOk={confirmAddBizRoleApp}
+        onCancel={onCancelBizRoleApp}
       >
         <Form
           name="basic"
@@ -370,33 +413,33 @@ export default ({ setCurrentContent }) => {
           </Form.Item>
 
           <Form.Item
-              label="appId"
-              name="appId"
-              rules={[{ required: true, message: '请输入appId!' }]}
+            label="appId"
+            name="appId"
+            rules={[{ required: true, message: '请输入appId!' }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-              label="appSecret"
-              name="appSecret"
-              rules={[{ required: true, message: '请输入appSecret!' }]}
+            label="appSecret"
+            name="appSecret"
+            rules={[{ required: true, message: '请输入appSecret!' }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-              label="token"
-              name="token"
-              rules={[{ required: true, message: '请输入token!' }]}
+            label="token"
+            name="token"
+            rules={[{ required: true, message: '请输入token!' }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-              label="aesKey"
-              name="aesKey"
-              rules={[{ required: true, message: '请输入aesKey!' }]}
+            label="aesKey"
+            name="aesKey"
+            rules={[{ required: true, message: '请输入aesKey!' }]}
           >
             <Input />
           </Form.Item>
@@ -428,14 +471,119 @@ export default ({ setCurrentContent }) => {
           </Form.Item>
         </Form>
       </Modal>
+
+      {/* 支付配置模态框 */}
+      <Modal
+        title="支付配置"
+        centered
+        open={payConfigModal}
+        onOk={() => setPayConfigModal(false)}
+        onCancel={() => setPayConfigModal(false)}
+      >
+        <Form
+          name="basic"
+          form={FormRef}
+          labelCol={{ span: 7 }}
+          wrapperCol={{ span: 14 }}
+          // 表单默认值
+          initialValues={{}}
+        >
+          <Form.Item
+            label="支付配置ID"
+            name="serialNo"
+            rules={[{ required: false, message: '请输入支付配置ID!' }]}
+          >
+            <Input disabled />
+          </Form.Item>
+          {/* <Form.Item
+            label="支付接口代码"
+            // 查询？？？
+            name="payInterfaceCode"
+            rules={[{ required: true, message: '请选择支付接口代码!' }]}
+          >
+            <Select style={{ width: '100%' }}>
+              <Option value="1">应用</Option>
+              <Option value="2">接口</Option>
+              <Option value="3">微信公众号</Option>
+              <Option value="4">微信小程序</Option>
+              <Option value="5">企业微信</Option>
+              <Option value="6">微信支付</Option>
+              <Option value="7">微信开放平台</Option>
+              <Option value="8">个人微信</Option>
+              <Option value="9">公众号菜单</Option>
+              <Option value="10">其他</Option>
+            </Select>
+          </Form.Item> */}
+
+          <Form.Item
+            label="支付接口代码"
+            name="payInterfaceCode"
+            rules={[{ required: true, message: '请选择支付接口代码!' }]}
+          >
+            <Select style={{ width: '100%' }} allowClear>
+              <Option value="0">请选择支付接口代码</Option>
+              {payChannelInterfaceList.map((payChannelInterface) => {
+                return (
+                  <Option value={payChannelInterface?.payInterfaceCode}>
+                    {payChannelInterface?.payInterfaceName}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="应用ID"
+            name="bizRoleAppId"
+            rules={[{ required: true, message: '请输入应用ID!' }]}
+          >
+            <Input disabled />
+          </Form.Item>
+
+          <Form.Item
+            label="支付接口代码"
+            name="payInterfaceCode"
+            rules={[{ required: true, message: '请输入支付接口代码!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="params"
+            name="params"
+            rules={[{ required: true, message: '请输入params!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="状态"
+            // 状态: 0-停用, 1-启用
+            name="status"
+            rules={[{ required: true, message: '请输入状态!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+
+          <Form.Item
+            label="备注"
+            name="remark"
+            rules={[{ required: true, message: '请输入备注!' }]}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
+
       {/* 查看详情模态框 */}
       <Modal
         title="详情"
         width={800}
         centered
-        open={isViewTemplateModal}
-        onOk={() => setIsViewTemplateModal(false)}
-        onCancel={() => setIsViewTemplateModal(false)}
+        open={isViewBizRoleAppModal}
+        onOk={() => setIsViewBizRoleAppModal(false)}
+        onCancel={() => setIsViewBizRoleAppModal(false)}
       >
         {/* 详情信息 */}
         <Descriptions title="商户应用">
