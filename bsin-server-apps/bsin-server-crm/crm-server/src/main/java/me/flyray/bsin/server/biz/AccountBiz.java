@@ -17,7 +17,7 @@ import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.domain.entity.Account;
 import me.flyray.bsin.domain.entity.AccountJournal;
 import me.flyray.bsin.domain.enums.AccountEnum;
-import me.flyray.bsin.domain.enums.AccountTxType;
+import me.flyray.bsin.domain.enums.TransactionType;
 import me.flyray.bsin.infrastructure.mapper.AccountJournalMapper;
 import me.flyray.bsin.infrastructure.mapper.AccountMapper;
 import me.flyray.bsin.utils.BsinSnowflake;
@@ -55,7 +55,7 @@ public class AccountBiz {
         ccy,
         decimals,
         amount,
-        AccountTxType.INT_ACCOUNT.getCode());
+        TransactionType.INT_ACCOUNT.getCode());
   }
 
   public Account outAccount(
@@ -75,7 +75,7 @@ public class AccountBiz {
         ccy,
         decimals,
         amount,
-        AccountTxType.OUT_ACCOUNT.getCode());
+        TransactionType.OUT_ACCOUNT.getCode());
   }
 
   private Account handleAccount(
@@ -109,7 +109,7 @@ public class AccountBiz {
       customerAccount.setCategory(category);
       customerAccount.setDecimals(decimals);
       String amountStr = decimalFormat.format(amount);
-      if (AccountTxType.INT_ACCOUNT.getCode().equals(journalDirection)) {
+      if (TransactionType.INT_ACCOUNT.getCode().equals(journalDirection)) {
         customerAccount.setBalance(amount);
         accountJournal.setInOutFlag(1);
       } else {
@@ -139,7 +139,7 @@ public class AccountBiz {
         throw new BusinessException(ResponseCode.ACCOUNT_BALANCE_INSUFFICIENT);
       }
 
-      if (AccountTxType.INT_ACCOUNT.getCode().equals(journalDirection)) {
+      if (TransactionType.INT_ACCOUNT.getCode().equals(journalDirection)) {
         customerAccount.setBalance(customerAccount.getBalance().add(amount));
         accountJournal.setInOutFlag(1);
       } else {

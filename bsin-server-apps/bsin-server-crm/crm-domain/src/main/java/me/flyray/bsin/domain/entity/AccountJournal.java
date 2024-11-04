@@ -1,6 +1,5 @@
 package me.flyray.bsin.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -9,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import lombok.Data;
-import me.flyray.bsin.domain.enums.AccountTxType;
+import me.flyray.bsin.domain.enums.TransactionType;
 
 /**
  *
@@ -52,7 +51,7 @@ public class AccountJournal implements Serializable {
 
     /**
      * 业务类型 0、支付 1、退款 2、出售 3、充值 4、转账 5、提现
-     * @see AccountTxType
+     * @see TransactionType
      */
     private Integer orderType;
 

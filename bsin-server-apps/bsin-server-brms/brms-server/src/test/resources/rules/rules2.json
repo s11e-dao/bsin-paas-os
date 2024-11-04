@@ -7,7 +7,7 @@
       },
       "before": [
         {
-          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
+          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取，4、指标计算",
           "valueTakingMethod": "1",
           "type": "String",
           "name": "用户名",
@@ -15,7 +15,7 @@
           "metricsValue": "bolei"
         },
         {
-          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
+          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取，4、指标计算",
           "valueTakingMethod": "2",
           "type": "String",
           "name": "年龄",
@@ -23,7 +23,7 @@
           "metricsValue": ""
         },
         {
-          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
+          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取，4、指标计算",
           "valueTakingMethod": "3",
           "type": "Object",
           "name": "用户对象",
@@ -171,7 +171,7 @@
           "map": "$map"
         },
         {
-          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
+          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取，4、指标计算",
           "valueTakingMethod": "1",
           "type": "String",
           "name": "用户名",
@@ -179,7 +179,7 @@
           "metricsValue": "bolei"
         },
         {
-          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
+          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取，4、指标计算",
           "valueTakingMethod": "2",
           "type": "String",
           "name": "年龄",
@@ -187,7 +187,7 @@
           "metricsValue": ""
         },
         {
-          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取",
+          "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取，4、指标计算",
           "valueTakingMethod": "3",
           "type": "Object",
           "name": "用户对象",

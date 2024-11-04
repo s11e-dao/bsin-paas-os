@@ -1,32 +1,32 @@
 package me.flyray.bsin.domain.enums;
 
-public enum AccountTxType {
+public enum TransactionType {
 
     NONE(100,"无"),
 
     /**
      * 订单类型
      */
-    PAY(0,"支付"),
-    REFUND(1,"退款"),
-    SELL(2,"出售"),
-    RECHARGE(3,"充值"),
-    TRANSFER(4,"转账"),
-    WITHDRAW(5,"提现"),
-    CONSUMING(6,"消费"),
-
+    PAY(1,"支付"),
+    RECHARGE(2,"充值"),
+    TRANSFER(3,"转账"),
+    WITHDRAW(4,"提现"),
+    REFUND(5,"退款"),
+    SETTLEMENT(7,"结算"),
     /**
      * 出账入账标志
      */
-    INT_ACCOUNT(0,"入账"),
-    OUT_ACCOUNT(1,"出账");
+    OUT_ACCOUNT(1,"出账"),
+
+    INT_ACCOUNT(2,"入账");
+
 
     // 状态码
     private Integer code;
     // 状态信息
     private String message;
 
-    AccountTxType(Integer code, String message) {
+    TransactionType(Integer code, String message) {
         this.code = code;
         this.message = message;
     }
