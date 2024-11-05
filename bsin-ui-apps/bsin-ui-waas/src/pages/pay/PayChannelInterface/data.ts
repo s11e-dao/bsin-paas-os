@@ -33,12 +33,12 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
 
   // table里面的内容
-  {
-    title: 'ID',
-    width: 190,
-    dataIndex: 'serialNo',
-    hideInSearch: true,
-  },
+  // {
+  //   title: 'ID',
+  //   width: 190,
+  //   dataIndex: 'serialNo',
+  //   hideInSearch: true,
+  // },
   {
     title: '接口代码',
     width: 160,

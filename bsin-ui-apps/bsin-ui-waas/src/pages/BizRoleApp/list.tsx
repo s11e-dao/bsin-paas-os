@@ -64,6 +64,7 @@ export default ({ setCurrentContent }) => {
   const [logoUrl, setLogoUrl] = useState('');
   // 获取表单
   const [FormRef] = Form.useForm();
+  const [PayChannelConfigFormRef] = Form.useForm();
 
   /**
    * 以下内容为表格相关
@@ -228,6 +229,7 @@ export default ({ setCurrentContent }) => {
       console.log('getBizRoleAppPayChannelConfig', res);
       if (res.code === '000000' || res.code === 0) {
         setCheckItem(res.data);
+        PayChannelConfigFormRef.setFieldsValue(res.data);
         setPayConfigModal(true);
       } else {
         message.error(`失败： ${res?.message}`);
@@ -286,6 +288,17 @@ export default ({ setCurrentContent }) => {
     }
   };
 
+  // 状态: 0-停用, 1-启用
+  const handleViewRecordOfPayChannelConfigStatus = () => {
+    let { status } = isViewRecord;
+    if (status == '0') {
+      return '停用';
+    } else if (status == '1') {
+      return '启用';
+    } else {
+      return status;
+    }
+  };
   // 上传图片
   const uploadProps: UploadProps = {
     name: 'file',
@@ -482,7 +495,7 @@ export default ({ setCurrentContent }) => {
       >
         <Form
           name="basic"
-          form={FormRef}
+          form={PayChannelConfigFormRef}
           labelCol={{ span: 7 }}
           wrapperCol={{ span: 14 }}
           // 表单默认值
@@ -495,26 +508,6 @@ export default ({ setCurrentContent }) => {
           >
             <Input disabled />
           </Form.Item>
-          {/* <Form.Item
-            label="支付接口代码"
-            // 查询？？？
-            name="payInterfaceCode"
-            rules={[{ required: true, message: '请选择支付接口代码!' }]}
-          >
-            <Select style={{ width: '100%' }}>
-              <Option value="1">应用</Option>
-              <Option value="2">接口</Option>
-              <Option value="3">微信公众号</Option>
-              <Option value="4">微信小程序</Option>
-              <Option value="5">企业微信</Option>
-              <Option value="6">微信支付</Option>
-              <Option value="7">微信开放平台</Option>
-              <Option value="8">个人微信</Option>
-              <Option value="9">公众号菜单</Option>
-              <Option value="10">其他</Option>
-            </Select>
-          </Form.Item> */}
-
           <Form.Item
             label="支付接口代码"
             name="payInterfaceCode"
@@ -541,20 +534,16 @@ export default ({ setCurrentContent }) => {
           </Form.Item>
 
           <Form.Item
-            label="支付接口代码"
-            name="payInterfaceCode"
-            rules={[{ required: true, message: '请输入支付接口代码!' }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
             label="params"
             name="params"
             rules={[{ required: true, message: '请输入params!' }]}
           >
-            <Input />
+            <TextArea
+              placeholder="请输入params"
+              autoSize={{ minRows: 2, maxRows: 8 }}
+            />
           </Form.Item>
+
 
           <Form.Item
             label="状态"
@@ -562,7 +551,11 @@ export default ({ setCurrentContent }) => {
             name="status"
             rules={[{ required: true, message: '请输入状态!' }]}
           >
-            <Input />
+            <Select style={{ width: '100%' }}>
+              {/* 状态: 0-停用, 1-启用 */}
+              <Option value="0">停用</Option>
+              <Option value="1">启用</Option>
+            </Select>
           </Form.Item>
 
 
