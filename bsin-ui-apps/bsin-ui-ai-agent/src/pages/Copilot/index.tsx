@@ -7,6 +7,7 @@ import {
   getLocalStorageInfo,
 } from '../../utils/localStorageInfo'
 export default () => {
+  
   // 控制是否展示详情组件
   const [isLoadCopilotDetail, setIsLoadCopilotDetail] = useState(false)
 
