@@ -10,11 +10,17 @@ import {
   Popconfirm,
   Descriptions,
   Upload,
+  Drawer,
+  Card,
+  Alert,
+  Radio,
+  Space
 } from 'antd';
 import type { UploadProps } from 'antd/es/upload/interface';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { PlusOutlined, InboxOutlined } from '@ant-design/icons';
+import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './data';
 import {
   getBizRoleAppPageList,
@@ -32,6 +38,9 @@ import {
   getSessionStorageInfo,
 } from '@/utils/localStorageInfo';
 import BizRoleApp from '.';
+
+const { Meta } = Card;
+const { TextArea } = Input;
 
 export default ({ setCurrentContent }) => {
 
@@ -78,7 +87,8 @@ export default ({ setCurrentContent }) => {
     <div key={record.dictType}>
       <a
         onClick={() => {
-          handlePayConfigModel(record);
+          // handlePayConfigModel(record);
+          showPayConfigDrawer(record)
         }}
       >
         支付配置
@@ -334,6 +344,29 @@ export default ({ setCurrentContent }) => {
     onRemove(e) { },
   };
 
+  const [openPayConfig, setOpenPayConfig] = useState(false);
+
+  const showPayConfigDrawer = (record) => {
+    setOpenPayConfig(true);
+  };
+
+  const onClosePayConfig = () => {
+    setOpenPayConfig(false);
+  };
+
+  const showChildrenDrawer = () => {
+    setChildrenDrawer(true);
+  };
+
+  const onChildrenDrawerClose = () => {
+    setChildrenDrawer(false);
+  };
+
+  const [childrenDrawer, setChildrenDrawer] = useState(false);
+
+  const [form] = Form.useForm();
+
+
   return (
     <div>
       {/* Pro表格 */}
@@ -383,6 +416,126 @@ export default ({ setCurrentContent }) => {
           </Button>,
         ]}
       />
+
+      <Drawer title="支付通道" width={800} closable={false} onClose={onClosePayConfig} open={openPayConfig}>
+        <Space size="middle" style={{ display: 'flex' }}>
+          <Card
+            style={{ width: 200 }}
+            styles={{ cover: { height: 100 } }}
+            cover={
+              <img
+                style={{ height: 100 }}
+                alt="example"
+                src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+              />
+            }
+            actions={[
+              <SettingOutlined key="setting" onClick={showChildrenDrawer} />
+            ]}
+          >
+            <Meta
+              title="微信支付"
+            />
+          </Card>
+
+          <Card
+            style={{ width: 200 }}
+            styles={{ cover: { height: 100 } }}
+            cover={
+              <img
+                style={{ height: 100 }}
+                alt="example"
+                src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+              />
+            }
+            actions={[
+              <SettingOutlined key="setting" onClick={showChildrenDrawer} />
+            ]}
+          >
+            <Meta
+              title="支付宝支付"
+            />
+          </Card>
+        </Space>
+        <Drawer
+          title="支付参数配置"
+          width={736}
+          closable={false}
+          onClose={onChildrenDrawerClose}
+          open={childrenDrawer}
+        >
+          <Form name="trigger" style={{ maxWidth: 600 }} layout="vertical" autoComplete="off">
+            {/* <Alert message="Use 'max' rule, continue type chars to see it" /> */}
+            <Form.Item
+              hasFeedback
+              label="状态"
+              name="field_a"
+              validateTrigger="onBlur"
+              rules={[{ max: 3 }]}
+            >
+              <Radio.Group options={[{ label: '启用', value: '1' }, { label: '停用', value: '0' },]} defaultValue="0" />
+            </Form.Item>
+
+            <Form.Item
+              hasFeedback
+              label="AppID"
+              name="field_a"
+              validateTrigger="onBlur"
+              rules={[{ max: 3 }]}
+            >
+              <Input placeholder="Validate required onBlur" />
+            </Form.Item>
+
+            <Form.Item
+              hasFeedback
+              label="微信支付商户号"
+              name="field_b"
+              validateDebounce={1000}
+              rules={[{ max: 3 }]}
+            >
+              <Input placeholder="Validate required debounce after 1s" />
+            </Form.Item>
+
+            <Form.Item
+              hasFeedback
+              label="微信支付API版本"
+              name="field_a"
+              validateTrigger="onBlur"
+              rules={[{ max: 3 }]}
+            >
+              <Radio.Group options={[{ label: 'V2', value: '1' }, { label: 'V3', value: '0' },]} defaultValue="0" />
+            </Form.Item>
+
+            <Form.Item
+              hasFeedback
+              label="APIv2密钥"
+              name="field_a"
+              validateTrigger="onBlur"
+              rules={[{ max: 3 }]}
+            >
+              <TextArea
+                placeholder="Controlled autosize"
+                autoSize={{ minRows: 3, maxRows: 5 }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              hasFeedback
+              label="APIv3密钥"
+              name="field_a"
+              validateTrigger="onBlur"
+              rules={[{ max: 3 }]}
+            >
+              <TextArea
+                placeholder="Controlled autosize"
+                autoSize={{ minRows: 3, maxRows: 5 }}
+              />
+            </Form.Item>
+
+          </Form>
+        </Drawer>
+      </Drawer>
+
       {/* 新增|编辑模态框 */}
       <Modal
         title={addModalTitle}

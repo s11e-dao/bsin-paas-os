@@ -19,9 +19,9 @@
     <description>bsin-paas平台：子应用</description>
 
     <modules>
-        <module>bsin-server-crm</module>
         <module>bsin-server-upms</module>
         <module>bsin-server-http</module>
+        <module>bsin-server-crm</module>
         <module>bsin-server-ai-agent</module>
         <module>bsin-server-waas</module>
         <module>bsin-server-search</module>
