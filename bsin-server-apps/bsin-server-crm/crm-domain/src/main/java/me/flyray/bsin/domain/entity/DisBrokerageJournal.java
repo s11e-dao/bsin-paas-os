@@ -111,6 +111,9 @@ public class DisBrokerageJournal implements Serializable {
 
     private String goodsCategoryNo;
 
+    private Integer isPreview;
+
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

@@ -23,10 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
 import com.alibaba.fastjson.JSON;
+
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import me.flyray.bsin.server.biz.AccountBiz;
 
 import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
 
@@ -57,6 +60,8 @@ public class DisBrokerageJournalServiceImpl implements DisBrokerageJournalServic
     @Autowired
     private DisBrokerageConfigMapper disBrokerageConfigMapper;
 
+    @Autowired
+    private AccountBiz accountBiz;
 
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
@@ -139,7 +144,7 @@ public class DisBrokerageJournalServiceImpl implements DisBrokerageJournalServic
             String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
             String goodsCategoryNo = MapUtils.getString(requestMap, "goodsCategoryNo");
             String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-
+            Integer idPreview = MapUtils.getInteger(requestMap, "isPreview");
             // 获取配置
             DisBrokerageConfig config = getConfig(requestMap);
             if (config == null ) {
@@ -163,10 +168,10 @@ public class DisBrokerageJournalServiceImpl implements DisBrokerageJournalServic
             }
 
             // 处理一级分佣
-            handleFirstLevelBrokerage(disBrokeragePolicy, disBrokerageRule, config, goodsSkuAmount, sysAgentNo, requestMap);
+            handleFirstLevelBrokerage(disBrokeragePolicy, disBrokerageRule, config, goodsSkuAmount, sysAgentNo,idPreview, requestMap);
 
             // 处理二级分佣
-            handleSecondLevelBrokerage(disBrokeragePolicy, disBrokerageRule, config, goodsSkuAmount, sysAgentNo, requestMap);
+            handleSecondLevelBrokerage(disBrokeragePolicy, disBrokerageRule, config, goodsSkuAmount, sysAgentNo,idPreview, requestMap);
 
             System.out.println("分佣接口调用成功");
         } catch (Exception e) {
@@ -196,25 +201,104 @@ public class DisBrokerageJournalServiceImpl implements DisBrokerageJournalServic
         );
     }
 
-    private void handleFirstLevelBrokerage(DisBrokeragePolicy disBrokeragePolicy, DisBrokerageRule disBrokerageRule, DisBrokerageConfig config, String goodsSkuAmount, String sysAgentNo, Map<String, Object> requestMap) {
+    private void handleFirstLevelBrokerage(DisBrokeragePolicy disBrokeragePolicy, DisBrokerageRule disBrokerageRule, DisBrokerageConfig config, String goodsSkuAmount, String sysAgentNo, Integer isPreview, Map<String, Object> requestMap)
+        throws UnsupportedEncodingException {
         Integer firstSalePer = disBrokerageRule.getFirstSalePer();
-        String parentAgentNo = getParentAgentNo(sysAgentNo);
-
-        DisBrokerageJournal disBrokerageJournal = createBrokerageJournal(disBrokeragePolicy, disBrokerageRule, config, goodsSkuAmount, 1, firstSalePer, sysAgentNo, requestMap);
+        String parentAgentNo = sysAgentNo;
+        if (parentAgentNo == null){
+            return;
+        }
+        DisBrokerageJournal disBrokerageJournal = createBrokerageJournal(disBrokeragePolicy, disBrokerageRule, config, goodsSkuAmount, 1, firstSalePer, sysAgentNo, isPreview, requestMap);
         disBrokerageJournalMapper.insert(disBrokerageJournal);
+        CustomerIdentity identity = CustomerIdentityMapper.selectOne(
+                new LambdaQueryWrapper<CustomerIdentity>()
+                        .eq(CustomerIdentity::getBizRoleTypeNo, parentAgentNo
+                        )
+        );
+        if (identity == null){
+            return;
+        }
+        if (isPreview==0){
+            accountBiz.inAccount(
+                    identity.getTenantId(),
+                    identity.getCustomerNo(),
+                    "4",
+                    "预分佣账户",
+                    "cny",
+                    2,
+                    disBrokerageJournal.getDisAmount()
+            );
+        }else{
+            accountBiz.outAccount(
+                    identity.getTenantId(),
+                    identity.getCustomerNo(),
+                    "4",
+                    "预分佣账户",
+                    "cny",
+                    2,
+                    disBrokerageJournal.getDisAmount().negate()
+            );
+            accountBiz.inAccount(
+                    identity.getTenantId(),
+                    identity.getCustomerNo(),
+                    "4",
+                    "分佣账户",
+                    "cny",
+                    2,
+                    disBrokerageJournal.getDisAmount()
+            );
+        }
     }
 
-    private void handleSecondLevelBrokerage(DisBrokeragePolicy disBrokeragePolicy, DisBrokerageRule disBrokerageRule, DisBrokerageConfig config, String goodsSkuAmount, String sysAgentNo, Map<String, Object> requestMap) {
+
+    private void handleSecondLevelBrokerage(DisBrokeragePolicy disBrokeragePolicy, DisBrokerageRule disBrokerageRule, DisBrokerageConfig config, String goodsSkuAmount, String sysAgentNo, Integer isPreview, Map<String, Object> requestMap)
+            throws UnsupportedEncodingException {
         Integer secondSalePer = disBrokerageRule.getSecondSalePer();
         String parentAgentNo = getParentAgentNo(sysAgentNo);
 
         if (secondSalePer != null && parentAgentNo != null) {
-            DisBrokerageJournal disBrokerageJournal2 = createBrokerageJournal(disBrokeragePolicy, disBrokerageRule, config, goodsSkuAmount, 2, secondSalePer, parentAgentNo, requestMap);
+            DisBrokerageJournal disBrokerageJournal2 = createBrokerageJournal(disBrokeragePolicy, disBrokerageRule, config, goodsSkuAmount, 2, secondSalePer, parentAgentNo, isPreview, requestMap);
             disBrokerageJournalMapper.insert(disBrokerageJournal2);
+            CustomerIdentity identity = CustomerIdentityMapper.selectOne(
+                    new LambdaQueryWrapper<CustomerIdentity>()
+                            .eq(CustomerIdentity::getBizRoleTypeNo, parentAgentNo
+                            )
+            );
+            if (isPreview==0){
+                accountBiz.inAccount(
+                        identity.getTenantId(),
+                        identity.getCustomerNo(),
+                        "4",
+                        "预分佣账户",
+                        "cny",
+                        2,
+                        disBrokerageJournal2.getDisAmount()
+                );
+            }else{
+                accountBiz.outAccount(
+                        identity.getTenantId(),
+                        identity.getCustomerNo(),
+                        "4",
+                        "预分佣账户",
+                        "cny",
+                        2,
+                        disBrokerageJournal2.getDisAmount().negate()
+                );
+                accountBiz.inAccount(
+                        identity.getTenantId(),
+                        identity.getCustomerNo(),
+                        "4",
+                        "分佣账户",
+                        "cny",
+                        2,
+                        disBrokerageJournal2.getDisAmount()
+                );
+            }
+
         }
     }
 
-    private DisBrokerageJournal createBrokerageJournal(DisBrokeragePolicy disBrokeragePolicy, DisBrokerageRule disBrokerageRule, DisBrokerageConfig config, String goodsSkuAmount, int disLevel, Integer salePer, String sysAgentNo, Map<String, Object> requestMap) {
+    private DisBrokerageJournal createBrokerageJournal(DisBrokeragePolicy disBrokeragePolicy, DisBrokerageRule disBrokerageRule, DisBrokerageConfig config, String goodsSkuAmount, int disLevel, Integer salePer, String sysAgentNo,Integer isPreview, Map<String, Object> requestMap) {
         DisBrokerageJournal disBrokerageJournal = BsinServiceContext.getReqBodyDto(DisBrokerageJournal.class, requestMap);
         disBrokerageJournal.setSerialNo(BsinSnowflake.getId());
         disBrokerageJournal.setBrokeragePoint(disBrokeragePolicy.getBrokeragePoint());
@@ -226,6 +310,7 @@ public class DisBrokerageJournalServiceImpl implements DisBrokerageJournalServic
         disBrokerageJournal.setSysAgentRate(config.getSysAgentRate());
         disBrokerageJournal.setDisAmount(new BigDecimal(goodsSkuAmount).multiply(config.getSysAgentRate()).multiply(new BigDecimal(salePer)).divide(new BigDecimal(100)).divide(new BigDecimal(100)));
         disBrokerageJournal.setSysAgentNo(sysAgentNo);
+        disBrokerageJournal.setIsPreview(isPreview);
         return disBrokerageJournal;
     }
 
