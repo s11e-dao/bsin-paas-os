@@ -204,6 +204,11 @@ const routes = [
         path: '/wallet/sys-agent-wallet',
         component: '@/pages/Wallet/SysAgentWallet/index',
       },
+      // ****************************收银************************
+      {
+        path: '/cashier',
+        component: '@/pages/Cashier/index',
+      },
       // **************************币种*************************
       {
         path: '/currency-management',
