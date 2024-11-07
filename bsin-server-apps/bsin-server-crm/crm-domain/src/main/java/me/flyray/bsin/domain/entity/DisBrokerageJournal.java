@@ -76,7 +76,7 @@ public class DisBrokerageJournal implements Serializable {
     private BigDecimal excludeCustomPer;
 
     /**
-     * 几级分佣一级分佣:1, 二级分佣:2
+     * 几级分佣  一级分佣:1, 二级分佣:2
      */
     private Integer disLevel;
 
