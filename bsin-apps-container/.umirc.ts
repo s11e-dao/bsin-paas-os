@@ -61,5 +61,6 @@ export default {
   headScripts: [
     'https://unpkg.com/react@18.0.0/umd/react.production.min.js',
     'https://unpkg.com/react-dom@18.0.0/umd/react-dom.production.min.js',
-  ]
+  ],
+  esbuildMinifyIIFE: true
 }
