@@ -24,8 +24,8 @@
             <result property="pointDays" column="point_days" jdbcType="INTEGER"/>
             <result property="goodSkuNo" column="good_sku_no" jdbcType="VARCHAR"/>
             <result property="goodsSkuAmount" column="goods_sku_amount" jdbcType="DECIMAL"/>
-
-
+            <result property="goodsCategoryNo" column="goods_category_no" jdbcType="VARCHAR"/>
+            <result property="isPreview" column="is_preview" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -34,6 +34,7 @@
         dis_amount,create_time,brokerage_point,
         exclude_fee_type,exclude_custom_per,dis_level,
         sys_agent_no,status,pay_amount,
-        sys_agent_rate,point_days,good_sku_no,goods_sku_amount
+        sys_agent_rate,point_days,good_sku_no,goods_sku_amount,
+        goods_category_no,is_preview
     </sql>
 </mapper>

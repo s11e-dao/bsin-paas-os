@@ -45,51 +45,130 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
     @Autowired
     private CustomerIdentityMapper CustomerIdentityMapper;
     @Autowired
-    private DisInviteRelationMapper DisInviteRelationMapper;
+    private DisInviteRelationMapper disInviteRelationMapper;
     @Autowired
     private DisBrokerageConfigMapper disBrokerageConfigMapper;
+    @Autowired
+    private DisModelMapper disModelMapper;
+
+
+
+
+    /**
+     * 添加分销团队关系
+     *
+     * 该方法主要用于处理分销团队关系的添加请求它首先检查请求中的参数，
+     * 然后根据这些参数查询相关的配置和实体信息，最后在数据库中创建一个新的分销团队关系
+     *
+     * @param requestMap 包含请求参数的映射，包括"sysAgentNo"和"tenantId"等关键信息
+     * @return 返回新创建的DisTeamRelation对象，如果请求失败或数据不合法则可能返回null
+     */
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
     @Override
     public DisTeamRelation add(Map<String, Object> requestMap) {
+        // 生成crm_sys_agent 数据后调用,requestMap ->{"sysAgentNo": 成为分销后的serial_no, "tenantId":租户ID}
         String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
         String tenantId = MapUtils.getString(requestMap, "tenantId");
-        DisBrokerageConfig config = disBrokerageConfigMapper.selectOne(
-                new LambdaQueryWrapper<DisBrokerageConfig>()
-                        .eq(DisBrokerageConfig::getTenantId,  MapUtils.getString(requestMap, "tenantId"))
-        );
-        if (config == null){
+        System.out.println(tenantId);
+        DisModel model = disModelMapper.selectById(tenantId);
+        System.out.println(model);
+        // 查询分销配置信息
+        if (model == null) {
             return null;
         }
+
+
+        // 根据sysAgentNo查询代理信息
         SysAgent agent = SysAgentMapper.selectById(sysAgentNo);
+        if (agent == null) {
+            return null;
+        }
+        System.out.println(agent);
+        // 查询客户身份信息
         CustomerIdentity identity = CustomerIdentityMapper.selectOne(
                 new LambdaQueryWrapper<CustomerIdentity>()
                 .eq(CustomerIdentity::getBizRoleTypeNo, agent.getSerialNo()
                 )
         );
-        DisInviteRelation relation  = DisInviteRelationMapper.selectOne(new LambdaQueryWrapper<DisInviteRelation>()
-                .eq(DisInviteRelation::getCustomerNo, identity.getCustomerNo()
-                )
+        System.out.println(identity);
+        if (identity == null) {
+            return null;
+        }
+
+        // 查询邀请关系信息
+        DisInviteRelation relation = disInviteRelationMapper.selectOne(
+                new LambdaQueryWrapper<DisInviteRelation>()
+                        .eq(DisInviteRelation::getCustomerNo, identity.getCustomerNo())
         );
+        if (relation == null) {
+            DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
+            disTeamRelation.setAgentType(1);
+            disTeamRelation.setSysAgentNo(agent.getSerialNo());
+            disTeamRelation.setSerialNo(BsinSnowflake.getId());
+            disTeamRelation.setTenantId(tenantId);
+
+            // 插入分销团队关系到数据库
+            disTeamRelationMapper.insert(disTeamRelation);
+
+            return disTeamRelation;
+        }
         String parentNo = relation.getParentNo();
-        CustomerIdentity parentIdentity = CustomerIdentityMapper.selectOne(new LambdaQueryWrapper<CustomerIdentity>()
-                .eq(CustomerIdentity::getCustomerNo, parentNo
-                )
+
+        // 查询父级客户身份信息
+        CustomerIdentity parentIdentity = CustomerIdentityMapper.selectOne(
+                new LambdaQueryWrapper<CustomerIdentity>()
+                        .eq(CustomerIdentity::getCustomerNo, parentNo)
         );
-//        SysAgent parentAgent =  SysAgentMapper.selectById(parentIdentity.getIdentityTypeNo());
-//        System.out.println(parentIdentity.getIdentityTypeNo());
+        if (parentIdentity == null) {
+            return null;
+        }
+
+        // 创建分销团队关系对象
         DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
         if (parentIdentity.getBizRoleTypeNo() != null){
             disTeamRelation.setPrarentSysAgentNo(parentIdentity.getBizRoleTypeNo());
             disTeamRelation.setAgentType(0);
-        }
-        else{
+        } else {
             disTeamRelation.setAgentType(1);
         }
         disTeamRelation.setSysAgentNo(agent.getSerialNo());
         disTeamRelation.setSerialNo(BsinSnowflake.getId());
+        disTeamRelation.setTenantId(tenantId);
+
+        // 插入分销团队关系到数据库
         disTeamRelationMapper.insert(disTeamRelation);
 
+        if (model.getModel().equals("level2_1") && parentIdentity.getBizRoleTypeNo() != null) {
+            DisTeamRelation parantDisTeamRelation = disTeamRelationMapper.selectOne(
+                    new LambdaQueryWrapper<DisTeamRelation>()
+                            .eq(DisTeamRelation::getSysAgentNo, parentIdentity.getBizRoleTypeNo())
+            );
+            if (parantDisTeamRelation == null) {
+                return disTeamRelation;
+            }
+            if (parantDisTeamRelation.getAgentType() != 1) {
+                // 查询该用户的上级是否已经有两个下级
+                Page<DisTeamRelation> page = new Page<>(1, 1);
+                LambdaQueryWrapper<DisTeamRelation> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(DisTeamRelation::getPrarentSysAgentNo, parentIdentity.getBizRoleTypeNo());
+                IPage<DisTeamRelation> pageList = disTeamRelationMapper.selectPage(page, wrapper);
+                if (pageList.getSize() >= model.getQuitCurrentLimit()) {
+                    DisTeamRelation topDisTeamRelation = disTeamRelationMapper.selectOne(
+                            new LambdaQueryWrapper<DisTeamRelation>()
+                                    .eq(DisTeamRelation::getPrarentSysAgentNo, parantDisTeamRelation.getPrarentSysAgentNo())
+                    );
+                    if (topDisTeamRelation == null) {
+                        return disTeamRelation;
+                    }
+                    for (DisTeamRelation item : pageList.getRecords()) {
+                        item.setPrarentSysAgentNo(topDisTeamRelation.getSysAgentNo());
+                        disTeamRelationMapper.updateById(item);
+                    }
+                    // 该用户改为老板身份,对应的下级改为上级的下级
+                }
+            }
+        }
         return disTeamRelation;
     }
 

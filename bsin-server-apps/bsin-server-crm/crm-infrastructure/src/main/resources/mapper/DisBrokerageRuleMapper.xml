@@ -23,4 +23,6 @@
         merchant_no,del_flag,create_time,
         update_time
     </sql>
+
+
 </mapper>
