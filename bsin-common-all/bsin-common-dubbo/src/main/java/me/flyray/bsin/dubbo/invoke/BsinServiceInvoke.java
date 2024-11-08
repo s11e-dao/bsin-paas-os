@@ -36,7 +36,6 @@ public class BsinServiceInvoke {
         reference.setApplication(application);
         reference.setInterface("me.flyray.bsin.facade.service." + serviceName); // 服务接口名
         reference.setGeneric(true); // 开启泛化调用
-        reference.setUrl("dubbo://localhost:20880"); // 服务提供方URL
 
         // 引用服务
         GenericService genericService = reference.get();
