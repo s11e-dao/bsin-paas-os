@@ -287,6 +287,7 @@ public enum ResponseCode implements ReturnCode {
     GOODS_UNDER_STOCK("120008", "库存不足"),
     GOODS_SPEC_ID_ISNULL("120009", "规格ID为空"),
     TYPE_IS_EMPTY("120010", "类型不能为空！"),
+    ORDER_NOT_EXIST("120011", "订单不存在！"),
 
     ;
 
