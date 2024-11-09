@@ -23,26 +23,36 @@ public class BsinServiceInvoke {
 
     public Object genericInvoke(String serviceName, String methodName, String version, Map<String, Object> reqParam) {
 
-        ApplicationConfig application = new ApplicationConfig();
-        application.setName("api-generic-provider");
+        GenericService genericService = concurrentHashMapBolt.get(serviceName);
 
-        //注册中心
-        RegistryConfig registry = new RegistryConfig();
-        registry.setAddress("nacos://127.0.0.1:8848");
-        application.setRegistry(registry);
+        if (genericService == null){
+            ApplicationConfig application = new ApplicationConfig();
+            application.setName("api-generic-provider");
 
-        // 引用远程服务
-        ReferenceConfig<GenericService> reference = new ReferenceConfig<GenericService>();
-        reference.setApplication(application);
-        reference.setInterface("me.flyray.bsin.facade.service." + serviceName); // 服务接口名
-        reference.setGeneric(true); // 开启泛化调用
+            //注册中心
+            RegistryConfig registry = new RegistryConfig();
+            registry.setAddress("nacos://127.0.0.1:8848");
+            registry.setUsername("nacos");
+            registry.setPassword("nacos");
+            application.setRegistry(registry);
 
-        // 引用服务
-        GenericService genericService = reference.get();
+            // 引用远程服务
+            ReferenceConfig<GenericService> reference = new ReferenceConfig<GenericService>();
+            reference.setApplication(application);
+            reference.setInterface("me.flyray.bsin.facade.service." + serviceName); // 服务接口名
+            reference.setVersion(version);
+            reference.setGeneric(true); // 开启泛化调用
+
+            // 引用服务
+            genericService = reference.get();
+            // 放入线程池中
+            concurrentHashMapBolt.put(serviceName, genericService);
+        }
 
         // 泛化调用
         Object result = genericService.$invoke(methodName, new String[]{"java.lang.String"}, new Object[]{reqParam});
         return result;
+
     }
 
     /**
