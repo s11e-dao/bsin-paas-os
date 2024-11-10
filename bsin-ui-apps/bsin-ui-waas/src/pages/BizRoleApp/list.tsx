@@ -31,6 +31,11 @@ import {
   getPayChannelInterfaceList,
   getBizRoleAppPayChannelConfig,
 } from './service';
+
+import {
+  getPayWayList
+} from '../pay/PayWay/service';
+
 import TableTitle from '../../components/TableTitle';
 import { hex_md5 } from '@/utils/md5';
 import {
@@ -69,6 +74,10 @@ export default ({ setCurrentContent }) => {
   const [checkItem, setCheckItem] = useState({});
 
   const [payChannelInterfaceList, setPayChannelInterfaceList] = useState([])
+
+  const [payWayList, setPayWayList] = useState([])
+
+  const [currentPayWay, setCurrentPayWay] = useState({})
 
   const [logoUrl, setLogoUrl] = useState('');
   // 获取表单
@@ -348,14 +357,22 @@ export default ({ setCurrentContent }) => {
 
   const showPayConfigDrawer = (record) => {
     setOpenPayConfig(true);
+    // 查询支付方式
+    getPayWayList({}).then((res) => {
+      if (res?.code == '000000' || res?.code == 0) {
+        setPayWayList(res?.data)
+      }
+    })
   };
 
   const onClosePayConfig = () => {
     setOpenPayConfig(false);
   };
 
-  const showChildrenDrawer = () => {
+  // 展示支付接口配置
+  const showChildrenDrawer = (record) => {
     setChildrenDrawer(true);
+    setCurrentPayWay(record)
   };
 
   const onChildrenDrawerClose = () => {
@@ -419,43 +436,31 @@ export default ({ setCurrentContent }) => {
 
       <Drawer title="支付通道" width={800} closable={false} onClose={onClosePayConfig} open={openPayConfig}>
         <Space size="middle" style={{ display: 'flex' }}>
-          <Card
-            style={{ width: 200 }}
-            styles={{ cover: { height: 100 } }}
-            cover={
-              <img
-                style={{ height: 100 }}
-                alt="example"
-                src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-              />
-            }
-            actions={[
-              <SettingOutlined key="setting" onClick={showChildrenDrawer} />
-            ]}
-          >
-            <Meta
-              title="微信支付"
-            />
-          </Card>
-
-          <Card
-            style={{ width: 200 }}
-            styles={{ cover: { height: 100 } }}
-            cover={
-              <img
-                style={{ height: 100 }}
-                alt="example"
-                src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-              />
-            }
-            actions={[
-              <SettingOutlined key="setting" onClick={showChildrenDrawer} />
-            ]}
-          >
-            <Meta
-              title="支付宝支付"
-            />
-          </Card>
+          {payWayList?.map((payWay) => {
+            return (
+              <Card
+                style={{ width: 200 }}
+                styles={{ cover: { height: 100 } }}
+                cover={
+                  <img
+                    style={{ height: 100 }}
+                    alt="example"
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                  />
+                }
+                actions={[
+                  <SettingOutlined key="setting"
+                    onClick={() => {
+                      showChildrenDrawer(payWay)
+                    }} />
+                ]}
+              >
+                <Meta
+                  title={payWay?.payWayName}
+                />
+              </Card>
+            );
+          })}
         </Space>
         <Drawer
           title="支付参数配置"
@@ -464,75 +469,146 @@ export default ({ setCurrentContent }) => {
           onClose={onChildrenDrawerClose}
           open={childrenDrawer}
         >
-          <Form name="trigger" style={{ maxWidth: 600 }} layout="vertical" autoComplete="off">
-            {/* <Alert message="Use 'max' rule, continue type chars to see it" /> */}
-            <Form.Item
-              hasFeedback
-              label="状态"
-              name="field_a"
-              validateTrigger="onBlur"
-              rules={[{ max: 3 }]}
-            >
-              <Radio.Group options={[{ label: '启用', value: '1' }, { label: '停用', value: '0' },]} defaultValue="0" />
-            </Form.Item>
+          {currentPayWay?.payWayCode == "aliPay" ? (
+            <Form name="trigger" style={{ maxWidth: 600 }} layout="vertical" autoComplete="off">
+              {/* <Alert message="Use 'max' rule, continue type chars to see it" /> */}
+              <Form.Item
+                hasFeedback
+                label="状态"
+                name="field_a"
+                validateTrigger="onBlur"
+                rules={[{ max: 3 }]}
+              >
+                <Radio.Group options={[{ label: '启用', value: '1' }, { label: '停用', value: '0' },]} defaultValue="0" />
+              </Form.Item>
 
-            <Form.Item
-              hasFeedback
-              label="AppID"
-              name="field_a"
-              validateTrigger="onBlur"
-              rules={[{ max: 3 }]}
-            >
-              <Input placeholder="Validate required onBlur" />
-            </Form.Item>
+              <Form.Item
+                hasFeedback
+                label="AppID"
+                name="field_a"
+                validateTrigger="onBlur"
+                rules={[{ max: 3 }]}
+              >
+                <Input placeholder="Validate required onBlur" />
+              </Form.Item>
 
-            <Form.Item
-              hasFeedback
-              label="微信支付商户号"
-              name="field_b"
-              validateDebounce={1000}
-              rules={[{ max: 3 }]}
-            >
-              <Input placeholder="Validate required debounce after 1s" />
-            </Form.Item>
+              <Form.Item
+                hasFeedback
+                label="支付宝商户号"
+                name="field_b"
+                validateDebounce={1000}
+                rules={[{ max: 3 }]}
+              >
+                <Input placeholder="Validate required debounce after 1s" />
+              </Form.Item>
 
-            <Form.Item
-              hasFeedback
-              label="微信支付API版本"
-              name="field_a"
-              validateTrigger="onBlur"
-              rules={[{ max: 3 }]}
-            >
-              <Radio.Group options={[{ label: 'V2', value: '1' }, { label: 'V3', value: '0' },]} defaultValue="0" />
-            </Form.Item>
+              <Form.Item
+                hasFeedback
+                label="支付宝API版本"
+                name="field_a"
+                validateTrigger="onBlur"
+                rules={[{ max: 3 }]}
+              >
+                <Radio.Group options={[{ label: 'V2', value: '1' }, { label: 'V3', value: '0' },]} defaultValue="0" />
+              </Form.Item>
 
-            <Form.Item
-              hasFeedback
-              label="APIv2密钥"
-              name="field_a"
-              validateTrigger="onBlur"
-              rules={[{ max: 3 }]}
-            >
-              <TextArea
-                placeholder="Controlled autosize"
-                autoSize={{ minRows: 3, maxRows: 5 }}
-              />
-            </Form.Item>
+              <Form.Item
+                hasFeedback
+                label="APIv2密钥"
+                name="field_a"
+                validateTrigger="onBlur"
+                rules={[{ max: 3 }]}
+              >
+                <TextArea
+                  placeholder="Controlled autosize"
+                  autoSize={{ minRows: 3, maxRows: 5 }}
+                />
+              </Form.Item>
 
-            <Form.Item
-              hasFeedback
-              label="APIv3密钥"
-              name="field_a"
-              validateTrigger="onBlur"
-              rules={[{ max: 3 }]}
-            >
-              <TextArea
-                placeholder="Controlled autosize"
-                autoSize={{ minRows: 3, maxRows: 5 }}
-              />
-            </Form.Item>
+              <Form.Item
+                hasFeedback
+                label="APIv3密钥"
+                name="field_a"
+                validateTrigger="onBlur"
+                rules={[{ max: 3 }]}
+              >
+                <TextArea
+                  placeholder="Controlled autosize"
+                  autoSize={{ minRows: 3, maxRows: 5 }}
+                />
+              </Form.Item>
+            </Form>
+          ) : (
+            <Form name="trigger" style={{ maxWidth: 600 }} layout="vertical" autoComplete="off">
+              {/* <Alert message="Use 'max' rule, continue type chars to see it" /> */}
+              <Form.Item
+                hasFeedback
+                label="状态"
+                name="field_a"
+                validateTrigger="onBlur"
+                rules={[{ max: 3 }]}
+              >
+                <Radio.Group options={[{ label: '启用', value: '1' }, { label: '停用', value: '0' },]} defaultValue="0" />
+              </Form.Item>
 
-          </Form>
+              <Form.Item
+                hasFeedback
+                label="AppID"
+                name="field_a"
+                validateTrigger="onBlur"
+                rules={[{ max: 3 }]}
+              >
+                <Input placeholder="Validate required onBlur" />
+              </Form.Item>
+
+              <Form.Item
+                hasFeedback
+                label="微信支付商户号"
+                name="field_b"
+                validateDebounce={1000}
+                rules={[{ max: 3 }]}
+              >
+                <Input placeholder="Validate required debounce after 1s" />
+              </Form.Item>
+
+              <Form.Item
+                hasFeedback
+                label="微信支付API版本"
+                name="field_a"
+                validateTrigger="onBlur"
+                rules={[{ max: 3 }]}
+              >
+                <Radio.Group options={[{ label: 'V2', value: '1' }, { label: 'V3', value: '0' },]} defaultValue="0" />
+              </Form.Item>
+
+              <Form.Item
+                hasFeedback
+                label="APIv2密钥"
+                name="field_a"
+                validateTrigger="onBlur"
+                rules={[{ max: 3 }]}
+              >
+                <TextArea
+                  placeholder="Controlled autosize"
+                  autoSize={{ minRows: 3, maxRows: 5 }}
+                />
+              </Form.Item>
+
+              <Form.Item
+                hasFeedback
+                label="APIv3密钥"
+                name="field_a"
+                validateTrigger="onBlur"
+                rules={[{ max: 3 }]}
+              >
+                <TextArea
+                  placeholder="Controlled autosize"
+                  autoSize={{ minRows: 3, maxRows: 5 }}
+                />
+              </Form.Item>
+            </Form>
+          )}
+
         </Drawer>
       </Drawer>
 
@@ -668,7 +744,7 @@ export default ({ setCurrentContent }) => {
           >
             <Select style={{ width: '100%' }} allowClear>
               <Option value="0">请选择支付接口代码</Option>
-              {payChannelInterfaceList.map((payChannelInterface) => {
+              {payChannelInterfaceList?.map((payChannelInterface) => {
                 return (
                   <Option value={payChannelInterface?.payInterfaceCode}>
                     {payChannelInterface?.payInterfaceName}

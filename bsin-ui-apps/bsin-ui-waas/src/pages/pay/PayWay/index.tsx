@@ -50,7 +50,7 @@ export default () => {
       <Divider type="vertical" />
       <Popconfirm
         title="是否删除此条数据?"
-        onConfirm={() => toDelPayWay(record.id)}
+        onConfirm={() => toDelPayWay(record)}
         onCancel={() => {
           message.warning(`取消删除`);
         }}
@@ -118,10 +118,10 @@ export default () => {
    */
   const toDelPayWay = async (record) => {
     console.log('record', record);
-    let { customerNo } = record;
-    let delRes = await deletePayWay({ customerNo });
+    let { serialNo } = record;
+    let delRes = await deletePayWay({ serialNo });
     console.log('delRes', delRes);
-    if (delRes.code === '000000') {
+    if (delRes.code === 0) {
       // 删除成功刷新表单
       actionRef.current?.reload();
     }

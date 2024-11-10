@@ -12,6 +12,8 @@ public enum ResponseCode implements ReturnCode {
     // 参数错误 400000
     PARAM_ERROR("1000", "参数错误"),
 
+    SERIAL_NO_NOT_EXIST("1001", "ID不存在"),
+
 
     // 数据库操作 100000
     DATA_BASE_UPDATE_FAILED("100001", "数据库更新失败"),

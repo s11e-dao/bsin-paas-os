@@ -13,6 +13,18 @@ export const getPayWayPageList = (params) => {
   });
 };
 
+
+export const getPayWayList = (params) => {
+  return request(waasPath + '/payWay/getList', {
+    serviceName: 'PayWayService',
+    methodName: 'getList',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
 // 添加平台
 export const addPayWay = (params) => {
   return request(waasPath + '/payWay/add', {
