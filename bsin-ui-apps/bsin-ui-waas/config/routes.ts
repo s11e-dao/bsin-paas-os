@@ -71,6 +71,10 @@ const routes = [
         path: '/merchant/merchant-list',
         component: '@/pages/Merchant/index',
       },
+      {
+        path: '/merchant/merchant-audit',
+        component: '@/pages/Merchant/MerchantAudit/index',
+      },
       // 商户认证
       {
         path: '/merchant/merchant-auth',

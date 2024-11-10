@@ -144,7 +144,7 @@ export default () => {
     <div>
       {/* Pro表格 */}
       <ProTable<columnsDataType>
-        headerTitle={<TableTitle title="商户认证信息" />}
+        headerTitle={<TableTitle title="商户待审核列表" />}
         scroll={{ x: 900 }}
         bordered
         // 表头
