@@ -19,6 +19,7 @@ package me.flyray.bsin.server;
 
 
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
+import org.dromara.x.file.storage.spring.EnableFileStorage;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -30,6 +31,8 @@ import me.flyray.bsin.infrastructure.config.TenantConfig;
 /**
  * TestDubboApplication.
  */
+
+@EnableFileStorage
 @SpringBootApplication(scanBasePackages = "me.flyray.bsin")
 @EnableDubbo
 @MapperScan("me.flyray.bsin.infrastructure.mapper")

@@ -3,7 +3,7 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://rm-2zeq9708apq292r36ko.mysql.rds.aliyuncs.com:3306/bsin-upms?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://127.0.0.1:3306/bsin-upms?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
     username: root
     password: root
   #redis
@@ -19,12 +19,16 @@ shenyu:
     serverLists: http://127.0.0.1:9095 #localhost:2181 #http://localhost:2379 #localhost:8848
     props:
       username: admin
-      password: 123456
+      password: 123456_Aa
   client:
     dubbo:
       props:
         contextPath: /upms
         appName: upms
+    http:
+      props:
+        contextPath: /http
+        appName: http
 
 dubbo:
   application:
@@ -51,5 +55,13 @@ dubbo:
     log-level: full
     request-log: true
 
-
-
+bsin:
+  oss:
+    upload:
+      uploadPath: G:\/upload\/
+    message:
+      upPath: /home/leonard/ipfsfile/
+      preImgUrl: http://file.s11edao.com
+    ipfs:
+      gateway: http://ipfs.s11edao.com/ipfs/
+      api: http://ipfsadmin.s11edao.com/api/v0

@@ -103,8 +103,6 @@
             <version>${spring-boot.version}</version>
         </dependency>
 
-
-
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-client</artifactId>
@@ -150,6 +148,19 @@
             <groupId>me.flyray.bsin</groupId>
             <artifactId>bsin-common-dubbo</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>me.flyray.bsin</groupId>
+            <artifactId>bsin-common-oss</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.shenyu</groupId>
+            <artifactId>shenyu-client-springmvc</artifactId>
+            <version>2.6.1</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

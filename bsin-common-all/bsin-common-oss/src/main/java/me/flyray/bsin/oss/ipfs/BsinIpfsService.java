@@ -33,16 +33,16 @@ import me.flyray.bsin.security.domain.LoginUser;
 @Slf4j
 public class BsinIpfsService {
 
-  @Value("${bsin.s11edao.ipfs.api}")
+  @Value("${bsin.oss.ipfs.api}")
   private String ipfsApi;
 
-  @Value("${bsin.s11edao.ipfs.gateway}")
+  @Value("${bsin.oss.ipfs.gateway}")
   private String ipfsGateway;
 
-  @Value("${message.upPath}")
+  @Value("${bsin.oss.message.upPath}")
   private String upPath;
 
-  @Value("${message.preImgUrl}")
+  @Value("${bsin.oss.message.preImgUrl}")
   private String preImgUrl;
 
   @Autowired private FileStorageService fileStorageService;
