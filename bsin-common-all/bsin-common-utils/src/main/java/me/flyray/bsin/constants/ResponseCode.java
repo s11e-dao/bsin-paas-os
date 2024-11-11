@@ -140,6 +140,8 @@ public enum ResponseCode implements ReturnCode {
     PAYMENT_ORDER_STATUS_ERROR("100906", "支付订单状态错误"),
     PAYMENT_WECHAT_PARSE_CALLBACK_ERROR("100907", "微信支付解析回调请求"),
     PAY_CHANNEL_CONFIG_NOT_EXIST("100908", "支付渠道配置不存在"),
+    NOT_SUPPORTED_PAY_WAY("100909", "不支持的支付方"),
+    OPEN_ID_NOT_EXISTS("100911", "openId为空"),
 
     /***********************************区块链服务类 200000 开头*****************************************/
     WALLET_CREATE_FAIL("200000", "创建链钱包失败~"),

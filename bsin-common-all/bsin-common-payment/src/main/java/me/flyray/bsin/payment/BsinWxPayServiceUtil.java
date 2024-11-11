@@ -1,6 +1,7 @@
 package me.flyray.bsin.payment;
 
 import com.github.binarywang.wxpay.config.WxPayConfig;
+import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,13 @@ public class BsinWxPayServiceUtil {
                   WxPayConfig config = new WxPayConfig();
                   config.setAppId(a.getAppId());
                   config.setServiceId(a.getServiceId());
+                  config.setMchId(a.getMchId());
+                  config.setMchKey(a.getMchKey());
+                  config.setSignType(a.getSignType());
+                  config.setApiV3Key(a.getApiV3Key());
+                  config.setNotifyUrl(a.getNotifyUrl());
+                  config.setKeyPath(a.getKeyPath());
+                  config.setCertSerialNo(a.getCertSerialNo());
                   return config;
                 })
             .collect(Collectors.toMap(WxPayConfig::getAppId, a -> a, (o, n) -> o)));

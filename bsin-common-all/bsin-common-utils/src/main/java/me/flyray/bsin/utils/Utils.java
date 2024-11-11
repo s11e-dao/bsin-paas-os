@@ -1,8 +1,11 @@
 package me.flyray.bsin.utils;
 
+import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Utils {
     public static byte[] sha256(byte[] message) {
@@ -56,5 +59,19 @@ public class Utils {
             throw new IllegalArgumentException(String.valueOf(errorMessage));
         }
     }
+    public static Map<String, Object> ObjectToMapConverter(Object obj) {
+        Map<String, Object> map = new HashMap<>();
+        Class<?> clazz = obj.getClass();
+        for (Field field : clazz.getDeclaredFields()) {
+            try {
+                field.setAccessible(true);
+                map.put(field.getName(), field.get(obj));
+            } catch (IllegalAccessException e) {
+                map.put(field.getName(), null);
+            }
+        }
+        return map;
+    }
+
 }
 
