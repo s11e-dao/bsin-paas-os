@@ -57,7 +57,6 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
      *
      * 该方法主要用于处理分销团队关系的添加请求它首先检查请求中的参数，
      * 然后根据这些参数查询相关的配置和实体信息，最后在数据库中创建一个新的分销团队关系
-     *
      * @param requestMap 包含请求参数的映射，包括"sysAgentNo"和"tenantId"等关键信息
      * @return 返回新创建的DisTeamRelation对象，如果请求失败或数据不合法则可能返回null
      */
@@ -135,6 +134,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         // 插入分销团队关系到数据库
         disTeamRelationMapper.insert(disTeamRelation);
 
+        // 不同的分销模型做不同的处理
         if (model.getModel().equals("level2_1") && parentIdentity.getBizRoleTypeNo() != null) {
             DisTeamRelation parantDisTeamRelation = disTeamRelationMapper.selectOne(
                     new LambdaQueryWrapper<DisTeamRelation>()
