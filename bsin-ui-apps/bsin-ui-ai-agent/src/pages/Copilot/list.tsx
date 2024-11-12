@@ -109,7 +109,7 @@ export default ({ addCurrentRecord, addCopilotList }) => {
       pageSize: '99',
     }
     getCopilotPageList(params).then((res) => {
-      if (res?.code == '000000') {
+      if (res?.code == '000000'  || res?.code == 0) {
         setCopilotList(res?.data)
         addCopilotList(res?.data)
 

@@ -162,7 +162,7 @@ services:
       context: ./bsin-paas-os/server-apps/upms
       dockerfile: dockerfile
     ports:
-      - "8013:8013"
+      - "9101:9101"
     #restart: always
     volumes:
       - ./bsin-paas-os/server-apps/upms/logs:/home/bsin-paas-os/server-apps/upms/logs
@@ -182,7 +182,7 @@ services:
       context: ./bsin-paas-os/server-apps/waas
       dockerfile: dockerfile
     ports:
-      - "8085:8085"
+      - "9107:9107"
     #restart: always
     volumes:
       - ./bsin-paas-os/server-apps/waas/logs:/home/bsin-paas-os/server-apps/waas/logs
@@ -203,7 +203,7 @@ services:
       context: ./bsin-paas-os/server-apps/crm
       dockerfile: dockerfile
     ports:
-      - "8072:8072"
+      - "9102:9102"
     #restart: always
     volumes:
       - ./bsin-paas-os/server-apps/crm/logs:/home/bsin-paas-os/server-apps/crm/logs
@@ -223,7 +223,7 @@ services:
       context: ./bsin-paas-os/server-apps/ai-agent
       dockerfile: dockerfile
     ports:
-      - "8084:8084"
+      - "9104:9104"
     #restart: always
     volumes:
       - ./bsin-paas-os/server-apps/ai-agent/logs:/home/bsin-paas-os/server-apps/ai-agent/logs
@@ -244,7 +244,7 @@ services:
       context: ./bsin-paas-os/apps-container
       dockerfile: dockerfile
     ports:
-      - "8000:80"
+      - "8000:8000"
 #    expose:
 #      - "80"
     volumes:
@@ -260,7 +260,7 @@ services:
       context: ./bsin-paas-os/ui-apps/upms
       dockerfile: dockerfile
     ports:
-      - "8003:80"
+      - "8001:8001"
 #    expose:
 #      - "80"
     volumes:
@@ -275,7 +275,7 @@ services:
       context: ./bsin-paas-os/ui-apps/ai-agent
       dockerfile: dockerfile
     ports:
-      - "8014:80"
+      - "8004:8004"
 #    expose:
 #      - "80"
     volumes:
@@ -290,7 +290,7 @@ services:
       context: ./bsin-paas-os/ui-apps/waas
       dockerfile: dockerfile
     ports:
-      - "8004:80"
+      - "8002:8002"
 #    expose:
 #      - "80"
     volumes:
@@ -306,7 +306,7 @@ services:
       context: ./bsin-paas-os/ui-apps/decision-admin
       dockerfile: dockerfile
     ports:
-      - "5555:80"
+      - "8003:8003"
 #    expose:
 #      - "80"
     volumes:

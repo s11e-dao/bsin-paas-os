@@ -2,20 +2,27 @@
 
 # 使用说明，用来提示输入参数
 usage(){
-	echo "Usage: sh deploy.sh [build|middleware|gateway|server_apps|ui_apps|start|stop|rm]"
+	echo "Usage: sh deploy.sh [build|middleware|gateway|server_apps|ui_apps|start|stop|rm|clean|copy]"
 	exit 1
 }
 
 # 重新构建
 build(){
-#  ./script/package.sh
-#  ./script/copy.sh
 	docker-compose stop
 	docker-compose rm
 	docker-compose build
 }
 
 
+# clean程序
+clean(){
+  ./script/package.sh
+}
+
+# copy程序
+copy(){
+  ./script/copy.sh
+}
 # 启动基础环境（必须）
 middleware(){
 	docker-compose up -d bsin-mysql bsin-redis bsin-nacos-standalone #bsin-rabbitmq bsin-milvus
@@ -72,6 +79,12 @@ case "$1" in
 ;;
 "rm")
 	rm
+;;
+"clean")
+	clean
+;;
+"copy")
+	copy
 ;;
 *)
 	usage

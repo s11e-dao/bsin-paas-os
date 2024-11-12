@@ -22,7 +22,7 @@ mkdir -p ./middleware/redis/logs
 mkdir -p ./bsin-paas-os/server-apps/ai-agent/jar
 mkdir -p ./bsin-paas-os/server-apps/brms/jar
 mkdir -p ./bsin-paas-os/server-apps/crm/jar
-mkdir -p ./bsin-paas-os/server-apps/http/jar
+#mkdir -p ./bsin-paas-os/server-apps/http/jar
 mkdir -p ./bsin-paas-os/server-apps/search/jar
 mkdir -p ./bsin-paas-os/server-apps/upms/jar
 mkdir -p ./bsin-paas-os/server-apps/waas/jar
@@ -64,7 +64,7 @@ echo "5.3 begin copy server-apps"
 cp ../bsin-server-apps/bsin-server-ai-agent/ai-agent-server/target/ai-agent-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/ai-agent/jar/ai-agent-server-2.0.0-SNAPSHOT.jar
 cp ../bsin-server-apps/bsin-server-brms/brms-server/target/brms-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/brms/jar/brms-server-2.0.0-SNAPSHOT.jar
 cp ../bsin-server-apps/bsin-server-crm/crm-server/target/crm-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/crm/jar/crm-server-2.0.0-SNAPSHOT.jar
-cp ../bsin-server-apps/bsin-server-http/target/bsin-server-http.jar ./bsin-paas-os/server-apps/http/jar/http-server-2.0.0-SNAPSHOT.jar
+#cp ../bsin-server-apps/bsin-server-http/target/bsin-server-http.jar ./bsin-paas-os/server-apps/http/jar/http-server-2.0.0-SNAPSHOT.jar
 cp ../bsin-server-apps/bsin-server-search/search-server/target/search-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/search/jar/search-server-2.0.0-SNAPSHOT.jar
 cp ../bsin-server-apps/bsin-server-upms/upms-server/target/upms-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/upms/jar/upms-server-2.0.0-SNAPSHOT.jar
 cp ../bsin-server-apps/bsin-server-waas/waas-server/target/waas-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/waas/jar/waas-server-2.0.0-SNAPSHOT.jar
