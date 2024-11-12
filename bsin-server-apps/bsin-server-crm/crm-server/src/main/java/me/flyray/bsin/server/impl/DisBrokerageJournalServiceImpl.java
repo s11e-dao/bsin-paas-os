@@ -301,7 +301,7 @@ public class DisBrokerageJournalServiceImpl implements DisBrokerageJournalServic
     private DisBrokerageJournal createBrokerageJournal(DisBrokeragePolicy disBrokeragePolicy, DisBrokerageRule disBrokerageRule, DisBrokerageConfig config, String goodsSkuAmount, int disLevel, Integer salePer, String sysAgentNo,Integer isPreview, Map<String, Object> requestMap) {
         DisBrokerageJournal disBrokerageJournal = BsinServiceContext.getReqBodyDto(DisBrokerageJournal.class, requestMap);
         disBrokerageJournal.setSerialNo(BsinSnowflake.getId());
-        disBrokerageJournal.setBrokeragePoint(disBrokeragePolicy.getBrokeragePoint());
+        disBrokerageJournal.setTriggerEventCode(disBrokeragePolicy.getTriggerEventCode());
         disBrokerageJournal.setRuleNo(disBrokerageRule.getSerialNo());
         disBrokerageJournal.setPolicyNo(disBrokerageRule.getBrokeragePolicyNo());
         disBrokerageJournal.setExcludeFeeType(disBrokeragePolicy.getExcludeFeeType());

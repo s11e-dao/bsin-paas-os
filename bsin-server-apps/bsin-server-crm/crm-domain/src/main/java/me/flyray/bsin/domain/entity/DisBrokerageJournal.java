@@ -61,9 +61,9 @@ public class DisBrokerageJournal implements Serializable {
     private Date createTime;
 
     /**
-     * 分佣条件,订单结束:FINISH , 确认收货: CONFIRM_TRANSFER
+     * 触发分佣的事件编码, 收款: PAY_SUCCESS, 发货: TRANSFER
      */
-    private String brokeragePoint;
+    private String triggerEventCode;
 
     /**
      * 不进行分佣的资金: 运费: carriage, 自定义: custom
@@ -76,7 +76,7 @@ public class DisBrokerageJournal implements Serializable {
     private BigDecimal excludeCustomPer;
 
     /**
-     * 几级分佣一级分佣:1, 二级分佣:2
+     * 几级分佣  一级分佣:1, 二级分佣:2
      */
     private Integer disLevel;
 
