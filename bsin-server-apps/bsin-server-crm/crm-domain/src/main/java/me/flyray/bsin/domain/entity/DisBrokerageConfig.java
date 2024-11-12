@@ -49,6 +49,11 @@ public class DisBrokerageConfig implements Serializable {
     private BigDecimal customerRate;
 
     /**
+     * 商户让利比例
+     */
+    private BigDecimal merchantSharingRate;
+
+    /**
      * 设置规则的商户
      */
     private String merchantNo;

@@ -37,7 +37,4 @@ public interface DisBrokerageJournalService {
      */
     public IPage<?> getPageList(Map<String, Object> requestMap);
 
-    void execute(Map<String, Object> requestMap);
-
-    void brokerage(Map<String, Object> requestMap);
 }

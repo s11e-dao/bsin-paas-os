@@ -13,7 +13,7 @@
             <result property="ruleNo" column="rule_no" jdbcType="VARCHAR"/>
             <result property="disAmount" column="dis_amount" jdbcType="DECIMAL"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="brokeragePoint" column="brokerage_point" jdbcType="VARCHAR"/>
+            <result property="triggerEventCode" column="trigger_event_code" jdbcType="VARCHAR"/>
             <result property="excludeFeeType" column="exclude_fee_type" jdbcType="VARCHAR"/>
             <result property="excludeCustomPer" column="exclude_custom_per" jdbcType="VARCHAR"/>
             <result property="disLevel" column="dis_level" jdbcType="INTEGER"/>
@@ -31,7 +31,7 @@
     <sql id="Base_Column_List">
         serial_no,order_no,merchant_no,
         good_no,policy_no,rule_no,
-        dis_amount,create_time,brokerage_point,
+        dis_amount,create_time,trigger_event_code,
         exclude_fee_type,exclude_custom_per,dis_level,
         sys_agent_no,status,pay_amount,
         sys_agent_rate,point_days,good_sku_no,goods_sku_amount,

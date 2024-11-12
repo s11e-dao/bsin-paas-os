@@ -52,8 +52,6 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
     private DisModelMapper disModelMapper;
 
 
-
-
     /**
      * 添加分销团队关系
      *
@@ -77,8 +75,6 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         if (model == null) {
             return null;
         }
-
-
         // 根据sysAgentNo查询代理信息
         SysAgent agent = SysAgentMapper.selectById(sysAgentNo);
         if (agent == null) {
@@ -211,7 +207,6 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         return pageList;
     }
 
-
     /**
      * 分销团队关系详情
      * @param requestMap
@@ -225,14 +220,6 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         DisTeamRelation disTeamRelation = disTeamRelationMapper.selectById(serialNo);
         return disTeamRelation;
     }
-
-
-
-
-
-
-
-
 
 }
 

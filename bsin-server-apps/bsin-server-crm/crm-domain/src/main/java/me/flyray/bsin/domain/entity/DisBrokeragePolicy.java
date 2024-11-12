@@ -29,9 +29,14 @@ public class DisBrokeragePolicy implements Serializable {
     private String tenantId;
 
     /**
-     * 分佣时间点, 收款: PAY_SUCCESS, 发货: TRANSFER
+     * 触发分佣的事件(对应事件表的编码), 收款: PAY_SUCCESS, 发货: TRANSFER
      */
-    private String brokeragePoint;
+    private String triggerEventCode;
+
+    /**
+     * 触发事件后几天
+     */
+    private Integer triggerEventAfterDate;
 
     /**
      * 分佣政策名称
