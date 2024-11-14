@@ -2,7 +2,7 @@
 
 # 使用说明，用来提示输入参数
 usage(){
-	echo "Usage: sh deploy.sh [build|middleware|gateway|server_apps|ui_apps|start|stop|rm|clean|copy]"
+	echo "Usage: sh deploy.sh [build|middleware|gateway|server_apps|ui_apps|start|stop|rm|clean|copy|ai_agent|upms|waas|crm|brms|search|workflow|workflow_admin]"
 	exit 1
 }
 
@@ -34,12 +34,44 @@ gateway(){
 }
 # 启动server-apps模块
 server_apps(){
-	docker-compose up -d bsin-server-upms bsin-server-waas bsin-server-crm bsin-server-ai-agent
+	docker-compose up -d bsin-server-upms bsin-server-waas bsin-server-crm bsin-server-ai-agent #bsin-server-workflow bsin-server-workflow-admin bsin-server-search bsin-server-brms
 }
 
+# 启动upms模块
+upms(){
+	docker-compose up -d bsin-server-upms
+}
+# 启动crm模块
+crm(){
+	docker-compose up -d bsin-server-crm
+}
+# 启动waas模块
+waas(){
+	docker-compose up -d bsin-server-waas
+}
+# 启动ai_agent模块
+ai_agent(){
+	docker-compose up -d bsin-server-ai-agent
+}
+# 启动brms模块
+brms(){
+	docker-compose up -d bsin-server-brms
+}
+# 启动search模块
+search(){
+	docker-compose up -d bsin-server-search
+}
+# 启动workflow模块
+workflow(){
+	docker-compose up -d bsin-server-workflow
+}
+# 启动workflow-admin模块
+workflow_admin(){
+	docker-compose up -d bsin-server-workflow-admin
+}
 # 启动ui-apps模块
 ui_apps(){
-	docker-compose up -d bsin-apps-container bsin-ui-upms bsin-ui-ai-agent bsin-ui-waas #bsin-ui-decision-admin
+	docker-compose up -d bsin-apps-container bsin-ui-upms bsin-ui-ai-agent bsin-ui-waas bsin-ui-decision-admin
 }
 # 关闭所有环境/模块
 stop(){
@@ -64,6 +96,30 @@ case "$1" in
 ;;
 "server_apps")
 	server_apps
+;;
+"ai_agent")
+	ai_agent
+;;
+"upms")
+	upms
+;;
+"waas")
+	waas
+;;
+"crm")
+	crm
+;;
+"brms")
+	brms
+;;
+"search")
+	search
+;;
+"workflow")
+	workflow
+;;
+"workflow_admin")
+	workflow_admin
 ;;
 "ui_apps")
 	ui_apps

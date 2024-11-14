@@ -73,6 +73,8 @@ public enum ResponseCode implements ReturnCode {
     APP_NOT_EXISTS("1006005", "该应用不存在"),
     UPMS_NOT_ADD("1006006", "权限管理不能添加"),
 
+    WX_APP_INSTANCE_FAIL("1006007", "微信应用服务实例化失败!!"),
+
     APP_ID_NOT_EXISTS("1006006", "未找到对应appid!!"),
 
     // 租户 100700
