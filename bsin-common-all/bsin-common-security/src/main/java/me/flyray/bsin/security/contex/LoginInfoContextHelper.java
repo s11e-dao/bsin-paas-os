@@ -62,7 +62,9 @@ public class LoginInfoContextHelper {
     public static String getMerchantNo() {
         return getLoginUser().getMerchantNo();
     }
-
+    public static String getCredential() {
+        return getLoginUser().getCredential();
+    }
     public static String getCustomerNo() {
         return getLoginUser().getCustomerNo();
     }

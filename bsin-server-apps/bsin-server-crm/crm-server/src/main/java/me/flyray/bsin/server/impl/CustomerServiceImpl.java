@@ -125,6 +125,7 @@ public class CustomerServiceImpl implements CustomerService {
     loginUser.setUsername(customerInfo.getUsername());
     loginUser.setPhone(customerInfo.getPhone());
     loginUser.setCustomerNo(customerInfo.getCustomerNo());
+    loginUser.setCredential(customerInfo.getCredential());
     loginUser.setBizRoleType(BizRoleType.CUSTOMER.getCode());
     loginUser.setBizRoleTypeNo(customerInfo.getCustomerNo());
     // 平台会员模型
@@ -337,6 +338,7 @@ public class CustomerServiceImpl implements CustomerService {
     loginUser.setUsername(customerBaseRegister.getUsername());
     loginUser.setPhone(customerBaseRegister.getPhone());
     loginUser.setCustomerNo(customerBaseRegister.getCustomerNo());
+    loginUser.setCredential(customerBaseRegister.getCredential());
     loginUser.setBizRoleType(BizRoleType.CUSTOMER.getCode());
     loginUser.setBizRoleTypeNo(customerBaseRegister.getCustomerNo());
     // 平台会员模型
@@ -421,6 +423,7 @@ public class CustomerServiceImpl implements CustomerService {
     //    loginUser.setUsername(customerBase.getUsername());
     //    loginUser.setPhone(customerBase.getPhone());
     //    loginUser.setCustomerNo(customerBase.getCustomerNo());
+    //    loginUser.setCredential(customerBaseRegister.getCredential());
     //    loginUser.setBizRoleType(BizRoleType.CUSTORMER.getCode());
     //    loginUser.setBizRoleTypeNo(customerBase.getCustomerNo());
     //    String token = AuthenticationProvider.createToken(loginUser, authSecretKey,
@@ -486,6 +489,7 @@ public class CustomerServiceImpl implements CustomerService {
     loginUser.setUsername(customerBaseRegister.getUsername());
     loginUser.setPhone(customerBaseRegister.getPhone());
     loginUser.setCustomerNo(customerBaseRegister.getCustomerNo());
+    loginUser.setCredential(customerBaseRegister.getCredential());
     loginUser.setBizRoleType(BizRoleType.CUSTOMER.getCode());
     loginUser.setBizRoleTypeNo(customerBaseRegister.getCustomerNo());
     String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
