@@ -5,13 +5,37 @@
 ## 准备环境
 1. 安装docker
 ~~~bash
+sudo apt-get installo -y docker
 ~$ docker -v
 Docker version 23.0.6, build ef23cbc
 ~~~
 2. 安装docker-compose
 ~~~bash
-~$ docker-compose -v
-Docker Compose version v2.17.3
+# 下载2.25版本的只有2.20版本以上支持include特性
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+# 授权可执行
+sudo chmod +x /usr/local/bin/docker-compose
+
+# 查看版本号
+docker-compose --version
+Docker Compose version v2.25.0
+
+# 卸载
+sudo rm /usr/local/bin/docker-compose
+
+# 指定文件启动
+docker-compose -f docker-compose.yml up -d
+
+# 查看运行中的容器
+docker-compose ps
+
+# 停止容器而不删除
+docker-compose stop
+
+# 停止并删除正在运行的容器
+docker-compose down
+
 ~~~
 
 
@@ -37,16 +61,54 @@ bash ./script/deploy.sh start
 bash ./script/deploy.sh stop
 
 ~~~
+- 容器启动成功后，访问地址：http://localhost:8000
+![](./doc/assets/bsin-login.png)
 
+## docker ui 服务
+~~~bash
+# 启动 portainer
+docker-compose -f portainer.yml up -d
+~~
+- 访问地址：http://localhost:9000
+![](./doc/assets/portainer.png)
 
 ## FAQ
 - 1.镜像构建失败
 * [尝试设置 docker 代理](https://cloud-atlas.readthedocs.io/zh-cn/latest/docker/network/docker_proxy_quickstart.html)
 
-- 2.tager-gateway 容器启动失败
+- 2.镜像pull失败
+~~~bash
+# 将其镜像地址进行替换
+vim /etc/docker/daemon.json
+# 添加镜像加速器
+{
+"registry-mirrors": [
+    "https://docker.m.daocloud.io",
+    "https://dockerproxy.com",
+    "https://registry.docker-cn.com",
+    "https://docker.mirrors.ustc.edu.cn",
+    "https://hub-mirror.c.163.com",
+    "https://hub.uuuadc.top",
+    "https://docker.anyhub.us.kg",
+    "https://dockerhub.jobcher.com",
+    "https://dockerhub.icu",
+    "https://docker.ckyl.me",
+    "https://docker.awsl9527.cn",
+    "https://mirror.baidubce.com"
+  ]
+}
+# 重启docker服务
+systemctl daemon-reload
+systemctl restart docker
+~~~
+
+- 3.tager-gateway 容器启动失败
 * 检查网关配置文件 [application.yml](../bsin-targe-gateway/src/main/resources/application.yml) 中 nacos 地址配置是否正确，修改为你当前启动**bsin-nacos-standalone**容器再主机的ipv4地址
 * 检查shenyu网关后台配置, 【插件列表】【Proxy】【Dubbo】【编辑】【register】 是否配置为 nacos 地址
 ![](./doc/assets/shenyu_nacos_register.png)
 
 
-- 3.同理，其他容器启动失败，需先仔细检查配置文件，如 nacos、网关、mysql数据库、redis数据库地址和端口，shenyu 用户名和密码，数据库用户名和密码等是否正确，总之要检查你的配置文件是否正确。
+- 4.同理，其他容器启动失败，需先仔细检查配置文件，如 nacos、网关、mysql数据库、redis数据库地址和端口，shenyu 用户名和密码，数据库用户名和密码等是否正确，总之要检查你的配置文件是否正确。
+
+- 5. 若使用云服务器 http://ip:8000 无法访问，请记得开发你的安全组,，根据情况开放相应的端口
+![](./doc/assets/aliyun_security_group.png)
