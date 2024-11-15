@@ -59,8 +59,8 @@ bash ./script/deploy.sh build
 bash ./script/deploy.sh start
 # 一键停止是所有容器
 bash ./script/deploy.sh stop
-
 ~~~
+
 - 容器启动成功后，访问地址：http://localhost:8000
 ![](./doc/assets/bsin-login.png)
 
@@ -68,7 +68,7 @@ bash ./script/deploy.sh stop
 ~~~bash
 # 启动 portainer
 docker-compose -f portainer.yml up -d
-~~
+~~~
 - 访问地址：http://localhost:9000
 ![](./doc/assets/portainer.png)
 
