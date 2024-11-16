@@ -38,6 +38,23 @@ public class AccountBiz {
     return account;
   }
 
+  /**
+   * 内部转账方法
+   */
+  public Account innerTransfer(
+          String tenantId,
+          String fromCustomerNo,
+          String toCustomerNo,
+          String fromAccountCategory,
+          String toAccountCategory,
+          String ccy,
+          Integer decimals,
+          BigDecimal amount)
+          throws UnsupportedEncodingException {
+
+    return null;
+  }
+
   public Account inAccount(
       String tenantId,
       String customerNo,

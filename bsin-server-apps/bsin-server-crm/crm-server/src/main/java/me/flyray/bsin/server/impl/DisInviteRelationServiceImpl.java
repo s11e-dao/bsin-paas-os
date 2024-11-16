@@ -40,28 +40,6 @@ public class DisInviteRelationServiceImpl implements DisInviteRelationService {
     @Autowired
     private DisInviteRelationMapper disInviteRelationMapper;
 
-    @ApiDoc(desc = "add")
-    @ShenyuDubboClient("/add")
-    @Override
-    public DisInviteRelation add(Map<String, Object> requestMap) {
-        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        DisInviteRelation disInviteRelation = BsinServiceContext.getReqBodyDto(DisInviteRelation.class, requestMap);
-        disInviteRelation.setTenantId(loginUser.getTenantId());
-        disInviteRelation.setSerialNo(BsinSnowflake.getId());
-        disInviteRelationMapper.insert(disInviteRelation);
-        return disInviteRelation;
-    }
-
-    @ApiDoc(desc = "delete")
-    @ShenyuDubboClient("/delete")
-    @Override
-    public void delete(Map<String, Object> requestMap) {
-        String serialNo = MapUtils.getString(requestMap, "serialNo");
-        if (disInviteRelationMapper.deleteById(serialNo) == 0){
-            throw new BusinessException(INVITE_RELATION_NOT_EXISTS);
-        }
-    }
-
     @ApiDoc(desc = "edit")
     @ShenyuDubboClient("/edit")
     @Override
@@ -90,7 +68,6 @@ public class DisInviteRelationServiceImpl implements DisInviteRelationService {
         IPage<DisInviteRelation> pageList = disInviteRelationMapper.selectPage(page, warapper);
         return pageList;
     }
-
 
     /**
      * 事件详情

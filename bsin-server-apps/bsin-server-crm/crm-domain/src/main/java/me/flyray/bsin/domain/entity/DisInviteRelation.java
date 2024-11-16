@@ -33,7 +33,7 @@ public class DisInviteRelation implements Serializable {
     private String customerNo;
 
     /**
-     * 父级邀请人序列号
+     * 父级邀请人客户号
      */
     private String parentNo;
 

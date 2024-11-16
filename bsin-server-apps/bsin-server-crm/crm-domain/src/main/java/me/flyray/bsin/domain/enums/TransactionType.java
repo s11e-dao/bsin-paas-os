@@ -13,12 +13,15 @@ public enum TransactionType {
     WITHDRAW(4,"提现"),
     REFUND(5,"退款"),
     SETTLEMENT(7,"结算"),
+
     /**
      * 出账入账标志
      */
     OUT_ACCOUNT(1,"出账"),
 
     INT_ACCOUNT(2,"入账");
+
+
 
 
     // 状态码

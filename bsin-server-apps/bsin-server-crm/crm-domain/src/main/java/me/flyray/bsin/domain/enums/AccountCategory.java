@@ -27,11 +27,25 @@ public enum AccountCategory {
      */
     ACCUMULATED_EXPENDITURE("3", "累计支出"),
 
+    /**
+     * 在途（In transit）账户: 属于中间账户
+     */
+    IN_TRANSIT("4", "在途账户"),
+
+    /**
+     * 待结算账户 Pending settlement
+     */
+    PENDING_SETTLEMENT("5", "待结算账户"),
+
+    /**
+     * 待分佣账户 Pending Brokerage
+     */
+    PENDING_BROKERAGE("6", "待分佣账户"),
 
     /**
      * Community 社区总收入账户
      */
-    COMMUNITY_ACCUMULATED_INCOME_TOKEN("4", "在途账户");
+    COMMUNITY_ACCUMULATED_INCOME_TOKEN("6", "社区总收入账户");
 
     private String code;
 
