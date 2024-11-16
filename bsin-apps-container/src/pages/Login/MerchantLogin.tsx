@@ -246,8 +246,8 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
         </div>
         <div className={styles['form-holder']}>
           <div className={styles['form-content']}>
-            <h3>bigan</h3>
-            <p>一站式的Web3.0品牌构建服务网络</p>
+            <h3>{process.env.saasTitle}</h3>
+            <p>{process.env.saasDescrition}</p>
             {pagesWitching === 'register' ? (
               <form className={styles['form']} >
                 <Select
@@ -335,7 +335,7 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
                     注册
                   </Button>
                   <span className={styles['login-link']}>
-                    已注册 bigan 账号了 ?
+                    已注册 {process.env.saasTitle} 账号了 ?
                     <a
                       onClick={() => setPagesWitching('login')}
                       className={styles['login-link']}
@@ -403,7 +403,7 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
                     登录
                   </Button>
                   <span className={styles['login-link']}>
-                    还没有自己的 bigan ?
+                    还没有自己的 {process.env.saasTitle} ?
                     <a
                       onClick={() => setPagesWitching('register')}
                       className={styles['login-link']}

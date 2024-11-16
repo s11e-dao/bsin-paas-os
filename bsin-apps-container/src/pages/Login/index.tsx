@@ -199,7 +199,7 @@ export default function () {
                     <div className={styles.logo}>
                       {/* <i className='bx bxl-html5 bx-lg'></i> */}
                       <img src={logo} />
-                      <h4 style={{ marginBottom: '0' }}>BsinPaaS一站式开发平台</h4>
+                      <h4 style={{ marginBottom: '0' }}>{process.env.paasDescription}</h4>
                     </div>
                     <div className={styles.actual_form}>
                       <div className={styles.input_wrap_role}>
@@ -261,7 +261,7 @@ export default function () {
                         登录
                       </Button>
                       <p className={styles.text}>
-                        s11e network web3品牌 <a className={styles.toggle} onClick={() => setPagesWitching('root')}>委员会登录</a>
+                        {process.env.subtitle} <a className={styles.toggle} onClick={() => setPagesWitching('root')}>委员会登录</a>
                       </p>
 
                     </div>
@@ -271,7 +271,7 @@ export default function () {
                     <div className={styles.logo}>
                       {/* <i className='bx bxl-html5 bx-lg'></i> */}
                       <img src={logo} />
-                      <h4 style={{ marginBottom: '0' }}>BsinPaaS一站式开发平台</h4>
+                      <h4 style={{ marginBottom: '0' }}>{process.env.paasDescription}</h4>
                     </div>
                     <div className={styles.actual_form}>
 
@@ -295,7 +295,7 @@ export default function () {
                         登录
                       </Button>
                       <p className={styles.text}>
-                        s11e network web3品牌 <a className={styles.toggle} onClick={() => setPagesWitching('node')}>节点登录</a>
+                        {process.env.subtitle} <a className={styles.toggle} onClick={() => setPagesWitching('node')}>节点登录</a>
                       </p>
 
                     </div>
@@ -311,7 +311,7 @@ export default function () {
                 <div className={styles.text_slider}>
                   <div className={styles.text_wrapper}>
                     <div className={styles.text_group}>
-                      <h2>s11e network web3品牌</h2>
+                      <h2>{process.env.subtitle}</h2>
                       <h2>打造专属个人空间</h2>
                       <h2>分享多彩生活</h2>
                     </div>
