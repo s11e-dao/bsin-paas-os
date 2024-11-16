@@ -100,9 +100,12 @@ public class BrokerageEngineImpl implements BrokerageEngine {
             DisBrokeragePolicy policy = validateAndGetBrokeragePolicy(rule);
             // 计算商户分佣金额
             BigDecimal merchantGoodsSkuSharingAmount = calculateSharingAmount(requestMap, config);
-
-            // 处理分佣逻辑
-            handleBrokerage(policy, rule, config, merchantGoodsSkuSharingAmount, requestMap);
+            int comparisonResult = merchantGoodsSkuSharingAmount.compareTo(BigDecimal.ZERO);
+            // 不分佣金
+            if(comparisonResult > 0){
+                // 处理分佣逻辑
+                handleBrokerage(policy, rule, config, merchantGoodsSkuSharingAmount, requestMap);
+            }
     }
 
     /**
@@ -232,14 +235,14 @@ public class BrokerageEngineImpl implements BrokerageEngine {
      * 处理账户交易记录
      */
     private void processAccountTransaction(String sysAgentNo, DisBrokerageJournal journal, Integer isPreview) throws UnsupportedEncodingException {
-
-        // 获取代理商信息，给代理商入账
         if (isPreview == 0) {
+            // 入账到代理商待结算账户
             accountBiz.inAccount(journal.getTenantId(), BizRoleType.SYS_AGENT.getCode(), sysAgentNo,
                     AccountCategory.PENDING_SETTLEMENT.getCode(), AccountCategory.PENDING_SETTLEMENT.getDesc(),
                     "cny", 2, journal.getDisAmount());
         } else {
-            accountBiz.innerTransfer(journal.getTenantId(), BizRoleType.SYS_AGENT.getCode(),sysAgentNo, BizRoleType.SYS_AGENT.getCode(),sysAgentNo,
+            // 从待分佣账户转到待结算账户
+            accountBiz.innerTransfer(journal.getTenantId(), BizRoleType.SYS_AGENT.getCode(), sysAgentNo, BizRoleType.SYS_AGENT.getCode(), sysAgentNo,
                     AccountCategory.PENDING_BROKERAGE.getCode(), AccountCategory.PENDING_SETTLEMENT.getCode(),
                     "cny", 2, journal.getDisAmount().negate());
         }

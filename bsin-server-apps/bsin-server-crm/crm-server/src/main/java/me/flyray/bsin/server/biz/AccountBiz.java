@@ -160,15 +160,14 @@ public class AccountBiz {
       if (customerAccount.getStatus().equals(AccountEnum.FREEZE.getCode())) {
         throw new BusinessException(ResponseCode.ACCOUNT_NOT_EXISTS);
       }
-      // 账户余额判断
-      if (customerAccount.getBalance().compareTo(amount) == -1) {
-        throw new BusinessException(ResponseCode.ACCOUNT_BALANCE_INSUFFICIENT);
-      }
-
       if (TransactionType.INT_ACCOUNT.getCode().equals(journalDirection)) {
         customerAccount.setBalance(customerAccount.getBalance().add(amount));
         accountJournal.setInOutFlag(1);
       } else {
+        // 账户余额判断
+        if (customerAccount.getBalance().compareTo(amount) < 0) {
+          throw new BusinessException(ResponseCode.ACCOUNT_BALANCE_INSUFFICIENT);
+        }
         customerAccount.setBalance(customerAccount.getBalance().subtract(amount));
         accountJournal.setInOutFlag(0);
       }
