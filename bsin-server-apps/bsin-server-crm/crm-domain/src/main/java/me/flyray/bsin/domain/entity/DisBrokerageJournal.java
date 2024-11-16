@@ -24,6 +24,11 @@ public class DisBrokerageJournal implements Serializable {
     private String serialNo;
 
     /**
+     * 租户号
+     */
+    private String tenantId;
+
+    /**
      * 订单ID
      */
     private String orderNo;

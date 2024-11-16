@@ -4,6 +4,7 @@ import cn.hutool.core.util.HexUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
+import me.flyray.bsin.domain.enums.CustomerType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,8 +44,10 @@ public class AccountBiz {
    */
   public Account innerTransfer(
           String tenantId,
-          String fromCustomerNo,
-          String toCustomerNo,
+          String fromBizRoleType,
+          String fromBizRoleTypeNo,
+          String toBizRoleType,
+          String toBizRoleTypeNo,
           String fromAccountCategory,
           String toAccountCategory,
           String ccy,
@@ -57,7 +60,8 @@ public class AccountBiz {
 
   public Account inAccount(
       String tenantId,
-      String customerNo,
+      String bizRoleType,
+      String bizRoleTypeNo,
       String accountCategory,
       String accountName,
       String ccy,
@@ -66,7 +70,8 @@ public class AccountBiz {
       throws UnsupportedEncodingException {
     return handleAccount(
         tenantId,
-        customerNo,
+        bizRoleType,
+        bizRoleTypeNo,
         accountCategory,
         accountName,
         ccy,
@@ -77,7 +82,8 @@ public class AccountBiz {
 
   public Account outAccount(
       String tenantId,
-      String customerNo,
+      String bizRoleType,
+      String bizRoleTypeNo,
       String accountCategory,
       String accountName,
       String ccy,
@@ -86,7 +92,8 @@ public class AccountBiz {
       throws UnsupportedEncodingException {
     return handleAccount(
         tenantId,
-        customerNo,
+        bizRoleType,
+        bizRoleTypeNo,
         accountCategory,
         accountName,
         ccy,
@@ -97,7 +104,8 @@ public class AccountBiz {
 
   private Account handleAccount(
       String tenantId,
-      String customerNo,
+      String bizRoleType,
+      String bizRoleTypeNo,
       String category,
       String accountName,
       String ccy,
@@ -106,7 +114,7 @@ public class AccountBiz {
       Integer journalDirection) {
     LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
     warapper.eq(Account::getTenantId, tenantId);
-    warapper.eq(Account::getBizRoleTypeNo, customerNo);
+    warapper.eq(Account::getBizRoleTypeNo, bizRoleTypeNo);
     warapper.eq(Account::getCcy, ccy);
     warapper.eq(ObjectUtil.isNotNull(category), Account::getCategory, category);
     Account customerAccount = accountMapper.selectOne(warapper);
@@ -118,10 +126,11 @@ public class AccountBiz {
     }
     if (customerAccount == null) {
       customerAccount = new Account();
-      customerAccount.setBizRoleTypeNo(customerNo);
+      customerAccount.setBizRoleType(bizRoleType);
+      customerAccount.setBizRoleTypeNo(bizRoleTypeNo);
       customerAccount.setTenantId(tenantId);
       customerAccount.setCcy(ccy);
-      customerAccount.setType("0");
+      customerAccount.setType(CustomerType.PERSONAL.getCode());
       customerAccount.setName(accountName);
       customerAccount.setCategory(category);
       customerAccount.setDecimals(decimals);

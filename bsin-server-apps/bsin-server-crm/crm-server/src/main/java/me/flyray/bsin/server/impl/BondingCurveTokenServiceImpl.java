@@ -19,6 +19,7 @@ import me.flyray.bsin.infrastructure.mapper.BondingCurveTokenParamMapper;
 import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.biz.AccountBiz;
 import me.flyray.bsin.server.biz.TokenReleaseBiz;
 import me.flyray.bsin.server.utils.Pagination;
@@ -372,6 +373,7 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
       Account customerAccount =
           customerAccountBiz.inAccount(
               tenantId,
+              BizRoleType.CUSTOMER.getCode(),
               customerNo,
               AccountCategory.ACCUMULATED_INCOME.getCode(),
               AccountCategory.ACCUMULATED_INCOME.getDesc(),
@@ -469,6 +471,7 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
     // 用户积分出账
     customerAccountBiz.outAccount(
         tenantId,
+        BizRoleType.CUSTOMER.getCode(),
         customerNo,
         accountCategory,
         accountName,

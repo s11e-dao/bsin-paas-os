@@ -91,7 +91,7 @@ public class DisBrokeragePolicy implements Serializable {
     /**
      * 创建用户
      * **/
-    private String CreateUserId;
+    private String createBy;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

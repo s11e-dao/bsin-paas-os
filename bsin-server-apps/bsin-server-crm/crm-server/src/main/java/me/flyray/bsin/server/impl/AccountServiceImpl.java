@@ -87,7 +87,7 @@ public class AccountServiceImpl implements AccountService {
   public void inAccount(Map<String, Object> requestMap)
       throws UnsupportedEncodingException {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-
+    String bizRoleType = MapUtils.getString(requestMap, "bizRoleType");
     String bizRoleTypeNo = MapUtils.getString(requestMap, "bizRoleTypeNo");
     if (bizRoleTypeNo == null) {
       throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
@@ -104,7 +104,7 @@ public class AccountServiceImpl implements AccountService {
     String name = MapUtils.getString(requestMap, "name");
     Integer decimals = Integer.valueOf(MapUtils.getString(requestMap, "decimals"));
     accountBiz.inAccount(
-        tenantId, bizRoleTypeNo, category, name, ccy, decimals, new BigDecimal(amount));
+        tenantId, bizRoleType, bizRoleTypeNo, category, name, ccy, decimals, new BigDecimal(amount));
 
   }
 
@@ -114,6 +114,7 @@ public class AccountServiceImpl implements AccountService {
   public void outAccount(Map<String, Object> requestMap)
       throws UnsupportedEncodingException {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+    String bizRoleType = MapUtils.getString(requestMap, "bizRoleType");
     String bizRoleTypeNo = MapUtils.getString(requestMap, "bizRoleTypeNo");
     if (bizRoleTypeNo == null) {
       throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
@@ -129,7 +130,7 @@ public class AccountServiceImpl implements AccountService {
     String name = MapUtils.getString(requestMap, "name");
     Integer decimals = Integer.valueOf(MapUtils.getString(requestMap, "decimals"));
     accountBiz.outAccount(
-        tenantId, bizRoleTypeNo, category, name, ccy, decimals, new BigDecimal(amount));
+        tenantId, bizRoleType, bizRoleTypeNo, category, name, ccy, decimals, new BigDecimal(amount));
   }
 
   @ShenyuDubboClient("/freeze")
