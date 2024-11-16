@@ -30,7 +30,6 @@ services:
         compose-network:        #指定network
           ipv4_address: 172.28.0.11
 
-
   bsin-mysql:
     container_name: bsin-mysql
     image: bsin-mysql:2.0.0
@@ -94,7 +93,7 @@ services:
 
 #  bsin-rabbitmq:
 #    container_name: bsin-rabbitmq
-#    image: rabbitmq:3.7.8
+#    image: bsin-rabbitmq:2.0.0
 #    build:
 #      context: middleware/rabbitmq
 #      dockerfile: dockerfile
@@ -109,7 +108,7 @@ services:
 #
 #  bsin-milvus:
 #    container_name: bsin-milvus
-#    image:
+#    image: bsin-milvus:2.0.0
 #    build:
 #      context: middleware/milvus
 #      dockerfile: dockerfile
@@ -124,7 +123,7 @@ services:
 #
 #    bsin-elasticsearch:
 #      container_name: bsin-elasticsearch
-#      image:
+#      image: bsin-elasticsearch:2.0.0
 #      build:
 #        context: middleware/elasticsearch
 #        dockerfile: dockerfile
@@ -136,6 +135,38 @@ services:
 #  networks:
 #    compose-network: #指定network
 #      ipv4_address: 172.28.0.16
+
+# bsin-emqx默认初始账号和密码
+# username：admin
+# password：public
+  bsin-emqx:
+      container_name: bsin-emqx
+      image: bsin-emqx:2.0.0
+      build:
+        context: middleware/emqx
+        dockerfile: dockerfile
+      ports:
+        - 1883:1883   # MQTT TCP
+        - 8883:8883   # MQTT TCP SSL
+        - 8083:8083   # MQTT Web Socket
+        - 8084:8084   # MQTT Web Socket SSL
+        - 18083:18083 # EMQX Dashboard
+      volumes:
+        - ./middleware/emqx/temp:/opt/emqx/temp
+        - ./middleware/emqx/data:/opt/emqx/data   # 数据目录映射，用于持久化数据
+#        - ./middleware/emqx/etc:/opt/emqx/etc
+        - ./middleware/emqx/log:/opt/emqx/log     # 日志目录映射，用于持久化日志
+        - /etc/localtime:/etc/localtime:ro
+      restart: always
+      environment:
+        EMQX_NAME: bsin-emqx
+        EMQX_HOST: 127.0.0.1
+      healthcheck:
+        test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
+        interval: 5s
+        timeout: 25s
+        retries: 5
+
 
   # targe-gateway-admin
   bsin-targe-gateway-admin:
