@@ -164,7 +164,7 @@ public class AccountBiz {
         customerAccount.setBalance(customerAccount.getBalance().add(amount));
         accountJournal.setInOutFlag(1);
       } else {
-        // 账户余额判断
+        // 出账的时候账户余额判断
         if (customerAccount.getBalance().compareTo(amount) < 0) {
           throw new BusinessException(ResponseCode.ACCOUNT_BALANCE_INSUFFICIENT);
         }

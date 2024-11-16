@@ -92,20 +92,33 @@ public class BrokerageEngineImpl implements BrokerageEngine {
      * @param requestMap 包含单个商品的分佣信息
      */
     public void brokerage(Map<String, Object> requestMap) throws UnsupportedEncodingException {
-            // 验证和获取分佣配置
-            DisBrokerageConfig config = validateAndGetConfig(requestMap);
-            // 验证和获取分佣规则
-            DisBrokerageRule rule = validateAndGetBrokerageRule(requestMap, config);
-            // 验证和获取分佣政策
-            DisBrokeragePolicy policy = validateAndGetBrokeragePolicy(rule);
-            // 计算商户分佣金额
-            BigDecimal merchantGoodsSkuSharingAmount = calculateSharingAmount(requestMap, config);
-            int comparisonResult = merchantGoodsSkuSharingAmount.compareTo(BigDecimal.ZERO);
-            // 不分佣金
-            if(comparisonResult > 0){
-                // 处理分佣逻辑
-                handleBrokerage(policy, rule, config, merchantGoodsSkuSharingAmount, requestMap);
-            }
+        String eventCode = MapUtils.getString(requestMap, "eventCode");
+        // 验证和获取分佣配置
+        DisBrokerageConfig config = validateAndGetConfig(requestMap);
+        // 验证和获取分佣规则
+        DisBrokerageRule rule = validateAndGetBrokerageRule(requestMap, config);
+        // 验证和获取分佣政策
+        DisBrokeragePolicy policy = validateAndGetBrokeragePolicy(rule);
+
+        // 判断触发事件编码是否一致, 不一致则直接返回
+        if(!policy.getTriggerEventCode().equals(eventCode)){
+            return;
+        }
+
+        // 存在, 一致则根据分佣时间扔给队列进行分佣（目前是根据时间直接进行分佣）
+        if(policy.getTriggerEventAfterDate() > 0){
+            // 判断完成事件时间跟当前时间差是否小于triggerEventAfterDate
+            // TODO 小于扔给延时队列进行处理
+
+        }
+        // 计算商户分佣金额
+        BigDecimal merchantGoodsSkuSharingAmount = calculateSharingAmount(requestMap, config);
+        int comparisonResult = merchantGoodsSkuSharingAmount.compareTo(BigDecimal.ZERO);
+        // 不分佣金
+        if(comparisonResult > 0){
+            // 处理分佣逻辑
+            handleBrokerage(policy, rule, config, merchantGoodsSkuSharingAmount, requestMap);
+        }
     }
 
     /**
