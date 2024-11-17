@@ -78,6 +78,12 @@ sudo apt-get install emqx
 sudo systemctl start emqx
 # 2.4 卸载
 sudo apt remove --purge emqx
+# 2.5 关闭开机自启
+sudo systemctl disable emqx
+# 2.6 开启开机自启
+sudo systemctl disable emqx
+# 2.7 停止服务
+sudo systemctl stop emqx
 ~~~
 - 登录：http://localhost:18083  
 初始账号：admin  

@@ -14,16 +14,16 @@
 # limitations under the License.
 
 server:
-  port: 8001
+  port: 9203
   address: 0.0.0.0
 
 shenyu:
   register:
     registerType: http
-    serverLists: http://localhost:9095
+    serverLists: http://192.168.1.5:9095
     props:
       username: admin
-      password: 123456
+      password: 123456_Aa
   client:
     websocket:
       props:
@@ -58,16 +58,51 @@ logging:
     org.apache.shenyu.lottery: debug
     org.apache.shenyu: debug
 
+#mqtt:
+#  # BASIC parameters are required.
+#  protocol: MQTT
+#  host: localhost
+#  port: 1883
+#  username: admin
+#  password: public
+#  client-id: 123456
+#  host-url: localhost
+#  in-client-id: shenyu
+#  out-client-id: 123456
+#  default-topic: sensor/+/temperature
+#  timeout: 100
+#  keepalive: 60
+#  clearSession: true
+#  maxPoolSize: 100
+#  corePoolSize: 10
+#  queueCapacity: 100
+#  keepAliveSeconds: 10
+#  enabled: true
+#  topics: sensor/+/temperature  # v4/p/post/thing/live/json/1.1
+#  completion-timeout: 3000
+#  qos: 1
+#  # If the protocol is ws/wss, this value is required.
+#  path:
+#    # 在最初连接到mqtt时需要订阅的主题，多个主题用“，”分隔。
+#    inbound-topic: sensor/+/temperature # mysys/+/envents_test
+
+
 mqtt:
   # BASIC parameters are required.
-  protocol: MQTT
-  host: 192.168.79.133
-  port: 1883
-  username:
-  password:
-  client-id: 123456
-  # If the protocol is ws/wss, this value is required.
-  path:
-  # 在最初连接到mqtt时需要订阅的主题，多个主题用“，”分隔。
-  inbound-topic: mysys/+/envents_test
-
+  BASIC:
+    protocol: MQTT
+    host: localhost
+    port: 1883
+    username: admin
+    password: public
+    client-id: 123456
+    # If the protocol is ws/wss, this value is required.
+    path:
+    # Topics that need to be subscribed when initially connecting to mqtt, multiple topics are divided by ",".
+    inbound-topic: sensor/+/temperature # mysys/+/envents_test
+  # 此部分是提供给后端生成token返回给前端，让前端使用websocket方式去和MQTT实现交互的，笔者此文的案例中并没有去实现
+  DRC:
+    protocol: WS
+    host: localhost
+    port: 8083
+    path: /mqtt
