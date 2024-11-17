@@ -12,23 +12,23 @@ import me.flyray.bsin.mqtt.domain.channal.Chan;
 import me.flyray.bsin.mqtt.domain.request.CommonTopicReceiver;
 import me.flyray.bsin.mqtt.domain.response.CommonTopicResponse;
 import me.flyray.bsin.mqtt.domain.response.ServiceReply;
-import me.flyray.bsin.mqtt.facade.IMessageSenderService;
-import me.flyray.bsin.mqtt.facade.IMqttMessageGateway;
+import me.flyray.bsin.mqtt.facade.service.MessageSenderService;
+import me.flyray.bsin.mqtt.facade.service.MqttMessageGateway;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 /**
- * @author sean.zhou
- * @date 2021/11/16
+ * @author leonard
  * @version 0.1
+ * @date 2024/11/17
  */
 @Service
 @Slf4j
-public class MessageSenderServiceImpl implements IMessageSenderService {
+public class MessageSenderServiceImpl implements MessageSenderService {
 
-  @Autowired private IMqttMessageGateway messageGateway;
+  @Autowired private MqttMessageGateway messageGateway;
 
   @Autowired private ObjectMapper mapper;
 

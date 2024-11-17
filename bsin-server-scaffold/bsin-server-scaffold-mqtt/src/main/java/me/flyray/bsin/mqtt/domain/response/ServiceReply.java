@@ -4,17 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 /**
- * @author sean.zhou
+ * @author leonard
+ * @date 2024/11/17
  * @version 0.1
- * @date 2021/11/22
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ServiceReply<T> {
 
-    private Integer result;
+  private Integer result;
 
-    private T info;
+  private T info;
 
-    private T output;
+  private T output;
 }

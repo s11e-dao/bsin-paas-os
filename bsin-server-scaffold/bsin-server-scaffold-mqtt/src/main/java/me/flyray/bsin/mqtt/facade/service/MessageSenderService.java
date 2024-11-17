@@ -1,15 +1,15 @@
-package me.flyray.bsin.mqtt.facade;
+package me.flyray.bsin.mqtt.facade.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import me.flyray.bsin.mqtt.domain.response.CommonTopicResponse;
 import me.flyray.bsin.mqtt.domain.response.ServiceReply;
 
 /**
- * @author sean.zhou
+ * @author leonard
  * @version 0.1
- * @date 2021/11/25
+ * @date 2024/11/17
  */
-public interface IMessageSenderService {
+public interface MessageSenderService {
 
   /**
    * Publish a message to a specific topic.

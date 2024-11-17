@@ -6,23 +6,23 @@ import me.flyray.bsin.mqtt.domain.channal.ChannelName;
 import me.flyray.bsin.mqtt.domain.request.CommonTopicReceiver;
 import me.flyray.bsin.mqtt.domain.request.RequestsReply;
 import me.flyray.bsin.mqtt.domain.response.CommonTopicResponse;
-import me.flyray.bsin.mqtt.facade.EnventsTestService;
-import me.flyray.bsin.mqtt.facade.IMessageSenderService;
+import me.flyray.bsin.mqtt.facade.service.EnventsTestService;
+import me.flyray.bsin.mqtt.facade.service.MessageSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Service;
 
 /**
- * @author sean
- * @version 1.2
- * @date 2022/7/29
+ * @author leonard
+ * @version 0.1
+ * @date 2024/11/17
  */
 @Service
 @Slf4j
 public class EnventsTestServiceImpl implements EnventsTestService {
 
-  @Autowired private IMessageSenderService messageSenderService;
+  @Autowired private MessageSenderService messageSenderService;
 
   @Autowired private ObjectMapper mapper;
 

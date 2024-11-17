@@ -13,8 +13,8 @@ import me.flyray.bsin.mqtt.domain.channal.ChannelName;
 /**
  * Client configuration for outbound messages.
  *
- * @author sean.zhou
- * @date 2021/11/10
+ * @author leonard
+ * @date 2024/11/17
  * @version 0.1
  */
 @Configuration

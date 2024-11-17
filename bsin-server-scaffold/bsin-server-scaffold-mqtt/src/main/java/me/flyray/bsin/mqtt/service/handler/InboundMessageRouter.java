@@ -15,9 +15,10 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 
 /**
- * @author sean.zhou
- * @date 2021/11/10
+ * @author leonard
+ * @date 2024/11/17
  * @version 0.1
+ * @description 此处的过滤链相关的东西，没有进行实现啦，具体可参考大疆的开源项目
  */
 @Component
 @Slf4j
@@ -43,7 +44,7 @@ public class InboundMessageRouter extends AbstractMessageRouter {
     MessageHeaders headers = message.getHeaders();
     String topic = headers.get(MqttHeaders.RECEIVED_TOPIC).toString();
     byte[] payload = (byte[]) message.getPayload();
-    log.info("received topic :{} \t payload :{}", topic, new String(payload));
+    log.info("received topic:{} \r\n payload:\r\n{}", topic, new String(payload));
     TopicEnum topicEnum = TopicEnum.find(topic);
     MessageChannel bean = (MessageChannel) SpringBeanUtils.getBean(topicEnum.getBeanName());
     return Collections.singleton(bean);

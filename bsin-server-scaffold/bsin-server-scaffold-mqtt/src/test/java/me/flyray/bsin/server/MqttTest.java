@@ -13,5 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class MqttTest {
 
   @Test
-  public void testMqttConnect() throws Exception {}
+  public void testMqttConnect() throws Exception {
+
+  }
 }

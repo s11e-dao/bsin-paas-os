@@ -1,33 +1,28 @@
 package me.flyray.bsin.mqtt.service.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.mqtt.domain.request.RequestsReply;
 import me.flyray.bsin.mqtt.domain.response.CommonTopicResponse;
-import me.flyray.bsin.mqtt.facade.IMessageSenderService;
-import me.flyray.bsin.mqtt.facade.IMqttTopicService;
+import me.flyray.bsin.mqtt.facade.service.MessageSenderService;
+import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
+import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author yihui wang
- * @version 1.0
- * @description: TODO
- * @date 2023/7/26 16:05
+ * @author leonard
+ * @date 2024/11/17
+ * @version 0.1
+ * @description mqtt topic 发布订阅
  */
-@RestController
-@RequestMapping("/topic")
+@Slf4j
+@ShenyuDubboService(path = "/mqttTopic", timeout = 6000)
+@ApiModule(value = "mqttTopic")
+@Service
 public class MqttTopicController {
 
-  @Autowired private IMqttTopicService mqttTopicService;
-
-  @Autowired private IMessageSenderService messageSenderService;
-
-  @GetMapping("/add")
-  public String add(String topic) {
-    mqttTopicService.subscribe(topic);
-    return topic + "添加成功";
-  }
+  @Autowired private MessageSenderService messageSenderService;
 
   @GetMapping("/pulish")
   public String pulish(String topic) {

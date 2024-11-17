@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 
 /**
  * Unified Topic response format
- * @author sean.zhou
- * @date 2021/11/15
+ *
+ * @author leonard
+ * @date 2024/11/17
  * @version 0.1
  */
 @Data
@@ -19,17 +20,17 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CommonTopicResponse<T> {
 
-    /**
-     * The command is sent and the response is matched by the tid and bid fields in the message,
-     * and the reply should keep the tid and bid the same.
-     */
-    private String tid;
+  /**
+   * The command is sent and the response is matched by the tid and bid fields in the message, and
+   * the reply should keep the tid and bid the same.
+   */
+  private String tid;
 
-    private String bid;
+  private String bid;
 
-    private String method;
+  private String method;
 
-    private T data;
+  private T data;
 
-    private Long timestamp;
+  private Long timestamp;
 }

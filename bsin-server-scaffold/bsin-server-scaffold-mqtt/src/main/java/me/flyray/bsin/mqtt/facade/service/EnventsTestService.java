@@ -1,12 +1,12 @@
-package me.flyray.bsin.mqtt.facade;
+package me.flyray.bsin.mqtt.facade.service;
 
 import me.flyray.bsin.mqtt.domain.request.CommonTopicReceiver;
 import org.springframework.messaging.MessageHeaders;
 
 /**
- * @author sean
- * @version 1.2
- * @date 2022/7/29
+ * @author leonard
+ * @version 0.1
+ * @date 2024/11/17
  */
 public interface EnventsTestService {
 

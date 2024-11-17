@@ -20,9 +20,9 @@ import org.springframework.messaging.MessageHandler;
 /**
  * Client configuration for inbound messages.
  *
- * @author sean.zhou
+ * @author leonard
+ * @date 2024/11/17
  * @version 0.1
- * @date 2021/11/10
  */
 @Slf4j
 @Configuration

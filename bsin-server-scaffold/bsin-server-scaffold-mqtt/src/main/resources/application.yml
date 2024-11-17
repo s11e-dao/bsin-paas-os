@@ -58,35 +58,6 @@ logging:
     org.apache.shenyu.lottery: debug
     org.apache.shenyu: debug
 
-#mqtt:
-#  # BASIC parameters are required.
-#  protocol: MQTT
-#  host: localhost
-#  port: 1883
-#  username: admin
-#  password: public
-#  client-id: 123456
-#  host-url: localhost
-#  in-client-id: shenyu
-#  out-client-id: 123456
-#  default-topic: sensor/+/temperature
-#  timeout: 100
-#  keepalive: 60
-#  clearSession: true
-#  maxPoolSize: 100
-#  corePoolSize: 10
-#  queueCapacity: 100
-#  keepAliveSeconds: 10
-#  enabled: true
-#  topics: sensor/+/temperature  # v4/p/post/thing/live/json/1.1
-#  completion-timeout: 3000
-#  qos: 1
-#  # If the protocol is ws/wss, this value is required.
-#  path:
-#    # 在最初连接到mqtt时需要订阅的主题，多个主题用“，”分隔。
-#    inbound-topic: sensor/+/temperature # mysys/+/envents_test
-
-
 mqtt:
   # BASIC parameters are required.
   BASIC:

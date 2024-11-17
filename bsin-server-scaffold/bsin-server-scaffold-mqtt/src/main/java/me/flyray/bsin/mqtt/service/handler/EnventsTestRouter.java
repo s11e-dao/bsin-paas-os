@@ -11,7 +11,7 @@ import me.flyray.bsin.mqtt.domain.channal.ChannelName;
 import me.flyray.bsin.mqtt.domain.request.CommonTopicReceiver;
 import me.flyray.bsin.mqtt.domain.request.RequestsReply;
 import me.flyray.bsin.mqtt.domain.response.CommonTopicResponse;
-import me.flyray.bsin.mqtt.facade.IMessageSenderService;
+import me.flyray.bsin.mqtt.facade.service.MessageSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,9 +22,10 @@ import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.messaging.MessageHeaders;
 
 /**
- * @author sean
- * @version 1.1
- * @date 2022/6/1
+ * @author leonard
+ * @date 2024/11/17
+ * @version 0.1
+ * @description 此处的过滤链相关的东西，没有进行实现啦，具体可参考大疆的开源项目
  */
 @Configuration
 @Slf4j
@@ -32,7 +33,7 @@ public class EnventsTestRouter {
 
   @Autowired private ObjectMapper mapper;
 
-  @Autowired private IMessageSenderService messageSenderService;
+  @Autowired private MessageSenderService messageSenderService;
 
   @Bean
   public IntegrationFlow myTestMethodRouterFlow() {

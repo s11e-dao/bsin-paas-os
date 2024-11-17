@@ -1,4 +1,4 @@
-package me.flyray.bsin.mqtt.facade;
+package me.flyray.bsin.mqtt.facade.service;
 
 import me.flyray.bsin.mqtt.domain.channal.ChannelName;
 import org.springframework.integration.annotation.MessagingGateway;
@@ -7,14 +7,13 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
 /**
- *
- * @author sean.zhou
- * @date 2021/11/10
+ * @author leonard
  * @version 0.1
+ * @date 2024/11/17
  */
 @Component
 @MessagingGateway(defaultRequestChannel = ChannelName.OUTBOUND)
-public interface IMqttMessageGateway {
+public interface MqttMessageGateway {
 
     /**
      * Publish a message to a specific topic.

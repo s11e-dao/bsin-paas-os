@@ -3,9 +3,9 @@ package me.flyray.bsin.mqtt.service.config.model;
 import lombok.Data;
 
 /**
- * @author sean
- * @version 1.3
- * @date 2023/1/18
+ * @author leonard
+ * @date 2024/11/17
+ * @version 0.1
  */
 @Data
 public class MqttClientOptions {

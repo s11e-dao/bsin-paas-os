@@ -13,8 +13,8 @@ import org.springframework.messaging.MessageChannel;
 /**
  * Definition classes for all channels
  *
- * @author sean.zhou
- * @date 2021/11/10
+ * @author leonard
+ * @date 2024/11/17
  * @version 0.1
  */
 @Configuration

@@ -6,8 +6,8 @@ import lombok.Data;
 /**
  * Unified topic receiving format.
  *
- * @author sean.zhou
- * @date 2021/11/10
+ * @author leonard
+ * @date 2024/11/17
  * @version 0.1
  */
 @Data
