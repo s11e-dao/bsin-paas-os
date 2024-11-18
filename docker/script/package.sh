@@ -1,4 +1,14 @@
 #!/bin/bash
+###
+ # @Author: leonard
+ # @Date: 2024-10-03 15:18:47
+ # @LastEditors: leonard 1287279970@qq.com
+ # @LastEditTime: 2024-11-18 20:42:26
+ # @FilePath: /bsin-paas-os/docker/script/package.sh
+ # @Description: 
+ # 
+ # Copyright (c) 2024 by CBD Technology CO., Ltd, All Rights Reserved. 
+### 
 # 使用说明，用来提示输入参数
 usage(){
 	echo "Usage: sh package.sh [server_apps|ui_apps|all]"
@@ -31,6 +41,13 @@ yarn build
 echo "1.5. build bsin-ui-waas"
 cd ../bsin-ui-waas
 yarn build
+echo "2. build frontend finish!!!"
+
+
+echo "1.6. build bsin-ui-bigan"
+cd ../../jiujiu-paas/jiujiu-paas-ui/bsin-ui-bigan/
+yarn build
+
 echo "2. build frontend finish!!!"
 }
 

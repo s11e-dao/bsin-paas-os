@@ -5,9 +5,14 @@
 ## 准备环境
 1. 安装docker
 ~~~bash
+# ubuntu
 sudo apt-get installo -y docker
 ~$ docker -v
 Docker version 23.0.6, build ef23cbc
+
+# centos
+
+# [Alibaba Cloud Linux 3.2104 LTS 64](https://www.cnblogs.com/del-x/p/18418824)
 ~~~
 2. 安装docker-compose
 ~~~bash
@@ -42,9 +47,10 @@ docker-compose down
 ## bsin-paas-os docker 镜像构建
 ~~~bash
 # 1.前后端程序打包 Usage: Usage: sh package.sh [server_apps|ui_apps|all]
-# 打包前端程序
+# 1.1、打包前端程序
 bash ./script/package.sh ui_apps
-# 打包后端端程序
+# 1.2、打包后端端程序
+# 打包前记得将配置文件修改为正确的mysql、redis、nacos地址，IP地址需要和主机地址(云服务器就是公网地址)一致
 bash ./script/package.sh server_apps
 # 一键打包前后端程序
 bash ./script/package.sh all
@@ -64,7 +70,7 @@ bash ./script/deploy.sh stop
 - 容器启动成功后，访问地址：http://localhost:8000
 ![](./doc/assets/bsin-login.png)
 
-## docker ui 服务
+## docker ui 服务(optional)
 ~~~bash
 # 启动 portainer
 docker-compose -f portainer.yml up -d

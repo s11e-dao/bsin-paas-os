@@ -82,11 +82,12 @@ services:
       dockerfile: dockerfile
     ports:
       - "6379:6379"
-    #restart: always
+    restart: always
+    privileged: true                                              # 获取宿主机root权限
     volumes:
-      - ./middleware/redis/conf/redis.conf:/home/bsin-paas-os/middleware/redis/redis.conf
-      - ./middleware/redis/data:/data
-    command: redis-server /home/bsin-paas-os/middleware/redis/redis.conf
+      - ./middleware/redis/conf/redis.conf:/etc/redis/redis.conf # 映射配置文件目录，宿主机:容器
+      - ./middleware/redis/data:/data                           # 映射数据目录，宿主机:容器
+    command: ["redis-server","/etc/redis/redis.conf"]           # 指定配置文件启动redis-server进程
     networks:
       compose-network:        #指定network
         ipv4_address: 172.28.0.13
@@ -312,6 +313,52 @@ services:
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.25
+
+  bsin-server-oms:
+    container_name: bsin-server-oms
+    image: bsin-server-oms:2.0.0
+    build:
+      context: ./bsin-paas-os/server-apps/oms
+      dockerfile: dockerfile
+    ports:
+      - "9111:9111"
+    #restart: always
+    volumes:
+      - ./bsin-paas-os/server-apps/oms/logs:/home/bsin-paas-os/server-apps/oms/logs
+    depends_on:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    links:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.26
+
+  bsin-server-community:
+    container_name: bsin-server-community
+    image: bsin-server-community:2.0.0
+    build:
+      context: ./bsin-paas-os/server-apps/community
+      dockerfile: dockerfile
+    ports:
+      - "9110:9110"
+    #restart: always
+    volumes:
+      - ./bsin-paas-os/server-apps/community/logs:/home/bsin-paas-os/server-apps/community/logs
+    depends_on:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    links:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.27
 
   # apps-container
   bsin-apps-container:

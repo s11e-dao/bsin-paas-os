@@ -106,3 +106,11 @@ docker/bsin-paas-os/apps-container/dist/
 docker/bsin-paas-os/ui-apps/decision-admin/dist/
 
 bsin-ui-apps/bsin-ui-decision-admin/dist/
+
+docker/middleware/emqx/data/
+
+docker/bsin-paas-os/server-apps/community/jar/
+
+docker/bsin-paas-os/server-apps/oms/jar/
+
+docker/bsin-paas-os/ui-apps/bigan/dist/
