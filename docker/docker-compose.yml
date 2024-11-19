@@ -26,6 +26,7 @@ services:
     ports:
       - "8848:8848"
       - "9848:9848"
+      - "9849:9849"
     networks:
         compose-network:        #指定network
           ipv4_address: 172.28.0.11
