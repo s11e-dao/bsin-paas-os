@@ -25,6 +25,7 @@ import me.flyray.bsin.infrastructure.mapper.AccountJournalMapper;
 import me.flyray.bsin.infrastructure.mapper.AccountMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.biz.AccountBiz;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
@@ -262,6 +263,17 @@ public class AccountServiceImpl implements AccountService {
       merchantNo = loginUser.getMerchantNo();
     }
     String customerNo = MapUtils.getString(requestMap, "customerNo");
+
+    String bizRoleType = MapUtils.getString(requestMap, "bizRoleType");
+    String bizRoleTypeNo = "";
+    if(BizRoleType.CUSTOMER.getCode().equals(bizRoleType)){
+      bizRoleTypeNo = customerNo;
+    } else if (BizRoleType.MERCHANT.getCode().equals(bizRoleType)) {
+      bizRoleTypeNo = merchantNo;
+    } else if (BizRoleType.TENANT.getCode().equals(bizRoleType)) {
+      bizRoleTypeNo = tenantId;
+    }
+
     // 不存在账户是否立即开户
     String openAccount = MapUtils.getString(requestMap, "openAccount");
 
@@ -279,7 +291,7 @@ public class AccountServiceImpl implements AccountService {
     if (serialNo == null) {
       LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
       warapper.eq(Account::getTenantId, tenantId);
-      warapper.eq(Account::getBizRoleTypeNo, customerNo);
+      warapper.eq(Account::getBizRoleTypeNo, bizRoleTypeNo);
       warapper.eq(Account::getCategory, customerAccount.getCategory());
       warapper.eq(Account::getCcy, customerAccount.getCcy());
       accountDetail = customerAccountMapper.selectOne(warapper);
