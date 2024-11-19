@@ -71,7 +71,7 @@ workflow_admin(){
 }
 # 启动ui-apps模块
 ui_apps(){
-	docker-compose up -d bsin-apps-container bsin-ui-upms bsin-ui-ai-agent bsin-ui-waas bsin-ui-decision-admin
+	docker-compose up -d bsin-apps-container bsin-ui-upms bsin-ui-ai-agent bsin-ui-waas bsin-ui-bigan bsin-ui-decision-admin
 }
 # 关闭所有环境/模块
 stop(){
