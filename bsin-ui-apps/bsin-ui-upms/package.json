@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
+    "@ant-design/pro-table": "^3.18.2",
     "@umijs/max": "^4.1.10",
     "antd": "^5.4.7",
     "antd-style": "^3.6.2",
