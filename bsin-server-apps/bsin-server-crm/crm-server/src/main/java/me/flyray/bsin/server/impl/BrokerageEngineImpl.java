@@ -220,6 +220,7 @@ public class BrokerageEngineImpl implements BrokerageEngine {
         // 创建分佣流水
         DisBrokerageJournal journal = new DisBrokerageJournal();
         journal.setSerialNo(BsinSnowflake.getId());
+        journal.setTenantId(policy.getTenantId());
         journal.setTriggerEventCode(policy.getTriggerEventCode());
         journal.setRuleNo(rule.getSerialNo());
         journal.setPolicyNo(rule.getBrokeragePolicyNo());
