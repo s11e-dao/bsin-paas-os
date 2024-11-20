@@ -100,6 +100,12 @@ export default function () {
         password: hex_md5(nodeLoginState.password),
         tenantId,
       });
+    } else if(bizRoleType == "21"){
+      res = await userLogin({
+        ...nodeLoginState,
+        password: hex_md5(nodeLoginState.password),
+        tenantId,
+      });
     } else {
       res = await sysAgentLogin({
         ...nodeLoginState,
@@ -163,7 +169,11 @@ export default function () {
 
   const options = [
     {
-      label: '火源节点',
+      label: '租户',
+      value: '21',
+    },
+    {
+      label: '节点',
       value: '2',
     },
     {

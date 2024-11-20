@@ -583,9 +583,11 @@ public class UserServiceImpl implements UserService {
             sysApps = new ArrayList<>();
             sysApps.add(baseApp);
         }else {
-            baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), bizRoleType);
-            if(baseApp == null){
-                baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), null);
+            if(sysProduct != null){
+                baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), bizRoleType);
+                if(baseApp == null){
+                    baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), null);
+                }
             }
             if (StringUtils.isEmpty(userId)) {
                 sysApps = new ArrayList<>();

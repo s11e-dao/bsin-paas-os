@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import me.flyray.bsin.server.biz.AccountBiz;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -56,6 +57,7 @@ public class BrokerageEngineImpl implements BrokerageEngine {
     @ApiDoc(desc = "execute")
     @ShenyuDubboClient("/execute")
     @Override
+    @Transactional
     public void execute(Map<String, Object> requestMap) {
         // 获取商品 SKU 列表
         List<Map<String, Object>> goodsSkuList = getGoodsSkuList(requestMap);
@@ -96,7 +98,6 @@ public class BrokerageEngineImpl implements BrokerageEngine {
      */
     public void brokerage(Map<String, Object> requestMap) throws UnsupportedEncodingException {
         String eventCode = MapUtils.getString(requestMap, "eventCode");
-        Integer isPreview = MapUtils.getInteger(requestMap, "isPreview");
         String tenantId = MapUtils.getString(requestMap, "tenantId");
         String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
         String customerNo = MapUtils.getString(requestMap, "customerNo");
@@ -128,13 +129,13 @@ public class BrokerageEngineImpl implements BrokerageEngine {
             int superTenantResult = superTenantBrokerageAmount.compareTo(BigDecimal.ZERO);
             if(superTenantResult > 0){
                 // 处理平台佣金
-                handleBrokerage(BizRoleType.TENANT.getCode(), supersTenantId, config.getSuperTenantRate(), policy, rule, superTenantBrokerageAmount, isPreview);
+                handleBrokerage(BizRoleType.TENANT.getCode(), supersTenantId, config.getSuperTenantRate(), policy, rule, superTenantBrokerageAmount, requestMap);
             }
             // 处理租户佣金
             BigDecimal tenantBrokerageAmount = merchantGoodsSkuSharingAmount.multiply(config.getTenantRate()).divide(new BigDecimal(100));
             int tenantResult = tenantBrokerageAmount.compareTo(BigDecimal.ZERO);
             if(tenantResult > 0){
-                handleBrokerage(BizRoleType.TENANT.getCode(), tenantId, config.getSuperTenantRate(), policy, rule, tenantBrokerageAmount, isPreview);
+                handleBrokerage(BizRoleType.TENANT.getCode(), tenantId, config.getSuperTenantRate(), policy, rule, tenantBrokerageAmount, requestMap);
             }
             //  处理代理商佣金
             BigDecimal sysAgentBrokerageAmount = merchantGoodsSkuSharingAmount.multiply(config.getSysAgentRate()).divide(new BigDecimal(100));
@@ -146,7 +147,7 @@ public class BrokerageEngineImpl implements BrokerageEngine {
             BigDecimal customerBrokerageAmount = merchantGoodsSkuSharingAmount.multiply(config.getCustomerRate()).divide(new BigDecimal(100));
             int customerResult = customerBrokerageAmount.compareTo(BigDecimal.ZERO);
             if(customerResult > 0){
-                handleBrokerage(BizRoleType.CUSTOMER.getCode(), customerNo, config.getSuperTenantRate(), policy, rule, customerBrokerageAmount, isPreview);
+                handleBrokerage(BizRoleType.CUSTOMER.getCode(), customerNo, config.getSuperTenantRate(), policy, rule, customerBrokerageAmount, requestMap);
             }
         }
     }
@@ -215,10 +216,10 @@ public class BrokerageEngineImpl implements BrokerageEngine {
     /**
      * 处理平台分佣
      */
-    private void handleBrokerage(String bizRoleType, String bizRoleTypeNo,BigDecimal rate, DisBrokeragePolicy policy, DisBrokerageRule rule,
-                                            BigDecimal brokerageAmount, Integer isPreview) throws UnsupportedEncodingException {
+    private void handleBrokerage(String bizRoleType, String bizRoleTypeNo, BigDecimal rate, DisBrokeragePolicy policy, DisBrokerageRule rule,
+                                            BigDecimal brokerageAmount, Map<String, Object> requestMap) throws UnsupportedEncodingException {
         // 创建分佣流水
-        DisBrokerageJournal journal = new DisBrokerageJournal();
+        DisBrokerageJournal journal = BsinServiceContext.getReqBodyDto(DisBrokerageJournal.class, requestMap);
         journal.setSerialNo(BsinSnowflake.getId());
         journal.setTenantId(policy.getTenantId());
         journal.setTriggerEventCode(policy.getTriggerEventCode());
@@ -229,7 +230,7 @@ public class BrokerageEngineImpl implements BrokerageEngine {
         journal.setRate(rate);
         journal.setDisAmount(brokerageAmount);
         disBrokerageJournalMapper.insert(journal);
-
+        Integer isPreview = MapUtils.getInteger(requestMap, "isPreview");
         // 入账操作
         if (isPreview == 0) {
             // 入账到代理商待结算账户
