@@ -136,7 +136,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         if (DisModelEnum.DIS_LEVEL21.getCode().equals(disModel.getModel()) && parentSysAgentNo != null) {
             // 如果邀请人还不是老板,进行链路2+1逻辑
             if (!DisAgentType.BOSS.getCode().equals(parantDisTeamRelation.getDisAgentType())) {
-                // 查询该用户的上级是否已经大于链动人数
+                // 查询邀请人的下级是否已经大于设置的链动人数
                 LambdaQueryWrapper<DisTeamRelation> wrapper = new LambdaQueryWrapper<>();
                 wrapper.eq(DisTeamRelation::getPrarentSysAgentNo, parentSysAgentNo);
                 List<DisTeamRelation> list = disTeamRelationMapper.selectList(wrapper);
