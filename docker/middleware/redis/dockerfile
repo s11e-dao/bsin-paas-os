@@ -3,11 +3,11 @@ FROM redis:6.2.1
 # author
 MAINTAINER bsin-paas
 
-# 挂载目录
-VOLUME /home/bsin-paas-os/middleware/redis
-# 创建目录
-RUN mkdir -p /home/bsin-paas-os/middleware/redis
-# 指定路径
-WORKDIR /home/bsin-paas-os/middleware/redis
-# 复制conf文件到路径
-COPY conf/redis.conf /home/bsin-paas-os/middleware/redis/redis.conf
+## 挂载目录
+#VOLUME /home/bsin-paas-os/middleware/redis
+## 创建目录
+#RUN mkdir -p /home/bsin-paas-os/middleware/redis
+## 指定路径
+#WORKDIR /home/bsin-paas-os/middleware/redis
+## 复制conf文件到路径
+#COPY conf/redis.conf /home/bsin-paas-os/middleware/redis/redis.conf

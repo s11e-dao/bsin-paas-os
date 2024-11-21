@@ -50,7 +50,7 @@ public class DisBrokeragePolicyServiceImpl implements DisBrokeragePolicyService 
         DisBrokeragePolicy disBrokeragePolicy = BsinServiceContext.getReqBodyDto(DisBrokeragePolicy.class, requestMap);
         disBrokeragePolicy.setTenantId(loginUser.getTenantId());
         disBrokeragePolicy.setSerialNo(BsinSnowflake.getId());
-        disBrokeragePolicy.setCreateUserId(loginUser.getUserId());
+        disBrokeragePolicy.setCreateBy(loginUser.getUserId());
         disBrokeragePolicyMapper.insert(disBrokeragePolicy);
         return disBrokeragePolicy;
     }

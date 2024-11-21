@@ -67,11 +67,7 @@
         select
         app_id
         from sys_product_app left join sys_product  on sys_product_app.product_id = sys_product.product_id
-        <where>
-            <if test="productCode != null and productCode != ''">
-                and sys_product.product_code = #{productCode}
-            </if>
-        </where>
+        where sys_product.product_code = #{productCode}
     </select>
 
     <select id="selectPageList"  resultMap="appInfo">

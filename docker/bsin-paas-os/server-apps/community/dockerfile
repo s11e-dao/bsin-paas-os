@@ -1,0 +1,17 @@
+# 基础镜像
+FROM  openjdk:11
+# author
+MAINTAINER bsin-paas
+
+LABEL version=2.0.0
+
+# 挂载目录
+VOLUME /home/bsin-paas-os/server-apps/community
+# 创建目录
+RUN mkdir -p /home/bsin-paas-os/server-apps/community
+# 指定路径
+WORKDIR /home/bsin-paas-os/server-apps/community
+# 复制jar文件到路径
+COPY ./jar/community-server-2.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/search/community-server-2.0.0-SNAPSHOT.jar
+# 启动用户服务
+ENTRYPOINT ["java","-jar","community-server-2.0.0-SNAPSHOT.jar"]

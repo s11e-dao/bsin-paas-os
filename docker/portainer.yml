@@ -1,0 +1,10 @@
+version: "3"
+services:
+  portainer:
+    image: portainer/portainer:latest
+    container_name: portainer
+    ports:
+    - "9000:9000"
+    volumes:
+    - /app/portainer/data:/data
+    - /var/run/docker.sock:/var/run/docker.sock

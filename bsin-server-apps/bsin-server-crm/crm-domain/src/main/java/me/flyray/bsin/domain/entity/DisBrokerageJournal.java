@@ -24,6 +24,11 @@ public class DisBrokerageJournal implements Serializable {
     private String serialNo;
 
     /**
+     * 租户号
+     */
+    private String tenantId;
+
+    /**
      * 订单ID
      */
     private String orderNo;
@@ -96,9 +101,9 @@ public class DisBrokerageJournal implements Serializable {
     private Integer payAmount;
 
     /**
-     * 代理商分佣比例
+     * 分佣比例
      */
-    private BigDecimal sysAgentRate;
+    private BigDecimal rate;
 
     /**
      * 分佣条件达成后隔几天结算佣金

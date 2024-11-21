@@ -27,6 +27,7 @@
         <module>bsin-server-brms</module>
         <module>bsin-server-workflow</module>
         <module>bsin-server-workflow-admin</module>
+        <module>bsin-server-iot</module>
     </modules>
 
     <properties>

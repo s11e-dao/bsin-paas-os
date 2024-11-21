@@ -3,7 +3,10 @@ package me.flyray.bsin.facade.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.DisBrokerageConfig;
 import me.flyray.bsin.domain.entity.DisModel;
+import me.flyray.bsin.validate.AddGroup;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 /**
@@ -11,12 +14,13 @@ import java.util.Map;
 * @description 针对表【crm_dis_brokerage_config(参与分佣设置表)】的数据库操作Service
 * @createDate 2024-10-25 17:13:34
 */
+
 public interface DisBrokerageConfigService {
 
     /**
      * 添加
      */
-    public DisBrokerageConfig add(Map<String, Object> requestMap);
+    public DisBrokerageConfig add(DisBrokerageConfig disBrokerageConfig);
 
     /**
      * 删除
@@ -40,5 +44,5 @@ public interface DisBrokerageConfigService {
     public IPage<?> getPageList(Map<String, Object> requestMap);
 
 
-    DisBrokerageConfig update(Map<String, Object> requestMap);
+    DisBrokerageConfig settingSharingRate(Map<String, Object> requestMap);
 }

@@ -4,6 +4,7 @@ import cn.hutool.core.util.HexUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
+import me.flyray.bsin.domain.enums.CustomerType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,9 +39,29 @@ public class AccountBiz {
     return account;
   }
 
+  /**
+   * 内部转账方法
+   */
+  public Account innerTransfer(
+          String tenantId,
+          String fromBizRoleType,
+          String fromBizRoleTypeNo,
+          String toBizRoleType,
+          String toBizRoleTypeNo,
+          String fromAccountCategory,
+          String toAccountCategory,
+          String ccy,
+          Integer decimals,
+          BigDecimal amount)
+          throws UnsupportedEncodingException {
+
+    return null;
+  }
+
   public Account inAccount(
       String tenantId,
-      String customerNo,
+      String bizRoleType,
+      String bizRoleTypeNo,
       String accountCategory,
       String accountName,
       String ccy,
@@ -49,7 +70,8 @@ public class AccountBiz {
       throws UnsupportedEncodingException {
     return handleAccount(
         tenantId,
-        customerNo,
+        bizRoleType,
+        bizRoleTypeNo,
         accountCategory,
         accountName,
         ccy,
@@ -60,7 +82,8 @@ public class AccountBiz {
 
   public Account outAccount(
       String tenantId,
-      String customerNo,
+      String bizRoleType,
+      String bizRoleTypeNo,
       String accountCategory,
       String accountName,
       String ccy,
@@ -69,7 +92,8 @@ public class AccountBiz {
       throws UnsupportedEncodingException {
     return handleAccount(
         tenantId,
-        customerNo,
+        bizRoleType,
+        bizRoleTypeNo,
         accountCategory,
         accountName,
         ccy,
@@ -80,7 +104,8 @@ public class AccountBiz {
 
   private Account handleAccount(
       String tenantId,
-      String customerNo,
+      String bizRoleType,
+      String bizRoleTypeNo,
       String category,
       String accountName,
       String ccy,
@@ -89,7 +114,7 @@ public class AccountBiz {
       Integer journalDirection) {
     LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
     warapper.eq(Account::getTenantId, tenantId);
-    warapper.eq(Account::getBizRoleTypeNo, customerNo);
+    warapper.eq(Account::getBizRoleTypeNo, bizRoleTypeNo);
     warapper.eq(Account::getCcy, ccy);
     warapper.eq(ObjectUtil.isNotNull(category), Account::getCategory, category);
     Account customerAccount = accountMapper.selectOne(warapper);
@@ -101,10 +126,11 @@ public class AccountBiz {
     }
     if (customerAccount == null) {
       customerAccount = new Account();
-      customerAccount.setBizRoleTypeNo(customerNo);
+      customerAccount.setBizRoleType(bizRoleType);
+      customerAccount.setBizRoleTypeNo(bizRoleTypeNo);
       customerAccount.setTenantId(tenantId);
       customerAccount.setCcy(ccy);
-      customerAccount.setType("0");
+      customerAccount.setType(CustomerType.PERSONAL.getCode());
       customerAccount.setName(accountName);
       customerAccount.setCategory(category);
       customerAccount.setDecimals(decimals);
@@ -134,15 +160,14 @@ public class AccountBiz {
       if (customerAccount.getStatus().equals(AccountEnum.FREEZE.getCode())) {
         throw new BusinessException(ResponseCode.ACCOUNT_NOT_EXISTS);
       }
-      // 账户余额判断
-      if (customerAccount.getBalance().compareTo(amount) == -1) {
-        throw new BusinessException(ResponseCode.ACCOUNT_BALANCE_INSUFFICIENT);
-      }
-
       if (TransactionType.INT_ACCOUNT.getCode().equals(journalDirection)) {
         customerAccount.setBalance(customerAccount.getBalance().add(amount));
         accountJournal.setInOutFlag(1);
       } else {
+        // 出账的时候账户余额判断
+        if (customerAccount.getBalance().compareTo(amount) < 0) {
+          throw new BusinessException(ResponseCode.ACCOUNT_BALANCE_INSUFFICIENT);
+        }
         customerAccount.setBalance(customerAccount.getBalance().subtract(amount));
         accountJournal.setInOutFlag(0);
       }

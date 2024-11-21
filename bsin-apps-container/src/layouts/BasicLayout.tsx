@@ -370,13 +370,17 @@ export default () => {
         let appMenus = []
         let appCode = location.pathname.split('/')[1]
         if (location.pathname.split('/')[1] == 'home') {
-          appCode = appRes.data?.defaultApp.appCode
+          appCode = appRes.data?.defaultApp?.appCode
         }
         setDefaultApp(appRes.data?.defaultApp)
         // 根据默认应用查询应用菜单及默认选中home导航
-        const menuRes = await getUserMenuTreeByAppCode({ appCode: appCode })
+        let menuRes
+        if(appCode){
+          menuRes = await getUserMenuTreeByAppCode({ appCode: appCode })
+        }
+        
         console.log(menuRes)
-        if (menuRes.code === 0) {
+        if (menuRes?.code === 0) {
           // 跳转默认子应用
           // setPathname('/' + appCode)
           // history.push('/' + appCode)

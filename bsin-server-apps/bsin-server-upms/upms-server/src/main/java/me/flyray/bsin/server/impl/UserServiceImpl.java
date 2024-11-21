@@ -583,9 +583,12 @@ public class UserServiceImpl implements UserService {
             sysApps = new ArrayList<>();
             sysApps.add(baseApp);
         }else {
-            baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), bizRoleType);
-            if(baseApp == null){
-                baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), null);
+            // upms应用中添加租户没有sysProduct，一般从crm中添加平台的方式添加租户
+            if(sysProduct != null){
+                baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), bizRoleType);
+                if(baseApp == null){
+                    baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), null);
+                }
             }
             if (StringUtils.isEmpty(userId)) {
                 sysApps = new ArrayList<>();

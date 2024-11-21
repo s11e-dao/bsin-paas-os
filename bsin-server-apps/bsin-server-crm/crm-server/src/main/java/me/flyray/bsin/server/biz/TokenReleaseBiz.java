@@ -34,31 +34,32 @@ public class TokenReleaseBiz {
    *
    * @param CustomerAccount
    */
-  public void bcAccountRelease(Account customerAccount, BigDecimal amount)
+  public void bcAccountRelease(Account account, BigDecimal amount)
       throws Exception {
 
     // 1 用户BC积分余额账户入账
     Account customerAccountRet =
         customerAccountBiz.inAccount(
-            customerAccount.getTenantId(),
-            customerAccount.getBizRoleTypeNo(),
-            AccountCategory.BALANCE.getCode(),
-            AccountCategory.BALANCE.getDesc(),
-            customerAccount.getCcy(),
-            customerAccount.getDecimals(),
+                account.getTenantId(),
+                account.getBizRoleType(),
+                account.getBizRoleTypeNo(),
+                AccountCategory.BALANCE.getCode(),
+                AccountCategory.BALANCE.getDesc(),
+                account.getCcy(),
+                account.getDecimals(),
             amount);
 
     // 失效时间???
     BsinCacheProvider.put("crm",
-        "customerAccount:"
-            + customerAccount.getTenantId()
-            + customerAccount.getBizRoleTypeNo()
-            + customerAccount.getCcy(),
+        "account:"
+            + account.getTenantId()
+            + account.getBizRoleTypeNo()
+            + account.getCcy(),
         customerAccountRet);
 
     Map<String, Object> requestMap = new HashMap<>();
-    requestMap.put("tenantId", customerAccount.getTenantId());
-    requestMap.put("customerNo", customerAccount.getBizRoleTypeNo());
+    requestMap.put("tenantId", account.getTenantId());
+    requestMap.put("customerNo", account.getBizRoleTypeNo());
     requestMap.put("customerAccount", customerAccountRet);
 
     // 2.请求token释放分配
@@ -70,12 +71,13 @@ public class TokenReleaseBiz {
     // TODO: 释放成功才出账
     customerAccountRet =
             customerAccountBiz.outAccount(
-                    customerAccount.getTenantId(),
-                    customerAccount.getBizRoleTypeNo(),
+                    account.getTenantId(),
+                    account.getBizRoleType(),
+                    account.getBizRoleTypeNo(),
                     AccountCategory.BALANCE.getCode(),
                     AccountCategory.BALANCE.getDesc(),
-                    customerAccount.getCcy(),
-                    customerAccount.getDecimals(),
+                    account.getCcy(),
+                    account.getDecimals(),
                     releaseAmount);
   }
 

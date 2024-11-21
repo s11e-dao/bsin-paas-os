@@ -13,20 +13,9 @@ import java.util.Map;
 public interface DisInviteRelationService {
 
     /**
-     * 添加
-     */
-    public DisInviteRelation add(Map<String, Object> requestMap);
-
-    /**
-     * 删除
-     */
-    public void delete(Map<String, Object> requestMap);
-
-    /**
      * 编辑
      */
     public DisInviteRelation edit(Map<String, Object> requestMap);
-
 
     /**
      * 详情

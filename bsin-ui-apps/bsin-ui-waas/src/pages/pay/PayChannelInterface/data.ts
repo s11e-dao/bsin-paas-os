@@ -52,6 +52,12 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
   },
   {
+    title: '支付参数',
+    width: 160,
+    dataIndex: 'params',
+    hideInSearch: true,
+  },
+  {
     title: '支付方式',
     width: 160,
     dataIndex: 'wayCode',

@@ -46,6 +46,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
 import static me.flyray.bsin.constants.ResponseCode.APP_ID_NOT_EXISTS;
+import static me.flyray.bsin.constants.ResponseCode.WX_APP_INSTANCE_FAIL;
 
 /**
  * @author <a href="https://github.com/binarywang">Binary Wang</a>
@@ -664,6 +665,9 @@ public class WxPortalController {
       }
       wxService = bsinWxMaServiceUtil.getWxMaService(config, wxRedisConfig);
     } else {
+    }
+    if (wxService == null) {
+      throw new BusinessException(WX_APP_INSTANCE_FAIL);
     }
     return wxService;
   }

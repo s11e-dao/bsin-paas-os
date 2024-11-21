@@ -52,4 +52,5 @@ public class BsinWxPayServiceUtil {
     concurrentWxServiceHashMap.put(payConfig.getAppId(), wxPayService);
     return wxPayService;
   }
+
 }

@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import me.flyray.bsin.validate.AddGroup;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -36,16 +38,19 @@ public class DisBrokerageConfig implements Serializable {
     /**
      * 租户平台分佣比例
      */
+    @NotBlank(message = "租户平台分佣比例不能为空！", groups = AddGroup.class)
     private BigDecimal tenantRate;
 
     /**
      * 代理商分佣比例
      */
+    @NotBlank(message = "代理商分佣比例不能为空！", groups = AddGroup.class)
     private BigDecimal sysAgentRate;
 
     /**
      * 消费者返利比例
      */
+    @NotBlank(message = "消费者返利比例不能为空！", groups = AddGroup.class)
     private BigDecimal customerRate;
 
     /**

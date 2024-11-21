@@ -182,8 +182,10 @@ public class TenantServiceImpl implements TenantService {
 
         // TODO 添加租户用户业务应用、应用角色、角色权限、岗位角色
         // 重复6、7、8、9、10动作
-        addTenantBizAppsPermission(tenantId, orgId, postId, sysTenant.getTenantCode(), sysTenant.getProductCode());
-
+        String productCode = sysTenantReq.getProductCode();
+        if(productCode != null) {
+            addTenantBizAppsPermission(tenantId, orgId, postId, sysTenant.getTenantCode(), productCode);
+        }
         return sysTenant;
     }
 

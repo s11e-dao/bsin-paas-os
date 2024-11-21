@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.DisBrokerageJournal">
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <id property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="orderNo" column="order_no" jdbcType="VARCHAR"/>
             <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
             <result property="goodNo" column="good_no" jdbcType="VARCHAR"/>
@@ -20,7 +21,7 @@
             <result property="sysAgentNo" column="sys_agent_no" jdbcType="VARCHAR"/>
             <result property="status" column="status" jdbcType="INTEGER"/>
             <result property="payAmount" column="pay_amount" jdbcType="DECIMAL"/>
-            <result property="sysAgentRate" column="sys_agent_rate" jdbcType="DECIMAL"/>
+            <result property="rate" column="rate" jdbcType="DECIMAL"/>
             <result property="pointDays" column="point_days" jdbcType="INTEGER"/>
             <result property="goodSkuNo" column="good_sku_no" jdbcType="VARCHAR"/>
             <result property="goodsSkuAmount" column="goods_sku_amount" jdbcType="DECIMAL"/>
@@ -29,12 +30,13 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        serial_no,order_no,merchant_no,
+        serial_no,tenant_id,order_no,merchant_no,
         good_no,policy_no,rule_no,
         dis_amount,create_time,trigger_event_code,
         exclude_fee_type,exclude_custom_per,dis_level,
         sys_agent_no,status,pay_amount,
-        sys_agent_rate,point_days,good_sku_no,goods_sku_amount,
+        rate,point_days,good_sku_no,goods_sku_amount,
         goods_category_no,is_preview
     </sql>
+
 </mapper>

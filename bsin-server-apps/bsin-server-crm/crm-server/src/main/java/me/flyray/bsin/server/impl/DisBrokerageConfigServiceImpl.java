@@ -12,6 +12,7 @@ import me.flyray.bsin.facade.service.DisBrokerageConfigService;
 import me.flyray.bsin.infrastructure.mapper.DisBrokerageConfigMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
@@ -22,6 +23,7 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
@@ -43,11 +45,16 @@ public class DisBrokerageConfigServiceImpl implements DisBrokerageConfigService 
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
     @Override
-    public DisBrokerageConfig add(Map<String, Object> requestMap) {
+    public DisBrokerageConfig add(DisBrokerageConfig disBrokerageConfig) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        DisBrokerageConfig disBrokerageConfig = BsinServiceContext.getReqBodyDto(DisBrokerageConfig.class, requestMap);
         disBrokerageConfig.setTenantId(loginUser.getTenantId());
         disBrokerageConfig.setSerialNo(BsinSnowflake.getId());
+        // 分佣比例加起来等于100
+        BigDecimal totalRate = BigDecimal.ZERO.add(disBrokerageConfig.getSuperTenantRate()).add(disBrokerageConfig.getTenantRate()).add(disBrokerageConfig.getSysAgentRate()).add(disBrokerageConfig.getCustomerRate());
+        int totalRateResult = totalRate.compareTo(new BigDecimal(100));
+        if(totalRateResult != 0){
+            throw new BusinessException("999","比例设置不等于100");
+        }
         disBrokerageConfigMapper.insert(disBrokerageConfig);
         return disBrokerageConfig;
     }
@@ -66,52 +73,6 @@ public class DisBrokerageConfigServiceImpl implements DisBrokerageConfigService 
     @ShenyuDubboClient("/edit")
     @Override
     public DisBrokerageConfig edit(Map<String, Object> requestMap) {
-        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        DisBrokerageConfig disBrokerageConfig = BsinServiceContext.getReqBodyDto(DisBrokerageConfig.class, requestMap);
-        disBrokerageConfig.setTenantId(loginUser.getTenantId());
-        if (disBrokerageConfigMapper.updateById(disBrokerageConfig) == 0){
-            throw new BusinessException(GRADE_NOT_EXISTS);
-        }
-        return disBrokerageConfig;
-    }
-
-    @ApiDoc(desc = "getPageList")
-    @ShenyuDubboClient("/getPageList")
-    @Override
-    public IPage<?> getPageList(Map<String, Object> requestMap) {
-        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        Object paginationObj =  requestMap.get("pagination");
-        Pagination pagination = new Pagination();
-        BeanUtil.copyProperties(paginationObj,pagination);
-        Page<DisBrokerageConfig> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-        DisBrokerageConfig disBrokerageConfig = BsinServiceContext.getReqBodyDto(DisBrokerageConfig.class, requestMap);
-        LambdaQueryWrapper<DisBrokerageConfig> warapper = new LambdaQueryWrapper<>();
-        warapper.eq(DisBrokerageConfig::getTenantId, loginUser.getTenantId());
-        IPage<DisBrokerageConfig> pageList = disBrokerageConfigMapper.selectPage(page, warapper);
-        return pageList;
-    }
-
-
-    /**
-     * 事件详情
-     * @param requestMap
-     * @return
-     */
-    @ApiDoc(desc = "getDetail")
-    @ShenyuDubboClient("/getDetail")
-    @Override
-    public DisBrokerageConfig getDetail(Map<String, Object> requestMap){
-        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        String tenantId = loginUser.getTenantId();
-        DisBrokerageConfig disBrokerageConfig = disBrokerageConfigMapper.selectById(tenantId);
-        return disBrokerageConfig;
-    }
-
-
-    @Override
-    @ApiDoc(desc = "update")
-    @ShenyuDubboClient("/update")
-    public DisBrokerageConfig update(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         // 将请求参数转换为 DisModel 对象
         DisBrokerageConfig disbrokerageconfig = BsinServiceContext.getReqBodyDto(DisBrokerageConfig.class, requestMap);
@@ -133,8 +94,56 @@ public class DisBrokerageConfigServiceImpl implements DisBrokerageConfigService 
         return disbrokerageconfig;
     }
 
+    @ApiDoc(desc = "getPageList")
+    @ShenyuDubboClient("/getPageList")
+    @Override
+    public IPage<?> getPageList(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        Object paginationObj =  requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj,pagination);
+        Page<DisBrokerageConfig> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+        DisBrokerageConfig disBrokerageConfig = BsinServiceContext.getReqBodyDto(DisBrokerageConfig.class, requestMap);
+        LambdaQueryWrapper<DisBrokerageConfig> warapper = new LambdaQueryWrapper<>();
+        warapper.eq(DisBrokerageConfig::getTenantId, loginUser.getTenantId());
+        IPage<DisBrokerageConfig> pageList = disBrokerageConfigMapper.selectPage(page, warapper);
+        return pageList;
+    }
 
+    /**
+     * 事件详情
+     * @param requestMap
+     * @return
+     */
+    @ApiDoc(desc = "getDetail")
+    @ShenyuDubboClient("/getDetail")
+    @Override
+    public DisBrokerageConfig getDetail(Map<String, Object> requestMap){
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        String tenantId = loginUser.getTenantId();
+        DisBrokerageConfig disBrokerageConfig = disBrokerageConfigMapper.selectById(tenantId);
+        return disBrokerageConfig;
+    }
 
+    /**
+     * 商户设置份润比例
+     * @param requestMap
+     * @return
+     */
+    @Override
+    @ApiDoc(desc = "settingSharingRate")
+    @ShenyuDubboClient("/settingSharingRate")
+    public DisBrokerageConfig settingSharingRate(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        if(!BizRoleType.MERCHANT.getCode().equals(loginUser.getBizRoleType())){
+            throw new BusinessException("999","非商户用户无法设置让利比例");
+        }
+        DisBrokerageConfig disbrokerageconfig = BsinServiceContext.getReqBodyDto(DisBrokerageConfig.class, requestMap);
+        disbrokerageconfig.setTenantId(loginUser.getTenantId());
+        disbrokerageconfig.setMerchantNo(loginUser.getMerchantNo());
+        disBrokerageConfigMapper.updateById(disbrokerageconfig);
+        return disbrokerageconfig;
+    }
 
 }
 

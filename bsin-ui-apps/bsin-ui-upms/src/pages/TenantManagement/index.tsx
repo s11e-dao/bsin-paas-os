@@ -28,6 +28,7 @@ import {
 import { PlusOutlined } from '@ant-design/icons';
 // 汉语
 import locale from 'antd/lib/locale/zh_CN';
+import { hex_md5 } from '../../utils/md5';
 
 export default () => {
   const { TextArea } = Input;
@@ -66,6 +67,7 @@ export default () => {
         if (isOption.option === 'add') {
           let res = await addTenantInfo({
             ...response,
+            password: hex_md5(response.password),
           });
           res ? message.success('添加成功') : message.error('添加失败！');
         } else {
@@ -287,6 +289,13 @@ export default () => {
               >
                 <Input />
               </Form.Item>
+              <Form.Item
+                label="密码"
+                name="password"
+                rules={[{ required: true, message: '请输入登录密码!' }]}
+              >
+                <Input />
+              </Form.Item>
             </>
           ) : (
             ''
@@ -309,7 +318,7 @@ export default () => {
       <Modal
         title="租户授权应用"
         centered
-        visible={isEmpowerModal}
+        open={isEmpowerModal}
         onOk={confirmEmpower}
         onCancel={cancelEmpower}
         width={810}

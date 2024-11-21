@@ -1,5 +1,13 @@
 # 描述 Compose 文件的版本信息
-version: '2.0'
+#version: '2.0'
+version: '3'
+networks:
+  compose-network:
+    driver: bridge
+    ipam: #自定义IPAM配置
+      config:
+        - subnet: 172.28.0.0/16
+      driver: default
 
 # 定义服务
 services:
@@ -14,10 +22,14 @@ services:
       - NACOS_AUTH_TOKEN=SecretKey012345678901234567890123456789012345678901234567890123456789
     volumes:
       - ./middleware/nacos/logs/:/home/bsin-paas-os/middleware/nacos/logs
-#      - ./middleware/nacos/conf/application.properties:/home/bsin-paas-os/middleware/nacos/conf/application.properties
+    #      - ./middleware/nacos/conf/application.properties:/home/bsin-paas-os/middleware/nacos/conf/application.properties
     ports:
       - "8848:8848"
       - "9848:9848"
+      - "9849:9849"
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.11
 
   bsin-mysql:
     container_name: bsin-mysql
@@ -51,14 +63,17 @@ services:
     ]
     privileged: true
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       timeout: 20s
       retries: 5
     environment:
       MYSQL_ROOT_PASSWORD: 123456
-#      MYSQL_DATABASE: bsin-mpc
-#      MYSQL_USER: bsin
-#      MYSQL_PASSWORD: 123456
+    #      MYSQL_DATABASE: bsin-mpc
+    #      MYSQL_USER: bsin
+    #      MYSQL_PASSWORD: 123456
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.12
 
   bsin-redis:
     container_name: bsin-redis
@@ -68,47 +83,92 @@ services:
       dockerfile: dockerfile
     ports:
       - "6379:6379"
-    #restart: always
+    restart: always
+    privileged: true                                              # 获取宿主机root权限
     volumes:
-      - ./middleware/redis/conf/redis.conf:/home/bsin-paas-os/middleware/redis/redis.conf
-      - ./middleware/redis/data:/data
-    command: redis-server /home/bsin-paas-os/middleware/redis/redis.conf
+      - ./middleware/redis/conf/redis.conf:/etc/redis/redis.conf # 映射配置文件目录，宿主机:容器
+      - ./middleware/redis/data:/data                           # 映射数据目录，宿主机:容器
+    command: [ "redis-server","/etc/redis/redis.conf" ]           # 指定配置文件启动redis-server进程
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.13
 
-#  bsin-rabbitmq:
-#    container_name: bsin-rabbitmq
-#    image: rabbitmq:3.7.8
-#    build:
-#      context: middleware/rabbitmq
-#      dockerfile: dockerfile
-#    ports:
-#      - "6379:6379"
-#    restart: always
-#    volumes:
-#      - ./middleware/rabbitmq/conf/rabbitmq.conf:/home/bsin-paas-os/middleware/rabbitmq/rabbitmq.conf
-#
-#  bsin-milvus:
-#    container_name: bsin-milvus
-#    image:
-#    build:
-#      context: middleware/milvus
-#      dockerfile: dockerfile
-#    ports:
-#      - "6379:6379"
-#    restart: always
-#    volumes:
-#      - ./middleware/milvus/conf:/home/bsin-paas-os/middleware/milvus/conf
-#
-#    bsin-elasticsearch:
-#      container_name: bsin-elasticsearch
-#      image:
-#      build:
-#        context: middleware/elasticsearch
-#        dockerfile: dockerfile
-#      ports:
-#        - "6379:6379"
-#      restart: always
-#      volumes:
-#        - ./middleware/elasticsearch/conf:/home/bsin-paas-os/middleware/elasticsearch/conf
+  #  bsin-rabbitmq:
+  #    container_name: bsin-rabbitmq
+  #    image: bsin-rabbitmq:2.0.0
+  #    build:
+  #      context: middleware/rabbitmq
+  #      dockerfile: dockerfile
+  #    ports:
+  #      - "6379:6379"
+  #    restart: always
+  #    volumes:
+  #      - ./middleware/rabbitmq/conf/rabbitmq.conf:/home/bsin-paas-os/middleware/rabbitmq/rabbitmq.conf
+  #  networks:
+  #    compose-network: #指定network
+  #      ipv4_address: 172.28.0.14
+  #
+  #  bsin-milvus:
+  #    container_name: bsin-milvus
+  #    image: bsin-milvus:2.0.0
+  #    build:
+  #      context: middleware/milvus
+  #      dockerfile: dockerfile
+  #    ports:
+  #      - "6379:6379"
+  #    restart: always
+  #    volumes:
+  #      - ./middleware/milvus/conf:/home/bsin-paas-os/middleware/milvus/conf
+  #  networks:
+  #    compose-network: #指定network
+  #      ipv4_address: 172.28.0.15
+  #
+  #    bsin-elasticsearch:
+  #      container_name: bsin-elasticsearch
+  #      image: bsin-elasticsearch:2.0.0
+  #      build:
+  #        context: middleware/elasticsearch
+  #        dockerfile: dockerfile
+  #      ports:
+  #        - "6379:6379"
+  #      restart: always
+  #      volumes:
+  #        - ./middleware/elasticsearch/conf:/home/bsin-paas-os/middleware/elasticsearch/conf
+  #  networks:
+  #    compose-network: #指定network
+  #      ipv4_address: 172.28.0.16
+
+  # bsin-emqx默认初始账号和密码
+  # username：admin
+  # password：public
+  bsin-emqx:
+    container_name: bsin-emqx
+    image: bsin-emqx:2.0.0
+    build:
+      context: middleware/emqx
+      dockerfile: dockerfile
+    ports:
+      - 1883:1883   # MQTT TCP
+      - 8883:8883   # MQTT TCP SSL
+      - 8083:8083   # MQTT Web Socket
+      - 8084:8084   # MQTT Web Socket SSL
+      - 18083:18083 # EMQX Dashboard
+    volumes:
+      - ./middleware/emqx/temp:/opt/emqx/temp
+      - ./middleware/emqx/data:/opt/emqx/data   # 数据目录映射，用于持久化数据
+      #        - ./middleware/emqx/etc:/opt/emqx/etc
+      - ./middleware/emqx/log:/opt/emqx/log     # 日志目录映射，用于持久化日志
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    environment:
+      EMQX_NAME: bsin-emqx
+      EMQX_HOST: 127.0.0.1
+    healthcheck:
+      test: [ "CMD", "/opt/emqx/bin/emqx", "ctl", "status" ]
+      interval: 5s
+      timeout: 25s
+      retries: 5
+
 
   # targe-gateway-admin
   bsin-targe-gateway-admin:
@@ -130,6 +190,9 @@ services:
       - bsin-nacos-standalone
       - bsin-redis
       - bsin-mysql
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.20
 
   # targe-gateway
   bsin-targe-gateway:
@@ -138,11 +201,13 @@ services:
     build:
       context: ./bsin-paas-os/targe-gateway
       dockerfile: dockerfile
+    command: sh -c "sleep 120 &&  echo 'waiting for bsin-targe-gateway-admin...'"
     ports:
       - "9195:9195"
-    #restart: always
+    restart: always
     volumes:
       - ./bsin-paas-os/targe-gateway/logs:/home/bsin-paas-os/targe-gateway/logs
+      - ./bsin-paas-os/targe-gateway/conf/hosts:/etc/hosts
     depends_on:
       - bsin-nacos-standalone
       - bsin-redis
@@ -153,6 +218,9 @@ services:
       - bsin-redis
       - bsin-mysql
       - bsin-targe-gateway-admin
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.21
 
   # server-apps
   bsin-server-upms:
@@ -162,8 +230,8 @@ services:
       context: ./bsin-paas-os/server-apps/upms
       dockerfile: dockerfile
     ports:
-      - "8013:8013"
-    #restart: always
+      - "9101:9101"
+    restart: always
     volumes:
       - ./bsin-paas-os/server-apps/upms/logs:/home/bsin-paas-os/server-apps/upms/logs
     depends_on:
@@ -174,6 +242,9 @@ services:
       - bsin-redis
       - bsin-mysql
       - bsin-targe-gateway
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.22
 
   bsin-server-waas:
     container_name: bsin-server-waas
@@ -182,8 +253,8 @@ services:
       context: ./bsin-paas-os/server-apps/waas
       dockerfile: dockerfile
     ports:
-      - "8085:8085"
-    #restart: always
+      - "9107:9107"
+    restart: always
     volumes:
       - ./bsin-paas-os/server-apps/waas/logs:/home/bsin-paas-os/server-apps/waas/logs
     depends_on:
@@ -194,6 +265,9 @@ services:
       - bsin-redis
       - bsin-mysql
       - bsin-targe-gateway
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.23
 
 
   bsin-server-crm:
@@ -203,8 +277,8 @@ services:
       context: ./bsin-paas-os/server-apps/crm
       dockerfile: dockerfile
     ports:
-      - "8072:8072"
-    #restart: always
+      - "9102:9102"
+    restart: always
     volumes:
       - ./bsin-paas-os/server-apps/crm/logs:/home/bsin-paas-os/server-apps/crm/logs
     depends_on:
@@ -215,6 +289,9 @@ services:
       - bsin-redis
       - bsin-mysql
       - bsin-targe-gateway
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.24
 
   bsin-server-ai-agent:
     container_name: bsin-server-ai-agent
@@ -223,8 +300,8 @@ services:
       context: ./bsin-paas-os/server-apps/ai-agent
       dockerfile: dockerfile
     ports:
-      - "8084:8084"
-    #restart: always
+      - "9104:9104"
+    restart: always
     volumes:
       - ./bsin-paas-os/server-apps/ai-agent/logs:/home/bsin-paas-os/server-apps/ai-agent/logs
     depends_on:
@@ -235,6 +312,55 @@ services:
       - bsin-redis
       - bsin-mysql
       - bsin-targe-gateway
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.25
+
+  bsin-server-oms:
+    container_name: bsin-server-oms
+    image: bsin-server-oms:2.0.0
+    build:
+      context: ./bsin-paas-os/server-apps/oms
+      dockerfile: dockerfile
+    ports:
+      - "9111:9111"
+    restart: always
+    volumes:
+      - ./bsin-paas-os/server-apps/oms/logs:/home/bsin-paas-os/server-apps/oms/logs
+    depends_on:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    links:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.26
+
+  bsin-server-community:
+    container_name: bsin-server-community
+    image: bsin-server-community:2.0.0
+    build:
+      context: ./bsin-paas-os/server-apps/community
+      dockerfile: dockerfile
+    ports:
+      - "9110:9110"
+    restart: always
+    volumes:
+      - ./bsin-paas-os/server-apps/community/logs:/home/bsin-paas-os/server-apps/community/logs
+    depends_on:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    links:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.27
 
   # apps-container
   bsin-apps-container:
@@ -245,14 +371,17 @@ services:
       dockerfile: dockerfile
     ports:
       - "8000:80"
-#    expose:
-#      - "80"
+    #    expose:
+    #      - "80"
     volumes:
       - ./bsin-paas-os/apps-container/dist:/home/bsin-paas-os/apps-container/dist
       - ./bsin-paas-os/apps-container/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./bsin-paas-os/apps-container/logs:/var/log/nginx
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.40
 
-# ui-apps
+  # ui-apps
   bsin-ui-upms:
     container_name: bsin-ui-upms
     image: bsin-ui-upms:2.0.0
@@ -260,13 +389,16 @@ services:
       context: ./bsin-paas-os/ui-apps/upms
       dockerfile: dockerfile
     ports:
-      - "8003:80"
-#    expose:
-#      - "80"
+      - "8001:80"
+    #    expose:
+    #      - "80"
     volumes:
       - ./bsin-paas-os/ui-apps/upms/dist:/home/bsin-paas-os/ui-apps/upms/dist
       - ./bsin-paas-os/ui-apps/upms/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./bsin-paas-os/ui-apps/upms/logs:/var/log/nginx
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.41
 
   bsin-ui-ai-agent:
     container_name: bsin-ui-ai-agent
@@ -275,13 +407,16 @@ services:
       context: ./bsin-paas-os/ui-apps/ai-agent
       dockerfile: dockerfile
     ports:
-      - "8014:80"
-#    expose:
-#      - "80"
+      - "8004:80"
+    #    expose:
+    #      - "80"
     volumes:
       - ./bsin-paas-os/ui-apps/ai-agent/dist:/home/bsin-paas-os/ui-apps/ai-agent/dist
       - ./bsin-paas-os/ui-apps/ai-agent/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./bsin-paas-os/ui-apps/ai-agent/logs:/var/log/nginx
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.42
 
   bsin-ui-waas:
     container_name: bsin-ui-waas
@@ -290,13 +425,16 @@ services:
       context: ./bsin-paas-os/ui-apps/waas
       dockerfile: dockerfile
     ports:
-      - "8004:80"
-#    expose:
-#      - "80"
+      - "8002:80"
+    #    expose:
+    #      - "80"
     volumes:
       - ./bsin-paas-os/ui-apps/waas/dist:/home/bsin-paas-os/ui-apps/waas/dist
       - ./bsin-paas-os/ui-apps/waas/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./bsin-paas-os/ui-apps/waas/logs:/var/log/nginx
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.43
 
 
   bsin-ui-decision-admin:
@@ -306,10 +444,32 @@ services:
       context: ./bsin-paas-os/ui-apps/decision-admin
       dockerfile: dockerfile
     ports:
-      - "5555:80"
-#    expose:
-#      - "80"
+      - "8003:80"
+    #    expose:
+    #      - "80"
     volumes:
       - ./bsin-paas-os/ui-apps/decision-admin/dist:/home/bsin-paas-os/ui-apps/decision-admin/dist
       - ./bsin-paas-os/ui-apps/decision-admin/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./bsin-paas-os/ui-apps/decision-admin/logs:/var/log/nginx
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.44
+
+
+  bsin-ui-bigan:
+    container_name: bsin-ui-bigan
+    image: bsin-ui-bigan:2.0.0
+    build:
+      context: ./bsin-paas-os/ui-apps/bigan
+      dockerfile: dockerfile
+    ports:
+      - "8006:80"
+    #    expose:
+    #      - "80"
+    volumes:
+      - ./bsin-paas-os/ui-apps/bigan/dist:/home/bsin-paas-os/ui-apps/bigan/dist
+      - ./bsin-paas-os/ui-apps/bigan/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./bsin-paas-os/ui-apps/bigan/logs:/var/log/nginx
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.45

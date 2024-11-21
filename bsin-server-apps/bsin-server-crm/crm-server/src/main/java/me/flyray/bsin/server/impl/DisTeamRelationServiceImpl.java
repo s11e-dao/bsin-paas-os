@@ -12,6 +12,7 @@ import me.flyray.bsin.facade.service.DisTeamRelationService;
 import me.flyray.bsin.infrastructure.mapper.*;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
@@ -65,6 +66,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
     @Override
     public DisTeamRelation add(Map<String, Object> requestMap) {
         // 生成crm_sys_agent 数据后调用,requestMap ->{"sysAgentNo": 成为分销后的serial_no, "tenantId":租户ID}
+        String customerNo = MapUtils.getString(requestMap, "customerNo");
         String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
         String tenantId = MapUtils.getString(requestMap, "tenantId");
         System.out.println(tenantId);
@@ -80,21 +82,11 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
             return null;
         }
         System.out.println(agent);
-        // 查询客户身份信息
-        CustomerIdentity identity = CustomerIdentityMapper.selectOne(
-                new LambdaQueryWrapper<CustomerIdentity>()
-                .eq(CustomerIdentity::getBizRoleTypeNo, agent.getSerialNo()
-                )
-        );
-        System.out.println(identity);
-        if (identity == null) {
-            return null;
-        }
 
         // 查询邀请关系信息
         DisInviteRelation relation = disInviteRelationMapper.selectOne(
                 new LambdaQueryWrapper<DisInviteRelation>()
-                        .eq(DisInviteRelation::getCustomerNo, identity.getCustomerNo())
+                        .eq(DisInviteRelation::getCustomerNo, customerNo)
         );
         if (relation == null) {
             DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
@@ -108,12 +100,13 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
 
             return disTeamRelation;
         }
-        String parentNo = relation.getParentNo();
+        String parentCustomerNo = relation.getParentNo();
 
         // 查询父级客户身份信息
         CustomerIdentity parentIdentity = CustomerIdentityMapper.selectOne(
                 new LambdaQueryWrapper<CustomerIdentity>()
-                        .eq(CustomerIdentity::getCustomerNo, parentNo)
+                        .eq(CustomerIdentity::getCustomerNo, parentCustomerNo)
+                        .eq(CustomerIdentity::getBizRoleType, BizRoleType.SYS_AGENT.getCode())
         );
         if (parentIdentity == null) {
             return null;

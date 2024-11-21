@@ -33,6 +33,11 @@ public class LoginUser implements Serializable {
     private String customerNo;
 
     /**
+     * 凭据，第三方标识，微信平台的openId
+     */
+    private String credential;
+
+    /**
      * C端客户类型： 个人客户 企业客户
      */
     private String customerType;
