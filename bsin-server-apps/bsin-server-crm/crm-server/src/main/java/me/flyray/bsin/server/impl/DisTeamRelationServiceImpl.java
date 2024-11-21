@@ -140,7 +140,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
                 LambdaQueryWrapper<DisTeamRelation> wrapper = new LambdaQueryWrapper<>();
                 wrapper.eq(DisTeamRelation::getPrarentSysAgentNo, parentSysAgentNo);
                 List<DisTeamRelation> list = disTeamRelationMapper.selectList(wrapper);
-                // 超过链动设置的人数，则邀请人变为老板并退出团队,邀请人的两人给邀请人的上级
+                // 超过链动设置的人数，则邀请人变为老板并退出团队,邀请人的下级给邀请人的上级, 人数判断必须大于等于,只判断等于,获得下级的下级后会有问题
                 if (list.size() >= disModel.getQuitCurrentLimit()) {
                     // 邀请人名下的所有人，都给邀请人的上级
                     for (DisTeamRelation item : list) {
