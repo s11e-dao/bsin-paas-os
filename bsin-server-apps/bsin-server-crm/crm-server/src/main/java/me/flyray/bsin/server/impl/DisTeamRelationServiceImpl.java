@@ -58,7 +58,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
     /**
      * 添加分销团队关系
      * 1、没有邀请关系直接组建团队成为老板代理商
-     * 2、根据邀请关系加入代理商团队：邀请关系中有一个邀请人的代理商（可能是直接邀请人、或直接邀请人的上级代理商）
+     * 2、根据邀请关系加入代理商团队：邀请关系中直接邀请人是代理商（直接邀请人代理商、或直接邀请人的上级代理商（递归选找））
      * 3、（链动2+1）加入团队后判断父级是否给上级留人并走人
      */
     @ApiDoc(desc = "add")
@@ -109,25 +109,22 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
                         .eq(CustomerIdentity::getBizRoleType, BizRoleType.SYS_AGENT.getCode())
         );
         String parentSysAgentNo = null;
-        // 2、根据邀请关系加入代理商团队：邀请关系中有一个邀请人的代理商（可能是直接邀请人、或直接邀请人的上级代理商）
+        // 2、根据邀请关系加入代理商团队：邀请关系中直接邀请人是代理商（直接邀请人代理商、或直接邀请人的上级代理商（递归选找））
         DisTeamRelation parantDisTeamRelation = disTeamRelationMapper.selectOne(
                 new LambdaQueryWrapper<DisTeamRelation>()
                         .eq(DisTeamRelation::getSysAgentNo, parentSysAgentNo));
         // 判断(邀请人)父级是否是代理商，如果是则加入团队
-        if(parentIdentity != null){
+        if(parentIdentity != null && parantDisTeamRelation != null){
             parentSysAgentNo = parentIdentity.getBizRoleTypeNo();
-
-            if (parantDisTeamRelation != null) {
-                disTeamRelation.setPrarentSysAgentNo(parentSysAgentNo);
-                disTeamRelation.setDisAgentType(DisAgentType.DISTRIBUTOR.getCode());
-                disTeamRelation.setSysAgentNo(agent.getSerialNo());
-                disTeamRelation.setSerialNo(BsinSnowflake.getId());
-                disTeamRelation.setTenantId(tenantId);
-                // 插入分销团队关系到数据库
-                disTeamRelationMapper.insert(disTeamRelation);
-            }
+            disTeamRelation.setPrarentSysAgentNo(parentSysAgentNo);
+            disTeamRelation.setDisAgentType(DisAgentType.DISTRIBUTOR.getCode());
+            disTeamRelation.setSysAgentNo(agent.getSerialNo());
+            disTeamRelation.setSerialNo(BsinSnowflake.getId());
+            disTeamRelation.setTenantId(tenantId);
+            // 插入分销团队关系到数据库
+            disTeamRelationMapper.insert(disTeamRelation);
         }else {
-            // 3、如果有邀请关系，并且邀请人不是代理商，则自己是老板
+            // 3、如果有邀请关系，并且邀请人不是代理商，则创建团队自己是老板
             disTeamRelation.setDisAgentType(DisAgentType.BOSS.getCode());
             disTeamRelation.setSysAgentNo(agent.getSerialNo());
             disTeamRelation.setSerialNo(BsinSnowflake.getId());
@@ -137,10 +134,9 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
             return disTeamRelation;
         }
 
-
         // 不同的分销模型做不同的处理: 链动2+1，走人和留人
         if (DisModelEnum.DIS_LEVEL21.getCode().equals(disModel.getModel()) && parentSysAgentNo != null) {
-            // 如果(邀请人)父类不是老板，并且是代理商
+            // 如果(邀请人)父类是代理商，并且不是老板
             if (parantDisTeamRelation != null && !DisAgentType.BOSS.getCode().equals(parantDisTeamRelation.getDisAgentType())) {
                 // 查询该用户的上级是否已经大于链动人数
                 LambdaQueryWrapper<DisTeamRelation> wrapper = new LambdaQueryWrapper<>();
