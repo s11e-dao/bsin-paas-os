@@ -162,6 +162,9 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
                         disTeamRelationMapper.updateById(item);
                     }
                     // 该用户改为老板身份,对应的下级改为上级的下级
+                    disTeamRelation.setAgentType(1);
+                    disTeamRelation.setPrarentSysAgentNo(null);
+                    disTeamRelationMapper.updateById(disTeamRelation);
                 }
             }
         }
