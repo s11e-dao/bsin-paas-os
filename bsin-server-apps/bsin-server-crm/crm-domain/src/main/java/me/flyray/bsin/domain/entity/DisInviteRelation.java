@@ -38,6 +38,11 @@ public class DisInviteRelation implements Serializable {
     private String parentNo;
 
     /**
+     * 父级代理商编号
+     */
+    private String parentSysAgentNo;
+
+    /**
      * 邀请等级 1、2、3级
      */
     private Integer inviteLevel;

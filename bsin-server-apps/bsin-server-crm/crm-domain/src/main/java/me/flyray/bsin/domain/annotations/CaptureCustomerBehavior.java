@@ -11,7 +11,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import me.flyray.bsin.domain.enums.BehaviorCode;
+import me.flyray.bsin.domain.enums.EventCode;
 import me.flyray.bsin.domain.enums.CustomerType;
 
 /**
@@ -33,6 +33,6 @@ public @interface CaptureCustomerBehavior {
      * 行为编号
      * @return
      */
-    BehaviorCode behaviorCode() default BehaviorCode.ISSUE;
+    EventCode behaviorCode() default EventCode.ISSUE;
 
 }

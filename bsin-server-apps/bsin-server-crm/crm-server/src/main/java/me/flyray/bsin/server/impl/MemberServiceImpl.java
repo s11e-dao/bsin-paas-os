@@ -66,32 +66,42 @@ public class MemberServiceImpl implements MemberService {
   public Member openMember(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
-    if (member.getCustomerNo() == null) {
-      throw new BusinessException(CUSTOMER_NO_NOT_ISNULL);
+    String customerNo = loginUser.getCustomerNo();
+    if (customerNo == null) {
+      customerNo = member.getCustomerNo();
+      if(customerNo == null) {
+        throw new BusinessException(CUSTOMER_NO_NOT_ISNULL);
+      }
     }
+    member.setCustomerNo(customerNo);
     if (member.getTenantId() == null) {
       member.setTenantId(LoginInfoContextHelper.getTenantId());
     }
+    String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+    if (merchantNo == null) {
+      merchantNo = loginUser.getMerchantNo();
+    }
+    member.setMerchantNo(merchantNo);
     // 检查客户信息是否存在
     if (!customerBaseMapper.exists(
         new LambdaUpdateWrapper<CustomerBase>()
             .eq(CustomerBase::getTenantId, member.getTenantId())
-            .eq(CustomerBase::getCustomerNo, member.getCustomerNo()))) {
+            .eq(CustomerBase::getCustomerNo, customerNo))) {
       throw new BusinessException(CUSTOMER_ERROR);
     }
     if (!memberMapper.exists(
         new LambdaUpdateWrapper<Member>()
             .eq(Member::getTenantId, member.getTenantId())
-            .eq(Member::getMerchantNo, loginUser.getMerchantNo())
-            .eq(Member::getCustomerNo, member.getCustomerNo()))) {
+            .eq(Member::getMerchantNo, merchantNo)
+            .eq(Member::getCustomerNo, customerNo))) {
       memberMapper.insert(member);
     } else {
       member =
           memberMapper.selectOne(
               new LambdaUpdateWrapper<Member>()
                   .eq(Member::getTenantId, member.getTenantId())
-                  .eq(Member::getMerchantNo, loginUser.getMerchantNo())
-                  .eq(Member::getCustomerNo, member.getCustomerNo()));
+                  .eq(Member::getMerchantNo, merchantNo)
+                  .eq(Member::getCustomerNo, customerNo));
     }
     return member;
   }

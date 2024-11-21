@@ -39,10 +39,7 @@ public class DisTeamRelation implements Serializable {
     /**
      * 分销商类型 1(老板), 0(分销员)
      */
-    private Integer agentType;
-
-
-
+    private String disAgentType;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

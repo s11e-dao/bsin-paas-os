@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * @date 2023/8/23
  * @desc
  */
-public enum BehaviorCode {
+public enum EventCode {
 
     /**
      * 发资产
@@ -22,7 +22,7 @@ public enum BehaviorCode {
 
     private String desc;
 
-    BehaviorCode(String code, String desc) {
+    EventCode(String code, String desc) {
         this.code = code;
         this.desc = desc;
     }
@@ -39,11 +39,11 @@ public enum BehaviorCode {
      * Json 枚举序列化
      */
     @JsonCreator
-    public static BehaviorCode getInstanceById(String id) {
+    public static EventCode getInstanceById(String id) {
         if (id == null) {
             return null;
         }
-        for (BehaviorCode status : values()) {
+        for (EventCode status : values()) {
             if (id.equals(status.getCode())) {
                 return status;
             }

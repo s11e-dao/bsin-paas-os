@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.enums.DisAgentType;
+import me.flyray.bsin.domain.enums.DisModelEnum;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisTeamRelationService;
 import me.flyray.bsin.infrastructure.mapper.*;
@@ -23,10 +25,10 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
-import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
-import static me.flyray.bsin.constants.ResponseCode.ACCOUNT_EXISTS;
+import static me.flyray.bsin.constants.ResponseCode.*;
 
 /**
 * @author bolei
@@ -44,7 +46,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
     @Autowired
     private SysAgentMapper SysAgentMapper;
     @Autowired
-    private CustomerIdentityMapper CustomerIdentityMapper;
+    private CustomerIdentityMapper customerIdentityMapper;
     @Autowired
     private DisInviteRelationMapper disInviteRelationMapper;
     @Autowired
@@ -55,94 +57,97 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
 
     /**
      * 添加分销团队关系
-     *
-     * 该方法主要用于处理分销团队关系的添加请求它首先检查请求中的参数，
-     * 然后根据这些参数查询相关的配置和实体信息，最后在数据库中创建一个新的分销团队关系
-     * @param requestMap 包含请求参数的映射，包括"sysAgentNo"和"tenantId"等关键信息
-     * @return 返回新创建的DisTeamRelation对象，如果请求失败或数据不合法则可能返回null
+     * 1、没有邀请关系直接组建团队成为老板代理商
+     * 2、根据邀请关系加入代理商团队：邀请关系中有一个邀请人的代理商（可能是直接邀请人、或直接邀请人的上级代理商）
+     * 3、（链动2+1）加入团队后判断父级是否给上级留人并走人
      */
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
     @Override
     public DisTeamRelation add(Map<String, Object> requestMap) {
         // 生成crm_sys_agent 数据后调用,requestMap ->{"sysAgentNo": 成为分销后的serial_no, "tenantId":租户ID}
+        DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
         String customerNo = MapUtils.getString(requestMap, "customerNo");
         String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
         String tenantId = MapUtils.getString(requestMap, "tenantId");
         System.out.println(tenantId);
-        DisModel model = disModelMapper.selectById(tenantId);
-        System.out.println(model);
+        DisModel disModel = disModelMapper.selectById(tenantId);
+        System.out.println(disModel);
         // 查询分销配置信息
-        if (model == null) {
-            return null;
+        if (disModel == null) {
+            throw new BusinessException(DIS_MODEL_NOT_EXISTS);
         }
         // 根据sysAgentNo查询代理信息
         SysAgent agent = SysAgentMapper.selectById(sysAgentNo);
         if (agent == null) {
-            return null;
+            throw new BusinessException(SYS_AGENT_NOT_EXISTS);
         }
-        System.out.println(agent);
 
         // 查询邀请关系信息
-        DisInviteRelation relation = disInviteRelationMapper.selectOne(
+        DisInviteRelation inviteRelation = disInviteRelationMapper.selectOne(
                 new LambdaQueryWrapper<DisInviteRelation>()
                         .eq(DisInviteRelation::getCustomerNo, customerNo)
         );
-        if (relation == null) {
-            DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
-            disTeamRelation.setAgentType(1);
+        // 1、没有邀请关系直接组建团队成为老板代理商
+        if (inviteRelation == null) {
+            disTeamRelation.setDisAgentType(DisAgentType.BOSS.getCode());
             disTeamRelation.setSysAgentNo(agent.getSerialNo());
             disTeamRelation.setSerialNo(BsinSnowflake.getId());
             disTeamRelation.setTenantId(tenantId);
 
             // 插入分销团队关系到数据库
             disTeamRelationMapper.insert(disTeamRelation);
-
             return disTeamRelation;
         }
-        String parentCustomerNo = relation.getParentNo();
+        // 根据邀请关系找到邀请人身份
+        String parentCustomerNo = inviteRelation.getParentNo();
 
-        // 查询父级客户身份信息
-        CustomerIdentity parentIdentity = CustomerIdentityMapper.selectOne(
+        // 查询(邀请人)父级客户身份信息
+        CustomerIdentity parentIdentity = customerIdentityMapper.selectOne(
                 new LambdaQueryWrapper<CustomerIdentity>()
                         .eq(CustomerIdentity::getCustomerNo, parentCustomerNo)
                         .eq(CustomerIdentity::getBizRoleType, BizRoleType.SYS_AGENT.getCode())
         );
-        if (parentIdentity == null) {
-            return null;
-        }
+        String parentSysAgentNo = null;
+        // 2、根据邀请关系加入代理商团队：邀请关系中有一个邀请人的代理商（可能是直接邀请人、或直接邀请人的上级代理商）
+        DisTeamRelation parantDisTeamRelation = disTeamRelationMapper.selectOne(
+                new LambdaQueryWrapper<DisTeamRelation>()
+                        .eq(DisTeamRelation::getSysAgentNo, parentSysAgentNo));
+        // 判断(邀请人)父级是否是代理商，如果是则加入团队
+        if(parentIdentity != null){
+            parentSysAgentNo = parentIdentity.getBizRoleTypeNo();
 
-        // 创建分销团队关系对象
-        DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
-        if (parentIdentity.getBizRoleTypeNo() != null){
-            disTeamRelation.setPrarentSysAgentNo(parentIdentity.getBizRoleTypeNo());
-            disTeamRelation.setAgentType(0);
-        } else {
-            disTeamRelation.setAgentType(1);
-        }
-        disTeamRelation.setSysAgentNo(agent.getSerialNo());
-        disTeamRelation.setSerialNo(BsinSnowflake.getId());
-        disTeamRelation.setTenantId(tenantId);
-
-        // 插入分销团队关系到数据库
-        disTeamRelationMapper.insert(disTeamRelation);
-
-        // 不同的分销模型做不同的处理
-        if (model.getModel().equals("level2_1") && parentIdentity.getBizRoleTypeNo() != null) {
-            DisTeamRelation parantDisTeamRelation = disTeamRelationMapper.selectOne(
-                    new LambdaQueryWrapper<DisTeamRelation>()
-                            .eq(DisTeamRelation::getSysAgentNo, parentIdentity.getBizRoleTypeNo())
-            );
-            if (parantDisTeamRelation == null) {
-                return disTeamRelation;
+            if (parantDisTeamRelation != null) {
+                disTeamRelation.setPrarentSysAgentNo(parentSysAgentNo);
+                disTeamRelation.setDisAgentType(DisAgentType.DISTRIBUTOR.getCode());
+                disTeamRelation.setSysAgentNo(agent.getSerialNo());
+                disTeamRelation.setSerialNo(BsinSnowflake.getId());
+                disTeamRelation.setTenantId(tenantId);
+                // 插入分销团队关系到数据库
+                disTeamRelationMapper.insert(disTeamRelation);
             }
-            if (parantDisTeamRelation.getAgentType() != 1) {
-                // 查询该用户的上级是否已经有两个下级
-                Page<DisTeamRelation> page = new Page<>(1, 1);
+        }else {
+            // 3、如果有邀请关系，并且邀请人不是代理商，则自己是老板
+            disTeamRelation.setDisAgentType(DisAgentType.BOSS.getCode());
+            disTeamRelation.setSysAgentNo(agent.getSerialNo());
+            disTeamRelation.setSerialNo(BsinSnowflake.getId());
+            disTeamRelation.setTenantId(tenantId);
+            // 插入分销团队关系到数据库
+            disTeamRelationMapper.insert(disTeamRelation);
+            return disTeamRelation;
+        }
+
+
+        // 不同的分销模型做不同的处理: 链动2+1，走人和留人
+        if (DisModelEnum.DIS_LEVEL21.getCode().equals(disModel.getModel()) && parentSysAgentNo != null) {
+            // 如果(邀请人)父类不是老板，并且是代理商
+            if (parantDisTeamRelation != null && !DisAgentType.BOSS.getCode().equals(parantDisTeamRelation.getDisAgentType())) {
+                // 查询该用户的上级是否已经大于链动人数
                 LambdaQueryWrapper<DisTeamRelation> wrapper = new LambdaQueryWrapper<>();
-                wrapper.eq(DisTeamRelation::getPrarentSysAgentNo, parentIdentity.getBizRoleTypeNo());
-                IPage<DisTeamRelation> pageList = disTeamRelationMapper.selectPage(page, wrapper);
-                if (pageList.getSize() >= model.getQuitCurrentLimit()) {
+                wrapper.eq(DisTeamRelation::getPrarentSysAgentNo, parentSysAgentNo);
+                List<DisTeamRelation> list = disTeamRelationMapper.selectList(wrapper);
+                // 超过链动人数，则父级代理商进行走人并贡献两人给父级的上级
+                if (list.size() == disModel.getQuitCurrentLimit()) {
                     DisTeamRelation topDisTeamRelation = disTeamRelationMapper.selectOne(
                             new LambdaQueryWrapper<DisTeamRelation>()
                                     .eq(DisTeamRelation::getPrarentSysAgentNo, parantDisTeamRelation.getPrarentSysAgentNo())
@@ -150,14 +155,20 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
                     if (topDisTeamRelation == null) {
                         return disTeamRelation;
                     }
-                    for (DisTeamRelation item : pageList.getRecords()) {
+                    // 贡献两个人: 将父级代理的下级改为父级上级的下级
+                    for (DisTeamRelation item : list) {
                         item.setPrarentSysAgentNo(topDisTeamRelation.getSysAgentNo());
                         disTeamRelationMapper.updateById(item);
+
                     }
-                    // 该用户改为老板身份,对应的下级改为上级的下级
+                    // 父级走人成为老板，该用户改为老板身份
+                    disTeamRelation.setDisAgentType(DisAgentType.BOSS.getCode());
+                    disTeamRelation.setPrarentSysAgentNo("-1");
+                    disTeamRelationMapper.updateById(disTeamRelation);
                 }
             }
         }
+
         return disTeamRelation;
     }
 

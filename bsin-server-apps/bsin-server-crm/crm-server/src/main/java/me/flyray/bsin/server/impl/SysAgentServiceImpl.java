@@ -107,26 +107,20 @@ public class SysAgentServiceImpl implements SysAgentService {
         throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
       }
     }
-    String customerNo = (String) requestMap.get("customerNo");
-    if (customerNo == null) {
-      customerNo = loginUser.getCustomerNo();
-      if (customerNo == null) {
-        throw new BusinessException(CUSTOMER_NO_IS_NULL);
-      }
-    }
-    String merchantNo = (String) requestMap.get("merchantNo");
+
+    String customerNo = loginUser.getCustomerNo();
+
+    // 成为平台直属商户的会员才能成为代理商
+    String merchantNo = LoginInfoContextHelper.getTenantMerchantNo();
     if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-      if (customerNo == null) {
-        throw new BusinessException(MERCHANT_NO_IS_NULL);
-      }
+      throw new BusinessException(MERCHANT_NO_IS_NULL);
     }
     // 会员所属商户包含在 loginUser.getMerchantNo
     Member member =
         memberMapper.selectOne(
             new LambdaUpdateWrapper<Member>()
                 .eq(Member::getTenantId, loginUser.getTenantId())
-                .eq(Member::getMerchantNo, loginUser.getMerchantNo())
+                .eq(Member::getMerchantNo, merchantNo)
                 .eq(Member::getCustomerNo, customerNo));
     if (member == null) {
       throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);
