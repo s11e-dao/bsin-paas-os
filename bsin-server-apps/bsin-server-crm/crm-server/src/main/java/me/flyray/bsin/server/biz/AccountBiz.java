@@ -51,8 +51,11 @@ public class AccountBiz {
           String fromAccountCategory,
           String toAccountCategory,
           String ccy,
+          String orderNo,
+          String transactionType,
           Integer decimals,
-          BigDecimal amount)
+          BigDecimal amount,
+          String remark)
           throws UnsupportedEncodingException {
 
     return null;
@@ -65,8 +68,11 @@ public class AccountBiz {
       String accountCategory,
       String accountName,
       String ccy,
+      String orderNo,
+      String transactionType,
       Integer decimals,
-      BigDecimal amount)
+      BigDecimal amount,
+      String remark)
       throws UnsupportedEncodingException {
     return handleAccount(
         tenantId,
@@ -75,9 +81,12 @@ public class AccountBiz {
         accountCategory,
         accountName,
         ccy,
+        orderNo,
+        transactionType,
         decimals,
         amount,
-        InOutAccountFlag.INT_ACCOUNT.getCode());
+        InOutAccountFlag.INT_ACCOUNT.getCode(),
+        remark);
   }
 
   public Account outAccount(
@@ -87,8 +96,11 @@ public class AccountBiz {
       String accountCategory,
       String accountName,
       String ccy,
+      String orderNo,
+      String transactionType,
       Integer decimals,
-      BigDecimal amount)
+      BigDecimal amount,
+      String remark)
       throws UnsupportedEncodingException {
     return handleAccount(
         tenantId,
@@ -97,9 +109,12 @@ public class AccountBiz {
         accountCategory,
         accountName,
         ccy,
+        orderNo,
+        transactionType,
         decimals,
         amount,
-        InOutAccountFlag.OUT_ACCOUNT.getCode());
+        InOutAccountFlag.OUT_ACCOUNT.getCode(),
+        remark);
   }
 
   private Account handleAccount(
@@ -109,9 +124,12 @@ public class AccountBiz {
       String category,
       String accountName,
       String ccy,
+      String orderNo,
+      String transactionType,
       Integer decimals,
       BigDecimal amount,
-      Integer journalDirection) {
+      Integer journalDirection,
+      String remark) {
     LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
     warapper.eq(Account::getTenantId, tenantId);
     warapper.eq(Account::getBizRoleTypeNo, bizRoleTypeNo);
@@ -175,7 +193,9 @@ public class AccountBiz {
       String newCheckCode = HexUtil.encodeHexStr(md5.digest(newBalance));
       customerAccount.setCheckCode(newCheckCode);
     }
-
+    accountJournal.setRemark(remark);
+    accountJournal.setOrderType(transactionType);
+    accountJournal.setOrderNo(orderNo);
     accountJournal.setSerialNo(BsinSnowflake.getId());
     accountJournal.setAccountNo(customerAccount.getSerialNo());
     accountJournal.setAccountType(customerAccount.getType());
