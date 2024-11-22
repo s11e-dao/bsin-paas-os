@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.DisBrokerageConfig;
+import me.flyray.bsin.domain.entity.DisModel;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisBrokerageConfigService;
 import me.flyray.bsin.infrastructure.mapper.DisBrokerageConfigMapper;
@@ -42,10 +43,10 @@ public class DisBrokerageConfigServiceImpl implements DisBrokerageConfigService 
     @Autowired
     private DisBrokerageConfigMapper disBrokerageConfigMapper;
 
-    @ApiDoc(desc = "add")
-    @ShenyuDubboClient("/add")
+    @ApiDoc(desc = "config")
+    @ShenyuDubboClient("/config")
     @Override
-    public DisBrokerageConfig add(DisBrokerageConfig disBrokerageConfig) {
+    public DisBrokerageConfig config(DisBrokerageConfig disBrokerageConfig) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         disBrokerageConfig.setTenantId(loginUser.getTenantId());
         disBrokerageConfig.setSerialNo(BsinSnowflake.getId());
@@ -55,7 +56,18 @@ public class DisBrokerageConfigServiceImpl implements DisBrokerageConfigService 
         if(totalRateResult != 0){
             throw new BusinessException("999","比例设置不等于100");
         }
-        disBrokerageConfigMapper.insert(disBrokerageConfig);
+        // 构建查询条件
+        LambdaQueryWrapper<DisBrokerageConfig> wrapper = new LambdaQueryWrapper<DisBrokerageConfig>()
+                .eq(DisBrokerageConfig::getTenantId, loginUser.getTenantId());
+        // 查询记录
+        DisBrokerageConfig existingDisBrokerageConfig = disBrokerageConfigMapper.selectOne(wrapper);
+        if (existingDisBrokerageConfig == null) {
+            // 记录不存在，插入新记录
+            disBrokerageConfigMapper.insert(disBrokerageConfig);
+        } else {
+            // 记录存在，更新记录
+            disBrokerageConfigMapper.updateById(disBrokerageConfig);
+        }
         return disBrokerageConfig;
     }
 
