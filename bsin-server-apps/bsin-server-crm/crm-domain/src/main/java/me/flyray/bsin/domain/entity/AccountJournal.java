@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import lombok.Data;
-import me.flyray.bsin.domain.enums.TransactionType;
 
 /**
  *

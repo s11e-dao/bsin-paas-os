@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import me.flyray.bsin.domain.enums.CustomerType;
+import me.flyray.bsin.domain.enums.InOutAccountFlag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,6 @@ import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.domain.entity.Account;
 import me.flyray.bsin.domain.entity.AccountJournal;
 import me.flyray.bsin.domain.enums.AccountEnum;
-import me.flyray.bsin.domain.enums.TransactionType;
 import me.flyray.bsin.infrastructure.mapper.AccountJournalMapper;
 import me.flyray.bsin.infrastructure.mapper.AccountMapper;
 import me.flyray.bsin.utils.BsinSnowflake;
@@ -77,7 +77,7 @@ public class AccountBiz {
         ccy,
         decimals,
         amount,
-        TransactionType.INT_ACCOUNT.getCode());
+        InOutAccountFlag.INT_ACCOUNT.getCode());
   }
 
   public Account outAccount(
@@ -99,7 +99,7 @@ public class AccountBiz {
         ccy,
         decimals,
         amount,
-        TransactionType.OUT_ACCOUNT.getCode());
+        InOutAccountFlag.OUT_ACCOUNT.getCode());
   }
 
   private Account handleAccount(
@@ -135,7 +135,7 @@ public class AccountBiz {
       customerAccount.setCategory(category);
       customerAccount.setDecimals(decimals);
       String amountStr = decimalFormat.format(amount);
-      if (TransactionType.INT_ACCOUNT.getCode().equals(journalDirection)) {
+      if (InOutAccountFlag.INT_ACCOUNT.getCode().equals(journalDirection)) {
         customerAccount.setBalance(amount);
         accountJournal.setInOutFlag(1);
       } else {
@@ -160,7 +160,7 @@ public class AccountBiz {
       if (customerAccount.getStatus().equals(AccountEnum.FREEZE.getCode())) {
         throw new BusinessException(ResponseCode.ACCOUNT_NOT_EXISTS);
       }
-      if (TransactionType.INT_ACCOUNT.getCode().equals(journalDirection)) {
+      if (InOutAccountFlag.INT_ACCOUNT.getCode().equals(journalDirection)) {
         customerAccount.setBalance(customerAccount.getBalance().add(amount));
         accountJournal.setInOutFlag(1);
       } else {

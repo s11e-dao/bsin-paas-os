@@ -1,4 +1,4 @@
-package me.flyray.bsin.domain.enums;
+package me.flyray.bsin.enums;
 
 public enum TransactionType {
 
@@ -12,16 +12,7 @@ public enum TransactionType {
     TRANSFER(3,"转账"),
     WITHDRAW(4,"提现"),
     REFUND(5,"退款"),
-    SETTLEMENT(7,"结算"),
-
-    /**
-     * 出账入账标志
-     */
-    OUT_ACCOUNT(1,"出账"),
-
-    INT_ACCOUNT(2,"入账");
-
-
+    SETTLEMENT(7,"结算");
 
 
     // 状态码
