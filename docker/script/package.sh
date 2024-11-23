@@ -53,7 +53,7 @@ echo "2. build frontend finish!!!"
 
 server_apps(){
 echo "3. build server start..."
-cd ../
+cd ../../
 mvn package -Dcheckstyle.skip=true -Dmaven.test.skip=true -Drat.skip=true -Denforcer.skip=true -Dmaven.javadoc.skip=true -Pdist,embedded-hbase-solr
 echo "4. build server finish!!!"
 }

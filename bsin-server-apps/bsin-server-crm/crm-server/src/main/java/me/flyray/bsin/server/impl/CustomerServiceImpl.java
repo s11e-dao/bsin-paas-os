@@ -56,8 +56,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.math.BigDecimal.ROUND_HALF_UP;
-import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_NO_NOT_ISNULL;
-import static me.flyray.bsin.constants.ResponseCode.DATA_BASE_UPDATE_FAILED;
+import static me.flyray.bsin.constants.ResponseCode.*;
 
 /**
  * @author bolei
@@ -309,7 +308,10 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   /**
-   * 手机验证码登录 1、判断用户是否存在 2、不存在则注册并登录 3、存在则直接登录 返回是否有数字分身
+   * 手机验证码登录
+   * 1、判断用户是否存在
+   * 2、不存在则注册并登录
+   * 3、存在则直接登录 返回是否有数字分身
    *
    * @param requestMap
    * @return
@@ -412,7 +414,7 @@ public class CustomerServiceImpl implements CustomerService {
     log.info("code:{},appId:{}", code, appId);
     CustomerBase customerBase = wxPortalController.authorizedLogin(tenantId, appId, code);
     if (customerBase == null) {
-      throw new BusinessException("100000", "获取openId失败！！！");
+      throw new BusinessException(GET_OPENID_FAIL);
     }
     Map res = new HashMap<>();
     res.put("openId", customerBase.getCredential());
