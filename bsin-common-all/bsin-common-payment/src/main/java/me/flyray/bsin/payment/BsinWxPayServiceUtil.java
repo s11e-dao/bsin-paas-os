@@ -46,6 +46,7 @@ public class BsinWxPayServiceUtil {
                   config.setNotifyUrl(a.getNotifyUrl());
                   config.setKeyPath(a.getKeyPath());
                   config.setCertSerialNo(a.getCertSerialNo());
+                  config.setPrivateKeyPath(a.getPrivateKeyPath());
                   return config;
                 })
             .collect(Collectors.toMap(WxPayConfig::getAppId, a -> a, (o, n) -> o)));
