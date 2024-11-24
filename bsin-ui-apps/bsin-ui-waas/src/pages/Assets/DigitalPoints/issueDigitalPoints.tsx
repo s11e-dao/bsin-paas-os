@@ -56,7 +56,7 @@ export default ({ setCurrentContent }) => {
         console.log(response);
         issueDigitalPoints(response).then((res) => {
           console.log('issue', res);
-          if (res?.code == '000000') {
+          if (res?.code == 0) {
             // 返回列表
             setCurrentContent('digitalPoints');
             // 重置输入的表单

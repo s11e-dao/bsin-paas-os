@@ -115,7 +115,7 @@ export default () => {
         };
         addTransaction(reqParam).then((res) => {
           console.log('add', res);
-          if (res.code === '000000' || res.code === 0) {
+          if (res.code === 0 ) {
             message.success('添加成功');
             // 重置输入的表单
             FormRef.resetFields();
@@ -146,7 +146,7 @@ export default () => {
     let { customerNo } = record;
     let delRes = await deleteTransaction({ customerNo });
     console.log('delRes', delRes);
-    if (delRes.code === '000000') {
+    if (delRes.code === 0) {
       // 删除成功刷新表单
       actionRef.current?.reload();
     }

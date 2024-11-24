@@ -69,7 +69,7 @@ export default ({ setCurrentContent }) => {
         response.assetsCollectionType = contractProtocolChoosed?.type;
         issueDigitalAssetsCollection(response).then((res) => {
           console.log('issue', res);
-          if (res?.code == '000000') {
+          if (res?.code == 0) {
             // 返回列表
             setCurrentContent('assetsCollection');
             // 重置输入的表单

@@ -141,7 +141,7 @@ export default () => {
       // metadataImage: ipfsGatewayUrl + metaDataImagePath,
     });
     console.log(res);
-    if (res.code === '000000' || res.code === 0) {
+    if (res.code === 0 ) {
       message.success('添加元数据成功');
       addFormRef.resetFields();
       setMetaDataImagePath(null);
@@ -169,7 +169,7 @@ export default () => {
     let { serialNo } = record;
     let delRes = await deleteMetadataTemplate({ serialNo });
     console.log('delRes', delRes);
-    if (delRes.code === '000000') {
+    if (delRes.code === 0) {
       // 删除成功刷新表单
       actionRef.current?.reload();
     }

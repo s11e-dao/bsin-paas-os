@@ -78,7 +78,7 @@ export default ({ setCurrentContent, assetsCollectionRecord }) => {
         formInfo.coverImage = coverImage;
         putOnShelvesDigitalAssetsCollection(formInfo).then((res) => {
           console.log('issue', res);
-          if (res?.code == '000000') {
+          if (res?.code == 0) {
             // 返回列表
             setCurrentContent('assetsCollection');
             // 重置输入的表单
@@ -158,7 +158,7 @@ export default ({ setCurrentContent, assetsCollectionRecord }) => {
     };
     getDigitalAssetsMetadataImageInfo(params).then((res) => {
       console.log(res);
-      if (res.code == '000000') {
+      if (res.code == 0) {
         setMetadataFile(res.data);
       } else {
         setMetadataFile([]);

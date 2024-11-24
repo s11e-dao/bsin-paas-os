@@ -72,7 +72,7 @@ export default ({ setCurrentContent }) => {
           console.log(requestParam);
           collectPassCard(requestParam).then((res) => {
             console.log('issue', res);
-            if (res?.code == '000000') {
+            if (res?.code == 0) {
               // 返回列表
               setCurrentContent('passCard');
             } else {
@@ -84,7 +84,7 @@ export default ({ setCurrentContent }) => {
           console.log(requestParam);
           issueDigitalAssetsCollection(requestParam).then((res) => {
             console.log('issue', res);
-            if (res?.code == '000000') {
+            if (res?.code == 0) {
               // 返回列表
               setCurrentContent('passCard');
             } else {
