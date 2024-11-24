@@ -5,6 +5,7 @@ import me.flyray.bsin.domain.entity.SysUser;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import me.flyray.bsin.mybatis.utils.Pagination;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.validate.QueryGroup;
 
 import javax.validation.Valid;
@@ -45,6 +46,10 @@ public class SysUserDTO extends SysUser implements Serializable {
      */
     private String roleId;
 
+    /**
+     * 业务角色类型
+     */
+    private String bizRoleType;
 
     private Integer userType;
 

@@ -67,9 +67,9 @@
 
 
     <insert id="insertUser" parameterType="me.flyray.bsin.domain.entity.SysUser">
-        insert into sys_user(user_id, username, password, org_id, tenant_id, nickname, phone, avatar, email,
+        insert into sys_user(user_id, username, password, org_id, tenant_id, nickname, phone, avatar, email, biz_role_type,
                              create_by, type)
-        VALUES (#{userId}, #{username}, #{password}, #{orgId}, #{tenantId}, #{nickname}, #{phone}, #{avatar}, #{email},
+        VALUES (#{userId}, #{username}, #{password}, #{orgId}, #{tenantId}, #{nickname}, #{phone}, #{avatar}, #{email}, #{bizRoleType},
                 #{createBy}, #{type})
     </insert>
 
@@ -174,7 +174,7 @@
     </update>
 
     <select id="selectPageList" resultMap="pageResultMap">
-        select u.user_id, u.username,u.status, u.org_id,o.org_name, u.tenant_id, u.nickname, u.phone, u.avatar, u.email,
+        select u.user_id, u.username,u.status, u.org_id,o.org_name, u.tenant_id, u.nickname, u.phone, u.avatar, u.email, u.biz_role_type,
         u.create_by, u.create_time, u.update_by, u.update_time, u.type
         from sys_user u
         left join sys_org o on u.org_id = o.org_id
@@ -228,7 +228,7 @@
     </select>
 
     <select id="selectUserList" resultMap="maps">
-        select user_id, username,status, org_id, tenant_id, nickname, phone, avatar, email,
+        select user_id, username,status, org_id, tenant_id, nickname, phone, avatar, email, biz_role_type,
         create_by, create_time, update_by, update_time, type from sys_user
         where tenant_id = #{tenantId,jdbcType=VARCHAR}
         <if test="username != null and username != ''">
@@ -262,7 +262,7 @@
     </select>
 
     <select id="selectListByUserIds" resultMap="map">
-        select user_id, username,status, org_id, tenant_id, nickname, phone, avatar, email,
+        select user_id, username,status, org_id, tenant_id, nickname, phone, avatar, email, biz_role_type,
         create_by, create_time, update_by, update_time, type from sys_user
         where user_id in
         <foreach collection="userIds" item="userId" index="index" open="(" close=")" separator=",">
@@ -272,7 +272,7 @@
     </select>
 
     <select id="selectUserInfo" resultMap="map">
-        select user_id, username, status, org_id, tenant_id, nickname, phone, avatar, email,
+        select user_id, username, status, org_id, tenant_id, nickname, phone, avatar, email,biz_role_type,
         create_by, create_time, update_by, update_time, type from sys_user
         <where>
             tenant_id = #{tenantId,jdbcType=VARCHAR}

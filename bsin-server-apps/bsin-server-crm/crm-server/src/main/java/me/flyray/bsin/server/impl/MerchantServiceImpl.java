@@ -458,6 +458,7 @@ public class MerchantServiceImpl implements MerchantService {
     requestMap.put("merchantNo", merchant.getSerialNo());
     SysUserDTO sysUserDTO = new SysUserDTO();
     BeanUtil.copyProperties(requestMap, sysUserDTO);
+    sysUserDTO.setBizRoleType(BizRoleType.MERCHANT.getCode());
     userService.addMerchantOrStoreUser(sysUserDTO);
     if (registerNotNeedAudit) {
       merchant.setAuthenticationStatus(AuthenticationStatus.CERTIFIED.getCode());
