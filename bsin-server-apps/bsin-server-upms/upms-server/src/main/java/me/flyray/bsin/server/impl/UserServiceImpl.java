@@ -755,9 +755,36 @@ public class UserServiceImpl implements UserService {
         if(StringUtils.isBlank(tenantId)){
             tenantId = loginUser.getTenantId();
         }
-        SysUser sysUser = userMapper.selectUserInfo(tenantId,reqUser.getUserId(),reqUser.getUsername());
+        SysUser sysUser = userMapper.selectUserInfo(tenantId, reqUser.getUserId(), reqUser.getUsername());
         SysTenant sysTenant = tenantMapper.selectTenantInfoByTenantId(tenantId);
-        UserResp userResp=new UserResp();
+
+        Set<SysApp> appSet = new HashSet<>();
+        // 登陆返回的用户机构对象信息
+        SysOrg sysOrg = orgMapper.selectInfoById(sysUser.getOrgId());
+        // 登陆返回的用户岗位对象信息
+        List<SysPost> sysPosts = postMapper.getPostByUserId(sysUser.getUserId());
+        // 根据岗位查询岗位角色
+        List<SysRole> roles = new ArrayList<>();
+        for (SysPost post : sysPosts) {
+            roles.addAll(roleMapper.getRoleListByPostId(post.getPostId()));
+        }
+        // 直接查询用户角色
+        List<SysRole> userRoles = roleMapper.getRoleListByUserId(sysUser.getUserId());
+        roles.addAll(userRoles);
+
+        // 登陆返回的用户角色对象信息
+        if (roles.size() > 0 && roles != null) {
+            for (SysRole role : roles) {
+                // 登录返回的所属用户角色的应用
+                SysApp sysApp = appMapper.getAppInfoByAppId(role.getAppId(), sysUser.getTenantId());
+                appSet.add(sysApp);
+            }
+        }
+        UserResp userResp = new UserResp();
+        userResp.setSysAppSet(appSet);
+        userResp.setSysOrg(sysOrg);
+        userResp.setSysPost(sysPosts);
+        userResp.setSysRoleList(roles);
         userResp.setSysTenant(sysTenant);
         userResp.setSysUser(sysUser);
         return userResp;
