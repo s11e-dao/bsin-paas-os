@@ -49,7 +49,7 @@ public class DisBrokerageRule implements Serializable {
     private String goodsCategoryNo;
 
     /**
-     * 门店ID
+     * 商户ID
      */
     private String merchantNo;
 
