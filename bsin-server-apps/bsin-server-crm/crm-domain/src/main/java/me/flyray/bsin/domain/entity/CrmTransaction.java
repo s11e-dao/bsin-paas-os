@@ -8,7 +8,6 @@ import me.flyray.bsin.enums.TransactionType;
 import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.validate.AddGroup;
 import org.springframework.format.annotation.DateTimeFormat;
-import me.flyray.bsin.domain.enums.TransactionStatus;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;

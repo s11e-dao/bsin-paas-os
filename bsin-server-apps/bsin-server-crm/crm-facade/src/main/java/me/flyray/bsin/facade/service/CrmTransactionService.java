@@ -1,5 +1,6 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.CrmTransaction;
 
 import java.util.Map; /**
@@ -37,6 +38,13 @@ public interface CrmTransactionService {
     public CrmTransaction withdraw(Map<String, Object> requestMap);
 
     /**
+     * 提现申请
+     * @param requestMap
+     * @return
+     */
+    public CrmTransaction withdrawApply(Map<String, Object> requestMap);
+
+    /**
      * 退款
      * @param requestMap
      * @return
@@ -63,5 +71,9 @@ public interface CrmTransactionService {
      * @return
      */
     public CrmTransaction redeem(Map<String, Object> requestMap);
+
+    public IPage<?> getPageList(Map<String, Object> requestMap);
+
+    public CrmTransaction getDetail(Map<String, Object> requestMap);
 
 }
