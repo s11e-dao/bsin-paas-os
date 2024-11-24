@@ -121,7 +121,7 @@ export default () => {
     let { customerNo } = record;
     let delRes = await deletePayInterface({ customerNo });
     console.log('delRes', delRes);
-    if (delRes.code === '000000') {
+    if (delRes.code === 0) {
       // 删除成功刷新表单
       actionRef.current?.reload();
     }

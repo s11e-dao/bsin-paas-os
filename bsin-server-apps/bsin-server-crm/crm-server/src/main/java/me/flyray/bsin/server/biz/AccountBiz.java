@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import me.flyray.bsin.domain.enums.CustomerType;
+import me.flyray.bsin.domain.enums.InOutAccountFlag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,6 @@ import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.domain.entity.Account;
 import me.flyray.bsin.domain.entity.AccountJournal;
 import me.flyray.bsin.domain.enums.AccountEnum;
-import me.flyray.bsin.domain.enums.TransactionType;
 import me.flyray.bsin.infrastructure.mapper.AccountJournalMapper;
 import me.flyray.bsin.infrastructure.mapper.AccountMapper;
 import me.flyray.bsin.utils.BsinSnowflake;
@@ -51,8 +51,11 @@ public class AccountBiz {
           String fromAccountCategory,
           String toAccountCategory,
           String ccy,
+          String orderNo,
+          String transactionType,
           Integer decimals,
-          BigDecimal amount)
+          BigDecimal amount,
+          String remark)
           throws UnsupportedEncodingException {
 
     return null;
@@ -65,8 +68,11 @@ public class AccountBiz {
       String accountCategory,
       String accountName,
       String ccy,
+      String orderNo,
+      String transactionType,
       Integer decimals,
-      BigDecimal amount)
+      BigDecimal amount,
+      String remark)
       throws UnsupportedEncodingException {
     return handleAccount(
         tenantId,
@@ -75,9 +81,12 @@ public class AccountBiz {
         accountCategory,
         accountName,
         ccy,
+        orderNo,
+        transactionType,
         decimals,
         amount,
-        TransactionType.INT_ACCOUNT.getCode());
+        InOutAccountFlag.INT_ACCOUNT.getCode(),
+        remark);
   }
 
   public Account outAccount(
@@ -87,8 +96,11 @@ public class AccountBiz {
       String accountCategory,
       String accountName,
       String ccy,
+      String orderNo,
+      String transactionType,
       Integer decimals,
-      BigDecimal amount)
+      BigDecimal amount,
+      String remark)
       throws UnsupportedEncodingException {
     return handleAccount(
         tenantId,
@@ -97,9 +109,12 @@ public class AccountBiz {
         accountCategory,
         accountName,
         ccy,
+        orderNo,
+        transactionType,
         decimals,
         amount,
-        TransactionType.OUT_ACCOUNT.getCode());
+        InOutAccountFlag.OUT_ACCOUNT.getCode(),
+        remark);
   }
 
   private Account handleAccount(
@@ -109,9 +124,12 @@ public class AccountBiz {
       String category,
       String accountName,
       String ccy,
+      String orderNo,
+      String transactionType,
       Integer decimals,
       BigDecimal amount,
-      Integer journalDirection) {
+      Integer journalDirection,
+      String remark) {
     LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
     warapper.eq(Account::getTenantId, tenantId);
     warapper.eq(Account::getBizRoleTypeNo, bizRoleTypeNo);
@@ -135,7 +153,7 @@ public class AccountBiz {
       customerAccount.setCategory(category);
       customerAccount.setDecimals(decimals);
       String amountStr = decimalFormat.format(amount);
-      if (TransactionType.INT_ACCOUNT.getCode().equals(journalDirection)) {
+      if (InOutAccountFlag.INT_ACCOUNT.getCode().equals(journalDirection)) {
         customerAccount.setBalance(amount);
         accountJournal.setInOutFlag(1);
       } else {
@@ -160,7 +178,7 @@ public class AccountBiz {
       if (customerAccount.getStatus().equals(AccountEnum.FREEZE.getCode())) {
         throw new BusinessException(ResponseCode.ACCOUNT_NOT_EXISTS);
       }
-      if (TransactionType.INT_ACCOUNT.getCode().equals(journalDirection)) {
+      if (InOutAccountFlag.INT_ACCOUNT.getCode().equals(journalDirection)) {
         customerAccount.setBalance(customerAccount.getBalance().add(amount));
         accountJournal.setInOutFlag(1);
       } else {
@@ -175,7 +193,9 @@ public class AccountBiz {
       String newCheckCode = HexUtil.encodeHexStr(md5.digest(newBalance));
       customerAccount.setCheckCode(newCheckCode);
     }
-
+    accountJournal.setRemark(remark);
+    accountJournal.setOrderType(transactionType);
+    accountJournal.setOrderNo(orderNo);
     accountJournal.setSerialNo(BsinSnowflake.getId());
     accountJournal.setAccountNo(customerAccount.getSerialNo());
     accountJournal.setAccountType(customerAccount.getType());

@@ -15,6 +15,7 @@ import me.flyray.bsin.domain.entity.AccountJournal;
 import me.flyray.bsin.domain.entity.TokenParam;
 import me.flyray.bsin.domain.enums.AccountCategory;
 import me.flyray.bsin.domain.enums.CcyType;
+import me.flyray.bsin.enums.TransactionType;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.enums.FreezeStatus;
 import me.flyray.bsin.facade.response.CommunityLedgerVO;
@@ -104,8 +105,15 @@ public class AccountServiceImpl implements AccountService {
     String category = MapUtils.getString(requestMap, "category");
     String name = MapUtils.getString(requestMap, "name");
     Integer decimals = Integer.valueOf(MapUtils.getString(requestMap, "decimals"));
+    String orderNo = MapUtils.getString(requestMap, "orderNo");
+    String transactionType = MapUtils.getString(requestMap, "transactionType");
+    // 判断交易类型是否存在
+    if(TransactionType.getInstanceById(transactionType) == null){
+      throw new BusinessException("9999", "交易类型不存在");
+    }
+    String remark = MapUtils.getString(requestMap, "remark");
     accountBiz.inAccount(
-        tenantId, bizRoleType, bizRoleTypeNo, category, name, ccy, decimals, new BigDecimal(amount));
+        tenantId, bizRoleType, bizRoleTypeNo, category, name, ccy, orderNo, transactionType, decimals, new BigDecimal(amount), remark);
 
   }
 
@@ -130,8 +138,15 @@ public class AccountServiceImpl implements AccountService {
     String category = MapUtils.getString(requestMap, "category");
     String name = MapUtils.getString(requestMap, "name");
     Integer decimals = Integer.valueOf(MapUtils.getString(requestMap, "decimals"));
+    String orderNo = MapUtils.getString(requestMap, "orderNo");
+    String transactionType = MapUtils.getString(requestMap, "transactionType");
+    // 判断交易类型是否存在
+    if(TransactionType.getInstanceById(transactionType) == null){
+      throw new BusinessException("9999", "交易类型不存在");
+    }
+    String remark = MapUtils.getString(requestMap, "remark");
     accountBiz.outAccount(
-        tenantId, bizRoleType, bizRoleTypeNo, category, name, ccy, decimals, new BigDecimal(amount));
+        tenantId, bizRoleType, bizRoleTypeNo, category, name, ccy, orderNo, transactionType, decimals, new BigDecimal(amount), remark);
   }
 
   @ShenyuDubboClient("/freeze")
@@ -400,18 +415,20 @@ public class AccountServiceImpl implements AccountService {
         BsinServiceContext.getReqBodyDto(Account.class, requestMap);
     Object paginationObj =  requestMap.get("pagination");
     Pagination pagination = new Pagination();
-    BeanUtil.copyProperties(paginationObj,pagination);
+    BeanUtil.copyProperties(paginationObj, pagination);
+    String bizRoleTypeNo = "";
+    if(BizRoleType.MERCHANT.getCode().equals(LoginInfoContextHelper.getBizRoleType())){
+      bizRoleTypeNo = merchantNo;
+    }
     Page<AccountJournal> page =
         new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<AccountJournal> warapper = new LambdaUpdateWrapper<>();
     warapper.orderByDesc(AccountJournal::getCreateTime);
     warapper.eq(AccountJournal::getTenantId, tenantId);
-    warapper.eq(
-        StringUtils.isNotEmpty(customerAccount.getBizRoleTypeNo()),
+    warapper.eq(StringUtils.isNotEmpty(bizRoleTypeNo),
         AccountJournal::getBizRoleTypeNo,
         customerAccount.getBizRoleTypeNo());
-    warapper.eq(
-        StringUtils.isNotEmpty(customerAccount.getCcy()),
+    warapper.eq(StringUtils.isNotEmpty(customerAccount.getCcy()),
         AccountJournal::getCcy,
         customerAccount.getCcy());
     IPage<AccountJournal> pageList =

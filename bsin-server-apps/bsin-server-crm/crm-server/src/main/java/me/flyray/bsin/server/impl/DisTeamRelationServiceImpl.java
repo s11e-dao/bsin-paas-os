@@ -59,8 +59,6 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
      * 添加分销团队关系
      * 用户成为代理商时调用
      * requestMap - >{"sysAgentNo": 代理商ID, "tenantId":租户ID, customerNo: 用户ID}
-     *
-     *
      * 1、没有邀请关系直接组建团队成为老板代理商
      * 2、根据邀请关系加入代理商团队：邀请关系中直接邀请人是代理商（直接邀请人代理商、或直接邀请人的上级代理商（递归选找））
      * 3、（链动2+1）加入团队后判断父级是否给上级留人并走人

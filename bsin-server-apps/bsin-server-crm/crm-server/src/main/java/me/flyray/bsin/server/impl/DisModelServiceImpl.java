@@ -40,17 +40,6 @@ public class DisModelServiceImpl implements DisModelService {
     @Autowired
     private DisModelMapper disModelMapper;
 
-    @ApiDoc(desc = "add")
-    @ShenyuDubboClient("/add")
-    @Override
-    public DisModel add(Map<String, Object> requestMap) {
-        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        DisModel disModel = BsinServiceContext.getReqBodyDto(DisModel.class, requestMap);
-        disModel.setTenantId(loginUser.getTenantId());
-        disModelMapper.insert(disModel);
-        return disModel;
-    }
-
     @ApiDoc(desc = "delete")
     @ShenyuDubboClient("/delete")
     @Override
@@ -90,7 +79,6 @@ public class DisModelServiceImpl implements DisModelService {
         return pageList;
     }
 
-
     /**
      * 事件详情
      * @param requestMap
@@ -105,12 +93,10 @@ public class DisModelServiceImpl implements DisModelService {
         return disModel;
     }
 
-
-
     @Override
-    @ApiDoc(desc = "update")
-    @ShenyuDubboClient("/update")
-    public DisModel update(Map<String, Object> requestMap) {
+    @ApiDoc(desc = "config")
+    @ShenyuDubboClient("/config")
+    public DisModel config(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         System.out.println(requestMap);
 

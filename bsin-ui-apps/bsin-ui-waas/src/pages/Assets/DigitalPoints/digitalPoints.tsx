@@ -299,7 +299,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
     let { serialNo } = record;
     let delRes = await deleteDigitalAssetsItem({ serialNo });
     console.log('delRes', delRes);
-    if (delRes.code === '000000') {
+    if (delRes.code === 0) {
       // 删除成功刷新表单
       actionRef.current?.reload();
     }
@@ -521,7 +521,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
         console.log(request);
         editTokenParam(request).then((res) => {
           console.log('config', res);
-          if (res?.code == '000000') {
+          if (res?.code == 0) {
             // 重置输入的表单
             FormRef.resetFields();
             // 刷新proTable

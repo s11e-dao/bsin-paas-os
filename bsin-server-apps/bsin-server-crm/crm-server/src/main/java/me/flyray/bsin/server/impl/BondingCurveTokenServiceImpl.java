@@ -12,6 +12,7 @@ import me.flyray.bsin.domain.entity.Account;
 import me.flyray.bsin.domain.entity.BondingCurveTokenJournal;
 import me.flyray.bsin.domain.entity.BondingCurveTokenParam;
 import me.flyray.bsin.domain.enums.AccountCategory;
+import me.flyray.bsin.enums.TransactionType;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.BondingCurveTokenService;
 import me.flyray.bsin.infrastructure.mapper.BondingCurveTokenJournalMapper;
@@ -378,11 +379,14 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
               AccountCategory.ACCUMULATED_INCOME.getCode(),
               AccountCategory.ACCUMULATED_INCOME.getDesc(),
               ccy,
+              bondingCurveTokenJournal.getSerialNo(),
+              TransactionType.INCOME.getCode(),
               bondingCurveTokenParam.getDecimals(),
-              new BigDecimal(amountToken));
+              new BigDecimal(amountToken), "BC积分累计账户入账");
 
       // 9.查询数字积分 tokenParam 参数，根据配置规则： 释放比例|释放周期|释放条件 进行链上数字积分 mint， 同时对 释放账户进行出账操作
-      tokenReleaseBiz.bcAccountRelease(customerAccount, new BigDecimal(amountToken));
+      tokenReleaseBiz.bcAccountRelease(customerAccount, new BigDecimal(amountToken), bondingCurveTokenJournal.getSerialNo(),
+              TransactionType.INCOME.getCode(), "BC释放");
     } catch (Exception e) {
       throw new BusinessException("100000", e.toString());
     }
@@ -476,8 +480,10 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
         accountCategory,
         accountName,
         ccy,
+        bondingCurveTokenJournal.getSerialNo(),
+        TransactionType.REDEEM.getCode(),
         bondingCurveTokenParam.getDecimals(),
-        new BigDecimal(amount));
+        new BigDecimal(amount),"赎回");
 
     return result;
   }

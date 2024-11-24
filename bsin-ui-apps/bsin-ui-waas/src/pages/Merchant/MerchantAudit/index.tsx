@@ -49,7 +49,7 @@ export default () => {
                 merchantNo: record.serialNo,
                 auditFlag: '1',
               });
-              if (res.code === '000000' || res.code === 0) {
+              if (res.code === 0 ) {
                 message.success('已通过审核');
               }
               // 表格重新渲染
@@ -68,7 +68,7 @@ export default () => {
                 customerNo: record.customerNo,
                 auditFlag: '2',
               });
-              if (res.code === '000000' || res.code === 0) {
+              if (res.code === 0 ) {
                 message.success('已拒绝');
               }
               // 表格重新渲染
@@ -110,7 +110,7 @@ export default () => {
         console.log(response);
         auditCustomerEnterprise(response).then((res) => {
           console.log('审核', res);
-          if (res.code === '000000' || res.code === 0) {
+          if (res.code === 0 ) {
             // 重置输入的表单
             editFormRef.resetFields();
             setEditModal(false);

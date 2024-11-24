@@ -14,11 +14,6 @@ import java.util.Map;
 public interface DisModelService {
 
     /**
-     * 添加
-     */
-    public DisModel add(Map<String, Object> requestMap);
-
-    /**
      * 删除
      */
     public void delete(Map<String, Object> requestMap);
@@ -39,6 +34,6 @@ public interface DisModelService {
      */
     public IPage<?> getPageList(Map<String, Object> requestMap);
 
+    DisModel config(Map<String, Object> requestMap);
 
-    DisModel update(Map<String, Object> requestMap);
 }

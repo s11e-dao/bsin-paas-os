@@ -123,7 +123,7 @@ export default () => {
     let { serialNo } = record;
     let delRes = await deleteCustomerAccount({ serialNo });
     console.log('delRes', delRes);
-    if (delRes.code === '000000') {
+    if (delRes.code === 0) {
       // 删除成功刷新表单
       actionRef.current?.reload();
     }

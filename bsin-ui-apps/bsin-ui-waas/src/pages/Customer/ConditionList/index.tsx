@@ -118,7 +118,7 @@ export default () => {
         console.log(response);
         addCondition(response).then((res) => {
           console.log('add', res);
-          if (res.code === '000000' || res.code === 0) {
+          if (res.code === 0 ) {
             // 重置输入的表单
             FormRef.resetFields();
             // 刷新proTable
@@ -149,7 +149,7 @@ export default () => {
     let { serialNo } = record;
     let delRes = await deleteCondition({ serialNo });
     console.log('delRes', delRes);
-    if (delRes.code === '000000') {
+    if (delRes.code === 0) {
       // 删除成功刷新表单
       actionRef.current?.reload();
     }
@@ -206,7 +206,7 @@ export default () => {
       getDigitalAssetsItemList(params).then((res) => {
         console.log(res);
         let typeNoListTemp = [];
-        if (res?.code == '000000') {
+        if (res?.code == 0) {
           res?.data.map((item) => {
             console.log(item);
             let typeNoJson = {
@@ -227,7 +227,7 @@ export default () => {
       getDigitalAssetsItemList(params).then((res) => {
         console.log(res);
         let typeNoListTemp = [];
-        if (res?.code == '000000') {
+        if (res?.code == 0) {
           res?.data.map((item) => {
             console.log(item);
             let typeNoJson = {
@@ -251,7 +251,7 @@ export default () => {
       getDigitalAssetsItemList(params).then((res) => {
         console.log(res);
         let typeNoListTemp = [];
-        if (res?.code == '000000') {
+        if (res?.code == 0) {
           res?.data.map((item) => {
             console.log(item);
             let typeNoJson = {
@@ -272,7 +272,7 @@ export default () => {
       getDigitalAssetsItemList(params).then((res) => {
         console.log(res);
         let typeNoListTemp = [];
-        if (res?.code == '000000') {
+        if (res?.code == 0) {
           res?.data.map((item) => {
             console.log(item);
             let typeNoJson = {
@@ -293,7 +293,7 @@ export default () => {
       getDigitalAssetsItemList(params).then((res) => {
         console.log(res);
         let typeNoListTemp = [];
-        if (res?.code == '000000') {
+        if (res?.code == 0) {
           res?.data.map((item) => {
             console.log(item);
             let typeNoJson = {
@@ -328,7 +328,7 @@ export default () => {
       getBondingCurveTokenList(params).then((res) => {
         console.log(res);
         let typeNoListTemp = [];
-        if (res?.code == '000000') {
+        if (res?.code == 0) {
           res?.data.map((item) => {
             console.log(item);
             let typeNoJson = {
@@ -359,7 +359,7 @@ export default () => {
       getGradeList(params).then((res) => {
         console.log(res);
         let typeNoListTemp = [];
-        if (res?.code == '000000') {
+        if (res?.code == 0) {
           res?.data.map((item) => {
             console.log(item);
             let typeNoJson = {

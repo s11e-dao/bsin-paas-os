@@ -45,8 +45,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
-import static me.flyray.bsin.constants.ResponseCode.APP_ID_NOT_EXISTS;
-import static me.flyray.bsin.constants.ResponseCode.WX_APP_INSTANCE_FAIL;
+import static me.flyray.bsin.constants.ResponseCode.*;
 
 /**
  * @author <a href="https://github.com/binarywang">Binary Wang</a>
@@ -142,7 +141,7 @@ public class WxPortalController {
   }
 
   /**
-   * 不对外暴露接口调用，作为rpc服务对内提供
+   * 微信授權登录：获取openId和sessionKey
    *
    * @param appid
    * @param code
@@ -189,11 +188,12 @@ public class WxPortalController {
         customerBase = customerBiz.register(customerBase);
       } else {
         // 更新最后登录时间
+        customerBase.setSessionKey(sessionKey);
         customerBiz.updateCustomerBase(customerBase);
       }
       return customerBase;
     } else {
-      throw new BusinessException("100000", "暂不支持该类型授权登录：" + merchantWxApp.getAppType() + "！！！");
+      throw new BusinessException(NOT_SUPPORT_AUTH_LOGIN);
     }
   }
 
