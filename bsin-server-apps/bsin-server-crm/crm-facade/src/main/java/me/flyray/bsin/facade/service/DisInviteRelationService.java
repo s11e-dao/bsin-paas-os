@@ -27,4 +27,5 @@ public interface DisInviteRelationService {
      */
     public IPage<?> getPageList(Map<String, Object> requestMap);
 
+    public Map<String, Integer> inviteCount(Map<String, Object> requestMap);
 }
