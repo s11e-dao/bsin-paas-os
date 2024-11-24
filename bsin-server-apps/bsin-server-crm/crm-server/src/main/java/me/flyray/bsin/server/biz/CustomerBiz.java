@@ -136,6 +136,9 @@ public class CustomerBiz {
     customerBase.setTenantId(customerBase.getTenantId());
     customerBase.setType(CustomerType.PERSONAL.getCode());
     customerBase.setPassword(customerBase.getPassword());
+    //    if (customerBase.getNickname() == null) {
+    //      customerBase.setNickname(jiujiumerchantNo);
+    //    }
     customerBase.setInviteCode(UniqueInviteCodeGenerator.generateUniqueInviteCode(6));
     customerBaseMapper.insert(customerBase);
 

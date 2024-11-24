@@ -11,9 +11,10 @@
             <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
             <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
             <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        serial_no,tenant_id,merchant_no,customer_no,nickname,status
+        serial_no,tenant_id,merchant_no,customer_no,nickname,status,avatar
     </sql>
 </mapper>

@@ -30,8 +30,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_ERROR;
-import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_NO_NOT_ISNULL;
+import static me.flyray.bsin.constants.ResponseCode.*;
 
 /**
  * @author bolei
@@ -54,7 +53,7 @@ public class MemberServiceImpl implements MemberService {
   private TokenParamService tokenParamService;
 
   /**
-   * 开通会员，支付成功后回调
+   * 开通会员，创建会员购买订单后调用
    *
    * @param requestMap 包含会员信息的请求映射
    * @return 会员对象
@@ -63,13 +62,13 @@ public class MemberServiceImpl implements MemberService {
   @ApiDoc(desc = "openMember")
   @ShenyuDubboClient("/openMember")
   @Override
-  public Member openMember(Map<String, Object> requestMap) {
+  public Map<String, Object> openMember(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
     String customerNo = loginUser.getCustomerNo();
     if (customerNo == null) {
       customerNo = member.getCustomerNo();
-      if(customerNo == null) {
+      if (customerNo == null) {
         throw new BusinessException(CUSTOMER_NO_NOT_ISNULL);
       }
     }
@@ -103,7 +102,26 @@ public class MemberServiceImpl implements MemberService {
                   .eq(Member::getMerchantNo, merchantNo)
                   .eq(Member::getCustomerNo, customerNo));
     }
-    return member;
+    return BeanUtil.beanToMap(member);
+  }
+
+  /**
+   * 编辑会员，支付成功后回调
+   *
+   * @param requestMap 包含会员信息的请求映射
+   * @return 会员对象
+   * @throws BusinessException 如果客户编号为空或客户信息不存在，则抛出业务异常
+   */
+  @ApiDoc(desc = "edit")
+  @ShenyuDubboClient("/edit")
+  @Override
+  public Map<String, Object> edit(Map<String, Object> requestMap) {
+    String serialNo = MapUtils.getString(requestMap, "serialNo");
+    Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
+    if (memberMapper.updateById(member) < 1) {
+      throw new BusinessException(DATA_BASE_UPDATE_FAILED);
+    }
+    return BeanUtil.beanToMap(member);
   }
 
   @ApiDoc(desc = "getPageList")
