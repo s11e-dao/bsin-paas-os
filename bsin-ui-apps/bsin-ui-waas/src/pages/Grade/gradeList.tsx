@@ -3,7 +3,7 @@ import {
   Card,
   Button,
   Space,
-  Table,
+  Select,
   Tag,
   Form,
   Modal,
@@ -12,16 +12,25 @@ import {
   message,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-
+import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
+import { PlusOutlined } from '@ant-design/icons';
+import TableTitle from '../../components/TableTitle';
 import {
   getGradeList,
+  getGradePageList,
   addGrade,
   editGrade,
   deleteGrade,
   getGradeDetail,
 } from './service';
+import columnsData, { columnsDataType } from './gradeData';
 
 export default ({ setCurrentContent, configGrade }) => {
+
+  const { Option } = Select;
+  const { TextArea } = Input;
+
   // 获取表单
   const [FormRef] = Form.useForm();
 
@@ -32,6 +41,50 @@ export default ({ setCurrentContent, configGrade }) => {
     address: string;
     tags: string[];
   }
+
+  // 表头数据
+  const columns: ProColumns<columnsDataType>[] = columnsData;
+
+  // 操作行数据 自定义操作行
+  const actionRender: any = (text: any, record: any, index: number) => (
+    <div key={record.dictType}>
+      <Space size="middle">
+        <a
+          onClick={() => {
+            toViewMemberGrade(record);
+          }}
+        >
+          查看
+        </a>
+        <a
+          onClick={() => {
+            toEditMemberGrade(record);
+          }}
+        >
+          编辑
+        </a>
+        <a
+          onClick={() => {
+            toConfigMemberGradeCondition(record);
+          }}
+        >
+          条件配置
+        </a>
+        <a
+          onClick={() => {
+            toConfigMemberGradeEquity(record);
+          }}
+        >
+          权益配置
+        </a>
+      </Space>
+    </div>
+  );
+
+  // 自定义数据的表格头部数据
+  columns.forEach((item: any) => {
+    item.dataIndex === 'action' ? (item.render = actionRender) : undefined;
+  });
 
   const [memberGradeList, setGradeList] = useState<DataType[]>([]);
 
@@ -54,6 +107,9 @@ export default ({ setCurrentContent, configGrade }) => {
     isConfigEquityMemberGradeModal,
     setIsConfigEquityMemberGradeModal,
   ] = useState(false);
+
+  // Table action 的引用，便于自定义触发
+  const actionRef = React.useRef<ActionType>();
 
   // 查看
   const [isViewRecord, setIsViewRecord] = useState({});
@@ -81,7 +137,7 @@ export default ({ setCurrentContent, configGrade }) => {
         console.log(response);
         addGrade(response).then((res) => {
           console.log('add', res);
-          if (res.code === 0 ) {
+          if (res.code === 0) {
             // 重置输入的表单
             FormRef.resetFields();
             // 刷新proTable
@@ -107,7 +163,7 @@ export default ({ setCurrentContent, configGrade }) => {
         console.log(response);
         editGrade(response).then((res) => {
           console.log('add', res);
-          if (res.code === 0 ) {
+          if (res.code === 0) {
             // 重置输入的表单
             FormRef.resetFields();
             // 刷新proTable
@@ -181,121 +237,60 @@ export default ({ setCurrentContent, configGrade }) => {
     { label: '菜单项二', key: 'item-2' },
   ];
 
-  const columns: ColumnsType<DataType> = [
-    {
-      title: '等级ID',
-      width: 190,
-      dataIndex: 'serialNo',
-      fixed: 'left',
-    },
-    {
-      title: '等级名称',
-      width: 160,
-      dataIndex: 'name',
-    },
-    {
-      title: '等级级数',
-      width: 160,
-      dataIndex: 'gradeNum',
-    },
-    {
-      title: '等级编号',
-      width: 160,
-      dataIndex: 'gradeCode',
-    },
-    {
-      title: '等级图标',
-      width: 160,
-      dataIndex: 'gradeImage',
-    },
-    {
-      title: '等级描述',
-      width: 160,
-      dataIndex: 'description',
-    },
-    {
-      title: 'Tags',
-      key: 'tags',
-      dataIndex: 'tags',
-      // render: (_, { tags }) => (
-      //   <>
-      //     {tags.map((tag) => {
-      //       let color = tag.length > 5 ? 'geekblue' : 'green';
-      //       if (tag === 'loser') {
-      //         color = 'volcano';
-      //       }
-      //       return (
-      //         <Tag color={color} key={tag}>
-      //           {tag.toUpperCase()}
-      //         </Tag>
-      //       );
-      //     })}
-      //   </>
-      // ),
-    },
-    {
-      title: '操作',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <a
-            onClick={() => {
-              toViewMemberGrade(record);
-            }}
-          >
-            查看
-          </a>
-          <a
-            onClick={() => {
-              toEditMemberGrade(record);
-            }}
-          >
-            编辑
-          </a>
-          <a
-            onClick={() => {
-              toConfigMemberGradeCondition(record);
-            }}
-          >
-            条件配置
-          </a>
-          <a
-            onClick={() => {
-              toConfigMemberGradeEquity(record);
-            }}
-          >
-            权益配置
-          </a>
-        </Space>
-      ),
-    },
-  ];
-
   return (
     <div>
       <Card>
         <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-          <Space size={[8, 16]} wrap>
-            <Button
-              type="primary"
-              onClick={() => {
-                addGradeModal();
-              }}
-            >
-              添加等级
-            </Button>
-          </Space>
-          <Table
-            onRow={(record) => {
-              return {
-                onClick: (event) => {
-                  console.log(event);
-                }, // 点击行
-              };
-            }}
+          <ProTable<columnsDataType>
+            headerTitle={<TableTitle title="等级信息" />}
+            scroll={{ x: 900 }}
+            bordered
+            // 表头
             columns={columns}
-            dataSource={memberGradeList}
+            actionRef={actionRef}
+            // 请求获取的数据
+            request={async (params) => {
+              // console.log(params);
+              if (params.gradeNum == null && params.name == null) {
+
+              }
+              let res = await getGradePageList({
+                ...params,
+              });
+              console.log('😒', res);
+              const result = {
+                data: res.data,
+                total: res.pagination.totalSize,
+              };
+              console.log(result);
+              return result;
+            }}
+            rowKey="serialNo"
+            // 搜索框配置
+            search={{
+              labelWidth: 'auto',
+            }}
+            // 搜索表单的配置
+            form={{
+              ignoreRules: false,
+            }}
+            pagination={{
+              pageSize: 10,
+            }}
+            toolBarRender={() => [
+              <Button
+                onClick={() => {
+                  addGradeModal();
+                }}
+                key="button"
+                icon={<PlusOutlined />}
+                type="primary"
+              >
+                新增
+              </Button>,
+            ]}
           />
+
         </Space>
       </Card>
       {/* 新增等级模板模态框 */}
@@ -312,7 +307,7 @@ export default ({ setCurrentContent, configGrade }) => {
           labelCol={{ span: 7 }}
           wrapperCol={{ span: 14 }}
           // 表单默认值
-          initialValues={{ type: '0', typeNo: '0' }}
+          initialValues={{ bizRoleType: '0' }}
         >
           <Form.Item
             label="等级名称"
@@ -320,6 +315,19 @@ export default ({ setCurrentContent, configGrade }) => {
             rules={[{ required: true, message: '请输入等级名称!' }]}
           >
             <Input />
+          </Form.Item>
+          <Form.Item
+            label="等级业务角色"
+            name="bizRoleType"
+            rules={[{ required: true, message: '请选择等级业务角色!' }]}
+          >
+            <Select style={{ width: '100%' }}>
+              <Option value="0">请选择等级业务角色</Option>
+              <Option value="1">平台租户</Option>
+              <Option value="2">商户</Option>
+              <Option value="3">代理商</Option>
+              <Option value="4">客户</Option>
+            </Select>
           </Form.Item>
           <Form.Item
             label="等级级别"
@@ -331,16 +339,14 @@ export default ({ setCurrentContent, configGrade }) => {
           <Form.Item
             label="等级图标"
             name="gradeImage"
-            rules={[{ required: true, message: '请输入等级图标!' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             label="等级描述"
             name="description"
-            rules={[{ required: true, message: '请输入等级描述!' }]}
           >
-            <Input />
+            <TextArea />
           </Form.Item>
         </Form>
       </Modal>
@@ -436,16 +442,14 @@ export default ({ setCurrentContent, configGrade }) => {
           <Form.Item
             label="等级图标"
             name="gradeImage"
-            rules={[{ required: true, message: '请输入等级图标!' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             label="等级描述"
             name="description"
-            rules={[{ required: true, message: '请输入等级描述!' }]}
           >
-            <Input />
+            <TextArea />
           </Form.Item>
         </Form>
       </Modal>

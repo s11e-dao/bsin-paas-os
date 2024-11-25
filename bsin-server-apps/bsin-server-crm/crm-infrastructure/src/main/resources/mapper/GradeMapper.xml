@@ -17,12 +17,13 @@
             <result property="description" column="description" jdbcType="VARCHAR"/>
             <result property="gradeNum" column="grade_num" jdbcType="INTEGER"/>
             <result property="gradeImage" column="grade_image" jdbcType="VARCHAR"/>
+            <result property="bizRoleType" column="biz_role_type" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         serial_no,create_by,create_time,
         update_by,update_time,del_flag,
         tenant_id,merchant_no,name,
-        description,grade_num,grade_image
+        description,grade_num,grade_image,biz_role_type
     </sql>
 </mapper>
