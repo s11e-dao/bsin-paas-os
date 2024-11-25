@@ -80,11 +80,6 @@ const routes = [
         path: '/merchant/merchant-auth',
         component: '@/pages/Merchant/MerchantAuth/index',
       },
-      // 商户账户
-      {
-        path: '/merchant/merchant-account',
-        component: '@/pages/Merchant/MerchantAccount/index',
-      },
       // 商户接入应用：小程序、公众号、app
       {
         path: '/merchant/merchant-app',
@@ -151,16 +146,6 @@ const routes = [
         path: '/customer/grade-list',
         component: '@/pages/Customer/Grade/index',
       },
-      // 客户账户
-      {
-        path: '/customer/account-list',
-        component: '@/pages/Customer/AccountList/index',
-      },
-      // 客户账户流水
-      {
-        path: '/customer/account-journal',
-        component: '@/pages/Customer/AccountJournal/index',
-      },
       // **************************权益条件管理**************************
       // 权益管理
       {
@@ -181,32 +166,27 @@ const routes = [
       // **************************钱包**************************
       {
         path: '/wallet',
-        redirect: '/wallet/platfor-wallet',
+        redirect: '/wallet/e-wallet',
       },
-      // 系统钱包
+      // 电子钱包
       {
-        path: '/wallet/sys-wallet',
-        component: '@/pages/Wallet/index',
+        path: '/wallet/e-wallet',
+        component: '@/pages/Wallet/E-wallet/index',
       },
-      // 平台钱包
+      // 链钱包
       {
-        path: '/wallet/platfor-wallet',
-        component: '@/pages/Wallet/PlatforWallet/index',
+        path: '/wallet/chain-wallet',
+        component: '@/pages/Wallet/ChainWallet/index',
       },
-      // 商户钱包
+      // 电子账户
       {
-        path: '/wallet/merchant-wallet',
-        component: '@/pages/Wallet/MerchantWallet/index',
+        path: '/wallet/account-list',
+        component: '@/pages/Wallet/AccountList/index',
       },
-      // 客户钱包
+      // 账户流水
       {
-        path: '/wallet/customer-wallet',
-        component: '@/pages/Wallet/CustomerWallet/index',
-      },
-      // 代理商钱包
-      {
-        path: '/wallet/sys-agent-wallet',
-        component: '@/pages/Wallet/SysAgentWallet/index',
+        path: '/wallet/account-journal',
+        component: '@/pages/Wallet/AccountJournal/index',
       },
       // ****************************收银************************
       {

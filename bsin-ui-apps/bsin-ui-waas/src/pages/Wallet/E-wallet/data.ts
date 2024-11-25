@@ -14,32 +14,6 @@ export type columnsDataType = {
 };
 
 const columnsData: ProColumns<columnsDataType>[] = [
-  // 配置搜索框
-  {
-    title: '类型',
-    dataIndex: 'type',
-    valueType: 'select',
-    hideInTable: true,
-    valueEnum: {
-      1: {
-        text: '首页',
-      },
-      2: {
-        text: '数字资产页',
-      },
-      3: {
-        text: '其他',
-      },
-    },
-  },
-  {
-    title: '名称',
-    dataIndex: 'title',
-    hideInTable: true,
-    fieldProps: {
-      maxLength: 20,
-    },
-  },
 
   // table里面的内容
   {
@@ -50,58 +24,52 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
   },
   {
-    title: '名称',
+    title: '账号',
     width: 160,
-    dataIndex: 'title',
+    dataIndex: 'accountNo',
     hideInSearch: true,
   },
   {
-    title: '图片',
+    title: '业务角色号',
     width: 160,
-    dataIndex: 'imageUrl',
+    dataIndex: 'bizRoleTypeNo',
     hideInSearch: true,
   },
   {
-    title: '链接',
+    title: '金额',
     width: 160,
-    dataIndex: 'linkUrl',
+    dataIndex: 'amount',
     hideInSearch: true,
   },
   {
-    title: '类型',
-    width: 100,
+    title: '交易类型',
+    width: 120,
     hideInSearch: true,
-    dataIndex: 'type',
+    dataIndex: 'orderType',
     valueType: 'select',
     valueEnum: {
-      1: {
-        text: '首页',
+      "10": {
+        text: '待支付',
       },
-      2: {
-        text: '数字资产页',
+      "20": {
+        text: '已取消',
       },
-      3: {
-        text: '其他',
+      "30": {
+        text: '已完成',
       },
     },
   },
   {
-    title: '状态',
-    width: 100,
+    title: '订单号',
+    width: 160,
+    dataIndex: 'orderNo',
     hideInSearch: true,
-    dataIndex: 'status',
-    valueType: 'select',
-    valueEnum: {
-      1: {
-        text: '首页',
-      },
-      2: {
-        text: '数字资产页',
-      },
-      3: {
-        text: '其他',
-      },
-    },
+  },
+  {
+    title: '创建者',
+    width: 160,
+    dataIndex: 'createBy',
+    hideInSearch: true,
   },
   {
     title: '创建时间',
@@ -111,7 +79,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '操作',
-    width: 100,
+    width: 120,
     hideInSearch: true,
     dataIndex: 'action',
     fixed: 'right',
