@@ -141,21 +141,21 @@ const routes = [
         path: '/customer/pass-card',
         component: '@/pages/Customer/PassCard/index',
       },
-      // 等级管理
+      // **************************业务角色等级管理**************************
       {
-        path: '/customer/grade-list',
-        component: '@/pages/Customer/Grade/index',
+        path: '/grade-list',
+        component: '@/pages/Grade/index',
       },
       // **************************权益条件管理**************************
       // 权益管理
       {
         path: '/equity-list',
-        component: '@/pages/Customer/EquityList/index',
+        component: '@/pages/conditionAndEquity/EquityList/index',
       },
       // 条件管理
       {
         path: '/condition-list',
-        component: '@/pages/Customer/ConditionList/index',
+        component: '@/pages/conditionAndEquity/ConditionList/index',
       },
       // **************************事件、事件模型**************************
       // 事件配置

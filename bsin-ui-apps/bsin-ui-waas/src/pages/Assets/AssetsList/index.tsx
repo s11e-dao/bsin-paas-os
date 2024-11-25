@@ -12,8 +12,8 @@ import {
   Select,
 } from 'antd';
 import AssetsList from './assetsList';
-import ConfigCondition from '../../Customer/ConditionList/configCondition';
-import ConfigEquity from '../../Customer/EquityList/configEquity';
+import ConfigCondition from '../../conditionAndEquity/ConditionList/configCondition';
+import ConfigEquity from '../../conditionAndEquity/EquityList/configEquity';
 
 export default () => {
   // 控制是否展示详情组件

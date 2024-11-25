@@ -19,8 +19,8 @@ import { PlusOutlined } from '@ant-design/icons';
 
 import { getGradeList, addGrade, deleteGrade, getGradeDetail } from './service';
 
-import ConfigCondition from '../ConditionList/configCondition';
-import ConfigEquity from '../EquityList/configEquity';
+import ConfigCondition from '../conditionAndEquity/ConditionList/configCondition';
+import ConfigEquity from '../conditionAndEquity/EquityList/configEquity';
 import MemberGrade from './memberGrade';
 import GradeList from './gradeList';
 import GradeMemberList from './gradeMemberList';

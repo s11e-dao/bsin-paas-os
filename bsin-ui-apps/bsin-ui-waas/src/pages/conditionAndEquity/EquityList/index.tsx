@@ -27,7 +27,7 @@ import {
   getBondingCurveTokenList,
 } from '../../Assets/AssetsList/service';
 
-import { getGradeList } from '../Grade/service';
+import { getGradeList } from '../../Grade/service';
 
 import TableTitle from '../../../components/TableTitle';
 

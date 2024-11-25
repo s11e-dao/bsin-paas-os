@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import PassCard from './passCard';
 import IssuePassCard from './issuePassCard';
 import PutOnShelvesAssets from '../AssetsCollection/putOnShelvesAssets';
-import ConfigCondition from '../../Customer/ConditionList/configCondition';
-import ConfigEquity from '../../Customer/EquityList/configEquity';
+import ConfigCondition from '../../conditionAndEquity/ConditionList/configCondition';
+import ConfigEquity from '../../conditionAndEquity/EquityList/configEquity';
 
 export default () => {
   const [currentContent, setCurrentContent] = useState('PassCard');

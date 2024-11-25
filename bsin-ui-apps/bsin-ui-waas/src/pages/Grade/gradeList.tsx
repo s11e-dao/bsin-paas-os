@@ -125,7 +125,7 @@ export default ({ setCurrentContent, configGrade }) => {
    */
   const onCancelAdd = () => {
     // 重置输入的表单
-    setIsEditMemberGradeModal(false);
+    setGradeModal(false);
   };
 
   /**
@@ -350,7 +350,7 @@ export default ({ setCurrentContent, configGrade }) => {
         title="查看会员等级"
         width={800}
         centered
-        visible={isViewMemberGradeModal}
+        open={isViewMemberGradeModal}
         onOk={() => setIsViewMemberGradeModal(false)}
         onCancel={() => setIsViewMemberGradeModal(false)}
       >

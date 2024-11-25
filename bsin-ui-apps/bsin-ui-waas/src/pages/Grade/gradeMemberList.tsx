@@ -25,7 +25,7 @@ import {
   getGradeAndMemberList,
   addGradeMember,
 } from './service';
-import TableTitle from '../../../components/TableTitle';
+import TableTitle from '../../components/TableTitle';
 
 export default ({ setCurrentContent, configGrade }) => {
   const { TextArea } = Input;
