@@ -232,11 +232,6 @@ export default ({ setCurrentContent, configGrade }) => {
     configGrade(record, 'configEquity');
   };
 
-  const items = [
-    { label: '菜单项一', key: 'item-1' }, // 菜单项务必填写 key
-    { label: '菜单项二', key: 'item-2' },
-  ];
-
   return (
     <div>
       <Card>

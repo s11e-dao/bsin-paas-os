@@ -98,6 +98,7 @@ public class BrokerageEngineImpl implements BrokerageEngine {
      * @param requestMap 包含单个商品的分佣信息
      */
     public void brokerage(Map<String, Object> requestMap) throws UnsupportedEncodingException {
+
         String eventCode = MapUtils.getString(requestMap, "eventCode");
         String tenantId = MapUtils.getString(requestMap, "tenantId");
         String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
@@ -110,15 +111,14 @@ public class BrokerageEngineImpl implements BrokerageEngine {
         // 验证和获取分佣政策
         DisBrokeragePolicy policy = validateAndGetBrokeragePolicy(rule);
 
-        // 判断触发事件编码是否一致, 不一致则直接返回
+        // TODO 统一规则引擎处理 判断触发事件编码是否一致, 不一致则直接返回
         if(!policy.getTriggerEventCode().equals(eventCode)){
             return;
         }
-
-        // 存在, 一致则根据分佣时间扔给队列进行分佣（目前是根据时间直接进行分佣）
+        // TODO 统一规则引擎处理 存在, 一致则根据分佣时间扔给队列进行分佣（目前是根据时间直接进行分佣）
         if(policy.getTriggerEventAfterDate() > 0){
             // 判断完成事件时间跟当前时间差是否小于triggerEventAfterDate
-            // TODO 小于扔给延时队列进行处理
+            // TODO 小于扔给延时队列进行处理，到到时间继续触发规则引擎
 
         }
         // 计算商户分佣金额
