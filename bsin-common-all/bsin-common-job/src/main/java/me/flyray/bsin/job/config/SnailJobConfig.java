@@ -20,7 +20,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * SnailJob基础配置
  */
 @AutoConfiguration
-@ConditionalOnProperty(prefix = "snail-job", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = "snail-job", name = "enabled", havingValue = "true",matchIfMissing = true)
 @EnableScheduling
 @EnableSnailJob
 public class SnailJobConfig {
