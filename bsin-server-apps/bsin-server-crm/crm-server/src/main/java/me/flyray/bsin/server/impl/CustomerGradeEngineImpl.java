@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.domain.entity.Grade;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.CustomerGradeEngine;
+import me.flyray.bsin.facade.engine.GradeEngine;
 import me.flyray.bsin.facade.service.GradeService;
 import me.flyray.bsin.facade.service.MemberService;
 
@@ -26,10 +26,10 @@ import me.flyray.bsin.facade.service.MemberService;
 
 
 @Slf4j
-@ShenyuDubboService(path = "/customerGradeEngine", timeout = 6000)
-@ApiModule(value = "customerGradeEngine")
+@ShenyuDubboService(path = "/gradeEngine", timeout = 6000)
+@ApiModule(value = "gradeEngine")
 @Service
-public class CustomerGradeEngineImpl implements CustomerGradeEngine {
+public class CustomerGradeEngineImpl implements GradeEngine {
 
     @DubboReference(version = "${dubbo.provider.version}")
     private MemberService memberService;

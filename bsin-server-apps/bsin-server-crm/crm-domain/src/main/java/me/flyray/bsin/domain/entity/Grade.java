@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import lombok.Data;
+import me.flyray.bsin.security.enums.BizRoleType;
 
 /**
  * 客户等级划分配置
@@ -72,6 +73,12 @@ public class Grade implements Serializable {
      * 等级描述
      */
     private String description;
+
+    /**
+     * 等级的业务角色类型
+     * @see BizRoleType
+     */
+    private String bizRoleType;
 
     /**
      * 等级级数

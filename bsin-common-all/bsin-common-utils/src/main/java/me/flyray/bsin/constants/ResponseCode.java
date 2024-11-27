@@ -36,6 +36,9 @@ public enum ResponseCode implements ReturnCode {
   USERNAME_EXIST("100119", "该用户名已存在"),
   PHOEN_EMAIL_EXIST("100120", "手机号、邮箱已存在"),
 
+  NOT_SUPPORT_AUTH_LOGIN("100121", "暂不支持该类型授权登录"),
+
+
   // 机构 100200
   ORG_NOT_EXIST("100201", "机构不存在"),
   ORG_UPDATE_EXCEPTION("100202", "机构更新异常"),
@@ -193,9 +196,11 @@ public enum ResponseCode implements ReturnCode {
   MEMBER_NOT_EXISTS("300015", "会员账号不存在！"),
   CUSTOMER_NO_IS_NULL("300016", "客户号不能为空！"),
   BIZ_ROLE_TYPE_ERROR("300017", "业务角色类型错误！"),
-
   INVITE_CODE_ERROR("300018", "邀请码错误！"),
   INVITE_RELATION_NOT_EXISTS("300019", "邀请关系不存在！"),
+  GET_OPENID_FAIL("300020", "获取openId失败！"),
+
+
 
   /***********************************分销类 310000 开头*****************************************/
   DIS_MODEL_NOT_EXISTS("310001", "分销模型不存在~"),
@@ -313,7 +318,6 @@ public enum ResponseCode implements ReturnCode {
   TYPE_IS_EMPTY("120010", "类型不能为空！"),
   ORDER_NOT_EXIST("120011", "订单不存在！"),
   DELIVERY_ADDRESS_NO_NOT_EXIST("120011", "邮寄地址NO不能为空！"),
-
   GOODS_NO_NOT_EXIST("120012", "商品ID不能为空！"),
 
   /*********************************** IOT 130000*****************************************/

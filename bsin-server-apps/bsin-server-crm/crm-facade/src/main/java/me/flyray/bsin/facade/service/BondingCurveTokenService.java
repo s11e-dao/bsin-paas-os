@@ -47,8 +47,7 @@ public interface BondingCurveTokenService {
   public Map<String, Object> mint(Map<String, Object> requestMap) throws UnsupportedEncodingException;
 
   /**
-   * 原力值兑换商品
-   *
+   * 赎回
    * @param: 原力积分数量
    * @return: laborValue
    */

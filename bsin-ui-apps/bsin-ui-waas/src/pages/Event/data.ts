@@ -120,7 +120,7 @@ export const DictItemColumnsData: ProColumns<DictItemColumnsItem>[] = [
     title: '操作',
     fixed: 'right',
     valueType: 'option',
-    width: 120,
+    width: 140,
   },
 ];
 

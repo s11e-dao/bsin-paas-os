@@ -7,7 +7,7 @@ export default (props) => {
   if (token) {
     return <Outlet />;
   } else{
-    window.location.href = "/#/login"
+    window.location.href = "/#/uncontainer"
     // 跳转到基座登录
     // return <Navigate to="/login" />;
   }

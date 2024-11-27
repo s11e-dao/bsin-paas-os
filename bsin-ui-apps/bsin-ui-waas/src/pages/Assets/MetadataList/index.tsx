@@ -219,7 +219,7 @@ export default () => {
           console.log('add', res);
           let param = {};
           getMetadataFileList(param).then((res) => {
-            if (res?.code == '000000') {
+            if (res?.code == 0) {
               setDirDataList(res?.data);
               // 重置输入的表单
               FormRef.resetFields();
@@ -339,7 +339,7 @@ export default () => {
       if (file?.status === 'done') {
         console.log(file.response);
         message.success(`${info.file.name} file uploaded successfully.`);
-        // if (file?.response.data != '000000') {
+        // if (file?.response.data != 0) {
         //   message.error(
         //     `${info.file.name} file uploaded failed. ${file?.response.data.message}`,
         //   );

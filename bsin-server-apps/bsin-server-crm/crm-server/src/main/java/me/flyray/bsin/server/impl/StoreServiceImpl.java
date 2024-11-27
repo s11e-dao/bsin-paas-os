@@ -66,6 +66,9 @@ public class StoreServiceImpl implements StoreService {
     if (StoreType.MAIN_STORE.getCode().equals(store.getType())) {
       setMainStore(requestMap);
     }
+    // TODO 调用upms开通店铺账号
+    // userService.addMerchantOrStoreUser(sysUserDTO);
+
     return store;
   }
 

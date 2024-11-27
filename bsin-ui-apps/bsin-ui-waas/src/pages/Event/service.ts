@@ -93,9 +93,9 @@ export const getRuleModelList = (params: any) => {
 };
 
 export const getInferenceModelList = (params: any) => {
-  return request(crmPath + '/eventModel/delete', {
+  return request(crmPath + '/eventModel/getList', {
     serviceName: 'EventModelService',
-    methodName: 'delete',
+    methodName: 'getList',
     bizParams: {
       ...params,
     },
@@ -103,9 +103,9 @@ export const getInferenceModelList = (params: any) => {
 };
 
 export const getFlowModelList = (params: any) => {
-  return request(crmPath + '/eventModel/delete', {
+  return request(crmPath + '/eventModel/getList', {
     serviceName: 'EventModelService',
-    methodName: 'delete',
+    methodName: 'getList',
     bizParams: {
       ...params,
     },
@@ -113,9 +113,9 @@ export const getFlowModelList = (params: any) => {
 };
 
 export const getFormModelList = (params: any) => {
-  return request(crmPath + '/eventModel/delete', {
+  return request(crmPath + '/eventModel/getList', {
     serviceName: 'EventModelService',
-    methodName: 'delete',
+    methodName: 'getList',
     bizParams: {
       ...params,
     },

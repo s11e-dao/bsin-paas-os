@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons';
@@ -128,7 +128,7 @@ const DictManagement = () => {
   const columnsOptionRender = (text: any, record: DictColumnsItem) => {
     return [
       <div key={record.dictType}>
-        <a onClick={() => handleCheckBtn(record)}>查看</a>
+        <a onClick={() => handleCheckBtn(record)}>事件模型</a>
         <Divider type="vertical" />
         <a onClick={() => handleEditModel(record)}>编辑</a>
         <Divider type="vertical" />
@@ -256,13 +256,13 @@ const DictManagement = () => {
     console.log(value);
     // 根据类型查询对应的模型列表
     let res = null
-    if (value === 1) {
+    if (value === "1") {
       res = await getFlowModelList({ });
-    }else if(value === 2){
+    }else if(value === "2"){
       res = await getFormModelList({ });
     }else if(value === 3){
       res = await getRuleModelList({ });
-    }else if(value === 4){
+    }else if(value === "4"){
       res = await getInferenceModelList({ });
     }
     if(res && res.code === 0){
@@ -427,7 +427,7 @@ const DictManagement = () => {
           form={checkForm}
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 20 }}
-          initialValues={{ remember: true }}
+          initialValues={{ modelNo: "0", modelType: "0" }}
           autoComplete="off"
         >
           <Form.Item
@@ -439,6 +439,7 @@ const DictManagement = () => {
               onChange={(value) => {
                 getModelList(value);
               }} >
+              <Option value="0">请选择模型类型</Option>
               <Option value="1">流程模型</Option>
               <Option value="2">表单模型</Option>
               <Option value="3">规则模型</Option>
@@ -451,8 +452,14 @@ const DictManagement = () => {
             rules={[{ required: true, message: '请选择事件模型!' }]}
           >
             <Select style={{ width: '100%' }} allowClear>
-              <Option value="1">平台级</Option>
-              <Option value="2">商户级</Option>
+              <Option value="0">请选择模型</Option>
+              {modelList?.map((model) => {
+                return (
+                  <Option value={model?.productCode}>
+                    {model?.productName}
+                  </Option>
+                );
+              })}
             </Select>
           </Form.Item>
         </Form>

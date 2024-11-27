@@ -23,8 +23,8 @@
         <module>bsin-common-sensitive</module>
         <module>bsin-common-redis</module>
         <module>bsin-common-schedule</module>
-        <module>bsin-common-brms</module>
         <module>bsin-common-tenant</module>
+        <module>bsin-common-brms</module>
     </modules>
     <name>bsin-common-all</name>
     <description>bsin-paas平台：中间件</description>

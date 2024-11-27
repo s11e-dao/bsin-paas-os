@@ -62,7 +62,7 @@ export default ({ setCurrentContent }) => {
         createProfile(response)
           .then(async (res) => {
             console.log(res);
-            if (res?.code == '000000') {
+            if (res?.code == 0) {
               // 返回列表
               setCurrentContent('profile');
               // 重置输入的表单
@@ -103,7 +103,7 @@ export default ({ setCurrentContent }) => {
       if (file?.status === 'done') {
         console.log(file.response);
         message.success(`${info.file.name} file uploaded successfully.`);
-        // if (file?.response.data != '000000') {
+        // if (file?.response.data != 0) {
         //   message.error(
         //     `${info.file.name} file uploaded failed. ${file?.response.data.message}`,
         //   );

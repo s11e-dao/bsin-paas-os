@@ -51,6 +51,7 @@ public class BrokerageEngineImpl implements BrokerageEngine {
     private AccountBiz accountBiz;
 
     /**
+     * 参数： eventCode tenantId sysAgentNo customerNo isPreview（是否预先分佣处理） orderNo transactionType remark goodsSkuList
      * 接口主方法：处理请求中的分佣逻辑
      * @param requestMap 包含分佣信息的请求参数
      */
@@ -97,6 +98,7 @@ public class BrokerageEngineImpl implements BrokerageEngine {
      * @param requestMap 包含单个商品的分佣信息
      */
     public void brokerage(Map<String, Object> requestMap) throws UnsupportedEncodingException {
+
         String eventCode = MapUtils.getString(requestMap, "eventCode");
         String tenantId = MapUtils.getString(requestMap, "tenantId");
         String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
@@ -109,15 +111,14 @@ public class BrokerageEngineImpl implements BrokerageEngine {
         // 验证和获取分佣政策
         DisBrokeragePolicy policy = validateAndGetBrokeragePolicy(rule);
 
-        // 判断触发事件编码是否一致, 不一致则直接返回
+        // TODO 统一规则引擎处理 判断触发事件编码是否一致, 不一致则直接返回
         if(!policy.getTriggerEventCode().equals(eventCode)){
             return;
         }
-
-        // 存在, 一致则根据分佣时间扔给队列进行分佣（目前是根据时间直接进行分佣）
+        // TODO 统一规则引擎处理 存在, 一致则根据分佣时间扔给队列进行分佣（目前是根据时间直接进行分佣）
         if(policy.getTriggerEventAfterDate() > 0){
             // 判断完成事件时间跟当前时间差是否小于triggerEventAfterDate
-            // TODO 小于扔给延时队列进行处理
+            // TODO 小于扔给延时队列进行处理，到到时间继续触发规则引擎
 
         }
         // 计算商户分佣金额
@@ -214,6 +215,7 @@ public class BrokerageEngineImpl implements BrokerageEngine {
     }
 
     /**
+     *
      * 处理平台分佣
      */
     private void handleBrokerage(String bizRoleType, String bizRoleTypeNo, BigDecimal rate, DisBrokeragePolicy policy, DisBrokerageRule rule,
@@ -231,17 +233,20 @@ public class BrokerageEngineImpl implements BrokerageEngine {
         journal.setDisAmount(brokerageAmount);
         disBrokerageJournalMapper.insert(journal);
         Integer isPreview = MapUtils.getInteger(requestMap, "isPreview");
+        String orderNo = MapUtils.getString(requestMap, "orderNo");
+        String transactionType = MapUtils.getString(requestMap, "transactionType");
+        String remark = MapUtils.getString(requestMap, "remark");
         // 入账操作
         if (isPreview == 0) {
             // 入账到代理商待结算账户
             accountBiz.inAccount(journal.getTenantId(), bizRoleType, bizRoleTypeNo,
                     AccountCategory.PENDING_SETTLEMENT.getCode(), AccountCategory.PENDING_SETTLEMENT.getDesc(),
-                    "cny", 2, journal.getDisAmount());
+                    "cny", orderNo, transactionType,2,  journal.getDisAmount(), remark);
         } else {
             // 从待分佣账户转到待结算账户
             accountBiz.innerTransfer(journal.getTenantId(), bizRoleType, bizRoleTypeNo, bizRoleType, bizRoleTypeNo,
                     AccountCategory.PENDING_BROKERAGE.getCode(), AccountCategory.PENDING_SETTLEMENT.getCode(),
-                    "cny", 2, journal.getDisAmount().negate());
+                    "cny", orderNo, transactionType,2, journal.getDisAmount().negate(), remark);
         }
 
     }
@@ -273,7 +278,7 @@ public class BrokerageEngineImpl implements BrokerageEngine {
         DisBrokerageJournal journal = createBrokerageJournal(policy, rule, config, sysAgentBrokerageAmount, level, salePer, isPreview, agentNo, requestMap);
         disBrokerageJournalMapper.insert(journal);
         // 处理账户交易
-        processAccountTransaction(agentNo, journal, isPreview);
+        processAccountTransaction(agentNo, journal, isPreview, requestMap);
     }
 
     /**
@@ -310,17 +315,20 @@ public class BrokerageEngineImpl implements BrokerageEngine {
     /**
      * 处理账户交易记录
      */
-    private void processAccountTransaction(String sysAgentNo, DisBrokerageJournal journal, Integer isPreview) throws UnsupportedEncodingException {
+    private void processAccountTransaction(String sysAgentNo, DisBrokerageJournal journal, Integer isPreview, Map<String, Object> requestMap) throws UnsupportedEncodingException {
+        String orderNo = MapUtils.getString(requestMap, "orderNo");
+        String transactionType = MapUtils.getString(requestMap, "transactionType");
+        String remark = MapUtils.getString(requestMap, "remark");
         if (isPreview == 0) {
             // 入账到代理商待结算账户
             accountBiz.inAccount(journal.getTenantId(), BizRoleType.SYS_AGENT.getCode(), sysAgentNo,
                     AccountCategory.PENDING_SETTLEMENT.getCode(), AccountCategory.PENDING_SETTLEMENT.getDesc(),
-                    "cny", 2, journal.getDisAmount());
+                    "cny", orderNo, transactionType,2, journal.getDisAmount(), remark);
         } else {
             // 从待分佣账户转到待结算账户
             accountBiz.innerTransfer(journal.getTenantId(), BizRoleType.SYS_AGENT.getCode(), sysAgentNo, BizRoleType.SYS_AGENT.getCode(), sysAgentNo,
                     AccountCategory.PENDING_BROKERAGE.getCode(), AccountCategory.PENDING_SETTLEMENT.getCode(),
-                    "cny", 2, journal.getDisAmount().negate());
+                    "cny", orderNo, transactionType,2, journal.getDisAmount().negate(), remark);
         }
     }
 }

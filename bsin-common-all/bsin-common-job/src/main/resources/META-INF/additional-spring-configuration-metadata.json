@@ -1,0 +1,25 @@
+{
+  "properties": [
+    {
+      "name": "snail-job.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "是否开启job"
+    }
+  ],
+  "hints": [
+    {
+      "name": "snail-job.enabled",
+      "values": [
+        {
+          "value": true,
+          "description": "开启job"
+        },
+        {
+          "value": false,
+          "description": "关闭job"
+        }
+      ]
+    }
+  ]
+}

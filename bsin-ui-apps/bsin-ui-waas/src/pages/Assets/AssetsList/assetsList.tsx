@@ -156,7 +156,7 @@ export default ({ setCurrentContent, configAssetsItem }) => {
         console.log(response);
         addDigitalAssetsItem(response).then((res) => {
           console.log('add', res);
-          if (res?.code == '000000') {
+          if (res?.code == 0) {
             // 重置输入的表单
             FormRef.resetFields();
             // 刷新proTable
@@ -187,7 +187,7 @@ export default ({ setCurrentContent, configAssetsItem }) => {
     let { serialNo } = record;
     let delRes = await deleteDigitalAssetsItem({ serialNo });
     console.log('delRes', delRes);
-    if (delRes.code === '000000') {
+    if (delRes.code === 0) {
       // 删除成功刷新表单
       actionRef.current?.reload();
     }

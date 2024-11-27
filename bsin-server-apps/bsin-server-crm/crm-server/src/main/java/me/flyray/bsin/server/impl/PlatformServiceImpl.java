@@ -16,13 +16,16 @@ import me.flyray.bsin.domain.enums.WalletType;
 import me.flyray.bsin.domain.request.PlatformDTO;
 import me.flyray.bsin.domain.request.SysTenantDTO;
 import me.flyray.bsin.domain.response.SysUserVO;
+import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MerchantService;
 import me.flyray.bsin.facade.service.PlatformService;
 import me.flyray.bsin.facade.service.TenantService;
 import me.flyray.bsin.facade.service.UserService;
 import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
+import me.flyray.bsin.infrastructure.mapper.MerchantMapper;
 import me.flyray.bsin.infrastructure.mapper.PlatformMapper;
+import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.security.enums.BizRoleType;
@@ -36,6 +39,7 @@ import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,10 +60,16 @@ import java.util.Map;
 @Service
 public class PlatformServiceImpl implements PlatformService {
 
-    @Autowired
-    private CustomerBaseMapper customerBaseMapper;
+    @Value("${bsin.security.authentication-secretKey}")
+    private String authSecretKey;
+
+    @Value("${bsin.security.authentication-expiration}")
+    private int authExpiration;
+
     @Autowired
     private PlatformMapper platformMapper;
+    @Autowired
+    private MerchantMapper merchantMapper;
 
     @DubboReference(version = "dev")
     private TenantService tenantService;
@@ -182,11 +192,25 @@ public class PlatformServiceImpl implements PlatformService {
         Map res = new HashMap<>();
         // userService
         SysUser sysUser = new SysUser();
-        BeanUtil.copyProperties(requestMap,sysUser);
+        BeanUtil.copyProperties(requestMap, sysUser);
         sysUser.setBizRoleType(BizRoleType.TENANT.getCode());
-        SysUserVO sysUserVO = userService.login(sysUser);
-        BeanUtil.beanToMap(sysUserVO);
-        res.putAll(BeanUtil.beanToMap(sysUserVO));
+        UserResp userResp = userService.getUserInfo(sysUser);
+        res.putAll(BeanUtil.beanToMap(userResp));
+        sysUser = userResp.getSysUser();
+        // 平台登录token处理
+        LoginUser loginUser = new LoginUser();
+        loginUser.setTenantId(platformReq.getTenantId());
+        loginUser.setUserId(sysUser.getUserId());
+        loginUser.setUsername(sysUser.getUsername());
+        loginUser.setPhone(sysUser.getPhone());
+        // token中处理平台对应的直属商户号
+        Merchant merchant = merchantMapper.selectOne(new LambdaQueryWrapper<Merchant>().eq(Merchant::getTenantId, platformReq.getTenantId()).eq(Merchant::getType,
+                CustomerType.UNDER_TENANT_MEMBER.getCode()));
+        loginUser.setTenantMerchantNo(merchant.getSerialNo());
+        loginUser.setBizRoleType(BizRoleType.TENANT.getCode());
+        loginUser.setBizRoleTypeNo(platformReq.getTenantId());
+        String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
+        res.put("token", token);
         res.put("platformInfo", BeanUtil.beanToMap(platform));
         return res;
     }

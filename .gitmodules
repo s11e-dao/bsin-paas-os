@@ -7,3 +7,6 @@
 [submodule "bsin-server-apps/bsin-server-ai-agent"]
 	path = bsin-server-apps/bsin-server-ai-agent
 	url = https://gitee.com/s11e-DAO/bsin-server-ai-agent.git
+[submodule "bsin-server-apps/bsin-server-iot"]
+	path = bsin-server-apps/bsin-server-iot
+	url = https://gitee.com/s11e-DAO/bsin-server-iot.git

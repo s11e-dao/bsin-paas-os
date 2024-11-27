@@ -132,7 +132,6 @@ public class GradeServiceImpl implements GradeService {
                 StringUtils.isNotEmpty(grade.getGradeNum()),
                 Grade::getGradeNum,
                 grade.getGradeNum());
-
         IPage<Grade> pageList = gradeMapper.selectPage(page, warapper);
         return pageList;
     }

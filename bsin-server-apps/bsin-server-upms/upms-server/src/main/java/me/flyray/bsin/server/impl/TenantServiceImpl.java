@@ -40,6 +40,7 @@ import me.flyray.bsin.facade.service.TenantService;
 
 import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.biz.AppBiz;
 import me.flyray.bsin.utils.BsinSnowflake;
 
@@ -345,6 +346,7 @@ public class TenantServiceImpl implements TenantService {
             password = tenantConfig.getPassword();
         }
         SysUser sysUser = new SysUser(userId, username, password, orgId, tenantId);
+        sysUser.setBizRoleType(BizRoleType.TENANT.getCode());
         sysUser.setType(UserType.TENANT.getCode());
         userMapper.insertUser(sysUser);
         return sysUser;

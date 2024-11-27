@@ -19,7 +19,12 @@ public interface MemberService {
     /**
      * 开通会员
      */
-    public Member openMember(Map<String, Object> requestMap);
+    public Map<String, Object> openMember(Map<String, Object> requestMap);
+
+    /**
+     * 编辑会员
+     */
+    public Map<String, Object> edit(Map<String, Object> requestMap);
 
     /**
      * 商户下所有会员：会员挂在商户下

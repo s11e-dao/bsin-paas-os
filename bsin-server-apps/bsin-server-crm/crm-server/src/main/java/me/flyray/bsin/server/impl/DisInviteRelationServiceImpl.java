@@ -13,7 +13,6 @@ import me.flyray.bsin.infrastructure.mapper.DisInviteRelationMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -22,6 +21,9 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.*;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import static me.flyray.bsin.constants.ResponseCode.*;
@@ -83,6 +85,52 @@ public class DisInviteRelationServiceImpl implements DisInviteRelationService {
         return disInviteRelation;
     }
 
+    @ApiDoc(desc = "我的客户相关邀请关系数据")
+    @ShenyuDubboClient("/inviteCount")
+    @Override
+    public Map<String, Integer> inviteCount(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        Map<String, Integer> map = new HashMap<>();
+
+        // 查询今天的邀请数
+        LambdaQueryWrapper<DisInviteRelation> warapper = new LambdaQueryWrapper<>();
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay(); // 获取今天的开始时间 (00:00:00)
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX); // 获取今天的结束时间 (23:59:59.999999999)
+        Instant startInstant = startOfDay.atZone(ZoneId.systemDefault()).toInstant();
+        Instant endInstant = endOfDay.atZone(ZoneId.systemDefault()).toInstant();
+        // 将 Instant 转换为 Date
+        Date startDate = Date.from(startInstant);
+        Date endDate = Date.from(endInstant);
+        warapper.between(DisInviteRelation::getCreateTime, startDate, endDate);
+        warapper.eq(DisInviteRelation::getParentNo, loginUser.getCustomerNo());
+        Long todayInvite = disInviteRelationMapper.selectCount(warapper);
+        map.put("todayInvite", todayInvite.intValue());
+
+        // 查询昨天的邀请数
+        LambdaQueryWrapper<DisInviteRelation> yesterdayWarapper = new LambdaQueryWrapper<>();
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        LocalDateTime startOfYesterday = yesterday.atStartOfDay();
+        LocalDateTime endOfYesterday = yesterday.atTime(LocalTime.MAX);
+
+        Instant startInstantYesterday = startOfYesterday.atZone(ZoneId.systemDefault()).toInstant();
+        Instant endInstantYesterday = endOfYesterday.atZone(ZoneId.systemDefault()).toInstant();
+        // 将 Instant 转换为 Date
+        Date startYesterday = Date.from(startInstantYesterday);
+        Date endYesterday = Date.from(endInstantYesterday);
+
+        yesterdayWarapper.between(DisInviteRelation::getCreateTime, startYesterday, endYesterday);
+        yesterdayWarapper.eq(DisInviteRelation::getParentNo, loginUser.getCustomerNo());
+        Long yesterdayInvite = disInviteRelationMapper.selectCount(yesterdayWarapper);
+        map.put("yesterdayInvite", yesterdayInvite.intValue());
+
+        // 查询总的邀请数
+        LambdaQueryWrapper<DisInviteRelation> totalWarapper = new LambdaQueryWrapper<>();
+        totalWarapper.eq(DisInviteRelation::getParentNo, loginUser.getCustomerNo());
+        Long totalInvite = disInviteRelationMapper.selectCount(totalWarapper);
+        map.put("totalInvite", totalInvite.intValue());
+        return map;
+    }
 }
 
 

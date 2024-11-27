@@ -34,7 +34,8 @@ public class TokenReleaseBiz {
    *
    * @param CustomerAccount
    */
-  public void bcAccountRelease(Account account, BigDecimal amount)
+  public void bcAccountRelease(Account account, BigDecimal amount, String orderNo,
+                               String transactionType, String remark)
       throws Exception {
 
     // 1 用户BC积分余额账户入账
@@ -46,8 +47,10 @@ public class TokenReleaseBiz {
                 AccountCategory.BALANCE.getCode(),
                 AccountCategory.BALANCE.getDesc(),
                 account.getCcy(),
+                orderNo,
+                transactionType,
                 account.getDecimals(),
-            amount);
+                amount, remark);
 
     // 失效时间???
     BsinCacheProvider.put("crm",
@@ -77,8 +80,10 @@ public class TokenReleaseBiz {
                     AccountCategory.BALANCE.getCode(),
                     AccountCategory.BALANCE.getDesc(),
                     account.getCcy(),
+                    orderNo,
+                    transactionType,
                     account.getDecimals(),
-                    releaseAmount);
+                    releaseAmount, remark);
   }
 
 }

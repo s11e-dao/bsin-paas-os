@@ -112,7 +112,7 @@ export default () => {
         console.log(response);
         addMintJournal(response).then((res) => {
           console.log('mint', res);
-          if (res?.code == '000000') {
+          if (res?.code == 0) {
             // 重置输入的表单
             FormRef.resetFields();
             // 刷新proTable

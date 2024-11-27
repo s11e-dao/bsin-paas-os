@@ -20,7 +20,7 @@ public interface DisBrokerageConfigService {
     /**
      * 添加
      */
-    public DisBrokerageConfig add(DisBrokerageConfig disBrokerageConfig);
+    public DisBrokerageConfig config(DisBrokerageConfig disBrokerageConfig);
 
     /**
      * 删除

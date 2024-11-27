@@ -34,7 +34,7 @@ gateway(){
 }
 # 启动server-apps模块
 server_apps(){
-	docker-compose up -d bsin-server-upms bsin-server-waas bsin-server-crm bsin-server-ai-agent #bsin-server-workflow bsin-server-workflow-admin bsin-server-search bsin-server-brms
+	docker-compose up -d bsin-server-upms bsin-server-waas bsin-server-crm bsin-server-ai-agent bsin-server-oms bsin-server-community #bsin-server-workflow bsin-server-workflow-admin bsin-server-search bsin-server-brms
 }
 
 # 启动upms模块
@@ -48,6 +48,14 @@ crm(){
 # 启动waas模块
 waas(){
 	docker-compose up -d bsin-server-waas
+}
+# 启动waas模块
+oms(){
+  docker-compose up -d bsin-server-oms
+}
+# 启动community模块
+community(){
+  docker-compose up -d bsin-server-community
 }
 # 启动ai_agent模块
 ai_agent(){
@@ -105,6 +113,12 @@ case "$1" in
 ;;
 "waas")
 	waas
+;;
+"oms")
+	oms
+;;
+"community")
+	community
 ;;
 "crm")
 	crm

@@ -334,7 +334,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
           console.log(requestParam);
           openPassCardByProfileFollow(requestParam).then((res) => {
             console.log('issue', res);
-            if (res?.code == '000000') {
+            if (res?.code == 0) {
               // 重置输入的表单
               // FormRef.resetFields();
               // 刷新proTable
@@ -347,7 +347,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
         } else {
           openPassCard(requestParam).then((res) => {
             console.log('issue', res);
-            if (res?.code == '000000') {
+            if (res?.code == 0) {
               // 重置输入的表单
               // FormRef.resetFields();
               // 刷新proTable
@@ -388,7 +388,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
     let { serialNo } = record;
     let delRes = await deleteDigitalAssetsItem({ serialNo });
     console.log('delRes', delRes);
-    if (delRes.code === '000000') {
+    if (delRes.code === 0) {
       // 删除成功刷新表单
       actionRef.current?.reload();
     }

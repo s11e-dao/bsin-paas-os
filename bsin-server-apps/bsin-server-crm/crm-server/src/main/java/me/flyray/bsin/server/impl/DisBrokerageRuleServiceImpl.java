@@ -82,6 +82,7 @@ public class DisBrokerageRuleServiceImpl implements DisBrokerageRuleService {
     @Override
     public IPage<?> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        String brokeragePolicyNo = MapUtils.getString(requestMap, "brokeragePolicyNo");
         Object paginationObj =  requestMap.get("pagination");
         Pagination pagination = new Pagination();
         BeanUtil.copyProperties(paginationObj,pagination);
@@ -90,6 +91,7 @@ public class DisBrokerageRuleServiceImpl implements DisBrokerageRuleService {
         LambdaQueryWrapper<DisBrokerageRule> warapper = new LambdaQueryWrapper<>();
         warapper.orderByDesc(DisBrokerageRule::getCreateTime);
         warapper.eq(DisBrokerageRule::getTenantId, loginUser.getTenantId());
+        warapper.eq(DisBrokerageRule::getBrokeragePolicyNo, brokeragePolicyNo);
         IPage<DisBrokerageRule> pageList = disBrokerageRuleMapper.selectPage(page, warapper);
         return pageList;
     }

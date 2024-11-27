@@ -75,7 +75,7 @@ export default ({ setCurrentContent }) => {
       appIds: checkedAppIds,
     };
     subscribeApps(reqParam).then((res) => {
-      if (res.code === '000000' || res.code === 0) {
+      if (res.code === 0 ) {
         message.success('添加成功');
       } else {
         message.error(`失败： ${res?.message}`);
