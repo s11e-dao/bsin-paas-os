@@ -47,6 +47,9 @@ public class DisPolicyMerchantServiceImpl implements DisPolicyMerchantService {
     public DisPolicyMerchant add(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         DisPolicyMerchant disPolicyMerchant = BsinServiceContext.getReqBodyDto(DisPolicyMerchant.class, requestMap);
+        if(disPolicyMerchant.getBrokeragePolicyNo() == null){
+            throw new BusinessException("999","分佣政策编号不能为空!");
+        }
         disPolicyMerchant.setTenantId(loginUser.getTenantId());
         disPolicyMerchant.setSerialNo(BsinSnowflake.getId());
         disPolicyMerchantMapper.insert(disPolicyMerchant);
