@@ -7,7 +7,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.entity.CustomerBase;
+import me.flyray.bsin.domain.entity.Grade;
+import me.flyray.bsin.domain.entity.Member;
+import me.flyray.bsin.domain.entity.TokenParam;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MemberService;
 import me.flyray.bsin.facade.service.TokenParamService;
@@ -187,5 +190,11 @@ public class MemberServiceImpl implements MemberService {
     }
     Grade memberGrade = memberGradeMapper.selectMemberGrade(customerNo);
     return memberGrade;
+  }
+
+  @Override
+  public List<String> getCustomerNoByGradeNos(Map<String, Object> requestMap) {
+    List<String> gradeNos = (List<String>) requestMap.get("gradeNos");
+    return memberMapper.getCustomerNoByGradeNos(gradeNos);
   }
 }

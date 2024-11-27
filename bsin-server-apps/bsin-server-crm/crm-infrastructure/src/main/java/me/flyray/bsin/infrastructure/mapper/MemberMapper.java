@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
 * @author bolei
 * @description 针对表【crm_member】的数据库操作Mapper
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Mapper
 public interface MemberMapper extends BaseMapper<Member> {
+
+    List<String> getCustomerNoByGradeNos(List<String> gradeNos);
 
 }
 

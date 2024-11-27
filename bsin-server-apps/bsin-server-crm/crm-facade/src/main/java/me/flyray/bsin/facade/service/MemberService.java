@@ -47,4 +47,7 @@ public interface MemberService {
     public Grade getMemberGradeDetail(Map<String, Object> requestMap);
 
 
+    public List<String> getCustomerNoByGradeNos(Map<String, Object> requestMap);
+
+
 }

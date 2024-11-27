@@ -1,12 +1,14 @@
 package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.Grade;
 import me.flyray.bsin.domain.entity.Store;
 import me.flyray.bsin.domain.enums.StoreType;
 import me.flyray.bsin.exception.BusinessException;
@@ -25,6 +27,7 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -114,6 +117,17 @@ public class StoreServiceImpl implements StoreService {
       throw new BusinessException(ResponseCode.DATA_BASE_UPDATE_FAILED);
     }
     return store;
+  }
+
+  @Override
+  public List<Store> getListByIds(Map<String, Object> requestMap) {
+    List<String> storeIds = (List<String>) requestMap.get("storeIds");
+    if (storeIds.size() < 1) {
+      throw new BusinessException("200000", "请求参数不能为空！");
+    }
+    List<Store> storeList = storeMapper.selectList(new LambdaQueryWrapper<Store>()
+            .in(Store::getSerialNo, storeIds));
+    return storeList;
   }
 
   @ShenyuDubboClient("/getPageList")

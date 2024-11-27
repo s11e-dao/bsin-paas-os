@@ -34,10 +34,10 @@ import java.util.Map;
 import static me.flyray.bsin.constants.ResponseCode.*;
 
 /**
-* @author bolei
-* @description 针对表【crm_grade(客户等级划分配置)】的数据库操作Service实现
-* @createDate 2023-09-19 23:06:17
-*/
+ * @author bolei
+ * @description 针对表【crm_grade(客户等级划分配置)】的数据库操作Service实现
+ * @createDate 2023-09-19 23:06:17
+ */
 
 @Slf4j
 @ShenyuDubboService(path = "/grade", timeout = 6000)
@@ -57,7 +57,8 @@ public class GradeServiceImpl implements GradeService {
     private EquityMapper equityMapper;
     @Autowired
     private ConditionMapper conditionMapper;
-    @Autowired private AccountBiz customerAccountBiz;
+    @Autowired
+    private AccountBiz customerAccountBiz;
 
     @DubboReference(version = "${dubbo.provider.version}")
     private TokenParamService tokenParamService;
@@ -80,7 +81,7 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public void delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
-        if (gradeMapper.deleteById(serialNo) ==0){
+        if (gradeMapper.deleteById(serialNo) == 0) {
             throw new BusinessException(GRADE_NOT_EXISTS);
         }
     }
@@ -93,7 +94,7 @@ public class GradeServiceImpl implements GradeService {
         Grade grade = BsinServiceContext.getReqBodyDto(Grade.class, requestMap);
         grade.setTenantId(loginUser.getTenantId());
         grade.setMerchantNo(loginUser.getMerchantNo());
-        if (gradeMapper.updateById(grade) ==0){
+        if (gradeMapper.updateById(grade) == 0) {
             throw new BusinessException(GRADE_NOT_EXISTS);
         }
         return grade;
@@ -108,7 +109,7 @@ public class GradeServiceImpl implements GradeService {
         LambdaQueryWrapper<Grade> warapper = new LambdaQueryWrapper<>();
         warapper.orderByDesc(Grade::getCreateTime);
         warapper.eq(Grade::getTenantId, loginUser.getTenantId());
-        warapper.eq(StringUtils.isNotEmpty(loginUser.getMerchantNo()),Grade::getMerchantNo, loginUser.getMerchantNo());
+        warapper.eq(StringUtils.isNotEmpty(loginUser.getMerchantNo()), Grade::getMerchantNo, loginUser.getMerchantNo());
         List<Grade> gradeList = gradeMapper.selectList(warapper);
         return gradeList;
     }
@@ -118,15 +119,15 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public IPage<?> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        Object paginationObj =  requestMap.get("pagination");
+        Object paginationObj = requestMap.get("pagination");
         Pagination pagination = new Pagination();
-        BeanUtil.copyProperties(paginationObj,pagination);
+        BeanUtil.copyProperties(paginationObj, pagination);
         Page<Grade> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
         Grade grade = BsinServiceContext.getReqBodyDto(Grade.class, requestMap);
         LambdaQueryWrapper<Grade> warapper = new LambdaQueryWrapper<>();
         warapper.orderByDesc(Grade::getCreateTime);
         warapper.eq(Grade::getTenantId, loginUser.getTenantId());
-        warapper.eq(StringUtils.isNotEmpty(loginUser.getMerchantNo()),Grade::getMerchantNo, loginUser.getMerchantNo());
+        warapper.eq(StringUtils.isNotEmpty(loginUser.getMerchantNo()), Grade::getMerchantNo, loginUser.getMerchantNo());
         warapper.eq(
                 StringUtils.isNotEmpty(grade.getGradeNum()),
                 Grade::getGradeNum,
@@ -139,21 +140,22 @@ public class GradeServiceImpl implements GradeService {
 
     /**
      * 等级条件和权益详情
+     *
      * @param requestMap
      * @return
      */
     @ApiDoc(desc = "getDetail")
     @ShenyuDubboClient("/getDetail")
     @Override
-    public GradeVO getDetail(Map<String, Object> requestMap){
+    public GradeVO getDetail(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         Grade grade = gradeMapper.selectById(serialNo);
         // 查询等级条件和权益
         // 1.权益分类编号：关联等级 任务 活动的编号
         String categoryNo = grade.getSerialNo();
-        List<Condition> conditionList =  conditionMapper.getConditionList(categoryNo);
+        List<Condition> conditionList = conditionMapper.getConditionList(categoryNo);
         // 2.权益分类编号：关联等级 任务 活动的编号
-        List<Equity> equityList =  equityMapper.getEquityList(categoryNo);
+        List<Equity> equityList = equityMapper.getEquityList(categoryNo);
 
         // 3.该等级下的会员member
         GradeVO gradeVO = new GradeVO();
@@ -166,13 +168,14 @@ public class GradeServiceImpl implements GradeService {
 
     /**
      * 等级详情
+     *
      * @param requestMap
      * @return
      */
     @ApiDoc(desc = "getGradeDetail")
     @ShenyuDubboClient("/getGradeDetail")
     @Override
-    public Grade getGradeDetail(Map<String, Object> requestMap){
+    public Grade getGradeDetail(Map<String, Object> requestMap) {
         String gradeNo = MapUtils.getString(requestMap, "gradeNo");
         if (gradeNo == null) {
             gradeNo = MapUtils.getString(requestMap, "serialNo");
@@ -181,12 +184,24 @@ public class GradeServiceImpl implements GradeService {
         return grade;
     }
 
+    @Override
+    public List<Grade> getGradeListByIds(Map<String, Object> requestMap) {
+        List<String> gradeNos = (List<String>) requestMap.get("gradeNos");
+        if (gradeNos.size() < 1) {
+            throw new BusinessException("200000", "请求参数不能为空！");
+        }
+        List<Grade> gradeList = gradeMapper.selectList(new LambdaQueryWrapper<Grade>()
+                .in(Grade::getSerialNo, gradeNos));
+        return gradeList;
+    }
+
     /**
      * 查询商户下的会员等级详情
      * 等级列表
      * 等级的权益
      * 等级的条件
      * 等级的会员
+     *
      * @param requestMap
      * @return
      */
@@ -196,16 +211,16 @@ public class GradeServiceImpl implements GradeService {
     public List<?> getGradeAndMemberList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         String tenantId = MapUtils.getString(requestMap, "tenantId");
-        if (tenantId==null) {
+        if (tenantId == null) {
             tenantId = loginUser.getTenantId();
             if (tenantId == null) {
                 throw new BusinessException(TENANT_ID_NOT_ISNULL);
             }
         }
         String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-        if (merchantNo==null) {
+        if (merchantNo == null) {
             merchantNo = loginUser.getMerchantNo();
-            requestMap.put("merchantNo",merchantNo);
+            requestMap.put("merchantNo", merchantNo);
             if (merchantNo == null) {
                 throw new BusinessException(MERCHANT_NO_IS_NULL);
             }
@@ -216,15 +231,15 @@ public class GradeServiceImpl implements GradeService {
         warapper.orderByDesc(Grade::getCreateTime);
         warapper.eq(Grade::getTenantId, tenantId);
         warapper.eq(Grade::getMerchantNo, merchantNo);
-        warapper.eq(StringUtils.isNotEmpty(gradeNum),Grade::getGradeNum,gradeNum);
-        warapper.eq(StringUtils.isNotEmpty(name),Grade::getGradeNum,name);
+        warapper.eq(StringUtils.isNotEmpty(gradeNum), Grade::getGradeNum, gradeNum);
+        warapper.eq(StringUtils.isNotEmpty(name), Grade::getGradeNum, name);
         List<GradeVO> gradeVOS = new ArrayList<>();
 
         List<Grade> gradeList = gradeMapper.selectList(warapper);
 
         // 1.商户发行的数字积分(查询tokenParam)
         TokenParam tokenParamMap = tokenParamService.getDetailByMerchantNo(requestMap);
-        Integer decimals =  Integer.valueOf(2);
+        Integer decimals = Integer.valueOf(2);
         String ccy = tokenParamMap.getSymbol();
         decimals = tokenParamMap.getDecimals();
 
@@ -233,7 +248,7 @@ public class GradeServiceImpl implements GradeService {
             gradeVO.setGrade(grade);
             gradeVO.setDecimals(decimals);
             // 查询该等级下的会员
-            List<CustomerBase> memberList= memberGradeMapper.selectMemberListByGrade(grade.getSerialNo(),ccy);
+            List<CustomerBase> memberList = memberGradeMapper.selectMemberListByGrade(grade.getSerialNo(), ccy);
             gradeVO.setMemberList(memberList);
             gradeVOS.add(gradeVO);
         }

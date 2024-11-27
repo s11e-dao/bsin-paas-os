@@ -3,6 +3,7 @@ package me.flyray.bsin.facade.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.Store;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +33,7 @@ public interface StoreService {
      * 设置为总店
      */
     public Store setMainStore(Map<String, Object> requestMap);
+    public List<Store> getListByIds(Map<String, Object> requestMap);
 
 
     /**
