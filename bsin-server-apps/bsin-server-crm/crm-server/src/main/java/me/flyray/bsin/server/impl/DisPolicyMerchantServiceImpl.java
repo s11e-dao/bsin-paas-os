@@ -23,6 +23,7 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
@@ -79,6 +80,17 @@ public class DisPolicyMerchantServiceImpl implements DisPolicyMerchantService {
         return disPolicyMerchant;
     }
 
+    @ApiDoc(desc = "getList")
+    @ShenyuDubboClient("/getList")
+    @Override
+    public List<DisPolicyMerchant> getList(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        LambdaQueryWrapper<DisPolicyMerchant> warapper = new LambdaQueryWrapper<>();
+        warapper.eq(DisPolicyMerchant::getBrokeragePolicyNo, MapUtils.getString(requestMap, "brokeragePolicyNo"));
+        List<DisPolicyMerchant> list = disPolicyMerchantMapper.selectList(warapper);
+        return list;
+    }
+
     @ApiDoc(desc = "getPageList")
     @ShenyuDubboClient("/getPageList")
     @Override
@@ -90,7 +102,7 @@ public class DisPolicyMerchantServiceImpl implements DisPolicyMerchantService {
         Page<DisPolicyMerchant> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
         DisPolicyMerchant disPolicyMerchant = BsinServiceContext.getReqBodyDto(DisPolicyMerchant.class, requestMap);
         LambdaQueryWrapper<DisPolicyMerchant> warapper = new LambdaQueryWrapper<>();
-        warapper.eq(DisPolicyMerchant::getBrokeragePolicyNo, MapUtils.getString(requestMap, "BrokeragePolicyNo"));
+        warapper.eq(DisPolicyMerchant::getBrokeragePolicyNo, MapUtils.getString(requestMap, "brokeragePolicyNo"));
         IPage<DisPolicyMerchant> pageList = disPolicyMerchantMapper.selectPage(page, warapper);
         return pageList;
     }
