@@ -474,6 +474,7 @@ export default ({ customerInfo, defaultCopilot }) => {
       />
 
       <Drawer
+        maskClosable={false}
         title="bsin app agent"
         onClose={onDrawerClose}
         open={drawerOpen}
