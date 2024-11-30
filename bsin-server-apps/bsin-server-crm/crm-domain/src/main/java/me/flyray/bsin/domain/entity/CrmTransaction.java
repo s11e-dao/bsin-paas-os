@@ -78,6 +78,11 @@ public class CrmTransaction extends BaseEntity implements Serializable {
     private String comment;
 
     /**
+     * 备注
+     */
+    private String auditStatus;
+
+    /**
      * 交易完成时间
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

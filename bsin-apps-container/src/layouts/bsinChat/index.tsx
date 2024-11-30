@@ -45,14 +45,210 @@ import {
 
 // import { chatData } from '../mocks/threebody'
 import { ProChat, ProChatInstance, ChatMessageMap } from '@ant-design/pro-chat'
+
 import { useTheme } from 'antd-style'
 import { MockResponse } from '../mocks/streamResponse'
 import {
   chatWithCopilot,
-  getDefaultCopilot,
-  getMerchantDefault,
   getChatHistoryList,
 } from '../service'
+
+import {
+  CloudUploadOutlined,
+  EllipsisOutlined,
+  FireOutlined,
+  HeartOutlined,
+  PaperClipOutlined,
+  PlusOutlined,
+  ReadOutlined,
+  SmileOutlined,
+} from '@ant-design/icons';
+import { Badge } from 'antd';
+
+import { createStyles } from 'antd-style';
+
+import {
+  Attachments,
+  Bubble,
+  Conversations,
+  Prompts,
+  Sender,
+  Welcome,
+  useXAgent,
+  useXChat,
+} from '@ant-design/x';
+
+const renderTitle = (icon, title) => (
+  <Space align="start">
+    {icon}
+    <span>{title}</span>
+  </Space>
+);
+const defaultConversationsItems = [
+  {
+    key: '0',
+    label: 'What is bsin-paas app agent?',
+  },
+];
+const useStyle = createStyles(({ token, css }) => {
+  return {
+    layout: css`
+      width: 100%;
+      min-width: 340px;
+      height: 722px;
+      border-radius: ${token.borderRadius}px;
+      display: flex;
+      background: ${token.colorBgContainer};
+      font-family: AlibabaPuHuiTi, ${token.fontFamily}, sans-serif;
+
+      .ant-prompts {
+        color: ${token.colorText};
+      }
+    `,
+    menu: css`
+      background: ${token.colorBgLayout}80;
+      width: 280px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    `,
+    conversations: css`
+      padding: 0 12px;
+      flex: 1;
+      overflow-y: auto;
+    `,
+    chat: css`
+      height: 100%;
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      padding: ${token.paddingLG}px;
+      gap: 16px;
+    `,
+    messages: css`
+      flex: 1;
+    `,
+    placeholder: css`
+      padding-top: 32px;
+    `,
+    sender: css`
+      box-shadow: ${token.boxShadow};
+    `,
+    logo: css`
+      display: flex;
+      height: 72px;
+      align-items: center;
+      justify-content: start;
+      padding: 0 24px;
+      box-sizing: border-box;
+
+      img {
+        width: 24px;
+        height: 24px;
+        display: inline-block;
+      }
+
+      span {
+        display: inline-block;
+        margin: 0 8px;
+        font-weight: bold;
+        color: ${token.colorText};
+        font-size: 16px;
+      }
+    `,
+    addBtn: css`
+      background: #1677ff0f;
+      border: 1px solid #1677ff34;
+      width: calc(100% - 24px);
+      margin: 0 12px 24px 12px;
+    `,
+  };
+});
+
+const placeholderPromptsItems = [
+  {
+    key: '1',
+    label: renderTitle(
+      <FireOutlined
+        style={{
+          color: '#FF4D4F',
+        }}
+      />,
+      'Hot Topics',
+    ),
+    description: 'What are you interested in?',
+    children: [
+      {
+        key: '1-3',
+        description: `Where is the doc?`,
+      },
+    ],
+  },
+  {
+    key: '2',
+    label: renderTitle(
+      <ReadOutlined
+        style={{
+          color: '#1890FF',
+        }}
+      />,
+      'Design Guide',
+    ),
+    description: 'How to design a good product?',
+    children: [
+      {
+        key: '2-1',
+        icon: <HeartOutlined />,
+        description: `Know the well`,
+      },
+    ],
+  },
+];
+const senderPromptsItems = [
+  {
+    key: '1',
+    description: 'Hot Topics',
+    icon: (
+      <FireOutlined
+        style={{
+          color: '#FF4D4F',
+        }}
+      />
+    ),
+  },
+  {
+    key: '2',
+    description: 'Design Guide',
+    icon: (
+      <ReadOutlined
+        style={{
+          color: '#1890FF',
+        }}
+      />
+    ),
+  },
+];
+const roles = {
+  ai: {
+    placement: 'start',
+    typing: {
+      step: 5,
+      interval: 20,
+    },
+    styles: {
+      content: {
+        borderRadius: 16,
+      },
+    },
+  },
+  local: {
+    placement: 'end',
+    variant: 'shadow',
+  },
+};
 
 import bsinBot from '../../assets/image/bsin-bot.svg'
 
@@ -75,7 +271,134 @@ export default ({ customerInfo, defaultCopilot }) => {
   //   historyChatList()
   // }, [])
 
-  const [chats, setChats] = useState<ChatMessageMap>()
+  // ==================== Style ====================
+  const { styles } = useStyle();
+
+  // ==================== State ====================
+  const [headerOpen, setHeaderOpen] = React.useState(false);
+  const [content, setContent] = React.useState('');
+  const [conversationsItems, setConversationsItems] = React.useState(defaultConversationsItems);
+  const [activeKey, setActiveKey] = React.useState(defaultConversationsItems[0].key);
+  const [attachedFiles, setAttachedFiles] = React.useState([]);
+
+  // ==================== Runtime ====================
+  const [agent] = useXAgent({
+    request: async ({ message }, { onSuccess }) => {
+      onSuccess(`Mock success return. You said: ${message}`);
+    },
+  });
+  const { onRequest, messages, setMessages } = useXChat({
+    agent,
+  });
+  useEffect(() => {
+    if (activeKey !== undefined) {
+      setMessages([]);
+    }
+  }, [activeKey]);
+
+  // ==================== Event ====================
+  const onSubmit = (nextContent) => {
+    if (!nextContent) return;
+    onRequest(nextContent);
+    setContent('');
+  };
+  const onPromptsItemClick = (info) => {
+    onRequest(info.data.description);
+  };
+  const onAddConversation = () => {
+    setConversationsItems([
+      ...conversationsItems,
+      {
+        key: `${conversationsItems.length}`,
+        label: `New Conversation ${conversationsItems.length}`,
+      },
+    ]);
+    setActiveKey(`${conversationsItems.length}`);
+  };
+  const onConversationClick = (key) => {
+    setActiveKey(key);
+  };
+  const handleFileChange = (info) => setAttachedFiles(info.fileList);
+
+  // ==================== Nodes ====================
+  const placeholderNode = (
+    <Space direction="vertical" size={16} className={styles.placeholder}>
+      <Welcome
+        variant="borderless"
+        icon="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/img/A*s5sNRo5LjfQAAAAAAAAAAAAADgCCAQ/fmt.webp"
+        title="Hello, bsin-paas app agent"
+        description="基于bsin-paas和大模型打造的应用智能体~"
+        extra={
+          <Space>
+            <Button icon={<ShareAltOutlined />} />
+          </Space>
+        }
+      />
+      <Prompts
+        title="Do you want?"
+        items={placeholderPromptsItems}
+        styles={{
+          list: {
+            width: '100%',
+          },
+          item: {
+            flex: 1,
+          },
+        }}
+        onItemClick={onPromptsItemClick}
+      />
+    </Space>
+  );
+  const items = messages.map(({ id, message, status }) => ({
+    key: id,
+    loading: status === 'loading',
+    role: status === 'local' ? 'local' : 'ai',
+    content: message,
+  }));
+  const attachmentsNode = (
+    <Badge dot={attachedFiles.length > 0 && !headerOpen}>
+      <Button type="text" icon={<PaperClipOutlined />} onClick={() => setHeaderOpen(!headerOpen)} />
+    </Badge>
+  );
+  const senderHeader = (
+    <Sender.Header
+      title="Attachments"
+      open={headerOpen}
+      onOpenChange={setHeaderOpen}
+      styles={{
+        content: {
+          padding: 0,
+        },
+      }}
+    >
+      <Attachments
+        beforeUpload={() => false}
+        items={attachedFiles}
+        onChange={handleFileChange}
+        placeholder={(type) =>
+          type === 'drop'
+            ? {
+              title: 'Drop file here',
+            }
+            : {
+              icon: <CloudUploadOutlined />,
+              title: 'Upload files',
+              description: 'Click or drag files to this area to upload',
+            }
+        }
+      />
+    </Sender.Header>
+  );
+  const logoNode = (
+    <div className={styles.logo}>
+      <img
+        src="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/img/A*eco6RrQhxbMAAAAAAAAAAAAADgCCAQ/original"
+        draggable={false}
+        alt="logo"
+      />
+      <span>Ant Design X</span>
+    </div>
+  );
 
   const chatTheme = useTheme()
 
@@ -157,126 +480,39 @@ export default ({ customerInfo, defaultCopilot }) => {
         size={size}
       >
         <div style={{ background: chatTheme.colorBgLayout }}>
-          <ProChat
-            loading={loading}
-            style={{ minHeight: '80vh' }}
-            showTitle
-            // 用户消息
-            userMeta={{
-              avatar:
-                customerInfo?.avatar == null ? bsinBot : customerInfo?.avatar,
-              title:
-                customerInfo?.username == null
-                  ? '访客'
-                  : customerInfo?.username,
-            }}
-            helloMessage={
-              '您好，我是' + defaultCopilot?.name + '，有什么可以帮助您呢？'
-            }
-            actions={{
-              render: (defaultDoms) => {
-                return [
-                  <a
-                    key="user"
-                    onClick={() => {
-                      window.open('https://github.com/ant-design/pro-chat')
-                    }}
-                  >
-                    人工服务
-                  </a>,
-                  <a
-                    key="user"
-                    onClick={() => {
-                      if (!proChatRef.current) return
-                      const messages = proChatRef.current.getChatMessages()
-                      const { id, content } = messages[0] || {}
 
-                      if (!id) return
-                      proChatRef.current.setMessageContent(id, content + '👋')
-                    }}
-                  >
-                    修改首条消息，添加表情：👋
-                  </a>,
-                  <a
-                    key="user"
-                    onClick={async () => {
-                      let messages = proChatRef.current.getChatMessages()
-                      let params = {
-                        receiver: defaultCopilot.serialNo,
-                        sender: customerInfo.customerNo,
-                        chatType: 'chat',
-                      }
-                      getChatHistoryList(params).then((res) => {
-                        if (res?.code == 0) {
-                          let i = 0
-                          res?.data.map((historyChat) => {
-                            let historyChatTmp = {
-                              content: historyChat.message,
-                              createAt: historyChat.timestamp,
-                              id: historyChat.sender + customerInfo.customerNo + i,
-                              // id: 'ZGxiX2p4',
-                              role:
-                                historyChat.sender == customerInfo.customerNo
-                                  ? 'user'
-                                  : 'assistant',
-                              updateAt: historyChat.timestamp,
-                            }
-                            i++
-                            // chatData.chats.ZGxiX2p4 = historyChatTmp
-                            messages.push(historyChatTmp)
-                            proChatRef.current?.setMessageContent(
-                              historyChatTmp.id,
-                              historyChatTmp.content,
-                            )
-                          })
-                          console.log(messages)
-                        }
-                      })
-                    }}
-                  >
-                    加载历史聊天记录
-                  </a>,
-                  ...defaultDoms,
-                ]
-              },
-              flexConfig: {
-                gap: 24,
-                direction: 'horizontal',
-                justify: 'space-between',
-              },
-            }}
-            // 聊天记录变化回调函数
-            onChatsChange={(chats) => {
-              console.log(chats)
-              setChats(chats)
-            }}
-            // 用户消息
-            assistantMeta={{
-              avatar:
-                defaultCopilot?.avatar == null
-                  ? bsinBot
-                  : defaultCopilot?.avatar,
-              title:
-                defaultCopilot?.name == null ? '火源兽' : defaultCopilot?.name,
-              backgroundColor: '#67dedd',
-            }}
-            // 初始化历史聊天数据
-            initialChats={chatData.chats}
-            chatRef={proChatRef}
-            request={async (messages) => {
-              //   const mockedData: string = `这是一段模拟的流式字符串数据。本次会话传入了${messages.length}条消息， ${messages}`
-              //   const mockResponse = new MockResponse(mockedData, 100)
-              //   return mockResponse.getResponse()
-              const response = await copilotChat(
-                messages[messages.length - 1].content,
-              )
-              if (response.code == 0) {
-                return new Response(response?.data?.answer)
-              } else {
-                return new Response(response?.message)
-              }
-            }}
-          />
+          <div className={styles.layout}>
+
+            <div className={styles.chat}>
+              {/* 🌟 消息列表 */}
+              <Bubble.List
+                items={
+                  items.length > 0
+                    ? items
+                    : [
+                      {
+                        content: placeholderNode,
+                        variant: 'borderless',
+                      },
+                    ]
+                }
+                roles={roles}
+                className={styles.messages}
+              />
+              {/* 🌟 提示词 */}
+              <Prompts items={senderPromptsItems} onItemClick={onPromptsItemClick} />
+              {/* 🌟 输入框 */}
+              <Sender
+                value={content}
+                header={senderHeader}
+                onSubmit={onSubmit}
+                onChange={setContent}
+                prefix={attachmentsNode}
+                loading={agent.isRequesting()}
+                className={styles.sender}
+              />
+            </div>
+          </div>
         </div>
       </Drawer>
     </>

@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@ant-design/compatible": "^5.1.1",
-    "@ant-design/pro-chat": "^1.15.2",
     "@ant-design/pro-layout": "^6.5.0",
     "@ant-design/pro-table": "^2.60.0",
     "@chatui/core": "^2.4.2",
@@ -27,7 +26,7 @@
     "@umijs/plugins": "^4.1.0",
     "antd": "^5.4.7",
     "antd-style": "^3.6.3",
-    "bsin-agent-ui": "^1.0.6",
+    "bsin-agent-ui": "^1.0.8",
     "idb-keyval": "^6.2.1",
     "qrcode.react": "^4.0.1",
     "react": "18.1.0",
