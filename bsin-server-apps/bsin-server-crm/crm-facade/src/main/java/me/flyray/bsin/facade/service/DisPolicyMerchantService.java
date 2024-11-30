@@ -2,6 +2,7 @@ package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.DisPolicyMerchant;
+import me.flyray.bsin.domain.entity.Merchant;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public interface DisPolicyMerchantService {
      */
     public DisPolicyMerchant getDetail(Map<String, Object> requestMap);
 
-    public List<DisPolicyMerchant> getList(Map<String, Object> requestMap);
+    public List<Merchant> getList(Map<String, Object> requestMap);
 
     /**
      * 租户下所有
@@ -43,4 +44,5 @@ public interface DisPolicyMerchantService {
 
 
     void update(Map<String, Object> requestMap);
+
 }
