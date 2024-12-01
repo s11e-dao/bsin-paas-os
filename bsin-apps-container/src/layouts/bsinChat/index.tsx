@@ -95,7 +95,7 @@ const useStyle = createStyles(({ token, css }) => {
     layout: css`
       width: 100%;
       min-width: 340px;
-      height: 722px;
+      height: 822px;
       border-radius: ${token.borderRadius}px;
       display: flex;
       background: ${token.colorBgContainer};
