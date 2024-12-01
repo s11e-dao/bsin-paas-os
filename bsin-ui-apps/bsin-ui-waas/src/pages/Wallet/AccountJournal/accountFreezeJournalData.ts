@@ -25,7 +25,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   // },
   {
     title: '账户编号',
-    dataIndex: 'customerAccountNo',
+    dataIndex: 'accountNo',
     hideInTable: true,
     fieldProps: {
       maxLength: 20,
@@ -83,7 +83,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '账户编号',
     width: 120,
-    dataIndex: 'customerAccountNo',
+    dataIndex: 'accountNo',
     hideInSearch: true,
   },
   {

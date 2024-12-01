@@ -8,11 +8,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  */
 public enum InOutAccountFlag {
     /**
-     * 发资产
+     * 出账
      */
     OUT_ACCOUNT(0, "出账"),
     /**
-     * 添加商户
+     * 入账
      */
     INT_ACCOUNT(1, "入账");
 

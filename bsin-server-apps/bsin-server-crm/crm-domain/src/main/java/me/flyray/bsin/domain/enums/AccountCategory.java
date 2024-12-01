@@ -45,7 +45,7 @@ public enum AccountCategory {
     /**
      * Community 社区总收入账户
      */
-    COMMUNITY_ACCUMULATED_INCOME_TOKEN("6", "社区总收入账户");
+    COMMUNITY_ACCUMULATED_INCOME_TOKEN("99", "社区总收入账户");
 
     private String code;
 
