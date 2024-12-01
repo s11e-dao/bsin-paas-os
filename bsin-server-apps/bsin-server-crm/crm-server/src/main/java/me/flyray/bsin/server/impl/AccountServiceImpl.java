@@ -387,8 +387,7 @@ public class AccountServiceImpl implements AccountService {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = loginUser.getTenantId();
     String merchantNo = loginUser.getMerchantNo();
-    Account customerAccount =
-        BsinServiceContext.getReqBodyDto(Account.class, requestMap);
+    AccountJournal accountJournal = BsinServiceContext.getReqBodyDto(AccountJournal.class, requestMap);
     Object paginationObj =  requestMap.get("pagination");
     Pagination pagination = new Pagination();
     BeanUtil.copyProperties(paginationObj, pagination);
@@ -396,19 +395,20 @@ public class AccountServiceImpl implements AccountService {
     if(BizRoleType.MERCHANT.getCode().equals(LoginInfoContextHelper.getBizRoleType())){
       bizRoleTypeNo = merchantNo;
     }
-    Page<AccountJournal> page =
-        new Page<>(pagination.getPageNum(), pagination.getPageSize());
+    Page<AccountJournal> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<AccountJournal> warapper = new LambdaUpdateWrapper<>();
     warapper.orderByDesc(AccountJournal::getCreateTime);
     warapper.eq(AccountJournal::getTenantId, tenantId);
     warapper.eq(StringUtils.isNotEmpty(bizRoleTypeNo),
         AccountJournal::getBizRoleTypeNo,
-        customerAccount.getBizRoleTypeNo());
-    warapper.eq(StringUtils.isNotEmpty(customerAccount.getCcy()),
+            accountJournal.getBizRoleTypeNo());
+    warapper.eq(StringUtils.isNotEmpty(accountJournal.getCcy()),
         AccountJournal::getCcy,
-        customerAccount.getCcy());
-    IPage<AccountJournal> pageList =
-            accountJournalMapper.selectPage(page, warapper);
+            accountJournal.getCcy());
+    warapper.eq(StringUtils.isNotEmpty(accountJournal.getOrderType()),
+            AccountJournal::getOrderType,
+            accountJournal.getOrderType());
+    IPage<AccountJournal> pageList = accountJournalMapper.selectPage(page, warapper);
     return pageList;
   }
 
