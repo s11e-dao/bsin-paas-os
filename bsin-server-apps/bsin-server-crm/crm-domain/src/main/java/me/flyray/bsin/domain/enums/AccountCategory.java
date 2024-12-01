@@ -42,9 +42,9 @@ public enum AccountCategory {
     PENDING_BROKERAGE("pendingBrokerage", "待分佣账户"),
 
     /**
-     * Community 社区总收入账户
+     * communityAccumulatedIncome 社区总收入账户
      */
-    COMMUNITY_ACCUMULATED_INCOME_TOKEN("99", "社区总收入账户");
+    COMMUNITY_ACCUMULATED_INCOME_TOKEN("communityAccumulatedIncome", "社区总收入账户");
 
     private String code;
 

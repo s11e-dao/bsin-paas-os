@@ -534,6 +534,8 @@ public class AccountServiceImpl implements AccountService {
    * @param requestMap
    * @return
    */
+  @ShenyuDubboClient("/getCategoryAccounts")
+  @ApiDoc(desc = "getCategoryAccounts")
   @Override
   public Map<String, Object> getCategoryAccounts(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
