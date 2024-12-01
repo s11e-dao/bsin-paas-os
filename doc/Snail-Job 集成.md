@@ -258,6 +258,8 @@ public class SnailJobConfig {
 }
 ```
 
+> ps：**由于配置类中对日志配置进行了配置,就无需在日志框架的xml文件中进行配置**
+
 4.  **Spring Boot 配置**
 
    + 在`reasource`中依次建立文件夹：`META-INF` 、`spring`
