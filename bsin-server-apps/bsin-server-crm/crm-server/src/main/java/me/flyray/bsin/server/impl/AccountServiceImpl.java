@@ -42,6 +42,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -525,6 +526,30 @@ public class AccountServiceImpl implements AccountService {
     // * 1、火钻账户（fireDiamond）
     //   * 2、品牌积分账户(brandsPoint)
     return payAccounts;
+  }
+
+  /**
+   * @see AccountCategory
+   * 按账户分类查询账户
+   * @param requestMap
+   * @return
+   */
+  @Override
+  public Map<String, Object> getCategoryAccounts(Map<String, Object> requestMap) {
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+    // 遍历AccountCategory枚举查询对应账户
+    Map<String, Object> accountList = new HashMap<>();
+    for (AccountCategory category : AccountCategory.values()) {
+      System.out.println("Code: " + category.getCode() + ", Description: " + category.getDesc());
+      LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
+      warapper.eq(Account::getTenantId, loginUser.getTenantId());
+      warapper.eq(Account::getBizRoleTypeNo, loginUser.getBizRoleTypeNo());
+      warapper.eq(Account::getCategory, category.getCode());
+      warapper.eq(Account::getCcy, CcyType.CNY.getCode());
+      Account account = accountMapper.selectOne(warapper);
+      accountList.put(category.getCode(), account);
+    }
+    return accountList;
   }
 
 }

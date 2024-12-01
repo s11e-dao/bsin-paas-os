@@ -78,4 +78,9 @@ public interface AccountService {
    */
   public Map<String, Object> getPayAccounts(Map<String, Object> requestMap);
 
+  /**
+   * 按 AccountCategory查询账户
+   */
+  public Map<String, Object> getCategoryAccounts(Map<String, Object> requestMap);
+
 }
