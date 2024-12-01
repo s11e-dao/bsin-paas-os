@@ -20,7 +20,7 @@ public class BsinWxPayServiceUtil {
   public WxPayService getWxPayService(WxPayConfig payConfig) {
 
     WxPayService wxPayService;
-    wxPayService = (WxPayService) concurrentWxServiceHashMap.get(payConfig.getAppId());
+    wxPayService = (WxPayService) concurrentWxServiceHashMap.get(payConfig.getMchId());
 
     if (null != wxPayService) {
       return wxPayService;
@@ -49,9 +49,9 @@ public class BsinWxPayServiceUtil {
                   config.setPrivateKeyPath(a.getPrivateKeyPath());
                   return config;
                 })
-            .collect(Collectors.toMap(WxPayConfig::getAppId, a -> a, (o, n) -> o)));
-    concurrentWxServiceHashMap.put(payConfig.getAppId(), wxPayService);
+            .collect(Collectors.toMap(WxPayConfig::getMchId, a -> a, (o, n) -> o)));
+    //    concurrentWxServiceHashMap.put(payConfig.getAppId(), wxPayService);
+    concurrentWxServiceHashMap.put(payConfig.getMchId(), wxPayService);
     return wxPayService;
   }
-
 }

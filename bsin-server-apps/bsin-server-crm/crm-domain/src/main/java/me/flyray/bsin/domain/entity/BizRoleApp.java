@@ -1,5 +1,6 @@
 package me.flyray.bsin.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -53,6 +54,13 @@ public class BizRoleApp implements Serializable {
      * 微信公众号的appID：公众号通过此ID检索公众号参数 设置企业微信的corpId：企业微信通过此ID检索公众号参数
      */
     private String appId;
+
+    /**
+     * 应用ID：
+     * 支付商户号ID
+     */
+    @TableField(exist = false)
+    private String mchId;
 
     /** 企业号ID，数据库统一字段为appId，此字段废弃 */
     private String corpId;
