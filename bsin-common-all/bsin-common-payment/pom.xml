@@ -17,7 +17,7 @@
     <description>bsin-paas平台：原子服务开发脚手架-业务接口模块</description>
     <properties>
         <java.version>11</java.version>
-        <weixin-java-pay.version>4.4.9.B</weixin-java-pay.version>
+        <weixin-java-pay.version>4.6.0</weixin-java-pay.version>
     </properties>
     <dependencies>
 
