@@ -72,6 +72,13 @@ public class CrmTransactionServiceImpl implements CrmTransactionService {
         return null;
     }
 
+    @ApiDoc(desc = "withdrawAudit")
+    @ShenyuDubboClient("/withdrawAudit")
+    @Override
+    public CrmTransaction withdrawAudit(Map<String, Object> requestMap) {
+        return null;
+    }
+
     @ApiDoc(desc = "refund")
     @ShenyuDubboClient("/refund")
     @Override

@@ -16,8 +16,8 @@ export type columnsDataType = {
 const columnsData: ProColumns<columnsDataType>[] = [
   // 配置搜索框
   {
-    title: '客户号',
-    dataIndex: 'customerNo',
+    title: '业务角色编号',
+    dataIndex: 'bizRoleTypeNo',
     hideInTable: true,
     fieldProps: {
       maxLength: 20,
@@ -83,9 +83,9 @@ const columnsData: ProColumns<columnsDataType>[] = [
 
   // table里面的内容
   {
-    title: '客户号',
+    title: '业务角色编号',
     width: 160,
-    dataIndex: 'customerNo',
+    dataIndex: 'bizRoleTypeNo',
     hideInSearch: true,
   },
   {

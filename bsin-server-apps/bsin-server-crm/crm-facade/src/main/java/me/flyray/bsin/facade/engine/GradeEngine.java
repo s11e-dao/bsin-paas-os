@@ -1,4 +1,4 @@
-package me.flyray.bsin.facade.service;
+package me.flyray.bsin.facade.engine;
 
 import java.util.Map;
 
@@ -7,7 +7,7 @@ import java.util.Map;
  * @date 2023/6/28 15:40
  * @desc 客户等级引擎
  */
-public interface CustomerGradeEngine {
+public interface GradeEngine {
 
     /**
      * 1、入参客户号和完成事件的编号(动作)

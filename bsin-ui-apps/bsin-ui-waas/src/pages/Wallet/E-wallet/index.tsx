@@ -7,31 +7,28 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import columnsData, { columnsDataType } from './data';
 
 import {
-  getCustomerAccountDetail
+  getAccountJournalPageList,
+  getCategoryAccounts
 } from './service';
-
 
 export default () => {
 
-  const [customerAccount, setCustomerAccount] = useState([]);
-  const [pagination, setPagination] = useState({});
+  const [balanceAccount, setBalanceAccount] = useState({});
+  const [accumulatedIncomeAccount, setAccumulatedIncomeAccount] = useState({});
+  const [accumulatedExpenditureAccount, setAccumulatedExpenditureAccount] = useState({});
+  const [accumulatedWithdrawAccount, setAccumulatedWithdrawAccount] = useState({});
+  const [orderType, setOrderType] = useState("");
+  
 
   // 查询商户账户余额
   useEffect(() => {
-    // category: 1
-    // ccy: cny
-    let params = {
-      category: '1',
-      ccy: 'cny',
-    };
-    getCustomerAccountDetail(params).then((res) => {
+
+    getCategoryAccounts({}).then((res) => {
       console.log(res?.data)
-      setCustomerAccount(res?.data);
-      setPagination({
-        current: res?.data?.pageNum,
-        pageSize: res?.data?.pageSize,
-        total: res?.data?.totalSize,
-      })
+      setBalanceAccount(res?.data?.balance)
+      setAccumulatedIncomeAccount(res?.data?.accumulatedIncome)
+      setAccumulatedExpenditureAccount(res?.data?.accumulatedExpenditure)
+      setAccumulatedWithdrawAccount(res?.data?.accumulatedWithdraw)
     });
 
   }, []);
@@ -39,67 +36,8 @@ export default () => {
   // 表头数据
   const columns: ProColumns<columnsDataType>[] = columnsData;
 
-  // 操作行数据 自定义操作行
-  const actionRender: any = (text: any, record: any, index: number) => (
-    <ul className="ant-list-item-action" style={{ margin: 0 }}>
-      <li>
-        <a
-          onClick={() => {
-            toViewContractTemplate(record);
-          }}
-        >
-          查看
-        </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-      <li>
-        <Popconfirm
-          title="确定删除此条模板？"
-          okText="是"
-          cancelText="否"
-          onConfirm={() => {
-            toDelContractTemplate(record);
-          }}
-        // onCancel={cancel}
-        >
-          <a>删除</a>
-        </Popconfirm>
-      </li>
-    </ul>
-  );
-
-  // 自定义数据的表格头部数据
-  columns.forEach((item: any) => {
-    item.dataIndex === 'action' ? (item.render = actionRender) : undefined;
-  });
-
   const onChange = (key: string) => {
-    let params = {};
-    // 根据不同的tab查询不同的数据
-    if (key == "1") {
-      params = {
-        category: '1',
-      };
-    }
-    if (key == "2") {
-      params = {
-        category: '1',
-      };
-    }
-    if (key == "3") {
-      params = {
-        category: '1',
-      };
-    }
-    getCustomerAccountDetail(params).then((res) => {
-      console.log(res?.data)
-      setCustomerAccount(res?.data);
-      setPagination({
-        current: res?.data?.pageNum,
-        pageSize: res?.data?.pageSize,
-        total: res?.data?.totalSize,
-      })
-    });
+    setOrderType(key)
   };
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -123,7 +61,7 @@ export default () => {
           <Card bordered={false}>
             <Statistic
               title="账户余额"
-              value={customerAccount?.balance}
+              value={balanceAccount?.balance}
               precision={2}
               valueStyle={{ color: '#3f8600' }}
               prefix={<PropertySafetyOutlined />}
@@ -138,7 +76,7 @@ export default () => {
           <Card bordered={false}>
             <Statistic
               title="已提现金额"
-              value={9.3}
+              value={accumulatedWithdrawAccount?.balance}
               precision={2}
               valueStyle={{ color: '#cf1322' }}
               prefix={<PropertySafetyOutlined />}
@@ -153,7 +91,7 @@ export default () => {
           <Card bordered={false}>
             <Statistic
               title="累计收入"
-              value={9.3}
+              value={accumulatedIncomeAccount?.balance}
               precision={2}
               valueStyle={{ color: '#cf1322' }}
               prefix={<PropertySafetyOutlined />}
@@ -166,7 +104,7 @@ export default () => {
           <Card bordered={false}>
             <Statistic
               title="累计支出"
-              value={11.28}
+              value={accumulatedExpenditureAccount?.balance}
               precision={2}
               valueStyle={{ color: '#3f8600' }}
               prefix={<PropertySafetyOutlined />}
@@ -178,7 +116,7 @@ export default () => {
       </Row>
       <Card bordered={false} >
         <Tabs defaultActiveKey="1" onChange={onChange}>
-          <Tabs.TabPane tab="账户记录" key="1">
+          <Tabs.TabPane tab="账户记录" key="">
             <ProTable<columnsDataType>
               headerTitle={<TableTitle title="账户记录列表" />}
               scroll={{ x: 900 }}
@@ -189,9 +127,9 @@ export default () => {
               // 请求获取的数据
               request={async (params) => {
                 // console.log(params);
-                let res = await getCustomerAccountDetail({
+                let res = await getAccountJournalPageList({
                   ...params,
-                  // pageNum: params.current,
+                  orderType: orderType,
                 });
                 console.log('😒', res);
                 const result = {
@@ -214,7 +152,7 @@ export default () => {
             />
           </Tabs.TabPane>
           <Tabs.TabPane tab="充值记录" key="2">
-          <ProTable<columnsDataType>
+            <ProTable<columnsDataType>
               headerTitle={<TableTitle title="充值记录" />}
               scroll={{ x: 900 }}
               bordered
@@ -224,9 +162,9 @@ export default () => {
               // 请求获取的数据
               request={async (params) => {
                 // console.log(params);
-                let res = await getCustomerAccountDetail({
+                let res = await getAccountJournalPageList({
                   ...params,
-                  // pageNum: params.current,
+                  orderType: orderType,
                 });
                 console.log('😒', res);
                 const result = {
@@ -249,7 +187,7 @@ export default () => {
             />
           </Tabs.TabPane>
           <Tabs.TabPane tab="提现记录" key="3">
-          <ProTable<columnsDataType>
+            <ProTable<columnsDataType>
               headerTitle={<TableTitle title="提现记录" />}
               scroll={{ x: 900 }}
               bordered
@@ -259,9 +197,9 @@ export default () => {
               // 请求获取的数据
               request={async (params) => {
                 // console.log(params);
-                let res = await getCustomerAccountDetail({
+                let res = await getAccountJournalPageList({
                   ...params,
-                  // pageNum: params.current,
+                  orderType: orderType,
                 });
                 console.log('😒', res);
                 const result = {
@@ -284,7 +222,7 @@ export default () => {
             />
           </Tabs.TabPane>
           <Tabs.TabPane tab="API消费记录" key="4">
-          <ProTable<columnsDataType>
+            <ProTable<columnsDataType>
               headerTitle={<TableTitle title="API消费记录" />}
               scroll={{ x: 900 }}
               bordered
@@ -294,9 +232,9 @@ export default () => {
               // 请求获取的数据
               request={async (params) => {
                 // console.log(params);
-                let res = await getCustomerAccountDetail({
+                let res = await getAccountJournalPageList({
                   ...params,
-                  // pageNum: params.current,
+                  orderType: orderType,
                 });
                 console.log('😒', res);
                 const result = {

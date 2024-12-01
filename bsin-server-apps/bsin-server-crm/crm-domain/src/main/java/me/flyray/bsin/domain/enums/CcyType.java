@@ -13,18 +13,7 @@ public enum CcyType {
     /**
      * 曲线积分账户 bonding_curve_token
      */
-    BC("bc", "曲线积分"),
-
-    /**
-     * 数字积分
-     */
-    DP("dp", "数字积分"),
-
-    /**
-     * 法币账户
-     */
-    CNY("cny", "火钻");
-
+    CNY("cny", "人民币");
 
     private String code;
 

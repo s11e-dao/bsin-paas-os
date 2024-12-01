@@ -42,6 +42,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,8 +62,8 @@ import static me.flyray.bsin.constants.ResponseCode.TASK_NON_CLAIM_CONDITION;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-  @Autowired private AccountMapper customerAccountMapper;
-  @Autowired private AccountJournalMapper customerAccountJournalMapper;
+  @Autowired private AccountMapper accountMapper;
+  @Autowired private AccountJournalMapper accountJournalMapper;
   @Autowired private AccountBiz accountBiz;
   @Autowired private AccountFreezeJournalMapper accountFreezeJournalMapper;
 
@@ -156,11 +157,11 @@ public class AccountServiceImpl implements AccountService {
     Account customerAccount =
         BsinServiceContext.getReqBodyDto(Account.class, requestMap);
     // 1.冻结
-    int i = customerAccountMapper.freezeAmount(customerAccount);
+    int i = accountMapper.freezeAmount(customerAccount);
 
     // 客户的账户编号
     Account freezeAccount =
-        customerAccountMapper.selectOne(
+            accountMapper.selectOne(
             new LambdaQueryWrapper<Account>()
                 .eq(Account::getTenantId, customerAccount.getTenantId())
                 .eq(Account::getBizRoleTypeNo, customerAccount.getBizRoleTypeNo())
@@ -196,7 +197,7 @@ public class AccountServiceImpl implements AccountService {
     for (String customerNo : customerNoList) {
       // 1.解冻
       customerAccount.setBizRoleTypeNo(customerNo);
-      int i = customerAccountMapper.unFreezeAmount(customerAccount);
+      int i = accountMapper.unFreezeAmount(customerAccount);
       // 查询出冻结记录
       AccountFreezeJournal accountFreezeJournal =
           accountFreezeJournalMapper.selectOne(
@@ -221,38 +222,10 @@ public class AccountServiceImpl implements AccountService {
     return null;
   }
 
-  @ShenyuDubboClient("/transfer")
-  @ApiDoc(desc = "transfer")
-  @Override
-  public Map<String, Object> transfer(Map<String, Object> requestMap) {
-    return null;
-  }
-
-  @ShenyuDubboClient("/pay")
-  @ApiDoc(desc = "pay")
-  @Override
-  public Map<String, Object> pay(Map<String, Object> requestMap) {
-    return null;
-  }
-
-  @ShenyuDubboClient("/refund")
-  @ApiDoc(desc = "refund")
-  @Override
-  public Map<String, Object> refund(Map<String, Object> requestMap) {
-    return null;
-  }
-
   @ShenyuDubboClient("/recharge")
   @ApiDoc(desc = "recharge")
   @Override
   public Map<String, Object> recharge(Map<String, Object> requestMap) {
-    return null;
-  }
-
-  @ShenyuDubboClient("/withdraw")
-  @ApiDoc(desc = "withdraw")
-  @Override
-  public Map<String, Object> withdraw(Map<String, Object> requestMap) {
     return null;
   }
 
@@ -303,23 +276,26 @@ public class AccountServiceImpl implements AccountService {
     Account accountDetail = null;
     Account customerAccount =
         BsinServiceContext.getReqBodyDto(Account.class, requestMap);
-    if (serialNo == null) {
+    if (serialNo != null) {
+      accountDetail = accountMapper.selectById(serialNo);
+      if(accountDetail == null){
+        throw new BusinessException(ResponseCode.CUSTOMER_ACCOUNT_IS_NULL);
+      }
+    } else {
       LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
       warapper.eq(Account::getTenantId, tenantId);
       warapper.eq(Account::getBizRoleTypeNo, bizRoleTypeNo);
       warapper.eq(Account::getCategory, customerAccount.getCategory());
       warapper.eq(Account::getCcy, customerAccount.getCcy());
-      accountDetail = customerAccountMapper.selectOne(warapper);
-    } else {
-      accountDetail = customerAccountMapper.selectById(serialNo);
-    }
-    // 如果账户不存在则开通账户
-    if (accountDetail == null && isAutoOpenAccount) {
-      customerAccount.setTenantId(tenantId);
-      customerAccount.setBizRoleTypeNo(customerNo);
-      accountBiz.openAccount(customerAccount);
-      customerAccount.setBalance(BigDecimal.ZERO);
-      accountDetail = customerAccount;
+      accountDetail = accountMapper.selectOne(warapper);
+      // 如果账户不存在则开通账户
+      if (accountDetail == null && isAutoOpenAccount) {
+        customerAccount.setTenantId(tenantId);
+        customerAccount.setBizRoleTypeNo(customerNo);
+        accountBiz.openAccount(customerAccount);
+        customerAccount.setBalance(BigDecimal.ZERO);
+        accountDetail = customerAccount;
+      }
     }
     return accountDetail;
   }
@@ -376,7 +352,7 @@ public class AccountServiceImpl implements AccountService {
         ObjectUtil.isNotNull(customerAccount.getCcy()),
         Account::getCcy,
         customerAccount.getCcy());
-    IPage<Account> pageList = customerAccountMapper.selectPage(page, warapper);
+    IPage<Account> pageList = accountMapper.selectPage(page, warapper);
     return pageList;
   }
 
@@ -400,7 +376,7 @@ public class AccountServiceImpl implements AccountService {
         ObjectUtil.isNotNull(customerAccount.getCcy()),
         Account::getCcy,
         customerAccount.getCcy());
-    List<Account> accounts = customerAccountMapper.selectList(warapper);
+    List<Account> accounts = accountMapper.selectList(warapper);
     return accounts;
   }
 
@@ -411,8 +387,7 @@ public class AccountServiceImpl implements AccountService {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = loginUser.getTenantId();
     String merchantNo = loginUser.getMerchantNo();
-    Account customerAccount =
-        BsinServiceContext.getReqBodyDto(Account.class, requestMap);
+    AccountJournal accountJournal = BsinServiceContext.getReqBodyDto(AccountJournal.class, requestMap);
     Object paginationObj =  requestMap.get("pagination");
     Pagination pagination = new Pagination();
     BeanUtil.copyProperties(paginationObj, pagination);
@@ -420,19 +395,20 @@ public class AccountServiceImpl implements AccountService {
     if(BizRoleType.MERCHANT.getCode().equals(LoginInfoContextHelper.getBizRoleType())){
       bizRoleTypeNo = merchantNo;
     }
-    Page<AccountJournal> page =
-        new Page<>(pagination.getPageNum(), pagination.getPageSize());
+    Page<AccountJournal> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<AccountJournal> warapper = new LambdaUpdateWrapper<>();
     warapper.orderByDesc(AccountJournal::getCreateTime);
     warapper.eq(AccountJournal::getTenantId, tenantId);
     warapper.eq(StringUtils.isNotEmpty(bizRoleTypeNo),
         AccountJournal::getBizRoleTypeNo,
-        customerAccount.getBizRoleTypeNo());
-    warapper.eq(StringUtils.isNotEmpty(customerAccount.getCcy()),
+            accountJournal.getBizRoleTypeNo());
+    warapper.eq(StringUtils.isNotEmpty(accountJournal.getCcy()),
         AccountJournal::getCcy,
-        customerAccount.getCcy());
-    IPage<AccountJournal> pageList =
-        customerAccountJournalMapper.selectPage(page, warapper);
+            accountJournal.getCcy());
+    warapper.eq(StringUtils.isNotEmpty(accountJournal.getOrderType()),
+            AccountJournal::getOrderType,
+            accountJournal.getOrderType());
+    IPage<AccountJournal> pageList = accountJournalMapper.selectPage(page, warapper);
     return pageList;
   }
 
@@ -441,7 +417,7 @@ public class AccountServiceImpl implements AccountService {
   @Override
   public AccountJournal getAccountJournalDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
-    AccountJournal accountJournal = customerAccountJournalMapper.selectById(serialNo);
+    AccountJournal accountJournal = accountJournalMapper.selectById(serialNo);
     return accountJournal;
   }
 
@@ -533,7 +509,7 @@ public class AccountServiceImpl implements AccountService {
       warapper.eq(Account::getBizRoleTypeNo, customerNo);
       warapper.eq(Account::getCategory, AccountCategory.BALANCE.getCode());
       warapper.eq(Account::getCcy, ccy);
-      accountDetail = customerAccountMapper.selectOne(warapper);
+      accountDetail = accountMapper.selectOne(warapper);
       accountDetail.setAnchoringValue(anchoringValue);
     }
 
@@ -542,7 +518,7 @@ public class AccountServiceImpl implements AccountService {
     fdWarapper.eq(Account::getBizRoleTypeNo, customerNo);
     fdWarapper.eq(Account::getCategory, AccountCategory.BALANCE.getCode());
     fdWarapper.eq(Account::getCcy, CcyType.CNY.getCode());
-    Account fdAccountDetail = customerAccountMapper.selectOne(fdWarapper);
+    Account fdAccountDetail = accountMapper.selectOne(fdWarapper);
     fdAccountDetail.setAnchoringValue(BigDecimal.valueOf(1));
 
     payAccounts.put("fireDiamond",fdAccountDetail);
@@ -550,6 +526,32 @@ public class AccountServiceImpl implements AccountService {
     // * 1、火钻账户（fireDiamond）
     //   * 2、品牌积分账户(brandsPoint)
     return payAccounts;
+  }
+
+  /**
+   * @see AccountCategory
+   * 按账户分类查询账户
+   * @param requestMap
+   * @return
+   */
+  @ShenyuDubboClient("/getCategoryAccounts")
+  @ApiDoc(desc = "getCategoryAccounts")
+  @Override
+  public Map<String, Object> getCategoryAccounts(Map<String, Object> requestMap) {
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+    // 遍历AccountCategory枚举查询对应账户
+    Map<String, Object> accountList = new HashMap<>();
+    for (AccountCategory category : AccountCategory.values()) {
+      System.out.println("Code: " + category.getCode() + ", Description: " + category.getDesc());
+      LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
+      warapper.eq(Account::getTenantId, loginUser.getTenantId());
+      warapper.eq(Account::getBizRoleTypeNo, loginUser.getBizRoleTypeNo());
+      warapper.eq(Account::getCategory, category.getCode());
+      warapper.eq(Account::getCcy, CcyType.CNY.getCode());
+      Account account = accountMapper.selectOne(warapper);
+      accountList.put(category.getCode(), account);
+    }
+    return accountList;
   }
 
 }

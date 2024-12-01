@@ -419,6 +419,40 @@ public class MerchantServiceImpl implements MerchantService {
     return pageList;
   }
 
+  /**
+   * c端查询平台的商户 没有token校验
+   *
+   * @param requestMap
+   * @return
+   */
+  @ApiDoc(desc = "getList")
+  @ShenyuDubboClient("/getList")
+  @Override
+  public List<Merchant> getList(Map<String, Object> requestMap) {
+    Merchant merchant = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
+    String tenantId = merchant.getTenantId();
+    String merchantNo = LoginInfoContextHelper.getMerchantNo();
+    if (tenantId == null) {
+      tenantId = LoginInfoContextHelper.getTenantId();
+    }
+    Object paginationObj = requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj, pagination);
+    Page<Merchant> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+    LambdaQueryWrapper<Merchant> warapper = new LambdaQueryWrapper<>();
+    warapper.orderByDesc(Merchant::getCreateTime);
+    warapper.eq(Merchant::getTenantId, tenantId);
+    warapper.eq(
+            StringUtils.isNotEmpty(merchant.getBusinessType()),
+            Merchant::getBusinessType,
+            merchant.getBusinessType());
+    warapper.eq(
+            StringUtils.isNotEmpty(merchant.getStatus()), Merchant::getStatus, merchant.getStatus());
+    warapper.eq(StringUtils.isNotEmpty(merchantNo), Merchant::getSerialNo, merchantNo);
+    List<Merchant> list = merchantMapper.selectList(warapper);
+    return list;
+  }
+
   @ApiDoc(desc = "getDetail")
   @ShenyuDubboClient("/getDetail")
   @Override
