@@ -62,7 +62,7 @@ docker-compose up -d snail-job-server
 
 > 需要注意JDK17及以上和JDK8环境中 版本号有区别
 
-<img src=".\images\job\image-20241201184634776.png" alt="image-20241201184634776" style="zoom:200%;" />
+![image-20241201203028891](./images/job/image-20241201184634776.png)
 
 #### 2.2 客户端配置
 
@@ -98,8 +98,6 @@ public class SnailJobSpringbootApplication {
 }
 ```
 
-
-
 #### 2.3 日志配置
 
 + ## logback.xml
@@ -133,7 +131,7 @@ public class SnailJobSpringbootApplication {
 
 1. **新建模块**
 
-![image-20241201203028891](.\images\job\image-20241201203028891.png)
+![image-20241201203028891](./images/job/image-20241201203028891.png)
 
 2. **在`pom.xml`文件中引入`Snail-Job`的依赖**
 
@@ -156,8 +154,7 @@ public class SnailJobSpringbootApplication {
     <properties>
         <snail-job.version>1.2.0-jdk8</snail-job.version>
     </properties>
-
-
+    
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -272,9 +269,6 @@ public class SnailJobConfig {
 
    ![image-20241201214154117](./images/job/image-20241201214154117.png)
 
-    
-
-   
 
 5.  **业务服务端引入**
 
@@ -303,8 +297,7 @@ snail-job:
 @Component
 @JobExecutor(name = "singleAnnotationJob")
 public class SingleAnnotationJobTest {
-
-
+    
     /**
      * <p>
      *     由于JobExecutor注解默认的方法名为jobExecute
@@ -321,14 +314,11 @@ public class SingleAnnotationJobTest {
 }
 ```
 
-
-
 #### 3.2 新建定时任务
 
 在Snail-Job的后台界面中的定时任务中点击**新建定时任务**
 
 ![image-20241201212253181](./images/job/image-20241201212253181.png)
-
 
 
 #### 3.3 执行结果
@@ -363,9 +353,7 @@ public class SingleAnnotationJobTest {
 ````java
 @Component
 public class MultipleJobTest {
-
-
-
+    
     @JobExecutor(name = "testA",method = "testA")
     public ExecuteResult testA(JobArgs jobArgs){
         //控制台日志
