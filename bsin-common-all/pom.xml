@@ -22,7 +22,6 @@
         <module>bsin-common-dubbo</module>
         <module>bsin-common-sensitive</module>
         <module>bsin-common-redis</module>
-        <module>bsin-common-schedule</module>
         <module>bsin-common-tenant</module>
         <module>bsin-common-brms</module>
         <module>bsin-common-job</module>

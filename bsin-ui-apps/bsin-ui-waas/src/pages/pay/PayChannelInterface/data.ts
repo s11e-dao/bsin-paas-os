@@ -56,6 +56,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     width: 160,
     dataIndex: 'params',
     hideInSearch: true,
+    ellipsis: true,
   },
   {
     title: '支付方式',

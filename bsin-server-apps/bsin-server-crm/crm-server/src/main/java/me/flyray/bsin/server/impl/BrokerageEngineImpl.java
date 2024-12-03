@@ -119,7 +119,7 @@ public class BrokerageEngineImpl implements BrokerageEngine {
         if(policy.getTriggerEventAfterDate() > 0){
             // 判断完成事件时间跟当前时间差是否小于triggerEventAfterDate
             // TODO 小于扔给延时队列进行处理，到到时间继续触发规则引擎
-
+            
         }
         // 计算商户分佣金额
         BigDecimal merchantGoodsSkuSharingAmount = calculateSharingAmount(requestMap, config);

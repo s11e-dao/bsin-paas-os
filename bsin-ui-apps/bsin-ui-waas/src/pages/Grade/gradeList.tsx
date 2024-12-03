@@ -141,7 +141,7 @@ export default ({ setCurrentContent, configGrade }) => {
             // 重置输入的表单
             FormRef.resetFields();
             // 刷新proTable
-            // actionRef.current?.reload();
+            actionRef.current?.reload();
             setGradeModal(false);
           } else {
             message.error(`失败： ${res?.message}`);

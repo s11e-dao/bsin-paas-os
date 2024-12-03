@@ -117,14 +117,6 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
     copyable: true,
     ellipsis: true,
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '此项为必填项',
-        },
-      ],
-    }
   },
   {
     title: '执行方法',

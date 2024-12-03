@@ -1,5 +1,6 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -156,7 +157,9 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = loginUser.getTenantId();
     String merchantNo = loginUser.getMerchantNo();
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
     Page<BondingCurveTokenParam> page =
         new Page<>(pagination.getPageNum(), pagination.getPageSize());
 

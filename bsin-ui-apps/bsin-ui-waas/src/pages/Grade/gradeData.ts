@@ -16,6 +16,33 @@ export type columnsDataType = {
 const columnsData: ProColumns<columnsDataType>[] = [
   // 配置搜索框
   {
+    title: '业务角色类型',
+    width: 120,
+    hideInTable: true,
+    dataIndex: 'bizRoleType',
+    valueType: 'select',
+    valueEnum: {
+      "1": {
+        text: '系统运营',
+      },
+      "2": {
+        text: '平台租户',
+      },
+      "3": {
+        text: '商户',
+      },
+      "4": {
+        text: '代理商',
+      },
+      "5": {
+        text: '客户',
+      },
+      "6": {
+        text: '门店',
+      },
+    },
+  },
+  {
     title: '等级Id',
     dataIndex: 'gradeNo',
     hideInTable: true,
@@ -36,6 +63,32 @@ const columnsData: ProColumns<columnsDataType>[] = [
     width: 190,
     dataIndex: 'serialNo',
     fixed: 'left',
+  },
+  {
+    title: '业务角色类型',
+    width: 120,
+    dataIndex: 'bizRoleType',
+    valueType: 'select',
+    valueEnum: {
+      "1": {
+        text: '系统运营',
+      },
+      "2": {
+        text: '平台租户',
+      },
+      "3": {
+        text: '商户',
+      },
+      "4": {
+        text: '代理商',
+      },
+      "5": {
+        text: '客户',
+      },
+      "6": {
+        text: '门店',
+      },
+    },
   },
   {
     title: '等级名称',
