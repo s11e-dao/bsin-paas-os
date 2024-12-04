@@ -12,6 +12,6 @@ RUN mkdir -p /home/bsin-paas-os/server-apps/community
 # 指定路径
 WORKDIR /home/bsin-paas-os/server-apps/community
 # 复制jar文件到路径
-COPY ./jar/community-server-2.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/search/community-server-2.0.0-SNAPSHOT.jar
+COPY ./jar/community-server-2.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/community/community-server-2.0.0-SNAPSHOT.jar
 # 启动用户服务
 ENTRYPOINT ["java","-jar","community-server-2.0.0-SNAPSHOT.jar"]
