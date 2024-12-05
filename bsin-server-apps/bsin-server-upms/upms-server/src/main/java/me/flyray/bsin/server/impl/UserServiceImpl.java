@@ -758,6 +758,9 @@ public class UserServiceImpl implements UserService {
         SysUser sysUser = userMapper.selectUserInfo(tenantId, reqUser.getUserId(), reqUser.getUsername());
         SysTenant sysTenant = tenantMapper.selectTenantInfoByTenantId(tenantId);
 
+        if(sysUser == null){
+            throw new BusinessException(ResponseCode.USERNAME_PASSWORD_ERROR);
+        }
         Set<SysApp> appSet = new HashSet<>();
         // 登陆返回的用户机构对象信息
         SysOrg sysOrg = orgMapper.selectInfoById(sysUser.getOrgId());
