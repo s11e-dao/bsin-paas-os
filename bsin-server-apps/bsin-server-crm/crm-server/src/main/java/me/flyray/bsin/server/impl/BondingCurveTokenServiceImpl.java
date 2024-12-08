@@ -159,7 +159,7 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
     String merchantNo = loginUser.getMerchantNo();
     Object paginationObj =  requestMap.get("pagination");
     Pagination pagination = new Pagination();
-    BeanUtil.copyProperties(paginationObj,pagination);
+    BeanUtil.copyProperties(paginationObj, pagination);
     Page<BondingCurveTokenParam> page =
         new Page<>(pagination.getPageNum(), pagination.getPageSize());
 
@@ -611,7 +611,9 @@ public class BondingCurveTokenServiceImpl implements BondingCurveTokenService {
   @Override
   public IPage<?> getBondingCurveTokenJournalPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-    Pagination pagination = (Pagination) requestMap.get("pagination");
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj, pagination);
     Page<BondingCurveTokenJournal> page =
         new Page<>(pagination.getPageNum(), pagination.getPageSize());
     BondingCurveTokenJournal bondingCurveTokenJournal =
