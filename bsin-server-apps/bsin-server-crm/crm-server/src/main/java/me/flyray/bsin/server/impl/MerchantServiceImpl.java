@@ -491,9 +491,9 @@ public class MerchantServiceImpl implements MerchantService {
     if (merchant.getUsername() == null) {
       throw new BusinessException(USER_NAME_ISNULL);
     }
-    if (merchant.getPassword() == null) {
-      throw new BusinessException(PASSWORD_EXISTS);
-    }
+    //    if (merchant.getPassword() == null) {
+    //      throw new BusinessException(PASSWORD_EXISTS);
+    //    }
     // 调用upms的商户授权功能，添加权限用户同时开通基础功能, 审核需传商户使用的产品ID
     // 查询出商户信息
     // TODO 先检查支付订单是否存在
@@ -501,6 +501,7 @@ public class MerchantServiceImpl implements MerchantService {
     requestMap.put("username", merchant.getUsername());
     requestMap.put("merchantName", merchant.getMerchantName());
     requestMap.put("merchantNo", merchant.getSerialNo());
+    requestMap.put("password", merchant.getPassword());
     SysUserDTO sysUserDTO = new SysUserDTO();
     BeanUtil.copyProperties(requestMap, sysUserDTO);
     sysUserDTO.setBizRoleType(BizRoleType.MERCHANT.getCode());

@@ -236,7 +236,7 @@ public class UserServiceImpl implements UserService {
         SysUser sysUser = new SysUser();
         BeanUtil.copyProperties(sysUserReq, sysUser);
 
-        String merchantNo = sysUserReq.getMerchantId();
+        String merchantNo = sysUserReq.getMerchantNo();
         String tenantId = sysUserReq.getTenantId();
         // TODO 1、查询租户顶级机构，在租户顶级机构下添加一个部门，如果是门店根据商户的信息查询门店的上级机构
         SysOrg sysOrg = orgMapper.selectTopOrgByTenantId(sysUser.getTenantId());
@@ -257,9 +257,11 @@ public class UserServiceImpl implements UserService {
         Snowflake snowflake = IdUtil.createSnowflake(1, 1);
         sysUser.setUserId(snowflake.nextIdStr());
         sysUser.setStoreId(sysUserReq.getStoreId());
-//        sysUser.setMerchantId(merchantNo);
-        //初始化密码 123456
-        sysUser.setPassword("e10adc3949ba59abbe56e057f20f883e");
+    //        sysUser.setMerchantId(merchantNo);
+        // 初始化密码 123456
+        if (sysUser.getPassword().isEmpty()) {
+            sysUser.setPassword("e10adc3949ba59abbe56e057f20f883e");
+        }
         userMapper.insertUser(sysUser);
 
         // 3、添加商户默认岗位 建立机构与岗位的关系、用户与岗位的关系
