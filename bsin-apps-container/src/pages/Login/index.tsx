@@ -168,10 +168,10 @@ export default function () {
   }
 
   const options = [
-    {
-      label: '租户',
-      value: '21',
-    },
+    // {
+    //   label: '租户',
+    //   value: '21',
+    // },
     {
       label: '节点',
       value: '2',

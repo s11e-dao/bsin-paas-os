@@ -23,7 +23,7 @@ public enum ResponseCode implements ReturnCode {
   USER_NAME_ISNULL("100101", "用户名为空值"),
   USER_DELETE_EXCEPTION("100102", "用户删除异常"),
   USER_SAVE_EXCEPTION("100103", "用户插入异常"),
-  USER_NOT_EXIST("100104", "不存在该用户"),
+  USER_NOT_EXIST("100104", "用户不存在"),
   USER_EXIST("100105", "该用户已存在"),
   USER_UPDATE_EXCEPTION("100106", "用户更新异常"),
   USERNAME_PASSWORD_ERROR("100107", "用户不存在或密码错误"),

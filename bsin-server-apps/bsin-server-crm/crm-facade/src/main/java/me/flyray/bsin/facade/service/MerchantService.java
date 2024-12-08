@@ -74,6 +74,8 @@ public interface MerchantService {
      */
     public IPage<Merchant> getPageListAdmin(Map<String, Object> requestMap);
 
+    public List<Merchant> getList(Map<String, Object> requestMap);
+
     /**
      * C端分页查询商户
      */

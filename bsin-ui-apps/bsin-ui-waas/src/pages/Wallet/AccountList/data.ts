@@ -70,7 +70,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
 
   // table里面的内容
   {
-    title: '客户号',
+    title: '业务角色编号',
     width: 190,
     dataIndex: 'bizRoleTypeNo',
     hideInSearch: true,
@@ -105,6 +105,12 @@ const columnsData: ProColumns<columnsDataType>[] = [
       },
       '4': {
         text: '在途账户',
+      },
+      '5': {
+        text: '待结算账户',
+      },
+      '6': {
+        text: '待分佣账户',
       },
     },
   },

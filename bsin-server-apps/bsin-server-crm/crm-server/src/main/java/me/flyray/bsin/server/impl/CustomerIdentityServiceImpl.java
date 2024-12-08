@@ -89,10 +89,7 @@ public class CustomerIdentityServiceImpl implements CustomerIdentityService {
   public List<CustomerIdentity> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     LambdaQueryWrapper<CustomerIdentity> warapper = new LambdaQueryWrapper<>();
-    String customerNo = MapUtils.getString(requestMap, "customerNo");
-    if (StringUtils.isEmpty(customerNo)) {
-      customerNo = loginUser.getCustomerNo();
-    }
+    String customerNo = loginUser.getCustomerNo();
     warapper.orderByDesc(CustomerIdentity::getCreateTime);
     warapper.eq(CustomerIdentity::getTenantId, loginUser.getTenantId());
     warapper.eq(CustomerIdentity::getCustomerNo, customerNo);

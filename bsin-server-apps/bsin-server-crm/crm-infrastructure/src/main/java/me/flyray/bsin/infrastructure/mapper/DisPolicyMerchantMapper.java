@@ -1,7 +1,12 @@
 package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.DisPolicyMerchant;
+import me.flyray.bsin.domain.entity.Merchant;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author rednet
@@ -10,6 +15,10 @@ import me.flyray.bsin.domain.entity.DisPolicyMerchant;
 * @Entity generator.domain.DisPolicyMerchant
 */
 public interface DisPolicyMerchantMapper extends BaseMapper<DisPolicyMerchant> {
+
+    IPage<Merchant> selectPageListByBrokeragePolicyNo(@Param("page") IPage<?> page, @Param("brokeragePolicyNo") String brokeragePolicyNo);
+
+    List<Merchant> selectListByBrokeragePolicyNo( @Param("brokeragePolicyNo") String brokeragePolicyNo);
 
 }
 

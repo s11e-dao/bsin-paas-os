@@ -77,13 +77,6 @@ const columnsData: ProColumns<columnsDataType>[] = [
     dataIndex: 'createTime',
     hideInSearch: true,
   },
-  {
-    title: '操作',
-    width: 120,
-    hideInSearch: true,
-    dataIndex: 'action',
-    fixed: 'right',
-  },
 ];
 
 export default columnsData;

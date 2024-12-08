@@ -11,8 +11,46 @@
             <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <resultMap id="MerchantResultMap" type="me.flyray.bsin.domain.entity.Merchant">
+        <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <result property="merchantName" column="merchant_name" jdbcType="VARCHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="logoUrl" column="logo_url" jdbcType="VARCHAR"/>
+        <result property="businessNo" column="business_no" jdbcType="VARCHAR"/>
+        <result property="legalPersonName" column="legal_person_name" jdbcType="VARCHAR"/>
+        <result property="legalPersonCredType" column="legal_person_cred_type" jdbcType="VARCHAR"/>
+        <result property="legalPersonCredNo" column="legal_person_cred_no" jdbcType="VARCHAR"/>
+        <result property="businessLicenceImg" column="business_licence_img" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="netAddress" column="net_address" jdbcType="VARCHAR"/>
+        <result property="merchantAddress" column="merchant_address" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="authenticationStatus" column="authentication_status" jdbcType="VARCHAR"/>
+        <result property="businessType" column="business_type" jdbcType="VARCHAR"/>
+        <result property="businessScope" column="business_scope" jdbcType="VARCHAR"/>
+        <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         serial_no,brokerage_policy_no,tenant_id,
         merchant_no
     </sql>
+
+    <select id="selectPageListByBrokeragePolicyNo"  resultMap="MerchantResultMap">
+        select
+        *
+        from crm_dis_policy_merchant dm left join crm_merchant m on dm.merchant_no = m.serial_no  where brokerage_policy_no= #{brokeragePolicyNo}
+    </select>
+
+    <select id="selectListByBrokeragePolicyNo"  resultMap="MerchantResultMap">
+        select
+            *
+        from crm_dis_policy_merchant dm left join crm_merchant m on dm.merchant_no = m.serial_no  where brokerage_policy_no= #{brokeragePolicyNo}
+    </select>
+
 </mapper>

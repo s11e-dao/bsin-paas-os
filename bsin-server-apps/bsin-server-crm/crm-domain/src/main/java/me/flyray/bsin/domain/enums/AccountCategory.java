@@ -12,40 +12,44 @@ public enum AccountCategory {
 
 
     /**
-     * 余额账户, 各种币种的账户余额
+     * balance 余额账户, 各种币种的账户余额
      */
-    BALANCE("1", "余额账户"),
-
-
-    /**
-     * 累计收入
-     */
-    ACCUMULATED_INCOME("2", "累计收入"),
+    BALANCE("balance", "余额账户"),
 
     /**
-     * 累计支出
+     * accumulatedIncome 累计收入
      */
-    ACCUMULATED_EXPENDITURE("3", "累计支出"),
+    ACCUMULATED_INCOME("accumulatedIncome", "累计收入"),
 
     /**
-     * 在途（In transit）账户: 属于中间账户
+     * accumulatedExpenditure 累计支出
      */
-    IN_TRANSIT("4", "在途账户"),
+    ACCUMULATED_EXPENDITURE("accumulatedExpenditure", "累计支出"),
 
     /**
-     * 待结算账户 Pending settlement
+     * inTransit 在途账户: 属于中间账户
      */
-    PENDING_SETTLEMENT("5", "待结算账户"),
+    IN_TRANSIT("inTransit", "在途账户"),
 
     /**
-     * 待分佣账户 Pending Brokerage
+     * 待结算账户 pendingSettlement
      */
-    PENDING_BROKERAGE("6", "待分佣账户"),
+    PENDING_SETTLEMENT("pendingSettlement", "待结算账户"),
 
     /**
-     * Community 社区总收入账户
+     * 累计提现 accumulatedWithdraw
      */
-    COMMUNITY_ACCUMULATED_INCOME_TOKEN("6", "社区总收入账户");
+    ACCUMULATED_WITHDRAW("accumulatedWithdraw", "累计提现"),
+
+    /**
+     * 待分佣账户 pendingBrokerage
+     */
+    PENDING_BROKERAGE("pendingBrokerage", "待分佣账户"),
+
+    /**
+     * communityAccumulatedIncome 社区总收入账户
+     */
+    COMMUNITY_ACCUMULATED_INCOME_TOKEN("communityAccumulatedIncome", "社区总收入账户");
 
     private String code;
 

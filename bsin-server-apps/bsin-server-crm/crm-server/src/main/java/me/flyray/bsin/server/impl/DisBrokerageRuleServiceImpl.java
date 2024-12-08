@@ -24,6 +24,7 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
@@ -48,6 +49,10 @@ public class DisBrokerageRuleServiceImpl implements DisBrokerageRuleService {
     public DisBrokerageRule add(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         DisBrokerageRule disBrokerageRule = BsinServiceContext.getReqBodyDto(DisBrokerageRule.class, requestMap);
+        // 分佣比例加起来等于100
+        if(disBrokerageRule.getFirstSalePer() + disBrokerageRule.getSecondSalePer() != 100){
+            throw new BusinessException("999","比例设置不等于100");
+        }
         disBrokerageRule.setTenantId(loginUser.getTenantId());
         disBrokerageRule.setSerialNo(BsinSnowflake.getId());
         disBrokerageRuleMapper.insert(disBrokerageRule);

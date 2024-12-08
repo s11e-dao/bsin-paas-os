@@ -45,6 +45,13 @@ public interface CrmTransactionService {
     public CrmTransaction withdrawApply(Map<String, Object> requestMap);
 
     /**
+     * 提现审核
+     * @param requestMap
+     * @return
+     */
+    public CrmTransaction withdrawAudit(Map<String, Object> requestMap);
+
+    /**
      * 退款
      * @param requestMap
      * @return

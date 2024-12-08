@@ -28,7 +28,6 @@ import {
   editBizRoleApp,
   deleteBizRoleApp,
   getBizRoleAppDetail,
-  getPayChannelInterfaceList,
   getBizRoleAppPayChannelConfig,
 } from './service';
 
@@ -54,6 +53,8 @@ export default ({ setCurrentContent }) => {
 
   let tenantAppType = process.env.tenantAppType;
 
+  const [formRef] = Form.useForm();
+  const [payChannelConfigFormRef] = Form.useForm();
   // 上传组件
   const { Dragger } = Upload;
 
@@ -73,16 +74,11 @@ export default ({ setCurrentContent }) => {
   // 选择的数据
   const [checkItem, setCheckItem] = useState({});
 
-  const [payChannelInterfaceList, setPayChannelInterfaceList] = useState([])
-
   const [payWayList, setPayWayList] = useState([])
 
   const [currentPayWay, setCurrentPayWay] = useState({})
 
   const [logoUrl, setLogoUrl] = useState('');
-  // 获取表单
-  const [FormRef] = Form.useForm();
-  const [PayChannelConfigFormRef] = Form.useForm();
 
   /**
    * 以下内容为表格相关
@@ -109,7 +105,7 @@ export default ({ setCurrentContent }) => {
           setCurrentContent('appConfig');
         }}
       >
-        应用配置
+        渠道应用配置
       </a>
       <Divider type="vertical" />
       <a onClick={() => toViewBizRoleApp(record)}>查看</a>
@@ -146,18 +142,7 @@ export default ({ setCurrentContent }) => {
 
 
   useEffect(() => {
-    // 查询支付接口
-    let params = {
-      current: '1',
-      pageSize: '99',
-    }
-    getPayChannelInterfaceList(params).then((res) => {
-      if (res?.code == 0 || res?.code == 0) {
-        setPayChannelInterfaceList(res?.data)
-        console.log(payChannelInterfaceList)
-        setLoading(false)
-      }
-    })
+    
   }, [])
 
   /**
@@ -174,10 +159,10 @@ export default ({ setCurrentContent }) => {
    */
   const confirmAddBizRoleApp = () => {
     // 获取输入的表单值
-    FormRef.validateFields()
+    formRef.validateFields()
       .then(async () => {
         // 获取表单结果
-        let response = FormRef.getFieldsValue();
+        let response = formRef.getFieldsValue();
         console.log(response);
         let reqParam = {
           ...response,
@@ -191,7 +176,7 @@ export default ({ setCurrentContent }) => {
             if (res.code === 0 ) {
               message.success('添加成功');
               // 重置输入的表单
-              FormRef.resetFields();
+              formRef.resetFields();
               // 刷新proTable
               actionRef.current?.reload();
               setIsAddBizRoleAppModal(false);
@@ -206,7 +191,7 @@ export default ({ setCurrentContent }) => {
             if (res.code === 0 ) {
               message.success('修改成功');
               // 重置输入的表单
-              FormRef.resetFields();
+              formRef.resetFields();
               // 刷新proTable
               actionRef.current?.reload();
               setIsAddBizRoleAppModal(false);
@@ -224,14 +209,14 @@ export default ({ setCurrentContent }) => {
    */
   const onCancelBizRoleApp = () => {
     // 重置输入的表单
-    FormRef.resetFields();
+    formRef.resetFields();
     setIsAddBizRoleAppModal(false);
   };
 
   // 点击编辑
   const handleEditModel = (record: DictColumnsItem) => {
     console.log('handleEditModel', record);
-    FormRef.setFieldsValue(record);
+    formRef.setFieldsValue(record);
     setAddModalTitle('编辑');
     setCheckItem(record);
     setIsAddBizRoleAppModal(true);
@@ -240,7 +225,7 @@ export default ({ setCurrentContent }) => {
   // 点击支付配置
   const handlePayConfigModel = (record: DictColumnsItem) => {
     console.log('handlePayConfigModel', record);
-    FormRef.setFieldsValue(record);
+    formRef.setFieldsValue(record);
     let reqParam = {
       bizRoleAppId: record.serialNo,
     };
@@ -248,7 +233,7 @@ export default ({ setCurrentContent }) => {
       console.log('getBizRoleAppPayChannelConfig', res);
       if (res.code === 0 ) {
         setCheckItem(res.data);
-        PayChannelConfigFormRef.setFieldsValue(res.data);
+        payChannelConfigFormRef.setFieldsValue(res.data);
         setPayConfigModal(true);
       } else {
         message.error(`失败： ${res?.message}`);
@@ -282,16 +267,6 @@ export default ({ setCurrentContent }) => {
     setIsViewRecord(record);
   };
 
-  const handleViewRecordOfStatus = () => {
-    let { status } = isViewRecord;
-    if (status == '0') {
-      return '正常';
-    } else if (status == '1') {
-      return '进冻结行中';
-    } else {
-      return status;
-    }
-  };
 
   // 认证状态   1: 待认证  2：认证成功  3：认证失败
   const handleViewRecordOfSauthenticationStatus = () => {
@@ -339,7 +314,7 @@ export default ({ setCurrentContent }) => {
       if (file?.status === 'done') {
         console.log(file.response);
         message.success(`${info.file.name} file uploaded successfully.`);
-        FormRef.setFieldValue('', file?.response.data.url);
+        formRef.setFieldValue('', file?.response.data.url);
         setLogoUrl(file?.response.data.url);
       } else if (file?.status === 'error') {
         setLogoUrl('');
@@ -373,6 +348,7 @@ export default ({ setCurrentContent }) => {
   const showChildrenDrawer = (record) => {
     setChildrenDrawer(true);
     setCurrentPayWay(record)
+
   };
 
   const onChildrenDrawerClose = () => {
@@ -380,9 +356,7 @@ export default ({ setCurrentContent }) => {
   };
 
   const [childrenDrawer, setChildrenDrawer] = useState(false);
-
-  const [form] = Form.useForm();
-
+  
 
   return (
     <div>
@@ -470,7 +444,7 @@ export default ({ setCurrentContent }) => {
           open={childrenDrawer}
         >
           {currentPayWay?.payWayCode == "aliPay" ? (
-            <Form name="trigger" style={{ maxWidth: 600 }} layout="vertical" autoComplete="off">
+            <Form name="trigger" form={payChannelConfigFormRef} style={{ maxWidth: 600 }} layout="vertical" autoComplete="off">
               {/* <Alert message="Use 'max' rule, continue type chars to see it" /> */}
               <Form.Item
                 hasFeedback
@@ -539,7 +513,7 @@ export default ({ setCurrentContent }) => {
               </Form.Item>
             </Form>
           ) : (
-            <Form name="trigger" style={{ maxWidth: 600 }} layout="vertical" autoComplete="off">
+            <Form name="trigger" form={payChannelConfigFormRef} style={{ maxWidth: 600 }} layout="vertical" autoComplete="off">
               {/* <Alert message="Use 'max' rule, continue type chars to see it" /> */}
               <Form.Item
                 hasFeedback
@@ -622,7 +596,7 @@ export default ({ setCurrentContent }) => {
       >
         <Form
           name="basic"
-          form={FormRef}
+          form={formRef}
           labelCol={{ span: 7 }}
           wrapperCol={{ span: 14 }}
           // 表单默认值
@@ -710,90 +684,6 @@ export default ({ setCurrentContent }) => {
             rules={[{ required: true, message: '请输入应用描述!' }]}
           >
             <TextArea />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      {/* 支付配置模态框 */}
-      <Modal
-        title="支付配置"
-        centered
-        open={payConfigModal}
-        onOk={() => setPayConfigModal(false)}
-        onCancel={() => setPayConfigModal(false)}
-      >
-        <Form
-          name="basic"
-          form={PayChannelConfigFormRef}
-          labelCol={{ span: 7 }}
-          wrapperCol={{ span: 14 }}
-          // 表单默认值
-          initialValues={{}}
-        >
-          <Form.Item
-            label="支付配置ID"
-            name="serialNo"
-            rules={[{ required: false, message: '请输入支付配置ID!' }]}
-          >
-            <Input disabled />
-          </Form.Item>
-          <Form.Item
-            label="支付接口代码"
-            name="payInterfaceCode"
-            rules={[{ required: true, message: '请选择支付接口代码!' }]}
-          >
-            <Select style={{ width: '100%' }} allowClear>
-              <Option value="0">请选择支付接口代码</Option>
-              {payChannelInterfaceList?.map((payChannelInterface) => {
-                return (
-                  <Option value={payChannelInterface?.payInterfaceCode}>
-                    {payChannelInterface?.payInterfaceName}
-                  </Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            label="应用ID"
-            name="bizRoleAppId"
-            rules={[{ required: true, message: '请输入应用ID!' }]}
-          >
-            <Input disabled />
-          </Form.Item>
-
-          <Form.Item
-            label="params"
-            name="params"
-            rules={[{ required: true, message: '请输入params!' }]}
-          >
-            <TextArea
-              placeholder="请输入params"
-              autoSize={{ minRows: 2, maxRows: 8 }}
-            />
-          </Form.Item>
-
-
-          <Form.Item
-            label="状态"
-            // 状态: 0-停用, 1-启用
-            name="status"
-            rules={[{ required: true, message: '请输入状态!' }]}
-          >
-            <Select style={{ width: '100%' }}>
-              {/* 状态: 0-停用, 1-启用 */}
-              <Option value="0">停用</Option>
-              <Option value="1">启用</Option>
-            </Select>
-          </Form.Item>
-
-
-          <Form.Item
-            label="备注"
-            name="remark"
-            rules={[{ required: true, message: '请输入备注!' }]}
-          >
-            <Input />
           </Form.Item>
         </Form>
       </Modal>
