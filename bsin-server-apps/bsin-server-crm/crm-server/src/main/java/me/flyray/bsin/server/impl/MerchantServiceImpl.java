@@ -173,7 +173,11 @@ public class MerchantServiceImpl implements MerchantService {
   }
 
   /**
-   * 付费认证，一年认证一次 1、付费 2、为商户添加基础的功能（添加应用角色，为角色添加菜单，将角色授权给岗位）
+   * 付费认证，一年认证一次
+   *
+   * <p>1、付费
+   *
+   * <p>2、为商户添加基础的功能（添加应用角色，为角色添加菜单，将角色授权给岗位）
    *
    * @param requestMap
    * @return
@@ -195,10 +199,11 @@ public class MerchantServiceImpl implements MerchantService {
   }
 
   /**
-   * 
    * 1、更新商户信息
-   * 2、开通商户钱包（开通钱包标识）
-   * 3、默认开通总店
+   *
+   * <p>2、开通商户钱包（开通钱包标识）
+   *
+   * <p>3、默认开通总店
    *
    * @param requestMap
    * @return
@@ -288,10 +293,16 @@ public class MerchantServiceImpl implements MerchantService {
         memberMapper.selectOne(
             new LambdaUpdateWrapper<Member>()
                 .eq(Member::getTenantId, loginUser.getTenantId())
-                .eq(Member::getMerchantNo, loginUser.getMerchantNo())
+                .eq(
+                    StringUtils.isNotEmpty(loginUser.getMerchantNo()),
+                    Member::getMerchantNo,
+                    loginUser.getMerchantNo())
                 .eq(Member::getCustomerNo, customerNo));
     if (member == null) {
       throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);
+    }
+    if (!member.getStatus().equals(MemberStatus.NORMAL.getCode())) {
+      throw new BusinessException(ResponseCode.MEMBER_STATUS_EXCEPTION);
     }
 
     // 默认密码 = 空
@@ -443,11 +454,11 @@ public class MerchantServiceImpl implements MerchantService {
     warapper.orderByDesc(Merchant::getCreateTime);
     warapper.eq(Merchant::getTenantId, tenantId);
     warapper.eq(
-            StringUtils.isNotEmpty(merchant.getBusinessType()),
-            Merchant::getBusinessType,
-            merchant.getBusinessType());
+        StringUtils.isNotEmpty(merchant.getBusinessType()),
+        Merchant::getBusinessType,
+        merchant.getBusinessType());
     warapper.eq(
-            StringUtils.isNotEmpty(merchant.getStatus()), Merchant::getStatus, merchant.getStatus());
+        StringUtils.isNotEmpty(merchant.getStatus()), Merchant::getStatus, merchant.getStatus());
     warapper.eq(StringUtils.isNotEmpty(merchantNo), Merchant::getSerialNo, merchantNo);
     List<Merchant> list = merchantMapper.selectList(warapper);
     return list;
@@ -497,7 +508,7 @@ public class MerchantServiceImpl implements MerchantService {
     if (registerNotNeedAudit) {
       merchant.setAuthenticationStatus(AuthenticationStatus.CERTIFIED.getCode());
       merchant.setStatus(MerchantStatus.NORMAL.getCode());
-    }else {
+    } else {
       // 普通注册逻辑
       merchant.setAuthenticationStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
       merchant.setStatus(MerchantStatus.TOBE_CERTIFIED.getCode());
@@ -511,8 +522,7 @@ public class MerchantServiceImpl implements MerchantService {
       CustomerIdentity customerIdentity = new CustomerIdentity();
       customerIdentity.setCustomerNo(customerNo);
       customerIdentity.setTenantId(merchant.getTenantId());
-      //      // 默认商户号??
-      //      customerIdentity.setMerchantNo(customerBase.getTenantId());
+      customerIdentity.setMerchantNo(merchant.getSerialNo());
       customerIdentity.setName(merchant.getUsername());
       customerIdentity.setUsername(merchant.getUsername());
       customerIdentity.setBizRoleType(BizRoleType.MERCHANT.getCode());

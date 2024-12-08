@@ -11,6 +11,7 @@ import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.AuthenticationStatus;
 import me.flyray.bsin.domain.enums.CustomerType;
+import me.flyray.bsin.domain.enums.MemberStatus;
 import me.flyray.bsin.domain.enums.MerchantStatus;
 import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.domain.response.UserResp;
@@ -120,12 +121,17 @@ public class SysAgentServiceImpl implements SysAgentService {
         memberMapper.selectOne(
             new LambdaUpdateWrapper<Member>()
                 .eq(Member::getTenantId, loginUser.getTenantId())
-                .eq(Member::getMerchantNo, merchantNo)
+                .eq(
+                    StringUtils.isNotEmpty(loginUser.getMerchantNo()),
+                    Member::getMerchantNo,
+                    loginUser.getMerchantNo())
                 .eq(Member::getCustomerNo, customerNo));
     if (member == null) {
       throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);
     }
-
+    if (!member.getStatus().equals(MemberStatus.NORMAL.getCode())) {
+      throw new BusinessException(ResponseCode.MEMBER_STATUS_EXCEPTION);
+    }
     // 默认密码 = 空
     //    if (merchant.getPassword() == null) {
     //      merchant.setMerchantName("123456");
