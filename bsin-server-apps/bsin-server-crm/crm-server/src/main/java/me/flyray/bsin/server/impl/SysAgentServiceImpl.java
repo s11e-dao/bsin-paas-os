@@ -141,7 +141,7 @@ public class SysAgentServiceImpl implements SysAgentService {
       sysAgent.setUsername("admin");
     }
     sysAgent.setType(CustomerType.PERSONAL.getCode());
-    sysAgent = addSysAgent(sysAgent, customerNo);
+    sysAgent = addSysAgent(sysAgent, merchantNo, customerNo);
     return sysAgent;
   }
 
@@ -153,7 +153,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     String tenantId = LoginInfoContextHelper.getTenantId();
     sysAgent.setTenantId(tenantId);
     sysAgent.setType(CustomerType.PERSONAL.getCode());
-    sysAgent = addSysAgent(sysAgent, NULL);
+    sysAgent = addSysAgent(sysAgent, NULL, NULL);
     return sysAgent;
   }
 
@@ -217,7 +217,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     return sysAgent;
   }
 
-  private SysAgent addSysAgent(SysAgent sysAgent, String customerNo) {
+  private SysAgent addSysAgent(SysAgent sysAgent, String merchantNo, String customerNo) {
     Map<String, Object> requestMap = new HashMap<>();
     sysAgent.setSerialNo(BsinSnowflake.getId());
     if (sysAgent.getUsername() == null) {
@@ -237,8 +237,7 @@ public class SysAgentServiceImpl implements SysAgentService {
       CustomerIdentity customerIdentity = new CustomerIdentity();
       customerIdentity.setCustomerNo(customerNo);
       customerIdentity.setTenantId(sysAgent.getTenantId());
-      //      // 默认商户号??
-      //      customerIdentity.setMerchantNo(customerBase.getTenantId());
+      customerIdentity.setMerchantNo(merchantNo);
       customerIdentity.setName(sysAgent.getUsername());
       customerIdentity.setUsername(sysAgent.getUsername());
       customerIdentity.setBizRoleType(BizRoleType.SYS_AGENT.getCode());

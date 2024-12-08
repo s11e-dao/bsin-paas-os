@@ -33,6 +33,7 @@ import me.flyray.bsin.server.biz.CustomerBiz;
 import me.flyray.bsin.server.controller.WxPortalController;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.server.utils.SignUtils;
+import me.flyray.bsin.utils.StringUtils;
 import me.flyray.bsin.validate.AddGroup;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -169,8 +170,9 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   /**
-   * 登录切换，根据 type: @see BizRoleType 来切换登录角色，返回token
+   * 登录切换，需要用户名，根据 type:
    *
+   * @see BizRoleType 来切换登录角色，返回token
    * @param requestMap
    * @return
    */
@@ -180,35 +182,53 @@ public class CustomerServiceImpl implements CustomerService {
   public Map<String, Object> loginSwitch(Map<String, Object> requestMap) {
     LoginUser loginOrinUser = LoginInfoContextHelper.getLoginUser();
     String bizRoleType = MapUtils.getString(requestMap, "bizRoleType");
+    String bizRoleTypeNo = MapUtils.getString(requestMap, "bizRoleTypeNo");
     String username = MapUtils.getString(requestMap, "username");
-    String customerNo = MapUtils.getString(requestMap, "customerNo");
+    if (StringUtils.isEmpty(bizRoleTypeNo)) {
+      if (StringUtils.isEmpty(username)) {
+        throw new BusinessException(ResponseCode.USER_NAME_ISNULL);
+      }
+    }
+    String customerNo = loginOrinUser.getCustomerNo();
     // 非平台直属商户会员模型登录需要  merchantNo 字段
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
 
-    LoginUser loginUser = new LoginUser();
-    if (BizRoleType.CUSTOMER.getCode().equals(bizRoleType)) {}
-
     String phone = null;
-    String bizRoleTypeNo = null;
-
     Map res = new HashMap<>();
-
-    // 查询客户信息
-    LambdaQueryWrapper<CustomerBase> wrapperCustomerBase = new LambdaQueryWrapper<>();
-    wrapperCustomerBase.eq(CustomerBase::getUsername, username);
-    CustomerBase customerInfo = customerBaseMapper.selectOne(wrapperCustomerBase);
-    if (customerInfo == null) {
-      throw new BusinessException(ResponseCode.CUSTOMER_ERROR);
-    }
-    res.put("customerInfo", customerInfo);
     if (BizRoleType.CUSTOMER.getCode().equals(bizRoleType)) {
+      // 查询客户信息
+      CustomerBase customerInfo = null;
+      if (StringUtils.isNotEmpty(bizRoleTypeNo)) {
+        customerInfo = customerBaseMapper.selectById(bizRoleTypeNo);
+      } else {
+        LambdaQueryWrapper<CustomerBase> wrapperCustomerBase = new LambdaQueryWrapper<>();
+        wrapperCustomerBase.eq(
+            StringUtils.isNotEmpty(loginOrinUser.getTenantId()),
+            CustomerBase::getTenantId,
+            loginOrinUser.getTenantId());
+        wrapperCustomerBase.eq(
+            StringUtils.isNotEmpty(username), CustomerBase::getUsername, username);
+        customerInfo = customerBaseMapper.selectOne(wrapperCustomerBase);
+      }
+      if (customerInfo == null) {
+        throw new BusinessException(ResponseCode.CUSTOMER_ERROR);
+      }
       phone = customerInfo.getPhone();
-      bizRoleTypeNo = customerInfo.getCustomerNo();
+      res.put("customerInfo", customerInfo);
     } else if (BizRoleType.MERCHANT.getCode().equals(bizRoleType)) {
       // 查询商户信息
-      LambdaQueryWrapper<Merchant> wrapperMerchant = new LambdaQueryWrapper<>();
-      wrapperMerchant.eq(Merchant::getUsername, username);
-      Merchant merchantInfo = merchantMapper.selectOne(wrapperMerchant);
+      Merchant merchantInfo = null;
+      if (StringUtils.isNotEmpty(bizRoleTypeNo)) {
+        merchantInfo = merchantMapper.selectById(bizRoleTypeNo);
+      } else {
+        LambdaQueryWrapper<Merchant> wrapperMerchant = new LambdaQueryWrapper<>();
+        wrapperMerchant.eq(
+            StringUtils.isNotEmpty(loginOrinUser.getTenantId()),
+            Merchant::getTenantId,
+            loginOrinUser.getTenantId());
+        wrapperMerchant.eq(StringUtils.isNotEmpty(username), Merchant::getUsername, username);
+        merchantInfo = merchantMapper.selectOne(wrapperMerchant);
+      }
       if (merchantInfo == null) {
         throw new BusinessException(ResponseCode.MERCHANT_NOT_EXISTS);
       }
@@ -217,9 +237,18 @@ public class CustomerServiceImpl implements CustomerService {
       bizRoleTypeNo = merchantInfo.getSerialNo();
     } else if (BizRoleType.SYS_AGENT.getCode().equals(bizRoleType)) {
       // 查询代理商信息
-      LambdaQueryWrapper<SysAgent> wrapperSysAgent = new LambdaQueryWrapper<>();
-      wrapperSysAgent.eq(SysAgent::getUsername, username);
-      SysAgent sysAgentInfo = sysAgentMapper.selectOne(wrapperSysAgent);
+      SysAgent sysAgentInfo = null;
+      if (StringUtils.isNotEmpty(bizRoleTypeNo)) {
+        sysAgentInfo = sysAgentMapper.selectById(bizRoleTypeNo);
+      } else {
+        LambdaQueryWrapper<SysAgent> wrapperSysAgent = new LambdaQueryWrapper<>();
+        wrapperSysAgent.eq(
+            StringUtils.isNotEmpty(loginOrinUser.getTenantId()),
+            SysAgent::getUsername,
+            loginOrinUser.getTenantId());
+        wrapperSysAgent.eq(StringUtils.isNotEmpty(username), SysAgent::getUsername, username);
+        sysAgentInfo = sysAgentMapper.selectOne(wrapperSysAgent);
+      }
       if (sysAgentInfo == null) {
         throw new BusinessException(ResponseCode.SYS_AGENT_NOT_EXISTS);
       }
@@ -229,39 +258,37 @@ public class CustomerServiceImpl implements CustomerService {
     } else {
       throw new BusinessException(ResponseCode.BIZ_ROLE_TYPE_ERROR);
     }
-
-    loginUser.setTenantId(loginOrinUser.getTenantId());
-    loginUser.setUsername(username);
-    loginUser.setPhone(phone);
-    loginUser.setCustomerNo(customerNo);
-    loginUser.setBizRoleType(bizRoleType);
-    loginUser.setBizRoleTypeNo(bizRoleTypeNo);
+    loginOrinUser.setUsername(username);
+    loginOrinUser.setPhone(phone);
+    loginOrinUser.setCustomerNo(customerNo);
+    loginOrinUser.setBizRoleType(bizRoleType);
+    loginOrinUser.setBizRoleTypeNo(bizRoleTypeNo);
     // 平台会员模型
     Platform platform =
         platformMapper.selectOne(
             new LambdaQueryWrapper<Platform>()
-                .eq(Platform::getTenantId, customerInfo.getTenantId()));
-    loginUser.setMemberModel(platform.getMemberModel());
+                .eq(Platform::getTenantId, loginOrinUser.getTenantId()));
+    loginOrinUser.setMemberModel(platform.getMemberModel());
     // 查询租户的默认直属商户号
     Merchant merchant =
         merchantMapper.selectOne(
             new LambdaQueryWrapper<Merchant>()
-                .eq(Merchant::getTenantId, customerInfo.getTenantId())
+                .eq(Merchant::getTenantId, loginOrinUser.getTenantId())
                 .eq(Merchant::getType, CustomerType.UNDER_TENANT_MEMBER.getCode()));
-    loginUser.setTenantMerchantNo(merchant.getSerialNo());
+    loginOrinUser.setTenantMerchantNo(merchant.getSerialNo());
     if (TenantMemberModel.UNDER_TENANT.getCode().equals(platform.getMemberModel())) {
-      loginUser.setMerchantNo(merchant.getSerialNo());
+      loginOrinUser.setMerchantNo(merchant.getSerialNo());
     } else {
-      loginUser.setMerchantNo(merchantNo);
+      loginOrinUser.setMerchantNo(merchantNo);
     }
-    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
+    String token = AuthenticationProvider.createToken(loginOrinUser, authSecretKey, authExpiration);
 
     // 查询会员信息
     Member member =
         memberMapper.selectOne(
             new LambdaUpdateWrapper<Member>()
                 .eq(Member::getTenantId, loginOrinUser.getTenantId())
-                .eq(Member::getMerchantNo, loginUser.getMerchantNo())
+                .eq(Member::getMerchantNo, loginOrinUser.getTenantMerchantNo())
                 .eq(Member::getCustomerNo, loginOrinUser.getCustomerNo()));
     // 查新询客户身份信息
     List<CustomerIdentity> identityList = customerBiz.getCustomerIdentityList(customerNo);
@@ -309,9 +336,12 @@ public class CustomerServiceImpl implements CustomerService {
 
   /**
    * 手机验证码登录
-   * 1、判断用户是否存在
-   * 2、不存在则注册并登录
-   * 3、存在则直接登录 返回是否有数字分身
+   *
+   * <p>1、判断用户是否存在
+   *
+   * <p>2、不存在则注册并登录
+   *
+   * <p>3、存在则直接登录 返回是否有数字分身
    *
    * @param requestMap
    * @return

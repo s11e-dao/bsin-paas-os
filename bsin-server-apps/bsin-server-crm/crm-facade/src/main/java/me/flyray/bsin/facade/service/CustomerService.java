@@ -3,6 +3,7 @@ package me.flyray.bsin.facade.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.CustomerBase;
 import me.flyray.bsin.facade.response.CustomerAccountVO;
+import me.flyray.bsin.security.enums.BizRoleType;
 
 import java.io.UnsupportedEncodingException;
 import java.security.SignatureException;
@@ -17,43 +18,101 @@ import java.util.Map;
  */
 public interface CustomerService {
 
-  /** 客户登录 */
+  /**
+   *
+   * 客户登录
+   *
+   * */
   public Map<String, Object> login(Map<String, Object> requestMap);
 
-  /** 登录切换 */
+  /**
+   *
+   * 登录切换，根据type:
+   *
+   * @see BizRoleType
+   *
+   * 来切换登录角色，返回token
+   *
+   * */
   public Map<String, Object> loginSwitch(Map<String, Object> requestMap) ;
 
-  /** 客户注册 */
+  /**
+   *
+   * 客户注册
+   *
+   * */
   public CustomerBase register(Map<String, Object> requestMap)throws UnsupportedEncodingException ;
 
-  /** 获取登录验证码 */
+  /**
+   *
+   * 获取登录验证码
+   *
+   * */
   public Map<String, Object> getLoginVerifycode(Map<String, Object> requestMap);
 
-  /** 客户注册登录接口:用户注册成一个客户，还不是会员，会员需要开通 1、微信注册登录 2、手机验证码注册登录 */
+  /**
+   * 客户注册登录接口:用户注册成一个客户，还不是会员，会员需要开通
+   *
+   * 1、微信注册登录
+   *
+   * 2、手机验证码注册登录
+   *
+   * */
   public Map<String, Object> registerOrLogin(Map<String, Object> requestMap)throws UnsupportedEncodingException ;
 
-  /** 微信平台授权登录 */
+  /**
+   *
+   * 微信平台授权登录
+   *
+   * */
   public Map<String, Object> getOpenId(Map<String, Object> requestMap) throws UnsupportedEncodingException;
 
-  /** web3登录 前端钱包签名，后端验证之后换取token */
+  /**
+   *
+   * web3登录
+   *
+   * 前端钱包签名，后端验证之后换取token
+   *
+   * */
   public Map<String, Object> web3Login(Map<String, Object> requestMap) throws SignatureException, UnsupportedEncodingException;
 
   /** 身份认证 */
   public void identityVerification(Map<String, Object> requestMap);
 
-  /** 分页查询客户信息 */
+  /**
+   *
+   * 分页查询客户信息
+   *
+   * */
   public IPage<?> getPageList(Map<String, Object> requestMap);
 
-  /** 查询客户信息 1、基础信息 2、等级信息 */
+  /**
+   * 查询客户信息
+   *
+   * 1、基础信息
+   *
+   * 2、等级信息
+   * */
   public CustomerBase getDetail(Map<String, Object> requestMap);
 
-  /** 客户信息编辑 */
+  /**
+   *
+   * 客户信息编辑
+   *
+   * */
   public CustomerBase edit(Map<String, Object> requestMap);
 
-  /** 激励发放 */
+  /**
+   * 激励发放
+   *
+   * */
   public Map<String, Object> incentiveDistribution(Map<String, Object> requestMap);
 
-  /** 根据数组查询客户信息 */
+  /**
+   *
+   * 根据数组查询客户信息
+   *
+   * */
   public List<?> getListByCustomerNos(Map<String, Object> requestMap);
 
   /** 实名认证 */
@@ -69,7 +128,15 @@ public interface CustomerService {
 
 
   /**
-   * 查询品牌客户的钱包账户 1、曲线积分（相当于声誉值、成长值、贡献值） 2、品牌积分 3、平台储值账户余额 4、钱包地址信息
+   * 查询品牌客户的钱包账户
+   *
+   * 1、曲线积分（相当于声誉值、成长值、贡献值）
+   *
+   * 2、品牌积分
+   *
+   * 3、平台储值账户余额
+   *
+   * 4、钱包地址信息
    *
    * @param requestMap
    * @return

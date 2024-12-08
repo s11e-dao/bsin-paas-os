@@ -119,7 +119,9 @@ public class MerchantServiceImpl implements MerchantService {
   }
 
   /**
-   * 1、查询商户信息 2、查询upms用户
+   * 1、查询商户信息
+   *
+   * <p>2、查询upms用户
    *
    * @param requestMap
    * @return
@@ -268,7 +270,10 @@ public class MerchantServiceImpl implements MerchantService {
     }
   }
 
-  /** 会员申请入住商户 */
+  /**
+   * 会员申请入住商户
+   *
+   * */
   @ApiDoc(desc = "openMerchant")
   @ShenyuDubboClient("/openMerchant")
   @Override
