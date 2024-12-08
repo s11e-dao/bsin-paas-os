@@ -1,0 +1,16 @@
+# 使用官方的Nginx镜像作为基础
+FROM nginx
+
+# author
+MAINTAINER bsin-paas
+
+## 将自定义的Nginx配置文件复制到容器中
+#COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+
+# 创建目录
+RUN mkdir -p /home/bsin-paas-os/middleware/nginx
+# 挂载目录
+VOLUME /home/bsin-paas-os/middleware/nginx
+
+# 启动Nginx服务
+CMD ["nginx", "-g", "daemon off;"]

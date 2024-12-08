@@ -168,7 +168,27 @@ services:
       interval: 5s
       timeout: 25s
       retries: 5
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.17
 
+  bsin-nginx:
+    container_name: bsin-nginx
+    image: bsin-nginx:2.0.0
+    build:
+      context: middleware/nginx
+      dockerfile: dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+    privileged: true                                              # 获取宿主机root权限
+    volumes:
+      - ./middleware/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./middleware/nginx/logs:/var/log/nginx
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.18
 
   # targe-gateway-admin
   bsin-targe-gateway-admin:
@@ -212,11 +232,13 @@ services:
       - bsin-nacos-standalone
       - bsin-redis
       - bsin-mysql
+      - bsin-nginx
       - bsin-targe-gateway-admin
     links:
       - bsin-nacos-standalone
       - bsin-redis
       - bsin-mysql
+      - bsin-nginx
       - bsin-targe-gateway-admin
     networks:
       compose-network: #指定network
