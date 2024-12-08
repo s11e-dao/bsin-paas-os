@@ -29,7 +29,7 @@ public class SysUserDTO extends SysUser implements Serializable {
     /**
      * 商户id
      */
-    private String merchantId;
+    private String merchantNo;
 
     /**
      * 所属机构
@@ -83,6 +83,8 @@ public class SysUserDTO extends SysUser implements Serializable {
 
 
     private String tenantId;
+
+    private String password;
 
     /**
      * 是否查询所有,默认不查
