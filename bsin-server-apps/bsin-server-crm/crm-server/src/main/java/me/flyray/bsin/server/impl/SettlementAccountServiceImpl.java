@@ -39,7 +39,6 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
         try{
             SettlementAccount settlementAccount = new SettlementAccount();
             BeanUtils.copyProperties(settlementAccountDTO,settlementAccount);
-
             LoginUser user = LoginInfoContextHelper.getLoginUser();  // 用户信息
             settlementAccount.setSerialNo(BsinSnowflake.getId());
             settlementAccount.setTenantId(user.getTenantId());
