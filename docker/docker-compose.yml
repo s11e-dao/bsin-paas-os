@@ -232,13 +232,13 @@ services:
       - bsin-nacos-standalone
       - bsin-redis
       - bsin-mysql
-      - bsin-nginx
+#      - bsin-nginx
       - bsin-targe-gateway-admin
     links:
       - bsin-nacos-standalone
       - bsin-redis
       - bsin-mysql
-      - bsin-nginx
+#      - bsin-nginx
       - bsin-targe-gateway-admin
     networks:
       compose-network: #指定network
