@@ -26,9 +26,9 @@ const columnsData: ProColumns<columnsDataType>[] = [
     dataIndex: 'authenticationStatus',
     valueType: 'select',
     valueEnum: {
-      0: { text: '待认证' },
-      1: { text: '认证成功' },
-      2: { text: '认证失败' },
+      1: { text: '待认证' },
+      2: { text: '认证成功' },
+      3: { text: '认证失败' },
     },
     hideInTable: true,
     fieldProps: {

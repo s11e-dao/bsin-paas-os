@@ -13,7 +13,7 @@ public enum AuthenticationStatus {
     /**
      * 待认证
      */
-    TOBE_CERTIFIED("0", "待认证"),
+    TOBE_CERTIFIED("1", "待认证"),
 
     /**
      * 认证成功

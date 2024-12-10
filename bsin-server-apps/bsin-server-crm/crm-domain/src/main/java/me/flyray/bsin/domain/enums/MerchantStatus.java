@@ -18,12 +18,12 @@ public enum MerchantStatus {
     /**
      * 冻结
      */
-    FREEZED("2", "冻结"),
+    FREEZED("1", "冻结"),
 
     /**
      * 待审核
      */
-    TOBE_CERTIFIED("3", "待审核");
+    TOBE_CERTIFIED("2", "待审核");
 
 
     private String code;
