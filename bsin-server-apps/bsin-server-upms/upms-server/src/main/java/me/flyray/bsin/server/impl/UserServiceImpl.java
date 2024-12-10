@@ -259,7 +259,7 @@ public class UserServiceImpl implements UserService {
         sysUser.setStoreId(sysUserReq.getStoreId());
     //        sysUser.setMerchantId(merchantNo);
         // 初始化密码 123456
-        if (sysUser.getPassword().isEmpty()) {
+        if (StringUtils.isEmpty(sysUser.getPassword())) {
             sysUser.setPassword("e10adc3949ba59abbe56e057f20f883e");
         }
         userMapper.insertUser(sysUser);

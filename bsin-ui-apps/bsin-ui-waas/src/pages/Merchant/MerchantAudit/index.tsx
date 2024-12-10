@@ -155,7 +155,8 @@ export default () => {
           // console.log(params);
           let res = await getCustomerEnterprisePageList({
             ...params,
-            status: '2',
+            // 认证状态   1: 待认证  2：认证成功  3：认证失败
+            authenticationStatus: '1',
           });
           console.log('😒', res);
           const result = {
@@ -188,8 +189,8 @@ export default () => {
         onCancel={onCancelApiFeeConfig}
       >
         <Descriptions>
-          <Descriptions.Item label="客户号">
-            {isViewRecord?.customerNo}
+          <Descriptions.Item label="商户号">
+            {isViewRecord?.serialNo}
           </Descriptions.Item>
           <Descriptions.Item label="账号状态">
             {isViewRecord.status == '0'
