@@ -23,7 +23,7 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.flyray.bsin.domain.entity.CustomerBase;
-import me.flyray.bsin.enums.AppType;
+import me.flyray.bsin.enums.AppChannel;
 // import me.flyray.bsin.server.biz.WxMpClickHandlerBiz;
 // import me.flyray.bsin.server.biz.WxMpMsgHandlerBiz;
 // import me.flyray.bsin.server.biz.WxMpSubscribeHandlerBiz;
@@ -109,7 +109,7 @@ public class WxPortalController {
     if (merchantWxApp == null) {
       return "未找到微信平台配置信息";
     }
-    if (StringUtils.equals(merchantWxApp.getAppType(), AppType.WX_MP.getType())) {
+    if (StringUtils.equals(merchantWxApp.getAppChannel(), AppChannel.WX_MP.getType())) {
       log.info("微信公众号请求验证");
       WxMpService wxService = (WxMpService) getWxService(merchantWxApp);
       if (!wxService.switchover(appid)) {
@@ -120,11 +120,11 @@ public class WxPortalController {
         log.info("微信公众号请求验证成功:=[%s]", echostr);
         return echostr;
       }
-    } else if (merchantWxApp.getAppType().equals(AppType.WX_CP.getType())) {
+    } else if (merchantWxApp.getAppChannel().equals(AppChannel.WX_CP.getType())) {
       log.debug("微信企业号|企业微信请求验证");
       // TODO: 企业号暂时不支持
       return "暂不支持企业号";
-    } else if (merchantWxApp.getAppType().equals(AppType.WX_MINIAPP.getType())) {
+    } else if (merchantWxApp.getAppChannel().equals(AppChannel.WX_MINIAPP.getType())) {
       log.debug("小程序请求验证");
       WxMaService wxService = (WxMaService) getWxService(merchantWxApp);
       if (!wxService.switchover(appid)) {
@@ -153,7 +153,7 @@ public class WxPortalController {
     if (merchantWxApp == null) {
       throw new BusinessException("100000", "未找到对应appid");
     }
-    if (StringUtils.equals(merchantWxApp.getAppType(), AppType.WX_MINIAPP.getType())) {
+    if (StringUtils.equals(merchantWxApp.getAppChannel(), AppChannel.WX_MINIAPP.getType())) {
       WxMaService wxService = (WxMaService) getWxService(merchantWxApp);
 
       // 调用微信sdk获取openId及sessionKey
@@ -212,7 +212,7 @@ public class WxPortalController {
     if (merchantWxApp == null) {
       throw new BusinessException(APP_ID_NOT_EXISTS);
     }
-    if (StringUtils.equals(merchantWxApp.getAppType(), AppType.WX_MINIAPP.getType())) {
+    if (StringUtils.equals(merchantWxApp.getAppChannel(), AppChannel.WX_MINIAPP.getType())) {
       WxMaService wxService = (WxMaService) getWxService(merchantWxApp);
       WxMaPhoneNumberInfo phoneNumberInfo = null;
       try {
@@ -247,7 +247,7 @@ public class WxPortalController {
     if (merchantWxApp == null) {
       throw new BusinessException(APP_ID_NOT_EXISTS);
     }
-    if (StringUtils.equals(merchantWxApp.getAppType(), AppType.WX_MINIAPP.getType())) {
+    if (StringUtils.equals(merchantWxApp.getAppChannel(), AppChannel.WX_MINIAPP.getType())) {
       WxMaService wxService = (WxMaService) getWxService(merchantWxApp);
       try {
         wxMaUserInfo =
@@ -318,7 +318,7 @@ public class WxPortalController {
     if (merchantWxApp == null) {
       throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
     }
-    if (StringUtils.equals(merchantWxApp.getAppType(), AppType.WX_MP.getType())) {
+    if (StringUtils.equals(merchantWxApp.getAppChannel(), AppChannel.WX_MP.getType())) {
       WxMpXmlOutMessage outMessage = null;
       WxMpProperties.MpConfig config = new WxMpProperties.MpConfig();
       config.setAesKey(merchantWxApp.getAesKey());
@@ -364,7 +364,7 @@ public class WxPortalController {
         }
         out = outMessage.toEncryptedXml(wxService.getWxMpConfigStorage());
       }
-    } else if (StringUtils.equals(merchantWxApp.getAppType(), AppType.WX_MINIAPP.getType())) {
+    } else if (StringUtils.equals(merchantWxApp.getAppChannel(), AppChannel.WX_MINIAPP.getType())) {
       WxMaXmlOutMessage outMessage = null;
       WxMaProperties.MaConfig config = new WxMaProperties.MaConfig();
       config.setAesKey(merchantWxApp.getAesKey());
@@ -549,7 +549,7 @@ public class WxPortalController {
       throw new IllegalArgumentException("请求参数非法，请核实!");
     }
     BizRoleApp merchantWxApp = bzRoleAppMapper.selectByCorpAgentId(corpId, agentId.toString());
-    if (StringUtils.equals(merchantWxApp.getAppType(), AppType.WX_CP.getType())) {
+    if (StringUtils.equals(merchantWxApp.getAppChannel(), AppChannel.WX_CP.getType())) {
       log.debug("微信企业号|企业微信请求验证");
       WxCpProperties.CpConfig config = new WxCpProperties.CpConfig();
       config.setAesKey(merchantWxApp.getAesKey());
@@ -631,7 +631,7 @@ public class WxPortalController {
 
   private WxService getWxService(BizRoleApp merchantWxApp) {
     WxService wxService = null;
-    if (StringUtils.equals(merchantWxApp.getAppType(), AppType.WX_MP.getType())) {
+    if (StringUtils.equals(merchantWxApp.getAppChannel(), AppChannel.WX_MP.getType())) {
       log.info("微信公众号应用");
       WxMpProperties.MpConfig config = new WxMpProperties.MpConfig();
       config.setAesKey(merchantWxApp.getAesKey());
@@ -646,7 +646,7 @@ public class WxPortalController {
         wxRedisConfig.setPassword(wxRedisPassword);
       }
       wxService = bsinWxMpServiceUtil.getWxMpService(config, wxRedisConfig);
-    } else if (StringUtils.equals(merchantWxApp.getAppType(), AppType.WX_MINIAPP.getType())) {
+    } else if (StringUtils.equals(merchantWxApp.getAppChannel(), AppChannel.WX_MINIAPP.getType())) {
       log.info("微信小程序应用");
       WxMaProperties.MaConfig config = new WxMaProperties.MaConfig();
       config.setAesKey(merchantWxApp.getAesKey());

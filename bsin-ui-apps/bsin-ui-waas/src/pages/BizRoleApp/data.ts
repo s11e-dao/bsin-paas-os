@@ -32,9 +32,9 @@ const columnsData: ProColumns<columnsDataType>[] = [
 
   // 应用类型  1: 应用 2：接口 3:mp(公众号服务订阅号)、4.miniapp(小程序)、 5.cp(企业号|企业微信)、6.pay(微信支付)、7.open(微信开放平台) 8wechat(个人微信) 9.menu(菜单模版)
   {
-    title: '应用类型',
+    title: '应用渠道',
     width: 120,
-    dataIndex: 'appType',
+    dataIndex: 'appChannel',
     valueType: 'select',
     valueEnum: {
       '1': {

@@ -3,7 +3,7 @@ package me.flyray.bsin.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /** 微信平台类别：mp(公众号服务订阅号)、miniapp(小程序)、 cp(企业号|企业微信)、pay(微信支付)、open(微信开放平台) */
-public enum AppType {
+public enum AppChannel {
 
   /** mp(公众号服务订阅号) */
   APPLICATION("1", "bsin-paas应用"),
@@ -32,7 +32,7 @@ public enum AppType {
 
   private String desc;
 
-  AppType(String code, String desc) {
+  AppChannel(String code, String desc) {
     this.type = code;
     this.desc = desc;
   }
@@ -47,11 +47,11 @@ public enum AppType {
 
   /** Json 枚举序列化 */
   @JsonCreator
-  public static AppType getInstanceByType(String id) {
+  public static AppChannel getInstanceByType(String id) {
     if (id == null) {
       return null;
     }
-    for (AppType status : values()) {
+    for (AppChannel status : values()) {
       if (id.equals(status.getType())) {
         return status;
       }

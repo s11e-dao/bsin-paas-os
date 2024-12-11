@@ -3,7 +3,6 @@ import { Segmented, Tabs, Steps, Card, Button, Space } from 'antd';
 import type { TabsProps } from 'antd';
 
 
-
 const steps = (
   <Steps
     direction="vertical"
@@ -43,16 +42,8 @@ const tabItems: TabsProps['items'] = [
   { key: '3', label: '版本管理', children: 'Content of Tab Pane 3' },
 ];
 
-type Align = '微信小程序' | '微信公众号' | 'app原生应用';
-
-const CHANNEL_CONFIGS: Record<Align, React.ReactNode> = {
-  微信小程序: <Tabs items={tabItems} />,
-  微信公众号: <div>公众号配置</div>,
-  app原生应用: <div>app原生应用</div>,
-};
 
 export default ({ setCurrentContent }) => {
-  const [alignValue, setAlignValue] = React.useState<Align>('微信小程序');
 
   return (
     <Card
@@ -66,13 +57,8 @@ export default ({ setCurrentContent }) => {
         </Button>
       }
     >
-      <Segmented
-        value={alignValue}
-        onChange={setAlignValue}
-        options={['微信小程序', '微信公众号', 'app原生应用']}
-        style={{ marginBottom: 8 }}
-      />
-      {CHANNEL_CONFIGS[alignValue]}
+      {/* 不同渠道应用内容不一样 */}
+      <Tabs items={tabItems} />
     </Card>
   );
 };

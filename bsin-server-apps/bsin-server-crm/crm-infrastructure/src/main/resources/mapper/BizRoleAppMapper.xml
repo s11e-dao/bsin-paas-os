@@ -7,14 +7,13 @@
         <result column="biz_role_type" jdbcType="VARCHAR" property="bizRoleType"/>
         <result column="biz_role_type_no" jdbcType="VARCHAR" property="bizRoleTypeNo"/>
         <result column="app_name" jdbcType="VARCHAR" property="appName"/>
-        <result property="appType" column="app_type" jdbcType="VARCHAR"/>
         <result column="app_id" jdbcType="VARCHAR" property="appId"/>
-        <result property="corpId" column="corp_id" jdbcType="VARCHAR"/>
-        <result property="agentId" column="agent_id" jdbcType="VARCHAR"/>
-        <result column="app_type" jdbcType="VARCHAR" property="appType"/>
+        <result column="corp_id" property="corpId" jdbcType="VARCHAR"/>
+        <result column="agent_id" property="agentId" jdbcType="VARCHAR"/>
+        <result column="app_channel" jdbcType="VARCHAR" property="appChannel"/>
         <result column="app_secret" jdbcType="VARCHAR" property="appSecret"/>
-        <result property="aesKey" column="aes_key" jdbcType="VARCHAR"/>
-        <result property="token" column="token" jdbcType="VARCHAR"/>
+        <result column="aes_key" property="aesKey" jdbcType="VARCHAR"/>
+        <result column="token" property="token"  jdbcType="VARCHAR"/>
         <result column="app_description" jdbcType="VARCHAR" property="appDescription"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
@@ -25,7 +24,7 @@
 
     <sql id="baseColumnList">
         serial_no,tenant_id,biz_role_type_no,app_name,app_id,corp_id,app_type,app_secret,aes_key
-        ,app_type,token,app_description,status
+        ,app_channel,token,app_description,status
         ,create_time,update_time
     </sql>
 
@@ -41,7 +40,7 @@
         biz_role_type_no,
         app_name,
         app_id,
-        app_type,
+        app_channel,
         app_secret,
         app_description,
         create_time,
@@ -70,7 +69,7 @@
                biz_role_type_no,
                app_name,
                app_id,
-               app_type,
+               app_channel,
                app_secret,
                app_description,
                create_time,
@@ -96,7 +95,7 @@
                biz_role_type_no,
                app_name,
                app_id,
-               app_type,
+               app_channel,
                app_secret,
                app_description,
                create_time,

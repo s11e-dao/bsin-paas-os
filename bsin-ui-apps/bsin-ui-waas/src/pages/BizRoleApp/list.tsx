@@ -610,9 +610,9 @@ export default ({ setCurrentContent }) => {
             <Input />
           </Form.Item>
           <Form.Item
-            label="应用类型"
-            name="appType"
-            rules={[{ required: true, message: '请输入应用类型!' }]}
+            label="应用渠道"
+            name="appChannel"
+            rules={[{ required: true, message: '请选择应用渠道!' }]}
           >
             <Select style={{ width: '100%' }}>
               <Option value="1">应用</Option>

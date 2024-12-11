@@ -11,7 +11,7 @@ import java.util.Date;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
-import me.flyray.bsin.enums.AppType;
+import me.flyray.bsin.enums.AppChannel;
 import me.flyray.bsin.security.enums.BizRoleType;
 
 /**
@@ -69,11 +69,12 @@ public class BizRoleApp implements Serializable {
     private Integer agentId;
 
     /**
+     * 接入应用的渠道
      * 1: app应用 2：接口 3：小程序 4:mp(公众号服务订阅号) 5:miniapp(小程序) 6:cp(企业号|企业微信) 7:pay(微信支付) 8:open(微信开放平台) 9:wechat(个人微信) 10:menu(菜单模版)
-     * @see AppType
+     * @see AppChannel
      */
 
-    private String appType;
+    private String appChannel;
     /**
      * 应用密钥：自动生成
      */
