@@ -2,7 +2,7 @@
 
 # 使用说明，用来提示输入参数
 usage(){
-	echo "Usage: sh deploy.sh [build|middleware|gateway|server_apps|ui_apps|start|stop|rm|clean|copy|ai_agent|upms|waas|crm|brms|search|workflow|workflow_admin]"
+	echo "Usage: sh deploy.sh [build|middleware|gateway|server_apps|ui_apps|start|stop|rm|clean|copy|ai_agent|upms|waas|crm|brms|search|workflow|workflow_admin|iot]"
 	exit 1
 }
 
@@ -34,7 +34,7 @@ gateway(){
 }
 # 启动server-apps模块
 server_apps(){
-	docker-compose up -d bsin-server-upms bsin-server-waas bsin-server-crm bsin-server-ai-agent bsin-server-oms bsin-server-community #bsin-server-workflow bsin-server-workflow-admin bsin-server-search bsin-server-brms
+	docker-compose up -d bsin-server-upms bsin-server-waas bsin-server-crm bsin-server-ai-agent bsin-server-oms bsin-server-community bsin-server-iot #bsin-server-workflow bsin-server-workflow-admin bsin-server-search bsin-server-brms
 }
 
 # 启动upms模块
@@ -76,6 +76,10 @@ workflow(){
 # 启动workflow-admin模块
 workflow_admin(){
 	docker-compose up -d bsin-server-workflow-admin
+}
+# 启动iot模块
+iot(){
+	docker-compose up -d bsin-server-iot
 }
 # 启动ui-apps模块
 ui_apps(){
@@ -134,6 +138,9 @@ case "$1" in
 ;;
 "workflow_admin")
 	workflow_admin
+;;
+"iot")
+	iot
 ;;
 "ui_apps")
 	ui_apps
