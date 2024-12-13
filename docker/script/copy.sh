@@ -24,10 +24,11 @@ mkdir -p ./bsin-paas-os/server-apps/upms/jar
 mkdir -p ./bsin-paas-os/server-apps/waas/jar
 mkdir -p ./bsin-paas-os/server-apps/workflow/jar
 mkdir -p ./bsin-paas-os/server-apps/workflow-admin/jar
-
-
 mkdir -p ./bsin-paas-os/server-apps/oms/jar
 mkdir -p ./bsin-paas-os/server-apps/community/jar
+mkdir -p ./bsin-paas-os/server-apps/iot/jar
+
+
 mkdir -p ./bsin-paas-os/targe-gateway/jar
 mkdir -p ./bsin-paas-os/targe-gateway-admin/jar
 
@@ -70,10 +71,11 @@ cp ../bsin-server-apps/bsin-server-upms/upms-server/target/upms-server-2.0.0-SNA
 cp ../bsin-server-apps/bsin-server-waas/waas-server/target/waas-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/waas/jar/waas-server-2.0.0-SNAPSHOT.jar
 cp ../bsin-server-apps/bsin-server-workflow/workflow-server/target/workflow-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/workflow/jar/workflow-server-2.0.0-SNAPSHOT.jar
 cp ../bsin-server-apps/bsin-server-workflow-admin/workflow-admin-server/target/workflow-admin-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/workflow-admin/jar/workflow-admin-server-2.0.0-SNAPSHOT.jar
+cp ../bsin-server-apps/bsin-server-iot/iot-server/target/iot-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/iot/jar/iot-server-2.0.0-SNAPSHOT.jar
 
 ## jiujiu-paas，业务闭源
-#cp ../../arrowspider/jiujiu-paas/jiujiu-paas-server/bsin-server-oms/oms-server/target/oms-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/oms/jar/oms-server-2.0.0-SNAPSHOT.jar
-#cp ../../arrowspider/jiujiu-paas/jiujiu-paas-server/bsin-server-community/community-server/target/community-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/community/jar/community-server-2.0.0-SNAPSHOT.jar
+cp ../../arrowspider/jiujiu-paas/jiujiu-paas-server/bsin-server-oms/oms-server/target/oms-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/oms/jar/oms-server-2.0.0-SNAPSHOT.jar
+cp ../../arrowspider/jiujiu-paas/jiujiu-paas-server/bsin-server-community/community-server/target/community-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/community/jar/community-server-2.0.0-SNAPSHOT.jar
 
 echo "6. end copy jar "
 
@@ -86,7 +88,7 @@ cp -r ../bsin-ui-apps/bsin-ui-upms/dist/* ./bsin-paas-os/ui-apps/upms/dist/
 cp -r ../bsin-ui-apps/bsin-ui-waas/dist/* ./bsin-paas-os/ui-apps/waas/dist/
 
 ## jiujiu-paas，业务闭源
-#cp -r ../../arrowspider/jiujiu-paas/jiujiu-paas-ui/bsin-ui-bigan/dist/* ./bsin-paas-os/ui-apps/bigan/dist/
+cp -r ../../arrowspider/jiujiu-paas/jiujiu-paas-ui/bsin-ui-bigan/dist/* ./bsin-paas-os/ui-apps/bigan/dist/
 
 echo "8. end copy frontend dist"
 
