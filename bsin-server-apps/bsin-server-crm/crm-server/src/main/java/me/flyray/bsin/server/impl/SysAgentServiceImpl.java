@@ -196,8 +196,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     warapper.orderByDesc(SysAgent::getCreateTime);
     warapper.eq(StringUtils.isNotEmpty(tenantId), SysAgent::getTenantId, tenantId);
     warapper.eq(
-        StringUtils.isNotEmpty(sysAgent.getBusinessType()),
-        SysAgent::getBusinessType,
+        StringUtils.isNotEmpty(sysAgent.getBusinessType()), SysAgent::getBusinessType,
         sysAgent.getBusinessType());
     warapper.eq(
         StringUtils.isNotEmpty(sysAgent.getStatus()), SysAgent::getStatus, sysAgent.getStatus());
