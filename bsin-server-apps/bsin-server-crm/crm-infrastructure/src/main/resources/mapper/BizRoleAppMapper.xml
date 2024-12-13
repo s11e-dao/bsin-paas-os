@@ -23,7 +23,7 @@
     </resultMap>
 
     <sql id="baseColumnList">
-        serial_no,tenant_id,biz_role_type_no,app_name,app_id,corp_id,app_type,app_secret,aes_key
+        serial_no,tenant_id,biz_role_type_no,app_name,app_id,corp_id,app_secret,aes_key
         ,app_channel,token,app_description,status
         ,create_time,update_time
     </sql>
