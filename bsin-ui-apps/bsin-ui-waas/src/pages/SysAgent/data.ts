@@ -52,9 +52,9 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
   },
   {
-    title: '节点描述',
+    title: '电话',
     width: 160,
-    dataIndex: 'description',
+    dataIndex: 'phone',
     hideInSearch: true,
   },
   {
