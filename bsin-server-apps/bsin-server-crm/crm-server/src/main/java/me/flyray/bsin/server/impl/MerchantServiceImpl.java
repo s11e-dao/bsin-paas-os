@@ -473,8 +473,11 @@ public class MerchantServiceImpl implements MerchantService {
   @ShenyuDubboClient("/getDetail")
   @Override
   public Merchant getDetail(Map<String, Object> requestMap) {
-    String serialNo = MapUtils.getString(requestMap, "serialNo");
-    Merchant merchant = merchantMapper.selectById(serialNo);
+    String merchantNo = MapUtils.getString(requestMap, "serialNo");
+    if(merchantNo == null){
+      merchantNo = MapUtils.getString(requestMap, "merchantNo");
+    }
+    Merchant merchant = merchantMapper.selectById(merchantNo);
     return merchant;
   }
 
