@@ -249,6 +249,9 @@ public class PlatformServiceImpl implements PlatformService {
         Page<Platform> page = new Page<>(pagination.getPageNum(),pagination.getPageSize());
         LambdaQueryWrapper<Platform> warapper = new LambdaQueryWrapper<>();
         warapper.orderByDesc(Platform::getCreateTime);
+        if(!BizRoleType.SYS.getCode().equals(LoginInfoContextHelper.getBizRoleType())){
+            warapper.eq(Platform::getTenantId, LoginInfoContextHelper.getTenantId());
+        }
         IPage<Platform> pageList = platformMapper.selectPage(page,warapper);
         return pageList;
     }

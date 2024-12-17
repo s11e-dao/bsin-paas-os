@@ -8,10 +8,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.BizRoleApp;
+import me.flyray.bsin.enums.AppChannel;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.BizRoleAppService;
 import me.flyray.bsin.infrastructure.mapper.BizRoleAppMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.lang3.StringUtils;
@@ -46,14 +48,17 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
     @Override
     public void add(Map<String, Object> requestMap) {
         String tenantId = LoginInfoContextHelper.getTenantId();
-        String merchantNo = LoginInfoContextHelper.getMerchantNo();
         BizRoleApp bizRoleApp = BsinServiceContext.getReqBodyDto(BizRoleApp.class, requestMap);
+        String appChannel = (String) requestMap.get("appChannel");
         bizRoleApp.setSerialNo(BsinSnowflake.getId());
-        String appId = BsinSnowflake.getId();
+        if(!AppChannel.WX_MINIAPP.getType().equals(appChannel) && !AppChannel.WX_MP.getType().equals(appChannel) ){
+            String appId = BsinSnowflake.getId();
+            bizRoleApp.setAppId(appId);
+            bizRoleApp.setAppSecret(BsinSnowflake.getId());
+        }
         bizRoleApp.setTenantId(tenantId);
-        bizRoleApp.setBizRoleTypeNo(merchantNo);
-        bizRoleApp.setAppId(appId);
-        bizRoleApp.setAppSecret(BsinSnowflake.getId());
+        bizRoleApp.setBizRoleType(LoginInfoContextHelper.getLoginUser().getBizRoleType());
+        bizRoleApp.setBizRoleTypeNo(LoginInfoContextHelper.getLoginUser().getBizRoleTypeNo());
         merchantAppMapper.insert(bizRoleApp);
 //        MerchantApiFeeConfig tenantApiFeeConfig = new MerchantApiFeeConfig();
 //        tenantApiFeeConfig.setTenantId(tenantId);

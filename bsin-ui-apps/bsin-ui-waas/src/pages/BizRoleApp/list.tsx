@@ -600,7 +600,7 @@ export default ({ setCurrentContent }) => {
           labelCol={{ span: 7 }}
           wrapperCol={{ span: 14 }}
           // 表单默认值
-          initialValues={{ appType: '1' }}
+          initialValues={{ appChannel: '0' }}
         >
           <Form.Item
             label="应用名称"
@@ -615,8 +615,9 @@ export default ({ setCurrentContent }) => {
             rules={[{ required: true, message: '请选择应用渠道!' }]}
           >
             <Select style={{ width: '100%' }}>
-              <Option value="1">应用</Option>
-              <Option value="2">接口</Option>
+              <Option value="0">请选择应用渠道</Option>
+              <Option value="1">app应用</Option>
+              <Option value="2">API接口</Option>
               <Option value="3">微信公众号</Option>
               <Option value="4">微信小程序</Option>
               <Option value="5">企业微信</Option>

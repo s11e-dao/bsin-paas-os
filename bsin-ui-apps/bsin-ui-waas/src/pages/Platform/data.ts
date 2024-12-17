@@ -73,7 +73,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '创建者',
-    width: 160,
+    width: 170,
     dataIndex: 'createBy',
     hideInSearch: true,
   },
