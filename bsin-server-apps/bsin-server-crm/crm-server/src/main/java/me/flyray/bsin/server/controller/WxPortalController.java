@@ -625,16 +625,16 @@ public class WxPortalController {
     return null;
   }
 
-  private WxService getWxService(BizRoleApp merchantWxApp) {
+  private WxService getWxService(BizRoleApp bizRoleApp) {
     WxService wxService = null;
-    if (StringUtils.equals(merchantWxApp.getAppChannel(), AppChannel.WX_MP.getType())) {
+    if (StringUtils.equals(bizRoleApp.getAppChannel(), AppChannel.WX_MP.getType())) {
       log.info("微信公众号应用");
       WxMpProperties.MpConfig config = new WxMpProperties.MpConfig();
-      config.setAesKey(merchantWxApp.getAesKey());
-      config.setAppId(merchantWxApp.getAppId());
+      config.setAesKey(bizRoleApp.getAesKey());
+      config.setAppId(bizRoleApp.getAppId());
       SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
-      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
-      config.setToken(merchantWxApp.getToken());
+      config.setSecret(aes.decryptStr(bizRoleApp.getAppSecret(), CharsetUtil.CHARSET_UTF_8));
+      config.setToken(bizRoleApp.getToken());
       if (wxRedisConfig == null) {
         wxRedisConfig = new WxRedisConfig();
         wxRedisConfig.setHost(wxRedisHost);
@@ -642,16 +642,16 @@ public class WxPortalController {
         wxRedisConfig.setPassword(wxRedisPassword);
       }
       wxService = bsinWxMpServiceUtil.getWxMpService(config, wxRedisConfig);
-    } else if (StringUtils.equals(merchantWxApp.getAppChannel(), AppChannel.WX_MINIAPP.getType())) {
+    } else if (StringUtils.equals(bizRoleApp.getAppChannel(), AppChannel.WX_MINIAPP.getType())) {
       log.info("微信小程序应用");
       WxMaProperties.MaConfig config = new WxMaProperties.MaConfig();
-      config.setAesKey(merchantWxApp.getAesKey());
-      config.setAppId(merchantWxApp.getAppId());
+      config.setAesKey(bizRoleApp.getAesKey());
+      config.setAppId(bizRoleApp.getAppId());
       //      SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
       //      config.setSecret(aes.decryptStr(merchantWxApp.getAppSecret(),
       // CharsetUtil.CHARSET_UTF_8));
-      config.setSecret(merchantWxApp.getAppSecret());
-      config.setToken(merchantWxApp.getToken());
+      config.setSecret(bizRoleApp.getAppSecret());
+      config.setToken(bizRoleApp.getToken());
       config.setMsgDataFormat("JSON");
       if (wxRedisConfig == null) {
         wxRedisConfig = new WxRedisConfig();

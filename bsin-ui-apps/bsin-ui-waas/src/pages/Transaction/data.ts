@@ -16,6 +16,39 @@ export type columnsDataType = {
 const columnsData: ProColumns<columnsDataType>[] = [
   // 配置搜索框
   {
+    title: '交易类型',
+    width: 120,
+    hideInTable: true,
+    dataIndex: 'transactionType',
+    valueType: 'select',
+    valueEnum: {
+      "1": {
+        text: '支付',
+      },
+      "2": {
+        text: '充值',
+      },
+      "3": {
+        text: '转账',
+      },
+      "4": {
+        text: '提现',
+      },
+      "5": {
+        text: '退款',
+      },
+      "6": {
+        text: '结算',
+      },
+      "7": {
+        text: '收入',
+      },
+      "8": {
+        text: '赎回',
+      },
+    },
+  },
+  {
     title: '交易hash',
     dataIndex: 'txHash',
     hideInTable: true,

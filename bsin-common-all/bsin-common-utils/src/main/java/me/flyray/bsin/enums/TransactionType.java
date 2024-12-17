@@ -14,11 +14,11 @@ public enum TransactionType {
     TRANSFER("3","转账"),
     WITHDRAW("4","提现"),
     REFUND("5","退款"),
-    SETTLEMENT("7","结算"),
+    SETTLEMENT("6","结算"),
 
-    INCOME("8","收入"),
+    INCOME("7","收入"),
 
-    REDEEM("9","赎回");
+    REDEEM("8","赎回");
 
     // 状态码
     private String code;

@@ -61,12 +61,14 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '等级ID',
     width: 190,
+    hideInSearch: true,
     dataIndex: 'serialNo',
     fixed: 'left',
   },
   {
     title: '业务角色类型',
     width: 120,
+    hideInSearch: true,
     dataIndex: 'bizRoleType',
     valueType: 'select',
     valueEnum: {
@@ -93,31 +95,37 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '等级名称',
     width: 160,
+    hideInSearch: true,
     dataIndex: 'name',
   },
   {
     title: '等级级数',
     width: 160,
+    hideInSearch: true,
     dataIndex: 'gradeNum',
   },
   {
     title: '等级编号',
     width: 160,
+    hideInSearch: true,
     dataIndex: 'gradeCode',
   },
   {
     title: '等级图标',
     width: 160,
+    hideInSearch: true,
     dataIndex: 'gradeImage',
   },
   {
     title: '等级描述',
     width: 160,
+    hideInSearch: true,
     dataIndex: 'description',
   },
   {
     title: 'Tags',
     key: 'tags',
+    hideInSearch: true,
     dataIndex: 'tags',
   },
   {

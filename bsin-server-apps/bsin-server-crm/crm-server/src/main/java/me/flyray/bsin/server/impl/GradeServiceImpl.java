@@ -119,6 +119,7 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public IPage<?> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        String bizRoleType = MapUtils.getString(requestMap, "bizRoleType");
         Object paginationObj = requestMap.get("pagination");
         Pagination pagination = new Pagination();
         BeanUtil.copyProperties(paginationObj, pagination);
@@ -128,6 +129,7 @@ public class GradeServiceImpl implements GradeService {
         warapper.orderByDesc(Grade::getCreateTime);
         warapper.eq(Grade::getTenantId, loginUser.getTenantId());
         warapper.eq(StringUtils.isNotEmpty(loginUser.getMerchantNo()), Grade::getMerchantNo, loginUser.getMerchantNo());
+        warapper.eq(StringUtils.isNotEmpty(bizRoleType), Grade::getBizRoleType, bizRoleType);
         warapper.eq(
                 StringUtils.isNotEmpty(grade.getGradeNum()),
                 Grade::getGradeNum,
@@ -221,7 +223,7 @@ public class GradeServiceImpl implements GradeService {
             merchantNo = loginUser.getMerchantNo();
             requestMap.put("merchantNo", merchantNo);
             if (merchantNo == null) {
-                throw new BusinessException(MERCHANT_NO_IS_NULL);
+                merchantNo = loginUser.getTenantMerchantNo();
             }
         }
         String gradeNum = MapUtils.getString(requestMap, "gradeNum");
