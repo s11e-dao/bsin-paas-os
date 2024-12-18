@@ -141,6 +141,11 @@ const routes = [
         path: '/customer/pass-card',
         component: '@/pages/Customer/PassCard/index',
       },
+      // 会员卡列表
+      {
+        path: '/customer/member-config',
+        component: '@/pages/Customer/MemberConfig/index',
+      },
       // **************************业务角色等级管理**************************
       {
         path: '/grade-list',

@@ -142,7 +142,7 @@ export default ({ setCurrentContent }) => {
 
 
   useEffect(() => {
-    
+
   }, [])
 
   /**
@@ -173,7 +173,7 @@ export default ({ setCurrentContent }) => {
         if (addModalTitle === '新增') {
           addBizRoleApp(reqParam).then((res) => {
             console.log('add', res);
-            if (res.code === 0 ) {
+            if (res.code === 0) {
               message.success('添加成功');
               // 重置输入的表单
               formRef.resetFields();
@@ -188,7 +188,7 @@ export default ({ setCurrentContent }) => {
           reqParam.serialNo = checkItem.serialNo;
           addBizRoleApp(reqParam).then((res) => {
             console.log('add', res);
-            if (res.code === 0 ) {
+            if (res.code === 0) {
               message.success('修改成功');
               // 重置输入的表单
               formRef.resetFields();
@@ -231,7 +231,7 @@ export default ({ setCurrentContent }) => {
     };
     getBizRoleAppPayChannelConfig(reqParam).then((res) => {
       console.log('getBizRoleAppPayChannelConfig', res);
-      if (res.code === 0 ) {
+      if (res.code === 0) {
         setCheckItem(res.data);
         payChannelConfigFormRef.setFieldsValue(res.data);
         setPayConfigModal(true);
@@ -356,7 +356,7 @@ export default ({ setCurrentContent }) => {
   };
 
   const [childrenDrawer, setChildrenDrawer] = useState(false);
-  
+
 
   return (
     <div>
@@ -583,6 +583,8 @@ export default ({ setCurrentContent }) => {
             </Form>
           )}
 
+          <Button type="primary">保存</Button>
+
         </Drawer>
       </Drawer>
 
@@ -687,6 +689,7 @@ export default ({ setCurrentContent }) => {
             <TextArea />
           </Form.Item>
         </Form>
+
       </Modal>
 
       {/* 查看详情模态框 */}
