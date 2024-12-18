@@ -277,6 +277,11 @@ public enum ResponseCode implements ReturnCode {
   COUPON_HAD_LIMIT("650036", "优惠券领取已达上限"),
   COUPON_NOT_RECEIVE("650037", "优惠券未领取"),
   COUPON_HAD_USED("650038", "优惠券已使用"),
+  DISCOUNT_IS_NULL("650039", "折扣为空"),
+  COUPON_TIME_IS_NULL("650040", "优惠券有效期为空"),
+  COUPON_APPLY_STORE_IS_NULL("650041", "优惠券适用门店为空"),
+  COUPON_APPLY_GOODS_IS_NULL("650041", "优惠券适用商品为空"),
+  COUPON_APPLY_GOODS_TYPE_IS_NULL("650041", "优惠券适用商品类型为空"),
 
   /***********************************数字资产类 700000 ipfs相关*****************************************/
   TOKEN_ID_METADATA_IMAGE_HAS_EXISTS("700000", "tokenId对应的资源已经存在！"),

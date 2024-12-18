@@ -58,4 +58,7 @@ public class SettlementAccount extends BaseEntity implements Serializable {
      */
     @NotBlank(message = "租户ID不能为空！", groups = AddGroup.class)
     private String tenantId;
+
+
+    private String merchantNo;
 }

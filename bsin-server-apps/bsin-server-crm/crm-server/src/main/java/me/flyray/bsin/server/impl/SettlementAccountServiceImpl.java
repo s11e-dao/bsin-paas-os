@@ -40,23 +40,24 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
     @ShenyuDubboClient("/setUp")
     @ApiDoc(desc = "setUp")
     public void setUp(SettlementAccountDTO settlementAccountDTO) {
-        log.debug("请求MerchantService.saveSettlementAccount,参数:{} ",settlementAccountDTO);
-        try{
+        log.debug("请求MerchantService.saveSettlementAccount,参数:{} ", settlementAccountDTO);
+        try {
             SettlementAccount settlementAccount = new SettlementAccount();
-            BeanUtils.copyProperties(settlementAccountDTO,settlementAccount);
+            BeanUtils.copyProperties(settlementAccountDTO, settlementAccount);
             LoginUser loginUser = LoginInfoContextHelper.getLoginUser();  // 用户信息
             settlementAccount.setSerialNo(BsinSnowflake.getId());
             settlementAccount.setTenantId(loginUser.getTenantId());
+            settlementAccount.setMerchantNo(loginUser.getMerchantNo());
             settlementAccount.setBizRoleTypeNo(loginUser.getBizRoleTypeNo());
             settlementAccount.setBizRoleType(loginUser.getBizRoleType());
             settlementAccount.setCreateBy(loginUser.getBizRoleTypeNo());
             settlementAccount.setCreateTime(new Date());
             settlementAccountMapper.insert(settlementAccount);
-        }catch (BusinessException be){
+        } catch (BusinessException be) {
             throw be;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            log.debug("save settlement account error: " , e.getMessage());
+            log.debug("save settlement account error: ", e.getMessage());
             throw new BusinessException("SYSTEM_ERROR");
         }
     }
@@ -65,18 +66,18 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
     @ApiDoc(desc = "edit")
     @Override
     public void edit(SettlementAccountDTO settlementAccountDTO) {
-        log.debug("请求MerchantService.editSettlementAccount,参数:{} " , settlementAccountDTO);
-        try{
+        log.debug("请求MerchantService.editSettlementAccount,参数:{} ", settlementAccountDTO);
+        try {
             SettlementAccount settlementAccount = new SettlementAccount();
-            BeanUtils.copyProperties(settlementAccountDTO,settlementAccount);
+            BeanUtils.copyProperties(settlementAccountDTO, settlementAccount);
 
             LoginUser user = LoginInfoContextHelper.getLoginUser();  // 用户信息
             settlementAccount.setUpdateBy(user.getUpdateBy());
             settlementAccount.setUpdateTime(new Date());
             settlementAccountMapper.updateById(settlementAccount);
-        }catch (BusinessException be){
+        } catch (BusinessException be) {
             throw be;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             log.debug("edit settlement account error: ", e.getMessage());
             throw new BusinessException("SYSTEM_ERROR");
@@ -87,21 +88,21 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
     @ApiDoc(desc = "delete")
     @Override
     public void delete(SettlementAccountDTO settlementAccountDTO) {
-        log.debug("请求MerchantService.deleteSettlementAccount,参数: {}" , settlementAccountDTO);
-        try{
+        log.debug("请求MerchantService.deleteSettlementAccount,参数: {}", settlementAccountDTO);
+        try {
             // 短信验证
             LoginUser loginUser = LoginInfoContextHelper.getLoginUser();  // 用户信息
             SettlementAccount settlementAccount = settlementAccountMapper.selectById(settlementAccountDTO.getSerialNo());
-            if(settlementAccount == null ){
+            if (settlementAccount == null) {
                 throw new BusinessException("SETTLEMENT_ACCOUNT_NOT_FOUND");
             }
             settlementAccount.setUpdateBy(loginUser.getUpdateBy());
             settlementAccount.setUpdateTime(new Date());
-            settlementAccountMapper.updateDelFlag(settlementAccount);
-        }catch (BusinessException be){
+            settlementAccountMapper.deleteById(settlementAccount);
+        } catch (BusinessException be) {
             throw be;
-        }catch (Exception e){
-            log.debug("delete settlement account error: " , e.getMessage());
+        } catch (Exception e) {
+            log.debug("delete settlement account error: ", e.getMessage());
             throw new BusinessException("SYSTEM_ERROR");
         }
     }
@@ -109,6 +110,7 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
     /**
      * 查询业务角色的结算信息
      * 每个业务角色只有一个账号
+     *
      * @param requestMap
      * @return
      */
@@ -130,14 +132,14 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
     public IPage<?> pageList(SettlementAccountDTO settlementAccountDTO) {
         log.debug("请求MerchantService.pageList,参数:{} ", settlementAccountDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();  // 用户信息
-        int current = settlementAccountDTO.getCurrent()==null?1:settlementAccountDTO.getCurrent();
-        int size = settlementAccountDTO.getSize()==null?10:settlementAccountDTO.getSize();
+        int current = settlementAccountDTO.getCurrent() == null ? 1 : settlementAccountDTO.getCurrent();
+        int size = settlementAccountDTO.getSize() == null ? 10 : settlementAccountDTO.getSize();
         QueryWrapper queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("business_role_no",user.getBizRoleTypeNo());
-        queryWrapper.eq("business_role_type",user.getBizRoleType());
-        queryWrapper.eq("tenant_id",user.getTenantId());
+        queryWrapper.eq("business_role_no", user.getBizRoleTypeNo());
+        queryWrapper.eq("business_role_type", user.getBizRoleType());
+        queryWrapper.eq("tenant_id", user.getTenantId());
         queryWrapper.orderByDesc("create_time");
-        return settlementAccountMapper.selectPage(new Page<>(current,size),queryWrapper);
+        return settlementAccountMapper.selectPage(new Page<>(current, size), queryWrapper);
     }
 
 }
