@@ -1,10 +1,13 @@
 package me.flyray.bsin.server.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.domain.entity.Platform;
 import me.flyray.bsin.domain.entity.SettlementAccount;
+import me.flyray.bsin.domain.entity.Store;
 import me.flyray.bsin.domain.request.SettlementAccountDTO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.SettlementAccountService;
@@ -12,6 +15,7 @@ import me.flyray.bsin.infrastructure.mapper.SettlementAccountMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.utils.BsinSnowflake;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -21,6 +25,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.Map;
 
 @Slf4j
 @DubboService
@@ -32,19 +37,19 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
     private SettlementAccountMapper settlementAccountMapper;
 
     @Override
-    @ShenyuDubboClient("/saveSettlementAccount")
-    @ApiDoc(desc = "saveSettlementAccount")
-    public void saveSettlementAccount(SettlementAccountDTO settlementAccountDTO) {
+    @ShenyuDubboClient("/setUp")
+    @ApiDoc(desc = "setUp")
+    public void setUp(SettlementAccountDTO settlementAccountDTO) {
         log.debug("请求MerchantService.saveSettlementAccount,参数:{} ",settlementAccountDTO);
         try{
             SettlementAccount settlementAccount = new SettlementAccount();
             BeanUtils.copyProperties(settlementAccountDTO,settlementAccount);
-            LoginUser user = LoginInfoContextHelper.getLoginUser();  // 用户信息
+            LoginUser loginUser = LoginInfoContextHelper.getLoginUser();  // 用户信息
             settlementAccount.setSerialNo(BsinSnowflake.getId());
-            settlementAccount.setTenantId(user.getTenantId());
-            settlementAccount.setBizRoleNo(user.getBizRoleTypeNo());
-            settlementAccount.setBizRoleType(user.getBizRoleType());
-            settlementAccount.setCreateBy(user.getUserId());
+            settlementAccount.setTenantId(loginUser.getTenantId());
+            settlementAccount.setBizRoleTypeNo(loginUser.getBizRoleTypeNo());
+            settlementAccount.setBizRoleType(loginUser.getBizRoleType());
+            settlementAccount.setCreateBy(loginUser.getBizRoleTypeNo());
             settlementAccount.setCreateTime(new Date());
             settlementAccountMapper.insert(settlementAccount);
         }catch (BusinessException be){
@@ -59,7 +64,7 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
     @ShenyuDubboClient("/edit")
     @ApiDoc(desc = "edit")
     @Override
-    public void editSettlementAccount(SettlementAccountDTO settlementAccountDTO) {
+    public void edit(SettlementAccountDTO settlementAccountDTO) {
         log.debug("请求MerchantService.editSettlementAccount,参数:{} " , settlementAccountDTO);
         try{
             SettlementAccount settlementAccount = new SettlementAccount();
@@ -81,16 +86,16 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
     @ShenyuDubboClient("/delete")
     @ApiDoc(desc = "delete")
     @Override
-    public void deleteSettlementAccount(SettlementAccountDTO settlementAccountDTO) {
+    public void delete(SettlementAccountDTO settlementAccountDTO) {
         log.debug("请求MerchantService.deleteSettlementAccount,参数: {}" , settlementAccountDTO);
         try{
             // 短信验证
-            LoginUser user = LoginInfoContextHelper.getLoginUser();  // 用户信息
+            LoginUser loginUser = LoginInfoContextHelper.getLoginUser();  // 用户信息
             SettlementAccount settlementAccount = settlementAccountMapper.selectById(settlementAccountDTO.getSerialNo());
             if(settlementAccount == null ){
                 throw new BusinessException("SETTLEMENT_ACCOUNT_NOT_FOUND");
             }
-            settlementAccount.setUpdateBy(user.getUpdateBy());
+            settlementAccount.setUpdateBy(loginUser.getUpdateBy());
             settlementAccount.setUpdateTime(new Date());
             settlementAccountMapper.updateDelFlag(settlementAccount);
         }catch (BusinessException be){
@@ -100,6 +105,24 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
             throw new BusinessException("SYSTEM_ERROR");
         }
     }
+
+    /**
+     * 查询业务角色的结算信息
+     * 每个业务角色只有一个账号
+     * @param requestMap
+     * @return
+     */
+    @ShenyuDubboClient("/getDetail")
+    @ApiDoc(desc = "getDetail")
+    @Override
+    public SettlementAccount getDetail(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();  // 用户信息
+        LambdaQueryWrapper<SettlementAccount> warapper = new LambdaQueryWrapper<>();
+        warapper.eq(SettlementAccount::getBizRoleTypeNo, loginUser.getBizRoleTypeNo());
+        SettlementAccount settlementAccount = settlementAccountMapper.selectOne(warapper);
+        return settlementAccount;
+    }
+
 
     @ShenyuDubboClient("/pageList")
     @ApiDoc(desc = "pageList")

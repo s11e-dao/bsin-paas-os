@@ -143,7 +143,7 @@ public class StoreServiceImpl implements StoreService {
     Pagination pagination = new Pagination();
     BeanUtil.copyProperties(paginationObj, pagination);
     Page<Store> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-    LambdaUpdateWrapper<Store> warapper = new LambdaUpdateWrapper<>();
+    LambdaQueryWrapper<Store> warapper = new LambdaQueryWrapper<>();
     warapper.orderByDesc(Store::getCreateTime);
     warapper.eq(Store::getTenantId, loginUser.getTenantId());
     warapper.eq(Store::getMerchantNo, loginUser.getMerchantNo());
