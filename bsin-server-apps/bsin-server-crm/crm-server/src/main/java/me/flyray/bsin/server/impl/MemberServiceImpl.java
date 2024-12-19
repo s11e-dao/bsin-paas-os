@@ -2,13 +2,11 @@ package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
-import me.flyray.bsin.domain.enums.MemberModel;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MemberService;
 import me.flyray.bsin.facade.service.TokenParamService;
@@ -18,6 +16,7 @@ import me.flyray.bsin.infrastructure.mapper.MemberGradeMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.security.enums.TenantMemberModel;
 import me.flyray.bsin.server.utils.Pagination;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -73,16 +72,16 @@ public class MemberServiceImpl implements MemberService {
     public Map<String, Object> openMember(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
-        String tenantId = loginUser.getTenantId();
+        String tenantId = member.getTenantId();
         if (tenantId == null) {
-            tenantId = member.getTenantId();
+            tenantId = loginUser.getTenantId();
             if (tenantId == null) {
                 throw new BusinessException(CUSTOMER_NO_NOT_ISNULL);
             }
         }
-        String customerNo = loginUser.getCustomerNo();
+        String customerNo = member.getCustomerNo();
         if (customerNo == null) {
-            customerNo = member.getCustomerNo();
+            customerNo = loginUser.getCustomerNo();
             if (customerNo == null) {
                 throw new BusinessException(CUSTOMER_NO_NOT_ISNULL);
             }
@@ -94,20 +93,19 @@ public class MemberServiceImpl implements MemberService {
         String merchantNo = MapUtils.getString(requestMap, "merchantNo");
         if (ObjectUtils.isEmpty(merchantNo)) {
             member.setMerchantNo(LoginInfoContextHelper.getTenantMerchantNo());
-        }
-        String storeNo = MapUtils.getString(requestMap, "storeNo");
-        // 根据商户号查询会员配置信息表的会员模型
-        LambdaQueryWrapper<MemberConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
-        memberConfigWrapper.eq(MemberConfig::getMerchantId, merchantNo);
-        memberConfigWrapper.eq(MemberConfig::getTenantId, tenantId);
-        memberConfigWrapper.last("limit 1");
-        MemberConfig memberConfig = memberConfigMapper.selectOne(memberConfigWrapper);
-        if (MemberModel.MERCHANT_MEMBER.getCode().equals(memberConfig.getModel())) {
-            member.setMerchantNo(merchantNo);
-        } else if (MemberModel.STORE_MEMBER.getCode().equals(memberConfig.getModel())) {
-            member.setStoreNo(storeNo);
         }else {
-            member.setMerchantNo(LoginInfoContextHelper.getTenantMerchantNo());
+            String storeNo = MapUtils.getString(requestMap, "storeNo");
+            // 根据商户号查询会员配置信息表的会员模型
+            LambdaQueryWrapper<MemberConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
+            memberConfigWrapper.eq(MemberConfig::getMerchantId, merchantNo);
+            memberConfigWrapper.eq(MemberConfig::getTenantId, tenantId);
+            memberConfigWrapper.last("limit 1");
+            MemberConfig memberConfig = memberConfigMapper.selectOne(memberConfigWrapper);
+            if (TenantMemberModel.UNDER_MERCHANT.getCode().equals(memberConfig.getModel())) {
+                member.setMerchantNo(merchantNo);
+            } else if (TenantMemberModel.UNDER_STORE.getCode().equals(memberConfig.getModel())) {
+                member.setStoreNo(storeNo);
+            }
         }
         LambdaQueryWrapper<CustomerBase> customerBaseWrapper = new LambdaQueryWrapper<>();
         customerBaseWrapper.eq(CustomerBase::getTenantId, tenantId);

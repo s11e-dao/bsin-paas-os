@@ -20,7 +20,6 @@
             <result property="platformAddress" column="platform_address" jdbcType="VARCHAR"/>
             <result property="status" column="status" jdbcType="VARCHAR"/>
             <result property="type" column="type" jdbcType="VARCHAR"/>
-            <result property="memberModel" column="member_model" jdbcType="VARCHAR"/>
             <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
@@ -41,10 +40,11 @@
         legal_person_cred_type,legal_person_cred_no,business_licence_img,
         logo_url,phone,net_address,
         platform_address,status,type,
-        member_model,create_by,create_time,
+        create_by,create_time,
         update_by,update_time,authentication_status,
         business_type,business_scope,del_flag,
         description,tx_password,tx_password_status,
         google_secret_key
     </sql>
+
 </mapper>

@@ -93,11 +93,6 @@ public class Platform implements Serializable {
     private Integer type;
 
     /**
-     * 平台的会员模式：1、平台直属 2、商户直属
-     */
-    private String memberModel;
-
-    /**
      * 
      */
     private String createBy;

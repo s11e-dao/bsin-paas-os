@@ -13,7 +13,10 @@ public enum TenantMemberModel {
   UNDER_TENANT("1", "租户会员"),
 
   /** 商户会员 */
-  UNDER_MERCHANT("2", "商户会员");
+  UNDER_MERCHANT("2", "商户会员"),
+
+  /** 商户会员 */
+  UNDER_STORE("3", "门店会员");
 
   private String code;
 

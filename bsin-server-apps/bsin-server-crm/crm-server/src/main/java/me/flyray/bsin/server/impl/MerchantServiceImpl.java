@@ -237,12 +237,15 @@ public class MerchantServiceImpl implements MerchantService {
     }
     merchantMapper.updateById(merchant);
 
-    // TODO: 创建钱包
-    walletService.createWallet(requestMap);
-
+    // 如果商户是web3商户
+    if(merchant.getCategory() == "2"){
+      // TODO: 创建钱包
+      walletService.createWallet(requestMap);
+    }
     // TODO RPC调用创建总店，store
     requestMap.put("businessModel", BusinessModel.FRANCHISE.getCode());
     requestMap.put("type", StoreType.MAIN_STORE.getCode());
+    requestMap.put("description", merchant.getDescription());
     storeService.openStore(requestMap);
   }
 
@@ -271,8 +274,9 @@ public class MerchantServiceImpl implements MerchantService {
   }
 
   /**
-   * 会员申请入住商户
-   *
+   * 申请入住商户
+   *  1、判断是否需要是会员
+   *  2、添加商户
    * */
   @ApiDoc(desc = "openMerchant")
   @ShenyuDubboClient("/openMerchant")
@@ -296,8 +300,7 @@ public class MerchantServiceImpl implements MerchantService {
               memberMapper.selectOne(
                       new LambdaUpdateWrapper<Member>()
                               .eq(Member::getTenantId, loginUser.getTenantId())
-                              .eq(
-                                      StringUtils.isNotEmpty(loginUser.getMerchantNo()),
+                              .eq(StringUtils.isNotEmpty(loginUser.getMerchantNo()),
                                       Member::getMerchantNo,
                                       loginUser.getMerchantNo())
                               .eq(Member::getCustomerNo, customerNo));
