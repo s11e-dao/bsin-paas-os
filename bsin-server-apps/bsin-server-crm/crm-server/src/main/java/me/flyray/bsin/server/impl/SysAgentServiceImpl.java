@@ -20,15 +20,18 @@ import me.flyray.bsin.facade.service.DisTeamRelationService;
 import me.flyray.bsin.facade.service.SysAgentService;
 import me.flyray.bsin.facade.service.WalletService;
 import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
+import me.flyray.bsin.infrastructure.mapper.MemberConfigMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberMapper;
 import me.flyray.bsin.infrastructure.mapper.SysAgentMapper;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.security.enums.BizRoleType;
+import me.flyray.bsin.security.enums.TenantMemberModel;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -61,6 +64,8 @@ public class SysAgentServiceImpl implements SysAgentService {
   @Autowired SysAgentMapper sysAgentMapper;
   @Autowired private MemberMapper memberMapper;
   @Autowired private CustomerIdentityMapper customerIdentityMapper;
+  @Autowired
+  private MemberConfigMapper memberConfigMapper;
 
   @DubboReference(version = "${dubbo.provider.version}")
   private DisTeamRelationService disTeamRelationService;
@@ -111,31 +116,40 @@ public class SysAgentServiceImpl implements SysAgentService {
 
     String customerNo = loginUser.getCustomerNo();
 
-    // 成为平台直属商户的会员才能成为代理商
-    String merchantNo = LoginInfoContextHelper.getTenantMerchantNo();
+    String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+    // 根据会员模型查询客户是否是会员，会员模型决定商户号是多少或是店铺号是多少
+    if (!ObjectUtils.isEmpty(merchantNo)) {
+      String storeNo = MapUtils.getString(requestMap, "storeNo");
+      // 根据商户号查询会员配置信息表的会员模型
+      LambdaQueryWrapper<MemberConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
+      memberConfigWrapper.eq(MemberConfig::getMerchantId, merchantNo);
+      memberConfigWrapper.eq(MemberConfig::getTenantId, loginUser.getTenantId());
+      memberConfigWrapper.last("limit 1");
+      MemberConfig memberConfig = memberConfigMapper.selectOne(memberConfigWrapper);
+      if (TenantMemberModel.UNDER_TENANT.getCode().equals(memberConfig.getModel())) {
+        merchantNo = LoginInfoContextHelper.getTenantMerchantNo();
+      }
+    }else {
+      merchantNo = LoginInfoContextHelper.getTenantMerchantNo();
+    }
+
     if (merchantNo == null) {
       throw new BusinessException(MERCHANT_NO_IS_NULL);
     }
+
     // 会员所属商户包含在 loginUser.getMerchantNo
-    Member member =
-        memberMapper.selectOne(
-            new LambdaUpdateWrapper<Member>()
-                .eq(Member::getTenantId, loginUser.getTenantId())
-                .eq(
-                    StringUtils.isNotEmpty(loginUser.getMerchantNo()),
-                    Member::getMerchantNo,
-                    loginUser.getMerchantNo())
-                .eq(Member::getCustomerNo, customerNo));
-    if (member == null) {
+    if (!memberMapper.exists(
+            new LambdaQueryWrapper<Member>()
+                    .eq(Member::getTenantId, loginUser.getTenantId())
+                    .eq(Member::getMerchantNo, merchantNo)
+                    .eq(Member::getCustomerNo, customerNo))) {
       throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);
     }
-    if (!member.getStatus().equals(MemberStatus.NORMAL.getCode())) {
-      throw new BusinessException(ResponseCode.MEMBER_STATUS_EXCEPTION);
-    }
+
     // 默认密码 = 空
-    //    if (merchant.getPassword() == null) {
-    //      merchant.setMerchantName("123456");
-    //    }
+    if (sysAgent.getPassword() == null) {
+      sysAgent.setPassword("123456");
+    }
     // 默认用户名 = admin
     if (sysAgent.getUsername() == null) {
       sysAgent.setUsername("admin");

@@ -107,7 +107,7 @@ public enum ResponseCode implements ReturnCode {
   ACCOUNT_EXISTS("100813", "账户已存在"),
   QUANTITY_ERROR("100814", "数量错误"),
   THEME_NOT_EXISTS("100815", "主题不存在"),
-  PASSWORD_EXISTS("100816", "口令不存在"),
+  PASSWORD_EXISTS("100816", "口令或密码不存在"),
   TOKEN_NOT_EXISTS("100817", "您还未发行属于自己的积分哦~"),
   TOKEN_CODE_EXISTS("100818", "code已存在哦~"),
   UNDER_STOCK("100819", "库存不足~"),
