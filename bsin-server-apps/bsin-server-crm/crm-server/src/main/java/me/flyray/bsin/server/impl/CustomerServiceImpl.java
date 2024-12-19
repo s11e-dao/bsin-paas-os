@@ -186,7 +186,7 @@ public class CustomerServiceImpl implements CustomerService {
     LoginUser loginOrinUser = LoginInfoContextHelper.getLoginUser();
     String bizRoleType = MapUtils.getString(requestMap, "bizRoleType");
     String bizRoleTypeNo = MapUtils.getString(requestMap, "bizRoleTypeNo");
-    String tenantId = MapUtils.getString(requestMap, "tenantId");
+    String tenantId = LoginInfoContextHelper.getTenantId();
     String username = MapUtils.getString(requestMap, "username");
     if (StringUtils.isEmpty(bizRoleTypeNo)) {
       if (StringUtils.isEmpty(username)) {
@@ -238,7 +238,6 @@ public class CustomerServiceImpl implements CustomerService {
       }
       res.put("merchantInfo", merchantInfo);
       phone = merchantInfo.getPhone();
-      bizRoleTypeNo = merchantInfo.getSerialNo();
     } else if (BizRoleType.SYS_AGENT.getCode().equals(bizRoleType)) {
       // 查询代理商信息
       SysAgent sysAgentInfo = null;
@@ -258,7 +257,6 @@ public class CustomerServiceImpl implements CustomerService {
       }
       res.put("sysAgentInfo", sysAgentInfo);
       phone = sysAgentInfo.getPhone();
-      bizRoleTypeNo = sysAgentInfo.getSerialNo();
     } else {
       throw new BusinessException(ResponseCode.BIZ_ROLE_TYPE_ERROR);
     }

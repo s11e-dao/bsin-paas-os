@@ -50,6 +50,7 @@ import { useTheme } from 'antd-style'
 import { MockResponse } from '../mocks/streamResponse'
 import {
   chatWithCopilot,
+  getAppAgent,
   getChatHistoryList,
 } from '../service'
 
@@ -252,15 +253,63 @@ const roles = {
 
 import bsinBot from '../../assets/image/bsin-bot.svg'
 
-export default ({ customerInfo, defaultCopilot }) => {
+export default ({ customerInfo }) => {
+
+  let defaultMerchantNo = process.env.defaultMerchantNo
+  
   const proChatRef = useRef<ProChatInstance>()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [size, setSize] = useState<DrawerProps['size']>()
   const [loading, setLoading] = useState(false)
+  const [defaultCopilot, setDefaultCopilot] = useState({})
 
   const showDrawer = () => {
     setSize('large')
     setDrawerOpen(true)
+
+    let params = {
+      merchantNo: defaultMerchantNo,
+      type: '1',
+    }
+    //TODO: 获取租户对应的appAgent
+    getAppAgent(params).then((res) => {
+      if (res?.code == 0) {
+        setDefaultCopilot(res?.data)
+        console.log(res?.data)
+        let params = {
+          receiver: res?.data.serialNo,
+          sender: customerInfo?.customerNo,
+          chatType: 'chat',
+        }
+        getChatHistoryList(params).then((res) => {
+          console.log(res?.data)
+          if (res?.code == 0) {
+            let i = 0
+            res?.data.map((historyChat) => {
+              let historyChatTmp = {
+                content: historyChat.message,
+                createAt: historyChat.timestamp,
+                // id: historyChat.sender + customerInfo.customerNo,
+                id: 'ZGxiX2p4',
+                role:
+                  historyChat.sender == customerInfo.customerNo
+                    ? 'user'
+                    : 'assistant',
+                updateAt: 1697862243540,
+              }
+              let id = historyChat.sender + customerInfo.customerNo + i
+              i++
+              chatData.chats.ZGxiX2p4 = historyChatTmp
+            })
+          }
+        })
+        console.log(chatData)
+      } else {
+        message.error('查询默认copilot失败！！！')
+      }
+    })
+    // 查询默认智能体
+    // defaultCopilot=
   }
 
   const onDrawerClose = () => {
@@ -404,7 +453,7 @@ export default ({ customerInfo, defaultCopilot }) => {
 
   const copilotChat = async (question) => {
     let params = {
-      copilotNo: defaultCopilot.serialNo,
+      copilotNo: defaultCopilot?.serialNo,
       quickReplies: true, //返回生成快捷回复
       question: question,
     }

@@ -89,7 +89,7 @@ public class Merchant implements Serializable {
     private String merchantAddress;
 
     /**
-     * 状态：0 正常 1 冻结 2 待审核
+     * 状态：0 正常 1 冻结 2 待审核 3、驳回 4、拒绝
      * @see MerchantStatus
      */
     private String status;

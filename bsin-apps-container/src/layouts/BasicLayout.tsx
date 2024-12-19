@@ -75,12 +75,6 @@ import { getUserMenuTreeByAppCode } from '@/services/appMenu'
 import customMenuDate from './customMenu'
 import BsinChat from './bsinChat'
 
-import {
-  chatWithCopilot,
-  getAppAgent,
-  getChatHistoryList,
-} from './service'
-
 let serviceData: any[] = customMenuDate
 
 export type AppMenu = {
@@ -92,8 +86,6 @@ export type AppMenu = {
 }[]
 
 export default () => {
-
-  let defaultMerchantNo = process.env.defaultMerchantNo
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [defaultCopilot, setDefaultCopilot] = useState({})
@@ -185,59 +177,6 @@ export default () => {
       },
     },
   }
-
-  useEffect(() => {
-    // TODO 浏览器刷新之后重新注册子应用
-    let params = {
-      merchantNo: defaultMerchantNo,
-      type: '1',
-    }
-    const token = getSessionStorageInfo("token");
-    if (token) {
-      //TODO: 获取租户对应的appAgent
-      getAppAgent(params).then((res) => {
-        if (res?.code == 0) {
-          setDefaultCopilot(res?.data)
-          setLocalStorageInfo('defaultCopilot', res.data)
-          let customerInfo = getLocalStorageInfo('customerInfo')
-          setCustomerInfo(customerInfo)
-          console.log('defaultCopilot:')
-          console.log(res?.data)
-          let params = {
-            receiver: res?.data.serialNo,
-            sender: customerInfo?.customerNo,
-            chatType: 'chat',
-          }
-          getChatHistoryList(params).then((res) => {
-            console.log(res?.data)
-            if (res?.code == 0) {
-              let i = 0
-              res?.data.map((historyChat) => {
-                let historyChatTmp = {
-                  content: historyChat.message,
-                  createAt: historyChat.timestamp,
-                  // id: historyChat.sender + customerInfo.customerNo,
-                  id: 'ZGxiX2p4',
-                  role:
-                    historyChat.sender == customerInfo.customerNo
-                      ? 'user'
-                      : 'assistant',
-                  updateAt: 1697862243540,
-                }
-                let id = historyChat.sender + customerInfo.customerNo + i
-                i++
-                chatData.chats.ZGxiX2p4 = historyChatTmp
-              })
-            }
-          })
-          console.log(chatData)
-        } else {
-          message.error('查询默认copilot失败！！！')
-        }
-      })
-    }
-
-  }, [])
 
   useEffect(() => {
     // 根据settings?.layout重新渲染菜单数据
@@ -695,9 +634,7 @@ export default () => {
                 </div>
               </div>
               <BsinChat
-                defaultCopilot={defaultCopilot}
                 customerInfo={customerInfo}
-              // chatData={chatData}
               />
               <Modal
                 title="登录"

@@ -23,7 +23,19 @@ public enum MerchantStatus {
     /**
      * 待审核
      */
-    TOBE_CERTIFIED("2", "待审核");
+    TOBE_CERTIFIED("2", "待审核"),
+
+    /**
+     * rebut 驳回
+     */
+    REBUT("3", "驳回"),
+
+    /**
+     * reject 拒绝
+     */
+    REJECT("4", "拒绝"),
+
+    ;
 
 
     private String code;
