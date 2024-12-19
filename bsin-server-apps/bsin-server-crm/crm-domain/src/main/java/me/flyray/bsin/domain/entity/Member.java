@@ -51,7 +51,7 @@ public class Member implements Serializable {
 
     private String nickname;
 
-    /** 状态： 0：禁用 1:正常 2:待支付 */
+    /** 状态： 0：禁用 1:正常 */
     private String status;
 
     /** 会员头像 */
@@ -60,7 +60,7 @@ public class Member implements Serializable {
     /**
      *  店铺id
      */
-    private String storeId;
+    private String storeNo;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

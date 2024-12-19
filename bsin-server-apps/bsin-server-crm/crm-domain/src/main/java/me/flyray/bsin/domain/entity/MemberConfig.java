@@ -33,7 +33,7 @@ public class MemberConfig extends BaseEntity {
     /**
      * 1平台会员 2商户会员 3店铺会员
      */
-    private Integer model;
+    private String model;
 
     private String createBy;
 
@@ -47,6 +47,7 @@ public class MemberConfig extends BaseEntity {
 
     private String merchantId;
 
-    private Integer delFlag;
+    private String delFlag;
+
 }
 

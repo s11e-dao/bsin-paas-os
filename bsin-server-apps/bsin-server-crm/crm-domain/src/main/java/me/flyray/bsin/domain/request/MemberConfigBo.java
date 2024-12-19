@@ -45,7 +45,8 @@ public class MemberConfigBo extends BaseEntity {
 
     private String merchantId;
 
-    private Integer delFlag;
+    private String delFlag;
+
 }
 
 

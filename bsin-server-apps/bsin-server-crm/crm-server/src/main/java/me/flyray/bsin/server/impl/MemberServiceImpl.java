@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.enums.MemberModel;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MemberService;
 import me.flyray.bsin.facade.service.TokenParamService;
@@ -72,6 +73,13 @@ public class MemberServiceImpl implements MemberService {
     public Map<String, Object> openMember(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
+        String tenantId = loginUser.getTenantId();
+        if (tenantId == null) {
+            tenantId = member.getTenantId();
+            if (tenantId == null) {
+                throw new BusinessException(CUSTOMER_NO_NOT_ISNULL);
+            }
+        }
         String customerNo = loginUser.getCustomerNo();
         if (customerNo == null) {
             customerNo = member.getCustomerNo();
@@ -85,31 +93,32 @@ public class MemberServiceImpl implements MemberService {
         }
         String merchantNo = MapUtils.getString(requestMap, "merchantNo");
         if (ObjectUtils.isEmpty(merchantNo)) {
-            throw new BusinessException("400", "商户id为空");
-        }
-        String storeId = MapUtils.getString(requestMap, "storeId");
-        // 根据商户号查询会员配置模型
-        LambdaQueryWrapper<MemberConfig> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(MemberConfig::getMerchantId, merchantNo);
-        lqw.eq(MemberConfig::getTenantId, LoginInfoContextHelper.getTenantId());
-        lqw.last("limit 1");
-        MemberConfig memberConfig = memberConfigMapper.selectOne(lqw);
-        if (memberConfig.getModel() == 1) {
             member.setMerchantNo(LoginInfoContextHelper.getTenantMerchantNo());
-        } else if (memberConfig.getModel() == 2) {
-            member.setMerchantNo(merchantNo);
-        } else if (memberConfig.getModel() == 3) {
-            member.setStoreId(storeId);
         }
+        String storeNo = MapUtils.getString(requestMap, "storeNo");
+        // 根据商户号查询会员配置信息表的会员模型
+        LambdaQueryWrapper<MemberConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
+        memberConfigWrapper.eq(MemberConfig::getMerchantId, merchantNo);
+        memberConfigWrapper.eq(MemberConfig::getTenantId, tenantId);
+        memberConfigWrapper.last("limit 1");
+        MemberConfig memberConfig = memberConfigMapper.selectOne(memberConfigWrapper);
+        if (MemberModel.MERCHANT_MEMBER.getCode().equals(memberConfig.getModel())) {
+            member.setMerchantNo(merchantNo);
+        } else if (MemberModel.STORE_MEMBER.getCode().equals(memberConfig.getModel())) {
+            member.setStoreNo(storeNo);
+        }else {
+            member.setMerchantNo(LoginInfoContextHelper.getTenantMerchantNo());
+        }
+        LambdaQueryWrapper<CustomerBase> customerBaseWrapper = new LambdaQueryWrapper<>();
+        customerBaseWrapper.eq(CustomerBase::getTenantId, tenantId);
+        customerBaseWrapper.eq(CustomerBase::getCustomerNo, customerNo);
+        CustomerBase customerBase = customerBaseMapper.selectOne(customerBaseWrapper);
         // 检查客户信息是否存在
-        if (!customerBaseMapper.exists(
-                new LambdaUpdateWrapper<CustomerBase>()
-                        .eq(CustomerBase::getTenantId, member.getTenantId())
-                        .eq(CustomerBase::getCustomerNo, customerNo))) {
+        if (customerBase == null) {
             throw new BusinessException(CUSTOMER_ERROR);
         }
         if (!memberMapper.exists(
-                new LambdaUpdateWrapper<Member>()
+                new LambdaQueryWrapper<Member>()
                         .eq(Member::getTenantId, member.getTenantId())
                         .eq(Member::getMerchantNo, merchantNo)
                         .eq(Member::getCustomerNo, customerNo))) {
@@ -117,11 +126,14 @@ public class MemberServiceImpl implements MemberService {
         } else {
             member =
                     memberMapper.selectOne(
-                            new LambdaUpdateWrapper<Member>()
+                            new LambdaQueryWrapper<Member>()
                                     .eq(Member::getTenantId, member.getTenantId())
                                     .eq(Member::getMerchantNo, merchantNo)
                                     .eq(Member::getCustomerNo, customerNo));
         }
+        // 更新客户会员信息状态
+        customerBase.setVipFlag(1);
+        customerBaseMapper.updateById(customerBase);
         return BeanUtil.beanToMap(member);
     }
 
