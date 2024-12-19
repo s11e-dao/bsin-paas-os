@@ -280,36 +280,34 @@ public class MerchantServiceImpl implements MerchantService {
   public Merchant openMerchant(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     Merchant merchant = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
+    merchant.setTenantId(loginUser.getTenantId());
     if (merchant.getTenantId() == null) {
-      merchant.setTenantId(loginUser.getTenantId());
-      if (merchant.getTenantId() == null) {
-        throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
-      }
+      throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
     }
-    String customerNo = (String) requestMap.get("customerNo");
+    String customerNo = loginUser.getCustomerNo();
     if (customerNo == null) {
-      customerNo = loginUser.getCustomerNo();
-      if (customerNo == null) {
-        throw new BusinessException(CUSTOMER_NO_IS_NULL);
+      throw new BusinessException(CUSTOMER_NO_IS_NULL);
+    }
+    // 是否需要开通会员标识
+    Boolean memberFlag = MapUtils.getBoolean(requestMap, "memberFlag");
+    if(memberFlag){
+      // 会员所属商户包含在 loginUser.getMerchantNo
+      Member member =
+              memberMapper.selectOne(
+                      new LambdaUpdateWrapper<Member>()
+                              .eq(Member::getTenantId, loginUser.getTenantId())
+                              .eq(
+                                      StringUtils.isNotEmpty(loginUser.getMerchantNo()),
+                                      Member::getMerchantNo,
+                                      loginUser.getMerchantNo())
+                              .eq(Member::getCustomerNo, customerNo));
+      if (member == null) {
+        throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);
+      }
+      if (!member.getStatus().equals(MemberStatus.NORMAL.getCode())) {
+        throw new BusinessException(ResponseCode.MEMBER_STATUS_EXCEPTION);
       }
     }
-    // 会员所属商户包含在 loginUser.getMerchantNo
-    Member member =
-        memberMapper.selectOne(
-            new LambdaUpdateWrapper<Member>()
-                .eq(Member::getTenantId, loginUser.getTenantId())
-                .eq(
-                    StringUtils.isNotEmpty(loginUser.getMerchantNo()),
-                    Member::getMerchantNo,
-                    loginUser.getMerchantNo())
-                .eq(Member::getCustomerNo, customerNo));
-    if (member == null) {
-      throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);
-    }
-    if (!member.getStatus().equals(MemberStatus.NORMAL.getCode())) {
-      throw new BusinessException(ResponseCode.MEMBER_STATUS_EXCEPTION);
-    }
-
     // 默认密码 = 空
     //    if (merchant.getPassword() == null) {
     //      merchant.setMerchantName("123456");

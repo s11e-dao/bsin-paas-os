@@ -32,9 +32,14 @@ public class SysAgent implements Serializable {
     private String tenantId;
 
     /**
-     * 企业名称
+     * 代理商名称
      */
     private String agentName;
+
+    /**
+     * 头像
+     */
+    private String avatar;
 
     /**
      * 企业logo

@@ -7,7 +7,7 @@
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.SysAgent">
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
-            <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
             <result property="agentName" column="agent_name" jdbcType="VARCHAR"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="logoUrl" column="logo_url" jdbcType="VARCHAR"/>
@@ -30,7 +30,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        serial_no,tenant_id,customer_no,username,
+        serial_no,tenant_id,avatar,username,
         agent_name,logo_url,business_no,legal_person_name,
         legal_person_cred_type,legal_person_cred_no,business_licence_img,
         phone,net_address,agent_address,
@@ -38,4 +38,5 @@
         update_time,authentication_status,business_type,
         business_scope,del_flag
     </sql>
+
 </mapper>
