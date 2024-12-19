@@ -57,6 +57,11 @@ public class Member implements Serializable {
     /** 会员头像 */
     private String avatar;
 
+    /**
+     *  店铺id
+     */
+    private String storeId;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
