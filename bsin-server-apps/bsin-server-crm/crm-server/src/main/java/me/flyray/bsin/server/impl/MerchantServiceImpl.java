@@ -533,7 +533,7 @@ public class MerchantServiceImpl implements MerchantService {
       customerIdentity.setCustomerNo(customerNo);
       customerIdentity.setTenantId(merchant.getTenantId());
       customerIdentity.setMerchantNo(merchant.getSerialNo());
-      customerIdentity.setName(merchant.getUsername());
+      customerIdentity.setName(BizRoleType.MERCHANT.getDesc());
       customerIdentity.setUsername(merchant.getUsername());
       customerIdentity.setBizRoleType(BizRoleType.MERCHANT.getCode());
       customerIdentity.setBizRoleTypeNo(merchant.getSerialNo());

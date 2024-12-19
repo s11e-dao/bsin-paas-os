@@ -251,7 +251,7 @@ public class SysAgentServiceImpl implements SysAgentService {
       customerIdentity.setCustomerNo(customerNo);
       customerIdentity.setTenantId(sysAgent.getTenantId());
       customerIdentity.setMerchantNo(merchantNo);
-      customerIdentity.setName(sysAgent.getUsername());
+      customerIdentity.setName(BizRoleType.SYS_AGENT.getDesc());
       customerIdentity.setUsername(sysAgent.getUsername());
       customerIdentity.setBizRoleType(BizRoleType.SYS_AGENT.getCode());
       customerIdentity.setBizRoleTypeNo(sysAgent.getSerialNo());
