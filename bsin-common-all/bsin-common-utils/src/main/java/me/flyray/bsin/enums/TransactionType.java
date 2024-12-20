@@ -2,6 +2,9 @@ package me.flyray.bsin.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+/**
+ * 1、支付 2、充值 3、转账 4、提现 5、退款 6、结算 7、收入 8、赎回
+ */
 public enum TransactionType {
 
     NONE("100","无"),

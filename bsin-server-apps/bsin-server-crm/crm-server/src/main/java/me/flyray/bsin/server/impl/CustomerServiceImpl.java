@@ -709,7 +709,7 @@ public class CustomerServiceImpl implements CustomerService {
 
   /**
    * 根据商户号查询用户在该品牌商户下的钱包资产 1、曲线积分 2、数字积分 3、平台储值账户余额 4、钱包地址
-   * 
+   *
    * @param requestMap
    * @return
    */
@@ -720,6 +720,9 @@ public class CustomerServiceImpl implements CustomerService {
     String customerNo = LoginInfoContextHelper.getCustomerNo();
     // 1.获取商户号
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+    if(StringUtils.isEmpty(merchantNo)){
+      merchantNo = LoginInfoContextHelper.getTenantMerchantNo();
+    }
 
     CustomerAccountVO customerAccountVO = new CustomerAccountVO();
 

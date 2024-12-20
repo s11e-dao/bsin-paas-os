@@ -199,10 +199,8 @@ public enum ResponseCode implements ReturnCode {
   INVITE_CODE_ERROR("300018", "邀请码错误！"),
   INVITE_RELATION_NOT_EXISTS("300019", "邀请关系不存在！"),
   GET_OPENID_FAIL("300020", "获取openId失败！"),
-
   MEMBER_STATUS_EXCEPTION("300021", "会员状态异常！"),
-
-
+  ACCOUNT_CATEGORY_NOT_EXISTS("300022", "账户类别不存在！"),
 
   /***********************************分销类 310000 开头*****************************************/
   DIS_MODEL_NOT_EXISTS("310001", "分销模型不存在~"),

@@ -93,7 +93,10 @@ public class AccountServiceImpl implements AccountService {
     String bizRoleType = MapUtils.getString(requestMap, "bizRoleType");
     String bizRoleTypeNo = MapUtils.getString(requestMap, "bizRoleTypeNo");
     if (bizRoleTypeNo == null) {
-      throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
+      bizRoleTypeNo = loginUser.getBizRoleTypeNo();
+      if(bizRoleTypeNo == null){
+        throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
+      }
     }
     String tenantId = MapUtils.getString(requestMap, "tenantId");
     if (tenantId == null) {
@@ -104,6 +107,10 @@ public class AccountServiceImpl implements AccountService {
     String amount = MapUtils.getString(requestMap, "amount");
     // TODO 建立账户体系枚举
     String category = MapUtils.getString(requestMap, "category");
+    if(AccountCategory.getInstanceById(category) == null){
+      throw new BusinessException(ResponseCode.ACCOUNT_CATEGORY_NOT_EXISTS);
+    }
+
     String name = MapUtils.getString(requestMap, "name");
     Integer decimals = Integer.valueOf(MapUtils.getString(requestMap, "decimals"));
     String orderNo = MapUtils.getString(requestMap, "orderNo");

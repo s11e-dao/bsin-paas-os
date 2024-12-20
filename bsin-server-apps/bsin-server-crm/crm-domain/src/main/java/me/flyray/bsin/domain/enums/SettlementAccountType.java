@@ -1,7 +1,7 @@
 package me.flyray.bsin.domain.enums;
 
 /**
- * 结算账户类型 1、微信 2、支付宝 3 银行卡
+ * 结算账户类型 1、微信 2、支付宝 3 银行卡 4 链地址
  */
 public enum SettlementAccountType {
 
@@ -17,7 +17,13 @@ public enum SettlementAccountType {
     /**
      * 银行卡
      */
-    BANK("3","银行卡");
+    BANK("3","银行卡"),
+
+
+    /**
+     * 链地址
+     */
+    CHAIN("4","链地址");
 
     // 状态码
     private String code;
