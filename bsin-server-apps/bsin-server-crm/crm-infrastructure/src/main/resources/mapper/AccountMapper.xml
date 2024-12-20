@@ -11,7 +11,6 @@
         <result property="bizRoleType" column="biz_role_type" jdbcType="VARCHAR"/>
         <result property="category" column="category" jdbcType="VARCHAR"/>
         <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
-        <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
         <result property="cumulativeAmount" column="cumulative_amount" jdbcType="DECIMAL"/>
         <result property="balance" column="balance" jdbcType="DECIMAL"/>
         <result property="decimals" column="decimals" jdbcType="DECIMAL"/>
@@ -46,7 +45,6 @@
             and ccy = #{query.ccy}
 <!--        </if>-->
     </update>
-
 
     <update id="unFreezeAmount">
         update crm_customer_account

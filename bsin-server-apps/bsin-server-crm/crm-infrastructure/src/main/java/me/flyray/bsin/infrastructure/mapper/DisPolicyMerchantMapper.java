@@ -18,7 +18,7 @@ public interface DisPolicyMerchantMapper extends BaseMapper<DisPolicyMerchant> {
 
     IPage<Merchant> selectPageListByBrokeragePolicyNo(@Param("page") IPage<?> page, @Param("brokeragePolicyNo") String brokeragePolicyNo);
 
-    List<Merchant> selectListByBrokeragePolicyNo( @Param("brokeragePolicyNo") String brokeragePolicyNo);
+    List<Merchant> selectListByBrokeragePolicyNo(@Param("brokeragePolicyNo") String brokeragePolicyNo);
 
 }
 

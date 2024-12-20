@@ -2,7 +2,9 @@ package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import me.flyray.bsin.domain.entity.DisInviteRelation;
+import me.flyray.bsin.domain.entity.SysAgent;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Mapper
 public interface DisInviteRelationMapper extends BaseMapper<DisInviteRelation> {
+
+    SysAgent selectSysAgent(@Param("customerNo") String customerNo);
 
 }
 

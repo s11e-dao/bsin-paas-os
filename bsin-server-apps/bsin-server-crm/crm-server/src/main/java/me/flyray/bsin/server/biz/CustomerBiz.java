@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import me.flyray.bsin.domain.entity.CustomerIdentity;
 import me.flyray.bsin.domain.entity.DisInviteRelation;
+import me.flyray.bsin.domain.entity.SysAgent;
 import me.flyray.bsin.enums.AuthMethod;
 import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
 import me.flyray.bsin.security.enums.BizRoleType;
@@ -82,12 +83,11 @@ public class CustomerBiz {
    * @param customerBase
    * @return
    */
-  public CustomerBase register(CustomerBase customerBase) throws UnsupportedEncodingException {
+  public CustomerBase register(CustomerBase customerBase, SysAgent sysAgent) throws UnsupportedEncodingException {
     String inviteCode = customerBase.getInviteCode();
     // 客户用户名在商户下唯一，查询客户信息
     LambdaQueryWrapper<CustomerBase> warapper = new LambdaQueryWrapper<>();
     warapper.eq(CustomerBase::getTenantId, customerBase.getTenantId());
-
     if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {
       warapper.eq(CustomerBase::getCredential, customerBase.getCredential());
       if (customerBase.getUsername() == null) {
@@ -165,7 +165,7 @@ public class CustomerBiz {
         throw new BusinessException(INVITE_CODE_ERROR);
       }
       // 添加邀请关系
-      inviteRelationBiz.addInvite(customerBase,parentCustomer);
+      inviteRelationBiz.addInvite(customerBase,parentCustomer, sysAgent);
     }
     return customerBase;
   }

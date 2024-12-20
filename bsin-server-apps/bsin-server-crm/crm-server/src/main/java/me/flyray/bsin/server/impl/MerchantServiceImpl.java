@@ -541,4 +541,5 @@ public class MerchantServiceImpl implements MerchantService {
     }
     return merchant;
   }
+
 }

@@ -25,6 +25,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -125,11 +126,22 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
         return settlementAccount;
     }
 
-
-    @ShenyuDubboClient("/pageList")
-    @ApiDoc(desc = "pageList")
+    @ShenyuDubboClient("/getList")
+    @ApiDoc(desc = "getList")
     @Override
-    public IPage<?> pageList(SettlementAccountDTO settlementAccountDTO) {
+    public List<SettlementAccount> getList(SettlementAccountDTO settlementAccountDTO) {
+        log.debug("请求MerchantService.pageList,参数:{} ", settlementAccountDTO);
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        QueryWrapper queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("merchant_no", loginUser.getMerchantNo());
+        queryWrapper.eq("tenant_id", loginUser.getTenantId());
+        return settlementAccountMapper.selectList(queryWrapper);
+    }
+
+    @ShenyuDubboClient("/getPageList")
+    @ApiDoc(desc = "getPageList")
+    @Override
+    public IPage<?> getPageList(SettlementAccountDTO settlementAccountDTO) {
         log.debug("请求MerchantService.pageList,参数:{} ", settlementAccountDTO);
         LoginUser user = LoginInfoContextHelper.getLoginUser();  // 用户信息
         int current = settlementAccountDTO.getCurrent() == null ? 1 : settlementAccountDTO.getCurrent();

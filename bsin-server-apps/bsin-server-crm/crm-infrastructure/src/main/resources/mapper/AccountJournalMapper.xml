@@ -27,4 +27,5 @@
         in_out_flag,amount,ccy,
         create_time,remark,tenant_id,merchant_no
     </sql>
+
 </mapper>

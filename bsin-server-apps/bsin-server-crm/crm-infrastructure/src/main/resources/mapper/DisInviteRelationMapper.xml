@@ -8,13 +8,21 @@
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
             <id property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="customerNo" column="customer_no" jdbcType="VARCHAR"/>
+            <result property="sysAgentNo" column="sys_agent_no" jdbcType="VARCHAR"/>
             <result property="parentNo" column="parent_no" jdbcType="VARCHAR"/>
             <result property="inviteLevel" column="invite_level" jdbcType="INTEGER"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        serial_no,tenant_id,customer_no,parent_no,
+        serial_no,tenant_id,customer_no,sys_agent_no,parent_no,
         invite_level,create_time
     </sql>
+
+    <select id="selectSysAgent" resultType="me.flyray.bsin.domain.entity.SysAgent">
+        select *
+        from crm_dis_invite_relation ir left join crm_sys_agent sa on ir.sys_agent_no = sa.serial_no
+        where ir.customer_no = #{customerNo}
+    </select>
+
 </mapper>

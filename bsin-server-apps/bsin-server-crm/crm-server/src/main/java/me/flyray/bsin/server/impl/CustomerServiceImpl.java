@@ -91,6 +91,8 @@ public class CustomerServiceImpl implements CustomerService {
   @Autowired private WxPortalController wxPortalController;
   @Autowired
   private MemberConfigMapper memberConfigMapper;
+  @Autowired
+  private DisInviteRelationMapper disInviteRelationMapper;
 
   @DubboReference(version = "${dubbo.provider.version}")
   private TenantService tenantService;
@@ -163,9 +165,13 @@ public class CustomerServiceImpl implements CustomerService {
     List<CustomerIdentity> identityList =
         customerBiz.getCustomerIdentityList(customerInfo.getCustomerNo());
     log.info("identityList: " + identityList.toString());
+    // 代理商信息
+    SysAgent sysAgentInfo = disInviteRelationMapper.selectSysAgent(customerInfo.getCustomerNo());
+
     Map res = new HashMap<>();
     res.put("customerInfo", customerInfo);
     res.put("memberInfo", member);
+    res.put("sysAgentInfo", sysAgentInfo);
     res.put("token", token);
     res.put("identityList", identityList);
 
@@ -219,6 +225,9 @@ public class CustomerServiceImpl implements CustomerService {
       }
       phone = customerInfo.getPhone();
       res.put("customerInfo", customerInfo);
+      // 代理商信息
+      SysAgent sysAgentInfo = disInviteRelationMapper.selectSysAgent(customerInfo.getCustomerNo());
+      res.put("sysAgentInfo", sysAgentInfo);
     } else if (BizRoleType.MERCHANT.getCode().equals(bizRoleType)) {
       // 查询商户信息
       Merchant merchantInfo = null;
@@ -304,7 +313,6 @@ public class CustomerServiceImpl implements CustomerService {
 
   /**
    * 不对外暴露接口调用，作为rpc服务对内提供
-   *
    * @param requestMap
    * @return
    */
@@ -313,14 +321,16 @@ public class CustomerServiceImpl implements CustomerService {
   @Transactional
   @Override
   public CustomerBase register(Map<String, Object> requestMap) throws UnsupportedEncodingException {
+    String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
-    customerBiz.register(customerBase);
+    SysAgent sysAgent = new SysAgent();
+    sysAgent.setSerialNo(sysAgentNo);
+    customerBiz.register(customerBase, sysAgent);
     return customerBase;
   }
 
   /**
    * 手机验证码登录 SMS verification code
-   *
    * @param requestMap
    * @return
    */
@@ -338,13 +348,9 @@ public class CustomerServiceImpl implements CustomerService {
 
   /**
    * 手机验证码登录
-   *
    * <p>1、判断用户是否存在
-   *
    * <p>2、不存在则注册并登录
-   *
    * <p>3、存在则直接登录 返回是否有数字分身
-   *
    * @param requestMap
    * @return
    */
@@ -365,7 +371,7 @@ public class CustomerServiceImpl implements CustomerService {
       throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
     }
     customerBase.setCredential(openId);
-    CustomerBase customerBaseRegister = customerBiz.register(customerBase);
+    CustomerBase customerBaseRegister = customerBiz.register(customerBase, new SysAgent());
 
     LoginUser loginUser = new LoginUser();
     loginUser.setTenantId(customerBaseRegister.getTenantId());
@@ -419,11 +425,14 @@ public class CustomerServiceImpl implements CustomerService {
     List<CustomerIdentity> identityList =
         customerBiz.getCustomerIdentityList(customerBaseRegister.getCustomerNo());
     log.info("identityList: " + identityList.toString());
+    // 代理商信息
+    SysAgent sysAgentInfo = disInviteRelationMapper.selectSysAgent(customerBaseRegister.getCustomerNo());
     // 查询客户的角色信息，是否是dao创建者
     // 查询用户加入的dao信息
     Map data = new HashMap<>();
     data.put("customerInfo", customerBaseRegister);
     data.put("memberInfo", member);
+    data.put("sysAgentInfo", sysAgentInfo);
     data.put("token", token);
     data.put("identityList", identityList);
     return data;
@@ -504,7 +513,7 @@ public class CustomerServiceImpl implements CustomerService {
     customerBase.setPassword(message);
     customerBase.setEvmWalletAddress(username);
     customerBase.setWalletAddress(username);
-    CustomerBase customerBaseRegister = customerBiz.register(customerBase);
+    CustomerBase customerBaseRegister = customerBiz.register(customerBase, new SysAgent());
     Member member =
         memberMapper.selectOne(
             new LambdaQueryWrapper<Member>()
@@ -700,7 +709,7 @@ public class CustomerServiceImpl implements CustomerService {
 
   /**
    * 根据商户号查询用户在该品牌商户下的钱包资产 1、曲线积分 2、数字积分 3、平台储值账户余额 4、钱包地址
-   *
+   * 
    * @param requestMap
    * @return
    */

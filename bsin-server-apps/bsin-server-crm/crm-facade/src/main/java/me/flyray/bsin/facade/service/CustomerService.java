@@ -129,15 +129,10 @@ public interface CustomerService {
 
   /**
    * 查询品牌客户的钱包账户
-   *
    * 1、曲线积分（相当于声誉值、成长值、贡献值）
-   *
    * 2、品牌积分
-   *
    * 3、平台储值账户余额
-   *
    * 4、钱包地址信息
-   *
    * @param requestMap
    * @return
    */

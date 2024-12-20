@@ -7,6 +7,7 @@ import me.flyray.bsin.domain.entity.Platform;
 import me.flyray.bsin.domain.entity.SettlementAccount;
 import me.flyray.bsin.domain.request.SettlementAccountDTO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +23,8 @@ public interface SettlementAccountService {
 
     public SettlementAccount getDetail(Map<String, Object> requestMap);
 
-    public IPage<?> pageList(SettlementAccountDTO settlementAccountDTO);
+    public List<SettlementAccount> getList(SettlementAccountDTO settlementAccountDTO);
+
+    public IPage<?> getPageList(SettlementAccountDTO settlementAccountDTO);
 
 }

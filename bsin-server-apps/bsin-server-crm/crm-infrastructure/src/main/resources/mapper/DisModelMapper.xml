@@ -5,7 +5,6 @@
 <mapper namespace="me.flyray.bsin.infrastructure.mapper.DisModelMapper">
 
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.DisModel">
-            <id property="serialNo" column="serial_no" jdbcType="INTEGER"/>
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="model" column="model" jdbcType="VARCHAR"/>
             <result property="quitCurrentLimit" column="quit_current_limit" jdbcType="INTEGER"/>

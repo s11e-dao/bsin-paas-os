@@ -130,6 +130,11 @@ public class SysAgent implements Serializable {
     private String businessScope;
 
     /**
+     * 介绍
+     */
+    private String description;
+
+    /**
      * 删除标识
      */
     @TableLogic(

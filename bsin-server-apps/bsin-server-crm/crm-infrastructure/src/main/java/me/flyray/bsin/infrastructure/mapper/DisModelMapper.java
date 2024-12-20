@@ -13,9 +13,8 @@ import org.apache.ibatis.annotations.Param;
 */
 public interface DisModelMapper extends BaseMapper<DisModel> {
 
-
-
     void update(DisModel user, UpdateWrapper dismodel);
+
 }
 
 

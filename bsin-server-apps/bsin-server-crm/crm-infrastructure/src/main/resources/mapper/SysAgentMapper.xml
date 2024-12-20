@@ -27,6 +27,7 @@
             <result property="businessType" column="business_type" jdbcType="VARCHAR"/>
             <result property="businessScope" column="business_scope" jdbcType="VARCHAR"/>
             <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -36,7 +37,7 @@
         phone,net_address,agent_address,
         status,type,create_time,
         update_time,authentication_status,business_type,
-        business_scope,del_flag
+        business_scope,del_flag,description
     </sql>
 
 </mapper>

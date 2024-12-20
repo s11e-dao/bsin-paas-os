@@ -4,6 +4,7 @@ package me.flyray.bsin.server.biz;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import me.flyray.bsin.domain.entity.CustomerBase;
 import me.flyray.bsin.domain.entity.DisInviteRelation;
+import me.flyray.bsin.domain.entity.SysAgent;
 import me.flyray.bsin.infrastructure.mapper.DisInviteRelationMapper;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class InviteRelationBiz {
     @Autowired
     private DisInviteRelationMapper disInviteRelationMapper;
 
-    public void addInvite(CustomerBase customerBase, CustomerBase parentCustomer) {
+    public void addInvite(CustomerBase customerBase, CustomerBase parentCustomer, SysAgent sysAgent) {
         // 添加邀请关系
         DisInviteRelation disInviteRelation = new DisInviteRelation();
         disInviteRelation.setTenantId(customerBase.getCustomerNo());
@@ -27,6 +28,12 @@ public class InviteRelationBiz {
         // 父级邀请人序列号
         disInviteRelation.setParentNo(parentCustomer.getCustomerNo());
         disInviteRelation.setInviteLevel(1);
+        // 邀请人代理商
+        if(sysAgent.getSerialNo() != null){
+            disInviteRelation.setSysAgentNo(sysAgent.getSerialNo());
+        }else {
+            disInviteRelation.setSysAgentNo("-1");
+        }
         addInviteRelation(disInviteRelation);
     }
 

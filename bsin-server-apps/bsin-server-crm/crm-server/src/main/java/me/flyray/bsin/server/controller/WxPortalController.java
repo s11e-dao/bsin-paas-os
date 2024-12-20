@@ -23,6 +23,7 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.flyray.bsin.domain.entity.CustomerBase;
+import me.flyray.bsin.domain.entity.SysAgent;
 import me.flyray.bsin.enums.AppChannel;
 import me.flyray.bsin.enums.AuthMethod;
 import me.flyray.bsin.exception.BusinessException;
@@ -181,7 +182,7 @@ public class WxPortalController {
         customerBase.setAuthMethod(AuthMethod.WECHAT.getType());
         customerBase.setSessionKey(sessionKey);
         customerBase.setCredential(openId);
-        customerBase = customerBiz.register(customerBase);
+        customerBase = customerBiz.register(customerBase,new SysAgent());
       } else {
         // 更新最后登录时间
         customerBase.setSessionKey(sessionKey);
