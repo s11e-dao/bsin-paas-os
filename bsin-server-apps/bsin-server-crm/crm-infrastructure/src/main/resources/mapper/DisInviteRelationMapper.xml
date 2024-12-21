@@ -25,4 +25,16 @@
         where ir.customer_no = #{customerNo}
     </select>
 
+    <select id="selectSysAgentCustormerPageList" resultType="me.flyray.bsin.domain.entity.CustomerBase">
+        select *
+        from crm_dis_invite_relation ir left join crm_customer_base sa on ir.customer_no = sa.customer_no
+        where ir.sys_agent_no = #{sysAgentNo}
+    </select>
+
+    <select id="selectMyInviteCustormerPageList" resultType="me.flyray.bsin.domain.entity.CustomerBase">
+        select *
+        from crm_dis_invite_relation ir left join crm_customer_base sa on ir.customer_no = sa.customer_no
+        where ir.customer_no = #{customerNo}
+    </select>
+
 </mapper>

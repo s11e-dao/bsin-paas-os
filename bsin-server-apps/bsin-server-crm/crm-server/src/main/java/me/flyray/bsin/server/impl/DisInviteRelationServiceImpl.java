@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.CustomerBase;
 import me.flyray.bsin.domain.entity.DisInviteRelation;
+import me.flyray.bsin.domain.entity.SysDict;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisInviteRelationService;
 import me.flyray.bsin.infrastructure.mapper.DisInviteRelationMapper;
@@ -72,7 +74,7 @@ public class DisInviteRelationServiceImpl implements DisInviteRelationService {
     }
 
     /**
-     * 事件详情
+     * 邀请关系详情
      * @param requestMap
      * @return
      */
@@ -85,10 +87,15 @@ public class DisInviteRelationServiceImpl implements DisInviteRelationService {
         return disInviteRelation;
     }
 
-    @ApiDoc(desc = "我的客户相关邀请关系数据")
-    @ShenyuDubboClient("/inviteCount")
+    /**
+     * 我的客户数据统计
+     * @param requestMap
+     * @return
+     */
+    @ApiDoc(desc = "inviteStatistics")
+    @ShenyuDubboClient("/inviteStatistics")
     @Override
-    public Map<String, Integer> inviteCount(Map<String, Object> requestMap) {
+    public Map<String, Integer> inviteStatistics(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Map<String, Integer> map = new HashMap<>();
 
@@ -131,6 +138,43 @@ public class DisInviteRelationServiceImpl implements DisInviteRelationService {
         map.put("totalInvite", totalInvite.intValue());
         return map;
     }
+
+    /**
+     * 查询代理商下面的客户列表
+     * @param requestMap
+     * @return
+     */
+    @ApiDoc(desc = "getSysAgentCustormerPageList")
+    @ShenyuDubboClient("/getSysAgentCustormerPageList")
+    @Override
+    public IPage<?> getSysAgentCustormerPageList(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        Object paginationObj =  requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj,pagination);
+        Page<CustomerBase> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+        IPage<CustomerBase> pageList = disInviteRelationMapper.selectSysAgentCustormerPageList(page, loginUser.getBizRoleTypeNo());
+        return pageList;
+    }
+
+    /**
+     * 查询我邀请的客户列表
+     * @param requestMap
+     * @return
+     */
+    @ApiDoc(desc = "getMyInviteCustormerPageList")
+    @ShenyuDubboClient("/getMyInviteCustormerPageList")
+    @Override
+    public IPage<?> getMyInviteCustormerPageList(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        Object paginationObj =  requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj,pagination);
+        Page<CustomerBase> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+        IPage<CustomerBase> pageList = disInviteRelationMapper.selectMyInviteCustormerPageList(page, loginUser.getBizRoleTypeNo());
+        return pageList;
+    }
+
 }
 
 

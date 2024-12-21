@@ -27,5 +27,20 @@ public interface DisInviteRelationService {
      */
     public IPage<?> getPageList(Map<String, Object> requestMap);
 
-    public Map<String, Integer> inviteCount(Map<String, Object> requestMap);
+    public Map<String, Integer> inviteStatistics(Map<String, Object> requestMap);
+
+    /**
+     * 查询代理商下面的客户列表
+     * @param requestMap
+     * @return
+     */
+    public IPage<?> getSysAgentCustormerPageList(Map<String, Object> requestMap);
+
+    /**
+     * 查询我邀请的客户列表
+     * @param requestMap
+     * @return
+     */
+    public IPage<?> getMyInviteCustormerPageList(Map<String, Object> requestMap);
+
 }

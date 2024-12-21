@@ -11,6 +11,7 @@ import java.io.Serializable;
 /**
  * 分销模型表
  * @TableName crm_dis_model
+ * 模型参数Json优化
  */
 @Data
 @TableName(value ="crm_dis_model")
@@ -42,7 +43,6 @@ public class DisModel implements Serializable {
      * 二级推荐奖励
      */
     private Integer secondInviteBrokerage;
-
 
 
 }
