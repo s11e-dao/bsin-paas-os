@@ -25,7 +25,7 @@ public interface MemberGradeMapper extends BaseMapper<MemberGrade> {
 
     Grade selectMemberGrade(String customerNo);
 
-    List<CustomerBase> selectMemberListByGrade(String gradeNo,  String ccy);
+    List<CustomerBase> selectMemberListByGrade(String gradeNo);
 
 
     IPage<CustomerBase> selectMemberPageListByGrade(@Param("page") IPage<?> page, String gradeNo);

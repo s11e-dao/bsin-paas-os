@@ -206,13 +206,13 @@ public class CustomerBase implements Serializable {
     private BigDecimal bcAccumulatedBalance;
 
     /**
-     *
+     * 商户数字积分余额
      */
     @TableField(exist = false)
     private BigDecimal dpBalance;
 
     /**
-     *
+     * 人民币账户余额
      */
     @TableField(exist = false)
     private BigDecimal cnyBalance;

@@ -51,8 +51,8 @@ public interface GradeService {
      * 查询等级详情
      */
     public Grade getGradeDetail(Map<String, Object> requestMap);
-    public List<Grade> getGradeListByIds(Map<String, Object> requestMap);
 
+    public List<Grade> getGradeListByIds(Map<String, Object> requestMap);
 
     public List<?> getGradeAndMemberList(Map<String, Object> requestMap);
 

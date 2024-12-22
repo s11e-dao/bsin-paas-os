@@ -177,7 +177,6 @@ public class MemberServiceImpl implements MemberService {
 
     /**
      * 查询某一等级下的会员
-     *
      * @param requestMap
      * @return
      */
@@ -193,8 +192,9 @@ public class MemberServiceImpl implements MemberService {
         TokenParam tokenParamMap = tokenParamService.getDetailByMerchantNo(requestMap);
         String ccy = tokenParamMap.getSymbol();
 
-        List<CustomerBase> memberList = memberGradeMapper.selectMemberListByGrade(gradeNo, ccy);
+        List<CustomerBase> memberList = memberGradeMapper.selectMemberListByGrade(gradeNo);
         for (CustomerBase customer : memberList) {
+
         }
 
         return memberList;
