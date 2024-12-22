@@ -345,7 +345,7 @@ services:
       context: ./bsin-paas-os/server-apps/iot
       dockerfile: dockerfile
     ports:
-      - "9110:9110"
+      - "9120:9120"
     restart: always
     volumes:
       - ./bsin-paas-os/server-apps/iot/logs:/home/bsin-paas-os/server-apps/iot/logs
