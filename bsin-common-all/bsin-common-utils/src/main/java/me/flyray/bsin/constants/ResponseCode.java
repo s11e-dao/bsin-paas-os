@@ -38,7 +38,6 @@ public enum ResponseCode implements ReturnCode {
 
   NOT_SUPPORT_AUTH_LOGIN("100121", "暂不支持该类型授权登录"),
 
-
   // 机构 100200
   ORG_NOT_EXIST("100201", "机构不存在"),
   ORG_UPDATE_EXCEPTION("100202", "机构更新异常"),
@@ -348,6 +347,10 @@ public enum ResponseCode implements ReturnCode {
   NON_REPEATABLE_BINDING(
       "130016", "The device has been bound to another organization and can't be bound repeatedly."),
   GET_DEVICE_BINDING_STATUS_FAILED("130017", "Failed to get device binding status."),
+
+  DEVICE_CATEGORY_NOT_EXIST("130018", "设备类目不存在."),
+  DEVICE_PRODUCT_CATEGORY_NOT_EXIST("130019", "设备产品类目不存在."),
+  DEVICE_DATA_NOT_EXIST("130020", "设备数据不存在."),
   NO_REPLY("130098", "No live reply received."),
   ;
 
