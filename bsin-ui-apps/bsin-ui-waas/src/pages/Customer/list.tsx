@@ -85,7 +85,6 @@ export default ({addCurrentRecord}) => {
                 收货地址
             </a>
             <Divider type="vertical"/>
-            <Divider type="vertical"/>
             <a
                 onClick={() => {
                     toViewCustomerIdentity(record);
