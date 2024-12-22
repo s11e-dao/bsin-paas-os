@@ -130,7 +130,7 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
     @Override
     public IPage<?> getPageList(Map<String, Object> requestMap) {
         String tenantId = LoginInfoContextHelper.getTenantId();
-        String merchantNo = LoginInfoContextHelper.getMerchantNo();
+        String bizRoleTypeNo = LoginInfoContextHelper.getLoginUser().getBizRoleTypeNo();
         String appName = (String) requestMap.get("appName");
         Object paginationObj =  requestMap.get("pagination");
         Pagination pagination = new Pagination();
@@ -139,7 +139,7 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
         LambdaUpdateWrapper<BizRoleApp> warapper = new LambdaUpdateWrapper<>();
         warapper.orderByDesc(BizRoleApp::getCreateTime);
         warapper.eq(BizRoleApp::getTenantId, tenantId);
-        warapper.eq(ObjectUtil.isNotNull(merchantNo),BizRoleApp::getBizRoleTypeNo, merchantNo);
+        warapper.eq(BizRoleApp::getBizRoleTypeNo, bizRoleTypeNo);
         warapper.eq(StringUtils.isNotEmpty(appName), BizRoleApp::getAppName, appName);
         IPage<BizRoleApp> pageList = merchantAppMapper.selectPage(page,warapper);
         return pageList;

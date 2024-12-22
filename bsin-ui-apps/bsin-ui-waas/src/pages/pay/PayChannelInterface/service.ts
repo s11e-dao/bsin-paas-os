@@ -13,6 +13,17 @@ export const getPayInterfacePageList = (params) => {
   });
 };
 
+export const getPayInterfaceList = (params) => {
+  return request(waasPath + '/payChannelInterface/getList', {
+    serviceName: 'PayChannelInterfaceService',
+    methodName: 'getPageList',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
 // 添加平台
 export const addPayInterface = (params) => {
   return request(waasPath + '/payChannelInterface/add', {
@@ -43,6 +54,19 @@ export const getPayInterfaceDetail = (params) => {
   return request(waasPath + '/payChannelInterface/getDetail', {
     serviceName: 'PayChannelInterfaceService',
     methodName: 'getDetail',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
+
+export const addAppPayChannel = (params) => {
+  console.log('params', params);
+  return request(waasPath + '/payChannelConfig/add', {
+    serviceName: 'PayChannelConfigService',
+    methodName: 'add',
     version: '1.0',
     bizParams: {
       ...params,
