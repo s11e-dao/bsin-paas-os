@@ -26,6 +26,7 @@ import {
 import TableTitle from '../../../components/TableTitle';
 
 export default () => {
+
   const { TextArea } = Input;
   const { Option } = Select;
   // 控制新增模态框
@@ -36,13 +37,6 @@ export default () => {
   const [isViewRecord, setIsViewRecord] = useState({});
   // 获取表单
   const [FormRef] = Form.useForm();
-
-  const [
-    digitalAssetsCollectionList,
-    setDigitalAssetsCollectionList,
-  ] = useState([]);
-
-  const [digitalAssetsItemList, setDigitalAssetsItemList] = useState([]);
 
   /**
    * 以下内容为表格相关
@@ -76,19 +70,7 @@ export default () => {
   const actionRef = React.useRef<ActionType>();
 
   useEffect(() => {
-    // 查询数字资产集合/ 数字资产Item
-    let params = {
-      current: '1',
-      pageSize: '99',
-    };
-    getDigitalAssetsCollectionList(params).then((res) => {
-      setDigitalAssetsCollectionList(res?.data);
-      console.log(JSON.stringify(res?.data));
-    });
-    getDigitalAssetsItemList(params).then((res) => {
-      setDigitalAssetsCollectionList(res?.data);
-      console.log(JSON.stringify(res?.data));
-    });
+    
   }, []);
 
   /**
@@ -222,7 +204,7 @@ export default () => {
       <Modal
         title="Mint"
         centered
-        visible={isMintJournalModal}
+        open={isMintJournalModal}
         onOk={confirmMintJournal}
         onCancel={onCancelMintJournal}
       >
@@ -255,7 +237,6 @@ export default () => {
           >
             <InputNumber min={1} />
           </Form.Item>
-          //TODO: 支持search
           <Form.Item
             label="接受客户号"
             name="toCustomerNo"
@@ -296,7 +277,7 @@ export default () => {
         title="查看铸造详情"
         width={800}
         centered
-        visible={isViewMintJournalModal}
+        open={isViewMintJournalModal}
         onOk={() => setIsViewMintJournalModal(false)}
         onCancel={() => setIsViewMintJournalModal(false)}
       >

@@ -240,14 +240,18 @@ public class GradeServiceImpl implements GradeService {
 
         // 1.商户发行的数字积分(查询tokenParam) TODO 处理会员在商户下的积分和余额
         TokenParam tokenParamMap = tokenParamService.getDetailByMerchantNo(requestMap);
-        Integer decimals = Integer.valueOf(2);
-        String ccy = tokenParamMap.getSymbol();
-        decimals = tokenParamMap.getDecimals();
+        if(tokenParamMap != null){
+            // TODO 如果商户发行了积分，则查询会员的积分余额
+            Integer decimals = Integer.valueOf(2);
+            String ccy = tokenParamMap.getSymbol();
+            decimals = tokenParamMap.getDecimals();
+
+
+        }
 
         for (Grade grade : gradeList) {
             GradeVO gradeVO = new GradeVO();
             gradeVO.setGrade(grade);
-            gradeVO.setDecimals(decimals);
             // 查询该等级下的会员
             List<CustomerBase> memberList = memberGradeMapper.selectMemberListByGrade(grade.getSerialNo());
             gradeVO.setMemberList(memberList);
