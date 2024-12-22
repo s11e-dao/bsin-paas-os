@@ -146,6 +146,11 @@ const routes = [
         path: '/customer/member-config',
         component: '@/pages/Customer/MemberConfig/index',
       },
+      // ************************Profile***********************
+      {
+        path: '/profile',
+        component: '@/pages/Profile/index',
+      },
       // **************************业务角色等级管理**************************
       {
         path: '/grade-list',
