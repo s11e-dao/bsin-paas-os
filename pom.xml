@@ -5,10 +5,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.flyray.bsin</groupId>
-    <artifactId>bsin-paas-all-in-one</artifactId>
+    <artifactId>bsin-paas-os</artifactId>
     <packaging>pom</packaging>
     <version>2.0.0-SNAPSHOT</version>
-    <name>bsin-paas-all-in-one</name>
+    <name>bsin-paas-os</name>
     <description>bsin-Paas平台</description>
 
     <modules>

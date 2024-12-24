@@ -27,6 +27,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 import me.flyray.bsin.infrastructure.config.DefaultMenuConfig;
 import me.flyray.bsin.infrastructure.config.TenantConfig;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * TestDubboApplication.
@@ -37,6 +38,7 @@ import me.flyray.bsin.infrastructure.config.TenantConfig;
 @EnableDubbo
 @MapperScan("me.flyray.bsin.infrastructure.mapper")
 @EnableConfigurationProperties({TenantConfig.class, DefaultMenuConfig.class})
+@EnableAspectJAutoProxy(exposeProxy = true)
 public class BsinUpmsApplication {
     
     /**
