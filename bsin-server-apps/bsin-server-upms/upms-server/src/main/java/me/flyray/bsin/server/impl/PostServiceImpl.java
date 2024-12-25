@@ -56,7 +56,6 @@ public class PostServiceImpl implements PostService {
     @ShenyuDubboClient("/add")
     @Override
     public SysPost add(SysPost post) {
-        // 参数校验
         //判断岗位编码是否存在
         SysPost sysPost = sysPostMapper.getPostByPostCode(post.getPostCode());
         if (sysPost != null) {

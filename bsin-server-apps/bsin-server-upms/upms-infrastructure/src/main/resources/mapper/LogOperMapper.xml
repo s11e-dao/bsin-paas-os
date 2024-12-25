@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.LogOperMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.SysLogOperate">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="methodTitle" column="method_title" jdbcType="VARCHAR"/>
+            <result property="method" column="method" jdbcType="VARCHAR"/>
+            <result property="requestMethod" column="request_method" jdbcType="VARCHAR"/>
+            <result property="operatorChannel" column="operator_channel" jdbcType="INTEGER"/>
+            <result property="operBy" column="oper_by" jdbcType="VARCHAR"/>
+            <result property="requestUrl" column="request_url" jdbcType="VARCHAR"/>
+            <result property="operIp" column="oper_ip" jdbcType="VARCHAR"/>
+            <result property="operLocation" column="oper_location" jdbcType="VARCHAR"/>
+            <result property="inputParam" column="input_param" jdbcType="OTHER"/>
+            <result property="outputParam" column="output_param" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="errorMsg" column="error_msg" jdbcType="VARCHAR"/>
+            <result property="operTime" column="oper_time" jdbcType="TIMESTAMP"/>
+            <result property="bizRoleType" column="biz_role_type" jdbcType="TINYINT"/>
+            <result property="bizRoleTypeNo" column="biz_role_type_no" jdbcType="VARCHAR"/>
+            <result property="costTime" column="cost_time" jdbcType="BIGINT"/>
+            <result property="browser" column="browser" jdbcType="VARCHAR"/>
+            <result property="os" column="os" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,tenant_id,method_title,
+        method,request_method,operator_channel,
+        oper_by,request_url,oper_ip,
+        oper_location,input_param,output_param,
+        status,error_msg,oper_time,
+        biz_role_type,biz_role_type_no,cost_time,
+        browser,os
+    </sql>
+
+</mapper>

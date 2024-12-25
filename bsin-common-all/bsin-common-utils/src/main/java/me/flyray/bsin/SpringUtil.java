@@ -1,4 +1,4 @@
-package me.flyray.bsin.utils;
+package me.flyray.bsin;
 
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;

@@ -77,7 +77,16 @@ const routes = [
         name: '用户中心',
         path: '/userCenter',
         component: '@/pages/UserCenter/index',
-      }
+      },
+      // ************日志 sys-log*************
+      {
+        path: 'operate-log',
+        component: '@/pages/OperateLog/index',
+      },
+      {
+        path: '/login-log',
+        component: '@/pages/LoginLog/index',
+      },
     ]
   }
 

@@ -21,6 +21,7 @@
     <modules>
         <module>bsin-server-upms</module>
         <module>bsin-server-crm</module>
+        <module>bsin-server-file</module>
         <module>bsin-server-ai-agent</module>
         <module>bsin-server-waas</module>
         <module>bsin-server-search</module>

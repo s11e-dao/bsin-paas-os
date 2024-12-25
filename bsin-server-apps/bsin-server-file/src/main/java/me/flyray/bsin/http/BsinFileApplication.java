@@ -15,38 +15,23 @@
  * limitations under the License.
  */
 
-package me.flyray.bsin.server;
+package me.flyray.bsin.http;
 
-
-import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
-import org.dromara.x.file.storage.spring.EnableFileStorage;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-
-import me.flyray.bsin.infrastructure.config.DefaultMenuConfig;
-import me.flyray.bsin.infrastructure.config.TenantConfig;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
- * TestDubboApplication.
+ * ShenyuTestHttpApplication.
  */
+@SpringBootApplication
+public class BsinFileApplication {
 
-@EnableFileStorage
-@SpringBootApplication(scanBasePackages = "me.flyray.bsin")
-@EnableDubbo
-@MapperScan("me.flyray.bsin.infrastructure.mapper")
-@EnableConfigurationProperties({TenantConfig.class, DefaultMenuConfig.class})
-@EnableAspectJAutoProxy(exposeProxy = true)
-public class BsinUpmsApplication {
-    
     /**
-     * Main Entrance.
-     * @param args startup arguments
+     * main.
+     *
+     * @param args args
      */
     public static void main(final String[] args) {
-        SpringApplication.run(BsinUpmsApplication.class, args);
+        SpringApplication.run(BsinFileApplication.class, args);
     }
-
 }

@@ -297,7 +297,7 @@ export const BasicList: FC = () => {
         style={{ marginRight: "16px" }}
       >
         新建
-      </Button>,
+      </Button>
       <RadioGroup defaultValue="all">
         <RadioButton value="all">全部</RadioButton>
         <RadioButton value="waiting">已上线</RadioButton>

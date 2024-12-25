@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import me.flyray.bsin.log.annotation.Log;
+import me.flyray.bsin.log.enums.OperateType;
 import me.flyray.bsin.security.enums.BizRoleType;
+import me.flyray.bsin.server.biz.LoginBiz;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -70,7 +73,6 @@ import me.flyray.bsin.infrastructure.mapper.TenantMapper;
 import me.flyray.bsin.infrastructure.mapper.UserMapper;
 import me.flyray.bsin.infrastructure.mapper.UserPostMapper;
 import me.flyray.bsin.infrastructure.mapper.UserRoleMapper;
-import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
@@ -131,6 +133,8 @@ public class UserServiceImpl implements UserService {
     private PostRoleMapper postRoleMapper;
     @Autowired
     private ProductMapper productMapper;
+    @Autowired
+    private LoginBiz loginBiz;
 
 
     @ApiDoc(desc = "login")
@@ -180,6 +184,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 新增
      */
+    @Log(title = "权限管理-用户-新增",operateType = OperateType.INSERT)
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
     @Override
@@ -320,6 +325,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 删除
      */
+    @Log(title = "权限管理-用户-删除",operateType = OperateType.DELETE)
     @ApiDoc(desc = "delete")
     @ShenyuDubboClient("/delete")
     @Override
@@ -857,6 +863,7 @@ public class UserServiceImpl implements UserService {
         sysUserVO.setSysRoleList(roles);
         sysUserVO.setSysAppSet(appSet);
         sysUserVO.setToken(token);
+        loginBiz.addLoginLog(sysUserVO, loginUser);
         return sysUserVO;
     }
 

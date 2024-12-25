@@ -152,7 +152,7 @@
 
         <dependency>
             <groupId>me.flyray.bsin</groupId>
-            <artifactId>bsin-common-dubbo</artifactId>
+            <artifactId>bsin-common-log</artifactId>
             <version>${project.version}</version>
         </dependency>
 
