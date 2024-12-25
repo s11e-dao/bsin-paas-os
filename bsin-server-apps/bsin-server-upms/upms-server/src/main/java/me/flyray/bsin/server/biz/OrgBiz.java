@@ -17,7 +17,6 @@ public class OrgBiz {
     @Autowired
     private UserMapper userMapper;
 
-
     public Integer getUserByOrgId(String orgId) {
         List<SysUser> sysUsers = userMapper.selectUserByPostIdAndOrgId(null, orgId);
         return sysUsers.size();
@@ -25,7 +24,6 @@ public class OrgBiz {
 
     /**
      * 递归
-     *
      * @param root
      * @param all
      * @return
