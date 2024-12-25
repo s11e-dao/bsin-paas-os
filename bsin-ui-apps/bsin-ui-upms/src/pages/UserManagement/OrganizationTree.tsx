@@ -18,6 +18,7 @@ const OrganizationTree = ({ getTreeKey }) => {
   useEffect(() => {
     getTree();
   }, []);
+  
   const getTree = async () => {
     const { data } = await getOrgTree({});
     // 传给父组件用于页面一开始展示头行详细数据
