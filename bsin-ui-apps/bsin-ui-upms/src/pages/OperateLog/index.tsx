@@ -104,29 +104,6 @@ export default () => {
         </a>
         <em className="ant-list-item-action-split"></em>
       </li>
-      <li>
-        <a
-          onClick={() => {
-            toEditAds(record);
-          }}
-        >
-          编辑
-        </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-      <li>
-        <Popconfirm
-          title="确定删除此条模板？"
-          okText="是"
-          cancelText="否"
-          onConfirm={() => {
-            toDelAds(record);
-          }}
-          // onCancel={cancel}
-        >
-          <a>删除</a>
-        </Popconfirm>
-      </li>
     </ul>
   );
 

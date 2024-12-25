@@ -118,13 +118,13 @@ const columnsData: ProColumns<columnsDataType>[] = [
     dataIndex: 'browser',
     hideInSearch: true,
   },
-  {
-    title: '操作',
-    width: 150,
-    hideInSearch: true,
-    dataIndex: 'action',
-    fixed: 'right',
-  },
+  // {
+  //   title: '操作',
+  //   width: 60,
+  //   hideInSearch: true,
+  //   dataIndex: 'action',
+  //   fixed: 'right',
+  // },
 ];
 
 export default columnsData;
