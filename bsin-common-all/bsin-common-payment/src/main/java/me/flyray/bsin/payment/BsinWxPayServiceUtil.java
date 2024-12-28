@@ -2,7 +2,9 @@ package me.flyray.bsin.payment;
 
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
+import com.github.binarywang.wxpay.service.TransferService;
 import com.github.binarywang.wxpay.service.WxPayService;
+import com.github.binarywang.wxpay.service.impl.TransferServiceImpl;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -54,4 +56,17 @@ public class BsinWxPayServiceUtil {
     concurrentWxServiceHashMap.put(payConfig.getMchId(), wxPayService);
     return wxPayService;
   }
+
+    public TransferService getWxTransferService(WxPayConfig payConfig) {
+        TransferService transferService;
+        transferService = (TransferService) concurrentWxServiceHashMap.get(payConfig.getMchId());
+        if (null != transferService) {
+            return transferService;
+        }
+        WxPayService wxPayService = this.getWxPayService(payConfig);
+        transferService = new TransferServiceImpl(wxPayService);
+
+        //    concurrentWxServiceHashMap.put(payConfig.getAppId(), wxPayService);
+        return transferService;
+    }
 }
