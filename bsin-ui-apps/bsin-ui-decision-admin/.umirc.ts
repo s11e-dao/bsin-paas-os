@@ -7,7 +7,7 @@ export default {
   },
   define: {
     // 后台访问地址
-    'process.env.baseUrl': 'http://127.0.0.1:8097/gateway',
+    'process.env.baseUrl': 'http://127.0.0.1:9195',
     //'process.env.baseUrl': 'http://api.s11edao.com/gateway',
     'process.env.ipfsApiUrl': 'https://ipfsadmin.s11edao.com/api/v0', // ipfs API
     'process.env.ipfsGatewauUrl': 'https://ipfs.s11edao.com/ipfs/', // ipfs Gateway
@@ -20,6 +20,7 @@ export default {
     'process.env.contextPath_aiAgent': '/ai-agent',  // aiAgent应用
     'process.env.contextPath_brms': '/brms',  // 业务规则系统
     'process.env.contextPath_workflow': '/workflow-admin',  // 工作流系统
+    'process.env.contextPath_crm': '/crm',  // crm应用
   },
   model: {},
   qiankun: {

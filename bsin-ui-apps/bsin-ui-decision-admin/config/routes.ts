@@ -32,7 +32,7 @@ const routes = [
       // ****************************事件模型***********************
       {
         path: '/event-model',
-        component: '@/pages/EventModel/index',
+        component: '@/pages/DecisionEvent/index',
       },
       // ****************************模型***********************
       {
