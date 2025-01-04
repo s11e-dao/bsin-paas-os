@@ -19,7 +19,8 @@ export default {
     'process.env.webScoketUrl': 'ws://192.168.1.6:8126/websocket',
     'process.env.contextPath_aiAgent': '/ai-agent',  // aiAgent应用
     'process.env.contextPath_brms': '/brms',  // 业务规则系统
-    'process.env.contextPath_workflow': '/workflow-admin',  // 工作流系统
+    'process.env.contextPath_workflowAdmin': '/workflow-admin',  // workflow-admin应用
+    'process.env.contextPath_workflow': '/workflow',  // workflow应用
     'process.env.contextPath_crm': '/crm',  // crm应用
   },
   model: {},

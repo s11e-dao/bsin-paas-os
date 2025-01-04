@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.flyray.bsin.domain.entity.DecisionRule;
 import me.flyray.bsin.domain.entity.EventModel;
-import me.flyray.bsin.domain.request.ExecuteParams;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.engine.DecisionEngine;
 import me.flyray.bsin.facade.service.EventModelService;
@@ -13,6 +12,7 @@ import me.flyray.bsin.server.context.DubboHelper;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
+import org.apache.shenyu.plugin.rulesEngine.ExecuteParams;
 import org.kie.api.runtime.KieSession;
 
 import java.util.HashMap;
@@ -48,8 +48,8 @@ public class DecisionEngineServiceImpl implements DecisionEngine {
      */
     @Override
     @ShenyuDubboClient("/execute")
-    public Map<?, ?> execute(ExecuteParams executeParams) {
-        String eventCode = executeParams.getEventCode();
+    public Map<?, ?> execute(Map executeParams) {
+        String eventCode = (String) executeParams.get("eventCode");
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("eventCode", eventCode);
         EventModel eventModel = eventModelService.getDetail(requestMap);

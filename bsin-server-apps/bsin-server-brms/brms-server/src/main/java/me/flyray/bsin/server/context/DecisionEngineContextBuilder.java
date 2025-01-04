@@ -3,7 +3,6 @@ package me.flyray.bsin.server.context;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import me.flyray.bsin.domain.entity.DecisionRule;
-import me.flyray.bsin.domain.request.ExecuteParams;
 import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.infrastructure.mapper.DecisionRuleMapper;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -193,9 +192,8 @@ public class DecisionEngineContextBuilder {
      * @param decisionRule
      * @return
      */
-    public Map<String, Object> buildDecisionFact(DecisionRule decisionRule, ExecuteParams executeParams) {
-        log.info("请求参数: {}", executeParams.getParams());
-        System.out.println(executeParams.getJsonParams());
+    public Map<String, Object> buildDecisionFact(DecisionRule decisionRule, Map executeParams) {
+        log.info("请求参数: {}", executeParams);
         // 根据decisionRule中json before配置获取指标字段事实
         if(true){
             // 泛化调用获取事实指标对象，从对象获取指标字段
@@ -206,11 +204,6 @@ public class DecisionEngineContextBuilder {
         Map<String, Object> params = new HashMap<>();
         // 创建要处理的Map对象，事实数据的处理
         // params.put("sex", executeParams.getParams().get("sex"));
-        log.info("性别：{}", executeParams.getParams().get("sex"));
-        String sex = String.valueOf(executeParams.getParams().get("sex"));
-        params.put("sex", sex);
-        String userAge = String.valueOf(executeParams.getParams().get("userAge"));
-        params.put("userAge", userAge);
 
         return params;
     }

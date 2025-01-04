@@ -1,7 +1,8 @@
 package me.flyray.bsin.facade.engine;
 
 
-import me.flyray.bsin.domain.request.ExecuteParams;
+
+import org.apache.shenyu.plugin.rulesEngine.ExecuteParams;
 
 import java.util.Map;
 
@@ -11,6 +12,6 @@ import java.util.Map;
 
 public interface DecisionEngine {
 
-    Map<?, ?> execute(ExecuteParams executeParams);
+    Map<?, ?> execute(Map executeParams);
 
 }
