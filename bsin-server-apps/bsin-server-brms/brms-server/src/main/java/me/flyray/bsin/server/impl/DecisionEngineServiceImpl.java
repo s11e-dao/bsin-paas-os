@@ -12,7 +12,6 @@ import me.flyray.bsin.server.context.DubboHelper;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
-import org.apache.shenyu.plugin.rulesEngine.ExecuteParams;
 import org.kie.api.runtime.KieSession;
 
 import java.util.HashMap;
