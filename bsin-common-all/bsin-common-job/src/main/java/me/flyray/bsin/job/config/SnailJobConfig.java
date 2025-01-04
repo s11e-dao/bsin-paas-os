@@ -57,8 +57,7 @@ public class SnailJobConfig {
                 (org.apache.logging.log4j.core.LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
             org.apache.logging.log4j.core.config.Configuration config = context.getConfiguration();
             Layout<?> layout = org.apache.logging.log4j.core.layout.PatternLayout.createDefaultLayout(config);
-            SnailLog4j2Appender snailAppender = SnailLog4j2Appender.create(
-                "snail_log_appender",
+            SnailLog4j2Appender snailAppender = SnailLog4j2Appender.create("snail_log_appender",
                 null,
                 layout,
                 "true",
@@ -67,9 +66,7 @@ public class SnailJobConfig {
             );
             snailAppender.start();
             config.addAppender(snailAppender);
-            config.getRootLogger().addAppender(snailAppender, 
-                org.apache.logging.log4j.Level.INFO, 
-                null);
+            config.getRootLogger().addAppender(snailAppender, org.apache.logging.log4j.Level.INFO, null);
             context.updateLoggers();
         }
     }

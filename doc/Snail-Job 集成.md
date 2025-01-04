@@ -19,14 +19,15 @@ services:
     container_name: snail-job-server
     ports:
       - "8080:8080"
-      - "1788:1788"
+      - "17888:17888"
     environment:
-        - PARAMS=--spring.datasource.username=root
-          --spring.datasource.password=your password
-          --spring.datasource.url=jdbc:mysql://IP:3306/snail_job?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
-          --spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver  
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: your password
+      SPRING_DATASOURCE_URL: jdbc:mysql://IP:3306/snail_job?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SNAIL_JOB_RPC_TYPE: grpc
     volumes:
-      - ./snail-job/logs:/snailjob/server/data/log:rw      
+      - ./snail-job/logs:/snailjob/server/data/log:rw   
 
 ```
 
@@ -36,7 +37,7 @@ services:
 docker-compose up -d snail-job-server
 ```
 
-> ps: 需要修改`spring.datasource.password` 、spring.`datasource.url` 
+> ps: 需要修改`SPRING_DATASOURCE_PASSWORD` 、`SPRING_DATASOURCE_URL` 
 
 ### 2.  客户端集成
 
@@ -71,19 +72,21 @@ snail-job:
   # 任务调度服务器信息
   server:
     # 服务器IP地址（或域名）
-    host: 127.0.0.1 
+    host: 127.0.0.1
     # 服务器通讯端口（不是后台管理页面服务端口）
-    port: 1788
-  # 命名空间
-  namespace: 
+    port: 17888
+  # 命名空间【唯一标识】
+  namespace:
   # 接入组名（需要在 SnailJob 后台组管理创建对应名称的组）注意：若通过注解配置了这里的配置不生效
-  group: 
+  group:
   # 接入组 token
-  token: 
+  token:
   # 客户端绑定IP，必须服务器可以访问到；默认自动推断，在服务器无法调度客户端时需要手动配置
-  # host: 
-  # 客户端通讯端口，默认 1789
-  port: 1789
+#  host: 
+  # 客户端通讯端口，默认 17889；若指定-1则会生成随机端口
+  port: 17889
+  #通知类型默认使用netty,后续版本会逐渐废弃netty采用grpc
+  rpc-type: grpc
 ```
 
 然后需要在启动类中添加注解：`@EnableSnailJob`
@@ -152,7 +155,7 @@ public class SnailJobSpringbootApplication {
     <description>bsin-common-job 定时任务模块</description>
 
     <properties>
-        <snail-job.version>1.2.0-jdk8</snail-job.version>
+        <snail-job.version>1.3.0-beta1-jdk8</snail-job.version>
     </properties>
     
     <dependencies>
@@ -281,12 +284,30 @@ public class SnailJobConfig {
     </dependency>
 ```
 
-然后在配置文件中的`Snail-Job`的配置加入
+**【完整的配置】**
 
 ```yaml
 snail-job:
   # 是否开启任务调度
   enabled: true
+  # 任务调度服务器信息
+  server:
+    # 服务器IP地址（或域名）
+    host: 127.0.0.1
+    # 服务器通讯端口（不是后台管理页面服务端口）
+    port: 17888
+  # 命名空间【唯一标识】
+  namespace:
+  # 接入组名（需要在 SnailJob 后台组管理创建对应名称的组）注意：若通过注解配置了这里的配置不生效
+  group:
+  # 接入组 token
+  token:
+  # 客户端绑定IP，必须服务器可以访问到；默认自动推断，在服务器无法调度客户端时需要手动配置
+  # host: 
+  # 客户端通讯端口，默认 17889；若指定-1则会生成随机端口
+  port: 17889
+  #通知类型默认使用netty,后续版本会逐渐废弃netty采用grpc
+  rpc-type: grpc
 ```
 
 ### 3. 定时任务
@@ -354,7 +375,7 @@ public class SingleAnnotationJobTest {
 @Component
 public class MultipleJobTest {
     
-    @JobExecutor(name = "testA",method = "testA")
+    @JobExecutor(name = "testA")
     public ExecuteResult testA(JobArgs jobArgs){
         //控制台日志
         SnailJobLog.LOCAL.info("执行定时任务A，参数：{}",jobArgs);
@@ -364,7 +385,7 @@ public class MultipleJobTest {
     }
 
 
-    @JobExecutor(name = "testB",method = "testB")
+    @JobExecutor(name = "testB")
     public ExecuteResult testB(JobArgs jobArgs){
         //控制台日志
         SnailJobLog.LOCAL.info("执行定时任务B，参数：{}",jobArgs);

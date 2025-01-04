@@ -11,7 +11,7 @@ public class MultipleJobTest {
 
 
 
-    @JobExecutor(name = "testA",method = "testA")
+    @JobExecutor(name = "testA")
     public ExecuteResult testA(JobArgs jobArgs){
         //控制台日志
         SnailJobLog.LOCAL.info("执行定时任务A，参数：{}",jobArgs);
@@ -21,7 +21,7 @@ public class MultipleJobTest {
     }
 
 
-    @JobExecutor(name = "testB",method = "testB")
+    @JobExecutor(name = "testB")
     public ExecuteResult testB(JobArgs jobArgs){
         //控制台日志
         SnailJobLog.LOCAL.info("执行定时任务B，参数：{}",jobArgs);
