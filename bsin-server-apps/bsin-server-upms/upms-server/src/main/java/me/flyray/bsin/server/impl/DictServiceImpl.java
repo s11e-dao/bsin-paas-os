@@ -97,8 +97,8 @@ public class DictServiceImpl implements DictService {
     @ShenyuDubboClient("/addItem")
     @Override
     public SysDictItem addItem(SysDictItem dictItem) {
-        String id = BsinSnowflake.getId();
         String tenantId = LoginInfoContextHelper.getTenantId();
+        String id = BsinSnowflake.getId();
         dictItem.setId(id);
         dictItem.setTenantId(tenantId);
         dictItemMapper.insert(dictItem);
