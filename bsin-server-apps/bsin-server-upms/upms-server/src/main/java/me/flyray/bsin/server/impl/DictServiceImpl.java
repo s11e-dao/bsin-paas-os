@@ -145,4 +145,5 @@ public class DictServiceImpl implements DictService {
         String tenantId = LoginInfoContextHelper.getTenantId();
         return dictItemMapper.selectList(tenantId, dictItem.getDictType());
     }
+
 }
