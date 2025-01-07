@@ -70,11 +70,12 @@ public class DictServiceImpl implements DictService {
     @ShenyuDubboClient("/getPageList")
     @Override
     public IPage<?> getPageList(@Validated(QueryGroup.class) SysDictDTO dictDTO) {
+        String tenantId = LoginInfoContextHelper.getTenantId();
         String dictType = dictDTO.getDictType();
         String systemFlag = dictDTO.getSystemFlag();
         Pagination pagination = dictDTO.getPagination();
         Page<SysDict> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-        IPage<SysDict> pageList = dictMapper.selectPageList(page, dictType, systemFlag);
+        IPage<SysDict> pageList = dictMapper.selectPageList(page, tenantId, dictType, systemFlag);
         return pageList;
     }
 

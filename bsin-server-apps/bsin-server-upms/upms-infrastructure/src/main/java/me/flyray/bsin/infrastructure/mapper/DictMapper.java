@@ -47,7 +47,7 @@ public interface DictMapper extends BaseMapper<SysDict> {
 
     public void deleteById(String appId);
 
-    public IPage<SysDict> selectPageList(@Param("page") IPage<?> page, @Param("dictType") String  dictType, @Param("systemFlag") String  systemFlag);
+    public IPage<SysDict> selectPageList(@Param("page") IPage<?> page, @Param("tenantId") String  tenantId, @Param("dictType") String  dictType, @Param("systemFlag") String  systemFlag);
 
     public int updateById(SysDict dict);
 

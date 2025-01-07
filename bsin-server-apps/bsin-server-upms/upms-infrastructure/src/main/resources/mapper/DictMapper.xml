@@ -38,7 +38,7 @@
             <if test="systemFlag != null and systemFlag != ''">
                 system_flag = #{systemFlag}
             </if>
-            and del_flag = 0
+            and del_flag = 0 and tenant_id = #{tenantId}
         </where>
         ORDER BY create_time desc
     </select>
