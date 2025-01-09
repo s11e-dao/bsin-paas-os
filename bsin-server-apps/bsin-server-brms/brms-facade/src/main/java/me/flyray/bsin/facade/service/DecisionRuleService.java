@@ -24,7 +24,6 @@ import me.flyray.bsin.domain.entity.DubboTest;
 import me.flyray.bsin.utils.BsinResultEntity;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ import java.util.Map;
  * DubboTestService.
  */
 @Validated
-public interface RuleService {
+public interface DecisionRuleService {
 
     public BsinResultEntity<DubboTest> sendMq(DubboTest bean);
 
@@ -42,9 +41,14 @@ public interface RuleService {
     public DecisionRule edit(final DecisionRule decisionRule) throws IOException;
 
     /**
-     * 商户下所有
+     * 所有
      */
     public List<DecisionRule> getList(Map<String, Object> requestMap);
+
+    /**
+     * 所有
+     */
+    public List<DecisionRule> getListByNos(Map<String, Object> requestMap);
 
     /** 分页所有 */
     public IPage<?> getPageList(Map<String, Object> requestMap);

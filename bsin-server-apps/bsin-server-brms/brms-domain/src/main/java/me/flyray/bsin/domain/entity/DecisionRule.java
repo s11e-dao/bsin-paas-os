@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -22,7 +23,7 @@ import lombok.Setter;
 
 @Data
 @TableName(value ="brms_decision_rule")
-public class DecisionRule {
+public class DecisionRule implements Serializable {
 
     /**
      * 规则ID
@@ -54,12 +55,6 @@ public class DecisionRule {
      * 规则内容
      */
     private String content;
-
-    /**
-     * 规则内容JSON
-     */
-    @TableField(exist = false)
-    private JSONObject ruleJson;
 
     /**
      * 规则内容JSON
@@ -97,4 +92,5 @@ public class DecisionRule {
     private boolean isBlank(String str) {
         return str == null || str.isEmpty();
     }
+
 }

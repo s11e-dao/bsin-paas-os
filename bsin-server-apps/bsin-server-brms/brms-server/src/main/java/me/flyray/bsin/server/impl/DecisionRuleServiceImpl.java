@@ -26,6 +26,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.DecisionRule;
 import me.flyray.bsin.domain.entity.EventModel;
+import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.EventModelService;
 import me.flyray.bsin.infrastructure.mapper.DecisionRuleMapper;
 import me.flyray.bsin.mybatis.utils.Pagination;
@@ -33,9 +34,7 @@ import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.context.DecisionEngineContextBuilder;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
@@ -58,7 +57,7 @@ import org.kie.api.runtime.KieSession;
 import me.flyray.bsin.server.handler.JsonToDroolsConverter;
 
 import me.flyray.bsin.domain.entity.DubboTest;
-import me.flyray.bsin.facade.service.RuleService;
+import me.flyray.bsin.facade.service.DecisionRuleService;
 import me.flyray.bsin.mq.producer.RocketMQProducer;
 import me.flyray.bsin.utils.BsinResultEntity;
 import org.springframework.stereotype.Service;
@@ -69,7 +68,7 @@ import org.springframework.stereotype.Service;
 @ShenyuDubboService(path = "/rule", timeout = 6000)
 @ApiModule(value = "rule")
 @Service
-public class RuleServiceImpl implements RuleService {
+public class DecisionRuleServiceImpl implements DecisionRuleService {
 
     @Autowired
     private RocketMQProducer rocketMQProducer;
@@ -79,7 +78,7 @@ public class RuleServiceImpl implements RuleService {
     private DecisionRuleMapper decisionRuleMapper;
     @Autowired
     private DecisionEngineContextBuilder decisionEngineContextBuilder;
-    private static final Logger LOGGER = LoggerFactory.getLogger(RuleServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DecisionRuleServiceImpl.class);
     @DubboReference(version = "${dubbo.provider.version}")
     private EventModelService eventModelService;
 
@@ -122,11 +121,9 @@ public class RuleServiceImpl implements RuleService {
     // @GlobalTransactional
     public DecisionRule edit(final DecisionRule decisionRule) throws IOException {
         // 模型转换
-        JSONObject ruleJson = decisionRule.getRuleJson();
         // json 转换成drl字符串文件
-        String content = JsonToDroolsConverter.convertToJsonToDrl(ruleJson.toJSONString());
+        String content = JsonToDroolsConverter.convertToJsonToDrl(decisionRule.getContentJson());
         decisionRule.setContent(content);
-        decisionRule.setContentJson(ruleJson.toJSONString());
         decisionRuleMapper.updateById(decisionRule);
         LOGGER.info(GsonUtils.getInstance().toJson(RpcContext.getContext().getAttachments()));
         return decisionRule;
@@ -138,6 +135,19 @@ public class RuleServiceImpl implements RuleService {
     public List<DecisionRule> getList(Map<String, Object> requestMap) {
         String tenantId = LoginInfoContextHelper.getTenantId();
         List<DecisionRule> decisionRuleList = decisionRuleMapper.getDecisionRuleList(tenantId);
+        return decisionRuleList;
+    }
+
+    @Override
+    @ShenyuDubboClient("/getListByNos")
+    @ApiDoc(desc = "getListByNos")
+    public List<DecisionRule> getListByNos(Map<String, Object> requestMap) {
+        String tenantId = LoginInfoContextHelper.getTenantId();
+        List<String> decisionRuleNos = (List<String>) requestMap.get("decisionRuleNos");
+        if (decisionRuleNos.size() < 1) {
+            throw new BusinessException("200000", "请求参数不能为空！");
+        }
+        List<DecisionRule> decisionRuleList = decisionRuleMapper.selectBatchIds(decisionRuleNos);
         return decisionRuleList;
     }
 
