@@ -153,7 +153,7 @@ public class RuleServiceImpl implements RuleService {
         DecisionRule decisionRule = BsinServiceContext.getReqBodyDto(DecisionRule.class, requestMap);
         LambdaQueryWrapper<DecisionRule> warapper = new LambdaQueryWrapper<>();
         warapper.orderByDesc(DecisionRule::getCreateTime);
-        warapper.eq(DecisionRule::getTenantId, "1");
+        warapper.eq(DecisionRule::getTenantId, loginUser.getTenantId());
         IPage<DecisionRule> pageList = decisionRuleMapper.selectPage(page, warapper);
         return pageList;
     }
