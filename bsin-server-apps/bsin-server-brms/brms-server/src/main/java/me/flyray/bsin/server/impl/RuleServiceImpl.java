@@ -18,14 +18,22 @@
 package me.flyray.bsin.server.impl;
 
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.DecisionRule;
 import me.flyray.bsin.domain.entity.EventModel;
 import me.flyray.bsin.facade.service.EventModelService;
 import me.flyray.bsin.infrastructure.mapper.DecisionRuleMapper;
+import me.flyray.bsin.mybatis.utils.Pagination;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.context.DecisionEngineContextBuilder;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
@@ -103,13 +111,23 @@ public class RuleServiceImpl implements RuleService {
     @ApiDoc(desc = "add")
     // @GlobalTransactional
     public DecisionRule add(final DecisionRule decisionRule) throws IOException {
+        decisionRule.setTenantId(LoginInfoContextHelper.getTenantId());
+        decisionRuleMapper.insert(decisionRule);
+        return decisionRule;
+    }
+
+    @Override
+    @ShenyuDubboClient("/edit")
+    @ApiDoc(desc = "edit")
+    // @GlobalTransactional
+    public DecisionRule edit(final DecisionRule decisionRule) throws IOException {
         // 模型转换
         JSONObject ruleJson = decisionRule.getRuleJson();
         // json 转换成drl字符串文件
         String content = JsonToDroolsConverter.convertToJsonToDrl(ruleJson.toJSONString());
         decisionRule.setContent(content);
         decisionRule.setContentJson(ruleJson.toJSONString());
-        decisionRuleMapper.insert(decisionRule);
+        decisionRuleMapper.updateById(decisionRule);
         LOGGER.info(GsonUtils.getInstance().toJson(RpcContext.getContext().getAttachments()));
         return decisionRule;
     }
@@ -118,9 +136,26 @@ public class RuleServiceImpl implements RuleService {
     @ShenyuDubboClient("/getList")
     @ApiDoc(desc = "getList")
     public List<DecisionRule> getList(Map<String, Object> requestMap) {
-        String tenantId = MapUtils.getString(requestMap, "tenantId");
+        String tenantId = LoginInfoContextHelper.getTenantId();
         List<DecisionRule> decisionRuleList = decisionRuleMapper.getDecisionRuleList(tenantId);
         return decisionRuleList;
+    }
+
+    @ShenyuDubboClient("/getPageList")
+    @ApiDoc(desc = "getPageList")
+    @Override
+    public IPage<?> getPageList(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        Object paginationObj = requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj, pagination);
+        Page<DecisionRule> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+        DecisionRule decisionRule = BsinServiceContext.getReqBodyDto(DecisionRule.class, requestMap);
+        LambdaQueryWrapper<DecisionRule> warapper = new LambdaQueryWrapper<>();
+        warapper.orderByDesc(DecisionRule::getCreateTime);
+        warapper.eq(DecisionRule::getTenantId, "1");
+        IPage<DecisionRule> pageList = decisionRuleMapper.selectPage(page, warapper);
+        return pageList;
     }
 
     @Override

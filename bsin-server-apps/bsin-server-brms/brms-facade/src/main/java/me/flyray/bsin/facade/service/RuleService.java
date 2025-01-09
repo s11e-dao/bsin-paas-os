@@ -18,6 +18,7 @@
 package me.flyray.bsin.facade.service;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.DecisionRule;
 import me.flyray.bsin.domain.entity.DubboTest;
 import me.flyray.bsin.utils.BsinResultEntity;
@@ -38,10 +39,15 @@ public interface RuleService {
 
     public DecisionRule add(final DecisionRule decisionRule) throws IOException;
 
+    public DecisionRule edit(final DecisionRule decisionRule) throws IOException;
+
     /**
      * 商户下所有
      */
     public List<DecisionRule> getList(Map<String, Object> requestMap);
+
+    /** 分页所有 */
+    public IPage<?> getPageList(Map<String, Object> requestMap);
 
     /**
      * find by id.

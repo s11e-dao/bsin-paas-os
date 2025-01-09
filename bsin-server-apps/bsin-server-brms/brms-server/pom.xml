@@ -96,7 +96,6 @@
             <version>${spring-boot.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-client</artifactId>

@@ -9,24 +9,26 @@
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="kiePackageName" column="kie_package_name" jdbcType="VARCHAR"/>
             <result property="kieBaseName" column="kie_base_name" jdbcType="VARCHAR"/>
+            <result property="ruleName" column="rule_name" jdbcType="VARCHAR"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
             <result property="contentJson" column="content_json" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="type" column="type" jdbcType="VARCHAR"/>
             <result property="version" column="version" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         serial_no,tenant_id,kie_package_name,
-        kie_base_name,content,content_json,create_time,
-        update_time,type,version
+        kie_base_name,rule_name,content,content_json,create_time,
+        update_time,type,version,description
     </sql>
 
     <select id="getDecisionRuleList" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"></include>
-        from decision_rule
+        from brms_decision_rule
         <where>
             <if test="tenantId != null and tenantId != ''">
                 tenant_id = #{tenantId,jdbcType=VARCHAR}
@@ -37,13 +39,13 @@
     <select id="getAllDecisionRuleList" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"></include>
-        from decision_rule
+        from brms_decision_rule
     </select>
 
     <select id="selectById" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"></include>
-        from decision_rule
+        from brms_decision_rule
             where serial_no = #{serialNo}
     </select>
 

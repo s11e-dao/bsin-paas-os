@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ import lombok.Setter;
  */
 
 @Data
+@TableName(value ="brms_decision_rule")
 public class DecisionRule {
 
     /**
@@ -32,6 +34,11 @@ public class DecisionRule {
      * kbase的名字
      */
     private String tenantId;
+
+    /**
+     * 规则名称
+     */
+    private String ruleName;
 
     /**
      * kbase的名字: 规则编号
@@ -70,6 +77,11 @@ public class DecisionRule {
      * 规则更新时间
      */
     private Date updateTime;
+
+    /**
+     * 规则描述
+     */
+    private String description;
 
     /**
      * 版本号
