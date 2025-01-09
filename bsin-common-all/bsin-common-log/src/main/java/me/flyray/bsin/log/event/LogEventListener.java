@@ -55,7 +55,8 @@ public class LogEventListener {
         Map<String, Object> attachments = RpcContext.getServiceContext().getObjectAttachments();
         log.info("attachments：{}", attachments);
         final UserAgent userAgent = UserAgentUtil.parse(MapUtil.getStr(attachments, "userAgent", ""));
-        String ip = MapUtil.getStr(attachments, "clientIp", null);
+        String clientIp = MapUtil.getStr(attachments, "clientIp", null);
+        String ip = MapUtil.getStr(attachments, "ip", null);
         String address = AddressUtils.getRealAddressByIP(ip);
         StringBuilder logInfo = new StringBuilder();
         logInfo.append(getBlock(ip));
@@ -63,12 +64,18 @@ public class LogEventListener {
         logInfo.append(getBlock(logininforEvent.getUsername()));
         logInfo.append(getBlock(logininforEvent.getStatus()));
         logInfo.append(getBlock(logininforEvent.getMessage()));
+        logininforEvent.setIp(ip);
+
         // 打印信息到日志
         log.info(logInfo.toString(), logininforEvent.getArgs());
         // 获取客户端操作系统
         String os = userAgent != null ? userAgent.getOs().getName() : "";
         // 获取客户端浏览器
         String browser = userAgent != null ? userAgent.getBrowser().getName() : "";
+        logininforEvent.setOs(os);
+        logininforEvent.setBrowser(browser);
+        logininforEvent.setIp(ip);
+        logininforEvent.setLoginLocation(clientIp);
         Map<String, Object> requestMap = BeanUtil.beanToMap(logininforEvent);
         // 日志状态
         if (StringUtils.equalsAny(logininforEvent.getStatus(), LoginActionEnum.LOGIN_SUCCESS.name(), LoginActionEnum.LOGOUT.name(), LoginActionEnum.REGISTER.name())) {

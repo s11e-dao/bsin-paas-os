@@ -15,7 +15,6 @@ public class LoginBiz {
             logininforEvent.setTenantId(loginUser.getTenantId());
             logininforEvent.setBizRoleType(loginUser.getBizRoleType());
             logininforEvent.setBizRoleTypeNo(loginUser.getBizRoleTypeNo());
-
             logininforEvent.setUsername(userVO.getSysUser().getUsername());
             logininforEvent.setStatus("1");
             logininforEvent.setMessage("登录成功");

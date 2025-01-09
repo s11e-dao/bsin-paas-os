@@ -853,6 +853,7 @@ public class UserServiceImpl implements UserService {
         loginUser.setUsername(sysUser.getUsername());
         loginUser.setPhone(sysUser.getPhone());
         loginUser.setBizRoleType(sysUser.getBizRoleType());
+        loginUser.setBizRoleTypeNo(sysUser.getUserId());
         String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
         // 组装返回报文
         SysUserVO sysUserVO = new SysUserVO();
