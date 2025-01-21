@@ -63,4 +63,5 @@ public class WsServerEndpoint {
     public String onMsg(final String text) {
         return "server send message：" + text;
     }
+
 }
