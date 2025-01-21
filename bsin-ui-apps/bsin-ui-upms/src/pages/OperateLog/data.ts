@@ -17,7 +17,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   // 配置搜索框
   {
     title: '登录地址',
-    dataIndex: 'title',
+    dataIndex: 'operIp',
     hideInTable: true,
     fieldProps: {
       maxLength: 20,
@@ -25,7 +25,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '用户名称',
-    dataIndex: 'title',
+    dataIndex: 'operBy',
     hideInTable: true,
     fieldProps: {
       maxLength: 20,
@@ -55,6 +55,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '操作方法',
     width: 320,
+    ellipsis: true,
     dataIndex: 'method',
     hideInSearch: true,
   },
@@ -62,18 +63,6 @@ const columnsData: ProColumns<columnsDataType>[] = [
     title: '请求方式',
     width: 100,
     dataIndex: 'requestMethod',
-    hideInSearch: true,
-  },
-  {
-    title: '请求方式',
-    width: 100,
-    dataIndex: 'requestMethod',
-    hideInSearch: true,
-  },
-  {
-    title: '操作者渠道',
-    width: 100,
-    dataIndex: 'operatorChannel',
     hideInSearch: true,
   },
   {
@@ -89,26 +78,16 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
   },
   {
-    title: '操作地点',
-    width: 160,
-    dataIndex: 'operLocation',
-    hideInSearch: true,
-  },
-  {
-    title: '操作地点',
-    width: 160,
-    dataIndex: 'inputParam',
-    hideInSearch: true,
-  },
-  {
     title: '请求参数',
     width: 140,
-    dataIndex: 'createTime',
+    ellipsis: true,
+    dataIndex: 'inputParam',
     hideInSearch: true,
   },
   {
     title: '响应参数',
     width: 140,
+    ellipsis: true,
     dataIndex: 'outputParam',
     hideInSearch: true,
   },
@@ -116,6 +95,12 @@ const columnsData: ProColumns<columnsDataType>[] = [
     title: '浏览器信息',
     width: 140,
     dataIndex: 'browser',
+    hideInSearch: true,
+  },
+  {
+    title: '操作地点',
+    width: 160,
+    dataIndex: 'operLocation',
     hideInSearch: true,
   },
   // {

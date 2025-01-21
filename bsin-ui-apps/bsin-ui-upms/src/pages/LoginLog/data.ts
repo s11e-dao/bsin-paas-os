@@ -40,14 +40,8 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '登录账号',
-    width: 160,
+    width: 120,
     dataIndex: 'username',
-    hideInSearch: true,
-  },
-  {
-    title: '用户昵称',
-    width: 320,
-    dataIndex: 'nickname',
     hideInSearch: true,
   },
   {
@@ -64,7 +58,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '登录时间',
-    width: 100,
+    width: 180,
     dataIndex: 'loginTime',
     hideInSearch: true,
   },
@@ -72,6 +66,12 @@ const columnsData: ProColumns<columnsDataType>[] = [
     title: '浏览器信息',
     width: 100,
     dataIndex: 'browser',
+    hideInSearch: true,
+  },
+  {
+    title: '用户昵称',
+    width: 320,
+    dataIndex: 'nickname',
     hideInSearch: true,
   },
   {
