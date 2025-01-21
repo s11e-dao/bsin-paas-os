@@ -139,7 +139,10 @@ export const BasicList: FC = () => {
           res ? message.success('编辑成功') : message.error('编辑失败！');
         }
         // 刷新表格
-        actionRef.current?.reload();
+        postRun("edit", {
+          pageNum: 1,
+          pageSize: 99
+        });
         // 重置表单Form
         formRef.resetFields();
         setAppFormModal(false);
