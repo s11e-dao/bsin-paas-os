@@ -7,8 +7,8 @@ export default {
   },
   define: {
     'process.env.title': 'Bsin-Paas',
-    'process.env.subtitle': 's11e network web3品牌',
-    'process.env.paasDescription': 'BsinPaaS一站式开发平台',
+    'process.env.subtitle': 'BsinPaaS一站式开发平台',
+    'process.env.paasDescription': 's11e network web3品牌',
     'process.env.saasTitle': "bigan",
     'process.env.saasDescrition': "一站式的Web3.0品牌构建服务网络",
     // 后台访问地址

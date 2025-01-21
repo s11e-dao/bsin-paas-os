@@ -251,7 +251,7 @@ export const BasicList: FC = () => {
 
   // 点击删除
   const confirmDelFunction = async (appFunctionId: string) => {
-    let res = await delAppInfo({ appFunctionId });
+    let res = await delAppFunction({ appFunctionId });
     res ? message.success('删除成功') : message.error('删除失败！');
     // 刷新表格
     functionForm.current?.reload();
@@ -265,11 +265,19 @@ export const BasicList: FC = () => {
     total: appList.length,
   };
   
-  const deleteItem = (id: string) => {
-    postRun('delete', {
-      pageNum: 1,
-      pageSize: 99
-    });
+  const deleteItem = (appId: string) => {
+    console.log(appId)
+    delAppInfo({appId:appId}).then(res=>{
+      if(res?.code == 0){
+        message.success('删除成功')
+        postRun("delete", {
+          pageNum: 1,
+          pageSize: 99
+        });
+      }else{
+        message.error('删除失败！')
+      }
+    })
   };
 
   const editAndDelete = (key: string | number, currentItem: BasicListItemDataType) => {
@@ -281,7 +289,7 @@ export const BasicList: FC = () => {
         content: '确定删除该任务吗？',
         okText: '确认',
         cancelText: '取消',
-        onOk: () => deleteItem(currentItem.id),
+        onOk: () => deleteItem(currentItem.appId),
       });
     }
   };
@@ -330,7 +338,7 @@ export const BasicList: FC = () => {
   );
  
   const handleSubmit = (values: BasicListItemDataType) => {
-    const method = values?.id ? 'update' : 'add';
+    const method = values?.appId ? 'update' : 'add';
     postRun(method, values);
   };
 
