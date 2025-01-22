@@ -2,8 +2,10 @@ package me.flyray.bsin.payment;
 
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
+import com.github.binarywang.wxpay.service.ProfitSharingService;
 import com.github.binarywang.wxpay.service.TransferService;
 import com.github.binarywang.wxpay.service.WxPayService;
+import com.github.binarywang.wxpay.service.impl.ProfitSharingServiceImpl;
 import com.github.binarywang.wxpay.service.impl.TransferServiceImpl;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
 import org.springframework.stereotype.Service;
@@ -16,8 +18,11 @@ import java.util.stream.Collectors;
 @Service
 public class BsinWxPayServiceUtil {
 
-  private static ConcurrentHashMap<String, WxPayService> concurrentWxServiceHashMap =
-      new ConcurrentHashMap();
+  private static ConcurrentHashMap<String, WxPayService> concurrentWxServiceHashMap = new ConcurrentHashMap();
+
+  private static ConcurrentHashMap<String, TransferService> concurrentWxTransferServiceHashMap = new ConcurrentHashMap();
+
+  private static ConcurrentHashMap<String, ProfitSharingService> concurrentWxProfitSharingServiceHashMap = new ConcurrentHashMap();
 
   public WxPayService getWxPayService(WxPayConfig payConfig) {
 
@@ -59,7 +64,7 @@ public class BsinWxPayServiceUtil {
 
     public TransferService getWxTransferService(WxPayConfig payConfig) {
         TransferService transferService;
-        transferService = (TransferService) concurrentWxServiceHashMap.get(payConfig.getMchId());
+        transferService = (TransferService) concurrentWxTransferServiceHashMap.get(payConfig.getMchId());
         if (null != transferService) {
             return transferService;
         }
@@ -69,4 +74,20 @@ public class BsinWxPayServiceUtil {
         //    concurrentWxServiceHashMap.put(payConfig.getAppId(), wxPayService);
         return transferService;
     }
+
+
+    public ProfitSharingService getProfitSharingService(WxPayConfig payConfig) {
+        ProfitSharingService profitSharingService;
+        profitSharingService = (ProfitSharingService) concurrentWxProfitSharingServiceHashMap.get(payConfig.getMchId());
+        if (null != profitSharingService) {
+            return profitSharingService;
+        }
+        WxPayService wxPayService = this.getWxPayService(payConfig);
+
+        profitSharingService = new ProfitSharingServiceImpl(wxPayService);
+
+        return profitSharingService;
+    }
+
+
 }
