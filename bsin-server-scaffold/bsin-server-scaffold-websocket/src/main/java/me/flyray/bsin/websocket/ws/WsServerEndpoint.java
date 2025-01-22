@@ -26,6 +26,7 @@ import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
+import javax.websocket.server.PathParam;
 
 /**
  * WsServerEndpoint.
@@ -41,7 +42,7 @@ public class WsServerEndpoint {
      * @param session session
      */
     @OnOpen
-    public void onOpen(final Session session) {
+    public void onOpen(@PathParam("key") String key, final Session session) {
         LOG.info("connect successful");
     }
 
@@ -60,7 +61,8 @@ public class WsServerEndpoint {
      * @return response
      */
     @OnMessage
-    public String onMsg(final String text) {
+    public String onMsg(@PathParam("key") String historyId, final String text) {
+        LOG.info("server revice: {}", text);
         return "server send message：" + text;
     }
 
