@@ -29,7 +29,7 @@ shenyu:
       props:
         contextPath: /ws-annotation
         appName: ws-annotation
-        port: 8001
+        port: ${server.port}
 
   #  discovery:
   #    enable: true

@@ -63,10 +63,11 @@ const routes = [
         path: '/ai-knowledge-base',
         component: '@/pages/KnowledgeBase/index',
       },
-      // 生成式聊天
+      // 智能对话
       {
         path: '/bsin-chat',
-        component: '@/pages/BsinChat/index',
+        // component: '@/pages/BsinChat/index',
+        component: '@/pages/Chat/index',
       },
       // 敏感词
       {
