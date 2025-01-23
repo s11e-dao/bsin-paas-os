@@ -42,7 +42,7 @@ export default ({
       if (window.innerWidth < 768 && offsetWidth > 400) {
         mode = 'horizontal'
       }
-      setInitConfig({ ...initConfig, mode: mode as SettingsState['mode'] })
+      setInitConfig((prevConfig) => ({ ...prevConfig, mode: mode as SettingsState['mode'] }))
     })
   }
 
@@ -86,7 +86,7 @@ export default ({
       >
         <div className={styles.leftMenu}>
           <Menu
-            style={{ width: 140 }}
+            style={{ width: 140, borderInlineEnd: "none", paddingLeft: '10px' }}
             mode={initConfig.mode}
             selectedKeys={[initConfig.selectKey]}
             onClick={({ key }) => {

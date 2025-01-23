@@ -425,13 +425,6 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
                       <List.Item key={item.serialNo}>
                         <Card
                           style={{ width: 300 }}
-                          cover={
-                            <img
-                              style={{ width: '100%', height: '260px' }}
-                              alt="example"
-                              src={item.coverImage}
-                            />
-                          }
                           actions={[
                             <EditOutlined
                               key="edit"
@@ -467,11 +460,7 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
                           <Meta
                             avatar={
                               <Avatar
-                                src={
-                                  item.defaultFlag == true
-                                    ? defaultFlag
-                                    : notDefaultFlag
-                                }
+                                src={item.coverImage}
                               />
                             }
                             title={item.name}
