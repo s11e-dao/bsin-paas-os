@@ -21,8 +21,9 @@ export default () => {
 
 
   useEffect(() => {
+
     // 创建 WebSocket 连接
-    let newSocket = new WebSocket("ws://192.168.198.197:9195/ws-annotation/myWs");
+    let newSocket = new WebSocket("ws://192.168.198.197:9195/ws-ai-agent/chat/f/t/1");
 
     // 连接成功的处理函数
     newSocket.onopen = () => {

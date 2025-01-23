@@ -44,7 +44,6 @@ import {
 } from '@ant-design/icons'
 
 // import { chatData } from '../mocks/threebody'
-import { ProChat, ProChatInstance, ChatMessageMap } from '@ant-design/pro-chat'
 
 import { useTheme } from 'antd-style'
 import { MockResponse } from '../mocks/streamResponse'
@@ -257,7 +256,6 @@ export default ({ customerInfo }) => {
 
   let defaultMerchantNo = process.env.defaultMerchantNo
   
-  const proChatRef = useRef<ProChatInstance>()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [size, setSize] = useState<DrawerProps['size']>()
   const [loading, setLoading] = useState(false)
