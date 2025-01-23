@@ -54,6 +54,8 @@ import {
 import { PlusOutlined } from '@ant-design/icons'
 import styles from './index.css'
 
+import './style.less'
+
 // 样式设计参考：https://fastgpt.run/dataset/list
 
 const { Dragger } = Upload
@@ -126,7 +128,7 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
           message.error(res.message)
         }
       })
-      .catch(() => {})
+      .catch(() => { })
   }
 
   // 点击编辑
@@ -165,7 +167,7 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
           message.error(res.message)
         }
       })
-      .catch(() => {})
+      .catch(() => { })
   }
 
   // 点击删除
@@ -207,7 +209,7 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
           message.error(res.message)
         }
       })
-      .catch(() => {})
+      .catch(() => { })
   }
 
   // 取消删除
@@ -284,7 +286,7 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
     onDrop(e) {
       console.log('Dropped files', e.dataTransfer.files)
     },
-    onRemove(e) {},
+    onRemove(e) { },
   }
   const formItemComponent = () => {
     return (
@@ -326,6 +328,14 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
     )
   }
 
+  // 使用状态来追踪当前活动的Tab
+  const [activeTab, setActiveTab] = useState(1);
+
+  // 切换Tab的事件处理函数
+  const handleTabClick = (tabNumber: any) => {
+    setActiveTab(tabNumber);
+  };
+
   return (
     <Card>
       <Button
@@ -338,7 +348,40 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
       >
         新增
       </Button>
-      <Descriptions title="我的知识库"></Descriptions>
+      <div>
+        <div
+            style={{
+              backgroundColor: '#f1f1f1',
+              width: '360px',
+              marginBottom: '10px',
+              height: '40px',
+              lineHeight: '40px',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center' /* 在交叉轴上居中 */,
+              justifyContent: 'center' /* 在主轴上居中 */,
+            }}
+          >
+            <p
+              onClick={() => handleTabClick(1)}
+              className={activeTab === 1 ? 'navItemA' : 'navItem'}
+            >
+              指令知识库
+            </p>
+            <p
+              onClick={() => handleTabClick(2)}
+              className={activeTab === 2 ? 'navItemA' : 'navItem'}
+            >
+              文档知识库
+            </p>
+            <p
+              onClick={() => handleTabClick(3)}
+              className={activeTab === 3 ? 'navItemA' : 'navItem'}
+            >
+              业务知识库
+            </p>
+          </div>
+      </div>
       <Space
         size="middle"
         direction={'vertical'}
@@ -354,13 +397,6 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
               return (
                 <List.Item key={item.serialNo}>
                   <Card
-                    cover={
-                      <img
-                        style={{ width: '100%', height: '220px' }}
-                        alt="example"
-                        src={item.coverImage}
-                      />
-                    }
                     actions={[
                       <EditOutlined
                         key="edit"
@@ -396,11 +432,7 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
                     <Meta
                       avatar={
                         <Avatar
-                          src={
-                            item.defaultFlag == true
-                              ? defaultFlag
-                              : notDefaultFlag
-                          }
+                          src={item?.coverImage}
                         />
                       }
                       title={item.name}
