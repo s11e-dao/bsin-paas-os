@@ -72,6 +72,26 @@ export default () => {
     </>
   );
 
+  const renderForm = () => {
+    const isOperator = userInfo?.bizRoleType === "2";
+    const isMerchant = userInfo?.bizRoleType === "3";
+
+    return (
+      <>
+        {isOperator && renderOperatorForm()}
+        {isMerchant && renderMerchantForm()}
+
+        {(isOperator || isMerchant) && (
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <Button type="primary" onClick={confirmActivity}>
+              保存
+            </Button>
+          </Form.Item>
+        )}
+      </>
+    );
+  };
+
   return (
     <Card title="会员配置">
       <Alert
@@ -86,14 +106,7 @@ export default () => {
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
       >
-        {userInfo?.bizRoleType === "2" ? renderOperatorForm() : null}
-        {userInfo?.bizRoleType === "3" ? renderMerchantForm() : null}
-
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" onClick={confirmActivity}>
-            保存
-          </Button>
-        </Form.Item>
+        {renderForm()}
       </Form>
     </Card>
   );
