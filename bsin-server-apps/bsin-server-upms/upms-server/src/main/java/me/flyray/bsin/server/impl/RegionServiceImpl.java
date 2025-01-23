@@ -83,16 +83,8 @@ public class RegionServiceImpl implements RegionService {
     public List<RegionTree> getSubNodeTree() {
         //等级行政区域
         List<SysRegion> regionList = regionMapper.selectAllList();
-        // 以parentCode为键，创建一个映射，以便快速访问子区域
-        Map<String, List<SysRegion>> groupedRegions = regionList.stream()
-                .collect(Collectors.groupingBy(SysRegion::getParentCode));
-        List<RegionTree> regionTreeList = groupedRegions.getOrDefault("0", new ArrayList<>()).stream()
-                .map(r -> new RegionTree(r.getRegionId(), r.getCode(), r.getName(), r.getParentCode(),
-                        r.getLayer(), r.getSort(), r.getStatus(), r.getRemark(), r.getCreateTime(), r.getUpdateTime(),
-                        regionBiz.getChildren(r, groupedRegions)))
-                .sorted(Comparator.comparing(RegionTree::getSort))
-                .collect(Collectors.toList());
-        return regionTreeList;
+        return regionBiz.buildRegionTree(regionList);
+
     }
 
     @ApiDoc(desc = "getRegionById")
@@ -107,15 +99,6 @@ public class RegionServiceImpl implements RegionService {
     @Override
     public List<RegionTree> getProvinceAndCityNodeTree() {
         List<SysRegion> regionList = regionMapper.selectProviceAndCityList();
-        // 以parentCode为键，创建一个映射，以便快速访问子区域
-        Map<String, List<SysRegion>> groupedRegions = regionList.stream()
-                .collect(Collectors.groupingBy(SysRegion::getParentCode));
-        List<RegionTree> regionTreeList = groupedRegions.getOrDefault("0", new ArrayList<>()).stream()
-                .map(r -> new RegionTree(r.getRegionId(), r.getCode(), r.getName(), r.getParentCode(),
-                        r.getLayer(), r.getSort(), r.getStatus(), r.getRemark(), r.getCreateTime(), r.getUpdateTime(),
-                        regionBiz.getChildren(r, groupedRegions)))
-                .sorted(Comparator.comparing(RegionTree::getSort))
-                .collect(Collectors.toList());
-        return regionTreeList;
+        return regionBiz.buildRegionTree(regionList);
     }
 }
