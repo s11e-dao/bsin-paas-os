@@ -353,7 +353,7 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
             style={{
               backgroundColor: '#f1f1f1',
               width: '360px',
-              marginBottom: '10px',
+              marginBottom: '15px',
               height: '40px',
               lineHeight: '40px',
               borderRadius: '10px',
