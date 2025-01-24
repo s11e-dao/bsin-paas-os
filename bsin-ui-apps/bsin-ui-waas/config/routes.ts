@@ -167,12 +167,7 @@ const routes = [
         path: '/condition-list',
         component: '@/pages/conditionAndEquity/ConditionList/index',
       },
-      // **************************事件、事件模型**************************
-      // 事件配置
-      {
-        path: '/event',
-        component: '@/pages/Event/index',
-      },
+     
       // **************************钱包**************************
       {
         path: '/wallet',
