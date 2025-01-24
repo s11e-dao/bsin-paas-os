@@ -43,7 +43,7 @@ public interface EquityService{
 
 
     /**
-     * 租户下所有
+     * 授权权益
      */
     public Map<String, Object> grant(Map<String, Object> requestMap) throws UnsupportedEncodingException;
 

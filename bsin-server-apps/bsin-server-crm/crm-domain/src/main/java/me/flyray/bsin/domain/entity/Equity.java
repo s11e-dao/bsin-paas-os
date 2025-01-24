@@ -87,7 +87,7 @@ public class Equity implements Serializable {
     /**
      * 满减金额、赠送金额、赠送数量 折扣值
      */
-    private BigDecimal amount;
+    private Integer value;
 
     /**
      * 叠加使用标识(1:是,2:否)

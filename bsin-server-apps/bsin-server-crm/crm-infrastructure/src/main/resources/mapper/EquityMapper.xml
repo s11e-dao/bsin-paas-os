@@ -17,7 +17,7 @@
             <result property="type" column="type" jdbcType="TINYINT"/>
             <result property="typeNo" column="type_no" jdbcType="VARCHAR"/>
             <result property="totalAmount" column="total_amount" jdbcType="DECIMAL"/>
-            <result property="amount" column="amount" jdbcType="DECIMAL"/>
+            <result property="value" column="value" jdbcType="INTEGER"/>
             <result property="equityRelationshipNo" column="equity_relationship_no" jdbcType="VARCHAR"/>
             <result property="overFlag" column="over_flag" jdbcType="VARCHAR"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
@@ -28,7 +28,7 @@
         update_by,update_time,del_flag,
         tenant_id,merchant_no,name,
         type,type_no,total_amount,
-        amount,over_flag,remark
+        value,over_flag,remark
     </sql>
 
     <select id="getEquityList" resultMap="BaseResultMap">
@@ -37,7 +37,7 @@
             e.update_by,e.update_time,e.del_flag,
             e.tenant_id,e.merchant_no,e.name,
             e.type,e.type_no,e.total_amount,
-            e.amount,e.over_flag,e.remark,
+            e.value,e.over_flag,e.remark,
             er.serial_no as equity_relationship_no,
             er.type_no as ertype_no,
             er.category_no

@@ -13,6 +13,19 @@ spring:
   application:
     name: scaffold
 
+shenyu:
+  register:
+    registerType: http #zookeeper #etcd #nacos #consul
+    serverLists: http://127.0.0.1:9095 #localhost:2181 #http://localhost:2379 #localhost:8848
+    props:
+      username: admin
+      password: 123456_Aa
+  client:
+    dubbo:
+      props:
+        contextPath: /brms
+        appName: brms
+
 # Nacos 配置
 nacos:
   server-addr: 127.0.0.1:8848

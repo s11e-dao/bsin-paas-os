@@ -12,7 +12,7 @@
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
-            <result property="amount" column="amount" jdbcType="DECIMAL"/>
+            <result property="value" column="value" jdbcType="INTEGER"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="conditionRelationshipNo" column="condition_relationship_no" jdbcType="VARCHAR"/>
@@ -27,7 +27,7 @@
     <sql id="Base_Column_List">
         serial_no,create_by,create_time,
         update_by,update_time,del_flag,
-        tenant_id,amount,remark,name,
+        tenant_id,value,remark,name,
         merchant_no,type_no,type_protocol,type_token_id,type
     </sql>
 
@@ -35,7 +35,7 @@
         select
             c.serial_no,c.create_by,c.create_time,
             c.update_by,c.update_time,c.del_flag,
-            c.tenant_id,c.amount, c.remark, c.name,
+            c.tenant_id,c.value, c.remark, c.name,
             c.merchant_no,c.type,c.type_no,
             cr.type_no as crtype_no,
             cr.serial_no as condition_relationship_no,

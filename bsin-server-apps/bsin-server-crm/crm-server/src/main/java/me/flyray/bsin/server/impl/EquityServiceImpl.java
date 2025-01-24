@@ -134,7 +134,7 @@ public class EquityServiceImpl implements EquityService {
       throws UnsupportedEncodingException {
 
     Equity equity = (Equity) requestMap.get("equity");
-    requestMap.put("amount", equity.getAmount());
+    requestMap.put("value", equity.getValue());
     switch (EquityType.getInstanceById(equity.getType())) {
       case BADGE:
       case PFP:

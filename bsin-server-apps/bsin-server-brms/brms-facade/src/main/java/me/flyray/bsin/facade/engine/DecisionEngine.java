@@ -1,6 +1,8 @@
 package me.flyray.bsin.facade.engine;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.util.Map;
 
 /**
@@ -9,6 +11,6 @@ import java.util.Map;
 
 public interface DecisionEngine {
 
-    Map<?, ?> execute(Map executeParams);
+    Map<?, ?> execute(Map executeParams) throws JsonProcessingException;
 
 }

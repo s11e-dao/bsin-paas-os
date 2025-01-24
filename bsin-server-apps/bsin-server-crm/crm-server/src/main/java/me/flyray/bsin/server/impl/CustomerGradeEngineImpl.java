@@ -37,10 +37,17 @@ public class CustomerGradeEngineImpl implements GradeEngine {
     @DubboReference(version = "${dubbo.provider.version}")
     private GradeService gradeService;
 
+    /**
+     * 判断等级变更
+     * @param requestMap
+     * @return
+     */
     @ApiDoc(desc = "execute")
     @ShenyuDubboClient("/execute")
     @Override
     public Map<String, Object> execute(Map<String, Object> requestMap) {
+        // 事件
+
         return null;
     }
 

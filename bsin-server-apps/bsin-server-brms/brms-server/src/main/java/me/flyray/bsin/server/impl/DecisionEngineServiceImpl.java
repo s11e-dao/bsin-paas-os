@@ -1,5 +1,6 @@
 package me.flyray.bsin.server.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.flyray.bsin.domain.entity.DecisionRule;
@@ -47,7 +48,7 @@ public class DecisionEngineServiceImpl implements DecisionEngine {
      */
     @Override
     @ShenyuDubboClient("/execute")
-    public Map<?, ?> execute(Map executeParams) {
+    public Map<?, ?> execute(Map executeParams) throws JsonProcessingException {
         String eventCode = (String) executeParams.get("eventCode");
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("eventCode", eventCode);
@@ -71,7 +72,7 @@ public class DecisionEngineServiceImpl implements DecisionEngine {
         kieSession.destroy();
 
         // 4、根据decisionRule中json afer配置和then的globalMap结果调用逻辑处理
-        decisionEngineContextBuilder.handleThenResult(decisionRule,globalMap);
+        decisionEngineContextBuilder.handleThenResult(decisionRule, globalMap);
 
         return globalMap;
     }

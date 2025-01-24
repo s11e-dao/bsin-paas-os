@@ -14,19 +14,6 @@ spring:
     password: root
     database: 123456
 
-shenyu:
-  register:
-    registerType: http #zookeeper #etcd #nacos #consul
-    serverLists: http://127.0.0.1:9095 #localhost:2181 #http://localhost:2379 #localhost:8848
-    props:
-      username: admin
-      password: 123456
-  client:
-    dubbo:
-      props:
-        contextPath: /brms
-        appName: brms
-
 dubbo:
   application:
     name: ${spring.application.name}

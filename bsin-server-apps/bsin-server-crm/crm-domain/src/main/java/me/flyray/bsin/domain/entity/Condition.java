@@ -62,7 +62,7 @@ public class Condition implements Serializable {
     /**
      * 条件值
      */
-    private BigDecimal amount;
+    private Integer value;
 
     /**
      * 备注

@@ -1,5 +1,11 @@
 package me.flyray.bsin.server.context;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import me.flyray.bsin.domain.entity.DecisionRule;
@@ -24,10 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Log4j2
 @Service
@@ -213,14 +216,44 @@ public class DecisionEngineContextBuilder {
      * @param decisionRule
      * @param globalMap
      */
-    public void handleThenResult(DecisionRule decisionRule, Map<String, Object> globalMap) {
+    public void handleThenResult(DecisionRule decisionRule, Map<String, Object> globalMap) throws JsonProcessingException {
 
         log.info("规则触发结果参数: {}", globalMap);
         // 根据decisionRule中json after配置获取指标字段事实
         if(true){
             // 泛化调用获取事实指标对象，从对象获取指标字段
+            // dubbo调用分佣和等级引擎
+            // 处理微信支付成功回调
+            // 根据 decisionRule.getContentJson() 和是否调用标识调用方法
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(decisionRule.getContentJson());
+            // 获取 actions和after的内容执行调用
+            ArrayNode rulesArray = (ArrayNode) rootNode.get("rules");
+            for (JsonNode ruleNode : rulesArray) {
+                ObjectNode ruleObject = (ObjectNode) ruleNode;
+                /*获取actions、after节点循环执行*/
+                /*首先获取两个节点，为空则不添加集合中循环执行*/
+                ArrayNode actionsArray = (ArrayNode) ruleObject.get("actions");
+                ArrayNode afterArray = (ArrayNode) ruleObject.get("after");
+                for (JsonNode actionsNode : actionsArray) {
+                    // 处理action的调用
+                    handleAction(actionsNode, globalMap);
+                }
 
+                for (JsonNode afterNode : afterArray) {
+                    handleAction(afterNode, globalMap);
+                }
+            }
         }
 
     }
+
+    public void handleAction(JsonNode jsonNode, Map<String, Object> globalMap){
+        // 处理after的调用
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.putAll(globalMap);
+        requestMap.put("resultCode", "");
+        bsinServiceInvoke.genericInvoke((String) globalMap.get("serviceName"), (String) globalMap.get("methodName"), "dev", requestMap);
+    }
+
 }
