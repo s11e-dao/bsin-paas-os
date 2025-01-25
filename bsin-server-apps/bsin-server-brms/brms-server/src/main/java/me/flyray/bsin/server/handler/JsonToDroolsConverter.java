@@ -63,18 +63,18 @@ public class JsonToDroolsConverter {
             droolsContent.append("then\n");
             ArrayNode actionsArray = (ArrayNode) ruleObject.get("actions");
             for (JsonNode actionNode : actionsArray) {
-                String actionType = actionNode.get("type").asText();
-                if (actionType.equals("globalMap.put")) {
+                String valueTakingMethod = actionNode.get("valueTakingMethod").asText();
+                if (valueTakingMethod.equals("globalMap.put")) {
                     String key = actionNode.get("key").asText();
                     String value = actionNode.get("value").asText();
                     droolsContent.append("    globalMap.put(\"").append(key).append("\", \"").append(value).append("\");\n");
-                } else if (actionType.equals("update")) {
+                } else if (valueTakingMethod.equals("update")) {
                     String map = actionNode.get("map").asText();
                     droolsContent.append("    update(").append(map).append(");\n");
-                } else if (actionType.equals("print")) {
+                } else if (valueTakingMethod.equals("print")) {
                     String message = actionNode.get("message").asText();
                     droolsContent.append("    System.out.println(\"").append(message).append("\");\n");
-                } else if (actionType.equals("dubboInvoke")) {
+                } else if (valueTakingMethod.equals("dubboInvoke")) {
                     // TODO dubbo泛化调用，处理命中后逻辑
                     // 当前的设计无需将执行的动作解析为drools的执行文件
                 }

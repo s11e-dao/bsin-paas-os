@@ -9,6 +9,7 @@ when
     $map : HashMap()
     eval(((1 + 5) * 3) > 10 && $map.get('userAge').equals("18"))
 then
+    globalMap.put("thenFlag", "1");
     globalMap.put("userScore", "100");
     update($map);
     System.out.println("触发规则：decision_rule_1_11");

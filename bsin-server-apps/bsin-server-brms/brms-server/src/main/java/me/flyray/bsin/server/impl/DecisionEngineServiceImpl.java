@@ -3,8 +3,10 @@ package me.flyray.bsin.server.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.log4j.Log4j2;
 import me.flyray.bsin.domain.entity.DecisionRule;
 import me.flyray.bsin.domain.entity.EventModel;
+import me.flyray.bsin.domain.enums.EventModelType;
 import me.flyray.bsin.facade.engine.DecisionEngine;
 import me.flyray.bsin.facade.service.EventModelService;
 import me.flyray.bsin.infrastructure.mapper.DecisionRuleMapper;
@@ -20,6 +22,7 @@ import java.util.Map;
 import me.flyray.bsin.server.context.DecisionEngineContextBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@Log4j2
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ShenyuDubboService(value = "/decisionEngine",timeout = 20000)
@@ -52,6 +55,11 @@ public class DecisionEngineServiceImpl implements DecisionEngine {
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("eventCode", eventCode);
         EventModel eventModel = eventModelService.getDetail(requestMap);
+        // 判断事件模型类型
+        if(EventModelType.FLOW_MODEL.equals(eventModel.getModelType()) || EventModelType.FORM_MODEL.equals(eventModel.getModelType())
+            || EventModelType.INFERENCE_MODEL.equals(eventModel.getModelType())){
+            return requestMap;
+        }
         DecisionRule decisionRule = decisionRuleMapper.selectById(eventModel.getModelNo());
         Map<String, Object> globalMap = new LinkedHashMap<>();
         if(decisionRule == null){
@@ -64,7 +72,7 @@ public class DecisionEngineServiceImpl implements DecisionEngine {
 
         // 2、处理fact（事实对象，接收数据的对象实体类）
         Map<String, Object> params = decisionEngineContextBuilder.buildDecisionFact(decisionRule, executeParams);
-
+        log.info("请求指标参数: {}", params);
         // 3、插入数据并执行规则
         kieSession.insert(params);
         kieSession.fireAllRules();

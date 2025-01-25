@@ -204,9 +204,17 @@ public class DecisionEngineContextBuilder {
         }
         // 直接获取请求参数指标
 
+        Map jsonParams = (Map) executeParams.get("jsonParams");
+
         Map<String, Object> params = new HashMap<>();
         // 创建要处理的Map对象，事实数据的处理
-        // params.put("sex", executeParams.getParams().get("sex"));
+        params.put("sex", jsonParams.get("sex"));
+        params.put("userAge", jsonParams.get("userAge"));
+        params.put("userName", jsonParams.get("userName"));
+
+//        params.put("sex", "女");
+//        params.put("userAge", "18");
+//        params.put("userName", "李四");
 
         return params;
     }
@@ -220,7 +228,7 @@ public class DecisionEngineContextBuilder {
 
         log.info("规则触发结果参数: {}", globalMap);
         // 根据decisionRule中json after配置获取指标字段事实
-        if(true){
+        if(globalMap.get("thenFlag").equals("1")){
             // 泛化调用获取事实指标对象，从对象获取指标字段
             // dubbo调用分佣和等级引擎
             // 处理微信支付成功回调
@@ -237,11 +245,17 @@ public class DecisionEngineContextBuilder {
                 ArrayNode afterArray = (ArrayNode) ruleObject.get("after");
                 for (JsonNode actionsNode : actionsArray) {
                     // 处理action的调用
-                    handleAction(actionsNode, globalMap);
+                    String valueTakingMethod = actionsNode.get("valueTakingMethod").asText();
+                    if ("3".equals(valueTakingMethod)) {
+                        handleAction(actionsNode, globalMap);
+                    }
                 }
 
                 for (JsonNode afterNode : afterArray) {
-                    handleAction(afterNode, globalMap);
+                    String valueTakingMethod = afterNode.get("valueTakingMethod").asText();
+                    if ("3".equals(valueTakingMethod)) {
+                        handleAction(afterNode, globalMap);
+                    }
                 }
             }
         }

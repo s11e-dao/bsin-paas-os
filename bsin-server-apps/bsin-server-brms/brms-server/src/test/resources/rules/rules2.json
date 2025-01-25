@@ -162,15 +162,6 @@
       ],
       "actions": [
         {
-          "type": "globalMap.put",
-          "key": "userScore",
-          "value": "100"
-        },
-        {
-          "type": "update",
-          "map": "$map"
-        },
-        {
           "valueTakingMethod?": "指标的取值方式：1、直接填写 2、请求参数中获取 3、通过泛化调用获取，4、指标计算",
           "valueTakingMethod": "1",
           "type": "String",
