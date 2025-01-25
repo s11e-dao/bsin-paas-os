@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 
 @Data
-@TableName(value ="crm_event_model")
+@TableName(value ="brms_event_model")
 public class EventModel implements Serializable {
     /**
      * 

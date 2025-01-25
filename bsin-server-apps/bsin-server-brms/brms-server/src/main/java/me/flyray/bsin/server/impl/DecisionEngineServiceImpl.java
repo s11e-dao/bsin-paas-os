@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.flyray.bsin.domain.entity.DecisionRule;
 import me.flyray.bsin.domain.entity.EventModel;
-import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.engine.DecisionEngine;
 import me.flyray.bsin.facade.service.EventModelService;
 import me.flyray.bsin.infrastructure.mapper.DecisionRuleMapper;
@@ -33,7 +32,7 @@ public class DecisionEngineServiceImpl implements DecisionEngine {
     @Autowired
     private DecisionRuleMapper decisionRuleMapper;
 
-    @DubboReference(version = "${dubbo.provider.version}")
+    @Autowired
     private EventModelService eventModelService;
 
     /**

@@ -14,7 +14,7 @@ import java.util.Date;
  */
 
 @Data
-@TableName(value ="crm_event")
+@TableName(value ="brms_event")
 public class Event implements Serializable {
     /**
      * 序列号

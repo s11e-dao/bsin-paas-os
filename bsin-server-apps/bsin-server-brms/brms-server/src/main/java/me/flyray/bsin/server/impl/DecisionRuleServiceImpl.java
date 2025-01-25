@@ -79,7 +79,8 @@ public class DecisionRuleServiceImpl implements DecisionRuleService {
     @Autowired
     private DecisionEngineContextBuilder decisionEngineContextBuilder;
     private static final Logger LOGGER = LoggerFactory.getLogger(DecisionRuleServiceImpl.class);
-    @DubboReference(version = "${dubbo.provider.version}")
+
+    @Autowired
     private EventModelService eventModelService;
 
     @ShenyuDubboClient("/sendMq")
