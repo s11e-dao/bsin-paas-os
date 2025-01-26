@@ -9,6 +9,7 @@ import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.SysLogLogin;
 import me.flyray.bsin.domain.entity.SysPost;
+import me.flyray.bsin.domain.entity.SysTenant;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.LogLoginService;
 import me.flyray.bsin.infrastructure.mapper.DictItemMapper;
@@ -57,6 +58,7 @@ public class LogLoginServiceImpl implements LogLoginService {
         BeanUtil.copyProperties(paginationObj,pagination);
         Page<SysLogLogin> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
         LambdaUpdateWrapper<SysLogLogin> warapper = new LambdaUpdateWrapper<>();
+        warapper.orderByDesc(SysLogLogin::getLoginTime);
         warapper.eq(SysLogLogin::getTenantId, tenantId);
         IPage<SysLogLogin> pageList = logLoginMapper.selectPage(page, warapper);
         return pageList;

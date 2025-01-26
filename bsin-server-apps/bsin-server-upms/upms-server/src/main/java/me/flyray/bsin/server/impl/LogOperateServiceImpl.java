@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.SysLogLogin;
 import me.flyray.bsin.domain.entity.SysLogOperate;
 import me.flyray.bsin.facade.service.LogOperateService;
 import me.flyray.bsin.infrastructure.mapper.LogOperMapper;
@@ -52,6 +53,7 @@ public class LogOperateServiceImpl implements LogOperateService {
         BeanUtil.copyProperties(paginationObj,pagination);
         Page<SysLogOperate> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
         LambdaUpdateWrapper<SysLogOperate> warapper = new LambdaUpdateWrapper<>();
+        warapper.orderByDesc(SysLogOperate::getOperTime);
         warapper.eq(SysLogOperate::getTenantId, tenantId);
         IPage<SysLogOperate> pageList = logOperMapper.selectPage(page, warapper);
         return pageList;
