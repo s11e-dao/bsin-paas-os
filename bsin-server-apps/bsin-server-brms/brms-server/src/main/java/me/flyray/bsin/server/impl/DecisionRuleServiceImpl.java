@@ -112,6 +112,8 @@ public class DecisionRuleServiceImpl implements DecisionRuleService {
     // @GlobalTransactional
     public DecisionRule add(final DecisionRule decisionRule) throws IOException {
         decisionRule.setTenantId(LoginInfoContextHelper.getTenantId());
+        String content = JsonToDroolsConverter.convertToJsonToDrl(decisionRule.getContentJson());
+        decisionRule.setContent(content);
         decisionRuleMapper.insert(decisionRule);
         return decisionRule;
     }

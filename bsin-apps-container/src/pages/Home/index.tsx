@@ -67,9 +67,9 @@ export default function () {
    * 点击跳转到子应用
    * @param app
    */
-  const getMenu = async (app: any) => {
+  const goSubApp = async (app: any) => {
     // debugger
-    history.push('/' + app.appCode);
+    history.push('/' + app.path);
   };
 
   const style = { padding: '16px 0', height: '100%' };
@@ -177,7 +177,7 @@ export default function () {
             bodyStyle={{ padding: 0 }}
           >
             {appList?.map((item) => (
-              <Card.Grid className={styles.projectGrid} key={item.appId}>
+              <Card.Grid className={styles.projectGrid} key={item.appId} onClick={() => goSubApp(item)}>
                 <Card
                   bodyStyle={{
                     padding: 0,
@@ -189,7 +189,7 @@ export default function () {
                     title={
                       <div
                         className={styles.cardTitle}
-                      // onClick={() => getMenu(item)}
+                      // onClick={() => goSubApp(item)}
                       >
                         <Avatar size="small" src={logo2} />
                         <a>{item.appName}</a>

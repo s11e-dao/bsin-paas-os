@@ -154,6 +154,11 @@ export default () => {
   useEffect(() => {
     if (specialMenustatus) {
       actionRef.current?.reload()
+    } else {
+      // 设置菜单焦点为当前路径
+      setPathname(location.pathname);
+      // 获取当前应用的菜单
+      getUserApplicationMenu(location.pathname?.split('/')[1])
     }
   }, [location.pathname.split('/')[1]])
 
