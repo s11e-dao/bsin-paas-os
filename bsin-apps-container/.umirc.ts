@@ -10,7 +10,7 @@ export default {
     'process.env.subtitle': 'BsinPaaS一站式开发平台',
     'process.env.paasDescription': 's11e network web3品牌',
     'process.env.saasTitle': "bigan",
-    'process.env.saasDescrition': "一站式的Web3.0品牌构建服务网络",
+    'process.env.saasDescrition': "一站式分布式商业生态构建服务网络",
     // 后台访问地址
     'process.env.baseUrl': 'http://localhost:9195',
     //'process.env.baseUrl': 'http://api.s11edao.com/gateway',
