@@ -16,10 +16,9 @@ import {
 export default () => {
 
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [messages, setMessages] = useState<string[]>([]);
   const [connected, setConnected] = useState(false);
-
-
+  const [messages, setMessages] = useState<string[]>([]);
+  
   useEffect(() => {
 
     // 创建 WebSocket 连接
@@ -34,6 +33,7 @@ export default () => {
     // 接收消息的处理函数
     newSocket.onmessage = (event) => {
       console.log('收到消息:', event.data);
+      // 显示到对话框里面
       setMessages((prevMessages) => [...prevMessages, event.data]);
     };
 

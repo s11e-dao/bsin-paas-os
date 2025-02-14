@@ -43,6 +43,8 @@ import {
   BgColorsOutlined,
 } from '@ant-design/icons'
 
+import { io, Socket } from 'socket.io-client';
+
 // import { chatData } from '../mocks/threebody'
 
 import { useTheme } from 'antd-style'
@@ -84,12 +86,14 @@ const renderTitle = (icon, title) => (
     <span>{title}</span>
   </Space>
 );
+
 const defaultConversationsItems = [
   {
     key: '0',
     label: 'What is bsin-paas app agent?',
   },
 ];
+
 const useStyle = createStyles(({ token, css }) => {
   return {
     layout: css`
@@ -207,6 +211,7 @@ const placeholderPromptsItems = [
     ],
   },
 ];
+
 const senderPromptsItems = [
   {
     key: '1',
@@ -231,9 +236,12 @@ const senderPromptsItems = [
     ),
   },
 ];
+
+// 对话角色定义
 const roles = {
   ai: {
     placement: 'start',
+    avatar: { icon: <UserOutlined />, style: { background: '#fde3cf' } },
     typing: {
       step: 5,
       interval: 20,
@@ -244,15 +252,87 @@ const roles = {
       },
     },
   },
-  local: {
+  user: {
     placement: 'end',
+    avatar: { icon: <UserOutlined />, style: { background: '#87d068' } },
     variant: 'shadow',
   },
 };
 
+interface MessageInfo<T> {
+  id: number; // or string, depending on your use case
+  message: T;
+  status: 'ai' | 'user' | 'success'; // Define possible statuses
+}
+
 import bsinBot from '../../assets/image/bsin-bot.svg'
 
 export default ({ customerInfo }) => {
+
+
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [connected, setConnected] = useState(false);
+
+  const [messages, setMessages] = useState<MessageInfo<string>[]>([]); // Ensure messages state is defined
+
+  useEffect(() => {
+
+    // 创建 WebSocket 连接
+    let newSocket = new WebSocket("ws://localhost:9195/ws-api/myWs");
+
+    // 连接成功的处理函数
+    newSocket.onopen = () => {
+      console.log('WebSocket连接成功');
+      setConnected(true);
+    };
+
+    // 接收消息的处理函数
+    newSocket.onmessage = (event) => {
+      console.log('收到消息:', event.data);
+      // 显示到对话框里面
+      // const messageData = JSON.parse(event.data);
+      // 对应的消息内容
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { id: 1, message: event.data, status: 'success' },
+      ]);
+      setIsRequesting(false)
+    };
+
+    // 连接关闭的处理函数
+    newSocket.onclose = () => {
+      console.log('WebSocket连接关闭');
+      setConnected(false);
+    };
+
+    // 连接错误的处理函数
+    newSocket.onerror = (error) => {
+      console.error('WebSocket错误:', error);
+      setConnected(false);
+    };
+
+    setSocket(newSocket);
+
+    // 清理函数
+    return () => {
+      newSocket.close();
+    };
+  }, []);
+
+  // 发送消息的方法
+  const sendMessage = (message: string) => {
+    if (socket?.readyState === WebSocket.OPEN) {
+      socket.send(message);
+
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { id: 1, message: message, status: 'user' },
+      ]);
+
+    } else {
+      console.error('WebSocket未连接');
+    }
+  };
 
   let defaultMerchantNo = process.env.defaultMerchantNo
   
@@ -323,34 +403,36 @@ export default ({ customerInfo }) => {
 
   // ==================== State ====================
   const [headerOpen, setHeaderOpen] = React.useState(false);
-  const [content, setContent] = React.useState('');
+  const [content, setContent] = React.useState(''); // 这是输入框的内容
   const [conversationsItems, setConversationsItems] = React.useState(defaultConversationsItems);
   const [activeKey, setActiveKey] = React.useState(defaultConversationsItems[0].key);
   const [attachedFiles, setAttachedFiles] = React.useState([]);
 
-  // ==================== Runtime ====================
-  const [agent] = useXAgent({
-    request: async ({ message }, { onSuccess }) => {
-      onSuccess(`Mock success return. You said: ${message}`);
-    },
-  });
-  const { onRequest, messages, setMessages } = useXChat({
-    agent,
-  });
-  useEffect(() => {
-    if (activeKey !== undefined) {
-      setMessages([]);
-    }
-  }, [activeKey]);
+  // // ==================== Runtime ====================
+  // const [agent] = useXAgent({
+  //   request: async ({ message }, { onSuccess }) => {
+  //     onSuccess(`Mock success return. You said: ${message}`);
+  //   },
+  // });
+  // const { onRequest, messages, setMessages } = useXChat({
+  //   agent,
+  // });
+  // useEffect(() => {
+  //   if (activeKey !== undefined) {
+  //     setMessages([]);
+  //   }
+  // }, [activeKey]);
 
   // ==================== Event ====================
   const onSubmit = (nextContent) => {
+    sendMessage(nextContent)
     if (!nextContent) return;
-    onRequest(nextContent);
+    // onRequest(nextContent);
+
     setContent('');
   };
   const onPromptsItemClick = (info) => {
-    onRequest(info.data.description);
+    // onRequest(info.data.description);
   };
   const onAddConversation = () => {
     setConversationsItems([
@@ -396,17 +478,21 @@ export default ({ customerInfo }) => {
       />
     </Space>
   );
+  
+  // 对话消息内容
   const items = messages.map(({ id, message, status }) => ({
     key: id,
-    loading: status === 'loading',
-    role: status === 'local' ? 'local' : 'ai',
+    loading: status === 'ai',
+    role: status === 'user' ? 'user' : 'ai',
     content: message,
   }));
+
   const attachmentsNode = (
     <Badge dot={attachedFiles.length > 0 && !headerOpen}>
       <Button type="text" icon={<PaperClipOutlined />} onClick={() => setHeaderOpen(!headerOpen)} />
     </Badge>
   );
+
   const senderHeader = (
     <Sender.Header
       title="Attachments"
@@ -436,6 +522,7 @@ export default ({ customerInfo }) => {
       />
     </Sender.Header>
   );
+
   const logoNode = (
     <div className={styles.logo}>
       <img
@@ -510,6 +597,9 @@ export default ({ customerInfo }) => {
     })
     console.log(chatData)
   }
+
+  const [isRequesting, setIsRequesting] = useState(false); // Define isRequesting state
+
   return (
     <>
       {/* bsin-copilot vuca */}
@@ -556,7 +646,7 @@ export default ({ customerInfo }) => {
                 onSubmit={onSubmit}
                 onChange={setContent}
                 prefix={attachmentsNode}
-                loading={agent.isRequesting()}
+                loading={isRequesting}
                 className={styles.sender}
               />
             </div>
