@@ -35,17 +35,14 @@ public class WebsocketLoginInfoInterceptor extends ServerEndpointConfig.Configur
             if (token != null && AuthenticationProvider.validateToken(token, SECRET_KEY)) {
                 // 2. 解析token，获取用户信息
                 Claims claims = AuthenticationProvider.parseToken(token, SECRET_KEY);
-                String userId = (String) claims.get("userId");
-
+                String bizRoleType = (String) claims.get("bizRoleType");
+                String bizRoleTypeNo = (String) claims.get("bizRoleTypeNo");
+                String username = (String) claims.get("username");
                 // 3. 将用户信息存储在ServerEndpointConfig的用户属性中
-                sec.getUserProperties().put("userId", userId);
-                sec.getUserProperties().put("claims", claims);
+                sec.getUserProperties().put("bizRoleType", bizRoleType);
+                sec.getUserProperties().put("username", username);
+                sec.getUserProperties().put("bizRoleTypeNo", bizRoleTypeNo);
                 sec.getUserProperties().put("authenticated", true);
-
-                // 可选：添加额外的用户信息
-                if (claims.get("roles") != null) {
-                    sec.getUserProperties().put("roles", claims.get("roles"));
-                }
             } else {
                 // 未认证的连接，可以选择拒绝连接或标记为未认证
                 // sec.getUserProperties().put("authenticated", false);

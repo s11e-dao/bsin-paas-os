@@ -23,11 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.PathParam;
+import java.io.IOException;
 
 /**
  * WsServerEndpoint.
@@ -43,9 +41,33 @@ public class WsServerEndpoint {
      * @param session session
      */
     @OnOpen
-    public void onOpen(@PathParam("key") String key, final Session session) {
+    public void onOpen(@PathParam("key") String key, final Session session, EndpointConfig config) {
+        String bizRoleType =  (String) config.getUserProperties().get("bizRoleType");
+        String bizRoleTypeNo =  (String) config.getUserProperties().get("bizRoleTypeNo");
+
+        LOG.info("connect bizRoleType: {}", bizRoleType);
+        LOG.info("connect bizRoleTypeNo: {}", bizRoleTypeNo);
+
+        // 获取拦截器中存储的用户信息
+        Boolean authenticated = (Boolean) config.getUserProperties().get("authenticated");
+        if (authenticated != null && authenticated) {
+            // 处理已认证的连接
+
+        } else {
+            // 处理未认证的连接
+            try {
+                session.close(new CloseReason(
+                        CloseReason.CloseCodes.VIOLATED_POLICY,
+                        "Unauthorized connection"
+                ));
+            } catch (IOException e) {
+                // 处理关闭异常
+            }
+        }
+
         LOG.info("connect successful");
     }
+
 
     /**
      * connect close.
