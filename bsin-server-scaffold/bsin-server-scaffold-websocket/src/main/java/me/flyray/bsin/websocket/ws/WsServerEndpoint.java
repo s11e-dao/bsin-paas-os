@@ -17,6 +17,7 @@
 
 package me.flyray.bsin.websocket.ws;
 
+import me.flyray.bsin.security.filter.WebsocketLoginInfoInterceptor;
 import org.apache.shenyu.client.spring.websocket.annotation.ShenyuServerEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ import javax.websocket.server.PathParam;
  * WsServerEndpoint.
  */
 @Component
-@ShenyuServerEndpoint("/myWs")
+@ShenyuServerEndpoint(value = "/myWs", configurator = WebsocketLoginInfoInterceptor.class)
 public class WsServerEndpoint {
 
     private static final Logger LOG = LoggerFactory.getLogger(WsServerEndpoint.class);

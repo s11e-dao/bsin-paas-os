@@ -66,8 +66,9 @@ const routes = [
       // 智能对话
       {
         path: '/bsin-chat',
-        // component: '@/pages/BsinChat/index',
-        component: '@/pages/Chat/index',
+        component: '@/pages/BsinChat/index',
+        // component: '@/pages/Chat/index',
+
       },
       // 敏感词
       {
