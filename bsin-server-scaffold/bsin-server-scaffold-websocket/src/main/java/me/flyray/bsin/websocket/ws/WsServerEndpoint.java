@@ -31,7 +31,7 @@ import java.io.IOException;
  * WsServerEndpoint.
  */
 @Component
-@ShenyuServerEndpoint(value = "/myWs", configurator = WebsocketLoginInfoInterceptor.class)
+@ShenyuServerEndpoint(value = "/myWs/{key}", configurator = WebsocketLoginInfoInterceptor.class)
 public class WsServerEndpoint {
 
     private static final Logger LOG = LoggerFactory.getLogger(WsServerEndpoint.class);

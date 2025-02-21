@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html" />
+    <title>Shenyu WebSocket Test</title>
+    <script>
+        var websocket;
+        function connect() {
+            try {
+                var token = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNTM1OTg0MzA0NTI4NjkxMjAwIiwidXNlcm5hbWUiOiJhZG1pbiIsInRlbmFudElkIjoiNjM0NTgyNDQxMzc2NDE1NzQ0MCIsImJpelJvbGVUeXBlIjoiOTkiLCJiaXpSb2xlVHlwZU5vIjoiMTUzNTk4NDMwNDUyODY5MTIwMCIsImlhdCI6MTc0MDExOTcxNiwiZXhwIjozNDgwMjQzMDMzfQ.mBncF6L_Kt1BQNvOwx6MtENQiF6hn9Ftv0azlFH2t2U"; // 从安全的存储中获取 token，这里是示例
+                websocket = new WebSocket(document.getElementById("url").value, token);
+                websocket.onopen = onOpen;
+                websocket.onerror = onError;
+                websocket.onmessage = onReceive;
+                websocket.onclose = onClose;
+            } catch (e) {
+                alert('[websocket] establish connection error.');
+            }
+        }
+        function onOpen() {
+            alert('[websocket] connect success.');
+        }
+        function onError(e) {
+            alert("[websocket] connect error. code: " + e.code);
+        }
+        function onReceive(msg) {
+            var show = document.getElementById("show");
+            show.innerHTML += "[Server Response] => " + msg.data + "<br/>";
+            show.scrollTop = show.scrollHeight;
+        }
+        function onClose(e) {
+            console.log("[websocket] connect closed. code: " + e.code)
+            alert("[websocket] connect closed.");
+            document.getElementById("show").innerHTML = "";
+            document.getElementById("msg").value = "";
+            websocket = null;
+        }
+        function buttonClose() {
+            if (websocket == null) {
+                console.log("Please establish a connection first.")
+            } else {
+                websocket.close(1000);
+                document.getElementById("show").innerHTML = "";
+                document.getElementById("msg").value = "";
+            }
+        }
+        function send() {
+            if (websocket == null) {
+                alert("Please establish a connection first.")
+            } else {
+                var msg = document.getElementById("msg").value;
+                show.innerHTML += "[Client Request] => " + msg + "<br/>";
+                websocket.send(msg);
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <input id="url" type="text" value="ws://localhost:9195/ws-oms/myWs"><br />
+    <input id="msg" type="text"><br />
+    <button id="connect" onclick="connect();">Connect</button>
+    <button id="send" onclick="send();">Send</button>
+    <button id="close" onclick="buttonClose();">Close</button></br>
+    <div id="show" class="show"></div>
+</body>
+
+</html>
+<style>
+    input {
+        width: 400px;
+        margin-bottom: 10px;
+    }
+
+    .show {
+        width: 600px;
+        height: 400px;
+        overflow-y: auto;
+        border: 1px solid #333;
+        margin-top: 10px;
+    }
+</style>
