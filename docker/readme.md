@@ -6,7 +6,7 @@
 1. 安装docker
 ~~~bash
 # ubuntu
-sudo apt-get installo -y docker
+sudo apt-get install -y docker
 ~$ docker -v
 Docker version 23.0.6, build ef23cbc
 
@@ -88,19 +88,33 @@ docker-compose -f portainer.yml up -d
 vim /etc/docker/daemon.json
 # 添加镜像加速器
 {
-"registry-mirrors": [
+ "data-root": "/var/lib/docker",
+ "experimental": true,
+ "fixed-cidr-v6": "fc00:1010:1111:100::/64",
+ "ip6tables": true,
+ "ipv6": true,
+ "live-restore": true,
+ "log-driver": "json-file",
+ "log-opts": {
+  "max-file": "3",
+  "max-size": "10m"
+ },
+ "registry-mirrors": [
+    "https://docker.1panel.live",
     "https://docker.m.daocloud.io",
-    "https://dockerproxy.com",
-    "https://registry.docker-cn.com",
-    "https://docker.mirrors.ustc.edu.cn",
-    "https://hub-mirror.c.163.com",
     "https://hub.uuuadc.top",
     "https://docker.anyhub.us.kg",
+    "https://docker.chenby.cn",
     "https://dockerhub.jobcher.com",
     "https://dockerhub.icu",
     "https://docker.ckyl.me",
     "https://docker.awsl9527.cn",
-    "https://mirror.baidubce.com"
+    "https://docker.hpcloud.cloud",
+    "https://atomhub.openatom.cn",
+    "https://hub.docker.com"
+ ],
+  "exec-opts": [
+    "native.cgroupdriver=systemd"
   ]
 }
 # 重启docker服务
