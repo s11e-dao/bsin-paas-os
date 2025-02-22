@@ -17,6 +17,7 @@
 
 package me.flyray.bsin.websocket.ws;
 
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.filter.WebsocketLoginInfoInterceptor;
 import org.apache.shenyu.client.spring.websocket.annotation.ShenyuServerEndpoint;
 import org.slf4j.Logger;
@@ -44,9 +45,15 @@ public class WsServerEndpoint {
     public void onOpen(@PathParam("key") String key, final Session session, EndpointConfig config) {
         String bizRoleType =  (String) config.getUserProperties().get("bizRoleType");
         String bizRoleTypeNo =  (String) config.getUserProperties().get("bizRoleTypeNo");
+        String username =  (String) config.getUserProperties().get("username");
 
         LOG.info("connect bizRoleType: {}", bizRoleType);
         LOG.info("connect bizRoleTypeNo: {}", bizRoleTypeNo);
+
+        // TODO 处理LoginInfoContextHelper，方便dubbo调用获取登录信息
+        LoginInfoContextHelper.set("bizRoleType", bizRoleType);
+        LoginInfoContextHelper.set("bizRoleTypeNo", bizRoleTypeNo);
+        LoginInfoContextHelper.set("username", username);
 
         // 获取拦截器中存储的用户信息
         Boolean authenticated = (Boolean) config.getUserProperties().get("authenticated");

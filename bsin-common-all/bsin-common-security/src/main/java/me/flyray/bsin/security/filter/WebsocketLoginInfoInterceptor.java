@@ -43,6 +43,7 @@ public class WebsocketLoginInfoInterceptor extends ServerEndpointConfig.Configur
                 sec.getUserProperties().put("username", username);
                 sec.getUserProperties().put("bizRoleTypeNo", bizRoleTypeNo);
                 sec.getUserProperties().put("authenticated", true);
+
             } else {
                 // 未认证的连接，可以选择拒绝连接或标记为未认证
                 // sec.getUserProperties().put("authenticated", false);
