@@ -1,5 +1,6 @@
 package me.flyray.bsin.security.filter;
 
+import cn.hutool.extra.spring.SpringUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,6 @@ import java.util.Map;
 @Slf4j
 public class WebsocketLoginInfoInterceptor extends ServerEndpointConfig.Configurator {
 
-    private String SECRET_KEY = "shenyu-test-shenyu-test-shenyu-test";
     // 实现你需要的方法覆盖
     @Override
     public boolean checkOrigin(String originHeaderValue) {
@@ -29,12 +29,14 @@ public class WebsocketLoginInfoInterceptor extends ServerEndpointConfig.Configur
     @Override
     public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
         try {
+            String SECRET_KEY = SpringUtil.getProperty("bsin.security.authentication-secretKey");
             // 1. 从请求头或查询参数中获取token
             String token = extractTokenInfo(request);
 
             if (token != null && AuthenticationProvider.validateToken(token, SECRET_KEY)) {
                 // 2. 解析token，获取用户信息
                 Claims claims = AuthenticationProvider.parseToken(token, SECRET_KEY);
+                String tenantId = (String) claims.get("tenantId");
                 String bizRoleType = (String) claims.get("bizRoleType");
                 String bizRoleTypeNo = (String) claims.get("bizRoleTypeNo");
                 String username = (String) claims.get("username");
@@ -42,6 +44,7 @@ public class WebsocketLoginInfoInterceptor extends ServerEndpointConfig.Configur
                 sec.getUserProperties().put("bizRoleType", bizRoleType);
                 sec.getUserProperties().put("username", username);
                 sec.getUserProperties().put("bizRoleTypeNo", bizRoleTypeNo);
+                sec.getUserProperties().put("tenantId", tenantId);
                 sec.getUserProperties().put("authenticated", true);
 
             } else {

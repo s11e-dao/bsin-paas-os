@@ -17,8 +17,10 @@
 
 package me.flyray.bsin.websocket;
 
+import me.flyray.bsin.websocket.ws.WsServerEndpoint;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -37,6 +39,9 @@ public class ScaffoldWebsocketApplication {
      */
     public static void main(final String[] args) {
         SpringApplication.run(ScaffoldWebsocketApplication.class, args);
+        ConfigurableApplicationContext applicationContext =
+                SpringApplication.run(ScaffoldWebsocketApplication.class, args);
+        WsServerEndpoint.setApplicationContext(applicationContext);
     }
 
     /**

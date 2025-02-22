@@ -19,9 +19,11 @@ package me.flyray.bsin.websocket.ws;
 
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.filter.WebsocketLoginInfoInterceptor;
+import me.flyray.bsin.websocket.biz.SaveFile;
 import org.apache.shenyu.client.spring.websocket.annotation.ShenyuServerEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -32,8 +34,15 @@ import java.io.IOException;
  * WsServerEndpoint.
  */
 @Component
-@ShenyuServerEndpoint(value = "/myWs/{key}", configurator = WebsocketLoginInfoInterceptor.class)
+@ShenyuServerEndpoint(value = "/myWs/{toNo}", configurator = WebsocketLoginInfoInterceptor.class)
 public class WsServerEndpoint {
+
+    //  处理无法注入bean问题
+    private static ApplicationContext applicationContext;
+
+    public static void setApplicationContext(ApplicationContext context) {
+        applicationContext = context;
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger(WsServerEndpoint.class);
 
@@ -87,13 +96,14 @@ public class WsServerEndpoint {
 
     /**
      * received message.
-     * @param text message
+     * @param message message
      * @return response
      */
     @OnMessage
-    public String onMsg(@PathParam("key") String historyId, final String text) {
-        LOG.info("server revice: {}", text);
-        return "server send message：" + text;
+    public String onMessage(@PathParam("toNo") String toNo, final String message) {
+        LOG.info("server revice: {}", message);
+        SaveFile saveFile = applicationContext.getBean(SaveFile.class);
+        return "server send message：" + message;
     }
 
 }
