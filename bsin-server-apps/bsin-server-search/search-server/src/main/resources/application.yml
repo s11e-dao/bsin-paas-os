@@ -15,16 +15,16 @@ spring:
 
 # Nacos 配置
 nacos:
-  server-addr: ${NACOS_SERVER_ADDR}
-  username: ${NACOS_USERNAME}
-  password: ${NACOS_PASSWORD}
+  server-addr: ${BSIN_NACOS_SERVER_ADDR}
+  username: ${BSIN_NACOS_USERNAME}
+  password: ${BSIN_NACOS_PASSWORD}
   namespace:
   seata-namespace: public
   # Nacos 配置中心的配置项，对应 NacosConfigProperties 配置类
   config:
-    server-addr: ${NACOS_SERVER_ADDR} # Nacos 服务器地址
-    username: ${NACOS_USERNAME}
-    password: ${NACOS_PASSWORD}
+    server-addr: ${BSIN_NACOS_SERVER_ADDR} # Nacos 服务器地址
+    username: ${BSIN_NACOS_USERNAME}
+    password: ${BSIN_NACOS_PASSWORD}
     namespace:
     bootstrap:
       enable: false # 是否开启 Nacos 配置预加载功能。默认为 false。

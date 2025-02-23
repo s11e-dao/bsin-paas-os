@@ -20,9 +20,10 @@ server:
 shenyu:
   register:
     registerType: http
-    serverLists: ${SHENYU_REGISTER_SERVERLISTS}    props:
-      username: ${SHENYU_REGISTER_PROPS_USERNAME}
-      password: ${SHENYU_REGISTER_PROPS_PASSWORD}
+    serverLists: ${BSIN_SHENYU_REGISTER_SERVERLISTS}
+    props:
+      username: ${BSIN_SHENYU_REGISTER_PROPS_USERNAME}
+      password: ${BSIN_SHENYU_REGISTER_PROPS_PASSWORD}
   client:
     websocket:
       props:

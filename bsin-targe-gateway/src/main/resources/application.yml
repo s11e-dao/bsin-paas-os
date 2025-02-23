@@ -32,7 +32,7 @@ spring:
       enabled: false
     nacos:
       discovery:
-        server-addr: ${NACOS_SERVER_ADDR} # Spring Cloud Alibaba Dubbo use this.
+        server-addr: ${BSIN_NACOS_SERVER_ADDR} # Spring Cloud Alibaba Dubbo use this.
         enabled: false
         namespace: ShenyuRegisterCenter
 
@@ -199,11 +199,11 @@ shenyu:
   register:
     enabled: true
     registerType: nacos #etcd #consul
-    serverLists: ${NACOS_SERVER_ADDR} #http://localhost:2379 #localhost:8848
+    serverLists: ${BSIN_NACOS_SERVER_ADDR} #http://localhost:2379 #localhost:8848
     props:
       nacosNameSpace: public
-      username: ${NACOS_USERNAME}
-      password: ${NACOS_PASSWORD}
+      username: ${BSIN_NACOS_USERNAME}
+      password: ${BSIN_NACOS_PASSWORD}
   cross:
     enabled: true
     allowedHeaders: "*"
@@ -234,7 +234,7 @@ shenyu:
     maxSize : 10
   sync:
     websocket:
-      urls: ws://${WEBSOCKET_HOST_PORT}/websocket
+      urls: ws://${BSIN_WEBSOCKET_HOST_PORT}/websocket
       allowOrigin: '*'
 #    apollo:
 #      appId: shenyu

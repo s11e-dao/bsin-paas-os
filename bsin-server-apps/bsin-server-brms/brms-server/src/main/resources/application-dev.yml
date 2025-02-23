@@ -21,9 +21,9 @@ dubbo:
     register-mode: interface
     qos-enable: false
   registry:
-    address: ${DOUBBO_REGISTRY_ADDRESS}
-    username: ${DOUBBO_REGISTRY_USERNAME}
-    password: ${DOUBBO_REGISTRY_ADDRESS}
+    address: ${BSIN_DOUBBO_REGISTRY_ADDRESS}
+    username: ${BSIN_DOUBBO_REGISTRY_USERNAME}
+    password: ${BSIN_DOUBBO_REGISTRY_PASSWORD}
   protocol:
     name: dubbo
     port: -1
