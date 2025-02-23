@@ -68,13 +68,13 @@ bsin:
 
 dromara:
   x-file-storage: #文件存储配置
-    default-platform: aliyun-oss-1 #默认使用的存储平台
+    default-platform: ${DROMARA_X_FILE_STORAGE_DEFAULT_PLATFORM} #默认使用的存储平台
     aliyun-oss:
-      - platform: aliyun-oss-1 # 存储平台标识
+      - platform: ${ALIYUN_OSS_PLATFORM} # 存储平台标识
         enable-storage: true  # 启用存储
-        access-key: ??
-        secret-key: ??
-        end-point: ??
-        bucket-name: ??
-        domain: ?? # 访问域名，注意“/”结尾，例如：https://abc.oss-cn-shanghai.aliyuncs.com/
-        base-path: test/ # 基础路径
+        access-key: ${ALIYUN_OSS_ACCESS_KEY}
+        secret-key: ${ALIYUN_OSS_SECRET_KEY}
+        end-point: ${ALIYUN_OSS_ENDPOINT}
+        bucket-name: ${ALIYUN_OSS_BUCKET_NAME}
+        domain: ${ALIYUN_OSS_DOMAIN} # 访问域名，注意“/”结尾，例如：https://abc.oss-cn-shanghai.aliyuncs.com/
+        base-path: ${ALIYUN_OSS_BASE_PATH} # 基础路径

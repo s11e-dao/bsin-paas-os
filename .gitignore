@@ -122,3 +122,5 @@ docker/bsin-paas-os/server-apps/iot/jar/iot-server-2.0.0-SNAPSHOT.jar
 bsin-ui-apps/bsin-ui-sea-condition
 
 .env
+
+.env.yue17

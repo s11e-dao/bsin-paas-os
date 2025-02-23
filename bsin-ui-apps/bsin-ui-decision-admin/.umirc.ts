@@ -7,7 +7,7 @@ export default {
   },
   define: {
     // 后台访问地址
-    'process.env.baseUrl': 'http://127.0.0.1:9195',
+    'process.env.baseUrl': process.env.BSIN_GATEWAY_BASE_URL || 'http://127.0.0.1:9195',
     //'process.env.baseUrl': 'http://api.s11edao.com/gateway',
     'process.env.ipfsApiUrl': 'https://ipfsadmin.s11edao.com/api/v0', // ipfs API
     'process.env.ipfsGatewauUrl': 'https://ipfs.s11edao.com/ipfs/', // ipfs Gateway
