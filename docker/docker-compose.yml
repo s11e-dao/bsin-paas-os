@@ -181,11 +181,12 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    restart: always
+#    restart: always
     privileged: true                                              # 获取宿主机root权限
     volumes:
       - ./middleware/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./middleware/nginx/logs:/var/log/nginx
+      - ./middleware/nginx/cert:/home/bsin-paas-os/middleware/nginx/cert
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.18

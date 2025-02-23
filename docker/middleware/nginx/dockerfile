@@ -8,9 +8,12 @@ MAINTAINER bsin-paas
 #COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 
 # 创建目录
-RUN mkdir -p /home/bsin-paas-os/middleware/nginx
-# 挂载目录
-VOLUME /home/bsin-paas-os/middleware/nginx
+RUN mkdir -p /home/bsin-paas-os/middleware/nginx/cert
+## 挂载目录
+#VOLUME /home/bsin-paas-os/middleware/nginx
+
+COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+#COPY ./cert /home/bsin-paas-os/middleware/nginx/
 
 # 启动Nginx服务
 CMD ["nginx", "-g", "daemon off;"]

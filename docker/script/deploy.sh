@@ -25,7 +25,7 @@ copy(){
 }
 # 启动基础环境（必须）
 middleware(){
-	docker-compose up -d bsin-mysql bsin-redis bsin-nacos-standalone #bsin-nginx #bsin-emqx #bsin-rabbitmq bsin-milvus
+	docker-compose up -d bsin-mysql bsin-redis bsin-nacos-standalone bsin-nginx #bsin-emqx #bsin-rabbitmq bsin-milvus
 }
 
 # 启动网关模块（必须）
