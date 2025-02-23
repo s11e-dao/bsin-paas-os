@@ -22,7 +22,7 @@ export default {
     'process.env.storeMethod': '3', //  1.IPFS存储：需要同时指定 backup 存储平台  2.aliOSS存储：  4.服务器本地存储：  3.both IPFS and aliOSS:  5.both IPFS and 服务器本地存储
     'process.env.biganH5Url': 'http://localhost:8080/', // biganH5 url local test
     // 'process.env.webScoketUrl': 'ws://127.0.0.1:8126/websocket',
-    'process.env.webScoketUrl': 'ws://127.0.0.1:8126/websocket',
+    'process.env.webScoketUrl': 'ws://localhost:9195/ws-oms/myWs',
     'process.env.registerNotNeedAudit': true,  // 针对copilot微信分身产品，用户注册无需审核，可直接使用基础产品
     'process.env.defaultTenantNo': '6345824413764157440',  // 默认租户号
     'process.env.defaultMerchantNo': '1737853502828482561',  // 默认商户号

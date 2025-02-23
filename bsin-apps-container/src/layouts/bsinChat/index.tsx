@@ -44,6 +44,7 @@ import {
 } from '@ant-design/icons'
 
 import { io, Socket } from 'socket.io-client';
+import { getSessionStorageInfo, getLocalStorageInfo } from '@/utils/localStorageInfo';
 
 // import { chatData } from '../mocks/threebody'
 
@@ -269,7 +270,7 @@ import bsinBot from '../../assets/image/bsin-bot.svg'
 
 export default ({ customerInfo }) => {
 
-
+  let token = getSessionStorageInfo('token')?.token;
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [connected, setConnected] = useState(false);
 
@@ -277,8 +278,17 @@ export default ({ customerInfo }) => {
 
   useEffect(() => {
 
+    let webScoketUrl = process.env.webScoketUrl;
+
+    // Ensure webScoketUrl is defined before creating the WebSocket connection
+    if (!webScoketUrl) {
+      console.error('WebSocket URL is not defined');
+      return; // or handle the error as needed
+    }
+
+    let toNo = "/11223"
     // 创建 WebSocket 连接
-    let newSocket = new WebSocket("ws://localhost:9195/ws-api/myWs");
+    let newSocket = new WebSocket(webScoketUrl+ toNo ,token);
 
     // 连接成功的处理函数
     newSocket.onopen = () => {
@@ -428,7 +438,6 @@ export default ({ customerInfo }) => {
     sendMessage(nextContent)
     if (!nextContent) return;
     // onRequest(nextContent);
-
     setContent('');
   };
   const onPromptsItemClick = (info) => {

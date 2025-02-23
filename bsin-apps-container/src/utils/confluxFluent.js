@@ -4,12 +4,12 @@ class ConfluxFluent {
 
   constructor (conflux) {
     if (typeof conflux === 'undefined') {
-      notification.open({
-        message: '您还没安装fluent钱包插件，请点击链链安装',
-        onClick: () => {
-          window.location.href="https://fluentwallet.com/";
-        },
-      });
+      // notification.open({
+      //   message: '您还没安装fluent钱包插件，请点击链链安装',
+      //   onClick: () => {
+      //     window.location.href="https://fluentwallet.com/";
+      //   },
+      // });
       return
     }
     if (!conflux.isConfluxPortal) {
