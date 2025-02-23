@@ -268,17 +268,17 @@ services:
       compose-network: #指定network
         ipv4_address: 172.28.0.22
 
-  bsin-server-waas:
-    container_name: bsin-server-waas
-    image: bsin-server-waas:2.0.0
+  bsin-server-crm:
+    container_name: bsin-server-crm
+    image: bsin-server-crm:2.0.0
     build:
-      context: ./bsin-paas-os/server-apps/waas
+      context: ./bsin-paas-os/server-apps/crm
       dockerfile: dockerfile
     ports:
-      - "9107:9107"
+      - "9102:9102"
     restart: always
     volumes:
-      - ./bsin-paas-os/server-apps/waas/logs:/home/bsin-paas-os/server-apps/waas/logs
+      - ./bsin-paas-os/server-apps/crm/logs:/home/bsin-paas-os/server-apps/crm/logs
     depends_on:
       - bsin-redis
       - bsin-mysql
@@ -291,18 +291,17 @@ services:
       compose-network: #指定network
         ipv4_address: 172.28.0.23
 
-
-  bsin-server-crm:
-    container_name: bsin-server-crm
-    image: bsin-server-crm:2.0.0
+  bsin-server-brms:
+    container_name: bsin-server-brms
+    image: bsin-server-brms:2.0.0
     build:
-      context: ./bsin-paas-os/server-apps/crm
+      context: ./bsin-paas-os/server-apps/brms
       dockerfile: dockerfile
     ports:
-      - "9102:9102"
+      - "9103:9103"
     restart: always
     volumes:
-      - ./bsin-paas-os/server-apps/crm/logs:/home/bsin-paas-os/server-apps/crm/logs
+      - ./bsin-paas-os/server-apps/brms/logs:/home/bsin-paas-os/server-apps/brms/logs
     depends_on:
       - bsin-redis
       - bsin-mysql
@@ -338,17 +337,17 @@ services:
       compose-network: #指定network
         ipv4_address: 172.28.0.25
 
-  bsin-server-iot:
-    container_name: bsin-server-iot
-    image: bsin-server-iot:2.0.0
+  bsin-server-waas:
+    container_name: bsin-server-waas
+    image: bsin-server-waas:2.0.0
     build:
-      context: ./bsin-paas-os/server-apps/iot
+      context: ./bsin-paas-os/server-apps/waas
       dockerfile: dockerfile
     ports:
-      - "9120:9120"
+      - "9107:9107"
     restart: always
     volumes:
-      - ./bsin-paas-os/server-apps/iot/logs:/home/bsin-paas-os/server-apps/iot/logs
+      - ./bsin-paas-os/server-apps/waas/logs:/home/bsin-paas-os/server-apps/waas/logs
     depends_on:
       - bsin-redis
       - bsin-mysql
@@ -359,31 +358,8 @@ services:
       - bsin-targe-gateway
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.26
+        ipv4_address: 172.28.0.28
 
-
-  bsin-server-oms:
-    container_name: bsin-server-oms
-    image: bsin-server-oms:2.0.0
-    build:
-      context: ./bsin-paas-os/server-apps/oms
-      dockerfile: dockerfile
-    ports:
-      - "9111:9111"
-    restart: always
-    volumes:
-      - ./bsin-paas-os/server-apps/oms/logs:/home/bsin-paas-os/server-apps/oms/logs
-    depends_on:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
-    links:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
-    networks:
-      compose-network: #指定network
-        ipv4_address: 172.28.0.30
 
   bsin-server-community:
     container_name: bsin-server-community
@@ -407,6 +383,53 @@ services:
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.31
+
+  bsin-server-oms:
+    container_name: bsin-server-oms
+    image: bsin-server-oms:2.0.0
+    build:
+      context: ./bsin-paas-os/server-apps/oms
+      dockerfile: dockerfile
+    ports:
+      - "9111:9111"
+    restart: always
+    volumes:
+      - ./bsin-paas-os/server-apps/oms/logs:/home/bsin-paas-os/server-apps/oms/logs
+    depends_on:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    links:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.32
+
+  bsin-server-iot:
+    container_name: bsin-server-iot
+    image: bsin-server-iot:2.0.0
+    build:
+      context: ./bsin-paas-os/server-apps/iot
+      dockerfile: dockerfile
+    ports:
+      - "9120:9120"
+    restart: always
+    volumes:
+      - ./bsin-paas-os/server-apps/iot/logs:/home/bsin-paas-os/server-apps/iot/logs
+    depends_on:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    links:
+      - bsin-redis
+      - bsin-mysql
+      - bsin-targe-gateway
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.33
+
 
   # apps-container
   bsin-apps-container:
