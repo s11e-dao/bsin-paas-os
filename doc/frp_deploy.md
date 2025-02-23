@@ -86,7 +86,7 @@ server_addr = 47.100.16.156
 #frps端口   
 server_port = 7000    
 #服务端认证密码
-token = your password     
+token = 12356789    
 tls_enable = true
 
 [leonard-honeywell-ssh]  
@@ -215,6 +215,13 @@ local_port = 9111
 remote_port = 9111
 
 
+[bsin-server-iot]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
+local_port = 9120
+#远程的时候链接的端
+remote_port = 9120
 
 [bsin-apps-container]  
 type = tcp
@@ -281,6 +288,13 @@ local_port = 8007
 #远程的时候链接的端
 remote_port = 8007
 
+[bsin-ui-sea-condition]  
+type = tcp
+local_ip = 127.0.0.1
+# linux远程连接服务端口
+local_port = 8009
+#远程的时候链接的端
+remote_port = 8009
 
 [bsin-ui-bigan]  
 type = tcp

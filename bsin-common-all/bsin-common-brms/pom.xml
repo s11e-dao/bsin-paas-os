@@ -11,10 +11,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>bsin-common-brms</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <version>2.0.0-SNAPSHOT</version>
     <name>bsin-common-brms</name>
-    <description>规则引擎插件</description>
+    <description>bsin-paas平台： 规则引擎插件</description>
 
     <properties>
         <junit-jupiter.version>5.7.2</junit-jupiter.version>
@@ -75,6 +75,7 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>

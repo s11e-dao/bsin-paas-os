@@ -16,10 +16,10 @@ spring:
 shenyu:
   register:
     registerType: http #zookeeper #etcd #nacos #consul
-    serverLists: http://127.0.0.1:9095 #localhost:2181 #http://localhost:2379 #localhost:8848
+    serverLists: ${SHENYU_REGISTER_SERVERLISTS} #localhost:2181 #http://localhost:2379 #localhost:8848
     props:
-      username: admin
-      password: 123456
+      username: ${SHENYU_REGISTER_PROPS_USERNAME}
+      password: ${SHENYU_REGISTER_PROPS_PASSWORD}
   client:
     dubbo:
       props:
@@ -33,9 +33,9 @@ dubbo:
     register-mode: interface
     qos-enable: false
   registry:
-    address: nacos://127.0.0.1:8848
-    username: nacos
-    password: nacos
+    address: ${DOUBBO_REGISTRY_ADDRESS}
+    username: ${DOUBBO_REGISTRY_USERNAME}
+    password: ${DOUBBO_REGISTRY_ADDRESS}
   protocol:
     name: dubbo
     port: -1

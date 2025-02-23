@@ -118,3 +118,7 @@ docker/bsin-paas-os/ui-apps/bigan/dist/
 docker/middleware/emqx/log/
 
 docker/bsin-paas-os/server-apps/iot/jar/iot-server-2.0.0-SNAPSHOT.jar
+
+bsin-ui-apps/bsin-ui-sea-condition
+
+.env

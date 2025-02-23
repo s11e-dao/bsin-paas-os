@@ -20,9 +20,9 @@ shenyu:
 
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/bsin-shenyu-gateway?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
-    username: root
-    password: root
+    url: ${TARGE_GATEWAY_ADMIN_MYSQL_DB_URL}?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+    username: ${TARGE_GATEWAY_ADMIN_MYSQL_DB_USERNAME}
+    password: ${TARGE_GATEWAY_ADMIN_MYSQL_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-timeout: 30000

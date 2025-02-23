@@ -10,10 +10,10 @@ chatGPT:
 shenyu:
   register:
     registerType: http #zookeeper #etcd #nacos #consul
-    serverLists: http://127.0.0.1:9095 #localhost:2181 #http://localhost:2379 #localhost:8848
+    serverLists: ${SHENYU_REGISTER_SERVERLISTS} #localhost:2181 #http://localhost:2379 #localhost:8848
     props:
-      username: admin
-      password: 123456_Aa
+      username: ${SHENYU_REGISTER_PROPS_USERNAME}
+      password: ${SHENYU_REGISTER_PROPS_PASSWORD}
   client:
     dubbo:
       props:
@@ -27,9 +27,9 @@ dubbo:
     register-mode: interface
     qos-enable: false
   registry:
-    address: nacos://127.0.0.1:8848
-    username: nacos
-    password: nacos
+    address: ${DOUBBO_REGISTRY_ADDRESS}
+    username: ${DOUBBO_REGISTRY_USERNAME}
+    password: ${DOUBBO_REGISTRY_ADDRESS}
   protocol:
     name: dubbo
     port: -1
@@ -46,8 +46,8 @@ wx:
   mp:
     useRedis: false
     redisConfig:
-      host: 127.0.0.1
-      port: 6379
+      host: ${CRM_REDIS_HOST}
+      port: ${CRM_REDIS_PORT}
     configs:
       - appId: 11 # 第一个公众号的appid
         secret: 11 # 公众号的appsecret
@@ -59,22 +59,22 @@ wx:
         aesKey: 111
   config-storage:
     redis:
-      host: 127.0.0.1
-      port: 6379
-      password: 123456
+      host: ${CRM_REDIS_HOST}
+      port: ${CRM_REDIS_PORT}
+      password: ${CRM_REDIS_PASSWORD}
 --- # redis 单机配置(单机与集群只能开启一个另一个需要注释掉)
 spring:
   redis:
     # 地址
-    host: 127.0.0.1
+    host: ${CRM_REDIS_HOST}
     # host: 192.168.198.198
     # 端口，默认为6379
-    port: 6379
+    port: ${CRM_REDIS_PORT}
     # 数据库索引
-    database: 10
+    database: ${CRM_REDIS_DB}
     # 密码(如没有密码请注释掉)
     # password: hongrenwang123
-    password: 123456
+    password: ${CRM_REDIS_PASSWORD}
     # password: hongrenwang123
     # 连接超时时间
     timeout: 10s

@@ -3,23 +3,23 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.198.198:3306/bsin-upms?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
-    username: root
-    password: 123456
+    url: ${UPMS_MYSQL_DB_URL}?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+    username: ${UPMS_MYSQL_DB_USERNAME}
+    password: ${UPMS_MYSQL_DB_PASSWORD}
   #redis
   redis:
-    host: 127.0.0.1
-    port: 6379
-    password: root
-    database: 123456
+    host: ${UPMS_REDIS_HOST}
+    port: ${UPMS_REDIS_PORT}
+    password: ${UPMS_REDIS_PASSWORD}
+    database: ${UPMS_REDIS_DB}
 
 shenyu:
   register:
     registerType: http #zookeeper #etcd #nacos #consul
-    serverLists: localhost:8848 #localhost:2181 #http://localhost:2379 #localhost:8848
+    serverLists: ${SHENYU_REGISTER_SERVERLISTS} #localhost:2181 #http://localhost:2379 #localhost:8848
     props:
-      username: nacos
-      password: nacos
+      username: ${SHENYU_REGISTER_PROPS_USERNAME}
+      password: ${SHENYU_REGISTER_PROPS_PASSWORD}
   client:
     dubbo:
       props:
@@ -33,9 +33,9 @@ dubbo:
     register-mode: interface
     qos-enable: false
   registry:
-    address: nacos://127.0.0.1:8848
-    username: nacos
-    password: nacos
+    address: ${DOUBBO_REGISTRY_ADDRESS}
+    username: ${DOUBBO_REGISTRY_USERNAME}
+    password: ${DOUBBO_REGISTRY_ADDRESS}
   protocol:
     name: dubbo
     port: -1

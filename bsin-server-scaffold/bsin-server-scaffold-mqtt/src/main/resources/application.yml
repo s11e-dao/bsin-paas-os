@@ -22,8 +22,8 @@ shenyu:
     registerType: http
     serverLists: http://192.168.1.5:9095
     props:
-      username: admin
-      password: 123456_Aa
+      username: ${SHENYU_REGISTER_PROPS_USERNAME}
+      password: ${SHENYU_REGISTER_PROPS_PASSWORD}
   client:
     websocket:
       props:

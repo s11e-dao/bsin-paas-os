@@ -3,16 +3,16 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://rm-2zeq9708apq292r36ko.mysql.rds.aliyuncs.com:3306/bsin-intelligent-decision?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
-    username: root
-    password: root
+    url: ${BRMS_MYSQL_DB_URL}?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+    username: ${BRMS_MYSQL_DB_USERNAME}
+    password: ${BRMS_MYSQL_DB_PASSWORD}
 
   #redis
   redis:
-    host: 127.0.0.1
-    port: 6379
-    password: root
-    database: 123456
+    host: ${BRMS_REDIS_HOST}
+    port: ${BRMS_REDIS_PORT}
+    password: ${BRMS_REDIS_PASSWORD}
+    database: ${BRMS_REDIS_DB}
 
 dubbo:
   application:
@@ -21,9 +21,9 @@ dubbo:
     register-mode: interface
     qos-enable: false
   registry:
-    address: nacos://127.0.0.1:8848
-    username: nacos
-    password: nacos
+    address: ${DOUBBO_REGISTRY_ADDRESS}
+    username: ${DOUBBO_REGISTRY_USERNAME}
+    password: ${DOUBBO_REGISTRY_ADDRESS}
   protocol:
     name: dubbo
     port: -1

@@ -1,10 +1,10 @@
 shenyu:
   register:
     registerType: http
-    serverLists: http://127.0.0.1:9095
+    serverLists: ${SHENYU_REGISTER_SERVERLISTS}
     props:
-      username: admin
-      password: 123456
+      username: ${SHENYU_REGISTER_PROPS_USERNAME}
+      password: ${SHENYU_REGISTER_PROPS_PASSWORD}
   client:
     dubbo:
       props:
@@ -19,9 +19,9 @@ dubbo:
     qos-enable: false
   registry:
     use-as-config-center: false # 关闭dubbo的配置中心配置
-    address: nacos://127.0.0.1:8848
-    username: nacos
-    password: nacos
+    address: ${DOUBBO_REGISTRY_ADDRESS}
+    username: ${DOUBBO_REGISTRY_USERNAME}
+    password: ${DOUBBO_REGISTRY_ADDRESS}
     parameters:
       namespace:
       group:
