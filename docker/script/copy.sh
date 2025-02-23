@@ -73,9 +73,29 @@ cp ../bsin-server-apps/bsin-server-workflow/workflow-server/target/workflow-serv
 cp ../bsin-server-apps/bsin-server-workflow-admin/workflow-admin-server/target/workflow-admin-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/workflow-admin/jar/workflow-admin-server-2.0.0-SNAPSHOT.jar
 cp ../bsin-server-apps/bsin-server-iot/iot-server/target/iot-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/iot/jar/iot-server-2.0.0-SNAPSHOT.jar
 
+
+
+echo "5.3 begin copy .env files"
+cp ../.env ./bsin-paas-os/server-apps/ai-agent -rvf
+cp ../.env ./bsin-paas-os/server-apps/brms -rvf
+cp ../.env ./bsin-paas-os/server-apps/crm -rvf
+cp ../.env ./bsin-paas-os/server-apps/search -rvf
+cp ../.env ./bsin-paas-os/server-apps/upms -rvf
+cp ../.env ./bsin-paas-os/server-apps/waas -rvf
+cp ../.env ./bsin-paas-os/server-apps/workflow -rvf
+cp ../.env ./bsin-paas-os/server-apps/workflow-admin -rvf
+cp ../.env ./bsin-paas-os/server-apps/oms -rvf
+cp ../.env ./bsin-paas-os/server-apps/iot -rvf
+cp ../.env ./bsin-paas-os/targe-gateway-admin -rvf
+cp ../.env ./bsin-paas-os/targe-gateway -rvf
+
+
 ## jiujiu-paas，业务闭源
-cp ../../arrowspider/jiujiu-paas/jiujiu-paas-server/bsin-server-oms/oms-server/target/oms-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/oms/jar/oms-server-2.0.0-SNAPSHOT.jar
-cp ../../arrowspider/jiujiu-paas/jiujiu-paas-server/bsin-server-community/community-server/target/community-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/community/jar/community-server-2.0.0-SNAPSHOT.jar
+cp ../../jiujiu-paas-yue17/jiujiu-paas-server/bsin-server-oms/oms-server/target/oms-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/oms/jar/oms-server-2.0.0-SNAPSHOT.jar
+cp ../../jiujiu-paas-yue17/jiujiu-paas-server/bsin-server-community/community-server/target/community-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/community/jar/community-server-2.0.0-SNAPSHOT.jar
+
+cp ../../jiujiu-paas-yue17/.env ./bsin-paas-os/server-apps/community -rvf
+cp ../../jiujiu-paas-yue17/.env ./bsin-paas-os/server-apps/oms -rvf
 
 echo "6. end copy jar "
 
@@ -88,7 +108,7 @@ cp -r ../bsin-ui-apps/bsin-ui-upms/dist/* ./bsin-paas-os/ui-apps/upms/dist/
 cp -r ../bsin-ui-apps/bsin-ui-waas/dist/* ./bsin-paas-os/ui-apps/waas/dist/
 
 ## jiujiu-paas，业务闭源
-cp -r ../../arrowspider/jiujiu-paas/jiujiu-paas-ui/bsin-ui-bigan/dist/* ./bsin-paas-os/ui-apps/bigan/dist/
+cp -r ../../jiujiu-paas-yue17/jiujiu-paas-ui/bsin-ui-bigan/dist/* ./bsin-paas-os/ui-apps/bigan/dist/
 
 echo "8. end copy frontend dist"
 

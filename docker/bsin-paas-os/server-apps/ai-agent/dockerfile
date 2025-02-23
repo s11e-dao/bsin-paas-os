@@ -13,5 +13,6 @@ RUN mkdir -p /home/bsin-paas-os/server-apps/ai-agent
 WORKDIR /home/bsin-paas-os/server-apps/ai-agent
 # 复制jar文件到路径
 COPY ./jar/ai-agent-server-2.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/ai-agent/ai-agent-server-2.0.0-SNAPSHOT.jar
+#COPY ../../../../.env /home/bsin-paas-os/server-apps/ai-agent/.env
 # 启动用户服务
 ENTRYPOINT ["java","-jar","ai-agent-server-2.0.0-SNAPSHOT.jar"]

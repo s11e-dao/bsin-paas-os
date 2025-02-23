@@ -197,6 +197,8 @@ services:
     build:
       context: ./bsin-paas-os/targe-gateway-admin
       dockerfile: dockerfile
+    env_file:
+      - ./bsin-paas-os/targe-gateway-admin/.env
     ports:
       - "9095:9095"
     #restart: always
@@ -222,6 +224,8 @@ services:
       context: ./bsin-paas-os/targe-gateway
       dockerfile: dockerfile
     command: sh -c "sleep 120 &&  echo 'waiting for bsin-targe-gateway-admin...'"
+    env_file:
+      - ./bsin-paas-os/targe-gateway/.env
     ports:
       - "9195:9195"
     restart: always
@@ -251,6 +255,8 @@ services:
     build:
       context: ./bsin-paas-os/server-apps/upms
       dockerfile: dockerfile
+    env_file:
+      - ./bsin-paas-os/server-apps/upms/.env
     ports:
       - "9101:9101"
     restart: always
@@ -274,6 +280,8 @@ services:
     build:
       context: ./bsin-paas-os/server-apps/crm
       dockerfile: dockerfile
+    env_file:
+      - ./bsin-paas-os/server-apps/crm/.env
     ports:
       - "9102:9102"
     restart: always
@@ -297,6 +305,8 @@ services:
     build:
       context: ./bsin-paas-os/server-apps/brms
       dockerfile: dockerfile
+    env_file:
+      - ./bsin-paas-os/server-apps/brms/.env
     ports:
       - "9103:9103"
     restart: always
@@ -320,6 +330,8 @@ services:
     build:
       context: ./bsin-paas-os/server-apps/ai-agent
       dockerfile: dockerfile
+    env_file:
+      - ./bsin-paas-os/server-apps/ai-agent/.env
     ports:
       - "9104:9104"
     restart: always
@@ -343,6 +355,8 @@ services:
     build:
       context: ./bsin-paas-os/server-apps/waas
       dockerfile: dockerfile
+    env_file:
+      - ./bsin-paas-os/server-apps/waas/.env
     ports:
       - "9107:9107"
     restart: always
@@ -367,6 +381,8 @@ services:
     build:
       context: ./bsin-paas-os/server-apps/community
       dockerfile: dockerfile
+    env_file:
+      - ./bsin-paas-os/server-apps/community/.env
     ports:
       - "9110:9110"
     restart: always
@@ -390,6 +406,8 @@ services:
     build:
       context: ./bsin-paas-os/server-apps/oms
       dockerfile: dockerfile
+    env_file:
+      - ./bsin-paas-os/server-apps/oms/.env
     ports:
       - "9111:9111"
     restart: always
@@ -413,6 +431,8 @@ services:
     build:
       context: ./bsin-paas-os/server-apps/iot
       dockerfile: dockerfile
+    env_file:
+      - ./bsin-paas-os/server-apps/iot/.env
     ports:
       - "9120:9120"
     restart: always
