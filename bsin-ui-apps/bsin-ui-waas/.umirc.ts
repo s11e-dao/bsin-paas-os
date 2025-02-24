@@ -12,7 +12,7 @@ export default {
     'process.env.ipfsApiUrl': 'https://ipfsadmin.s11edao.com/api/v0', // ipfs API
     'process.env.ipfsGatewauUrl': 'https://ipfs.s11edao.com/ipfs/', // ipfs Gateway
     'process.env.fileUrl': 'http://file.s11edao.com/jiujiu/', // 本地服务器文件前缀地址
-    'process.env.bsinFileUploadUrl': 'http://127.0.0.1:8097/bsinFileUpload', // IPFS存储且OSS备份
+    'process.env.bsinFileUploadUrl': process.env.BSIN_FILE_UPLOAF_URL || 'http://127.0.0.1:9195/http/upload/aliOssUpload', // IPFS存储且OSS备份
     'process.env.storeMethod': '3', //  1.IPFS存储：需要同时指定 backup 存储平台  2.aliOSS存储：  4.服务器本地存储：  3.both IPFS and aliOSS:  5.both IPFS and 服务器本地存储
     'process.env.biganH5Url': 'http://localhost:8080/', // biganH5 url local test
     'process.env.tenantAppType': 'ai', //
@@ -31,7 +31,7 @@ export default {
       apps: [
         {
           name: 'bsin-ui-upms', // 唯一 id
-          entry: 'http://127.0.0.1:8001', // html entry
+          entry: process.env.BSIN_UPMS_BASE_URL || 'http://127.0.0.1:8001', // html entry
           //  entry: 'http://copilotupms.s11edao.com',
           props: {
             // bsin-ui-waas的应用ID
