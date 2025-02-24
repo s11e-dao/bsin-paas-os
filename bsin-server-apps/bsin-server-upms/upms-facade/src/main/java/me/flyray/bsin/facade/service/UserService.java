@@ -180,8 +180,6 @@ public interface UserService {
 
     public UserResp getUserInfo(SysUser reqUser);
 
-    List<SysUser> getUserList(SysUserDTO sysUserDTO);
-
     public Map<String, Object> authMerchantFunction(Map<String, Object> requestMap);
 
 

@@ -390,11 +390,9 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 修改用户账户
-     *
      * @param sysUser
      * @return
      */
-
     @Override
     @Transactional
     public SysUser editUserAccount(SysUser sysUser) {
@@ -430,7 +428,9 @@ public class UserServiceImpl implements UserService {
         String orgId = sysUserDto.getOrgId();
         String nickname = sysUserDto.getNickname();
         String username = sysUserDto.getUsername();
-        List<SysUser> sysUsers = userMapper.selectUserList(tenantId, nickname, username, phone, orgId);
+        String bizRoleType = sysUserDto.getBizRoleType();
+        Integer type = sysUserDto.getType();
+        List<SysUser> sysUsers = userMapper.selectUserList(tenantId, nickname, username, phone, orgId, bizRoleType, type);
         List<SysUserDTO> sysUserDTOList = new ArrayList<>();
         if (!sysUsers.isEmpty()) {
             for (SysUser sysUser : sysUsers) {
@@ -714,7 +714,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 根据userIds和orgIds查询user
-     *
      * @param userIds
      * @param orgIds
      * @return
@@ -800,19 +799,6 @@ public class UserServiceImpl implements UserService {
         userResp.setSysUser(sysUser);
         return userResp;
     }
-
-
-    @Override
-    public List<SysUser> getUserList(SysUserDTO sysUserDTO) {
-        return userMapper.selectList(new LambdaQueryWrapper<SysUser>()
-                .notIn(ObjectUtil.isNotEmpty(sysUserDTO.getExcludeUserIds()), SysUser::getUserId, sysUserDTO.getExcludeUserIds())
-                .eq(StrUtil.isNotBlank(sysUserDTO.getTenantId()), SysUser::getTenantId, sysUserDTO.getTenantId())
-                .eq(SysUser::getStatus, UserStatusEnum.ON.getStatus())
-                .in(ObjectUtil.isNotEmpty(sysUserDTO.getOrgIds()), SysUser::getOrgId, sysUserDTO.getOrgIds())
-                .orderByDesc(SysUser::getCreateTime)
-        );
-    }
-
 
     private SysUserVO login(SysUser sysUserReq, SysUser sysUser) {
         log.info("登录用户：{}", sysUser);

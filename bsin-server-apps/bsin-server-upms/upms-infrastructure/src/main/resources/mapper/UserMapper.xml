@@ -243,6 +243,12 @@
         <if test="phone != null and phone != ''">
             and phone=#{phone}
         </if>
+        <if test="bizRoleType != null and bizRoleType != ''">
+            and biz_role_type=#{bizRoleType}
+        </if>
+        <if test="type != null and type != ''">
+            and type=#{type}
+        </if>
         and del_flag = 0
     </select>
 
