@@ -83,10 +83,12 @@ export default () => {
     FormRef.validateFields()
       .then(async () => {
         // 获取表单结果
-        let response = FormRef.getFieldsValue();
-        console.log(response);
+        let request = FormRef.getFieldsValue();
+        console.log(request);
+        // 将 wayCode 的值处理成数组
+        request.wayCode = request.wayCode ? request.wayCode.split(',') : [];
         let reqParam = {
-          ...response
+          ...request
         };
         addPayInterface(reqParam).then((res) => {
           console.log('add', res);
@@ -221,14 +223,14 @@ export default () => {
         >
           <Form.Item
             label="接口名称"
-            name="payInterfaceName"
+            name="payChannelCode"
             rules={[{ required: true, message: '请输入接口名称!' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             label="接口代码"
-            name="payInterfaceCode"
+            name="payChannelName"
             rules={[{ required: true, message: '请输入接口代码!' }]}
           >
             <Input />

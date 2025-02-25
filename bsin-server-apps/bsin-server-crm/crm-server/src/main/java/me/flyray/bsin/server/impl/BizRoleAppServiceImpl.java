@@ -36,7 +36,7 @@ import static me.flyray.bsin.constants.ResponseCode.*;
 public class BizRoleAppServiceImpl implements BizRoleAppService {
 
     @Autowired
-    private BizRoleAppMapper merchantAppMapper;
+    private BizRoleAppMapper bizRoleAppMapper;
 
     /**
      * 添加
@@ -59,7 +59,7 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
         bizRoleApp.setTenantId(tenantId);
         bizRoleApp.setBizRoleType(LoginInfoContextHelper.getLoginUser().getBizRoleType());
         bizRoleApp.setBizRoleTypeNo(LoginInfoContextHelper.getLoginUser().getBizRoleTypeNo());
-        merchantAppMapper.insert(bizRoleApp);
+        bizRoleAppMapper.insert(bizRoleApp);
 //        MerchantApiFeeConfig tenantApiFeeConfig = new MerchantApiFeeConfig();
 //        tenantApiFeeConfig.setTenantId(tenantId);
 //        tenantApiFeeConfig.setProductId(productId);
@@ -81,7 +81,7 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
     @Override
     public void delete(Map<String, Object> requestMap) {
         BizRoleApp bizRoleApp = BsinServiceContext.bisId(BizRoleApp.class, requestMap);
-        if (merchantAppMapper.deleteById(bizRoleApp.getSerialNo())==0) {
+        if (bizRoleAppMapper.deleteById(bizRoleApp.getSerialNo())==0) {
             throw new BusinessException(APP_NOT_EXISTS);
         }
     }
@@ -98,7 +98,7 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
         BizRoleApp bizRoleApp = BsinServiceContext.bisId(BizRoleApp.class, requestMap);
         String serialNo = (String) requestMap.get("serialNo");
         bizRoleApp.setAppId(serialNo);
-        if (merchantAppMapper.updateById(bizRoleApp)==0) {
+        if (bizRoleAppMapper.updateById(bizRoleApp)==0) {
             throw new BusinessException(APP_NOT_EXISTS);
         }
     }
@@ -116,7 +116,7 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
         String merchantNo = LoginInfoContextHelper.getMerchantNo();
         // 从当前token中获取appId
         String serialNo = (String) requestMap.get("serialNo");
-        BizRoleApp tenantAppResult = merchantAppMapper.getAppInfo(tenantId, merchantNo, serialNo);
+        BizRoleApp tenantAppResult = bizRoleAppMapper.getAppInfo(tenantId, merchantNo, serialNo);
         return tenantAppResult;
     }
 
@@ -141,7 +141,7 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
         warapper.eq(BizRoleApp::getTenantId, tenantId);
         warapper.eq(BizRoleApp::getBizRoleTypeNo, bizRoleTypeNo);
         warapper.eq(StringUtils.isNotEmpty(appName), BizRoleApp::getAppName, appName);
-        IPage<BizRoleApp> pageList = merchantAppMapper.selectPage(page,warapper);
+        IPage<BizRoleApp> pageList = bizRoleAppMapper.selectPage(page,warapper);
         return pageList;
     }
 
