@@ -201,6 +201,8 @@ public enum ResponseCode implements ReturnCode {
   MEMBER_STATUS_EXCEPTION("300021", "会员状态异常！"),
   ACCOUNT_CATEGORY_NOT_EXISTS("300022", "账户类别不存在！"),
 
+  PLATFOEM_MODEL_NOT_EXISTS("300023", "平台会员模型未配置！"),
+
   /***********************************分销类 310000 开头*****************************************/
   DIS_MODEL_NOT_EXISTS("310001", "分销模型不存在~"),
 

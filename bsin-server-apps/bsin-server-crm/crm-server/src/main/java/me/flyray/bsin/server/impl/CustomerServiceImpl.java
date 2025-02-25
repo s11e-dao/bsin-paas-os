@@ -387,6 +387,9 @@ public class CustomerServiceImpl implements CustomerService {
     memberConfigWrapper.eq(MemberConfig::getTenantId, tenantId);
     memberConfigWrapper.last("limit 1");
     MemberConfig memberConfig = memberConfigMapper.selectOne(memberConfigWrapper);
+    if (memberConfig == null) {
+      throw new BusinessException(ResponseCode.PLATFOEM_MODEL_NOT_EXISTS);
+    }
     loginUser.setMemberModel(memberConfig.getModel());
     // 查询租户的默认直属商户号
     Merchant merchant =
