@@ -400,7 +400,6 @@ public class CustomerServiceImpl implements CustomerService {
     } else {
       loginUser.setMerchantNo(merchantNo);
     }
-    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
     if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {
       // 获取手机号
       if (ObjectUtil.isEmpty(customerBaseRegister.getPhone())) {
@@ -424,6 +423,8 @@ public class CustomerServiceImpl implements CustomerService {
     // 查新询客户身份信息
     List<CustomerIdentity> identityList =
         customerBiz.getCustomerIdentityList(customerBaseRegister.getCustomerNo());
+
+    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
     log.info("identityList: " + identityList.toString());
     // 代理商信息
     SysAgent sysAgentInfo = disInviteRelationMapper.selectSysAgent(customerBaseRegister.getCustomerNo());
