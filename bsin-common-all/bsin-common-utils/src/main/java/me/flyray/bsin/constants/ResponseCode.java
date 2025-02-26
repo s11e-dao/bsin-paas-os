@@ -325,6 +325,7 @@ public enum ResponseCode implements ReturnCode {
   ORDER_NOT_EXIST("120011", "订单不存在！"),
   DELIVERY_ADDRESS_NO_NOT_EXIST("120011", "邮寄地址NO不能为空！"),
   GOODS_NO_NOT_EXIST("120012", "商品ID不能为空！"),
+  GOODS_SKU_NO_NOT_EXIST("120013", "商品SKU ID不能为空！"),
 
   /*********************************** IOT 130000*****************************************/
   DEVICE_OFFLINE("130000", "Device is offline."),
