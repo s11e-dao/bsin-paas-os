@@ -69,8 +69,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        tenant_id, tenant_code, tenant_name, status, create_time, update_time,
-        type, remark, logo, product_code
+        user_id, username, status, org_id, tenant_id, nickname, phone, avatar, email, del_flag, create_by,
+        create_time, update_by, update_time, type,description
     </sql>
 
     <insert id="insertUser" parameterType="me.flyray.bsin.domain.entity.SysUser">
