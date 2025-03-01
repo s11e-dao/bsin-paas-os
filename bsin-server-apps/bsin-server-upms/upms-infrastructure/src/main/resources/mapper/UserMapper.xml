@@ -18,6 +18,7 @@
         <result column="update_time" property="updateTime"/>
         <result column="biz_role_type" property="bizRoleType"/>
         <result column="type" property="type"/>
+        <result column="description" property="description"/>
     </resultMap>
 
     <resultMap id="maps" type="me.flyray.bsin.domain.response.UserPostResp">
@@ -38,6 +39,7 @@
         <result column="type" property="type"/>
         <result column="post_id" property="postId"/>
         <result column="post_name" property="postName"/>
+        <result column="description" property="description"/>
     </resultMap>
 
 
@@ -56,6 +58,7 @@
         <result column="update_by" property="updateBy"/>
         <result column="update_time" property="updateTime"/>
         <result column="biz_role_type" property="bizRoleType"/>
+        <result column="description" property="description"/>
         <result column="type" property="type"/>
         <association property="org" javaType="me.flyray.bsin.domain.entity.SysOrg"
                      column="user_id" select="me.flyray.bsin.infrastructure.mapper.OrgMapper.selectInfoById"/>
@@ -65,12 +68,16 @@
                     select="me.flyray.bsin.infrastructure.mapper.RoleMapper.getRoleListByUserId"/>
     </resultMap>
 
+    <sql id="Base_Column_List">
+        tenant_id, tenant_code, tenant_name, status, create_time, update_time,
+        type, remark, logo, product_code
+    </sql>
 
     <insert id="insertUser" parameterType="me.flyray.bsin.domain.entity.SysUser">
         insert into sys_user(user_id, username, password, org_id, tenant_id, nickname, phone, avatar, email, biz_role_type,
-                             create_by, type)
+                             create_by, type, description)
         VALUES (#{userId}, #{username}, #{password}, #{orgId}, #{tenantId}, #{nickname}, #{phone}, #{avatar}, #{email}, #{bizRoleType},
-                #{createBy}, #{type})
+                #{createBy}, #{type}, #{description})
     </insert>
 
     <update id="deleteById" parameterType="java.lang.String">
@@ -81,8 +88,9 @@
 
 
     <select id="selectByUsername" resultMap="map" parameterType="java.lang.String">
-        select user_id, username, status, org_id, tenant_id, nickname, phone, avatar, email, del_flag, create_by,
-        create_time, update_by, update_time, type from sys_user
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
         <where>
             <if test="username != null and username != ''">
                 and username = #{username}
@@ -98,23 +106,8 @@
     </select>
 
     <select id="login" parameterType="java.lang.String" resultMap="map">
-        select user_id,
-               username,
-               password,
-               status,
-               org_id,
-               tenant_id,
-               nickname,
-               phone,
-               avatar,
-               email,
-               del_flag,
-               create_by,
-               create_time,
-               update_by,
-               update_time,
-               biz_role_type,
-               type
+        select
+        <include refid="Base_Column_List"/>
         from sys_user
         where tenant_id = #{tenantId}
           and username = #{username}
@@ -124,23 +117,8 @@
     </select>
 
     <select id="getById" parameterType="java.lang.String" resultMap="map">
-        select user_id,
-               username,
-               password,
-               status,
-               org_id,
-               tenant_id,
-               nickname,
-               phone,
-               avatar,
-               email,
-               del_flag,
-               create_by,
-               create_time,
-               update_by,
-               update_time,
-               biz_role_type,
-               type,
+        select
+        <include refid="Base_Column_List"/>
         from sys_user
         where user_id = #{userId}
           and del_flag = 0
@@ -175,7 +153,7 @@
 
     <select id="selectPageList" resultMap="pageResultMap">
         select u.user_id, u.username,u.status, u.org_id,o.org_name, u.tenant_id, u.nickname, u.phone, u.avatar, u.email, u.biz_role_type,
-        u.create_by, u.create_time, u.update_by, u.update_time, u.type
+        u.create_by, u.create_time, u.update_by, u.update_time, u.type, u.description
         from sys_user u
         left join sys_org o on u.org_id = o.org_id
         <where>
@@ -228,8 +206,9 @@
     </select>
 
     <select id="selectUserList" resultMap="maps">
-        select user_id, username,status, org_id, tenant_id, nickname, phone, avatar, email, biz_role_type,
-        create_by, create_time, update_by, update_time, type from sys_user
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
         where tenant_id = #{tenantId,jdbcType=VARCHAR}
         <if test="username != null and username != ''">
             and username LIKE CONCAT('%', #{username}, '%')
@@ -268,8 +247,9 @@
     </select>
 
     <select id="selectListByUserIds" resultMap="map">
-        select user_id, username,status, org_id, tenant_id, nickname, phone, avatar, email, biz_role_type,
-        create_by, create_time, update_by, update_time, type from sys_user
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
         where user_id in
         <foreach collection="userIds" item="userId" index="index" open="(" close=")" separator=",">
             #{userId}
@@ -278,8 +258,9 @@
     </select>
 
     <select id="selectUserInfo" resultMap="map">
-        select user_id, username, status, org_id, tenant_id, nickname, phone, avatar, email,biz_role_type,
-        create_by, create_time, update_by, update_time, type from sys_user
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
         <where>
             tenant_id = #{tenantId,jdbcType=VARCHAR}
             <if test="username != null and username != ''">
@@ -295,21 +276,8 @@
     </select>
 
     <select id="selectEmail" resultMap="map">
-        select user_id,
-               username,
-               status,
-               org_id,
-               tenant_id,
-               nickname,
-               phone,
-               avatar,
-               email,
-               create_by,
-               create_time,
-               update_by,
-               update_time,
-               biz_role_type,
-               type
+        select
+        <include refid="Base_Column_List"/>
         from sys_user
         where email = #{email}
           and del_flag = 0
@@ -321,21 +289,8 @@
         where user_id = #{userId}
     </select>
     <select id="selectUserByUsername" resultType="me.flyray.bsin.domain.entity.SysUser">
-        select user_id,
-               username,
-               status,
-               org_id,
-               tenant_id,
-               nickname,
-               phone,
-               avatar,
-               email,
-               create_by,
-               create_time,
-               update_by,
-               update_time,
-               biz_role_type,
-               type
+        select
+        <include refid="Base_Column_List"/>
         from sys_user
         where username = #{username}
           and del_flag = 0

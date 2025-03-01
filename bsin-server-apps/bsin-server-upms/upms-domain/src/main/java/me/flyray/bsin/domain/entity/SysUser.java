@@ -189,6 +189,11 @@ public class SysUser implements Serializable {
     private String googleSecretKey;
 
     /**
+     * 个人简介
+     */
+    private String description;
+
+    /**
      * 第一次登录标识
      */
     private Boolean loginedFlag;

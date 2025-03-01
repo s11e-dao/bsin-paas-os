@@ -98,4 +98,10 @@ public class UserPostResp extends SysUser implements Serializable{
      * 岗位名称
      */
     private String postName;
+
+    /**
+     * 个人简介
+     */
+    private String description;
+
 }
