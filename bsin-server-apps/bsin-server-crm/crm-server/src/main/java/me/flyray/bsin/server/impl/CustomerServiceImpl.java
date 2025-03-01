@@ -146,14 +146,10 @@ public class CustomerServiceImpl implements CustomerService {
                 .eq(Merchant::getTenantId, customerInfo.getTenantId())
                 .eq(Merchant::getType, CustomerType.UNDER_TENANT_MEMBER.getCode()));
     loginUser.setTenantMerchantNo(merchant.getSerialNo());
-
-    if (TenantMemberModel.UNDER_TENANT.getCode().equals(memberConfig.getModel())) {
-      loginUser.setMerchantNo(merchant.getSerialNo());
-    } else {
+    if (TenantMemberModel.UNDER_MERCHANT.getCode().equals(memberConfig.getModel()) || TenantMemberModel.UNDER_STORE.getCode().equals(memberConfig.getModel())) {
       loginUser.setMerchantNo(merchantNo);
     }
 
-    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
     // 查询会员信息
     Member member =
         memberMapper.selectOne(
@@ -167,6 +163,8 @@ public class CustomerServiceImpl implements CustomerService {
     log.info("identityList: " + identityList.toString());
     // 代理商信息
     SysAgent sysAgentInfo = disInviteRelationMapper.selectSysAgent(customerInfo.getCustomerNo());
+
+    String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
 
     Map res = new HashMap<>();
     res.put("customerInfo", customerInfo);
@@ -287,9 +285,8 @@ public class CustomerServiceImpl implements CustomerService {
                 .eq(Merchant::getTenantId, loginOrinUser.getTenantId())
                 .eq(Merchant::getType, CustomerType.UNDER_TENANT_MEMBER.getCode()));
     loginOrinUser.setTenantMerchantNo(merchant.getSerialNo());
-    if (TenantMemberModel.UNDER_TENANT.getCode().equals(memberConfig.getModel())) {
-      loginOrinUser.setMerchantNo(merchant.getSerialNo());
-    } else {
+    loginOrinUser.setTenantMerchantNo(merchant.getSerialNo());
+    if (TenantMemberModel.UNDER_MERCHANT.getCode().equals(memberConfig.getModel()) || TenantMemberModel.UNDER_STORE.getCode().equals(memberConfig.getModel())) {
       loginOrinUser.setMerchantNo(merchantNo);
     }
     String token = AuthenticationProvider.createToken(loginOrinUser, authSecretKey, authExpiration);
@@ -398,9 +395,8 @@ public class CustomerServiceImpl implements CustomerService {
                 .eq(Merchant::getTenantId, customerBaseRegister.getTenantId())
                 .eq(Merchant::getType, CustomerType.UNDER_TENANT_MEMBER.getCode()));
     loginUser.setTenantMerchantNo(merchant.getSerialNo());
-    if (TenantMemberModel.UNDER_TENANT.getCode().equals(memberConfig.getModel())) {
-      loginUser.setMerchantNo(merchant.getSerialNo());
-    } else {
+    loginUser.setTenantMerchantNo(merchant.getSerialNo());
+    if (TenantMemberModel.UNDER_MERCHANT.getCode().equals(memberConfig.getModel()) || TenantMemberModel.UNDER_STORE.getCode().equals(memberConfig.getModel())) {
       loginUser.setMerchantNo(merchantNo);
     }
     if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {
