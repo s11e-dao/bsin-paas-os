@@ -423,7 +423,10 @@ public class UserServiceImpl implements UserService {
     @ShenyuDubboClient("/getList")
     @Override
     public List<SysUserDTO> getList(SysUser sysUserDto) {
-        String tenantId = LoginInfoContextHelper.getTenantId();
+        String tenantId = sysUserDto.getTenantId();
+        if(tenantId == null){
+            tenantId = LoginInfoContextHelper.getTenantId();
+        }
         String phone = sysUserDto.getPhone();
         String orgId = sysUserDto.getOrgId();
         String nickname = sysUserDto.getNickname();
