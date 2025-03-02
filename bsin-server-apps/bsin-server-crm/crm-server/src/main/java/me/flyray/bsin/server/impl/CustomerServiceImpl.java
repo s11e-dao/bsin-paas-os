@@ -570,7 +570,9 @@ public class CustomerServiceImpl implements CustomerService {
     Page<CustomerBase> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<CustomerBase> warapper = new LambdaUpdateWrapper<>();
     warapper.orderByDesc(CustomerBase::getCreateTime);
-    warapper.eq(CustomerBase::getTenantId, tenantId);
+    if(BizRoleType.SYS.getCode().equals(LoginInfoContextHelper.getBizRoleType())){
+      warapper.eq(CustomerBase::getTenantId, tenantId);
+    }
     warapper.eq(
         ObjectUtil.isNotNull(customerBase.getCustomerNo()),
         CustomerBase::getCustomerNo,

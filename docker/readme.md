@@ -1,7 +1,6 @@
 # bsin-paas-os docker 启动说明
 
 
-
 ## 准备环境
 1. 安装docker
 ~~~bash
@@ -54,7 +53,6 @@ bash ./script/package.sh ui_apps
 bash ./script/package.sh server_apps
 # 一键打包前后端程序
 bash ./script/package.sh all
-
 
 # 2.bsin-paas-os程序拷贝、镜像构建和启动 Usage: sh deploy.sh [build|middleware|gateway|server_apps|ui_apps|start|stop|rm|clean|copy|ai_agent|upms|waas|crm|brms|search|workflow|workflow_admin]
 # 一键拷贝打包好的程序包到对应镜像构建目录
