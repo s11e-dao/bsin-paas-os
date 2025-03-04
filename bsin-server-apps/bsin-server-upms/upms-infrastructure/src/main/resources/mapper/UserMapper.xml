@@ -70,7 +70,7 @@
 
     <sql id="Base_Column_List">
         user_id, username, status, org_id, tenant_id, nickname, phone, avatar, email, del_flag, create_by,
-        create_time, update_by, update_time, type,description
+        create_time, update_by, update_time, biz_role_type, type, description
     </sql>
 
     <insert id="insertUser" parameterType="me.flyray.bsin.domain.entity.SysUser">
@@ -85,7 +85,6 @@
         set del_flag = 1
         where user_id = #{userId}
     </update>
-
 
     <select id="selectByUsername" resultMap="map" parameterType="java.lang.String">
         select

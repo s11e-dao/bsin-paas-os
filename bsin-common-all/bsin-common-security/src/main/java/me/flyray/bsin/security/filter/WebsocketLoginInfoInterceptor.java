@@ -36,10 +36,10 @@ public class WebsocketLoginInfoInterceptor extends ServerEndpointConfig.Configur
             if (token != null && AuthenticationProvider.validateToken(token, SECRET_KEY)) {
                 // 2. 解析token，获取用户信息
                 Claims claims = AuthenticationProvider.parseToken(token, SECRET_KEY);
-                String tenantId = (String) claims.get("tenantId");
-                String bizRoleType = (String) claims.get("bizRoleType");
-                String bizRoleTypeNo = (String) claims.get("bizRoleTypeNo");
-                String username = (String) claims.get("username");
+                String tenantId = String.valueOf(claims.get("tenantId"));
+                String bizRoleType = String.valueOf(claims.get("bizRoleType"));
+                String bizRoleTypeNo = String.valueOf(claims.get("bizRoleTypeNo"));
+                String username = String.valueOf(claims.get("username"));
                 // 3. 将用户信息存储在ServerEndpointConfig的用户属性中
                 sec.getUserProperties().put("bizRoleType", bizRoleType);
                 sec.getUserProperties().put("username", username);

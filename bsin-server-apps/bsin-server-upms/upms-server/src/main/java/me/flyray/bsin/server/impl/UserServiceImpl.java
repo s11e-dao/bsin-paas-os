@@ -365,7 +365,6 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-
     /**
      * 更新
      */
@@ -460,7 +459,6 @@ public class UserServiceImpl implements UserService {
         return userPostList;
     }
 
-
     /**
      * 多条件分页查询用户集合
      * 查询当前登录租户的用户
@@ -506,7 +504,6 @@ public class UserServiceImpl implements UserService {
         }
         return sysUserDTOList;
     }
-
 
     /**
      * 根据用户名查询用户(rpc)
@@ -642,7 +639,6 @@ public class UserServiceImpl implements UserService {
         return roleList;
     }
 
-
     /**
      * 机构分配岗位
      * 1、判断解绑的岗位是否被授权给其他用户
@@ -697,7 +693,6 @@ public class UserServiceImpl implements UserService {
 
     }
 
-
     @Override
     @ApiDoc(desc = "editUserOrg")
     @ShenyuDubboClient("/editUserOrg")
@@ -714,7 +709,6 @@ public class UserServiceImpl implements UserService {
             userMapper.updateByUserId(sysUser);
         }
     }
-
 
     /**
      * 根据userIds和orgIds查询user
