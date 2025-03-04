@@ -433,7 +433,8 @@ public class UserServiceImpl implements UserService {
         String username = sysUserDto.getUsername();
         String bizRoleType = sysUserDto.getBizRoleType();
         Integer type = sysUserDto.getType();
-        List<SysUser> sysUsers = userMapper.selectUserList(tenantId, nickname, username, phone, orgId, bizRoleType, type);
+        Integer status = sysUserDto.getStatus();
+        List<SysUser> sysUsers = userMapper.selectUserList(tenantId, nickname, username, phone, orgId, bizRoleType, type, status);
         List<SysUserDTO> sysUserDTOList = new ArrayList<>();
         if (!sysUsers.isEmpty()) {
             for (SysUser sysUser : sysUsers) {

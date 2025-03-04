@@ -228,6 +228,9 @@
         <if test="type != null and type != ''">
             and type=#{type}
         </if>
+        <if test="status != null and status != ''">
+            and status=#{status}
+        </if>
         and del_flag = 0
     </select>
 
