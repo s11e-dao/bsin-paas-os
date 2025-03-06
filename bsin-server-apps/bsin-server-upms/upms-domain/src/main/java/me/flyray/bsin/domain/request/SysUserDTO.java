@@ -51,7 +51,7 @@ public class SysUserDTO extends SysUser implements Serializable {
      */
     private String bizRoleType;
 
-    private Integer userType;
+    private Integer type;
 
     /**
      * 租户的应用类型

@@ -174,8 +174,11 @@
             <if test="query.phone != null and query.phone != ''">
                 and u.phone=#{query.phone}
             </if>
-            <if test="query.userType != null">
-                and u.type=#{query.userType}
+            <if test="query.type != null and query.type!=''">
+                and u.type=#{query.type}
+            </if>
+            <if test="query.bizRoleType != null and query.bizRoleType!=''">
+                and u.biz_role_type=#{query.bizRoleType}
             </if>
             <if test="query.beginTime != null and query.beginTime!=''">
                 AND u.create_time <![CDATA[>=]]> #{query.beginTime}
