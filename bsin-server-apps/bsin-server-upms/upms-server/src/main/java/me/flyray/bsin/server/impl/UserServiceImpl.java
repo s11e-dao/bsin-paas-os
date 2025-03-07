@@ -512,11 +512,10 @@ public class UserServiceImpl implements UserService {
     @ShenyuDubboClient("/getDetail")
     @Override
     public SysUser getDetail(String userId) {
-        String tenantId = LoginInfoContextHelper.getTenantId();
         if (userId == null) {
             userId = LoginInfoContextHelper.getAdminUserId();
         }
-        SysUser sysUser = userMapper.selectUserInfo(tenantId, userId, null);
+        SysUser sysUser = userMapper.selectUserInfo(userId, null);
         if (sysUser != null) {
             sysUser.setOrg(orgMapper.selectInfoById(sysUser.getOrgId()));
             List<SysPost> sysPosts = postMapper.getPostByUserId(userId);
@@ -534,8 +533,7 @@ public class UserServiceImpl implements UserService {
     @ShenyuDubboClient("/getDetailByPhone")
     @Override
     public SysUser getDetailByPhone(String phone) {
-        String tenantId = LoginInfoContextHelper.getTenantId();
-        SysUser sysUser = userMapper.selectUserInfo(tenantId, null, phone);
+        SysUser sysUser = userMapper.selectUserInfo(null, phone);
         return sysUser;
     }
 
@@ -760,7 +758,7 @@ public class UserServiceImpl implements UserService {
         if(StringUtils.isBlank(tenantId)){
             tenantId = loginUser.getTenantId();
         }
-        SysUser sysUser = userMapper.selectUserInfo(tenantId, reqUser.getUserId(), reqUser.getUsername());
+        SysUser sysUser = userMapper.selectUserInfo(reqUser.getUserId(), reqUser.getUsername());
         SysTenant sysTenant = tenantMapper.selectTenantInfoByTenantId(tenantId);
 
         if(sysUser == null){

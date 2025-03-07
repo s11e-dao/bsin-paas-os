@@ -268,17 +268,12 @@
         <include refid="Base_Column_List"/>
         from sys_user
         <where>
-            tenant_id = #{tenantId,jdbcType=VARCHAR}
+            user_id = #{userId}
             <if test="username != null and username != ''">
                 and username = #{username,jdbcType=VARCHAR}
             </if>
-            <if test="userId != null and userId != ''">
-                and user_id=#{userId}
-            </if>
             and del_flag = 0
         </where>
-
-
     </select>
 
     <select id="selectEmail" resultMap="map">

@@ -48,7 +48,7 @@ public interface UserMapper extends BaseMapper<SysUser> {
     List<SysUser> selectUserByPostIdAndOrgId(@Param("postId") String postId,
                                              @Param("orgId") String orgId);
 
-    SysUser selectUserInfo(@Param("tenantId") String tenantId, @Param("userId") String userId, @Param("username") String username);
+    SysUser selectUserInfo(@Param("userId") String userId, @Param("username") String username);
 
     SysUser selectEmail(String email);
 
