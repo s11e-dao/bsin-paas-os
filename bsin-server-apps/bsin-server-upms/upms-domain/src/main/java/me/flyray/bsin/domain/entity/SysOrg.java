@@ -91,11 +91,6 @@ public class SysOrg implements Serializable {
     private String tenantId;
 
     /**
-     * 商户id
-     */
-    private String merchantId;
-
-    /**
      * 创建时间
      */
     @JsonFormat(shape =JsonFormat.Shape.STRING,pattern ="yyyy-MM-dd HH:mm:ss",timezone ="GMT+8")
