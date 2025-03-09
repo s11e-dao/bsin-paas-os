@@ -102,6 +102,14 @@ public interface CustomerService {
    * */
   public CustomerBase edit(Map<String, Object> requestMap);
 
+
+  /**
+   *
+   * 客户信息删除
+   *
+   * */
+  public Boolean delete(Map<String, Object> requestMap);
+
   /**
    * 激励发放
    *
