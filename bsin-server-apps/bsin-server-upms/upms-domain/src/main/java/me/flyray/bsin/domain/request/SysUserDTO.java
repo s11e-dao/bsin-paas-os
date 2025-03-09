@@ -59,6 +59,11 @@ public class SysUserDTO extends SysUser implements Serializable {
      */
     private String tenantAppType;
 
+    /**
+     * 个人简介
+     */
+    private String description;
+
     @Valid
     @NotNull(message = "分页不能为空！", groups = QueryGroup.class)
     private Pagination pagination;
