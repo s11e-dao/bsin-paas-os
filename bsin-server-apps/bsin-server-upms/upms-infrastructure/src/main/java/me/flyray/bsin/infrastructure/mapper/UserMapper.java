@@ -62,11 +62,11 @@ public interface UserMapper extends BaseMapper<SysUser> {
      */
     SysUser selectByUserId(String userId);
 
-    SysUser selectUserByUsername(@Param("username") String username);
+    SysUser selectUserByUsername(@Param("tenantId")String tenantId, @Param("username") String username);
 
     List<String> getUserIdByName(@Param("name") String name, @Param("tenantId") String tenantId);
 
-    SysUser getUserByRoleCode(@Param("roleCode") String roleCode,@Param("tenantId")String tenantId);
+    SysUser getUserByRoleCode(@Param("roleCode") String roleCode, @Param("tenantId")String tenantId);
 
     /**
      *

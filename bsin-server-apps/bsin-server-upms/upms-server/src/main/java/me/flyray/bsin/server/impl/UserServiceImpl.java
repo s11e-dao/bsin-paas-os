@@ -544,7 +544,8 @@ public class UserServiceImpl implements UserService {
     @ShenyuDubboClient("/getDetailByUsername")
     @Override
     public SysUser getDetailByUsername(String username) {
-        SysUser sysUser = userMapper.selectUserByUsername(username);
+        String tenantId = LoginInfoContextHelper.getTenantId();
+        SysUser sysUser = userMapper.selectUserByUsername(tenantId, username);
         return sysUser;
     }
 
@@ -758,7 +759,7 @@ public class UserServiceImpl implements UserService {
         if(StringUtils.isBlank(tenantId)){
             tenantId = loginUser.getTenantId();
         }
-        SysUser sysUser = userMapper.selectUserInfo(reqUser.getUserId(), reqUser.getUsername());
+        SysUser sysUser = userMapper.selectUserByUsername(tenantId, reqUser.getUsername());
         SysTenant sysTenant = tenantMapper.selectTenantInfoByTenantId(tenantId);
 
         if(sysUser == null){
