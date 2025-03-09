@@ -570,7 +570,7 @@ public class CustomerServiceImpl implements CustomerService {
     Page<CustomerBase> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
     LambdaUpdateWrapper<CustomerBase> warapper = new LambdaUpdateWrapper<>();
     warapper.orderByDesc(CustomerBase::getCreateTime);
-    if(BizRoleType.SYS.getCode().equals(LoginInfoContextHelper.getBizRoleType())){
+    if(!BizRoleType.SYS.getCode().equals(LoginInfoContextHelper.getBizRoleType())){
       warapper.eq(CustomerBase::getTenantId, tenantId);
     }
     warapper.eq(
@@ -613,6 +613,20 @@ public class CustomerServiceImpl implements CustomerService {
     }
     customerBaseMapper.updateById(customerBase);
     return customerBase;
+  }
+
+  @ApiDoc(desc = "delete")
+  @ShenyuDubboClient("/delete")
+  @Override
+  public Boolean delete(Map<String, Object> requestMap) {
+    String customerNo = MapUtils.getString(requestMap, "customerNo");
+    if (customerNo == null) {
+        throw new BusinessException(CUSTOMER_NO_NOT_ISNULL);
+    }
+    if (customerBaseMapper.deleteById(customerNo) == 0) {
+      throw new BusinessException(CUSTOMER_ERROR);
+    }
+    return true;
   }
 
   /**
