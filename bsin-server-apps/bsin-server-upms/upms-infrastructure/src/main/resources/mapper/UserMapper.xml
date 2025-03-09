@@ -18,6 +18,7 @@
         <result column="update_time" property="updateTime"/>
         <result column="biz_role_type" property="bizRoleType"/>
         <result column="type" property="type"/>
+        <result column="sex" property="sex"/>
         <result column="description" property="description"/>
         <result column="google_secret_key" property="googleSecretKey"/>
     </resultMap>
@@ -59,6 +60,7 @@
         <result column="update_by" property="updateBy"/>
         <result column="update_time" property="updateTime"/>
         <result column="biz_role_type" property="bizRoleType"/>
+        <result column="sex" property="sex"/>
         <result column="description" property="description"/>
         <result column="type" property="type"/>
         <association property="org" javaType="me.flyray.bsin.domain.entity.SysOrg"
@@ -71,14 +73,14 @@
 
     <sql id="Base_Column_List">
         user_id, username, status, org_id, tenant_id, nickname, phone, avatar, email, del_flag, create_by,
-        create_time, update_by, update_time, biz_role_type, type, description, google_secret_key
+        create_time, update_by, update_time, biz_role_type, type, description, google_secret_key,sex
     </sql>
 
     <insert id="insertUser" parameterType="me.flyray.bsin.domain.entity.SysUser">
         insert into sys_user(user_id, username, password, org_id, tenant_id, nickname, phone, avatar, email, biz_role_type,
-                             create_by, type, description, google_secret_key)
+                             create_by, type, description, google_secret_key,sex)
         VALUES (#{userId}, #{username}, #{password}, #{orgId}, #{tenantId}, #{nickname}, #{phone}, #{avatar}, #{email}, #{bizRoleType},
-                #{createBy}, #{type}, #{description}, #{googleSecretKey})
+                #{createBy}, #{type}, #{description}, #{googleSecretKey}, #{sex})
     </insert>
 
     <update id="deleteById" parameterType="java.lang.String">
@@ -153,7 +155,7 @@
 
     <select id="selectPageList" resultMap="pageResultMap">
         select u.user_id, u.username,u.status, u.org_id,o.org_name, u.tenant_id, u.nickname, u.phone, u.avatar, u.email, u.biz_role_type,
-        u.create_by, u.create_time, u.update_by, u.update_time, u.type, u.description, u.google_secret_key
+        u.create_by, u.create_time, u.update_by, u.update_time, u.type, u.description, u.google_secret_key,u.sex
         from sys_user u
         left join sys_org o on u.org_id = o.org_id
         <where>
@@ -375,7 +377,8 @@
         u.STATUS,
         u.create_time,
         u.org_id,
-        o.org_name
+        o.org_name,
+        u.sex
         from sys_user u
         left join sys_org o on o.org_id = u.org_id
         <where>
