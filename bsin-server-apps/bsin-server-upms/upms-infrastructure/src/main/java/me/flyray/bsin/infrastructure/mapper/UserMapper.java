@@ -41,7 +41,8 @@ public interface UserMapper extends BaseMapper<SysUser> {
                              @Param("orgId") String orgId,
                              @Param("bizRoleType") String bizRoleType,
                              @Param("type") Integer type,
-                             @Param("status") Integer status);
+                             @Param("status") Integer status,
+                             @Param("sex") Integer sex);
 
     List<SysUser> selectListByUserIds(@Param("userIds") List<String> userIds);
 
