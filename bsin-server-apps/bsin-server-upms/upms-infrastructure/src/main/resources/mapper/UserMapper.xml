@@ -236,6 +236,9 @@
         <if test="status != null and status != ''">
             and status=#{status}
         </if>
+        <if test="sex != null and sex != ''">
+            and sex=#{sex}
+        </if>
         and del_flag = 0
     </select>
 
