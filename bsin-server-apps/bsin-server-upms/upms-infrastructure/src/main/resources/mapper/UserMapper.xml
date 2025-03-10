@@ -230,13 +230,13 @@
         <if test="bizRoleType != null and bizRoleType != ''">
             and biz_role_type=#{bizRoleType}
         </if>
-        <if test="type != null and type != ''">
+        <if test="type != null">
             and type=#{type}
         </if>
-        <if test="status != null and status != ''">
+        <if test="status != null">
             and status=#{status}
         </if>
-        <if test="sex != null and sex != ''">
+        <if test="sex != null">
             and sex=#{sex}
         </if>
         and del_flag = 0
