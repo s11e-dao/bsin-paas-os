@@ -5,7 +5,7 @@
         <id column="user_id" property="userId"/>
         <result column="username" property="username"/>
         <result column="password" property="password"/>
-        <result column="status" property="status"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
         <result column="org_id" property="orgId"/>
         <result column="tenant_id" property="tenantId"/>
         <result column="nickname" property="nickname"/>
@@ -17,8 +17,8 @@
         <result column="update_by" property="updateBy"/>
         <result column="update_time" property="updateTime"/>
         <result column="biz_role_type" property="bizRoleType"/>
-        <result column="type" property="type"/>
-        <result column="sex" property="sex"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="sex" jdbcType="INTEGER" property="sex"/>
         <result column="description" property="description"/>
         <result column="google_secret_key" property="googleSecretKey"/>
     </resultMap>
@@ -230,14 +230,14 @@
         <if test="bizRoleType != null and bizRoleType != ''">
             and biz_role_type=#{bizRoleType}
         </if>
-        <if test="type != null">
-            and type=#{type}
+        <if test="type != null or type == 0">
+            and type=#{type,jdbcType=INTEGER}
         </if>
-        <if test="status != null">
-            and status=#{status}
+        <if test="status != null or status == 0">
+            and status=#{status,jdbcType=INTEGER}
         </if>
-        <if test="sex != null">
-            and sex=#{sex}
+        <if test="sex != null or sex == 0">
+            and sex=#{sex,jdbcType=INTEGER}
         </if>
         and del_flag = 0
     </select>

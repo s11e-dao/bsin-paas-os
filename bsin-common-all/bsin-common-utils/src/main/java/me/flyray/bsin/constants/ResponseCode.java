@@ -357,6 +357,10 @@ public enum ResponseCode implements ReturnCode {
   NO_REPLY("130098", "No live reply received."),
   DEVICE_PRODUCT_NOT_EXIST("130099", "设备产品不存在."),
 
+  /*********************************** community 140000*****************************************/
+
+  ARTICLE_CATEGORY_NOT_EXIST("140001", "文章分类不存在"),
+
   ;
 
   private String code;
