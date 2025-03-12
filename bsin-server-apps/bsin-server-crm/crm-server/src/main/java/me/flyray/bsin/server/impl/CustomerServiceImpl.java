@@ -367,6 +367,9 @@ public class CustomerServiceImpl implements CustomerService {
     if (ObjectUtil.isEmpty(customerBase.getTenantId())) {
       throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
     }
+    if (ObjectUtil.isEmpty(customerBase.getAuthMethod())) {
+      throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
+    }
     customerBase.setCredential(openId);
     CustomerBase customerBaseRegister = customerBiz.register(customerBase, new SysAgent());
 
