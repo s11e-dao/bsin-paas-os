@@ -191,11 +191,12 @@ export default function () {
           left: '20px',
           zIndex: 999,
           color: '#fff',
+          display: 'flex'
         }}
         shape="round"
         type="primary"
         onClick={changeLogin}
-        icon={<SwapOutlined />}
+        icon={<SwapOutlined style={{color: '#fff' }} />}
       >
         切换登录
       </Button>
