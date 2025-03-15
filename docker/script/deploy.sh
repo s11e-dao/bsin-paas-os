@@ -25,7 +25,7 @@ copy(){
 }
 # 启动基础环境（必须）
 middleware(){
-	docker-compose up -d bsin-mysql bsin-redis bsin-nacos-standalone bsin-nginx #bsin-emqx #bsin-rabbitmq bsin-milvus
+	docker-compose up -d bsin-mysql bsin-redis bsin-nacos-standalone bsin-nginx bsin-emqx #bsin-rabbitmq bsin-milvus
 }
 
 # 启动网关模块（必须）
@@ -34,7 +34,7 @@ gateway(){
 }
 # 启动server-apps模块
 server_apps(){
-	docker-compose up -d bsin-server-upms bsin-server-waas bsin-server-crm bsin-server-ai-agent bsin-server-oms bsin-server-community bsin-server-brms #bsin-server-iot #bsin-server-workflow bsin-server-workflow-admin bsin-server-search
+	docker-compose up -d bsin-server-upms bsin-server-waas bsin-server-crm bsin-server-ai-agent bsin-server-oms bsin-server-community bsin-server-brms bsin-server-iot #bsin-server-workflow bsin-server-workflow-admin bsin-server-search
 }
 
 # 启动upms模块
@@ -83,7 +83,7 @@ iot(){
 }
 # 启动ui-apps模块
 ui_apps(){
-	docker-compose up -d bsin-apps-container bsin-ui-upms bsin-ui-ai-agent bsin-ui-waas bsin-ui-bigan bsin-ui-decision-admin
+	docker-compose up -d bsin-apps-container bsin-ui-upms bsin-ui-ai-agent bsin-ui-waas bsin-ui-bigan bsin-ui-decision-admin bsin-ui-sea-condition
 }
 # 关闭所有环境/模块
 stop(){

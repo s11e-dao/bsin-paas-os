@@ -38,6 +38,7 @@ mkdir -p ./bsin-paas-os/ui-apps/decision-admin/dist/
 mkdir -p ./bsin-paas-os/ui-apps/upms/dist/
 mkdir -p ./bsin-paas-os/ui-apps/waas/dist/
 mkdir -p ./bsin-paas-os/ui-apps/bigan/dist/
+mkdir -p ./bsin-paas-os/ui-apps/sea-condition/dist/
 
 echo "2. create dir finished!!!"
 
@@ -52,26 +53,26 @@ echo "4. end copy sql "
 echo "5. begin copy jar "
 
 echo "5.1 begin copy targe-gateway-admin jar "
-cp ../bsin-targe-gateway-admin/target/targe-gateway-admin-2.0.0-SNAPSHOT.jar ./bsin-paas-os/targe-gateway-admin/jar/targe-gateway-admin-server-2.0.0-SNAPSHOT.jar
-cp ../bsin-targe-gateway-admin/target/targe-gateway-admin-2.0.0-SNAPSHOT-javadoc.jar ./bsin-paas-os/targe-gateway-admin/jar/targe-gateway-admin-javadoc-2.0.0-SNAPSHOT.jar
-cp ../bsin-targe-gateway-admin/target/targe-gateway-admin-2.0.0-SNAPSHOT-sources.jar ./bsin-paas-os/targe-gateway-admin/jar/targe-gateway-admin-sources-2.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-targe-gateway-admin/target/targe-gateway-admin-2.0.0-SNAPSHOT.jar ./bsin-paas-os/targe-gateway-admin/jar/targe-gateway-admin-server-2.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-targe-gateway-admin/target/targe-gateway-admin-2.0.0-SNAPSHOT-javadoc.jar ./bsin-paas-os/targe-gateway-admin/jar/targe-gateway-admin-javadoc-2.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-targe-gateway-admin/target/targe-gateway-admin-2.0.0-SNAPSHOT-sources.jar ./bsin-paas-os/targe-gateway-admin/jar/targe-gateway-admin-sources-2.0.0-SNAPSHOT.jar
 
 
 echo "5.2 begin copy targe-gateway jar "
-cp ../bsin-targe-gateway/target/targe-gateway-2.0.0-SNAPSHOT.jar ./bsin-paas-os/targe-gateway/jar/targe-gateway-server-2.0.0-SNAPSHOT.jar
-cp ../bsin-targe-gateway/target/targe-gateway-2.0.0-SNAPSHOT-sources.jar ./bsin-paas-os/targe-gateway/jar/targe-gateway-sources-2.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-targe-gateway/target/targe-gateway-2.0.0-SNAPSHOT.jar ./bsin-paas-os/targe-gateway/jar/targe-gateway-server-2.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-targe-gateway/target/targe-gateway-2.0.0-SNAPSHOT-sources.jar ./bsin-paas-os/targe-gateway/jar/targe-gateway-sources-2.0.0-SNAPSHOT.jar
 
 echo "5.3 begin copy server-apps"
-cp ../bsin-server-apps/bsin-server-ai-agent/ai-agent-server/target/ai-agent-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/ai-agent/jar/ai-agent-server-2.0.0-SNAPSHOT.jar
-cp ../bsin-server-apps/bsin-server-brms/brms-server/target/brms-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/brms/jar/brms-server-2.0.0-SNAPSHOT.jar
-cp ../bsin-server-apps/bsin-server-crm/crm-server/target/crm-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/crm/jar/crm-server-2.0.0-SNAPSHOT.jar
-#cp ../bsin-server-apps/bsin-server-http/target/bsin-server-http.jar ./bsin-paas-os/server-apps/http/jar/http-server-2.0.0-SNAPSHOT.jar
-cp ../bsin-server-apps/bsin-server-search/search-server/target/search-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/search/jar/search-server-2.0.0-SNAPSHOT.jar
-cp ../bsin-server-apps/bsin-server-upms/upms-server/target/upms-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/upms/jar/upms-server-2.0.0-SNAPSHOT.jar
-cp ../bsin-server-apps/bsin-server-waas/waas-server/target/waas-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/waas/jar/waas-server-2.0.0-SNAPSHOT.jar
-cp ../bsin-server-apps/bsin-server-workflow/workflow-server/target/workflow-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/workflow/jar/workflow-server-2.0.0-SNAPSHOT.jar
-cp ../bsin-server-apps/bsin-server-workflow-admin/workflow-admin-server/target/workflow-admin-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/workflow-admin/jar/workflow-admin-server-2.0.0-SNAPSHOT.jar
-cp ../bsin-server-apps/bsin-server-iot/iot-server/target/iot-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/iot/jar/iot-server-2.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-server-apps/bsin-server-ai-agent/ai-agent-server/target/ai-agent-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/ai-agent/jar/ai-agent-server-2.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-server-apps/bsin-server-brms/brms-server/target/brms-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/brms/jar/brms-server-2.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-server-apps/bsin-server-crm/crm-server/target/crm-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/crm/jar/crm-server-2.0.0-SNAPSHOT.jar
+#cp -rvf ../bsin-server-apps/bsin-server-http/target/bsin-server-http.jar ./bsin-paas-os/server-apps/http/jar/http-server-2.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-server-apps/bsin-server-search/search-server/target/search-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/search/jar/search-server-2.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-server-apps/bsin-server-upms/upms-server/target/upms-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/upms/jar/upms-server-2.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-server-apps/bsin-server-waas/waas-server/target/waas-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/waas/jar/waas-server-2.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-server-apps/bsin-server-workflow/workflow-server/target/workflow-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/workflow/jar/workflow-server-2.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-server-apps/bsin-server-workflow-admin/workflow-admin-server/target/workflow-admin-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/workflow-admin/jar/workflow-admin-server-2.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-server-apps/bsin-server-iot/iot-server/target/iot-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/iot/jar/iot-server-2.0.0-SNAPSHOT.jar
 
 
 
@@ -90,9 +91,12 @@ cp ../.env ./bsin-paas-os/targe-gateway-admin -rvf
 cp ../.env ./bsin-paas-os/targe-gateway -rvf
 
 
+##
+cp -r /home/leonard/ssd12/bsin-paas/prj/sea/bsin-ui-sea-condition/dist/* ./bsin-paas-os/ui-apps/sea-condition/dist/
+
 ## jiujiu-paas，业务闭源
-cp ../../jiujiu-paas-yue17/jiujiu-paas-server/bsin-server-oms/oms-server/target/oms-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/oms/jar/oms-server-2.0.0-SNAPSHOT.jar
-cp ../../jiujiu-paas-yue17/jiujiu-paas-server/bsin-server-community/community-server/target/community-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/community/jar/community-server-2.0.0-SNAPSHOT.jar
+cp -rvf ../../jiujiu-paas-yue17/jiujiu-paas-server/bsin-server-oms/oms-server/target/oms-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/oms/jar/oms-server-2.0.0-SNAPSHOT.jar
+cp -rvf ../../jiujiu-paas-yue17/jiujiu-paas-server/bsin-server-community/community-server/target/community-server-2.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/community/jar/community-server-2.0.0-SNAPSHOT.jar
 
 cp ../../jiujiu-paas-yue17/.env ./bsin-paas-os/server-apps/community -rvf
 cp ../../jiujiu-paas-yue17/.env ./bsin-paas-os/server-apps/oms -rvf
@@ -101,14 +105,14 @@ echo "6. end copy jar "
 
 
 echo "7. begin copy frontend dist "
-cp -r ../bsin-apps-container/dist/* ./bsin-paas-os/apps-container/dist/
-cp -r ../bsin-ui-apps/bsin-ui-ai-agent/dist/* ./bsin-paas-os/ui-apps/ai-agent/dist/
-cp -r ../bsin-ui-apps/bsin-ui-decision-admin/dist/* ./bsin-paas-os/ui-apps/decision-admin/dist/
-cp -r ../bsin-ui-apps/bsin-ui-upms/dist/* ./bsin-paas-os/ui-apps/upms/dist/
-cp -r ../bsin-ui-apps/bsin-ui-waas/dist/* ./bsin-paas-os/ui-apps/waas/dist/
+cp -rvf  ../bsin-apps-container/dist/* ./bsin-paas-os/apps-container/dist/
+cp -rvf  ../bsin-ui-apps/bsin-ui-ai-agent/dist/* ./bsin-paas-os/ui-apps/ai-agent/dist/
+cp -rvf  ../bsin-ui-apps/bsin-ui-decision-admin/dist/* ./bsin-paas-os/ui-apps/decision-admin/dist/
+cp -rvf  ../bsin-ui-apps/bsin-ui-upms/dist/* ./bsin-paas-os/ui-apps/upms/dist/
+cp -rvf  ../bsin-ui-apps/bsin-ui-waas/dist/* ./bsin-paas-os/ui-apps/waas/dist/
 
 ## jiujiu-paas，业务闭源
-cp -r ../../jiujiu-paas-yue17/jiujiu-paas-ui/bsin-ui-bigan/dist/* ./bsin-paas-os/ui-apps/bigan/dist/
+cp -rvf  ../../jiujiu-paas-yue17/jiujiu-paas-ui/bsin-ui-bigan/dist/* ./bsin-paas-os/ui-apps/bigan/dist/
 
 echo "8. end copy frontend dist"
 
