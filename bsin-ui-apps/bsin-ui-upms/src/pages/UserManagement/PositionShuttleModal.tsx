@@ -11,6 +11,8 @@ import locale from 'antd/lib/locale/zh_CN';
 type PositionFormModalPropsType = {
   isAssignModal: boolean;
   closeAssignModal: Function;
+  isRecord: any; // Add this line to include isRecord
+  actionRef: any; // Ensure actionRef is also defined if not already
 };
 
 const PositionShuttleModal: FC<PositionFormModalPropsType> = ({
@@ -21,9 +23,9 @@ const PositionShuttleModal: FC<PositionFormModalPropsType> = ({
 }) => {
   const { userId } = isRecord;
   // 存储全部的post数据
-  const [isPostListAll, setIsPostListAll] = useState([]);
+  const [isPostListAll, setIsPostListAll] = useState<any[]>([]);
   // 存储选中的key 存储已经分配的post数据
-  const [targetKeys, setTargetKeys] = useState([]);
+  const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
   useEffect(() => {
     if (isRecord.userId !== undefined) {
@@ -45,6 +47,7 @@ const PositionShuttleModal: FC<PositionFormModalPropsType> = ({
     data.forEach((item) => {
       assignedPostList.push(item.postId);
     });
+    console.log(assignedPostList)
     setTargetKeys(assignedPostList);
     setIsPostListAll(postListAll);
   };
@@ -68,7 +71,7 @@ const PositionShuttleModal: FC<PositionFormModalPropsType> = ({
   return (
     <Modal
       title="用户分配岗位"
-      visible={isAssignModal}
+      open={isAssignModal}
       onOk={confirmAssignPost}
       onCancel={() => {
         closeAssignModal(false);
