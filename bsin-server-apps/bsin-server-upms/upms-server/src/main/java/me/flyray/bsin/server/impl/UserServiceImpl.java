@@ -468,7 +468,11 @@ public class UserServiceImpl implements UserService {
     @ShenyuDubboClient("/getPageList")
     @Override
     public IPage<SysUser> getPageList(SysUserDTO sysUserDTO) throws Exception {
-        sysUserDTO.setTenantId(LoginInfoContextHelper.getTenantId());
+        String tenantId = sysUserDTO.getTenantId();
+        if(StringUtils.isEmpty(tenantId)){
+            tenantId = LoginInfoContextHelper.getTenantId();
+        }
+        sysUserDTO.setTenantId(tenantId);
         Page<SysUser> page = sysUserDTO.getPagination().build();
         if (sysUserDTO.getSelectAll()) {
             userMapper.selectPageAllList(page, sysUserDTO);
