@@ -34,6 +34,7 @@ bsin:
     authentication-secretKey: shenyu-test-shenyu-test-shenyu-test
     # 过期时间，单位分钟
     authentication-expiration: 60
+    aes-secretKey: 73F1A8C4B6D2E5908742F3A619DB7CE0
   tenant:
     appId: 6345489506536636416 # 权限管理
     qixietongAppId: 1649584597970849792
