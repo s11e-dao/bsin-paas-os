@@ -45,6 +45,10 @@ https://www.bilibili.com/video/BV1VM4y1a7PF/?vd_source=360ae092de70c0b6c577d1d26
 ## 逻辑架构示图
 ![avatar](./doc/images/architecture/架构设计.png)
 
+## RWA产品逻辑图
+![avatar](./doc/images/architecture/RWA.jpg)
+RWA.jpg
+
 ## 系统业务角色定义
 ![avatar](./doc/images/architecture/bizRole.jpg)
 
