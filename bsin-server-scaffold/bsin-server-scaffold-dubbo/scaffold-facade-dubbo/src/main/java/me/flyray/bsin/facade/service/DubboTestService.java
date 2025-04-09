@@ -18,13 +18,12 @@
 package me.flyray.bsin.facade.service;
 
 
+import jakarta.validation.Valid;
 import me.flyray.bsin.domain.entity.DubboTest;
 import me.flyray.bsin.domain.entity.ListResp;
 import me.flyray.bsin.utils.BsinResultEntity;
 import me.flyray.bsin.validate.AddGroup;
 import org.springframework.validation.annotation.Validated;
-
-import javax.validation.Valid;
 
 /**
  * DubboTestService.

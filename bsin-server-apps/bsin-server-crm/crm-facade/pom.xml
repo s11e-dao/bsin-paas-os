@@ -6,11 +6,11 @@
     <parent>
         <groupId>me.flyray.bsin</groupId>
         <artifactId>bsin-server-crm</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>crm-facade</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <name>crm-facade</name>
     <packaging>jar</packaging>
 
@@ -30,7 +30,7 @@
         <dependency>
             <groupId>me.flyray.bsin</groupId>
             <artifactId>crm-domain</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>okhttp</artifactId>

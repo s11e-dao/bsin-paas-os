@@ -40,6 +40,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.shenyu.common.constant.Constants.SYS_DEFAULT_NAMESPACE_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -89,10 +90,14 @@ public final class ShenyuClientRegisterSpringCloudServiceImplTest {
     @Test
     public void testRegisterMetadata() {
         MetaDataDO metaDataDO = MetaDataDO.builder().build();
-        when(metaDataService.findByPath(any())).thenReturn(metaDataDO);
-        MetaDataRegisterDTO metaDataDTO = MetaDataRegisterDTO.builder().path("/contextPath/test").build();
+        when(metaDataService.findByPathAndNamespaceId(any(), any())).thenReturn(metaDataDO);
+        MetaDataRegisterDTO metaDataDTO = MetaDataRegisterDTO
+                .builder()
+                .path("/contextPath/test")
+                .namespaceId(SYS_DEFAULT_NAMESPACE_ID)
+                .build();
         shenyuClientRegisterSpringCloudService.registerMetadata(metaDataDTO);
-        verify(metaDataService).findByPath("/contextPath/test");
+        verify(metaDataService).findByPathAndNamespaceId("/contextPath/test", SYS_DEFAULT_NAMESPACE_ID);
         verify(metaDataService).saveOrUpdateMetaData(metaDataDO, metaDataDTO);
     }
     
@@ -101,9 +106,9 @@ public final class ShenyuClientRegisterSpringCloudServiceImplTest {
         shenyuClientRegisterSpringCloudService = spy(shenyuClientRegisterSpringCloudService);
         
         final String returnStr = "{serviceId:'test1',gray:false,divideUpstreams:[{weight:50,warmup:10,protocol:"
-                + "'http://',upstreamHost:'localhost',upstreamUrl:'localhost:8090',status:'true',timestamp:1637909490935}]}";
+                + "'http://',upstreamHost:'localhost',upstreamUrl:'localhost:8090',status:'true',timestamp:1637909490935,\"gray\":false}]}";
         final String expected = "{\"serviceId\":\"test1\",\"gray\":false,\"divideUpstreams\":[{\"weight\":50,\"warmup\":10,\"protocol\":"
-                + "\"http://\",\"upstreamHost\":\"localhost\",\"upstreamUrl\":\"localhost:8090\",\"status\":true,\"timestamp\":1637909490935}]}";
+                + "\"http://\",\"upstreamHost\":\"localhost\",\"upstreamUrl\":\"localhost:8090\",\"status\":true,\"timestamp\":1637909490935,\"gray\":false}]}";
         final URIRegisterDTO dto1 = URIRegisterDTO.builder().appName("test2")
                 .rpcType(RpcTypeEnum.SPRING_CLOUD.getName())
                 .host(HOST).port(8090).build();

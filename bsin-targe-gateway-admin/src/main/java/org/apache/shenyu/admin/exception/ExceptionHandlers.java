@@ -37,8 +37,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -123,11 +123,11 @@ public class ExceptionHandlers {
     
     @ExceptionHandler(ShenyuException.class)
     protected ShenyuAdminResult handleShenyuException(final ShenyuException exception) {
-        String message = exception.getCause() == null ? null : exception.getCause().getMessage();
+        LOG.error(exception.getMessage(), exception);
+        String message = Objects.isNull(exception.getCause()) ? null : exception.getCause().getMessage();
         if (!StringUtils.hasText(message)) {
             message = exception.getMessage();
         }
-        LOG.error(exception.getMessage());
         return ShenyuAdminResult.error(message);
     }
     

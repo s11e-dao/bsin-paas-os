@@ -1,9 +1,9 @@
 package org.apache.shenyu.plugin.rulesEngine;
 
 import com.alibaba.fastjson2.JSONObject;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;

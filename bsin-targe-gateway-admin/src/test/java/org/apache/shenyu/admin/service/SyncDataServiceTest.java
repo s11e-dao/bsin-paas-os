@@ -18,7 +18,7 @@
 package org.apache.shenyu.admin.service;
 
 import org.apache.shenyu.admin.model.result.ShenyuAdminResult;
-import org.apache.shenyu.admin.model.vo.PluginVO;
+import org.apache.shenyu.admin.model.vo.NamespacePluginVO;
 import org.apache.shenyu.admin.service.impl.SyncDataServiceImpl;
 import org.apache.shenyu.common.dto.ConditionData;
 import org.apache.shenyu.common.dto.PluginData;
@@ -28,16 +28,20 @@ import org.apache.shenyu.common.enums.DataEventTypeEnum;
 import org.apache.shenyu.common.enums.OperatorEnum;
 import org.apache.shenyu.common.enums.ParamTypeEnum;
 import org.apache.shenyu.common.utils.DateUtils;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 
+import static org.apache.shenyu.common.constant.Constants.SYS_DEFAULT_NAMESPACE_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.mockito.BDDMockito.given;
@@ -46,9 +50,12 @@ import static org.mockito.BDDMockito.given;
  * test for SyncDataService.
  */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public final class SyncDataServiceTest {
 
     private static final String ID = "1";
+    
+    private static final String NAMESPACE_PLUGIN_ID = "1801816010882822145";
 
     @InjectMocks
     private SyncDataServiceImpl syncDataService;
@@ -89,13 +96,14 @@ public final class SyncDataServiceTest {
     @Mock
     private DiscoveryUpstreamService discoveryUpstreamService;
 
+    @Mock
+    private NamespacePluginService namespacePluginService;
+
     @Test
     public void syncAllTest() {
-        PluginData pluginData = buildPluginData();
         SelectorData selectorData = buildSelectorData();
         RuleData ruleData = buildRuleData();
         given(this.appAuthService.syncData()).willReturn(ShenyuAdminResult.success());
-        given(this.pluginService.listAll()).willReturn(Collections.singletonList(pluginData));
         given(this.selectorService.listAll()).willReturn(Collections.singletonList(selectorData));
         given(this.ruleService.listAll()).willReturn(Collections.singletonList(ruleData));
         assertThat(syncDataService.syncAll(DataEventTypeEnum.CREATE), greaterThan(false));
@@ -103,12 +111,13 @@ public final class SyncDataServiceTest {
 
     @Test
     public void syncPluginDataTest() {
-        PluginVO pluginVO = buildPluginVO();
-        given(this.pluginService.findById(pluginVO.getId())).willReturn(pluginVO);
+        NamespacePluginVO pluginVO = buildNamespacePluginVO();
+        NamespacePluginVO namespacePluginVO = new NamespacePluginVO();
+        given(this.namespacePluginService.findById(pluginVO.getId())).willReturn(namespacePluginVO);
         SelectorData selectorData = buildSelectorData();
-        given(this.selectorService.findByPluginId(pluginVO.getId())).willReturn(Collections.singletonList(selectorData));
+        given(this.selectorService.findByPluginIdAndNamespaceId(pluginVO.getPluginId(), pluginVO.getNamespaceId())).willReturn(Collections.singletonList(selectorData));
 
-        assertThat(syncDataService.syncPluginData(pluginVO.getId()), greaterThan(false));
+        assertThat(syncDataService.syncPluginData(pluginVO.getId()), lessThanOrEqualTo(false));
     }
 
 
@@ -145,6 +154,7 @@ public final class SyncDataServiceTest {
         selectorData.setPluginName("divide");
         selectorData.setSort(1);
         selectorData.setType(1);
+        selectorData.setNamespaceId("test");
         ConditionData conditionData = new ConditionData();
         conditionData.setParamType(ParamTypeEnum.POST.getName());
         conditionData.setOperator(OperatorEnum.EQ.getAlias());
@@ -170,6 +180,7 @@ public final class SyncDataServiceTest {
         ruleData.setPluginName("divide");
         ruleData.setSelectorId("1");
         ruleData.setSort(1);
+        ruleData.setNamespaceId("test");
         ConditionData conditionData = new ConditionData();
         conditionData.setParamType(ParamTypeEnum.POST.getName());
         conditionData.setOperator(OperatorEnum.EQ.getAlias());
@@ -184,10 +195,10 @@ public final class SyncDataServiceTest {
      *
      * @return PluginVO
      */
-    private PluginVO buildPluginVO() {
+    private NamespacePluginVO buildNamespacePluginVO() {
         String dateTime = DateUtils.localDateTimeToString(LocalDateTime.now());
-        return new PluginVO(
-                ID,
+        return new NamespacePluginVO(
+                NAMESPACE_PLUGIN_ID,
                 "1",
                 "divide",
                 null,
@@ -195,7 +206,10 @@ public final class SyncDataServiceTest {
                 true,
                 dateTime,
                 dateTime,
-                ""
-        );
+                "",
+                null,
+                ID,
+                SYS_DEFAULT_NAMESPACE_ID,
+                null);
     }
 }

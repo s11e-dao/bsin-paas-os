@@ -1,13 +1,13 @@
 package me.flyray.bsin.domain.request;
 
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.flyray.bsin.entity.BaseEntity;
 import me.flyray.bsin.validate.AddGroup;
 import me.flyray.bsin.validate.EditGroup;
 
-import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 

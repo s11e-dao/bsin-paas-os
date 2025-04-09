@@ -3,12 +3,12 @@ package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 
 import me.flyray.bsin.domain.entity.SysRole;
 import me.flyray.bsin.domain.request.SysRoleDTO;

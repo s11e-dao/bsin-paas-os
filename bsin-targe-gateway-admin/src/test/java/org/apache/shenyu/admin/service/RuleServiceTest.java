@@ -38,6 +38,7 @@ import org.apache.shenyu.admin.model.page.CommonPager;
 import org.apache.shenyu.admin.model.page.PageParameter;
 import org.apache.shenyu.admin.model.query.RuleConditionQuery;
 import org.apache.shenyu.admin.model.query.RuleQuery;
+import org.apache.shenyu.admin.model.result.ConfigImportResult;
 import org.apache.shenyu.admin.model.vo.RuleVO;
 import org.apache.shenyu.admin.service.impl.RuleServiceImpl;
 import org.apache.shenyu.admin.service.publish.RuleEventPublisher;
@@ -63,6 +64,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.apache.shenyu.common.constant.Constants.SYS_DEFAULT_NAMESPACE_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -127,7 +129,7 @@ public final class RuleServiceTest {
         given(this.ruleMapper.selectById("123")).willReturn(ruleDO);
         final List<String> ids = Collections.singletonList(ruleDO.getId());
         given(this.ruleMapper.deleteByIds(ids)).willReturn(ids.size());
-        assertEquals(this.ruleService.delete(ids), ids.size());
+        assertEquals(this.ruleService.deleteByIdsAndNamespaceId(ids, SYS_DEFAULT_NAMESPACE_ID), ids.size());
     }
 
     @Test
@@ -160,6 +162,37 @@ public final class RuleServiceTest {
     public void testListAll() {
         publishEvent();
         checkListAll(null);
+    }
+
+    @Test
+    public void testListAllData() {
+        publishEvent();
+        RuleConditionQuery ruleConditionQuery = buildRuleConditionQuery();
+        RuleConditionDO ruleCondition = buildRuleConditionDO();
+        given(this.ruleConditionMapper.selectByQuery(ruleConditionQuery)).willReturn(Collections.singletonList(ruleCondition));
+        RuleDO ruleDO = buildRuleDO("123");
+        List<RuleDO> ruleDOList = Collections.singletonList(ruleDO);
+        given(this.ruleMapper.selectAll()).willReturn(ruleDOList);
+        List<RuleVO> dataList = this.ruleService.listAllData();
+        assertNotNull(dataList);
+        assertEquals(ruleDOList.size(), dataList.size());
+    }
+
+    @Test
+    public void testImportData() {
+        final List<RuleDO> ruleDO = Collections.singletonList(buildRuleDO("123", "123"));
+        given(this.ruleMapper.selectAll()).willReturn(ruleDO);
+
+        final List<RuleDTO> ruleDTOS = Collections.singletonList(buildRuleDTO("123"));
+        given(this.ruleMapper.insertSelective(any())).willReturn(1);
+
+        given(this.pluginMapper.selectById(any())).willReturn(buildPluginDO());
+
+        ConfigImportResult configImportResult = this.ruleService.importData(ruleDTOS);
+
+        assertNotNull(configImportResult);
+        assertEquals(configImportResult.getSuccessCount(), ruleDTOS.size());
+
     }
 
     @Test
@@ -271,6 +304,27 @@ public final class RuleServiceTest {
                 .selectorId("456")
                 .matchMode(0)
                 .handle("{\"test1\":\"\"}")
+                .name("456")
+                .build();
+        if (StringUtils.isNotBlank(id)) {
+            ruleDTO.setId(id);
+        }
+        RuleConditionDTO ruleConditionDTO1 = RuleConditionDTO.builder().id("111").build();
+        RuleConditionDTO ruleConditionDTO2 = RuleConditionDTO.builder().id("222").build();
+        ruleDTO.setRuleConditions(Arrays.asList(ruleConditionDTO1, ruleConditionDTO2));
+        RuleDO ruleDO = RuleDO.buildRuleDO(ruleDTO);
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+        ruleDO.setDateCreated(now);
+        ruleDO.setDateUpdated(now);
+        return ruleDO;
+    }
+
+    private RuleDO buildRuleDO(final String id, final String name) {
+        RuleDTO ruleDTO = RuleDTO.builder()
+                .selectorId("456")
+                .matchMode(0)
+                .handle("{\"test1\":\"\"}")
+                .name(name)
                 .build();
         if (StringUtils.isNotBlank(id)) {
             ruleDTO.setId(id);
@@ -290,6 +344,8 @@ public final class RuleServiceTest {
                 .selectorId("456")
                 .matchMode(0)
                 .handle("{\"test1\":\"\"}")
+                .name("456")
+                .namespaceId(SYS_DEFAULT_NAMESPACE_ID)
                 .build();
         if (StringUtils.isNotBlank(id)) {
             ruleDTO.setId(id);

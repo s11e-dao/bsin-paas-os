@@ -1,13 +1,13 @@
 package me.flyray.bsin.facade.service;
 
 
+import jakarta.validation.Valid;
 import me.flyray.bsin.domain.entity.SysApp;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.Valid;
 
 import me.flyray.bsin.domain.entity.SysOrg;
 import me.flyray.bsin.domain.response.AppResp;

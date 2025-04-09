@@ -57,6 +57,7 @@ public enum MetaDataTransfer {
                         .parameterTypes(dto.getParameterTypes())
                         .rpcExt(dto.getRpcExt())
                         .enabled(dto.getEnabled())
+                        .namespaceId(metaDataDTO.getNamespaceId())
                         .build())
                 .orElse(null);
     }
@@ -79,6 +80,30 @@ public enum MetaDataTransfer {
                         .parameterTypes(dto.getParameterTypes())
                         .rpcExt(dto.getRpcExt())
                         .enabled(dto.isEnabled())
+                        .namespaceId(dto.getNamespaceId())
+                        .build())
+                .orElse(null);
+    }
+
+    /**
+     * COpy to entity meta data do.
+     *
+     * @param metaDataDO the meta data source do
+     * @return the meta data do
+     */
+    public MetaDataDO copy(final MetaDataDO metaDataDO) {
+        return Optional.ofNullable(metaDataDO)
+                .map(source -> MetaDataDO.builder()
+                        .id(source.getId())
+                        .appName(source.getAppName())
+                        .path(source.getPath())
+                        .pathDesc(source.getPathDesc())
+                        .rpcType(source.getRpcType())
+                        .serviceName(source.getServiceName())
+                        .methodName(source.getMethodName())
+                        .parameterTypes(source.getParameterTypes())
+                        .rpcExt(source.getRpcExt())
+                        .enabled(source.getEnabled())
                         .build())
                 .orElse(null);
     }
@@ -124,6 +149,7 @@ public enum MetaDataTransfer {
                         .parameterTypes(v.getParameterTypes())
                         .rpcExt(v.getRpcExt())
                         .enabled(v.getEnabled())
+                        .namespaceId(v.getNamespaceId())
                         .build())
                 .orElse(null);
     }

@@ -1,5 +1,7 @@
 package me.flyray.bsin.domain.request;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import me.flyray.bsin.domain.entity.SysOrg;
 import me.flyray.bsin.domain.entity.SysUser;
 import lombok.*;
@@ -8,8 +10,6 @@ import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.validate.QueryGroup;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;

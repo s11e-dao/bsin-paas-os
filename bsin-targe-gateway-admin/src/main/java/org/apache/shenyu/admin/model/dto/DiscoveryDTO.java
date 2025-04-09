@@ -17,7 +17,11 @@
 
 package org.apache.shenyu.admin.model.dto;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.apache.shenyu.admin.mapper.NamespaceMapper;
+import org.apache.shenyu.admin.validation.annotation.Existed;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -65,6 +69,23 @@ public class DiscoveryDTO implements Serializable {
      */
     @NotNull(message = "props not null")
     private String props;
+
+    /**
+     * namespaceId.
+     */
+    @NotBlank
+    @Existed(message = "namespaceId is not existed", provider = NamespaceMapper.class)
+    private String namespaceId;
+
+    /**
+     * discoveryHandler.
+     */
+    private DiscoveryHandlerDTO discoveryHandler;
+
+    /**
+     * discoveryRel.
+     */
+    private DiscoveryRelDTO discoveryRel;
 
     /**
      * get id.
@@ -192,6 +213,56 @@ public class DiscoveryDTO implements Serializable {
         this.pluginName = pluginName;
     }
 
+    /**
+     * Get discovery handler.
+     * @return discovery handler
+     */
+    public DiscoveryHandlerDTO getDiscoveryHandler() {
+        return discoveryHandler;
+    }
+
+    /**
+     * Set discovery handler.
+     * @param discoveryHandler discovery handler
+     */
+    public void setDiscoveryHandler(final DiscoveryHandlerDTO discoveryHandler) {
+        this.discoveryHandler = discoveryHandler;
+    }
+
+    /**
+     * get namespaceId.
+     *
+     * @return namespaceId
+     */
+    public String getNamespaceId() {
+        return namespaceId;
+    }
+
+    /**
+     * set namespaceId.
+     *
+     * @param namespaceId namespaceId
+     */
+    public void setNamespaceId(final String namespaceId) {
+        this.namespaceId = namespaceId;
+    }
+
+    /**
+     * Get discovery rel.
+     * @return discovery rel
+     */
+    public DiscoveryRelDTO getDiscoveryRel() {
+        return discoveryRel;
+    }
+
+    /**
+     * Set discovery rel.
+     * @param discoveryRel discovery rel
+     */
+    public void setDiscoveryRel(final DiscoveryRelDTO discoveryRel) {
+        this.discoveryRel = discoveryRel;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -204,11 +275,14 @@ public class DiscoveryDTO implements Serializable {
         DiscoveryDTO that = (DiscoveryDTO) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(type, that.type)
                 && Objects.equals(serverList, that.serverList) && Objects.equals(props, that.props)
-                && Objects.equals(level, that.level) && Objects.equals(pluginName, that.pluginName);
+                && Objects.equals(level, that.level) && Objects.equals(pluginName, that.pluginName)
+                && Objects.equals(discoveryHandler, that.discoveryHandler)
+                && Objects.equals(discoveryRel, that.discoveryRel)
+                && Objects.equals(namespaceId, that.namespaceId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, type, serverList, props, level, pluginName);
+        return Objects.hash(id, name, type, serverList, props, level, pluginName, discoveryHandler, discoveryRel, namespaceId);
     }
 }

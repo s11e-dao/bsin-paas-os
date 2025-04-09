@@ -21,27 +21,29 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.admin.discovery.DiscoveryProcessor;
 import org.apache.shenyu.admin.discovery.DiscoveryProcessorHolder;
 import org.apache.shenyu.admin.mapper.DataPermissionMapper;
+import org.apache.shenyu.admin.mapper.DiscoveryHandlerMapper;
+import org.apache.shenyu.admin.mapper.DiscoveryMapper;
+import org.apache.shenyu.admin.mapper.DiscoveryRelMapper;
+import org.apache.shenyu.admin.mapper.DiscoveryUpstreamMapper;
+import org.apache.shenyu.admin.mapper.NamespacePluginRelMapper;
 import org.apache.shenyu.admin.mapper.PluginMapper;
 import org.apache.shenyu.admin.mapper.RuleMapper;
 import org.apache.shenyu.admin.mapper.SelectorConditionMapper;
 import org.apache.shenyu.admin.mapper.SelectorMapper;
-import org.apache.shenyu.admin.mapper.DiscoveryMapper;
-import org.apache.shenyu.admin.mapper.DiscoveryHandlerMapper;
-import org.apache.shenyu.admin.mapper.DiscoveryRelMapper;
-import org.apache.shenyu.admin.mapper.DiscoveryUpstreamMapper;
 import org.apache.shenyu.admin.model.custom.UserInfo;
 import org.apache.shenyu.admin.model.dto.DataPermissionDTO;
 import org.apache.shenyu.admin.model.dto.SelectorConditionDTO;
 import org.apache.shenyu.admin.model.dto.SelectorDTO;
 import org.apache.shenyu.admin.model.entity.DataPermissionDO;
+import org.apache.shenyu.admin.model.entity.DiscoveryDO;
+import org.apache.shenyu.admin.model.entity.DiscoveryHandlerDO;
 import org.apache.shenyu.admin.model.entity.PluginDO;
 import org.apache.shenyu.admin.model.entity.RuleDO;
 import org.apache.shenyu.admin.model.entity.SelectorDO;
-import org.apache.shenyu.admin.model.entity.DiscoveryDO;
-import org.apache.shenyu.admin.model.entity.DiscoveryHandlerDO;
 import org.apache.shenyu.admin.model.page.CommonPager;
 import org.apache.shenyu.admin.model.page.PageParameter;
 import org.apache.shenyu.admin.model.query.SelectorQuery;
+import org.apache.shenyu.admin.model.result.ConfigImportResult;
 import org.apache.shenyu.admin.model.vo.SelectorConditionVO;
 import org.apache.shenyu.admin.model.vo.SelectorVO;
 import org.apache.shenyu.admin.service.impl.SelectorServiceImpl;
@@ -71,6 +73,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.apache.shenyu.common.constant.Constants.SYS_DEFAULT_NAMESPACE_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.notNullValue;
@@ -80,10 +83,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doNothing;
 
 /**
  * Test cases for SelectorService.
@@ -133,6 +136,9 @@ public final class SelectorServiceTest {
 
     @Mock
     private SelectorEventPublisher selectorEventPublisher;
+
+    @Mock
+    private NamespacePluginRelMapper namespacePluginRelMapper;
 
     @BeforeEach
     public void setUp() {
@@ -185,12 +191,12 @@ public final class SelectorServiceTest {
 
         // mock for test for-each statement.
 //        RuleDO mockedRuleDo = mock(RuleDO.class);
-//        when(ruleMapper.deleteByIds(Collections.singletonList(mockedRuleDo.getId()))).thenReturn(1);
+//        when(ruleMapper.deleteByIdsAndNamespaceId(Collections.singletonList(mockedRuleDo.getId()))).thenReturn(1);
 //        when(ruleConditionMapper.deleteByRuleIds(Collections.singletonList(mockedRuleDo.getId()))).thenReturn(1);
 
         final List<String> ids = Collections.singletonList(correctId);
         given(selectorMapper.deleteByIds(ids)).willReturn(ids.size());
-        assertEquals(selectorService.delete(ids), ids.size());
+        assertEquals(selectorService.deleteByNamespaceId(ids, any()), ids.size());
     }
 
     @Test
@@ -208,8 +214,8 @@ public final class SelectorServiceTest {
     @Test
     public void testFindByName() {
         List<SelectorDO> selectorDO1List = Collections.singletonList(buildSelectorDO());
-        given(this.selectorMapper.selectByName(eq("kuan"))).willReturn(selectorDO1List);
-        SelectorDO selectorDO2 = this.selectorService.findByName("kuan");
+        given(this.selectorMapper.selectByNameAndNamespaceId(eq("kuan"), eq(SYS_DEFAULT_NAMESPACE_ID))).willReturn(selectorDO1List);
+        SelectorDO selectorDO2 = this.selectorService.findByNameAndNamespaceId("kuan", SYS_DEFAULT_NAMESPACE_ID);
         assertNotNull(selectorDO2);
         assertEquals(selectorDO1List.size(), 1);
         assertEquals(selectorDO1List.get(0).getId(), selectorDO2.getId());
@@ -228,7 +234,7 @@ public final class SelectorServiceTest {
     @Test
     public void testFindByPluginId() {
 
-        List<SelectorData> res = this.selectorService.findByPluginId("789");
+        List<SelectorData> res = this.selectorService.findByPluginIdAndNamespaceId("789", SYS_DEFAULT_NAMESPACE_ID);
         res.forEach(selectorData -> assertEquals("789", selectorData.getPluginId()));
     }
 
@@ -249,6 +255,36 @@ public final class SelectorServiceTest {
         // Test the situation where the selector cannot be found based on the contextPath.
         given(pluginMapper.selectByName("test")).willReturn(buildPluginDO());
         assertNotNull(selectorService.registerDefault(buildMetaDataRegisterDTO(), "test", ""));
+    }
+
+    @Test
+    public void testListAllData() {
+        final List<SelectorDO> selectorDOs = buildSelectorDOList();
+        given(this.selectorMapper.selectAll()).willReturn(selectorDOs);
+        given(this.pluginMapper.selectByIds(any())).willReturn(Collections.singletonList(buildPluginDO()));
+        List<SelectorVO> dataList = this.selectorService.listAllData();
+        assertNotNull(dataList);
+        assertEquals(selectorDOs.size(), dataList.size());
+    }
+
+    @Test
+    public void testImportData() {
+        final List<SelectorDO> selectorDOs = buildSelectorDOList();
+        given(this.selectorMapper.selectAll()).willReturn(selectorDOs);
+
+        final List<SelectorDTO> selectorDTOs = buildSelectorDTOList();
+        given(this.selectorMapper.insertSelective(any())).willReturn(1);
+
+        given(this.pluginMapper.selectById(any())).willReturn(buildPluginDO());
+
+        ConfigImportResult configImportResult = this.selectorService.importData(selectorDTOs);
+
+        assertNotNull(configImportResult);
+        assertEquals(configImportResult.getSuccessCount(), selectorDTOs.size());
+    }
+
+    private List<SelectorDTO> buildSelectorDTOList() {
+        return Collections.singletonList(buildSelectorDTO("456"));
     }
 
     private void testUpdate() {

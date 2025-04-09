@@ -83,6 +83,12 @@ public class ProxySelectorVO implements Serializable {
 
 
     /**
+     * namespaceId.
+     */
+    private String namespaceId;
+
+
+    /**
      * discovery.
      */
     private DiscoveryDTO discovery;
@@ -101,12 +107,15 @@ public class ProxySelectorVO implements Serializable {
 
     /**
      * ProxySelectorVO.
-     *
+     * @param id  id of the id
      * @param name name of the proxy
      * @param forwardPort forward port
      * @param type type of the proxy
      * @param listenerNode listener
      * @param handler handler
+     * @param discoveryHandlerId discoveryHandlerId
+     * @param createTime createTime
+     * @param updateTime updateTime
      * @param discovery discovery
      * @param discoveryUpstreams discoveryUpstreams
      * @param props props
@@ -302,6 +311,24 @@ public class ProxySelectorVO implements Serializable {
      */
     public void setProps(final String props) {
         this.props = props;
+    }
+
+    /**
+     * get namespaceId.
+     *
+     * @return namespaceId
+     */
+    public String getNamespaceId() {
+        return namespaceId;
+    }
+
+    /**
+     * set namespaceId.
+     *
+     * @param namespaceId namespaceId
+     */
+    public void setNamespaceId(final String namespaceId) {
+        this.namespaceId = namespaceId;
     }
 
     /**

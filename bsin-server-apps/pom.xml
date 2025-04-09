@@ -6,33 +6,32 @@
     <parent>
         <groupId>me.flyray.bsin</groupId>
         <artifactId>bsin-paas-dependencies</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
         <relativePath>../bsin-paas-dependencies/pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>me.flyray.bsin</groupId>
     <artifactId>bsin-server-apps</artifactId>
     <packaging>pom</packaging>
     <name>bsin-server-apps</name>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <description>bsin-paas平台：子应用</description>
 
     <modules>
         <module>bsin-server-upms</module>
         <module>bsin-server-crm</module>
         <module>bsin-server-file</module>
-        <module>bsin-server-app-agent</module>
         <module>bsin-server-waas</module>
+        <!--        <module>bsin-server-app-agent</module>-->
         <module>bsin-server-search</module>
         <module>bsin-server-brms</module>
         <module>bsin-server-workflow</module>
         <module>bsin-server-workflow-admin</module>
-        <module>bsin-server-iot</module>
+<!--        <module>bsin-server-iot</module>-->
     </modules>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <bsin.paas.starter>1.0.0-SNAPSHOT</bsin.paas.starter>
         <lombok.version>1.18.26</lombok.version>
         <maven-compiler-plugin.verison>3.11.0</maven-compiler-plugin.verison>

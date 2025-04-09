@@ -19,8 +19,8 @@ package me.flyray.bsin.facade.service;
 
 
 
-import javax.validation.constraints.NotBlank;
 
+import jakarta.validation.constraints.NotBlank;
 import me.flyray.bsin.domain.entity.DubboTest;
 import me.flyray.bsin.domain.entity.ListResp;
 

@@ -8,8 +8,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.validation.constraints.NotBlank;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import me.flyray.bsin.domain.enums.CustomerType;
 import me.flyray.bsin.validate.AddGroup;

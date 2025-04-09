@@ -22,11 +22,11 @@
     <parent>
         <groupId>me.flyray.bsin</groupId>
         <artifactId>bsin-server-scaffold</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>bsin-server-scaffold-http</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
 
     <properties>
         <commons-lang3.version>3.3.2</commons-lang3.version>

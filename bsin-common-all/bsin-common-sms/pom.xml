@@ -6,27 +6,22 @@
     <parent>
         <groupId>me.flyray.bsin</groupId>
         <artifactId>bsin-common-all</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>bsin-common-sms</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <name>bsin-common-sms</name>
     <packaging>jar</packaging>
     
     <description>bsin-paas平台：短信模块</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <fastjson.version>1.2.28</fastjson.version>
     </properties>
     <dependencies>
 
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

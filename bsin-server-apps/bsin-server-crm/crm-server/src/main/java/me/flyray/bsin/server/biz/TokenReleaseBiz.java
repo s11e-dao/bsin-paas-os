@@ -24,10 +24,10 @@ public class TokenReleaseBiz {
 
   @Autowired private AccountMapper customerAccountMapper;
 
-  @DubboReference(version = "dev")
-  private TokenParamService tokenReleaseParamService;
-
   @Autowired private AccountBiz customerAccountBiz;
+
+  @DubboReference(version = "${dubbo.provider.version}")
+  private TokenParamService tokenReleaseParamService;
 
   /**
    * 根据tokenParam参数进行数字积分链上铸造

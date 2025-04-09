@@ -39,8 +39,8 @@ public class SnailJobConfig {
             appender.setName("snail_log_appender");
             appender.setContext(context);
             appender.start();
-            Logger rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
-            rootLogger.addAppender(appender);
+//            Logger rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+//            rootLogger.addAppender(appender);
         }
     }
 

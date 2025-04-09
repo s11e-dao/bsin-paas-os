@@ -1,11 +1,11 @@
 package me.flyray.bsin.facade.service;
 
 
+import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
-import javax.validation.Valid;
 
 import me.flyray.bsin.domain.entity.SysMenu;
 import me.flyray.bsin.domain.entity.SysRole;

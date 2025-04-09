@@ -1,11 +1,11 @@
 package me.flyray.bsin.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import me.flyray.bsin.entity.BaseEntity;
 import me.flyray.bsin.validate.AddGroup;
 
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -16,6 +16,7 @@ import java.io.Serializable;
 @Data
 @TableName("crm_customer_api_key")
 public class ApiKey extends BaseEntity implements Serializable {
+
     /** api秘钥名称 */
     @NotBlank(message = "秘钥名称不能为空",groups = AddGroup.class)
     private String name ;

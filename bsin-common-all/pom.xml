@@ -6,15 +6,15 @@
     <parent>
         <groupId>me.flyray.bsin</groupId>
         <artifactId>bsin-paas-dependencies</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
         <relativePath>../bsin-paas-dependencies/pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.flyray.bsin</groupId>
     <artifactId>bsin-common-all</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <version>2.0.0-SNAPSHOT</version>
 
     <modules>
         <module>bsin-common-mq</module>
@@ -39,22 +39,11 @@
     <description>bsin-paas平台：中间件</description>
 
     <properties>
-        <java.version>11</java.version>
-        <dubbo.version>3.2.5</dubbo.version>
-        <sofa.version>5.8.3</sofa.version>
+        <java.version>17</java.version>
         <redisson.version>3.20.1</redisson.version>
-        <sofa-boot.version>3.12.1</sofa-boot.version>
         <lombok.version>1.18.26</lombok.version>
-        <hutool.version>5.8.15</hutool.version>
-        <spring.version>5.3.30</spring.version>
-        <spring-boot.version>2.7.17</spring-boot.version>
-        <mybatis-plus.version>3.5.3.2</mybatis-plus.version>
-        <spring.version>5.3.30</spring.version>
-        <fastjson.version>2.0.49</fastjson.version>
-        <fastjson2.version>2.0.49</fastjson2.version>
+        <mybatis-plus.version>3.5.9</mybatis-plus.version>
         <maven-compiler-plugin.verison>3.11.0</maven-compiler-plugin.verison>
-        <shenyu.version>2.6.1</shenyu.version>
-        <dubbo.version>3.2.5</dubbo.version>
         <redisson.version>3.20.1</redisson.version>
         <lock4j.version>2.2.5</lock4j.version>
         <seata.version>1.7.0</seata.version>
@@ -66,6 +55,18 @@
             <artifactId>bsin-paas-starter</artifactId>
             <version>${bsin.paas.starter}</version>
         </dependency>-->
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>${fastjson2.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.alibaba</groupId>

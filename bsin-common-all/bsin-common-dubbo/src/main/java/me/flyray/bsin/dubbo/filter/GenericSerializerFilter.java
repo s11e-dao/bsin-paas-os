@@ -29,7 +29,6 @@ import static org.apache.dubbo.common.constants.CommonConstants.$INVOKE_ASYNC;
 @Activate(group = CommonConstants.PROVIDER, order = -20001)
 public class GenericSerializerFilter implements Filter {
 
-
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         //判断是否是泛化调用
@@ -52,4 +51,5 @@ public class GenericSerializerFilter implements Filter {
         }
         return result;
     }
+
 }

@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static ch.qos.logback.core.joran.action.ActionConst.NULL;
+import static cn.hutool.core.text.CharSequenceUtil.NULL;
 import static me.flyray.bsin.constants.ResponseCode.*;
 
 /**
@@ -52,6 +52,9 @@ import static me.flyray.bsin.constants.ResponseCode.*;
 @ApiModule(value = "merchant")
 @Service
 public class MerchantServiceImpl implements MerchantService {
+
+  @DubboReference(version = "${dubbo.provider.version}")
+  private WalletService walletService;
 
   @Value("${bsin.security.authentication-secretKey}")
   private String authSecretKey;
@@ -69,9 +72,6 @@ public class MerchantServiceImpl implements MerchantService {
 
   @DubboReference(version = "${dubbo.provider.version}")
   private UserService userService;
-
-  @DubboReference(version = "${dubbo.provider.version}")
-  private WalletService walletService;
 
   @DubboReference(version = "${dubbo.provider.version}")
   private StoreService storeService;

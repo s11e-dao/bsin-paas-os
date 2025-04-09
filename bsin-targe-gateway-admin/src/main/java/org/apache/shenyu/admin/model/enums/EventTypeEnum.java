@@ -80,6 +80,11 @@ public enum EventTypeEnum {
      */
     USER_CREATE("CREATE:User", DataEventTypeEnum.CREATE, Color.CREATE_COLOR),
     
+    /**
+     * namespace created event.
+     */
+    NAMESPACE_CREATE("CREATE:Namespace", DataEventTypeEnum.CREATE, Color.CREATE_COLOR),
+    
     // ============== delete ===================
     /**
      * deleted event.
@@ -187,7 +192,13 @@ public enum EventTypeEnum {
     /**
      * user update.
      */
-    USER_UPDATE("UPDATE:User", DataEventTypeEnum.UPDATE, Color.UPDATE_COLOR);
+    USER_UPDATE("UPDATE:User", DataEventTypeEnum.UPDATE, Color.UPDATE_COLOR),
+
+
+    /**
+     * local discovery upstream update.
+     */
+    LOCAL_DISCOVERY_UPSTREAM_UPDATE("UPDATE:LocalDiscoveryUpstream", DataEventTypeEnum.UPDATE, Color.UPDATE_COLOR);
     
     /**
      * type name.

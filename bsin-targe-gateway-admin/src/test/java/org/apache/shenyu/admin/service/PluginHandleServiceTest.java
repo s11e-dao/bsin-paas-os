@@ -187,7 +187,18 @@ public final class PluginHandleServiceTest {
                 .dateCreated(now)
                 .dateUpdated(now)
                 .build();
-        return Collections.singletonList(result);
+        final ShenyuDictDO disableDict = ShenyuDictDO.builder()
+                .type("burstCapacity")
+                .dictCode("RATE_LIMITER_QPS")
+                .dictName("disable")
+                .dictValue("disable")
+                .desc("disable")
+                .enabled(false)
+                .sort(1)
+                .dateCreated(now)
+                .dateUpdated(now)
+                .build();
+        return List.of(result, disableDict);
     }
 
     @Test
@@ -197,6 +208,17 @@ public final class PluginHandleServiceTest {
         given(this.pluginHandleMapper.selectByQuery(any())).willReturn(pluginHandleDOs);
         given(this.shenyuDictMapper.findByTypeBatch(any())).willReturn(shenyuDictDOList);
         final List<PluginHandleVO> result = pluginHandleService.list("4", 2);
+        assertThat(result, notNullValue());
+        assertEquals(pluginHandleDOs.size(), result.size());
+    }
+
+    @Test
+    public void testListAllData() {
+        final List<PluginHandleDO> pluginHandleDOs = buildPluginHandleDOList();
+        final List<ShenyuDictDO> shenyuDictDOList = buildShenyuDictDOs();
+        given(this.pluginHandleMapper.selectByQuery(any())).willReturn(pluginHandleDOs);
+        given(this.shenyuDictMapper.findByTypeBatch(any())).willReturn(shenyuDictDOList);
+        final List<PluginHandleVO> result = pluginHandleService.listAllData();
         assertThat(result, notNullValue());
         assertEquals(pluginHandleDOs.size(), result.size());
     }

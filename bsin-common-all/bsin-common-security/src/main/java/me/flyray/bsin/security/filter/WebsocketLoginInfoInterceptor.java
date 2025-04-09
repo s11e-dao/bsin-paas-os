@@ -3,15 +3,15 @@ package me.flyray.bsin.security.filter;
 import cn.hutool.extra.spring.SpringUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import jakarta.websocket.HandshakeResponse;
+import jakarta.websocket.server.HandshakeRequest;
+import jakarta.websocket.server.ServerEndpointConfig;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.websocket.HandshakeResponse;
-import javax.websocket.server.HandshakeRequest;
-import javax.websocket.server.ServerEndpointConfig;
 import java.util.List;
 import java.util.Map;
 

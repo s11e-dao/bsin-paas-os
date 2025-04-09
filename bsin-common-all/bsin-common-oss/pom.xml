@@ -6,17 +6,17 @@
     <parent>
         <groupId>me.flyray.bsin</groupId>
         <artifactId>bsin-common-all</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>bsin-common-oss</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <name>bsin-common-oss</name>
     <packaging>jar</packaging>
 
     <description>bsin-paas平台：oss 存储</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <!--        https://x-file-storage.xuyanwu.cn/#/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8-->
@@ -81,33 +81,22 @@
         </dependency>
 
         <dependency>
-            <groupId>com.alipay.sofa</groupId>
-            <artifactId>runtime-sofa-boot</artifactId>
-            <version>3.18.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>5.3.26</version>
+            <version>${spring.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>me.flyray.bsin</groupId>
-            <artifactId>bsin-common-security</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
+
         <dependency>
             <groupId>me.flyray.bsin</groupId>
             <artifactId>bsin-common-utils</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>5.3.26</version>
+            <version>${spring.version}</version>
             <scope>compile</scope>
         </dependency>
 

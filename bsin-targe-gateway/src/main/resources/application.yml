@@ -24,7 +24,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   application:
-    name: bsin-targe-gateway
+    name: shenyu-bootstrap
   codec:
     max-in-memory-size: 2MB
   cloud:
@@ -32,7 +32,7 @@ spring:
       enabled: false
     nacos:
       discovery:
-        server-addr: ${BSIN_NACOS_SERVER_ADDR} # Spring Cloud Alibaba Dubbo use this.
+        server-addr: 127.0.0.1:8848 # Spring Cloud Alibaba Dubbo use this.
         enabled: false
         namespace: ShenyuRegisterCenter
 
@@ -80,6 +80,7 @@ management:
           - 'health'
           - 'info'
 shenyu:
+  namespace: 649330b6-c2d7-4edc-be8e-8a54df9eb385
   selectorMatchCache:
     ## selector L1 cache
     cache:
@@ -94,7 +95,7 @@ shenyu:
   ruleMatchCache:
     ## rule L1 cache
     cache:
-      enabled: true
+      enabled: false
       initialCapacity: 10000 # initial capacity in cache
       maximumSize: 65536 # max size in cache
     ## rule L2 cache, use trie as L2 cache
@@ -192,18 +193,14 @@ shenyu:
 #      selectCount: 1
 #      workerCount: 8
 #      daemon: true
-  duplicate-response-header:
-    strategy: RETAIN_FIRST
-    headers:
-      - Access-Control-Allow-Origin
   register:
-    enabled: true
+    enabled: false
     registerType: nacos #etcd #consul
-    serverLists: ${BSIN_NACOS_SERVER_ADDR} #http://localhost:2379 #localhost:8848
+    serverLists: localhost:8848 #http://localhost:2379 #localhost:8848
     props:
       nacosNameSpace: public
-      username: ${BSIN_NACOS_USERNAME}
-      password: ${BSIN_NACOS_PASSWORD}
+      username: nacos
+      password: nacos
   cross:
     enabled: true
     allowedHeaders: "*"
@@ -234,8 +231,9 @@ shenyu:
     maxSize : 10
   sync:
     websocket:
-      urls: ws://${BSIN_WEBSOCKET_HOST_PORT}/websocket
-      allowOrigin: '*'
+      urls: ws://localhost:9095/websocket
+      allowOrigin: ws://localhost:9195
+#      allowOrigin: '*'
 #    apollo:
 #      appId: shenyu
 #      meta: http://localhost:8080
@@ -255,6 +253,7 @@ shenyu:
 #      namespace: 1c10d748-af86-43b9-8265-75f487d20c6c
 #      username:
 #      password:
+#      context-path: nacos
 #      acm:
 #        enabled: false
 #        endpoint: acm.aliyun.com

@@ -21,12 +21,12 @@
     <parent>
         <groupId>me.flyray.bsin</groupId>
         <artifactId>bsin-server-upms</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
     
     <modelVersion>4.0.0</modelVersion>
     <artifactId>upms-server</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <description>bsin-paas平台：UPMS-业务服务模块</description>
@@ -36,6 +36,26 @@
     </properties>
 
     <dependencies>
+
+        <!-- Bean Validation API -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
+        </dependency>
+        <!-- Hibernate Validator, 一个常用的 Bean Validation 实现 -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.1.Final</version>
+        </dependency>
+        <!-- 如果你使用 Spring Boot, 可以使用 spring-boot-starter-validation 来自动配置 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+            <version>${spring-boot.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -64,6 +84,12 @@
             <groupId>me.flyray.bsin</groupId>
             <artifactId>upms-facade</artifactId>
             <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -136,6 +162,33 @@
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
             <version>${pagehelper-starter.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>mybatis-spring-boot-starter</artifactId>
+                    <groupId>org.mybatis.spring.boot</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jsqlparser</artifactId>
+                    <groupId>com.github.jsqlparser</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>pagehelper-spring-boot-autoconfigure</artifactId>
+                    <groupId>com.github.pagehelper</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Dubbo dependency -->
+        <dependency>
+            <groupId>me.flyray.bsin</groupId>
+            <artifactId>bsin-common-dubbo</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-registry-nacos</artifactId>
+            <version>${dubbo.version}</version>
         </dependency>
 
         <dependency>

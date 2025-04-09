@@ -19,6 +19,7 @@ package org.apache.shenyu.admin.service.impl;
 
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.admin.mapper.AlertReceiverMapper;
 import org.apache.shenyu.alert.AlertNotifyHandler;
 import org.apache.shenyu.alert.exception.AlertNoticeException;
@@ -92,7 +93,7 @@ public class AlertDispatchServiceImpl implements AlertDispatchService, Disposabl
     
     @Override
     public boolean sendNoticeMsg(final AlertReceiverDTO receiver, final AlarmContent alert) {
-        if (receiver == null || receiver.getType() == null) {
+        if (Objects.isNull(receiver) || Objects.isNull(receiver.getType())) {
             log.warn("DispatcherAlarm-sendNoticeMsg params is empty alert:[{}], receiver:[{}]", alert, receiver);
             return false;
         }
@@ -105,7 +106,7 @@ public class AlertDispatchServiceImpl implements AlertDispatchService, Disposabl
     }
     
     @Override
-    public void destroy() throws Exception {
+    public void destroy() {
         if (this.workerExecutor != null) {
             workerExecutor.shutdownNow();
         }
@@ -156,6 +157,12 @@ public class AlertDispatchServiceImpl implements AlertDispatchService, Disposabl
                         return true;
                     }
 
+                    if (StringUtils.isNotBlank(item.getNamespaceId())) {
+                        boolean namespaceIdMatch = Objects.equals(item.getNamespaceId(), alert.getNamespaceId());
+                        if (!namespaceIdMatch) {
+                            return false;
+                        }
+                    }
                     if (!CollectionUtils.isEmpty(item.getLevels())) {
                         boolean levelMatch = item.getLevels().stream().anyMatch(level -> level == alert.getLevel());
                         if (!levelMatch) {
@@ -164,7 +171,7 @@ public class AlertDispatchServiceImpl implements AlertDispatchService, Disposabl
                     }
                     if (!CollectionUtils.isEmpty(item.getLabels())) {
                         return item.getLabels().entrySet().stream().anyMatch(entry -> {
-                            if (alert.getLabels() == null || !alert.getLabels().containsKey(entry.getKey())) {
+                            if (Objects.isNull(alert.getLabels()) || !alert.getLabels().containsKey(entry.getKey())) {
                                 return false;
                             }
                             String labelValue = alert.getLabels().get(entry.getKey());

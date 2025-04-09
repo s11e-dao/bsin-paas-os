@@ -1,5 +1,6 @@
 package me.flyray.bsin.domain.request;
 
+import jakarta.validation.constraints.NotNull;
 import me.flyray.bsin.domain.entity.SysTenant;
 
 import lombok.Data;
@@ -9,7 +10,6 @@ import me.flyray.bsin.validate.QueryGroup;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotNull;
 
 /**
  * @author HLW

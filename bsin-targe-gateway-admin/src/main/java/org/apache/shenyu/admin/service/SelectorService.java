@@ -23,7 +23,9 @@ import org.apache.shenyu.admin.model.entity.SelectorDO;
 import org.apache.shenyu.admin.model.page.CommonPager;
 import org.apache.shenyu.admin.model.query.SelectorQuery;
 import org.apache.shenyu.admin.model.query.SelectorQueryCondition;
+import org.apache.shenyu.admin.model.result.ConfigImportResult;
 import org.apache.shenyu.admin.model.vo.SelectorVO;
+import org.apache.shenyu.admin.service.configs.ConfigsImportContext;
 import org.apache.shenyu.admin.utils.Assert;
 import org.apache.shenyu.common.dto.SelectorData;
 import org.apache.shenyu.common.enums.SelectorTypeEnum;
@@ -104,83 +106,91 @@ public interface SelectorService extends PageService<SelectorQueryCondition, Sel
     int updateSelective(SelectorDO selectorDO);
 
     /**
-     * delete selectors.
+     * delete selectors by ids and namespaceId.
      *
-     * @param ids primary key.
+     * @param ids         primary key.
+     * @param namespaceId namespaceId.
      * @return rows int
      */
-    int delete(List<String> ids);
+    int deleteByNamespaceId(List<String> ids, String namespaceId);
 
     /**
-     * find selector by id.
+     * find selector by id and namespaceId.
      *
-     * @param id primary key.
+     * @param id          primary key.
      * @return {@linkplain SelectorVO}
      */
     SelectorVO findById(String id);
 
     /**
-     * find selector by name.
+     * find selector by name and namespaceId.
      *
-     * @param name the name
+     * @param name        the name
+     * @param namespaceId namespaceId.
+     *                    Therefore, it is recommended to: {@linkplain SelectorService#findListByNameAndNamespaceId(java.lang.String, java.lang.String)}
      * @return selector do
      * @deprecated sice 2.6.0  Deprecated. By querying under this condition, multiple data are usually obtained.
-     *              Therefore, it is recommended to: {@linkplain SelectorService#findListByName(java.lang.String)}
      */
     @Deprecated
-    SelectorDO findByName(String name);
+    SelectorDO findByNameAndNamespaceId(String name, String namespaceId);
 
     /**
-     * find selector list by name.
+     * find selector list by name and namespaceId.
      *
-     * @param name name
+     * @param name        name
+     * @param namespaceId namespaceId.
      * @return list
      */
-    List<SelectorDO> findListByName(String name);
+    List<SelectorDO> findListByNameAndNamespaceId(String name, String namespaceId);
 
     /**
-     * Find by name and plugin id selector do.
+     * Find selector do by name and pluginName and namespaceId.
      *
-     * @param name       the name
-     * @param pluginName the plugin name
+     * @param name        the name
+     * @param pluginName  the plugin name
+     * @param namespaceId the namespaceId
      * @return the selector do
      */
-    SelectorDO findByNameAndPluginName(String name, String pluginName);
+    SelectorDO findByNameAndPluginNameAndNamespaceId(String name, String pluginName, String namespaceId);
 
     /**
-     * findByNameAndPluginNameForUpdate.
+     * find selector entity by selector name, plugin name and namespace id.
      *
-     * @param name       name
-     * @param pluginName pluginName
+     * @param name        name
+     * @param pluginName  pluginName
+     * @param namespaceId namespaceId.
      * @return SelectorDO
      */
-    SelectorDO findByNameAndPluginNameForUpdate(String name, String pluginName);
+    SelectorDO findByNameAndPluginNameAndNamespaceIdForUpdate(String name, String pluginName, String namespaceId);
 
     /**
      * Find selectorDO list by name and plugin name list.
      *
      * @param name        name
      * @param pluginNames pluginNames
+     * @param namespaceId namespaceId
      * @return selectorDO list
      */
-    List<SelectorDO> findByNameAndPluginNames(String name, List<String> pluginNames);
+    List<SelectorDO> findByNameAndPluginNamesAndNamespaceId(String name, List<String> pluginNames, String namespaceId);
 
     /**
-     * Build by name selector data.
+     * Build selector data by name and namespaceId.
      *
-     * @param name the name
+     * @param name        the name
+     * @param namespaceId namespaceId.
      * @return the selector data
      */
-    SelectorData buildByName(String name);
+    SelectorData buildByNameAndNamespaceId(String name, String namespaceId);
 
     /**
-     * Build by name selector data.
+     * Build selector data by name and plugin name and namespaceId.
      *
-     * @param name       the name
-     * @param pluginName the plugin name
+     * @param name        the name
+     * @param pluginName  the plugin name
+     * @param namespaceId the namespaceId
      * @return the selector data
      */
-    SelectorData buildByName(String name, String pluginName);
+    SelectorData buildByNameAndPluginNameAndNamespaceId(String name, String pluginName, String namespaceId);
 
     /**
      * find page of selector by query.
@@ -199,12 +209,13 @@ public interface SelectorService extends PageService<SelectorQueryCondition, Sel
     CommonPager<SelectorVO> listByPage(SelectorQuery selectorQuery);
 
     /**
-     * Find by plugin id list.
+     * Find list by plugin id and namespaceId.
      *
-     * @param pluginId the plugin id
+     * @param pluginId    the plugin id
+     * @param namespaceId the namespaceId
      * @return the list
      */
-    List<SelectorData> findByPluginId(String pluginId);
+    List<SelectorData> findByPluginIdAndNamespaceId(String pluginId, String namespaceId);
 
     /**
      * List all list.
@@ -212,4 +223,56 @@ public interface SelectorService extends PageService<SelectorQueryCondition, Sel
      * @return the list
      */
     List<SelectorData> listAll();
+
+
+    /**
+     * List all by namespaceId list.
+     *
+     * @param namespaceId the namespaceId
+     * @return the list
+     */
+    List<SelectorData> listAllByNamespaceId(String namespaceId);
+
+    /**
+     * List all export vo list.
+     *
+     * @return the vo list
+     */
+    List<SelectorVO> listAllData();
+
+    /**
+     * List all export vo list.
+     *
+     * @param namespaceId the namespaceId
+     * @return the vo list
+     */
+    List<SelectorVO> listAllDataByNamespaceId(String namespaceId);
+
+    /**
+     * Import the plugin selector list.
+     *
+     * @param selectorList the plugin selector list
+     * @return config import result
+     */
+    ConfigImportResult importData(List<SelectorDTO> selectorList);
+
+    /**
+     * Import the plugin selector list.
+     *
+     * @param namespace    the namespace
+     * @param selectorList the plugin selector list
+     * @param context import context
+     * @return config import result
+     */
+    ConfigImportResult importData(String namespace, List<SelectorDTO> selectorList, ConfigsImportContext context);
+
+    /**
+     * Enabled by ids and namespaceId.
+     *
+     * @param ids         the ids
+     * @param enabled     the enabled
+     * @param namespaceId the namespaceId
+     * @return the result
+     */
+    Boolean enabledByIdsAndNamespaceId(List<String> ids, Boolean enabled, String namespaceId);
 }

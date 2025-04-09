@@ -2,13 +2,13 @@ package me.flyray.bsin.facade.service;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import jakarta.validation.Valid;
 import me.flyray.bsin.domain.entity.MemberConfig;
 import me.flyray.bsin.domain.request.MemberConfigBo;
 import me.flyray.bsin.validate.AddGroup;
 import me.flyray.bsin.validate.EditGroup;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 
 /**
  * 会员配置：会员模型(CrmMemberConfig)表服务接口

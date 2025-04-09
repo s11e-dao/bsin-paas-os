@@ -20,9 +20,9 @@ shenyu:
 
 spring:
   datasource:
-    url: ${TARGE_GATEWAY_ADMIN_MYSQL_DB_URL}?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
-    username: ${TARGE_GATEWAY_ADMIN_MYSQL_DB_USERNAME}
-    password: ${TARGE_GATEWAY_ADMIN_MYSQL_DB_PASSWORD}
+    url: jdbc:mysql://rm-2zeq9708apq292r36ko.mysql.rds.aliyuncs.com:3306/shenyu-gateway7?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+    username: flyray_eco
+    password: bsin_paas_os_eco123
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-timeout: 30000

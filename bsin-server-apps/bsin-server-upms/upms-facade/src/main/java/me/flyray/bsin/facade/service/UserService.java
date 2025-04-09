@@ -2,12 +2,11 @@ package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.validation.Valid;
 
 import me.flyray.bsin.domain.entity.SysRole;
 import me.flyray.bsin.domain.entity.SysUser;

@@ -18,6 +18,8 @@ server:
   address: 0.0.0.0
 
 spring:
+  application:
+    name: shenyu-admin
   profiles:
     active: mysql
   thymeleaf:
@@ -68,7 +70,7 @@ shenyu:
     websocket:
       enabled: true
       messageMaxSize: 10240
-      allowOrigins: "*"
+      allowOrigins: ws://localhost:9095;ws://localhost:9195;
 #    apollo:
 #      meta: http://localhost:8080
 #      appId: shenyu
@@ -88,6 +90,7 @@ shenyu:
 #      namespace: 1c10d748-af86-43b9-8265-75f487d20c6c
 #      username:
 #      password:
+#      context-path: nacos
 #      acm:
 #        enabled: false
 #        endpoint: acm.aliyun.com
@@ -112,6 +115,65 @@ shenyu:
     login-field: cn
   jwt:
     expired-seconds: 86400000
+  cluster:
+    enabled: false
+    type: jdbc
+    connectionTimeout: 15000
+    readTimeout: 15000
+    ignored-list:
+      - /selector/list/**
+      - /appAuth/list/**
+      - /plugin/list/**
+      - /rule/list/**
+    forward-list:
+      - /shenyu-client/**
+      - /configs/**
+      - /selector/batchEnabled
+      - /selector/batch
+      - /selector
+      - /selector/**
+      - /rule/batchEnabled
+      - /rule/batch
+      - /rule
+      - /rule/**
+      - /plugin
+      - /plugin/**
+      - /plugin/createPluginResource/**
+      - /plugin/batch
+      - /plugin/enabled
+      - /plugin/syncPluginAll
+      - /plugin/syncPluginData/**
+      - /proxy-selector/binding
+      - /proxy-selector/**
+      - /proxy-selector/batch
+      - /proxy-selector/addProxySelector
+      - /proxy-selector/fetch/**
+      - /api
+      - /api/**
+      - /api/batch
+      - /appAuth/apply
+      - /appAuth/updateDetail
+      - /appAuth/updateDetailPath
+      - /appAuth/batchDelete
+      - /appAuth/batchEnabled
+      - /appAuth/batchOpened
+      - /appAuth/syncData
+      - /discovery/insertOrUpdate
+      - /discovery/**
+      - /discovery-upstream
+      - /discovery-upstream/batch
+      - /discovery-upstream/**
+      - /meta-data/createOrUpdate
+      - /meta-data/batchDeleted
+      - /meta-data/batchEnabled
+      - /meta-data/syncData
+      - /plugin-handle
+      - /plugin-handle/**
+      - /plugin-handle/batch
+    zookeeper:
+      url: localhost:2181
+      sessionTimeout: 5000
+      connectionTimeout: 2000
   shiro:
     white-list:
       - /
@@ -119,6 +181,7 @@ shenyu:
       - /static/**
       - /index**
       - /platform/login
+      - /platform/secretInfo
       - /websocket
       - /error
       - /actuator/health
@@ -145,6 +208,23 @@ shenyu:
         - system:resource:editMenu
         - system:resource:deleteButton
         - system:resource:deleteMenu
+  k8s:
+    scale:
+      enabled: false
+      monitor-interval: 10000
+      pool-size: 6
+    prometheus:
+      url: http://localhost:9090
+      queries:
+        cpu_usage: "sum(rate(container_cpu_usage_seconds_total{namespace='%s', pod=~'%s.*'}[5m]))"
+        memory_usage: "sum(container_memory_usage_bytes{namespace='%s', pod=~'%s.*'})"
+        request_count: "sum(rate(http_requests_total{namespace='%s', pod=~'%s.*'}[1m]))"
+    deployment:
+      name: "shenyu-bootstrap"
+      namespace: "shenyu"
+      apiServer: "https://127.0.0.1:6443"
+      token: "token"
+      caCertPath: "/etc/kubernetes/pki/ca.crt"
 
 springdoc:
   api-docs:

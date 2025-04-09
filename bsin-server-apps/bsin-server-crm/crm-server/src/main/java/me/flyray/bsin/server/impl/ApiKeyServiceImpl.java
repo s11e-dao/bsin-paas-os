@@ -12,7 +12,7 @@ import me.flyray.bsin.infrastructure.mapper.ApiKeyMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.utils.BsinSnowflake;
-import me.flyray.bsin.utils.I18eCode;
+import me.flyray.bsin.i18n.I18eCode;
 import me.flyray.bsin.utils.LocalSigner;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;

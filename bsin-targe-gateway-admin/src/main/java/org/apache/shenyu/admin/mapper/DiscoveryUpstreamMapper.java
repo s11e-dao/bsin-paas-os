@@ -38,13 +38,19 @@ public interface DiscoveryUpstreamMapper extends ExistProvider {
     Boolean existed(@Param("id") Serializable key);
 
     /**
-     * selectByIds.
+     * selectByIdsAndNamespaceId.
      *
      * @param ids id list
      * @return discoveryUpstreamDO list
      */
     List<DiscoveryUpstreamDO> selectByIds(@Param("ids") List<String> ids);
 
+    /**
+     * selectAllByNamespaceId.
+     *
+     * @return discoveryUpstreamDO list
+     */
+    List<DiscoveryUpstreamDO> selectAll();
 
     /**
      * selectByProxySelectorId.
@@ -62,6 +68,15 @@ public interface DiscoveryUpstreamMapper extends ExistProvider {
      * @return DiscoveryUpstreamDO list
      */
     List<DiscoveryUpstreamDO> selectBySelectorId(@Param("selectorId") String selectorId);
+
+
+    /**
+     * selectByNamespaceId.
+     *
+     * @param namespaceId namespaceId
+     * @return DiscoveryUpstreamDO list
+     */
+    List<DiscoveryUpstreamDO> selectByNamespaceId(String namespaceId);
 
     /**
      * selectByDiscoveryHandlerId.
@@ -96,7 +111,7 @@ public interface DiscoveryUpstreamMapper extends ExistProvider {
     int updateSelective(DiscoveryUpstreamDO discoveryUpstreamDO);
 
     /**
-     * deleteByIds.
+     * deleteByIdsAndNamespaceId.
      *
      * @param ids id list
      * @return rows int
@@ -144,4 +159,15 @@ public interface DiscoveryUpstreamMapper extends ExistProvider {
      * @return rows
      */
     int updateDiscoveryHandlerIdAndUrl(DiscoveryUpstreamDO discoveryUpstreamDO);
+
+    /**
+     * updateStatusByUrl.
+     *
+     * @param discoveryHandlerId discoveryHandlerId
+     * @param url                url
+     * @param status             status 0 healthy 1 unhealthy
+     * @return effect
+     */
+    int updateStatusByUrl(@Param("discoveryHandlerId") String discoveryHandlerId, @Param("url") String url, int status);
+
 }

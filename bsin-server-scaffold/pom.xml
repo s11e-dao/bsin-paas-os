@@ -6,7 +6,7 @@
     <parent>
         <groupId>me.flyray.bsin</groupId>
         <artifactId>bsin-paas-dependencies</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
         <relativePath>../bsin-paas-dependencies/pom.xml</relativePath>
     </parent>
 
@@ -15,12 +15,11 @@
     <artifactId>bsin-server-scaffold</artifactId>
     <packaging>pom</packaging>
     <name>bsin-server-scaffold</name>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <description>bsin-paas平台：脚手架</description>
 
     <modules>
         <module>bsin-server-scaffold-dubbo</module>
-        <module>bsin-server-scaffold-sofa</module>
         <module>bsin-server-scaffold-http</module>
         <module>bsin-server-scaffold-websocket</module>
         <module>bsin-server-scaffold-mqtt</module>

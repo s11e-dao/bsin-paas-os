@@ -17,7 +17,11 @@
 
 package org.apache.shenyu.admin.model.vo;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.apache.shenyu.admin.mapper.NamespaceMapper;
+import org.apache.shenyu.admin.validation.annotation.Existed;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -65,6 +69,23 @@ public class DiscoveryVO implements Serializable {
      */
     @NotNull(message = "props not null")
     private String props;
+
+    /**
+     * namespaceId.
+     */
+    @NotBlank
+    @Existed(message = "namespaceId is not existed", provider = NamespaceMapper.class)
+    private String namespaceId;
+
+    /**
+     * discoveryHandler.
+     */
+    private DiscoveryHandlerVO discoveryHandler;
+
+    /**
+     * discoveryRel.
+     */
+    private DiscoveryRelVO discoveryRel;
 
     /**
      * get id.
@@ -192,6 +213,56 @@ public class DiscoveryVO implements Serializable {
         this.props = props;
     }
 
+    /**
+     * Get discoveryHandler.
+     * @return discoveryHandler
+     */
+    public DiscoveryHandlerVO getDiscoveryHandler() {
+        return discoveryHandler;
+    }
+
+    /**
+     * Set discoveryHandler.
+     * @param discoveryHandler discoveryHandler
+     */
+    public void setDiscoveryHandler(final DiscoveryHandlerVO discoveryHandler) {
+        this.discoveryHandler = discoveryHandler;
+    }
+
+    /**
+     * Get discoveryRel.
+     * @return discoveryRel
+     */
+    public DiscoveryRelVO getDiscoveryRel() {
+        return discoveryRel;
+    }
+
+    /**
+     * Set discoveryRel.
+     * @param discoveryRel discoveryRel
+     */
+    public void setDiscoveryRel(final DiscoveryRelVO discoveryRel) {
+        this.discoveryRel = discoveryRel;
+    }
+
+    /**
+     * get namespaceId.
+     *
+     * @return namespaceId
+     */
+    public String getNamespaceId() {
+        return namespaceId;
+    }
+
+    /**
+     * set namespaceId.
+     *
+     * @param namespaceId namespaceId
+     */
+    public void setNamespaceId(final String namespaceId) {
+        this.namespaceId = namespaceId;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -204,11 +275,14 @@ public class DiscoveryVO implements Serializable {
         DiscoveryVO that = (DiscoveryVO) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(type, that.type)
                 && Objects.equals(level, that.level) && Objects.equals(serverList, that.serverList)
-                && Objects.equals(pluginName, that.pluginName) && Objects.equals(props, that.props);
+                && Objects.equals(pluginName, that.pluginName) && Objects.equals(props, that.props)
+                && Objects.equals(discoveryHandler, that.discoveryHandler)
+                && Objects.equals(discoveryRel, that.discoveryRel)
+                && Objects.equals(namespaceId, that.namespaceId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, type, level, serverList, pluginName, props);
+        return Objects.hash(id, name, type, level, serverList, pluginName, props, discoveryHandler, discoveryRel, namespaceId);
     }
 }

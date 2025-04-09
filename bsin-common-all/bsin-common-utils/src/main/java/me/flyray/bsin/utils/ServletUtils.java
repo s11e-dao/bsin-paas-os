@@ -3,6 +3,10 @@ package me.flyray.bsin.utils;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.http.HttpStatus;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.http.MediaType;
@@ -10,10 +14,6 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -22,13 +22,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * 客户端工具类
  *
  * @author ruoyi
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ServletUtils extends ServletUtil {
+public class ServletUtils {
 
     /**
      * 获取String参数
@@ -167,8 +168,9 @@ public class ServletUtils extends ServletUtil {
     }
 
     public static String getClientIP() {
-        return getClientIP(getRequest());
+        return null;
     }
+
 
     /**
      * 内容编码

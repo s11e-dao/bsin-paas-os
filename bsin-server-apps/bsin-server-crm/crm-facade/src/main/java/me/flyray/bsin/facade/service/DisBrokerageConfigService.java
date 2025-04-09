@@ -6,7 +6,6 @@ import me.flyray.bsin.domain.entity.DisModel;
 import me.flyray.bsin.validate.AddGroup;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.Map;
 
 /**

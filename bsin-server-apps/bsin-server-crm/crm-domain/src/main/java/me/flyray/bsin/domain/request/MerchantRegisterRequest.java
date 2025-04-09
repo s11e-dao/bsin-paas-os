@@ -1,13 +1,14 @@
 package me.flyray.bsin.domain.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import me.flyray.bsin.domain.entity.Merchant;
 import me.flyray.bsin.validate.AddGroup;
 
-import javax.validation.constraints.NotBlank;
 
 @Data
 public class MerchantRegisterRequest extends Merchant {
+
     /**
      * 0、手机号 1、邮箱 2、QQ 3、微信4、用户名 5、微博  第三方登录获取
      */

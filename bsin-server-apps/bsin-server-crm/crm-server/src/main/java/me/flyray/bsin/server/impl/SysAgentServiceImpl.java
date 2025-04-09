@@ -45,7 +45,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ch.qos.logback.core.joran.action.ActionConst.NULL;
+import static cn.hutool.core.text.CharSequenceUtil.NULL;
 import static me.flyray.bsin.constants.ResponseCode.*;
 
 /** 系统代理商服务 */

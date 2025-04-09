@@ -7,8 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.validation.constraints.NotBlank;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import me.flyray.bsin.validate.AddGroup;
 

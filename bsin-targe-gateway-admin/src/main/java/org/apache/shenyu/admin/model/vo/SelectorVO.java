@@ -124,6 +124,16 @@ public class SelectorVO implements Serializable {
      */
     private List<DiscoveryUpstreamVO> discoveryUpstreams;
 
+    /**
+     * selector rules.
+     */
+    private List<RuleVO> selectorRules;
+
+    /**
+     * namespaceId.
+     */
+    private String namespaceId;
+
     public SelectorVO() {
     }
 
@@ -142,7 +152,8 @@ public class SelectorVO implements Serializable {
                       final String handle,
                       final List<SelectorConditionVO> selectorConditions,
                       final String dateCreated,
-                      final String dateUpdated) {
+                      final String dateUpdated,
+                      final String namespaceId) {
         this.id = id;
         this.pluginId = pluginId;
         this.name = name;
@@ -159,6 +170,7 @@ public class SelectorVO implements Serializable {
         this.selectorConditions = selectorConditions;
         this.dateCreated = dateCreated;
         this.dateUpdated = dateUpdated;
+        this.namespaceId = namespaceId;
     }
 
     /**
@@ -503,6 +515,25 @@ public class SelectorVO implements Serializable {
         this.dateUpdated = dateUpdated;
     }
 
+
+    /**
+     * Gets the value of rules.
+     *
+     * @return the value of rules
+     */
+    public List<RuleVO> getSelectorRules() {
+        return selectorRules;
+    }
+
+    /**
+     * Sets the rules.
+     *
+     * @param selectorRules the rules
+     */
+    public void setSelectorRules(final List<RuleVO> selectorRules) {
+        this.selectorRules = selectorRules;
+    }
+
     /**
      * build selectorVO.
      *
@@ -520,13 +551,34 @@ public class SelectorVO implements Serializable {
      * @param selectorConditions {@linkplain List}
      * @return {@linkplain SelectorVO}
      */
-    public static SelectorVO buildSelectorVO(final SelectorDO selectorDO, final List<SelectorConditionVO> selectorConditions) {
+    public static SelectorVO buildSelectorVO(final SelectorDO selectorDO,
+                                             final List<SelectorConditionVO> selectorConditions) {
         return new SelectorVO(selectorDO.getId(), selectorDO.getPluginId(), selectorDO.getName(), selectorDO.getMatchMode(),
                 MatchModeEnum.getMatchModeByCode(selectorDO.getMatchMode()), selectorDO.getType(),
                 SelectorTypeEnum.getSelectorTypeByCode(selectorDO.getType()), selectorDO.getSort(),
                 selectorDO.getEnabled(), selectorDO.getLoged(), selectorDO.getContinued(),
                 selectorDO.getMatchRestful(), selectorDO.getHandle(), selectorConditions,
                 DateUtils.localDateTimeToString(selectorDO.getDateCreated().toLocalDateTime()),
-                DateUtils.localDateTimeToString(selectorDO.getDateUpdated().toLocalDateTime()));
+                DateUtils.localDateTimeToString(selectorDO.getDateUpdated().toLocalDateTime()),
+                selectorDO.getNamespaceId());
     }
+
+    /**
+     * Gets the value of namespaceId.
+     *
+     * @return the value of namespaceId
+     */
+    public String getNamespaceId() {
+        return namespaceId;
+    }
+
+    /**
+     * Sets the namespaceId.
+     *
+     * @param namespaceId namespaceId
+     */
+    public void setNamespaceId(final String namespaceId) {
+        this.namespaceId = namespaceId;
+    }
+
 }

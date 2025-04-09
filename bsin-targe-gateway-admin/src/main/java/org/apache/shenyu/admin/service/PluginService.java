@@ -22,8 +22,10 @@ import org.apache.shenyu.admin.model.entity.PluginDO;
 import org.apache.shenyu.admin.model.page.CommonPager;
 import org.apache.shenyu.admin.model.query.PluginQuery;
 import org.apache.shenyu.admin.model.query.PluginQueryCondition;
+import org.apache.shenyu.admin.model.result.ConfigImportResult;
 import org.apache.shenyu.admin.model.vo.PluginSnapshotVO;
 import org.apache.shenyu.admin.model.vo.PluginVO;
+import org.apache.shenyu.admin.service.configs.ConfigsImportContext;
 import org.apache.shenyu.common.dto.PluginData;
 
 import java.util.List;
@@ -78,6 +80,13 @@ public interface PluginService extends PageService<PluginQueryCondition, PluginV
      * @return the list
      */
     List<PluginData> listAll();
+
+    /**
+     * List all vo list.
+     *
+     * @return the vo list
+     */
+    List<PluginVO> listAllData();
     
     /**
      * list all not in resource.
@@ -117,4 +126,13 @@ public interface PluginService extends PageService<PluginQueryCondition, PluginV
      * @return plugin list
      */
     List<PluginSnapshotVO> activePluginSnapshot();
+
+    /**
+     * import plugin data.
+     *
+     * @param pluginList the plugin data
+     * @param context the import context
+     * @return config import result
+     */
+    ConfigImportResult importData(List<PluginDTO> pluginList, ConfigsImportContext context);
 }

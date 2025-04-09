@@ -1,11 +1,11 @@
 package me.flyray.bsin.infrastructure.config;
 
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
 
-import lombok.Data;
 
 @Data
 @ConfigurationProperties(prefix = "bsin.tenant")

@@ -1,6 +1,7 @@
 package me.flyray.bsin.security.filter;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.rpc.*;
@@ -9,7 +10,6 @@ import java.lang.reflect.Field;
 import java.util.Map;
 
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 
@@ -19,7 +19,6 @@ import me.flyray.bsin.security.domain.LoginUser;
 @Slf4j
 @Activate(group = {CommonConstants.PROVIDER}, order = Integer.MAX_VALUE)
 public class DubboLoginInfoFilter implements Filter {
-
 
     @Override
     @SneakyThrows

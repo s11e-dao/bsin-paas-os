@@ -1,8 +1,8 @@
 package me.flyray.bsin.domain.request;
 
+    import jakarta.validation.constraints.NotNull;
     import me.flyray.bsin.domain.entity.SysProduct;
 
-import javax.validation.constraints.NotNull;
 
 import lombok.Data;
     import me.flyray.bsin.mybatis.utils.Pagination;

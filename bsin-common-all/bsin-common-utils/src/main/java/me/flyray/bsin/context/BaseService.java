@@ -6,8 +6,7 @@ import java.lang.reflect.Field;
 import java.util.Map;
 
 
-import javax.validation.constraints.NotBlank;
-
+import jakarta.validation.constraints.NotBlank;
 import me.flyray.bsin.annotate.BsinId;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.utils.EmptyChecker;

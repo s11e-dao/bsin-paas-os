@@ -2,9 +2,9 @@ package me.flyray.bsin.exception;
 
 
 import lombok.Data;
-import me.flyray.bsin.utils.I18eCode;
+import me.flyray.bsin.i18n.I18eCode;
 import me.flyray.bsin.utils.ReturnCode;
-import me.flyray.bsin.utils.I18nUtils;
+import me.flyray.bsin.i18n.I18nUtils;
 
 
 @Data

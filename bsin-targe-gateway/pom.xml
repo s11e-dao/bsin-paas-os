@@ -20,32 +20,42 @@
     <parent>
         <groupId>org.apache.shenyu</groupId>
         <artifactId>shenyu</artifactId>
-        <version>2.6.1</version>
-        <relativePath/>
+        <version>2.7.1-SNAPSHOT</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>targe-gateway</artifactId>
-    <packaging>jar</packaging>
-    <version>2.0.0-SNAPSHOT</version>
-    <description>bsin-paas平台：网关模块</description>
+    <artifactId>bsin-targe-gateway</artifactId>
+    <version>2.7.1-SNAPSHOT</version>
 
     <properties>
-        <java.version>11</java.version>
         <nacos-discovery.version>2021.0.1.0</nacos-discovery.version>
-        <eureka-client.version>3.1.2</eureka-client.version>
+        <eureka-client.version>4.1.2</eureka-client.version>
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
-        <hutool.version>5.8.15</hutool.version>
-        <shenyu.version>2.6.1</shenyu.version>
-        <sofa.version>5.8.3</sofa.version>
-        <fastjson.version>1.2.83</fastjson.version>
         <fastjson2.version>2.0.49</fastjson2.version>
-        <dubbo.version>3.2.5</dubbo.version>
-        <nacos-client.version>2.3.2</nacos-client.version>
-        <maven.test.skip>true</maven.test.skip>
-        <maven.javadoc.skip>true</maven.javadoc.skip>
     </properties>
 
     <dependencies>
+
+        <!-- 自定义依赖 开始 -->
+        <dependency>
+            <groupId>me.flyray.bsin</groupId>
+            <artifactId>bsin-common-utils</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-extension</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>${fastjson2.version}</version>
+        </dependency>
+        <!-- 自定义依赖 结束 -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
@@ -60,14 +70,14 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-gateway</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!--shenyu param mapping plugin start-->
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-param-mapping</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu param mapping end-->
 
@@ -75,7 +85,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-waf</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu waf plugin end-->
 
@@ -83,7 +93,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-ratelimiter</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu ratelimiter plugin end-->
 
@@ -91,7 +101,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-hystrix</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu hystrix plugin end-->
 
@@ -99,7 +109,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-resilience4j</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu resilience4j plugin end-->
 
@@ -107,7 +117,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-sentinel</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu sentinel plugin end-->
 
@@ -115,7 +125,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-redirect</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu redirect plugin end-->
 
@@ -123,7 +133,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-rewrite</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu redirect plugin end-->
 
@@ -131,7 +141,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-request</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu request plugin end-->
 
@@ -139,7 +149,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-logging-console</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu debug plugin end-->
 
@@ -147,7 +157,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-sign</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu sign plugin end-->
 
@@ -155,7 +165,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-oauth2</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu oauth2 plugin end-->
 
@@ -163,7 +173,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-jwt</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu jwt end-->
 
@@ -171,7 +181,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-casdoor</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu auth plugin end-->
 
@@ -179,7 +189,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-modify-response</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu modify response plugin end-->
 
@@ -187,7 +197,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-cryptor</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu cryptor end-->
 
@@ -195,7 +205,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-general-context</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu general context plugin end-->
 
@@ -203,7 +213,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-websocket</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu websocket plugin end-->
 
@@ -211,7 +221,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-metrics</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu metrics plugin end-->
 
@@ -219,7 +229,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-cache</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu cache plugin end-->
 
@@ -228,7 +238,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-grpc</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu grpc plugin end-->
 
@@ -236,7 +246,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-tars</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -250,7 +260,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-tcp</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--Tcp Plugin end-->
 
@@ -258,7 +268,6 @@
         <dependency>
             <groupId>com.alipay.sofa</groupId>
             <artifactId>sofa-rpc-all</artifactId>
-            <version>5.7.6</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.jcip</groupId>
@@ -268,12 +277,39 @@
                     <groupId>io.grpc</groupId>
                     <artifactId>grpc-core</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>commons-io</artifactId>
+                    <groupId>commons-io</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>okio</artifactId>
+                    <groupId>com.squareup.okio</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>sofa-common-tools</artifactId>
+                    <groupId>com.alipay.sofa.common</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>validation-api</artifactId>
+                    <groupId>javax.validation</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.alipay.sofa.common</groupId>
+            <artifactId>sofa-common-tools</artifactId>
+            <version>${sofa-common-tools.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-sofa</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu sofa plugin end-->
 
@@ -281,7 +317,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-springcloud</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -319,7 +355,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-key-auth</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu key-auth plugin end -->
 
@@ -327,7 +363,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-mock</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu mock plugin end-->
 
@@ -335,11 +371,12 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-apache-dubbo</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
+            <version>${apache.dubbo.version}</version>
         </dependency>
         <!-- Dubbo Nacos registry dependency -->
         <!--  <dependency>
@@ -367,63 +404,6 @@
         </dependency>
         <!-- Dubbo zookeeper registry dependency end -->
         <!-- shenyu  apache dubbo plugin end-->
-
-        <!--shenyu alibaba dubbo plugin start-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.shenyu</groupId>-->
-        <!--            <artifactId>shenyu-spring-boot-starter-plugin-alibaba-dubbo</artifactId>-->
-        <!--            <version>${shenyu.version}</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>com.alibaba</groupId>-->
-        <!--            <artifactId>dubbo</artifactId>-->
-        <!--            <version>${alibaba.dubbo.version}</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.curator</groupId>-->
-        <!--            <artifactId>curator-client</artifactId>-->
-        <!--            <version>${curator.version}</version>-->
-        <!--            <exclusions>-->
-        <!--                <exclusion>-->
-        <!--                    <artifactId>log4j</artifactId>-->
-        <!--                    <groupId>log4j</groupId>-->
-        <!--                </exclusion>-->
-        <!--            </exclusions>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.curator</groupId>-->
-        <!--            <artifactId>curator-framework</artifactId>-->
-        <!--            <version>${curator.version}</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.curator</groupId>-->
-        <!--            <artifactId>curator-recipes</artifactId>-->
-        <!--            <version>${curator.version}</version>-->
-        <!--        </dependency>-->
-        <!--shenyu alibaba dubbo plugin end-->
-
-        <!--shenyu spring cloud alibaba dubbo plugin start-->
-        <!--
-        <dependency>
-            <groupId>org.apache.shenyu</groupId>
-            <artifactId>shenyu-spring-boot-starter-plugin-apache-dubbo</artifactId>
-            <version>${shenyu.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
-            <version>${netflix-ribbon.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-dubbo</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
-        -->
-        <!-- shenyu spring cloud alibaba dubbo end-->
 
         <!--shenyu motan plugin start-->
         <!--If you plan to use the motan plugin and want to use the hessian serialization,
@@ -462,7 +442,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-motan</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu motan plugin end-->
 
@@ -470,35 +450,35 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-sync-data-zookeeper</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!--shenyu data sync start use websocket-->
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-sync-data-websocket</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!--shenyu data sync start use http-->
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-sync-data-http</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!--shenyu data sync start use nacos-->
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-sync-data-nacos</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!--shenyu data sync start use etcd-->
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-sync-data-etcd</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>io.grpc</groupId>
@@ -516,7 +496,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-sync-data-consul</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu registry start-->
 
@@ -524,14 +504,14 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-sync-data-polaris</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!--shenyu instance start-->
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-registry</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu registry end-->
 
@@ -539,7 +519,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-logging-rocketmq</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu logging-rocketmq plugin end-->
 
@@ -547,23 +527,23 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-logging-kafka</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu logging-kafka plugin end-->
-        
+
         <!--shenyu logging-rabbitmq plugin start-->
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-logging-rabbitmq</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu logging-rabbitmq plugin end-->
-        
+
         <!--shenyu logging-elasticsearch plugin start-->
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-logging-elasticsearch</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--shenyu logging-elasticsearch plugin end-->
 
@@ -571,7 +551,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-logging-aliyun-sls</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu logging-aliyunsls plugin end -->
 
@@ -579,7 +559,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-logging-pulsar</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu logging-pulsar plugin end -->
 
@@ -587,7 +567,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-logging-tencent-cls</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu logging-tencentcls plugin end -->
 
@@ -595,7 +575,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-logging-huawei-lts</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu logging-huaweilts plugin end -->
 
@@ -604,7 +584,7 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-logging-clickhouse</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- shenyu logging-clickhouse plugin end -->
 
@@ -612,7 +592,7 @@
 <!--        <dependency>-->
 <!--            <groupId>org.apache.shenyu</groupId>-->
 <!--            <artifactId>shenyu-spring-boot-starter-k8s</artifactId>-->
-<!--            <version>${shenyu.version}</version>-->
+<!--            <version>${project.version}</version>-->
 <!--        </dependency>-->
         <!-- shenyu kubernetes controller end -->
 
@@ -620,39 +600,15 @@
         <dependency>
             <groupId>org.apache.shenyu</groupId>
             <artifactId>shenyu-spring-boot-starter-plugin-basic-auth</artifactId>
-            <version>${shenyu.version}</version>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>provided</scope>
         </dependency>
         <!-- shenyu basic-auth plugin end -->
-
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
-            <version>${hutool.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-json</artifactId>
-            <version>${hutool.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>me.flyray.bsin</groupId>
-            <artifactId>bsin-common-utils</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-extension</artifactId>
-            <version>${mybatis-plus.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba.fastjson2</groupId>
-            <artifactId>fastjson2</artifactId>
-            <version>${fastjson2.version}</version>
-        </dependency>
 
     </dependencies>
     <profiles>
@@ -672,31 +628,20 @@
         </profile>
     </profiles>
     <build>
+        <finalName>shenyu-bootstrap</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <mainClass>me.flyray.bsin.gateway.BsinGatewayApplication</mainClass>
-                    <skip>false</skip>
-<!--                    <executable>true</executable>-->
+                    <skip>true</skip>
                 </configuration>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-surefire-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <skip>true</skip>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 </project>
