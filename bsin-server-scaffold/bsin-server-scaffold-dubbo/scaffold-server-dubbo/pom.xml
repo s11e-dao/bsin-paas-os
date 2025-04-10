@@ -94,26 +94,24 @@
             <version>${druid-starter.version}</version>
         </dependency>
 
-        <!-- Hibernate Validator -->
         <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>8.0.1.Final</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
 
-        <!-- Jakarta API -->
         <dependency>
-            <groupId>jakarta.validation</groupId>
-            <artifactId>jakarta.validation-api</artifactId>
-            <version>3.1.0</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${jakarta.servlet.version}</version>
         </dependency>
 
-        <!-- EL implementation -->
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>jakarta.el</artifactId>
-            <version>5.0.0-M1</version>
-        </dependency>
+        <!-- Bean Validation API -->
+        <!--        <dependency>-->
+        <!--            <groupId>javax.validation</groupId>-->
+        <!--            <artifactId>validation-api</artifactId>-->
+        <!--            <version>2.0.1.Final</version>-->
+        <!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
         <dependency>
@@ -192,17 +190,17 @@
             <version>${nacos-config.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>me.flyray.bsin</groupId>
-            <artifactId>bsin-common-dubbo</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>me.flyray.bsin</groupId>-->
+        <!--            <artifactId>bsin-common-dubbo</artifactId>-->
+        <!--            <version>${project.version}</version>-->
+        <!--        </dependency>-->
 
-        <dependency>
-            <groupId>me.flyray.bsin</groupId>
-            <artifactId>bsin-common-mq</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>me.flyray.bsin</groupId>-->
+        <!--            <artifactId>bsin-common-mq</artifactId>-->
+        <!--            <version>${project.version}</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>com.github.houbb</groupId>

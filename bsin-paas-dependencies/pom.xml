@@ -40,7 +40,7 @@
         <nacos-config.version>0.3.0-RC</nacos-config.version>
         <shiro.version>1.8.0</shiro.version>
         <jwt.version>3.12.0</jwt.version>
-        <slf4j.version>1.7.32</slf4j.version>
+        <slf4j.version>2.0.17</slf4j.version>
         <consul.api.version>1.4.5</consul.api.version>
         <consul.version>2.2.6.RELEASE</consul.version>
         <opengauss-jdbc.version>5.0.0-og</opengauss-jdbc.version>
