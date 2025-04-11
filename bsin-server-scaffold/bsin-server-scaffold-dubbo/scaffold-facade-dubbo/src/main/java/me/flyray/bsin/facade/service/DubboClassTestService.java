@@ -20,13 +20,16 @@ package me.flyray.bsin.facade.service;
 
 
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import me.flyray.bsin.domain.entity.DubboTest;
 import me.flyray.bsin.domain.entity.ListResp;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * DubboClassTestService.
  */
+@Validated
 public interface DubboClassTestService {
 
     /**
@@ -52,7 +55,8 @@ public interface DubboClassTestService {
      * @param dubboTest the dubbo test
      * @return the dubbo test
      */
-    DubboTest insert(DubboTest dubboTest);
+    @Validated
+    DubboTest insert(@Valid DubboTest dubboTest);
 
     /**
      * findList.

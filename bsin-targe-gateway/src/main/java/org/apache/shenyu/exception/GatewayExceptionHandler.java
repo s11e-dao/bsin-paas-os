@@ -2,6 +2,8 @@ package org.apache.shenyu.exception;
 
 import com.alibaba.dubbo.rpc.service.GenericException;
 import com.google.common.collect.Sets;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.exception.BusinessException;
 import org.apache.shenyu.common.exception.ShenyuException;
@@ -19,8 +21,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
 import java.util.Set;
 
 /**
