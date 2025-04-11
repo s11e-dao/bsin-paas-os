@@ -17,6 +17,10 @@
 
 package me.flyray.bsin.websocket.ws;
 
+import jakarta.websocket.OnClose;
+import jakarta.websocket.OnMessage;
+import jakarta.websocket.OnOpen;
+import jakarta.websocket.Session;
 import org.apache.shenyu.client.spring.websocket.annotation.ShenyuServerEndpoint;
 import me.flyray.bsin.websocket.biz.SaveFile;
 import org.slf4j.Logger;
@@ -24,10 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;

@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.dsl.IntegrationFlow;
-import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.messaging.MessageHeaders;
 
@@ -37,7 +36,7 @@ public class EnventsTestRouter {
 
   @Bean
   public IntegrationFlow myTestMethodRouterFlow() {
-    return IntegrationFlows.from(ChannelName.ENVENTS_INBOUND_TEST)
+    return IntegrationFlow.from(ChannelName.ENVENTS_INBOUND_TEST)
         .<byte[], CommonTopicReceiver>transform(
             payload -> {
               try {

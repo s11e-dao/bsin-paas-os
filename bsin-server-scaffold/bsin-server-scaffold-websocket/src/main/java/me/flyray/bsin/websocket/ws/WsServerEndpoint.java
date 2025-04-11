@@ -17,6 +17,8 @@
 
 package me.flyray.bsin.websocket.ws;
 
+import jakarta.websocket.*;
+import jakarta.websocket.server.PathParam;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.filter.WebsocketLoginInfoInterceptor;
 import me.flyray.bsin.websocket.biz.SaveFile;
@@ -26,8 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import javax.websocket.*;
-import javax.websocket.server.PathParam;
 import java.io.IOException;
 
 /**

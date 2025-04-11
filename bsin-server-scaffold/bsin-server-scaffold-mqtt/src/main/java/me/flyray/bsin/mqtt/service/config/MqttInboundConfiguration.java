@@ -1,6 +1,6 @@
 package me.flyray.bsin.mqtt.service.config;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.mqtt.domain.channal.ChannelName;
 import me.flyray.bsin.mqtt.service.config.model.MqttClientOptions;

@@ -111,14 +111,6 @@
             </exclusions>
         </dependency>
 
-
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -145,33 +137,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.shenyu</groupId>
-            <artifactId>shenyu-spring-boot-starter-client-apache-dubbo</artifactId>
-            <version>${shenyu.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>me.flyray.bsin</groupId>
-            <artifactId>bsin-common-dubbo</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
             <groupId>me.flyray.bsin</groupId>
             <artifactId>bsin-common-mybatis</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>me.flyray.bsin</groupId>
-            <artifactId>bsin-common-mq</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>me.flyray.bsin</groupId>
-            <artifactId>bsin-common-security</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -199,12 +167,11 @@
             <version>${dubbo.version}</version>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>me.flyray.bsin</groupId>-->
-        <!--            <artifactId>bsin-common-security</artifactId>-->
-        <!--            <version>${project.version}</version>-->
-        <!--        </dependency>-->
-
+        <dependency>
+            <groupId>me.flyray.bsin</groupId>
+            <artifactId>bsin-common-security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>cn.hutool</groupId>
@@ -222,12 +189,6 @@
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>${druid-starter.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-            <version>${spring-boot.version}</version>
         </dependency>
 
         <dependency>
@@ -263,29 +224,6 @@
             <version>${spring-boot.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-client</artifactId>
-            <version>${curator.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-framework</artifactId>
-            <version>${curator.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-recipes</artifactId>
-            <version>${curator.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>com.github.pagehelper</groupId>
@@ -320,17 +258,17 @@
             <version>${nacos-config.version}</version>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>me.flyray.bsin</groupId>-->
-        <!--            <artifactId>bsin-common-dubbo</artifactId>-->
-        <!--            <version>${project.version}</version>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>me.flyray.bsin</groupId>
+            <artifactId>bsin-common-dubbo</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>me.flyray.bsin</groupId>-->
-        <!--            <artifactId>bsin-common-mq</artifactId>-->
-        <!--            <version>${project.version}</version>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>me.flyray.bsin</groupId>
+            <artifactId>bsin-common-mq</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.github.houbb</groupId>

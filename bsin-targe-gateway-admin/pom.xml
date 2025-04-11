@@ -22,6 +22,7 @@
         <artifactId>shenyu</artifactId>
         <version>2.7.1-SNAPSHOT</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
     <artifactId>bsin-targe-gateway-admin</artifactId>
     <description>bsin-paas平台：网关管理后台模块</description>

@@ -42,7 +42,7 @@ dubbo:
   scan:
     base-packages: me.flyray.bsin.server.impl
   provider:
-    validation: shenyuValidation
+    validation: false
     version: dev
   consumer:
     check: false
