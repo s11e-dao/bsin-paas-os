@@ -43,8 +43,8 @@ services:
       # 绝对路径
       # - "/mydata/docker_mysql/data:/var/lib/mysql"
       # 相对路径，相对当前 docker-compose.yml 文件所在目录
-      # - “./conf:/etc/mysql/conf.d“
-      # - “./docker_volume/mysql:/var/lib/mysql“
+      # - "./conf:/etc/mysql/conf.d"
+      # - "./docker_volume/mysql:/var/lib/mysql"
       # 匿名挂载，匿名挂载只需要写容器目录即可，容器外对应的目录会在 /var/lib/docker/volume 中生成
       # - "/var/lib/mysql"
       # 具名挂载，就是给数据卷起了个名字，容器外对应的目录会在 /var/lib/docker/volume 中生成
@@ -83,7 +83,7 @@ services:
       dockerfile: dockerfile
     ports:
       - "6379:6379"
-    restart: always
+    #    restart: always
     privileged: true                                              # 获取宿主机root权限
     volumes:
       - ./middleware/redis/conf/redis.conf:/etc/redis/redis.conf # 映射配置文件目录，宿主机:容器
@@ -159,7 +159,7 @@ services:
       #        - ./middleware/emqx/etc:/opt/emqx/etc
       - ./middleware/emqx/log:/opt/emqx/log     # 日志目录映射，用于持久化日志
       - /etc/localtime:/etc/localtime:ro
-    restart: always
+    #    restart: always
     environment:
       EMQX_NAME: bsin-emqx
       EMQX_HOST: 127.0.0.1
@@ -181,16 +181,58 @@ services:
     ports:
       - "80:80"
       - "443:443"
-#    restart: always
+    #    restart: always
     privileged: true                                              # 获取宿主机root权限
     volumes:
       - ./middleware/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./middleware/nginx/logs:/var/log/nginx
       - ./middleware/nginx/cert:/home/bsin-paas-os/middleware/nginx/cert
+      # 添加HLS目录挂载
+      - /home/leonard/ssd12/bsin-paas/bsin-paas-os/hls:/home/bsin-paas-os/middleware/nginx/hls
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.18
 
+  #  bsin-srs:
+  #    container_name: bsin-srs
+  #    image: bsin-srs:2.0.0
+  #    build:
+  #      context: middleware/srs
+  #      dockerfile: dockerfile
+  #    ports:
+  #      - "${RTMP_PORT:-1935}:1935"   # RTMP端口
+  #      - "${HTTP_PORT:-8080}:8080"   # HTTP服务（HLS流访问）
+  #      - "${API_PORT:-1985}:1985"    # HTTP API端口
+  #      - "${RTC_PORT:-8000}:8000"    # WebRTC端口
+  #      - "${RTSP_PORT:-554}:554"     # RTSP端口
+  #    volumes:
+  #      - ./middleware/srs/conf:/usr/local/srs/conf
+  #      - ./middleware/srs/objs:/usr/local/srs/objs
+  #      - ./middleware/srs/logs:/usr/local/srs/logs
+  #    restart: always
+  #    environment:
+  #      - CANDIDATE=${SERVER_IP:-127.0.0.1}
+  #    logging:
+  #      driver: "json-file"
+  #      options:
+  #        max-size: "10m"
+  #        max-file: "3"
+  #    networks:
+  #      compose-network: #指定network
+  #        ipv4_address: 172.28.0.19
+  #
+  #  bsin-ffmpeg-helper:
+  #    image: jrottenberg/ffmpeg:4.4-ubuntu
+  #    container_name: bsin-ffmpeg-helper
+  #    restart: always
+  #    volumes:
+  #      - ./scripts:/scripts
+  #    entrypoint: ["tail", "-f", "/dev/null"]  # 保持容器运行但不执行任何操作
+  #    networks:
+  #      compose-network: #指定network
+  #        ipv4_address: 172.28.0.19
+  #    depends_on:
+  #      - bsin-srs
   # targe-gateway-admin
   bsin-targe-gateway-admin:
     container_name: bsin-targe-gateway-admin
@@ -229,7 +271,7 @@ services:
       - ./bsin-paas-os/targe-gateway/.env
     ports:
       - "9195:9195"
-    restart: always
+    #    restart: always
     volumes:
       - ./bsin-paas-os/targe-gateway/logs:/home/bsin-paas-os/targe-gateway/logs
       - ./bsin-paas-os/targe-gateway/conf/hosts:/etc/hosts
@@ -237,13 +279,13 @@ services:
       - bsin-nacos-standalone
       - bsin-redis
       - bsin-mysql
-#      - bsin-nginx
+      #      - bsin-nginx
       - bsin-targe-gateway-admin
     links:
       - bsin-nacos-standalone
       - bsin-redis
       - bsin-mysql
-#      - bsin-nginx
+      #      - bsin-nginx
       - bsin-targe-gateway-admin
     networks:
       compose-network: #指定network
@@ -260,7 +302,7 @@ services:
       - ./bsin-paas-os/server-apps/upms/.env
     ports:
       - "9101:9101"
-    restart: always
+    #    restart: always
     volumes:
       - ./bsin-paas-os/server-apps/upms/logs:/home/bsin-paas-os/server-apps/upms/logs
     depends_on:
@@ -285,7 +327,7 @@ services:
       - ./bsin-paas-os/server-apps/crm/.env
     ports:
       - "9102:9102"
-    restart: always
+    #    restart: always
     volumes:
       - ./bsin-paas-os/server-apps/crm/logs:/home/bsin-paas-os/server-apps/crm/logs
     depends_on:
@@ -310,7 +352,7 @@ services:
       - ./bsin-paas-os/server-apps/brms/.env
     ports:
       - "9103:9103"
-    restart: always
+    #    restart: always
     volumes:
       - ./bsin-paas-os/server-apps/brms/logs:/home/bsin-paas-os/server-apps/brms/logs
     depends_on:
@@ -335,7 +377,7 @@ services:
       - ./bsin-paas-os/server-apps/ai-agent/.env
     ports:
       - "9104:9104"
-    restart: always
+    #    restart: always
     volumes:
       - ./bsin-paas-os/server-apps/ai-agent/logs:/home/bsin-paas-os/server-apps/ai-agent/logs
     depends_on:
@@ -360,7 +402,7 @@ services:
       - ./bsin-paas-os/server-apps/waas/.env
     ports:
       - "9107:9107"
-    restart: always
+    #    restart: always
     volumes:
       - ./bsin-paas-os/server-apps/waas/logs:/home/bsin-paas-os/server-apps/waas/logs
     depends_on:
@@ -386,7 +428,7 @@ services:
       - ./bsin-paas-os/server-apps/community/.env
     ports:
       - "9110:9110"
-    restart: always
+    #    restart: always
     volumes:
       - ./bsin-paas-os/server-apps/community/logs:/home/bsin-paas-os/server-apps/community/logs
     depends_on:
@@ -411,7 +453,7 @@ services:
       - ./bsin-paas-os/server-apps/oms/.env
     ports:
       - "9111:9111"
-    restart: always
+    #    restart: always
     volumes:
       - ./bsin-paas-os/server-apps/oms/logs:/home/bsin-paas-os/server-apps/oms/logs
     depends_on:
@@ -436,7 +478,7 @@ services:
       - ./bsin-paas-os/server-apps/iot/.env
     ports:
       - "9120:9120"
-    restart: always
+    #    restart: always
     volumes:
       - ./bsin-paas-os/server-apps/iot/logs:/home/bsin-paas-os/server-apps/iot/logs
     depends_on:
@@ -577,7 +619,7 @@ services:
     #    expose:
     #      - "80"
     volumes:
-      - ./bsin-paas-os/ui-apps/bigan/dist:/home/bsin-paas-os/ui-apps/sea-condition/dist
+      - ./bsin-paas-os/ui-apps/sea-condition/dist:/home/bsin-paas-os/ui-apps/sea-condition/dist
       - ./bsin-paas-os/ui-apps/sea-condition/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./bsin-paas-os/ui-apps/sea-condition/logs:/var/log/nginx
     networks:
