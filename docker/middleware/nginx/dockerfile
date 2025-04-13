@@ -9,6 +9,7 @@ MAINTAINER bsin-paas
 
 # 创建目录
 RUN mkdir -p /home/bsin-paas-os/middleware/nginx/cert
+RUN mkdir -p /home/bsin-paas-os/middleware/nginx/hls
 ## 挂载目录
 #VOLUME /home/bsin-paas-os/middleware/nginx
 

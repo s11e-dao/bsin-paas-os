@@ -126,3 +126,5 @@ bsin-ui-apps/bsin-ui-sea-condition
 .env.yue17
 
 docker/bsin-paas-os/ui-apps/sea-condition/dist/
+
+docker/bsin-paas-os/ui-apps/bigan/dist/
