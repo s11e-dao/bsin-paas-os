@@ -7,12 +7,17 @@ COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 # 创建目录
 RUN mkdir -p /home/bsin-paas-os/ui-apps/sea-condition/dist
 
-# 挂载目录
-VOLUME /home/bsin-paas-os/ui-apps/sea-condition/dist
-
 # 将前端静态文件复制到Nginx默认的静态文件目录
 COPY ./dist /home/bsin-paas-os/ui-apps/sea-condition/dist
 
+# 确保Nginx用户有权限访问目录
+RUN chown -R nginx:nginx /home/bsin-paas-os/ui-apps/sea-condition/dist
+
+
+# 挂载目录
+VOLUME /home/bsin-paas-os/ui-apps/sea-condition/dist
+
+EXPOSE 80
 
 # 启动Nginx服务
 CMD ["nginx", "-g", "daemon off;"]
