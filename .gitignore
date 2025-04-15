@@ -17,6 +17,9 @@
 # production
 /dist
 
+# Maven ignore
+.flattened-pom.xml
+
 # misc
 .DS_Store
 
