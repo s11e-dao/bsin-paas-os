@@ -9,6 +9,7 @@ LABEL version=2.0.0
 VOLUME /home/bsin-paas-os/server-apps/iot
 # 创建目录
 RUN mkdir -p /home/bsin-paas-os/server-apps/iot
+RUN mkdir -p /home/bsin-paas-os/server-apps/iot/hls
 # 指定路径
 WORKDIR /home/bsin-paas-os/server-apps/iot
 # 复制jar文件到路径

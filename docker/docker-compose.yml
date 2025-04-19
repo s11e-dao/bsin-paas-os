@@ -188,7 +188,9 @@ services:
       - ./middleware/nginx/logs:/var/log/nginx
       - ./middleware/nginx/cert:/home/bsin-paas-os/middleware/nginx/cert
       # 添加HLS目录挂载
-      - /home/leonard/ssd12/bsin-paas/bsin-paas-os/hls:/home/bsin-paas-os/middleware/nginx/hls
+      #- /home/leonard/ssd12/bsin-paas/bsin-paas-os/hls:/home/bsin-paas-os/middleware/nginx/hls
+      # 挂载 iot 的 hls 文件
+      - /root/bsin-paas-os/bsin-paas-os/server-apps/iot/hls:/home/bsin-paas-os/middleware/nginx/hls
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.18
@@ -481,6 +483,7 @@ services:
     #    restart: always
     volumes:
       - ./bsin-paas-os/server-apps/iot/logs:/home/bsin-paas-os/server-apps/iot/logs
+      - ./bsin-paas-os/server-apps/iot/hls:/home/bsin-paas-os/server-apps/iot/hls
     depends_on:
       - bsin-redis
       - bsin-mysql
