@@ -1,18 +1,45 @@
 # 基础镜像
-FROM  openjdk:11
+FROM openjdk:11
 # author
 MAINTAINER bsin-paas
 
 LABEL version=2.0.0
 
-# 挂载目录
-VOLUME /home/bsin-paas-os/server-apps/iot
-# 创建目录
-RUN mkdir -p /home/bsin-paas-os/server-apps/iot
-RUN mkdir -p /home/bsin-paas-os/server-apps/iot/hls
-# 指定路径
+# 安装FFmpeg
+RUN apt-get update && \
+    apt-get install -y wget && \
+    wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz && \
+    tar xvf ffmpeg-release-amd64-static.tar.xz && \
+    mv ffmpeg-*-static/ffmpeg /usr/local/bin/ && \
+    mv ffmpeg-*-static/ffprobe /usr/local/bin/ && \
+    rm -rf ffmpeg-*-static* && \
+    apt-get remove -y wget && \
+    apt-get clean
+
+# 创建目录并设置权限
+RUN mkdir -p /home/bsin-paas-os/server-apps/iot/hls && \
+    chmod -R 777 /home/bsin-paas-os/server-apps/iot/hls
+
+# 设置工作目录
 WORKDIR /home/bsin-paas-os/server-apps/iot
+
+## 复制jar文件到路径
+#COPY ./jar/iot-server-2.0.0-SNAPSHOT.jar ./iot-server-2.0.0-SNAPSHOT.jar
 # 复制jar文件到路径
 COPY ./jar/iot-server-2.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/iot/iot-server-2.0.0-SNAPSHOT.jar
+
+# 挂载卷（确保持久化）
+VOLUME ["/home/bsin-paas-os/server-apps/iot/hls"]
+
+# 添加健康检查
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD ffmpeg -version || exit 1
 # 启动用户服务
 ENTRYPOINT ["java","-jar","iot-server-2.0.0-SNAPSHOT.jar"]
+
+
+## 启动用户服务（添加JVM参数）
+#ENTRYPOINT ["java", \
+#    "-Dspring.profiles.active=prod", \
+#    "-Drtsp.hls.output-dir=/home/bsin-paas-os/server-apps/iot/hls", \
+#    "-jar", "iot-server-2.0.0-SNAPSHOT.jar"]
