@@ -190,7 +190,8 @@ services:
       # 添加HLS目录挂载
       #- /home/leonard/ssd12/bsin-paas/bsin-paas-os/hls:/home/bsin-paas-os/middleware/nginx/hls
       # 挂载 iot 的 hls 文件
-      - /root/bsin-paas-os/bsin-paas-os/server-apps/iot/hls:/home/bsin-paas-os/middleware/nginx/hls
+      - ./bsin-paas-os/server-apps/iot/hls:/home/bsin-paas-os/middleware/nginx/hls
+#      - /root/bsin-paas-os/bsin-paas-os/server-apps/iot/hls:/home/bsin-paas-os/middleware/nginx/hls
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.18
