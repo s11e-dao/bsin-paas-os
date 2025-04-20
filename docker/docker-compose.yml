@@ -138,6 +138,22 @@ services:
   #    compose-network: #指定network
   #      ipv4_address: 172.28.0.16
 
+
+  bsin-easymedia:
+    container_name: bsin-easymedia
+    image: bsin-easymedia:2.0.0
+    build:
+      context: ./middleware/easymedia
+      dockerfile: dockerfile
+    ports:
+      - "8865:8865"
+      - "8866:8866"
+    volumes:
+      - ./middleware/easymedia/logs:/home/bsin-paas-os/middleware/easymedia/logs
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.16
+
   # bsin-emqx默认初始账号和密码
   # username：admin
   # password：public

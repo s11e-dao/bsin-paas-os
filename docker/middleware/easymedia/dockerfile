@@ -1,0 +1,49 @@
+ # 基础镜像
+FROM openjdk:11
+# author
+MAINTAINER bsin-paas
+
+LABEL version=2.0.0
+
+# 安装FFmpeg及所有必要的依赖
+RUN apt-get update && \
+    apt-get install -y wget libxcb1 libxcb-shm0 libxcb-shape0 libxcb-xfixes0 \
+    libx11-6 libxext6 libavdevice-dev x11-common xorg \
+    libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
+    libgtk-3-dev libsm6 libice6 libxrender1 \
+    libxcb-render0 libxcb-render-util0 libpng-dev libjpeg-dev && \
+    wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz && \
+    tar xvf ffmpeg-release-amd64-static.tar.xz && \
+    mv ffmpeg-*-static/ffmpeg /usr/local/bin/ && \
+    mv ffmpeg-*-static/ffprobe /usr/local/bin/ && \
+    rm -rf ffmpeg-*-static* && \
+    apt-get clean
+
+# 设置工作目录
+WORKDIR /home/bsin-paas-os/middleware/easymedia
+ 
+# 复制jar文件到路径
+COPY ./jar/EasyMedia-1.3.1.jar /home/bsin-paas-os/middleware/easymedia/EasyMedia-1.3.1.jar
+
+# 添加健康检查
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD ffmpeg -version || exit 1
+
+# 配置JavaCV库路径
+ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/lib/x86_64-linux-gnu:/lib/x86_64-linux-gnu:/usr/lib:${LD_LIBRARY_PATH}
+ENV JAVA_TOOL_OPTIONS="-Djava.library.path=/usr/local/lib:/usr/lib/x86_64-linux-gnu:/lib/x86_64-linux-gnu:/usr/lib"
+ENV MALLOC_ARENA_MAX=4
+
+# 禁用avdevice加载-很可能应用并不需要这部分功能
+ENV JAVACPP_SKIP_AVDEVICE=1
+
+# 启动用户服务 
+# -Dserver.port=页面端口 -Dmediaserver.port=媒体端口
+ENTRYPOINT ["java", "-jar", \
+            "-Dserver.port=8865", \
+            "-Dmediaserver.port=8866", \
+            "-Djavacpp.platform=linux-x86_64", \
+            "-Dffmpeg.path=/usr/local/bin/ffmpeg", \
+            "-Dorg.bytedeco.javacpp.maxphysicalbytes=0", \
+            "-Dorg.bytedeco.javacpp.maxbytes=0", \
+            "EasyMedia-1.3.1.jar"]
