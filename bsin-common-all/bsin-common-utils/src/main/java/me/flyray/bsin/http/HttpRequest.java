@@ -145,8 +145,8 @@ public class HttpRequest {
 
   public static void main(String[] args) {
     // 发送 GET 请求
-    /* String s=HttpRequest.sendGet("http://localhost:6144/Home/RequestString", "key=123&v=456");
-    System.out.println(s);*/
+    String s=HttpRequest.sendGet("http://127.0.0.1:8865/list", null);
+    System.out.println(s);
 
     // 发送 POST 请求
     /* String sr=HttpRequest.sendPost("http://www.cheshouye.com/api/weizhang/get_all_config","");
