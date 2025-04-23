@@ -98,6 +98,13 @@
         <dependency>
             <groupId>me.flyray.bsin</groupId>
             <artifactId>crm-facade</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>me.flyray.bsin</groupId>
+            <artifactId>crm-mcp</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -111,6 +118,7 @@
             <artifactId>upms-facade</artifactId>
             <version>${project.version}</version>
         </dependency>
+
 
         <!--单个引入需要的中间件服务-->
         <dependency>

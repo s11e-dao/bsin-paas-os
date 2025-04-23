@@ -11,14 +11,16 @@
 
     <artifactId>crm-mcp</artifactId>
     <version>3.0.0-SNAPSHOT</version>
+    <name>crm-infrastructure</name>
+    <packaging>jar</packaging>
 
-    <name>crm mcp server</name>
     <description>Sample Spring Boot application demonstrating MCP stdio server usage</description>
 
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-mcp-server-spring-boot-starter</artifactId>
+            <artifactId>spring-ai-mcp-server-webmvc-spring-boot-starter</artifactId>
             <version>${spring-ai.version}</version>
         </dependency>
 
