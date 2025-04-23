@@ -19,14 +19,12 @@
         <module>crm-facade</module>
         <module>crm-domain</module>
         <module>crm-infrastructure</module>
+        <module>crm-mcp</module>
         <module>crm-server</module>
     </modules>
 
-
     <properties>
-        <java.version>11</java.version>
-        <scaffold.version>2.0.0-SNAPSHOT</scaffold.version>
-        <bsin.paas.starter>2.0.0-SNAPSHOT</bsin.paas.starter>
+        <java.version>17</java.version>
         <lombok.version>1.18.20</lombok.version>
         <flowable.version>6.7.2.32</flowable.version>
     </properties>
