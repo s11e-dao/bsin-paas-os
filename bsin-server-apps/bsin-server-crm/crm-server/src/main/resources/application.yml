@@ -5,6 +5,8 @@ logging:
     org.springframework: info
     com.github.binarywang.demo.wx.mp: DEBUG
     me.chanjar.weixin: DEBUG
+    io.modelcontextprotocol.client: DEBUG
+    io.modelcontextprotocol.spec: DEBUG
 
 chatGPT:
   templateEnable: false #是否启用模板推送消息
