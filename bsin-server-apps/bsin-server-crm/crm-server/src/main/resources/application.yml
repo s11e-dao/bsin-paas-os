@@ -91,6 +91,7 @@ spring:
         name: ai_mcp_server
         version: 1.0.0
         type: ASYNC
+        sse-endpoint: /sse
         sse-message-endpoint: /mcp/message
 
 redisson:
