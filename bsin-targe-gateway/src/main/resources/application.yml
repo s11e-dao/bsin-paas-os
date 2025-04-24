@@ -301,7 +301,7 @@ shenyu:
   upstreamCheck:
     enabled: false
     poolSize: 10
-    timeout: 3000
+    timeout: 10000
     healthyThreshold: 1
     unhealthyThreshold: 1
     interval: 5000

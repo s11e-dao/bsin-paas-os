@@ -1,8 +1,9 @@
 #日志
 logging:
   level:
-    me.flyray.bsin: INFO
-    org.springframework: info
+    me.flyray.bsin: DEBUG
+    org.springframework: DEBUG
+    org.springframework.io: DEBUG
     com.github.binarywang.demo.wx.mp: DEBUG
     me.chanjar.weixin: DEBUG
     io.modelcontextprotocol.client: DEBUG
@@ -77,11 +78,20 @@ spring:
       port: 6380
       password: ${CRM_REDIS_PASSWORD}
   ai:
+    dashscope:
+      api-key: sk-43bea14d2bea47bb83282a25f42f5525
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      chat:
+        options:
+          stream: true
+          model: qwen-turbo
     mcp:
       server:
-        name: my-weather-server
-        version: 0.0.1
-        type: SYNC
+        enabled: true
+        name: ai_mcp_server
+        version: 1.0.0
+        type: ASYNC
+        sse-message-endpoint: /mcp/message
 
 redisson:
   # redis key前缀
