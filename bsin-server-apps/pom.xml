@@ -23,7 +23,6 @@
         <module>bsin-server-waas</module>
         <module>bsin-server-app-agent</module>
         <module>bsin-server-file</module>
-        <module>bsin-server-search</module>
         <module>bsin-server-brms</module>
         <module>bsin-server-workflow</module>
         <module>bsin-server-workflow-admin</module>
