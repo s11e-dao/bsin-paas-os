@@ -75,7 +75,7 @@ spring:
   data:
     redis:
       host: ${CRM_REDIS_HOST}
-      port: 6380
+      port: ${CRM_REDIS_PORT}
       password: ${CRM_REDIS_PASSWORD}
   ai:
     dashscope:
