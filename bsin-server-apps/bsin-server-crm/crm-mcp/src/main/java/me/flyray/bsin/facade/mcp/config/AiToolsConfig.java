@@ -9,9 +9,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AiToolsConfig {
+
     @Bean
     ToolCallbackProvider tools(OpenMeteoService openMeteoService) {
         ToolCallback[] toolCallbacks = ToolCallbacks.from(openMeteoService) ;
         return ToolCallbackProvider.from(toolCallbacks) ;
     }
+
 }

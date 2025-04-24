@@ -42,7 +42,6 @@ public class OpenMeteoService {
         return "hello";
     }
 
-
     @Tool(description = "获取城市天气预报")
     public String getWeatherForecastByLocation(@ToolParam(description = "城市") String city) {
         return "天气晴朗";
