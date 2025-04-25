@@ -4,12 +4,16 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.flyray.bsin.utils.BsinResultEntity;
 import org.apache.dubbo.common.utils.ReflectUtils;
 import org.apache.shenyu.plugin.api.result.DefaultShenyuEntity;
 import org.apache.shenyu.plugin.api.result.ShenyuResult;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.server.ServerWebExchange;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author HLW
@@ -46,6 +50,15 @@ public class ApiResult implements ShenyuResult<DefaultShenyuEntity> {
             jsonObj.remove(CLASS_NAME_KEY);
             if (PAGE_CLASS.equals(clazz)) {
                 origin =BsinResultEntity.ok(jsonObj.to(Page.class));
+            }else {
+                origin = BsinResultEntity.ok(origin);
+            }
+        } else if (origin instanceof HashMap<?,?>) {
+            String clazz = ((Map<?, ?>) origin).get(CLASS_NAME_KEY).toString();
+            ((HashMap<?, ?>) origin).remove(CLASS_NAME_KEY);
+            ObjectMapper objectMapper = new ObjectMapper();
+            if (PAGE_CLASS.equals(clazz)) {
+                origin =BsinResultEntity.ok(objectMapper.convertValue(origin, Page.class));
             }else {
                 origin = BsinResultEntity.ok(origin);
             }
