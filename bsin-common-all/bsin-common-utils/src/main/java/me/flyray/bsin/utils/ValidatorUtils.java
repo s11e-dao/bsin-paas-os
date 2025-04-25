@@ -2,13 +2,13 @@ package me.flyray.bsin.utils;
 
 
 import cn.hutool.extra.spring.SpringUtil;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
+import jakarta.validation.Validator;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
-import javax.validation.Validator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
