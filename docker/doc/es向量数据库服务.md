@@ -1,6 +1,8 @@
 # elasticsearch向量数据库服务搭建
 [toc]
 
+## docker安装
+
 ### 一、es安装步骤
 
 > 1、创建网络
@@ -293,6 +295,11 @@ POST /vector_index/_search
 }
 
 ```
+
+## compose安装
+
+查看容器日志
+sudo docker logs es01
 
 ## 参考资料
 * https://blog.csdn.net/cmh1008611/article/details/141562198

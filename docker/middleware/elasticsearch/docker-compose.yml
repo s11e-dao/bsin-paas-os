@@ -1,0 +1,83 @@
+version: '3.5'
+
+# 服务配置
+services:
+  elasticsearch:
+    container_name: es01
+    image: elasticsearch:8.15.0
+    restart: unless-stopped
+    environment:
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+      - "TZ=Asia/Shanghai"
+      - "discovery.type=single-node"
+      - "xpack.security.enabled=false"
+      - "http.cors.enabled=true"
+      - "http.cors.allow-origin='*'"
+      - "http.cors.allow-credentials=false"
+      - "http.cors.allow-methods=OPTIONS,HEAD,GET,POST,PUT,DELETE"
+      - "http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
+      - "action.auto_create_index=true"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      # - ./config:/usr/share/elasticsearch/config
+      - es_data:/usr/share/elasticsearch/data
+      - es_plugins:/usr/share/elasticsearch/plugins
+    networks:
+      - elastic_net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  kibana:
+    container_name: kibana01
+    image: kibana:8.15.0
+    restart: unless-stopped
+    environment:
+      - "TZ=Asia/Shanghai"
+      - "I18N_LOCALE=zh-CN"
+      - "ELASTICSEARCH_HOSTS=http://elasticsearch:9200"
+#      - "ELASTICSEARCH_USERNAME=elastic" # 默认用户名是 elastic
+#      - "ELASTICSEARCH_PASSWORD=123456"
+    ports:
+      - "5601:5601"
+        #volumes:
+      #- ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    networks:
+      - elastic_net
+    depends_on:
+      - elasticsearch
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5601" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  elasticsearch-head:
+    container_name: es-head5-02
+    image: mobz/elasticsearch-head:5
+    restart: unless-stopped
+    environment:
+      - "TZ=Asia/Shanghai"
+    #volumes:
+    #       - /opt/modules/elasticsearch/head/Gruntfile.js:/usr/src/app/Gruntfile.js
+    #       - /opt/modules/elasticsearch/head/_site/app.js:/usr/src/app/_site/app.js
+    ports:
+      - "9100:9100"
+    networks:
+      - elastic_net
+    depends_on:
+      - elasticsearch
+
+# 卷配置
+volumes:
+  es_data:
+  es_plugins:
+
+# 网络配置
+networks:
+  elastic_net:
+    driver: bridge

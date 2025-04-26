@@ -607,7 +607,6 @@ services:
         ipv4_address: 172.28.0.45
 
 
-
   bsin-ui-sea-condition:
     container_name: bsin-ui-sea-condition
     image: bsin-ui-sea-condition:2.0.0
