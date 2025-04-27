@@ -58,6 +58,7 @@
         <tomcat.version>10.1.25</tomcat.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <commons-lang3.version>3.13.0</commons-lang3.version>
+        <elasticsearch-java.version>8.15.5</elasticsearch-java.version>
     </properties>
 
     <dependencies>
