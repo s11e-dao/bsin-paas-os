@@ -18,6 +18,8 @@ import me.flyray.bsin.domain.enums.AccountCategory;
 import me.flyray.bsin.domain.enums.CustomerType;
 import me.flyray.bsin.enums.AuthMethod;
 import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.engine.PassCardServiceEngine;
+import me.flyray.bsin.facade.engine.DigitalPointsServiceEngine;
 import me.flyray.bsin.facade.response.CustomerAccountVO;
 import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
 import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
@@ -104,13 +106,13 @@ public class CustomerServiceImpl implements CustomerService {
   private WalletService walletService;
 
   @DubboReference(version = "${dubbo.provider.version}")
-  private DigitalPointsService digitalPointsService;
+  private DigitalPointsServiceEngine digitalPointsService;
 
   @DubboReference(version = "${dubbo.provider.version}")
   private TokenParamService tokenParamService;
 
   @DubboReference(version = "${dubbo.provider.version}")
-  private CustomerPassCardService customerPassCardService;
+  private PassCardServiceEngine customerPassCardService;
 
   /**
    * @param requestMap

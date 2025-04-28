@@ -2,12 +2,11 @@ package me.flyray.bsin.server.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.AccountCategory;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.engine.BrokerageEngine;
+import me.flyray.bsin.facade.engine.BrokerageServiceEngine;
 import me.flyray.bsin.infrastructure.mapper.*;
 import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.utils.BsinSnowflake;
@@ -31,7 +30,7 @@ import java.util.Map;
 @ShenyuDubboService(path = "/brokerageEngine", timeout = 6000)
 @ApiModule(value = "brokerageEngine")
 @Service
-public class BrokerageEngineImpl implements BrokerageEngine {
+public class BrokerageEngineImpl implements BrokerageServiceEngine {
 
     @Value("${bsin.supersTenantId}")
     private String supersTenantId;
