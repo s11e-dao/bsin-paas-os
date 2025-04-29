@@ -22,7 +22,7 @@ import { getMetadataFileList } from './../MetadataList/service';
 import styles from './index.css';
 
 export default ({ setCurrentContent }) => {
-  
+
   const [contractProtocolList, setContractProtocolList] = useState([]);
 
   const [contractProtocolChoosed, setContractProtocolChoosed] = useState({});
@@ -79,7 +79,7 @@ export default ({ setCurrentContent }) => {
           }
         });
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   // const mergedArrow = useMemo(() => {
@@ -98,7 +98,7 @@ export default ({ setCurrentContent }) => {
 
   const protocolCodeChange = (value) => {
     console.log(value);
-    contractProtocolList.map((contractProtocol) => {
+    contractProtocolList?.map((contractProtocol) => {
       if (contractProtocol?.protocolCode == value) {
         setContractProtocolChoosed(contractProtocol);
         FormRef.setFieldValue('contractProtocolNo', contractProtocol.serialNo);
@@ -156,7 +156,7 @@ export default ({ setCurrentContent }) => {
                 }}
               >
                 <Option value="1">请选择资产类型</Option>
-                {contractProtocolList.map((contractProtocol) => {
+                {contractProtocolList?.map((contractProtocol) => {
                   //筛选出ERC721/1155的合约
                   console.log(contractProtocol?.protocolStandards);
                   if (
@@ -257,7 +257,7 @@ export default ({ setCurrentContent }) => {
             >
               <Select style={{ width: '100%' }}>
                 <Option value="1">请选择元数据图片路径</Option>
-                {metadataFilePathList.map((metadataFilePath) => {
+                {metadataFilePathList?.map((metadataFilePath) => {
                   return (
                     <Option value={metadataFilePath?.serialNo}>
                       {metadataFilePath?.fileName}
@@ -332,12 +332,13 @@ export default ({ setCurrentContent }) => {
                 <Option value="wenchang">文昌链</Option>
               </Select>
             </Form.Item>
-            <Form.Item label=" ">
+            <Form.Item label={null}>
               <Button
                 type="primary"
                 onClick={() => {
                   confirmIssue();
                 }}
+                style={{ marginLeft: '16px' }}
               >
                 发行
               </Button>

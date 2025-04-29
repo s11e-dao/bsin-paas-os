@@ -21,7 +21,7 @@
     "@ant-design/compatible": "^5.1.1",
     "@ant-design/pro-layout": "^6.5.0",
     "@ant-design/pro-table": "^2.60.0",
-    "@chatui/core": "^2.4.2",
+    "@chatui/core": "^3.0.0",
     "@umijs/max": "^4.1.0",
     "@umijs/plugins": "^4.1.0",
     "antd": "^5.4.7",

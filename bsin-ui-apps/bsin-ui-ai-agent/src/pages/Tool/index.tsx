@@ -10,11 +10,11 @@ const contentMap = {
     <PageContainer>
       <Descriptions title="我的工具集合" />
       <Tabs defaultActiveKey="1">
-        <Tabs.TabPane tab="微信平台" key="1">
-          <WxPlatform />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="通用工具集" key="3">
+        <Tabs.TabPane tab="通用工具集" key="1">
           <ToolList />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="微信平台" key="3">
+          <WxPlatform />
         </Tabs.TabPane>
       </Tabs>
     </PageContainer>
@@ -35,8 +35,8 @@ export default () => {
 
   const renderContent = () => {
     const content = contentMap[currentContent];
-    return typeof content === 'function' 
-      ? content(wxPlatformMenuTemplateRecord, routerChange) 
+    return typeof content === 'function'
+      ? content(wxPlatformMenuTemplateRecord, routerChange)
       : content;
   };
 

@@ -348,44 +348,42 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
       >
         新增
       </Button>
-      <div>
-        <div
-            style={{
-              backgroundColor: '#f1f1f1',
-              width: '360px',
-              marginBottom: '15px',
-              height: '40px',
-              lineHeight: '40px',
-              borderRadius: '10px',
-              display: 'flex',
-              alignItems: 'center' /* 在交叉轴上居中 */,
-              justifyContent: 'center' /* 在主轴上居中 */,
-            }}
-          >
-            <p
-              onClick={() => handleTabClick(1)}
-              className={activeTab === 1 ? 'navItemA' : 'navItem'}
-            >
-              指令知识库
-            </p>
-            <p
-              onClick={() => handleTabClick(2)}
-              className={activeTab === 2 ? 'navItemA' : 'navItem'}
-            >
-              文档知识库
-            </p>
-            <p
-              onClick={() => handleTabClick(3)}
-              className={activeTab === 3 ? 'navItemA' : 'navItem'}
-            >
-              业务知识库
-            </p>
-          </div>
+      <div
+        style={{
+          backgroundColor: '#f1f1f1',
+          width: '360px',
+          marginBottom: '15px',
+          height: '40px',
+          lineHeight: '40px',
+          borderRadius: '10px',
+          display: 'flex',
+          alignItems: 'center' /* 在交叉轴上居中 */,
+          justifyContent: 'center' /* 在主轴上居中 */,
+        }}
+      >
+        <p
+          onClick={() => handleTabClick(1)}
+          className={activeTab === 1 ? 'navItemA' : 'navItem'}
+        >
+          指令数据集
+        </p>
+        <p
+          onClick={() => handleTabClick(2)}
+          className={activeTab === 2 ? 'navItemA' : 'navItem'}
+        >
+          文档数据集
+        </p>
+        <p
+          onClick={() => handleTabClick(3)}
+          className={activeTab === 3 ? 'navItemA' : 'navItem'}
+        >
+          业务数据集
+        </p>
       </div>
       <Space
         size="middle"
         direction={'vertical'}
-        style={{ display: 'flex', flexWrap: 'wrap' }}
+        style={{ display: 'flex', marginTop: '30px', flexWrap: 'wrap' }}
       >
         <List
           loading={loading}
