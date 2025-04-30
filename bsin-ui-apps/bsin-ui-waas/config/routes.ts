@@ -203,7 +203,7 @@ const routes = [
         path: '/currency-management',
         component: '@/pages/Currency/index',
       },
-      // **************************资产*************************
+      // **************************数字资产*************************
       {
         path: '/assets',
         redirect: '/assets/assets-collection',
@@ -267,6 +267,20 @@ const routes = [
       {
         path: '/assets/contract-list',
         component: '@/pages/Assets/Contract/index',
+      },
+      // **************************数据资产*************************
+      
+      {
+        path: '/data-assets',
+        redirect: '/data-assets/overview',
+      },
+      {
+        path: '/data-assets/overview',
+        component: '@/pages/dataAssets/Overview/index',
+      },
+      {
+        path: '/data-assets/value-config',
+        component: '@/pages/dataAssets/DataValueConfig/index',
       },
       // **************************支付*************************
       {
