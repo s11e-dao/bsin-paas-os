@@ -88,6 +88,7 @@ const Settings: React.FC = () => {
       >
         <div className={styles.leftMenu}>
           <Menu
+            style={{ marginLeft: 5, width: 185 }}
             mode={initConfig.mode}
             selectedKeys={[initConfig.selectKey]}
             onClick={({ key }) => {
