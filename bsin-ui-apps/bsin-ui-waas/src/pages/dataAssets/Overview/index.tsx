@@ -1,287 +1,238 @@
 import React, { useState } from 'react';
-import {
-  Form,
-  Input,
-  Modal,
-  message,
-  Button,
-  Select,
-  Popconfirm,
-  Divider,
-  Descriptions,
-} from 'antd';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import { PlusOutlined } from '@ant-design/icons';
-import columnsData, { columnsDataType } from './data';
-import {
-  getChainCoinPageList,
-  addChainCoin,
-  deleteChainCoin,
-  getChainCoinDetail,
-} from './service';
-import TableTitle from '../../../components/TableTitle';
-import { hex_md5 } from '../../../utils/md5';
+import { Layout, Card, Typography, Button, Space, Tag, Divider, Avatar, Tooltip } from 'antd';
+import { CopyOutlined, StarOutlined, MenuOutlined, ArrowUpOutlined } from '@ant-design/icons';
+import { Link, history } from 'umi';
+import { ProCard, StatisticCard } from '@ant-design/pro-components';
+const { Statistic } = StatisticCard;
+import RcResizeObserver from 'rc-resize-observer';
 
-export default () => {
+const imgStyle = {
+  display: 'block',
+  width: 42,
+  height: 42,
+};
 
-  const { TextArea } = Input;
-  const { Option } = Select;
-  // 控制新增模态框
-  const [isTemplateModal, setIsTemplateModal] = useState(false);
-  // 查看模态框
-  const [isViewTemplateModal, setIsViewTemplateModal] = useState(false);
-  // 查看
-  const [isViewRecord, setIsViewRecord] = useState({});
-  // 获取表单
-  const [FormRef] = Form.useForm();
+const { Text } = Typography;
 
-  /**
-   * 以下内容为表格相关
-   */
-
-  // 表头数据
-  const columns: ProColumns<columnsDataType>[] = columnsData;
-
-  // 操作行数据 自定义操作行
-  const actionRender: any = (text: any, record: any, index: number) => (
-    <div key={record.dictType}>
-        <a onClick={() => toViewContractTemplate(record)}>查看</a>
-        <Divider type="vertical" />
-        <Popconfirm
-          title="是否删除此条数据?"
-          onConfirm={() => toDelContractTemplate(record.id)}
-          onCancel={() => {
-            message.warning(`取消删除`);
-          }}
-          okText="是"
-          cancelText="否"
-        >
-          <a>删除</a>
-        </Popconfirm>
-      </div>
-  );
-
-  // 自定义数据的表格头部数据
-  columns.forEach((item: any) => {
-    item.dataIndex === 'action' ? (item.render = actionRender) : undefined;
-  });
-
-  // Table action 的引用，便于自定义触发
-  const actionRef = React.useRef<ActionType>();
-
-  // 新增模板
-  const increaseTemplate = () => {
-    setIsTemplateModal(true);
+// 使用示例
+const currentDateAndWeekday = () => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    weekday: 'long' as const
   };
+  const currentDate = new Date().toLocaleDateString('zh-CN', options);
+  return currentDate;
+}
 
-  /**
-   * 确认添加模板
-   */
-  const confirmTemplate = () => {
-    // 获取输入的表单值
-    FormRef.validateFields()
-      .then(async () => {
-        // 获取表单结果
-        let response = FormRef.getFieldsValue();
-        console.log(response);
-        let reqParam = {
-          ...response,
-          password: hex_md5(response.password),
-        };
-        addChainCoin(reqParam).then((res) => {
-          console.log('add', res);
-          if (res.code === 0) {
-            message.success('添加成功');
-            // 重置输入的表单
-            FormRef.resetFields();
-            setIsTemplateModal(false);
-            actionRef.current?.reload();
-          } else {
-            message.error(`失败： ${res?.message}`);
-          }
-        });
-      })
-      .catch(() => {});
-  };
+export default function SaaSDashboard() {
 
-  /**
-   * 取消添加模板
-   */
-  const onCancelTemplate = () => {
-    // 重置输入的表单
-    FormRef.resetFields();
-    setIsTemplateModal(false);
-  };
-
-  /**
-   * 删除模板
-   */
-  const toDelContractTemplate = async (record) => {
-    console.log('record', record);
-    let { customerNo } = record;
-    let delRes = await deleteChainCoin({ customerNo });
-    console.log('delRes', delRes);
-    if (delRes.code === 0) {
-      // 删除成功刷新表单
-      actionRef.current?.reload();
-    }
-  };
-
-  /**
-   * 查看详情
-   */
-  const toViewContractTemplate = async (record) => {
-    console.log(record);
-    let { serialNo } = record;
-    let viewRes = await getChainCoinDetail({ serialNo });
-    setIsViewTemplateModal(true);
-    console.log('viewRes', viewRes);
-    setIsViewRecord(viewRes.data);
-  };
-
-  /**
-   * 详情，模板类型对应
-   */
-  const handleViewRecordOfType = () => {
-    let { type } = isViewRecord;
-    // 客户类型 0、个人客户 1、租户商家客户 2、租户(dao)客户 3、顶级平台商家客户
-    let typeText = type;
-    if (typeText == '4') {
-      return '超级节点';
-    } else if (typeText == '2') {
-      return '普通节点';
-    } else {
-      return typeText;
-    }
-  };
+  const [responsive, setResponsive] = useState(false);
 
   return (
-    <div>
-      {/* Pro表格 */}
-      <ProTable<columnsDataType>
-        headerTitle={<TableTitle title="币种列表" />}
-        scroll={{ x: 900 }}
-        bordered
-        // 表头
-        columns={columns}
-        actionRef={actionRef}
-        // 请求获取的数据
-        request={async (params) => {
-          // console.log(params);
-          let res = await getChainCoinPageList({
-            ...params,
-            // 租户客户类型
-            type: '3',
-          });
-          console.log('😒', res);
-          const result = {
-            data: res.data,
-            total: res.pagination.totalSize,
-          };
-          return result;
+    <Card>
+      <header>
+        <h1 style={{ marginBottom: "0" }}>RWA资产总览</h1>
+        <p style={{ color: "#6b7280" }} className="text-gray-500 mb-4">实时监控链上真实世界资产的表现与趋势</p>
+      </header>
+
+      <div style={{}}>
+        {/* Header Section */}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Avatar style={{ backgroundColor: '#1890ff', marginRight: '8px' }}>C</Avatar>
+            <Text strong style={{ fontSize: '16px', marginRight: '8px' }}>合约地址</Text>
+            <Text type="secondary" style={{ marginRight: '4px' }}>0x3fC9F717222b385e2F7CB3827751916160D5ea68f</Text>
+            <Button type="text" icon={<CopyOutlined />} size="small" />
+          </div>
+          <div style={{ marginLeft: 'auto' }}>
+            <Space>
+              <Button type="primary">购买</Button>
+              <Button onClick={() => history.push('/assets/assets-collection')}>发行</Button>
+              <Button>溯源</Button>
+            </Space>
+          </div>
+        </div>
+
+
+        {/* Content Cards */}
+        <div style={{ display: 'flex', gap: '16px' }}>
+          {/* Overview Card */}
+          <Card title="rwa资产" style={{ flex: 1 }}>
+            <div>
+              <Text type="secondary" style={{ fontSize: '12px', display: 'block' }}>余额</Text>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Avatar size="small" style={{ backgroundColor: '#faad14', marginRight: '8px' }}>R</Avatar>
+                <Text>0 RWA</Text>
+              </div>
+            </div>
+            <Divider style={{ margin: '12px 0' }} />
+            <div>
+              <Text type="secondary" style={{ fontSize: '12px', display: 'block' }}>价值</Text>
+              <Text>$0.00</Text>
+            </div>
+          </Card>
+
+          {/* More Info Card */}
+          <Card title="资产详情" style={{ flex: 1 }}>
+            <div>
+              <Text type="secondary" style={{ fontSize: '12px', display: 'block' }}>PRIVATE NAME TAGS</Text>
+              <Button type="dashed" size="small" style={{ marginTop: '8px' }}>+ Add</Button>
+            </div>
+            <Divider style={{ margin: '12px 0' }} />
+            <div>
+              <Text type="secondary" style={{ fontSize: '12px', display: 'block' }}>发行方</Text>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Text style={{ color: '#1890ff' }}>0x42238292...04EfBd982</Text>
+                <Button type="text" size="small" icon={<CopyOutlined />} />
+                <Text style={{ marginLeft: '8px' }}>680 days ago</Text>
+                <ArrowUpOutlined style={{ marginLeft: '4px' }} />
+              </div>
+            </div>
+          </Card>
+
+          {/* Multichain Info Card */}
+          <Card title="多链信息" style={{ flex: 1 }}>
+            <div style={{ marginBottom: '16px' }}>
+              <Tag style={{ display: 'flex', alignItems: 'center' }}>
+                💼 $0 (Multichain Portfolio)
+              </Tag>
+            </div>
+            <Text type="secondary">No addresses found</Text>
+          </Card>
+        </div>
+      </div>
+
+      <RcResizeObserver
+        key="resize-observer"
+        onResize={(offset) => {
+          setResponsive(offset.width < 596);
         }}
-        rowKey="serialNo"
-        // 搜索框配置
-        search={{
-          labelWidth: 'auto',
-        }}
-        // 搜索表单的配置
-        form={{
-          ignoreRules: false,
-        }}
-        pagination={{
-          pageSize: 10,
-        }}
-        toolBarRender={() => [
-          <Button
-            onClick={() => {
-              increaseTemplate();
-            }}
-            key="button"
-            icon={<PlusOutlined />}
-            type="primary"
-          >
-            添加
-          </Button>,
-        ]}
-      />
-      {/* 新增合约模板模态框 */}
-      <Modal
-        title="添加代理商"
-        centered
-        open={isTemplateModal}
-        onOk={confirmTemplate}
-        onCancel={onCancelTemplate}
       >
-        <Form
-          name="basic"
-          form={FormRef}
-          labelCol={{ span: 7 }}
-          wrapperCol={{ span: 14 }}
-          // 表单默认值
-          initialValues={{ productCode: '0' }}
+
+        <ProCard split="vertical"
+          style={{ margin: "20px 0px" }}
+          bordered
         >
-          <Form.Item
-            label="代理商名称"
-            name="agentName"
-            rules={[{ required: true, message: '请输入代理商名称!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="登录名称"
-            name="username"
-            rules={[{ required: true, message: '请输入登录名称!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="登录密码"
-            name="password"
-            rules={[{ required: true, message: '请输入登录密码!' }]}
-          >
-            <Input.Password placeholder="请输入登录密码" />
-          </Form.Item>
-          <Form.Item
-            label="节点描述"
-            name="description"
-          >
-            <TextArea />
-          </Form.Item>
-        </Form>
-      </Modal>
-      {/* 查看详情模态框 */}
-      <Modal
-        title="详情"
-        width={800}
-        centered
-        open={isViewTemplateModal}
-        onOk={() => setIsViewTemplateModal(false)}
-        onCancel={() => setIsViewTemplateModal(false)}
-      >
-        {/* 详情信息 */}
-        <Descriptions title="节点信息">
-          <Descriptions.Item label="节点号">
-            {isViewRecord?.tenantId}
-          </Descriptions.Item>
-          <Descriptions.Item label="节点名称">
-            {isViewRecord?.PlatformName}
-          </Descriptions.Item>
-          <Descriptions.Item label="节点类型">
-            {handleViewRecordOfType()}
-          </Descriptions.Item>
-          <Descriptions.Item label="节点描述">
-            {isViewRecord?.description}
-          </Descriptions.Item>
-          <Descriptions.Item label="创建者">
-            {isViewRecord?.createBy}
-          </Descriptions.Item>
-          <Descriptions.Item label="创建时间">
-            {isViewRecord?.createTime}
-          </Descriptions.Item>
-        </Descriptions>
-      </Modal>
-    </div>
+          <StatisticCard.Group direction={responsive ? 'column' : 'row'}>
+            <StatisticCard
+              statistic={{
+                title: '可信身份',
+                value: 2176,
+                icon: (
+                  <img
+                    style={imgStyle}
+                    src="https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*dr_0RKvVzVwAAAAAAAAAAABkARQnAQ"
+                    alt="icon"
+                  />
+                ),
+              }}
+            />
+            <StatisticCard
+              statistic={{
+                title: '消费数据',
+                value: 475,
+                icon: (
+                  <img
+                    style={imgStyle}
+                    src="https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*-jVKQJgA1UgAAAAAAAAAAABkARQnAQ"
+                    alt="icon"
+                  />
+                ),
+              }}
+            />
+            <StatisticCard
+              statistic={{
+                title: '产品数据',
+                value: 87,
+                icon: (
+                  <img
+                    style={imgStyle}
+                    src="https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*FPlYQoTNlBEAAAAAAAAAAABkARQnAQ"
+                    alt="icon"
+                  />
+                ),
+              }}
+            />
+            <StatisticCard
+              statistic={{
+                title: '物流数据',
+                value: 1754,
+                icon: (
+                  <img
+                    style={imgStyle}
+                    src="https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*pUkAQpefcx8AAAAAAAAAAABkARQnAQ"
+                    alt="icon"
+                  />
+                ),
+              }}
+            />
+          </StatisticCard.Group>
+        </ProCard>
+
+        <ProCard
+          title="数据概览"
+          extra={currentDateAndWeekday()}
+          split={responsive ? 'horizontal' : 'vertical'}
+          headerBordered
+          bordered
+        >
+
+
+          <ProCard split="horizontal">
+            <ProCard split="vertical">
+              <StatisticCard
+                statistic={{
+                  title: '昨日全部流量',
+                  value: 234,
+                  description: (
+                    <Statistic
+                      title="较本月平均流量"
+                      value="8.04%"
+                      trend="down"
+                    />
+                  ),
+                }}
+              />
+              <StatisticCard
+                statistic={{
+                  title: '本月累计流量',
+                  value: 234,
+                  description: (
+                    <Statistic title="月同比" value="8.04%" trend="up" />
+                  ),
+                }}
+              />
+            </ProCard>
+            <ProCard split="vertical">
+              <StatisticCard
+                statistic={{
+                  title: '运行中实验',
+                  value: '12/56',
+                  suffix: '个',
+                }}
+              />
+              <StatisticCard
+                statistic={{
+                  title: '历史实验总数',
+                  value: '134',
+                  suffix: '个',
+                }}
+              />
+            </ProCard>
+          </ProCard>
+          <StatisticCard
+            title="资产价值趋势"
+            chart={
+              <img
+                src="https://gw.alipayobjects.com/zos/alicdn/_dZIob2NB/zhuzhuangtu.svg"
+                width="100%"
+              />
+            }
+          />
+        </ProCard>
+      </RcResizeObserver>
+    </Card>
   );
-};
+}
