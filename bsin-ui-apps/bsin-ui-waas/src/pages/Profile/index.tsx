@@ -5,8 +5,8 @@ import ConfigCondition from '../conditionAndEquity/ConditionList/configCondition
 import ConfigEquity from '../conditionAndEquity/EquityList/configEquity';
 
 export default () => {
+  
   const [currentContent, setCurrentContent] = useState('profile');
-  const [assetsCollectionRecord, setAssetsCollectionRecord] = useState(null);
   const [record, setRecord] = useState(null);
   
   const configAssetsItem = (record, value) => {
@@ -14,34 +14,34 @@ export default () => {
     setCurrentContent(value);
   };
 
-  const Conent = () => {
-    let conentComp = (
-      <Profile
-        setCurrentContent={setCurrentContent}
-        configAssetsItem={configAssetsItem}
-      />
-    );
-    if (currentContent == 'createProfile') {
-      conentComp = <CreateProfile setCurrentContent={setCurrentContent} />;
-    } else if (currentContent == 'configCondition') {
-      conentComp = (
-        <ConfigCondition
-          setCurrentContent={setCurrentContent}
-          record={record}
-        />
-      );
-    } else if (currentContent == 'configEquity') {
-      conentComp = (
-        <ConfigEquity setCurrentContent={setCurrentContent} record={record} />
-      );
+  const renderContent = () => {
+    switch (currentContent) {
+      case 'createProfile':
+        return <CreateProfile setCurrentContent={setCurrentContent} />;
+      case 'configCondition':
+        return (
+          <ConfigCondition
+            setCurrentContent={setCurrentContent}
+            record={record}
+          />
+        );
+      case 'configEquity':
+        return (
+          <ConfigEquity setCurrentContent={setCurrentContent} record={record} />
+        );
+      default:
+        return (
+          <Profile
+            setCurrentContent={setCurrentContent}
+            configAssetsItem={configAssetsItem}
+          />
+        );
     }
-
-    return <>{conentComp}</>;
   };
 
   return (
     <div>
-      <Conent />
+      {renderContent()}
     </div>
   );
 };

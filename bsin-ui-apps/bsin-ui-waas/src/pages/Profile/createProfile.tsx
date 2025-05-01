@@ -177,7 +177,7 @@ export default ({ setCurrentContent }) => {
             >
               <Select style={{ width: '100%' }}>
                 <Option value="0">请选择Profile external URI</Option>
-                {metadataFilePathList.map((metadataFilePath) => {
+                {metadataFilePathList?.map((metadataFilePath) => {
                   return (
                     <Option value={metadataFilePath?.serialNo}>
                       {metadataFilePath?.fileName}

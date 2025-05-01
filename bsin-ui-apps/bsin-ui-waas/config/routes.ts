@@ -206,7 +206,12 @@ const routes = [
       // **************************数字资产*************************
       {
         path: '/assets',
-        redirect: '/assets/assets-collection',
+        redirect: '/assets/di-overview',
+      },
+      // 资产总览
+      {
+        path: '/assets/di-overview',
+        component: '@/pages/Assets/Overview/index',
       },
       // 资产集合
       {

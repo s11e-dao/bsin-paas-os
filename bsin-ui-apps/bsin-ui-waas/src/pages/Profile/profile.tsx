@@ -39,6 +39,7 @@ import {
 import TableTitle from '../../components/TableTitle';
 
 export default ({ setCurrentContent, configAssetsItem }) => {
+
   let biganH5 = process.env.biganH5Url;
   const { TextArea } = Input;
   const { Option } = Select;
@@ -193,7 +194,7 @@ export default ({ setCurrentContent, configAssetsItem }) => {
   };
   return (
     <div>
-      <Row gutter={16}>
+      <Row gutter={16} style={{ marginBottom: '16px' }}>
         <Col span={6}>
           <Card bordered={false}>
             <Statistic
@@ -231,160 +232,161 @@ export default ({ setCurrentContent, configAssetsItem }) => {
             </Button>
           </Card>
         </Col>
-        <Card bordered={false} style={{ width: '100%' }}>
-          <Tabs defaultActiveKey="1">
-            <Tabs.TabPane tab="创建记录" key="1">
-              {/* Pro表格 */}
-              <ProTable<columnsProfileDataType>
-                headerTitle={<TableTitle title="创建记录" />}
-                scroll={{ x: 900 }}
-                bordered
-                // 表头
-                columns={columnsProfile}
-                actionRef={profileActionRef}
-                // 请求获取的数据
-                request={async (params) => {
-                  params.collectionType = '3';
-                  let res = await getCustomerProfilePageList({
-                    ...params,
-                    pageNum: params.current,
-                  });
-                  console.log('😒', res);
-                  const result = {
-                    data: res.data,
-                    total: res.pagination.totalSize,
-                  };
-                  return result;
-                }}
-                rowKey="serialNo"
-                // 搜索框配置
-                search={{
-                  labelWidth: 'auto',
-                }}
-                // 搜索表单的配置
-                form={{
-                  ignoreRules: false,
-                }}
-                pagination={{
-                  pageSize: 10,
-                }}
-              />{' '}
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="profile流通记录" key="2">
-              {/* 交易记录表格 */}
-              <ProTable<columnsTransferDataType>
-                headerTitle={<TableTitle title="profile流通记录" />}
-                scroll={{ x: 900 }}
-                bordered
-                // 表头
-                columns={columnsTransfer}
-                actionRef={transferActionRef}
-                // 请求获取的数据
-                request={async (params) => {
-                  let res = await getCustomerProfileTransferPageList({
-                    ...params,
-                    pageNum: params.current,
-                  });
-                  console.log('😒', res);
-                  const result = {
-                    data: res.data,
-                    total: res.pagination.totalSize,
-                  };
-                  return result;
-                }}
-                rowKey="serialNo"
-                // 搜索框配置
-                search={{
-                  labelWidth: 'auto',
-                }}
-                // 搜索表单的配置
-                form={{
-                  ignoreRules: false,
-                }}
-                pagination={{
-                  pageSize: 10,
-                }}
-              />
-            </Tabs.TabPane>
-
-            <Tabs.TabPane tab="Follow记录" key="3">
-              <ProTable<columnsFollowDataType>
-                headerTitle={<TableTitle title="profile Follow记录" />}
-                scroll={{ x: 900 }}
-                bordered
-                // 表头
-                columns={columnsFollow}
-                actionRef={followActionRef}
-                // 请求获取的数据
-                request={async (params) => {
-                  let res = await getCustomerProfileFollowPageList({
-                    ...params,
-                    pageNum: params.current,
-                  });
-                  console.log('😒', res);
-                  const result = {
-                    data: res.data,
-                    total: res.pagination.totalSize,
-                  };
-                  return result;
-                }}
-                rowKey="serialNo"
-                // 搜索框配置
-                search={{
-                  labelWidth: 'auto',
-                }}
-                // 搜索表单的配置
-                form={{
-                  ignoreRules: false,
-                }}
-                pagination={{
-                  pageSize: 10,
-                }}
-              />
-            </Tabs.TabPane>
-
-            <Tabs.TabPane tab="memeber" key="4">
-              {/* Pro表格 */}
-              <ProTable<columnsMemberDataType>
-                headerTitle={<TableTitle title="memeber列表" />}
-                scroll={{ x: 900 }}
-                bordered
-                // 表头
-                columns={columnsMember}
-                actionRef={memberActionRef}
-                // 请求获取的数据
-                request={async (params) => {
-                  // console.log(params);
-                  // 品牌商户发行资产类型 1、数字徽章 2、PFP 3、数字积分 4、数字门票 5、pass卡 6、徽章/门票
-                  params.assetsTypes = ['3'];
-                  let res = await getCustomerProfileMemberPageList({
-                    ...params,
-                    pageNum: params.current,
-                  });
-                  console.log('😒', res);
-                  const result = {
-                    data: res.data,
-                    total: res.pagination.totalSize,
-                  };
-                  return result;
-                }}
-                rowKey="serialNo"
-                // 搜索框配置
-                search={{
-                  labelWidth: 'auto',
-                }}
-                // 搜索表单的配置
-                form={{
-                  ignoreRules: false,
-                }}
-                pagination={{
-                  pageSize: 10,
-                }}
-              />{' '}
-            </Tabs.TabPane>
-          </Tabs>
-        </Card>
       </Row>
+      <Card bordered={false} style={{ width: '100%' }}>
+        <Tabs defaultActiveKey="1">
+          <Tabs.TabPane tab="创建记录" key="1">
+            {/* Pro表格 */}
+            <ProTable<columnsProfileDataType>
+              headerTitle={<TableTitle title="创建记录" />}
+              scroll={{ x: 900 }}
+              bordered
+              // 表头
+              columns={columnsProfile}
+              actionRef={profileActionRef}
+              // 请求获取的数据
+              request={async (params) => {
+                params.collectionType = '3';
+                let res = await getCustomerProfilePageList({
+                  ...params,
+                  pageNum: params.current,
+                });
+                console.log('😒', res);
+                const result = {
+                  data: res.data,
+                  total: res.pagination.totalSize,
+                };
+                return result;
+              }}
+              rowKey="serialNo"
+              // 搜索框配置
+              search={{
+                labelWidth: 'auto',
+              }}
+              // 搜索表单的配置
+              form={{
+                ignoreRules: false,
+              }}
+              pagination={{
+                pageSize: 10,
+              }}
+            />{' '}
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="profile流通记录" key="2">
+            {/* 交易记录表格 */}
+            <ProTable<columnsTransferDataType>
+              headerTitle={<TableTitle title="profile流通记录" />}
+              scroll={{ x: 900 }}
+              bordered
+              // 表头
+              columns={columnsTransfer}
+              actionRef={transferActionRef}
+              // 请求获取的数据
+              request={async (params) => {
+                let res = await getCustomerProfileTransferPageList({
+                  ...params,
+                  pageNum: params.current,
+                });
+                console.log('😒', res);
+                const result = {
+                  data: res.data,
+                  total: res.pagination.totalSize,
+                };
+                return result;
+              }}
+              rowKey="serialNo"
+              // 搜索框配置
+              search={{
+                labelWidth: 'auto',
+              }}
+              // 搜索表单的配置
+              form={{
+                ignoreRules: false,
+              }}
+              pagination={{
+                pageSize: 10,
+              }}
+            />
+          </Tabs.TabPane>
+
+          <Tabs.TabPane tab="Follow记录" key="3">
+            <ProTable<columnsFollowDataType>
+              headerTitle={<TableTitle title="profile Follow记录" />}
+              scroll={{ x: 900 }}
+              bordered
+              // 表头
+              columns={columnsFollow}
+              actionRef={followActionRef}
+              // 请求获取的数据
+              request={async (params) => {
+                let res = await getCustomerProfileFollowPageList({
+                  ...params,
+                  pageNum: params.current,
+                });
+                console.log('😒', res);
+                const result = {
+                  data: res.data,
+                  total: res.pagination.totalSize,
+                };
+                return result;
+              }}
+              rowKey="serialNo"
+              // 搜索框配置
+              search={{
+                labelWidth: 'auto',
+              }}
+              // 搜索表单的配置
+              form={{
+                ignoreRules: false,
+              }}
+              pagination={{
+                pageSize: 10,
+              }}
+            />
+          </Tabs.TabPane>
+
+          <Tabs.TabPane tab="memeber" key="4">
+            {/* Pro表格 */}
+            <ProTable<columnsMemberDataType>
+              headerTitle={<TableTitle title="memeber列表" />}
+              scroll={{ x: 900 }}
+              bordered
+              // 表头
+              columns={columnsMember}
+              actionRef={memberActionRef}
+              // 请求获取的数据
+              request={async (params) => {
+                // console.log(params);
+                // 品牌商户发行资产类型 1、数字徽章 2、PFP 3、数字积分 4、数字门票 5、pass卡 6、徽章/门票
+                params.assetsTypes = ['3'];
+                let res = await getCustomerProfileMemberPageList({
+                  ...params,
+                  pageNum: params.current,
+                });
+                console.log('😒', res);
+                const result = {
+                  data: res.data,
+                  total: res.pagination.totalSize,
+                };
+                return result;
+              }}
+              rowKey="serialNo"
+              // 搜索框配置
+              search={{
+                labelWidth: 'auto',
+              }}
+              // 搜索表单的配置
+              form={{
+                ignoreRules: false,
+              }}
+              pagination={{
+                pageSize: 10,
+              }}
+            />{' '}
+          </Tabs.TabPane>
+        </Tabs>
+      </Card>
+
       {/* 查看Member详情模态框 */}
       <Modal
         title="查看Member"

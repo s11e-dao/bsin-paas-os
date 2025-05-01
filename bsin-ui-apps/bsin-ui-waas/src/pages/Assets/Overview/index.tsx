@@ -33,76 +33,9 @@ export default function SaaSDashboard() {
   return (
     <Card>
       <header>
-        <h1 style={{ marginBottom: "0" }}>RWA数据资产总览</h1>
+        <h1 style={{ marginBottom: "0" }}>RWA数字资产总览</h1>
         <p style={{ color: "#6b7280" }} className="text-gray-500 mb-4">实时监控链上真实世界资产的表现与趋势</p>
       </header>
-
-      <div style={{}}>
-        {/* Header Section */}
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Avatar style={{ backgroundColor: '#1890ff', marginRight: '8px' }}>C</Avatar>
-            <Text strong style={{ fontSize: '16px', marginRight: '8px' }}>合约地址</Text>
-            <Text type="secondary" style={{ marginRight: '4px' }}>0x3fC9F717222b385e2F7CB3827751916160D5ea68f</Text>
-            <Button type="text" icon={<CopyOutlined />} size="small" />
-          </div>
-          <div style={{ marginLeft: 'auto' }}>
-            <Space>
-              <Button type="primary">购买</Button>
-              <Button onClick={() => history.push('/assets/assets-collection')}>发行</Button>
-              <Button>溯源</Button>
-            </Space>
-          </div>
-        </div>
-
-
-        {/* Content Cards */}
-        <div style={{ display: 'flex', gap: '16px' }}>
-          {/* Overview Card */}
-          <Card title="rwa资产" style={{ flex: 1 }}>
-            <div>
-              <Text type="secondary" style={{ fontSize: '12px', display: 'block' }}>余额</Text>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Avatar size="small" style={{ backgroundColor: '#faad14', marginRight: '8px' }}>R</Avatar>
-                <Text>0 RWA</Text>
-              </div>
-            </div>
-            <Divider style={{ margin: '12px 0' }} />
-            <div>
-              <Text type="secondary" style={{ fontSize: '12px', display: 'block' }}>价值</Text>
-              <Text>$0.00</Text>
-            </div>
-          </Card>
-
-          {/* More Info Card */}
-          <Card title="资产详情" style={{ flex: 1 }}>
-            <div>
-              <Text type="secondary" style={{ fontSize: '12px', display: 'block' }}>PRIVATE NAME TAGS</Text>
-              <Button type="dashed" size="small" style={{ marginTop: '8px' }}>+ Add</Button>
-            </div>
-            <Divider style={{ margin: '12px 0' }} />
-            <div>
-              <Text type="secondary" style={{ fontSize: '12px', display: 'block' }}>发行方</Text>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Text style={{ color: '#1890ff' }}>0x42238292...04EfBd982</Text>
-                <Button type="text" size="small" icon={<CopyOutlined />} />
-                <Text style={{ marginLeft: '8px' }}>680 days ago</Text>
-                <ArrowUpOutlined style={{ marginLeft: '4px' }} />
-              </div>
-            </div>
-          </Card>
-
-          {/* Multichain Info Card */}
-          <Card title="多链信息" style={{ flex: 1 }}>
-            <div style={{ marginBottom: '16px' }}>
-              <Tag style={{ display: 'flex', alignItems: 'center' }}>
-                💼 $0 (Multichain Portfolio)
-              </Tag>
-            </div>
-            <Text type="secondary">No addresses found</Text>
-          </Card>
-        </div>
-      </div>
 
       <RcResizeObserver
         key="resize-observer"
@@ -118,7 +51,7 @@ export default function SaaSDashboard() {
           <StatisticCard.Group direction={responsive ? 'column' : 'row'}>
             <StatisticCard
               statistic={{
-                title: '可信身份',
+                title: '会员卡数',
                 value: 2176,
                 icon: (
                   <img
@@ -131,7 +64,7 @@ export default function SaaSDashboard() {
             />
             <StatisticCard
               statistic={{
-                title: '消费数据',
+                title: 'IP集合数',
                 value: 475,
                 icon: (
                   <img
@@ -144,7 +77,7 @@ export default function SaaSDashboard() {
             />
             <StatisticCard
               statistic={{
-                title: '产品数据',
+                title: '徽章总数',
                 value: 87,
                 icon: (
                   <img
@@ -157,7 +90,7 @@ export default function SaaSDashboard() {
             />
             <StatisticCard
               statistic={{
-                title: '物流数据',
+                title: '数字分身',
                 value: 1754,
                 icon: (
                   <img
