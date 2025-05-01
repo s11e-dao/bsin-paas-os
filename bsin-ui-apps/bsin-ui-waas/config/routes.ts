@@ -278,6 +278,12 @@ const routes = [
         path: '/data-assets/overview',
         component: '@/pages/dataAssets/Overview/index',
       },
+      // 数据分类
+      {
+        path: '/data-assets/data-category',
+        component: '@/pages/dataAssets/DataCategory/index',
+      },
+      // 数据价值配置
       {
         path: '/data-assets/value-config',
         component: '@/pages/dataAssets/DataValueConfig/index',
