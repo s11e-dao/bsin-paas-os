@@ -72,10 +72,8 @@ import './index.less'
 import { getAppListByUserId } from '@/services/getAppByUserId'
 import { getUserMenuTreeByAppCode } from '@/services/appMenu'
 
-import customMenuDate from './customMenu'
 import BsinChat from './bsinChat'
 
-let serviceData: any[] = customMenuDate
 
 export type AppMenu = {
   title: string
@@ -85,13 +83,20 @@ export type AppMenu = {
   children?: AppMenu[]
 }[]
 
+// Add this interface to define the app structure
+interface UserApp {
+  name: string;
+  path: string;
+  url: string;
+  icon: React.ReactNode;
+  logo: string;
+  description: string;
+}
+
 export default () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [defaultCopilot, setDefaultCopilot] = useState({})
   const [customerInfo, setCustomerInfo] = useState({})
-
-  // let defaultCopilot = {}
 
   const [isLogin, setIsLogin] = useState(false)
 
@@ -162,27 +167,6 @@ export default () => {
     }
   }, [location.pathname.split('/')[1]])
 
-  let chatData = {
-    chats: {
-      ZGxiX2p4: {
-        content: '历史聊天记录 user',
-        createAt: 1697862242452,
-        id: 'ZGxiX2p4',
-        role: 'user',
-        updateAt: 1697862243540,
-      },
-      Sb5pAzLL: {
-        content: '历史聊天记录 assistant',
-        createAt: 1697862247302,
-        id: 'Sb5pAzLL',
-        parentId: 'ZGxiX2p4',
-        role: 'assistant',
-        updateAt: 1697862249387,
-        model: 'gpt-3.5-turbo',
-      },
-    },
-  }
-
   useEffect(() => {
     // 根据settings?.layout重新渲染菜单数据
     setLayoutMode(settings?.layout)
@@ -216,7 +200,7 @@ export default () => {
     setActiveTab(tabNumber)
   }
 
-  const [userApps, setUserApps] = useState([])
+  const [userApps, setUserApps] = useState<UserApp[]>([])
 
   const [appMenus, setAppMenus] = useState({})
 
@@ -235,7 +219,7 @@ export default () => {
   // const [layoutMenudata, setLayoutMenudata] = useState([]);
   const getAppLogo = (appLogo: any) => {
     let appLogoImg = logoImg;
-    if(appLogo){
+    if (appLogo) {
       appLogoImg = appLogo
     }
     return <Avatar shape="square" src={appLogoImg} />
@@ -305,10 +289,11 @@ export default () => {
           return {
             name: item.appName,
             path: item.appCode,
+            url: item.url,
             icon: getAppLogo(item.logo),
             logo: item.logo,
             description: item.remark,
-          }
+          } as UserApp;  // Add type assertion here
         })
         setUserApps(apps)
         let appMenus = []
@@ -319,10 +304,10 @@ export default () => {
         setDefaultApp(appRes.data?.defaultApp)
         // 根据默认应用查询应用菜单及默认选中home导航
         let menuRes
-        if(appCode){
+        if (appCode) {
           menuRes = await getUserMenuTreeByAppCode({ appCode: appCode })
         }
-        
+
         console.log(menuRes)
         if (menuRes?.code === 0) {
           // 跳转默认子应用
@@ -372,6 +357,32 @@ export default () => {
     history.push('/login')
   }
 
+  // Refactor the checkMicroAppAvailability function to be more robust
+  const checkMicroAppAvailability = async (appCode: string) => {
+    if (!appCode || appCode === 'home') return true;
+
+    // Find the app in userApps to get its URL
+    const app = userApps.find(app => app.path === appCode);
+    if (!app?.url) return true; // If app not found or has no URL, assume it's available
+
+    try {
+      // Add timeout to the fetch request to prevent long waiting times
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+      const response = await fetch(app.url, {
+        method: 'HEAD', // Use HEAD request for faster checking
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+      return response.ok;
+    } catch (error) {
+      console.error(`Failed to connect to micro-app ${appCode}:`, error);
+      return false;
+    }
+  };
+
   return (
     <div
       id="bsin-pro-layout"
@@ -380,7 +391,6 @@ export default () => {
         overflow: 'auto',
       }}
     >
-      {/* <ProConfigProvider hashed={false} dark={true}> */}
       <ProConfigProvider hashed={false}>
         <ConfigProvider
           getTargetContainer={() => {
@@ -515,7 +525,7 @@ export default () => {
                         },
                         {
                           key: 'logout',
-                          icon: <LogoutOutlined onClick={logout}/>,
+                          icon: <LogoutOutlined onClick={logout} />,
                           label: (
                             <span onClick={logout}>
                               退出登录
@@ -570,7 +580,7 @@ export default () => {
               return (
                 <>
                   {defaultDom}
-                  <AppCenter userApps={userApps} getAppMenu= {getAppMenu} />
+                  <AppCenter userApps={userApps} getAppMenu={getAppMenu} />
                 </>
               )
             }}
@@ -592,17 +602,38 @@ export default () => {
             onMenuHeaderClick={handleMenuHeaderClick}
             // 左侧应用点击事件
             menuItemRender={(item, dom) => {
-              // console.log(item)
               return (
                 <div
                   onClick={() => {
-                    // 初始化子应用开始状态
+                    // Check if we're recovering from an error
+                    const isRecovering = window.localStorage.getItem('bsin-microAppErrorRecovery') === '1';
+                    if (isRecovering) {
+                      // Clear the recovery flag
+                      window.localStorage.removeItem('bsin-microAppErrorRecovery');
+
+                      // Force reload the page to clear any lingering state
+                      if (item.path !== '/home') {
+                        window.location.href = item.path;
+                        return;
+                      }
+                    }
+
+                    // Normal flow - initialize micro-app status
                     window.localStorage.setItem('bsin-microAppMountStatus', '1');
-                    // 查询应用菜单
-                    getUserApplicationMenu(item?.path?.split('/')[1] || '')
-                    // 点击应用默认跳转到首页
-                    history.push(item.path)
-                    setPathname(item.path || '/home')
+
+                    // Check if the app is available before navigating
+                    const appCode = item?.path?.split('/')[1] || '';
+                    checkMicroAppAvailability(appCode).then(isAvailable => {
+                      if (isAvailable) {
+                        // Query application menu
+                        getUserApplicationMenu(appCode);
+                        // Navigate to the app
+                        history.push(item.path);
+                        setPathname(item.path || '/home');
+                      } else {
+                        message.warning('该应用当前不可用，请稍后再试');
+                      }
+                    });
                   }}
                 >
                   {dom}
