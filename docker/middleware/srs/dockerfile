@@ -1,0 +1,22 @@
+FROM ossrs/srs:5.0
+
+# 添加健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:1985/api/status || exit 1
+
+# 安装必要工具
+RUN apt-get update && apt-get install -y \
+    curl \
+    vim \
+    net-tools \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 创建必要目录
+RUN mkdir -p /usr/local/srs/objs/nginx/html/live
+
+# 设置工作目录
+WORKDIR /usr/local/srs
+
+# 设置容器启动命令
+ENTRYPOINT ["./objs/srs", "-c", "conf/rtsp2hls.conf"]

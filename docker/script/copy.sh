@@ -112,7 +112,7 @@ cp -rvf  ../bsin-ui-apps/bsin-ui-upms/dist/* ./bsin-paas-os/ui-apps/upms/dist/
 cp -rvf  ../bsin-ui-apps/bsin-ui-waas/dist/* ./bsin-paas-os/ui-apps/waas/dist/
 
 ## jiujiu-paas，业务闭源
-cp -rvf  ../../jiujiu-paas-yue17/jiujiu-paas-ui/bsin-ui-bigan/dist/* ./bsin-paas-os/ui-apps/bigan/dist/
+#cp -rvf  ../../jiujiu-paas-yue17/jiujiu-paas-ui/bsin-ui-bigan/dist/* ./bsin-paas-os/ui-apps/bigan/dist/
 
 echo "8. end copy frontend dist"
 

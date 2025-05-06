@@ -25,7 +25,7 @@ copy(){
 }
 # 启动基础环境（必须）
 middleware(){
-	docker-compose up -d bsin-mysql bsin-redis bsin-nacos-standalone bsin-nginx bsin-emqx #bsin-rabbitmq bsin-milvus
+	docker-compose up -d bsin-mysql bsin-redis bsin-nacos-standalone bsin-nginx bsin-easymedia #bsin-emqx #bsin-rabbitmq bsin-milvus
 }
 
 # 启动网关模块（必须）
@@ -80,6 +80,10 @@ workflow_admin(){
 # 启动iot模块
 iot(){
 	docker-compose up -d bsin-server-iot
+}
+# 启动easymedia模块
+easymedia(){
+	docker-compose up -d bsin-easymedia
 }
 # 启动ui-apps模块
 ui_apps(){
