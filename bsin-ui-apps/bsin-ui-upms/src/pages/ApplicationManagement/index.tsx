@@ -59,7 +59,7 @@ const ListContent = ({
   data: BasicListItemDataType;
 }) => {
   return (
-    <div style={{ width: "580px" }}>
+    <div style={{ width: "650px" }}>
       <div className={styles.listContentItem}>
         <span>应用ID</span>
         <p>{appId}</p>

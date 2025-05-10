@@ -26,7 +26,6 @@ export default {
         {
           name: 'bsin-ui-upms', // 唯一 id
           entry: process.env.BSIN_UPMS_BASE_URL || 'http://127.0.0.1:8001', // html entry
-        //  entry: 'http://copilotupms.s11edao.com',
         },
       ],
       routes: [
@@ -38,7 +37,7 @@ export default {
     },
     slave: {},
   },
-  base: '/bsin-ui-asset-management',
+  base: '/bsin-ui-data-warehouse',
   routes,
   // 路由模式
   hash: true,
