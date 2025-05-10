@@ -1,5 +1,7 @@
 # bsin-paas-os docker 启动说明
 
+## 安装命令行工具
+oh-my-zsh
 
 ## 准备环境
 1. 安装docker
@@ -12,6 +14,20 @@ Docker version 23.0.6, build ef23cbc
 # centos
 
 # [Alibaba Cloud Linux 3.2104 LTS 64](https://www.cnblogs.com/del-x/p/18418824)
+
+
+问题说明：
+1、 Package 'docker' has no installation candidate 需要更新软件源: 阿里云镜像源
+
+依次再执行以下命令：
+#阿里云镜像源
+curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+ 
+#官方网站
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+sudo apt update
+
 ~~~
 2. 安装docker-compose
 ~~~bash
@@ -40,8 +56,21 @@ docker-compose stop
 # 停止并删除正在运行的容器
 docker-compose down
 
+问题说明：
+网络访问配置
+配置host可以访问github
+
 ~~~
 
+## 上传编译号的部署文件到指定目录
+1、新进服务器目录
+```json
+mkdir bsin-paas-os
+```
+
+```json
+sh upload.sh root@47.105.xx.xxx
+```
 
 ## bsin-paas-os docker 镜像构建
 ~~~bash
