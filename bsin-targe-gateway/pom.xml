@@ -637,7 +637,7 @@
         </profile>
     </profiles>
     <build>
-        <finalName>shenyu-bootstrap</finalName>
+        <finalName>bsin-targe-gateway</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

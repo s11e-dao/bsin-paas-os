@@ -397,7 +397,7 @@
     </profiles>
 
     <build>
-        <finalName>shenyu-admin</finalName>
+        <finalName>bsin-targe-gateway-admin</finalName>
         <plugins>
 
             <plugin>
