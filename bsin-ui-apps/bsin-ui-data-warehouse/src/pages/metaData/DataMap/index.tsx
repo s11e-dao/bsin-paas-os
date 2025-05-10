@@ -1,280 +1,187 @@
 import React, { useState } from 'react';
-import {
-  Form,
-  Input,
-  Modal,
-  message,
-  Button,
-  Select,
-  Popconfirm,
-  Divider,
-  Descriptions,
-} from 'antd';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import { PlusOutlined } from '@ant-design/icons';
-import columnsData, { columnsDataType } from './data';
-import {
-  getChainCoinPageList,
-  addChainCoin,
-  deleteChainCoin,
-  getChainCoinDetail,
-} from './service';
-import TableTitle from '../../../components/TableTitle';
-import { hex_md5 } from '../../../utils/md5';
+import { Input, Card, Tabs, Row, Col, Badge, List, Space, Typography, Layout } from 'antd';
+import { 
+  SearchOutlined, 
+  AppstoreOutlined, 
+  CompassOutlined, 
+  DatabaseOutlined, 
+  HeartOutlined, 
+  SyncOutlined,
+  PictureOutlined
+} from '@ant-design/icons';
+import { PageContainer } from '@ant-design/pro-components';
 
-export default () => {
+const { Search } = Input;
+const { TabPane } = Tabs;
+const { Text, Title } = Typography;
+const { Content } = Layout;
 
-  const { TextArea } = Input;
-  const { Option } = Select;
-  // 控制新增模态框
-  const [isTemplateModal, setIsTemplateModal] = useState(false);
-  // 查看模态框
-  const [isViewTemplateModal, setIsViewTemplateModal] = useState(false);
-  // 查看
-  const [isViewRecord, setIsViewRecord] = useState({});
-  // 获取表单
-  const [FormRef] = Form.useForm();
+const DataAssetPage = () => {
+  const [activeTab, setActiveTab] = useState('history');
 
-  /**
-   * 以下内容为表格相关
-   */
+  // Mock data for datasets
+  const datasets = [
+    { id: 1, title: '人口库_基础库_个人房屋', code: 'ods.ods_rkk_jck_grfw', type: 'history' },
+    { id: 2, title: '人口库_基础库_人口基础信息', code: 'ods.ods_rkk_jck_rkjcxx', type: 'history' },
+    { id: 3, title: 't_policy_info', code: 't_policy_info', type: 'history' },
+    { id: 4, title: '【ads】单位账户综合信息', code: 'ads.ads_corp_accinfo_zh', type: 'history' },
+    { id: 5, title: '【DWD】贷款账总余额', code: 'dwd.dwd_loan_txbalance', type: 'history' },
+    { id: 6, title: '【dws】贷款计划', code: 'dws.dws_loan_plan', type: 'history' },
+    { id: 7, title: '【ads】贷款计划', code: 'ads.ads_loan_plan', type: 'history' },
+    { id: 8, title: '人口库_基础库_户籍人口', code: 'ods.ods_rkk_jck_hjrk', type: 'history' },
+    { id: 9, title: '人口库_基础库_学生信息', code: 'history' },
+    { id: 10, title: 'ods-人口信息', code: 'ods.ods_zsj_sbss_population', type: 'history' },
+    { id: 11, title: '【ads】个人缴存明细', code: 'ads.ads_per_jcdetail', type: 'hot' },
+    { id: 12, title: '【ads】财务会计账簿', code: 'ads.ads_fin_core_acct', type: 'hot' },
+    { id: 13, title: '【dws】单位账户综合信息', code: 'dws.dws_corp_accinfo_zh', type: 'hot' },
+    { id: 14, title: '【dws】个人缴存明细', code: 'dws.dws_per_jcdetail', type: 'hot' },
+    { id: 15, title: '【ods】财务会计账簿', code: 'ods.t_fin_core_acct', type: 'hot' },
+  ];
 
-  // 表头数据
-  const columns: ProColumns<columnsDataType>[] = columnsData;
-
-  // 操作行数据 自定义操作行
-  const actionRender: any = (text: any, record: any, index: number) => (
-    <div key={record.dictType}>
-        <a onClick={() => toViewContractTemplate(record)}>查看</a>
-        <Divider type="vertical" />
-        <Popconfirm
-          title="是否删除此条数据?"
-          onConfirm={() => toDelContractTemplate(record.id)}
-          onCancel={() => {
-            message.warning(`取消删除`);
-          }}
-          okText="是"
-          cancelText="否"
-        >
-          <a>删除</a>
-        </Popconfirm>
-      </div>
-  );
-
-  // 自定义数据的表格头部数据
-  columns.forEach((item: any) => {
-    item.dataIndex === 'action' ? (item.render = actionRender) : undefined;
-  });
-
-  // Table action 的引用，便于自定义触发
-  const actionRef = React.useRef<ActionType>();
-
-  // 新增模板
-  const increaseTemplate = () => {
-    setIsTemplateModal(true);
+  // Filter datasets based on active tab
+  const getDatasetsByType = (type) => {
+    return datasets.filter(dataset => dataset.type === type);
   };
 
-  /**
-   * 确认添加模板
-   */
-  const confirmTemplate = () => {
-    // 获取输入的表单值
-    FormRef.validateFields()
-      .then(async () => {
-        // 获取表单结果
-        let response = FormRef.getFieldsValue();
-        console.log(response);
-        let reqParam = {
-          ...response,
-          password: hex_md5(response.password),
-        };
-        addChainCoin(reqParam).then((res) => {
-          console.log('add', res);
-          if (res.code === 0) {
-            message.success('添加成功');
-            // 重置输入的表单
-            FormRef.resetFields();
-            setIsTemplateModal(false);
-            actionRef.current?.reload();
-          } else {
-            message.error(`失败： ${res?.message}`);
-          }
-        });
-      })
-      .catch(() => {});
-  };
-
-  /**
-   * 取消添加模板
-   */
-  const onCancelTemplate = () => {
-    // 重置输入的表单
-    FormRef.resetFields();
-    setIsTemplateModal(false);
-  };
-
-  /**
-   * 删除模板
-   */
-  const toDelContractTemplate = async (record) => {
-    console.log('record', record);
-    let { customerNo } = record;
-    let delRes = await deleteChainCoin({ customerNo });
-    console.log('delRes', delRes);
-    if (delRes.code === 0) {
-      // 删除成功刷新表单
-      actionRef.current?.reload();
-    }
-  };
-
-  /**
-   * 查看详情
-   */
-  const toViewContractTemplate = async (record) => {
-    console.log(record);
-    let { serialNo } = record;
-    let viewRes = await getChainCoinDetail({ serialNo });
-    setIsViewTemplateModal(true);
-    console.log('viewRes', viewRes);
-    setIsViewRecord(viewRes.data);
-  };
-
-  /**
-   * 详情，模板类型对应
-   */
-  const handleViewRecordOfType = () => {
-    let { type } = isViewRecord;
-    // 客户类型 0、个人客户 1、租户商家客户 2、租户(dao)客户 3、顶级平台商家客户
-    let typeText = type;
-    if (typeText == '4') {
-      return '超级节点';
-    } else if (typeText == '2') {
-      return '普通节点';
-    } else {
-      return typeText;
-    }
-  };
+  // Category cards data
+  const categories = [
+    { title: '接入层', count: 30, icon: <CompassOutlined />, color: '#36cfc9' },
+    { title: '数据体系', count: 235, icon: <DatabaseOutlined />, color: '#f759ab' },
+    { title: '服务应用', count: 60, icon: <HeartOutlined />, color: '#52c41a' },
+    { title: '共享层', count: 1, icon: <SyncOutlined />, color: '#1890ff' },
+  ];
 
   return (
-    <div>
-      {/* Pro表格 */}
-      <ProTable<columnsDataType>
-        headerTitle={<TableTitle title="数据地图" />}
-        scroll={{ x: 900 }}
-        bordered
-        // 表头
-        columns={columns}
-        actionRef={actionRef}
-        // 请求获取的数据
-        request={async (params) => {
-          // console.log(params);
-          let res = await getChainCoinPageList({
-            ...params,
-            // 租户客户类型
-            type: '3',
-          });
-          console.log('😒', res);
-          const result = {
-            data: res.data,
-            total: res.pagination.totalSize,
-          };
-          return result;
-        }}
-        rowKey="serialNo"
-        // 搜索框配置
-        search={{
-          labelWidth: 'auto',
-        }}
-        // 搜索表单的配置
-        form={{
-          ignoreRules: false,
-        }}
-        pagination={{
-          pageSize: 10,
-        }}
-        toolBarRender={() => [
-          <Button
-            onClick={() => {
-              increaseTemplate();
-            }}
-            key="button"
-            icon={<PlusOutlined />}
-            type="primary"
-          >
-            添加
-          </Button>,
-        ]}
-      />
-      {/* 新增合约模板模态框 */}
-      <Modal
-        title="添加数据要素分类"
-        centered
-        open={isTemplateModal}
-        onOk={confirmTemplate}
-        onCancel={onCancelTemplate}
-      >
-        <Form
-          name="basic"
-          form={FormRef}
-          labelCol={{ span: 7 }}
-          wrapperCol={{ span: 14 }}
-          // 表单默认值
-          initialValues={{ productCode: '0' }}
-        >
-          <Form.Item
-            label="分类名称"
-            name="agentName"
-            rules={[{ required: true, message: '请输入分类名称!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="分类编号"
-            name="username"
-            rules={[{ required: true, message: '请输入分类编号!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="描述"
-            name="description"
-          >
-            <TextArea />
-          </Form.Item>
-        </Form>
-      </Modal>
-      {/* 查看详情模态框 */}
-      <Modal
-        title="详情"
-        width={800}
-        centered
-        open={isViewTemplateModal}
-        onOk={() => setIsViewTemplateModal(false)}
-        onCancel={() => setIsViewTemplateModal(false)}
-      >
-        {/* 详情信息 */}
-        <Descriptions title="节点信息">
-          <Descriptions.Item label="节点号">
-            {isViewRecord?.tenantId}
-          </Descriptions.Item>
-          <Descriptions.Item label="节点名称">
-            {isViewRecord?.PlatformName}
-          </Descriptions.Item>
-          <Descriptions.Item label="节点类型">
-            {handleViewRecordOfType()}
-          </Descriptions.Item>
-          <Descriptions.Item label="节点描述">
-            {isViewRecord?.description}
-          </Descriptions.Item>
-          <Descriptions.Item label="创建者">
-            {isViewRecord?.createBy}
-          </Descriptions.Item>
-          <Descriptions.Item label="创建时间">
-            {isViewRecord?.createTime}
-          </Descriptions.Item>
-        </Descriptions>
-      </Modal>
-    </div>
+    <PageContainer title={false} header={{ breadcrumb: {} }}>
+      <Layout style={{ background: '#fff' }}>
+        <Content style={{ padding: '0 24px' }}>
+          {/* Search Bar */}
+          <div style={{ textAlign: 'center', marginBottom: 24 }}>
+            <Search
+              placeholder="请输入您想查的资产名称"
+              enterButton={<SearchOutlined />}
+              size="large"
+              style={{ maxWidth: 600, width: '100%' }}
+            />
+          </div>
+
+          {/* Category Cards */}
+          <Row gutter={16} style={{ marginBottom: 24 }}>
+            {categories.map((category, index) => (
+              <Col key={index} xs={24} sm={12} md={6} lg={4.8}>
+                <Card 
+                  hoverable 
+                  bodyStyle={{ 
+                    padding: '16px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between',
+                    border: `1px solid ${category.color}20`,
+                    borderRadius: '4px',
+                    background: `${category.color}10`
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ 
+                      backgroundColor: category.color, 
+                      color: 'white', 
+                      borderRadius: '4px', 
+                      width: 32, 
+                      height: 32, 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      marginRight: 12
+                    }}>
+                      {category.icon}
+                    </div>
+                    <Text style={{ color: category.color, fontWeight: 'bold' }}>{category.title}</Text>
+                  </div>
+                  <Badge count={category.count} style={{ backgroundColor: category.color }} />
+                </Card>
+              </Col>
+            ))}
+          </Row>
+
+          {/* Tabs and List */}
+          <Card>
+            <Tabs activeKey={activeTab} onChange={setActiveTab}>
+              <TabPane tab="历史足迹" key="history" />
+              <TabPane tab="我的收藏" key="favorite" />
+            </Tabs>
+            
+            <div style={{ display: 'flex' }}>
+              <div style={{ flex: 3 }}>
+                <List
+                  grid={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 2, xxl: 2 }}
+                  dataSource={getDatasetsByType(activeTab)}
+                  renderItem={item => (
+                    <List.Item>
+                      <Card 
+                        hoverable
+                        size="small"
+                        style={{ marginBottom: 16 }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <div style={{ 
+                            backgroundColor: '#1890ff', 
+                            borderRadius: '4px', 
+                            width: 40, 
+                            height: 40, 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center',
+                            marginRight: 12
+                          }}>
+                            <PictureOutlined style={{ color: 'white', fontSize: 20 }} />
+                          </div>
+                          <div>
+                            <div>{item.title}</div>
+                            <Text type="secondary" style={{ fontSize: 12 }}>{item.code}</Text>
+                          </div>
+                        </div>
+                      </Card>
+                    </List.Item>
+                  )}
+                />
+              </div>
+              
+              <div style={{ flex: 1, marginLeft: 24 }}>
+                <Card title="热门" style={{ marginBottom: 16 }}>
+                  <List
+                    size="small"
+                    dataSource={getDatasetsByType('hot')}
+                    renderItem={item => (
+                      <List.Item>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <div style={{ 
+                            backgroundColor: '#1890ff', 
+                            borderRadius: '4px', 
+                            width: 32, 
+                            height: 32, 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center',
+                            marginRight: 12
+                          }}>
+                            <PictureOutlined style={{ color: 'white', fontSize: 16 }} />
+                          </div>
+                          <div>
+                            <div style={{ fontSize: 13 }}>{item.title}</div>
+                            <Text type="secondary" style={{ fontSize: 11 }}>{item.code}</Text>
+                          </div>
+                        </div>
+                      </List.Item>
+                    )}
+                  />
+                </Card>
+              </div>
+            </div>
+          </Card>
+        </Content>
+      </Layout>
+    </PageContainer>
   );
 };
+
+export default DataAssetPage;

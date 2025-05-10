@@ -1,280 +1,242 @@
-import React, { useState } from 'react';
-import {
-  Form,
-  Input,
-  Modal,
-  message,
-  Button,
-  Select,
-  Popconfirm,
-  Divider,
-  Descriptions,
-} from 'antd';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import { PlusOutlined } from '@ant-design/icons';
-import columnsData, { columnsDataType } from './data';
-import {
-  getChainCoinPageList,
-  addChainCoin,
-  deleteChainCoin,
-  getChainCoinDetail,
-} from './service';
-import TableTitle from '../../../components/TableTitle';
-import { hex_md5 } from '../../../utils/md5';
+import React, { useState, useEffect } from 'react';
+import { Card, Row, Col, Statistic, Tabs, Space, Typography, Select } from 'antd';
+import { PageContainer } from '@ant-design/pro-components';
+import { Column } from '@antv/g2plot';
+import { PieChartOutlined, FileTextOutlined, ClockCircleOutlined } from '@ant-design/icons';
 
-export default () => {
+const { Title } = Typography;
+const { TabPane } = Tabs;
+const { Option } = Select;
 
-  const { TextArea } = Input;
-  const { Option } = Select;
-  // 控制新增模态框
-  const [isTemplateModal, setIsTemplateModal] = useState(false);
-  // 查看模态框
-  const [isViewTemplateModal, setIsViewTemplateModal] = useState(false);
-  // 查看
-  const [isViewRecord, setIsViewRecord] = useState({});
-  // 获取表单
-  const [FormRef] = Form.useForm();
+const QualityInspectionPage = () => {
+  // Mock data for the chart
+  const [chartData, setChartData] = useState<Array<{date: string; type: string; value: number}>>([]);
+  
+  useEffect(() => {
+    // Simulating the data for the chart
+    const data = [
+      {
+        date: '5月1日',
+        type: '问题总数',
+        value: 20000,
+      },
+      {
+        date: '5月1日',
+        type: '问题率',
+        value: 0,
+      },
+      {
+        date: '5月1日',
+        type: '待处理问题数',
+        value: 0,
+      },
+      {
+        date: '5月1日',
+        type: '已解决问题数',
+        value: 0,
+      },
+      {
+        date: '5月2日',
+        type: '问题总数',
+        value: 20000,
+      },
+      {
+        date: '5月2日',
+        type: '问题率',
+        value: 0,
+      },
+      {
+        date: '5月2日',
+        type: '待处理问题数',
+        value: 0,
+      },
+      {
+        date: '5月2日',
+        type: '已解决问题数',
+        value: 0,
+      },
+      {
+        date: '5月3日',
+        type: '问题总数',
+        value: 20000,
+      },
+      {
+        date: '5月3日',
+        type: '问题率',
+        value: 0,
+      },
+      {
+        date: '5月3日',
+        type: '待处理问题数',
+        value: 0,
+      },
+      {
+        date: '5月3日',
+        type: '已解决问题数',
+        value: 0,
+      },
+      {
+        date: '5月4日',
+        type: '问题总数',
+        value: 20000,
+      },
+      {
+        date: '5月4日',
+        type: '问题率',
+        value: 0,
+      },
+      {
+        date: '5月4日',
+        type: '待处理问题数',
+        value: 0,
+      },
+      {
+        date: '5月4日',
+        type: '已解决问题数',
+        value: 0,
+      },
+      {
+        date: '5月5日',
+        type: '问题总数',
+        value: 20000,
+      },
+      {
+        date: '5月5日',
+        type: '问题率',
+        value: 0,
+      },
+      {
+        date: '5月5日',
+        type: '待处理问题数',
+        value: 0,
+      },
+      {
+        date: '5月5日',
+        type: '已解决问题数',
+        value: 0,
+      },
+    ];
+    setChartData(data);
+  }, []);
 
-  /**
-   * 以下内容为表格相关
-   */
+  // Initialize the chart after the component mounts and when data changes
+  useEffect(() => {
+    if (chartData.length > 0) {
+      const columnPlot = new Column('chart-container', {
+        data: chartData,
+        isGroup: true,
+        xField: 'date',
+        yField: 'value',
+        seriesField: 'type',
+        color: ['#1890ff', '#ffa940', '#f5222d', '#52c41a'],
+        legend: {
+          position: 'top-right',
+        },
+        xAxis: {
+          label: {
+            autoRotate: true,
+          },
+        },
+        yAxis: {
+          label: {
+            formatter: (v) => `${v}`,
+          },
+          title: {
+            text: '单位（个）',
+          },
+        },
+        animation: {
+          appear: {
+            animation: 'fade-in',
+          },
+        },
+        tooltip: {
+          shared: true,
+        },
+      });
 
-  // 表头数据
-  const columns: ProColumns<columnsDataType>[] = columnsData;
+      columnPlot.render();
 
-  // 操作行数据 自定义操作行
-  const actionRender: any = (text: any, record: any, index: number) => (
-    <div key={record.dictType}>
-        <a onClick={() => toViewContractTemplate(record)}>查看</a>
-        <Divider type="vertical" />
-        <Popconfirm
-          title="是否删除此条数据?"
-          onConfirm={() => toDelContractTemplate(record.id)}
-          onCancel={() => {
-            message.warning(`取消删除`);
-          }}
-          okText="是"
-          cancelText="否"
-        >
-          <a>删除</a>
-        </Popconfirm>
-      </div>
-  );
-
-  // 自定义数据的表格头部数据
-  columns.forEach((item: any) => {
-    item.dataIndex === 'action' ? (item.render = actionRender) : undefined;
-  });
-
-  // Table action 的引用，便于自定义触发
-  const actionRef = React.useRef<ActionType>();
-
-  // 新增模板
-  const increaseTemplate = () => {
-    setIsTemplateModal(true);
-  };
-
-  /**
-   * 确认添加模板
-   */
-  const confirmTemplate = () => {
-    // 获取输入的表单值
-    FormRef.validateFields()
-      .then(async () => {
-        // 获取表单结果
-        let response = FormRef.getFieldsValue();
-        console.log(response);
-        let reqParam = {
-          ...response,
-          password: hex_md5(response.password),
-        };
-        addChainCoin(reqParam).then((res) => {
-          console.log('add', res);
-          if (res.code === 0) {
-            message.success('添加成功');
-            // 重置输入的表单
-            FormRef.resetFields();
-            setIsTemplateModal(false);
-            actionRef.current?.reload();
-          } else {
-            message.error(`失败： ${res?.message}`);
-          }
-        });
-      })
-      .catch(() => {});
-  };
-
-  /**
-   * 取消添加模板
-   */
-  const onCancelTemplate = () => {
-    // 重置输入的表单
-    FormRef.resetFields();
-    setIsTemplateModal(false);
-  };
-
-  /**
-   * 删除模板
-   */
-  const toDelContractTemplate = async (record) => {
-    console.log('record', record);
-    let { customerNo } = record;
-    let delRes = await deleteChainCoin({ customerNo });
-    console.log('delRes', delRes);
-    if (delRes.code === 0) {
-      // 删除成功刷新表单
-      actionRef.current?.reload();
+      return () => {
+        columnPlot.destroy();
+      };
     }
-  };
+  }, [chartData]);
 
-  /**
-   * 查看详情
-   */
-  const toViewContractTemplate = async (record) => {
-    console.log(record);
-    let { serialNo } = record;
-    let viewRes = await getChainCoinDetail({ serialNo });
-    setIsViewTemplateModal(true);
-    console.log('viewRes', viewRes);
-    setIsViewRecord(viewRes.data);
-  };
-
-  /**
-   * 详情，模板类型对应
-   */
-  const handleViewRecordOfType = () => {
-    let { type } = isViewRecord;
-    // 客户类型 0、个人客户 1、租户商家客户 2、租户(dao)客户 3、顶级平台商家客户
-    let typeText = type;
-    if (typeText == '4') {
-      return '超级节点';
-    } else if (typeText == '2') {
-      return '普通节点';
-    } else {
-      return typeText;
-    }
-  };
+  const statisticsCards = [
+    {
+      title: '质量规则总数',
+      value: 20,
+      icon: <PieChartOutlined style={{ fontSize: '48px', color: '#1890ff' }} />,
+      color: '#e6f7ff',
+    },
+    {
+      title: '质量作业总数',
+      value: 50,
+      icon: <PieChartOutlined style={{ fontSize: '48px', color: '#1890ff' }} />,
+      color: '#e6f7ff',
+    },
+    {
+      title: '已处理问题数',
+      value: 8,
+      icon: <FileTextOutlined style={{ fontSize: '48px', color: '#52c41a' }} />,
+      color: '#f6ffed',
+    },
+    {
+      title: '当日新增已处理问题数',
+      value: 0,
+      icon: <FileTextOutlined style={{ fontSize: '48px', color: '#52c41a' }} />,
+      color: '#f6ffed',
+    },
+    {
+      title: '待处理问题数',
+      value: 8,
+      icon: <ClockCircleOutlined style={{ fontSize: '48px', color: '#fa8c16' }} />,
+      color: '#fff7e6',
+    },
+    {
+      title: '当日新增待处理问题数',
+      value: 1,
+      icon: <ClockCircleOutlined style={{ fontSize: '48px', color: '#fa8c16' }} />,
+      color: '#fff7e6',
+    },
+  ];
 
   return (
-    <div>
-      {/* Pro表格 */}
-      <ProTable<columnsDataType>
-        headerTitle={<TableTitle title="数据质量" />}
-        scroll={{ x: 900 }}
-        bordered
-        // 表头
-        columns={columns}
-        actionRef={actionRef}
-        // 请求获取的数据
-        request={async (params) => {
-          // console.log(params);
-          let res = await getChainCoinPageList({
-            ...params,
-            // 租户客户类型
-            type: '3',
-          });
-          console.log('😒', res);
-          const result = {
-            data: res.data,
-            total: res.pagination.totalSize,
-          };
-          return result;
-        }}
-        rowKey="serialNo"
-        // 搜索框配置
-        search={{
-          labelWidth: 'auto',
-        }}
-        // 搜索表单的配置
-        form={{
-          ignoreRules: false,
-        }}
-        pagination={{
-          pageSize: 10,
-        }}
-        toolBarRender={() => [
-          <Button
-            onClick={() => {
-              increaseTemplate();
-            }}
-            key="button"
-            icon={<PlusOutlined />}
-            type="primary"
-          >
-            添加
-          </Button>,
-        ]}
-      />
-      {/* 新增合约模板模态框 */}
-      <Modal
-        title="添加数据要素分类"
-        centered
-        open={isTemplateModal}
-        onOk={confirmTemplate}
-        onCancel={onCancelTemplate}
+    <PageContainer
+    >
+      <Card title="质量检查总览" bordered={false}>
+        <Row gutter={[16, 16]}>
+          {statisticsCards.map((item, index) => (
+            <Col xs={24} sm={12} md={8} key={index}>
+              <Card bordered={false} style={{ background: item.color, height: '100%' }}>
+                <Row align="middle" gutter={16}>
+                  <Col>{item.icon}</Col>
+                  <Col>
+                    <Statistic title={item.title} value={item.value} />
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </Card>
+
+      <Card 
+        title="近7天数据质量趋势" 
+        style={{ marginTop: 16 }}
+        extra={
+          <Select defaultValue="全部" style={{ width: 120 }}>
+            <Option value="全部">全部</Option>
+            <Option value="已处理">已处理</Option>
+            <Option value="待处理">待处理</Option>
+          </Select>
+        }
       >
-        <Form
-          name="basic"
-          form={FormRef}
-          labelCol={{ span: 7 }}
-          wrapperCol={{ span: 14 }}
-          // 表单默认值
-          initialValues={{ productCode: '0' }}
-        >
-          <Form.Item
-            label="分类名称"
-            name="agentName"
-            rules={[{ required: true, message: '请输入分类名称!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="分类编号"
-            name="username"
-            rules={[{ required: true, message: '请输入分类编号!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="描述"
-            name="description"
-          >
-            <TextArea />
-          </Form.Item>
-        </Form>
-      </Modal>
-      {/* 查看详情模态框 */}
-      <Modal
-        title="详情"
-        width={800}
-        centered
-        open={isViewTemplateModal}
-        onOk={() => setIsViewTemplateModal(false)}
-        onCancel={() => setIsViewTemplateModal(false)}
-      >
-        {/* 详情信息 */}
-        <Descriptions title="节点信息">
-          <Descriptions.Item label="节点号">
-            {isViewRecord?.tenantId}
-          </Descriptions.Item>
-          <Descriptions.Item label="节点名称">
-            {isViewRecord?.PlatformName}
-          </Descriptions.Item>
-          <Descriptions.Item label="节点类型">
-            {handleViewRecordOfType()}
-          </Descriptions.Item>
-          <Descriptions.Item label="节点描述">
-            {isViewRecord?.description}
-          </Descriptions.Item>
-          <Descriptions.Item label="创建者">
-            {isViewRecord?.createBy}
-          </Descriptions.Item>
-          <Descriptions.Item label="创建时间">
-            {isViewRecord?.createTime}
-          </Descriptions.Item>
-        </Descriptions>
-      </Modal>
-    </div>
+        <div id="chart-container" style={{ height: 400 }}></div>
+      </Card>
+    </PageContainer>
   );
 };
+
+export default QualityInspectionPage;
