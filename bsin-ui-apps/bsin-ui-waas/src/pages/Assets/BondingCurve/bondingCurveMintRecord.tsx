@@ -67,7 +67,7 @@ export default () => {
         excRate: Number(item.price),
       };
     });
-    let data = { ...res.data, excRateChangeList };
+    let data = { ...res.data, excRateChangeList: excRateChangeList || [] };
     setAllData(data);
   };
 
@@ -179,6 +179,7 @@ export default () => {
     <div>
       <LindeChart data={allData ? allData.excRateChangeList : []} />
       <Button
+        style={{ marginTop: '20px' }}
         onClick={() => {
           refreshCurve();
         }}
@@ -188,7 +189,7 @@ export default () => {
       >
         刷新曲线
       </Button>
-      ,{/* Pro表格 */}
+      {/* Pro表格 */}
       <div style={{ marginTop: '20px' }}>
         <ProTable<columnsDataType>
           headerTitle={<TableTitle title="铸造列表" />}

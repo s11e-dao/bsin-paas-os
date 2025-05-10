@@ -334,6 +334,21 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
   // 切换Tab的事件处理函数
   const handleTabClick = (tabNumber: any) => {
     setActiveTab(tabNumber);
+    
+    // 查询知识库列表数据
+    setLoading(true);
+    let params = {
+      current: '1',
+      pageSize: '99',
+      type: tabNumber.toString(), // 根据选中的tab类型查询
+    }
+    getKnowledgeBasePageList(params).then((res) => {
+      if (res?.code == '000000') {
+        setKnowledgeBaseList(res?.data)
+        addKnowledgeBaseList(res?.data)
+      }
+      setLoading(false)
+    })
   };
 
   return (
@@ -365,19 +380,19 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
           onClick={() => handleTabClick(1)}
           className={activeTab === 1 ? 'navItemA' : 'navItem'}
         >
-          指令数据集
+          文档数据集
         </p>
         <p
           onClick={() => handleTabClick(2)}
           className={activeTab === 2 ? 'navItemA' : 'navItem'}
         >
-          文档数据集
+          业务数据集
         </p>
         <p
           onClick={() => handleTabClick(3)}
           className={activeTab === 3 ? 'navItemA' : 'navItem'}
         >
-          业务数据集
+          指令数据集
         </p>
       </div>
       <Space
