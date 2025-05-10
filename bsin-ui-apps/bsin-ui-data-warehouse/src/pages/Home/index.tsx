@@ -424,7 +424,7 @@ const DataLifecyclePage = () => {
       {/* Lifecycle Visualization */}
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col span={16}>
-          <Card title="数据生命周期流程" bordered={false}>
+          <Card title="数据生命周期流程" bordered={false} style={{ height: 300 }}>
             <FlowGraph
               data={flowChartData}
               nodeCfg={{
@@ -468,7 +468,7 @@ const DataLifecyclePage = () => {
           </Card>
         </Col>
         <Col span={8}>
-          <Card title="阶段统计" bordered={false}>
+          <Card title="阶段统计" bordered={false} style={{ height: 300 }}>
             <Space direction="vertical" style={{ width: '100%' }}>
               <Row align="middle">
                 <Col span={8}>
