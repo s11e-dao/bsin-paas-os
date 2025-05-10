@@ -80,7 +80,7 @@ docker/bsin-paas-os/server-apps/waas/jar/
 
 docker/bsin-paas-os/server-apps/search/jar/
 
-docker/bsin-paas-os/server-apps/http/jar/
+docker/bsin-paas-os/server-apps/file/jar/
 
 docker/bsin-paas-os/ui-apps/ai-agent/dist/
 

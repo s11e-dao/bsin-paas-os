@@ -72,6 +72,16 @@ mkdir bsin-paas-os
 sh upload.sh root@47.105.xx.xxx
 ```
 
+## 修改docker镜像IP
+nginx镜像配置: 如果不需要域名访问，则不需要配置，注释掉deploy.sh脚本里面得bsin-nginx
+
+/docker/middleware/nginx/conf/nginx.conf
+
+
+## 修改完配置文件上传
+.env配置文件
+
+
 ## bsin-paas-os docker 镜像构建
 ~~~bash
 # 1.前后端程序打包 Usage: Usage: sh package.sh [server_apps|ui_apps|all]
@@ -159,3 +169,23 @@ systemctl restart docker
 
 - 5. 若使用云服务器 http://ip:8000 无法访问，请记得开发你的安全组,，根据情况开放相应的端口
 ![](./doc/assets/aliyun_security_group.png)
+
+
+备注：
+
+需要开放服务器端口
+
+
+| 端口          |      服务名称 |
+|:------------|----------:|
+| 8000        |    基座访问地址 | 
+| 9195        |      网关服务 |  
+| 554         |    RTSP协议 | 
+| 1935        |      RTMP |  
+| 8865        | easymedia |  
+| 智能决策:工作流程引擎 |         ❌ |  
+| 智能决策:表单引擎   |         ❌ |  
+| AI知识库       |         ❌ |  
+| 区块链引擎       |         ❌ |  
+| 两次培训服务      |         ❌ |  
+| 一个版本一次的咨询培训 |         ❌ | 

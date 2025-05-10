@@ -1,0 +1,17 @@
+# 使用官方的Nginx镜像作为基础
+FROM nginx
+
+# 将自定义的Nginx配置文件复制到容器中
+COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+
+# 创建目录
+RUN mkdir -p /home/bsin-paas-os/ui-apps/data-warehouse/dist
+
+# 挂载目录
+VOLUME /home/bsin-paas-os/ui-apps/data-warehouse/dist
+
+# 将前端静态文件复制到Nginx默认的静态文件目录
+COPY ./dist /home/bsin-paas-os/ui-apps/data-warehouse/dist
+
+# 启动Nginx服务
+CMD ["nginx", "-g", "daemon off;"]

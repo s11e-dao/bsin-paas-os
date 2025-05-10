@@ -13,6 +13,6 @@ RUN mkdir -p /home/bsin-paas-os/server-apps/waas
 # 指定路径
 WORKDIR /home/bsin-paas-os/server-apps/waas
 # 复制jar文件到路径
-COPY ./jar/waas-server-2.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/waas/waas-server-2.0.0-SNAPSHOT.jar
+COPY ./jar/waas-server-2.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/waas/waas-server-3.0.0-SNAPSHOT.jar
 # 启动用户服务
-ENTRYPOINT ["java","-jar","waas-server-2.0.0-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","waas-server-3.0.0-SNAPSHOT.jar"]

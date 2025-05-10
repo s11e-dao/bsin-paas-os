@@ -25,7 +25,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>bsin-targe-gateway</artifactId>
-    <version>2.7.1-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
 
     <properties>
         <nacos-discovery.version>2021.0.1.0</nacos-discovery.version>
