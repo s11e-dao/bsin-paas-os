@@ -81,6 +81,8 @@ nginx镜像配置: 如果不需要域名访问，则不需要配置，注释掉d
 ## 修改完配置文件上传
 .env配置文件
 
+上传到bsin-paas-os目录
+
 
 ## bsin-paas-os docker 镜像构建
 ~~~bash

@@ -397,7 +397,7 @@
     </profiles>
 
     <build>
-        <finalName>bsin-targe-gateway-admin</finalName>
+        <finalName>targe-gateway-admin</finalName>
         <plugins>
 
             <plugin>

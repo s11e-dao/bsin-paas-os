@@ -60,6 +60,12 @@ cd ../../jiujiu-paas-yue17/jiujiu-paas-ui/bsin-ui-bigan/
 yarn
 yarn build
 
+echo "1.7. build bsin-ui-data-warehouse"
+cd ../bsin-ui-apps/bsin-ui-data-warehouse
+echo ${PWD}
+yarn
+yarn build
+
 echo "2. build frontend finish!!!"
 }
 

@@ -637,7 +637,7 @@
         </profile>
     </profiles>
     <build>
-        <finalName>bsin-targe-gateway</finalName>
+        <finalName>targe-gateway</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
