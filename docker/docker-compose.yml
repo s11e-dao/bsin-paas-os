@@ -238,15 +238,15 @@ services:
     container_name: bsin-targe-gateway-admin
     image: bsin-targe-gateway-admin:2.0.0
     build:
-      context: ./bsin-paas-os/targe-gateway-admin
+      context: ./app-service/targe-gateway-admin
       dockerfile: dockerfile
     env_file:
-      - ./bsin-paas-os/targe-gateway-admin/.env
+      - ./app-service/targe-gateway-admin/.env
     ports:
       - "9095:9095"
     #restart: always
     volumes:
-      - ./bsin-paas-os/targe-gateway-admin/logs:/home/bsin-paas-os/targe-gateway-admin/logs
+      - ./app-service/targe-gateway-admin/logs:/home/bsin-paas-os/targe-gateway-admin/logs
     depends_on:
       - bsin-nacos-standalone
       - bsin-redis
@@ -264,17 +264,17 @@ services:
     container_name: bsin-targe-gateway
     image: bsin-targe-gateway:2.0.0
     build:
-      context: ./bsin-paas-os/targe-gateway
+      context: ./app-service/targe-gateway
       dockerfile: dockerfile
     command: sh -c "sleep 120 &&  echo 'waiting for bsin-targe-gateway-admin...'"
     env_file:
-      - ./bsin-paas-os/targe-gateway/.env
+      - ./app-service/targe-gateway/.env
     ports:
       - "9195:9195"
 #    restart: always
     volumes:
-      - ./bsin-paas-os/targe-gateway/logs:/home/bsin-paas-os/targe-gateway/logs
-      - ./bsin-paas-os/targe-gateway/conf/hosts:/etc/hosts
+      - ./app-service/targe-gateway/logs:/home/bsin-paas-os/targe-gateway/logs
+      - ./app-service/targe-gateway/conf/hosts:/etc/hosts
     depends_on:
       - bsin-nacos-standalone
       - bsin-redis
@@ -296,15 +296,15 @@ services:
     container_name: bsin-server-upms
     image: bsin-server-upms:2.0.0
     build:
-      context: ./bsin-paas-os/server-apps/upms
+      context: ./app-service/server-apps/upms
       dockerfile: dockerfile
     env_file:
-      - ./bsin-paas-os/server-apps/upms/.env
+      - ./app-service/server-apps/upms/.env
     ports:
       - "9101:9101"
 #    restart: always
     volumes:
-      - ./bsin-paas-os/server-apps/upms/logs:/home/bsin-paas-os/server-apps/upms/logs
+      - ./app-service/server-apps/upms/logs:/home/bsin-paas-os/server-apps/upms/logs
     depends_on:
       - bsin-redis
       - bsin-mysql
@@ -321,15 +321,15 @@ services:
     container_name: bsin-server-crm
     image: bsin-server-crm:2.0.0
     build:
-      context: ./bsin-paas-os/server-apps/crm
+      context: ./app-service/server-apps/crm
       dockerfile: dockerfile
     env_file:
-      - ./bsin-paas-os/server-apps/crm/.env
+      - ./app-service/server-apps/crm/.env
     ports:
       - "9102:9102"
 #    restart: always
     volumes:
-      - ./bsin-paas-os/server-apps/crm/logs:/home/bsin-paas-os/server-apps/crm/logs
+      - ./app-service/server-apps/crm/logs:/home/bsin-paas-os/server-apps/crm/logs
     depends_on:
       - bsin-redis
       - bsin-mysql
@@ -346,15 +346,15 @@ services:
     container_name: bsin-server-brms
     image: bsin-server-brms:2.0.0
     build:
-      context: ./bsin-paas-os/server-apps/brms
+      context: ./app-service/server-apps/brms
       dockerfile: dockerfile
     env_file:
-      - ./bsin-paas-os/server-apps/brms/.env
+      - ./app-service/server-apps/brms/.env
     ports:
       - "9103:9103"
 #    restart: always
     volumes:
-      - ./bsin-paas-os/server-apps/brms/logs:/home/bsin-paas-os/server-apps/brms/logs
+      - ./app-service/server-apps/brms/logs:/home/bsin-paas-os/server-apps/brms/logs
     depends_on:
       - bsin-redis
       - bsin-mysql
@@ -371,15 +371,15 @@ services:
     container_name: bsin-server-ai-agent
     image: bsin-server-ai-agent:2.0.0
     build:
-      context: ./bsin-paas-os/server-apps/ai-agent
+      context: ./app-service/server-apps/ai-agent
       dockerfile: dockerfile
     env_file:
-      - ./bsin-paas-os/server-apps/ai-agent/.env
+      - ./app-service/server-apps/ai-agent/.env
     ports:
       - "9104:9104"
 #    restart: always
     volumes:
-      - ./bsin-paas-os/server-apps/ai-agent/logs:/home/bsin-paas-os/server-apps/ai-agent/logs
+      - ./app-service/server-apps/ai-agent/logs:/home/bsin-paas-os/server-apps/ai-agent/logs
     depends_on:
       - bsin-redis
       - bsin-mysql
@@ -396,15 +396,15 @@ services:
     container_name: bsin-server-waas
     image: bsin-server-waas:2.0.0
     build:
-      context: ./bsin-paas-os/server-apps/waas
+      context: ./app-service/server-apps/waas
       dockerfile: dockerfile
     env_file:
-      - ./bsin-paas-os/server-apps/waas/.env
+      - ./app-service/server-apps/waas/.env
     ports:
       - "9107:9107"
 #    restart: always
     volumes:
-      - ./bsin-paas-os/server-apps/waas/logs:/home/bsin-paas-os/server-apps/waas/logs
+      - ./app-service/server-apps/waas/logs:/home/bsin-paas-os/server-apps/waas/logs
     depends_on:
       - bsin-redis
       - bsin-mysql
@@ -422,15 +422,15 @@ services:
     container_name: bsin-server-community
     image: bsin-server-community:2.0.0
     build:
-      context: ./bsin-paas-os/server-apps/community
+      context: ./app-service/server-apps/community
       dockerfile: dockerfile
     env_file:
-      - ./bsin-paas-os/server-apps/community/.env
+      - ./app-service/server-apps/community/.env
     ports:
       - "9110:9110"
 #    restart: always
     volumes:
-      - ./bsin-paas-os/server-apps/community/logs:/home/bsin-paas-os/server-apps/community/logs
+      - ./app-service/server-apps/community/logs:/home/bsin-paas-os/server-apps/community/logs
     depends_on:
       - bsin-redis
       - bsin-mysql
@@ -447,15 +447,15 @@ services:
     container_name: bsin-server-oms
     image: bsin-server-oms:2.0.0
     build:
-      context: ./bsin-paas-os/server-apps/oms
+      context: ./app-service/server-apps/oms
       dockerfile: dockerfile
     env_file:
-      - ./bsin-paas-os/server-apps/oms/.env
+      - ./app-service/server-apps/oms/.env
     ports:
       - "9111:9111"
 #    restart: always
     volumes:
-      - ./bsin-paas-os/server-apps/oms/logs:/home/bsin-paas-os/server-apps/oms/logs
+      - ./app-service/server-apps/oms/logs:/home/bsin-paas-os/server-apps/oms/logs
     depends_on:
       - bsin-redis
       - bsin-mysql
@@ -472,15 +472,15 @@ services:
     container_name: bsin-server-iot
     image: bsin-server-iot:2.0.0
     build:
-      context: ./bsin-paas-os/server-apps/iot
+      context: ./app-service/server-apps/iot
       dockerfile: dockerfile
     env_file:
-      - ./bsin-paas-os/server-apps/iot/.env
+      - ./app-service/server-apps/iot/.env
     ports:
       - "9120:9120"
 #    restart: always
     volumes:
-      - ./bsin-paas-os/server-apps/iot/logs:/home/bsin-paas-os/server-apps/iot/logs
+      - ./app-service/server-apps/iot/logs:/home/bsin-paas-os/server-apps/iot/logs
     depends_on:
       - bsin-redis
       - bsin-mysql
@@ -499,16 +499,16 @@ services:
     container_name: bsin-apps-container
     image: bsin-apps-container:2.0.0
     build:
-      context: ./bsin-paas-os/apps-container
+      context: ./app-service/apps-container
       dockerfile: dockerfile
     ports:
       - "8000:80"
     #    expose:
     #      - "80"
     volumes:
-      - ./bsin-paas-os/apps-container/dist:/home/bsin-paas-os/apps-container/dist
-      - ./bsin-paas-os/apps-container/conf/nginx.conf:/etc/nginx/nginx.conf
-      - ./bsin-paas-os/apps-container/logs:/var/log/nginx
+      - ./app-service/apps-container/dist:/home/bsin-paas-os/apps-container/dist
+      - ./app-service/apps-container/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./app-service/apps-container/logs:/var/log/nginx
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.40
@@ -518,16 +518,16 @@ services:
     container_name: bsin-ui-upms
     image: bsin-ui-upms:2.0.0
     build:
-      context: ./bsin-paas-os/ui-apps/upms
+      context: ./app-service/ui-apps/upms
       dockerfile: dockerfile
     ports:
       - "8001:80"
     #    expose:
     #      - "80"
     volumes:
-      - ./bsin-paas-os/ui-apps/upms/dist:/home/bsin-paas-os/ui-apps/upms/dist
-      - ./bsin-paas-os/ui-apps/upms/conf/nginx.conf:/etc/nginx/nginx.conf
-      - ./bsin-paas-os/ui-apps/upms/logs:/var/log/nginx
+      - ./app-service/ui-apps/upms/dist:/home/bsin-paas-os/ui-apps/upms/dist
+      - ./app-service/ui-apps/upms/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./app-service/ui-apps/upms/logs:/var/log/nginx
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.41
@@ -536,16 +536,16 @@ services:
     container_name: bsin-ui-ai-agent
     image: bsin-ui-ai-agent:2.0.0
     build:
-      context: ./bsin-paas-os/ui-apps/ai-agent
+      context: ./app-service/ui-apps/ai-agent
       dockerfile: dockerfile
     ports:
       - "8004:80"
     #    expose:
     #      - "80"
     volumes:
-      - ./bsin-paas-os/ui-apps/ai-agent/dist:/home/bsin-paas-os/ui-apps/ai-agent/dist
-      - ./bsin-paas-os/ui-apps/ai-agent/conf/nginx.conf:/etc/nginx/nginx.conf
-      - ./bsin-paas-os/ui-apps/ai-agent/logs:/var/log/nginx
+      - ./app-service/ui-apps/ai-agent/dist:/home/bsin-paas-os/ui-apps/ai-agent/dist
+      - ./app-service/ui-apps/ai-agent/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./app-service/ui-apps/ai-agent/logs:/var/log/nginx
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.42
@@ -554,16 +554,16 @@ services:
     container_name: bsin-ui-waas
     image: bsin-ui-waas:2.0.0
     build:
-      context: ./bsin-paas-os/ui-apps/waas
+      context: ./app-service/ui-apps/waas
       dockerfile: dockerfile
     ports:
       - "8002:80"
     #    expose:
     #      - "80"
     volumes:
-      - ./bsin-paas-os/ui-apps/waas/dist:/home/bsin-paas-os/ui-apps/waas/dist
-      - ./bsin-paas-os/ui-apps/waas/conf/nginx.conf:/etc/nginx/nginx.conf
-      - ./bsin-paas-os/ui-apps/waas/logs:/var/log/nginx
+      - ./app-service/ui-apps/waas/dist:/home/bsin-paas-os/ui-apps/waas/dist
+      - ./app-service/ui-apps/waas/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./app-service/ui-apps/waas/logs:/var/log/nginx
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.43
@@ -573,35 +573,34 @@ services:
     container_name: bsin-ui-decision-admin
     image: bsin-ui-decision-admin:2.0.0
     build:
-      context: ./bsin-paas-os/ui-apps/decision-admin
+      context: ./app-service/ui-apps/decision-admin
       dockerfile: dockerfile
     ports:
       - "8003:80"
     #    expose:
     #      - "80"
     volumes:
-      - ./bsin-paas-os/ui-apps/decision-admin/dist:/home/bsin-paas-os/ui-apps/decision-admin/dist
-      - ./bsin-paas-os/ui-apps/decision-admin/conf/nginx.conf:/etc/nginx/nginx.conf
-      - ./bsin-paas-os/ui-apps/decision-admin/logs:/var/log/nginx
+      - ./app-service/ui-apps/decision-admin/dist:/home/bsin-paas-os/ui-apps/decision-admin/dist
+      - ./app-service/ui-apps/decision-admin/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./app-service/ui-apps/decision-admin/logs:/var/log/nginx
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.44
-
 
   bsin-ui-bigan:
     container_name: bsin-ui-bigan
     image: bsin-ui-bigan:2.0.0
     build:
-      context: ./bsin-paas-os/ui-apps/bigan
+      context: ./app-service/ui-apps/bigan
       dockerfile: dockerfile
     ports:
       - "8006:80"
     #    expose:
     #      - "80"
     volumes:
-      - ./bsin-paas-os/ui-apps/bigan/dist:/home/bsin-paas-os/ui-apps/bigan/dist
-      - ./bsin-paas-os/ui-apps/bigan/conf/nginx.conf:/etc/nginx/nginx.conf
-      - ./bsin-paas-os/ui-apps/bigan/logs:/var/log/nginx
+      - ./app-service/ui-apps/bigan/dist:/home/bsin-paas-os/ui-apps/bigan/dist
+      - ./app-service/ui-apps/bigan/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./app-service/ui-apps/bigan/logs:/var/log/nginx
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.45
@@ -611,16 +610,16 @@ services:
     container_name: bsin-ui-sea-condition
     image: bsin-ui-sea-condition:2.0.0
     build:
-      context: ./bsin-paas-os/ui-apps/sea-condition
+      context: ./app-service/ui-apps/sea-condition
       dockerfile: dockerfile
     ports:
       - "8009:80"
     #    expose:
     #      - "80"
     volumes:
-      - ./bsin-paas-os/ui-apps/sea-condition/dist:/home/bsin-paas-os/ui-apps/sea-condition/dist
-      - ./bsin-paas-os/ui-apps/sea-condition/conf/nginx.conf:/etc/nginx/nginx.conf
-      - ./bsin-paas-os/ui-apps/sea-condition/logs:/var/log/nginx
+      - ./app-service/ui-apps/sea-condition/dist:/home/bsin-paas-os/ui-apps/sea-condition/dist
+      - ./app-service/ui-apps/sea-condition/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./app-service/ui-apps/sea-condition/logs:/var/log/nginx
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.48

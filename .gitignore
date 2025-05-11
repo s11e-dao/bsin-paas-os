@@ -133,3 +133,4 @@ bsin-ui-apps/bsin-ui-sea-condition
 docker/app-service/ui-apps/sea-condition/dist/
 
 docker/app-service/ui-apps/bigan/dist/
+/docker/app-service/server-apps/app-agent/jar/app-agent-server-3.0.0-SNAPSHOT.jar
