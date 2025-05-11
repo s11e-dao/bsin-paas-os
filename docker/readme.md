@@ -67,13 +67,13 @@ docker-compose down
 ## 编译打包
  1.前后端程序打包 Usage: Usage: sh package.sh [server_apps|ui_apps|all]
 
-### 打包前端程序
+### 编译打包前端程序
 
 ```shell
 bash ./script/package.sh ui_apps
 ```
 
-### 打包后端端程序###
+### 编译打包后端端程序###
  打包前记得将配置文件修改为正确的mysql、redis、nacos地址，IP地址需要和主机地址(云服务器就是公网地址)一致
 bash ./script/package.sh server_apps
 
