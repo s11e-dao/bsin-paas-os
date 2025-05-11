@@ -1,9 +1,9 @@
 # 基础镜像
-FROM  openjdk:17
+FROM openjdk:17-jdk-slim
 # author
 MAINTAINER bsin-paas
 
-LABEL version=2.0.0
+LABEL version=3.0.0
 
 # 挂载目录
 VOLUME /home/bsin-paas-os/server-apps/brms
@@ -12,6 +12,6 @@ RUN mkdir -p /home/bsin-paas-os/server-apps/brms
 # 指定路径
 WORKDIR /home/bsin-paas-os/server-apps/brms
 # 复制jar文件到路径
-COPY ./jar/brms-server-2.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/brms/brms-server-3.0.0-SNAPSHOT.jar
+COPY ./jar/brms-server-3.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/brms/brms-server-3.0.0-SNAPSHOT.jar
 # 启动用户服务
 ENTRYPOINT ["java","-jar","brms-server-3.0.0-SNAPSHOT.jar"]

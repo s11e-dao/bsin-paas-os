@@ -1,9 +1,9 @@
 # 基础镜像
-FROM  openjdk:11
+FROM openjdk:17-jdk-slim
 # author
 MAINTAINER bsin-paas
 
-LABEL version=2.0.0
+LABEL version=3.0.0
 
 # 挂载目录
 VOLUME /home/bsin-paas-os/server-apps/workflow-admin

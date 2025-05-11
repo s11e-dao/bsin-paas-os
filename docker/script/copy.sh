@@ -7,17 +7,17 @@ bash clean.sh
 
 # 复制sql文件
 echo "3. begin copy sql "
-#cp ../sql/timeless_seckill.sql ./mysql/db
+#cp ../sql/test.sql ../middleware/mysql/db
 echo "4. end copy sql "
 
 # 复制jar文件
 echo "5. begin copy jar "
 
 echo "5.1 begin copy targe-gateway-admin jar "
-cp -rvf ../bsin-targe-gateway-admin/target/targe-gateway-admin.jar ./app-service/targe-gateway-admin/jar/targe-gateway-admin-3.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-targe-gateway-admin/target/bsin-targe-gateway-admin-3.0.0-SNAPSHOT.jar ./app-service/targe-gateway-admin/jar/bsin-targe-gateway-admin-3.0.0-SNAPSHOT.jar
 
 echo "5.2 begin copy targe-gateway jar "
-cp -rvf ../bsin-targe-gateway/target/targe-gateway.jar ./app-service/targe-gateway/jar/targe-gateway-3.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-targe-gateway/target/bsin-targe-gateway-3.0.0-SNAPSHOT.jar ./app-service/targe-gateway/jar/bsin-targe-gateway-3.0.0-SNAPSHOT.jar
 
 echo "5.3 begin copy server-apps"
 cp -rvf ../bsin-server-apps/bsin-server-app-agent/app-agent-server/target/app-agent-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/app-agent/jar/app-agent-server-3.0.0-SNAPSHOT.jar

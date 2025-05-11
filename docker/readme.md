@@ -87,7 +87,7 @@ nginx镜像配置: 如果不需要域名访问，则不需要配置，注释掉d
 /docker/middleware/nginx/conf/nginx.conf
 
 ## 镜像环境准备
-.env配置文件
+.env配置文件, 修改成服务器公网IP
 
 ### 创建镜像目录
 ```shell

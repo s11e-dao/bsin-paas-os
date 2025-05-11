@@ -38,7 +38,7 @@ gateway(){
 }
 # 启动server-apps模块
 server_apps(){
-	docker-compose up -d bsin-server-upms bsin-server-waas bsin-server-crm bsin-server-app-agent bsin-server-oms bsin-server-community bsin-server-brms bsin-server-iot #bsin-server-workflow bsin-server-workflow-admin
+	docker-compose up -d bsin-server-upms bsin-server-waas bsin-server-crm bsin-server-app-agent bsin-server-oms bsin-server-community bsin-server-brms #bsin-server-iot bsin-server-workflow bsin-server-workflow-admin
 }
 
 # 启动upms模块

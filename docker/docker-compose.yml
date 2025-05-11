@@ -33,7 +33,7 @@ services:
 
   bsin-mysql:
     container_name: bsin-mysql
-    image: bsin-mysql:2.0.0
+    image: bsin-mysql:3.0.0
     build:
       context: middleware/mysql
     ports:
@@ -77,7 +77,7 @@ services:
 
   bsin-redis:
     container_name: bsin-redis
-    image: bsin-redis:2.0.0
+    image: bsin-redis:3.0.0
     build:
       context: middleware/redis
       dockerfile: dockerfile
@@ -95,7 +95,7 @@ services:
 
   #  bsin-rabbitmq:
   #    container_name: bsin-rabbitmq
-  #    image: bsin-rabbitmq:2.0.0
+  #    image: bsin-rabbitmq:3.0.0
   #    build:
   #      context: middleware/rabbitmq
   #      dockerfile: dockerfile
@@ -110,7 +110,7 @@ services:
   #
   #  bsin-milvus:
   #    container_name: bsin-milvus
-  #    image: bsin-milvus:2.0.0
+  #    image: bsin-milvus:3.0.0
   #    build:
   #      context: middleware/milvus
   #      dockerfile: dockerfile
@@ -125,7 +125,7 @@ services:
   #
   #    bsin-elasticsearch:
   #      container_name: bsin-elasticsearch
-  #      image: bsin-elasticsearch:2.0.0
+  #      image: bsin-elasticsearch:3.0.0
   #      build:
   #        context: middleware/elasticsearch
   #        dockerfile: dockerfile
@@ -143,7 +143,7 @@ services:
   # password：public
   bsin-emqx:
     container_name: bsin-emqx
-    image: bsin-emqx:2.0.0
+    image: bsin-emqx:3.0.0
     build:
       context: middleware/emqx
       dockerfile: dockerfile
@@ -174,7 +174,7 @@ services:
 
   bsin-nginx:
     container_name: bsin-nginx
-    image: bsin-nginx:2.0.0
+    image: bsin-nginx:3.0.0
     build:
       context: middleware/nginx
       dockerfile: dockerfile
@@ -195,7 +195,7 @@ services:
 
 #  bsin-srs:
 #    container_name: bsin-srs
-#    image: bsin-srs:2.0.0
+#    image: bsin-srs:3.0.0
 #    build:
 #      context: middleware/srs
 #      dockerfile: dockerfile
@@ -236,7 +236,7 @@ services:
   # targe-gateway-admin
   bsin-targe-gateway-admin:
     container_name: bsin-targe-gateway-admin
-    image: bsin-targe-gateway-admin:2.0.0
+    image: bsin-targe-gateway-admin:3.0.0
     build:
       context: ./app-service/targe-gateway-admin
       dockerfile: dockerfile
@@ -262,7 +262,7 @@ services:
   # targe-gateway
   bsin-targe-gateway:
     container_name: bsin-targe-gateway
-    image: bsin-targe-gateway:2.0.0
+    image: bsin-targe-gateway:3.0.0
     build:
       context: ./app-service/targe-gateway
       dockerfile: dockerfile
@@ -294,7 +294,7 @@ services:
   # server-apps
   bsin-server-upms:
     container_name: bsin-server-upms
-    image: bsin-server-upms:2.0.0
+    image: bsin-server-upms:3.0.0
     build:
       context: ./app-service/server-apps/upms
       dockerfile: dockerfile
@@ -319,7 +319,7 @@ services:
 
   bsin-server-crm:
     container_name: bsin-server-crm
-    image: bsin-server-crm:2.0.0
+    image: bsin-server-crm:3.0.0
     build:
       context: ./app-service/server-apps/crm
       dockerfile: dockerfile
@@ -344,7 +344,7 @@ services:
 
   bsin-server-brms:
     container_name: bsin-server-brms
-    image: bsin-server-brms:2.0.0
+    image: bsin-server-brms:3.0.0
     build:
       context: ./app-service/server-apps/brms
       dockerfile: dockerfile
@@ -367,19 +367,19 @@ services:
       compose-network: #指定network
         ipv4_address: 172.28.0.24
 
-  bsin-server-ai-agent:
-    container_name: bsin-server-ai-agent
-    image: bsin-server-ai-agent:2.0.0
+  bsin-server-app-agent:
+    container_name: bsin-server-app-agent
+    image: bsin-server-app-agent:3.0.0
     build:
-      context: ./app-service/server-apps/ai-agent
+      context: ./app-service/server-apps/app-agent
       dockerfile: dockerfile
     env_file:
-      - ./app-service/server-apps/ai-agent/.env
+      - ./app-service/server-apps/app-agent/.env
     ports:
       - "9104:9104"
 #    restart: always
     volumes:
-      - ./app-service/server-apps/ai-agent/logs:/home/bsin-paas-os/server-apps/ai-agent/logs
+      - ./app-service/server-apps/app-agent/logs:/home/bsin-paas-os/server-apps/app-agent/logs
     depends_on:
       - bsin-redis
       - bsin-mysql
@@ -394,7 +394,7 @@ services:
 
   bsin-server-waas:
     container_name: bsin-server-waas
-    image: bsin-server-waas:2.0.0
+    image: bsin-server-waas:3.0.0
     build:
       context: ./app-service/server-apps/waas
       dockerfile: dockerfile
@@ -420,7 +420,7 @@ services:
 
   bsin-server-community:
     container_name: bsin-server-community
-    image: bsin-server-community:2.0.0
+    image: bsin-server-community:3.0.0
     build:
       context: ./app-service/server-apps/community
       dockerfile: dockerfile
@@ -445,7 +445,7 @@ services:
 
   bsin-server-oms:
     container_name: bsin-server-oms
-    image: bsin-server-oms:2.0.0
+    image: bsin-server-oms:3.0.0
     build:
       context: ./app-service/server-apps/oms
       dockerfile: dockerfile
@@ -468,36 +468,36 @@ services:
       compose-network: #指定network
         ipv4_address: 172.28.0.32
 
-  bsin-server-iot:
-    container_name: bsin-server-iot
-    image: bsin-server-iot:2.0.0
-    build:
-      context: ./app-service/server-apps/iot
-      dockerfile: dockerfile
-    env_file:
-      - ./app-service/server-apps/iot/.env
-    ports:
-      - "9120:9120"
-#    restart: always
-    volumes:
-      - ./app-service/server-apps/iot/logs:/home/bsin-paas-os/server-apps/iot/logs
-    depends_on:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
-    links:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
-    networks:
-      compose-network: #指定network
-        ipv4_address: 172.28.0.33
+#  bsin-server-iot:
+#    container_name: bsin-server-iot
+#    image: bsin-server-iot:3.0.0
+#    build:
+#      context: ./app-service/server-apps/iot
+#      dockerfile: dockerfile
+#    env_file:
+#      - ./app-service/server-apps/iot/.env
+#    ports:
+#      - "9120:9120"
+##    restart: always
+#    volumes:
+#      - ./app-service/server-apps/iot/logs:/home/bsin-paas-os/server-apps/iot/logs
+#    depends_on:
+#      - bsin-redis
+#      - bsin-mysql
+#      - bsin-targe-gateway
+#    links:
+#      - bsin-redis
+#      - bsin-mysql
+#      - bsin-targe-gateway
+#    networks:
+#      compose-network: #指定network
+#        ipv4_address: 172.28.0.33
 
 
   # apps-container
   bsin-apps-container:
     container_name: bsin-apps-container
-    image: bsin-apps-container:2.0.0
+    image: bsin-apps-container:3.0.0
     build:
       context: ./app-service/apps-container
       dockerfile: dockerfile
@@ -516,7 +516,7 @@ services:
   # ui-apps
   bsin-ui-upms:
     container_name: bsin-ui-upms
-    image: bsin-ui-upms:2.0.0
+    image: bsin-ui-upms:3.0.0
     build:
       context: ./app-service/ui-apps/upms
       dockerfile: dockerfile
@@ -534,7 +534,7 @@ services:
 
   bsin-ui-ai-agent:
     container_name: bsin-ui-ai-agent
-    image: bsin-ui-ai-agent:2.0.0
+    image: bsin-ui-ai-agent:3.0.0
     build:
       context: ./app-service/ui-apps/ai-agent
       dockerfile: dockerfile
@@ -552,7 +552,7 @@ services:
 
   bsin-ui-waas:
     container_name: bsin-ui-waas
-    image: bsin-ui-waas:2.0.0
+    image: bsin-ui-waas:3.0.0
     build:
       context: ./app-service/ui-apps/waas
       dockerfile: dockerfile
@@ -571,7 +571,7 @@ services:
 
   bsin-ui-decision-admin:
     container_name: bsin-ui-decision-admin
-    image: bsin-ui-decision-admin:2.0.0
+    image: bsin-ui-decision-admin:3.0.0
     build:
       context: ./app-service/ui-apps/decision-admin
       dockerfile: dockerfile
@@ -589,7 +589,7 @@ services:
 
   bsin-ui-bigan:
     container_name: bsin-ui-bigan
-    image: bsin-ui-bigan:2.0.0
+    image: bsin-ui-bigan:3.0.0
     build:
       context: ./app-service/ui-apps/bigan
       dockerfile: dockerfile
@@ -605,10 +605,27 @@ services:
       compose-network: #指定network
         ipv4_address: 172.28.0.45
 
+  bsin-ui-data-warehouse:
+    container_name: bsin-ui-data-warehouse
+    image: bsin-ui-data-warehouse:3.0.0
+    build:
+      context: ./app-service/ui-apps/data-warehouse
+      dockerfile: dockerfile
+    ports:
+      - "8005:80"
+    #    expose:
+    #      - "80"
+    volumes:
+      - ./app-service/ui-apps/data-warehouse/dist:/home/bsin-paas-os/ui-apps/data-warehouse/dist
+      - ./app-service/ui-apps/data-warehouse/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./app-service/ui-apps/data-warehouse/logs:/var/log/nginx
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.46
 
   bsin-ui-sea-condition:
     container_name: bsin-ui-sea-condition
-    image: bsin-ui-sea-condition:2.0.0
+    image: bsin-ui-sea-condition:3.0.0
     build:
       context: ./app-service/ui-apps/sea-condition
       dockerfile: dockerfile
