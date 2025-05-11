@@ -38,41 +38,26 @@ services:
       context: middleware/mysql
     ports:
       - "3306:3306"
-    #restart: always
     volumes:
-      # 绝对路径
-      # - "/mydata/docker_mysql/data:/var/lib/mysql"
-      # 相对路径，相对当前 docker-compose.yml 文件所在目录
-      # - "./conf:/etc/mysql/conf.d"
-      # - "./docker_volume/mysql:/var/lib/mysql"
-      # 匿名挂载，匿名挂载只需要写容器目录即可，容器外对应的目录会在 /var/lib/docker/volume 中生成
-      # - "/var/lib/mysql"
-      # 具名挂载，就是给数据卷起了个名字，容器外对应的目录会在 /var/lib/docker/volume 中生成
-      # - "mysql-data-volume:/var/lib/mysql"
       - ./middleware/mysql/conf:/etc/mysql/conf.d
       - ./middleware/mysql/logs:/logs
       - ./middleware/mysql/data:/var/lib/mysql
       - ./middleware/mysql/db:/docker-entrypoint-initdb.d/
-    command: [
-      'mysqld',
-      '--innodb-buffer-pool-size=80M',
-      '--character-set-server=utf8mb4',
-      '--collation-server=utf8mb4_unicode_ci',
-      '--default-time-zone=+8:00',
-      '--lower-case-table-names=1'
-    ]
-    privileged: true
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      timeout: 20s
-      retries: 5
+    command: 
+      - mysqld
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --explicit_defaults_for_timestamp=true
+      - --lower_case_table_names=1
+      - --host_cache_size=0
+      - --authentication_policy=caching_sha2_password
     environment:
+      TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: 123456
-    #      MYSQL_DATABASE: bsin-mpc
-    #      MYSQL_USER: bsin
-    #      MYSQL_PASSWORD: 123456
+      MYSQL_USER: bsin
+      MYSQL_PASSWORD: 123456
     networks:
-      compose-network: #指定network
+      compose-network:
         ipv4_address: 172.28.0.12
 
   bsin-redis:

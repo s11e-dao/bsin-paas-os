@@ -1,5 +1,5 @@
 # 使用官方的Nginx镜像作为基础
-FROM nginx
+FROM nginx:latest
 
 # author
 MAINTAINER bsin-paas

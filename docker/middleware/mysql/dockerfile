@@ -13,4 +13,10 @@ WORKDIR /home/bsin-paas-os/middleware/mysql
 
 # 执行sql脚本
 # `/docker-entrypoint-initdb.d/`是MySQL官方镜像中的一个特殊目录，用于存放初始化数据库的脚本文件。
-ADD ./db/*.sql /docker-entrypoint-initdb.d/
+# ADD ./db/*.sql /docker-entrypoint-initdb.d/
+# 复制初始化SQL脚本
+# COPY ./db/*.sql /docker-entrypoint-initdb.d/
+
+# # 设置权限
+# RUN chown -R mysql:mysql /docker-entrypoint-initdb.d/
+
