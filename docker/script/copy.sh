@@ -82,15 +82,12 @@ cp ../.env ./bsin-paas-os/server-apps/iot -rvf
 cp ../.env ./bsin-paas-os/targe-gateway-admin -rvf
 cp ../.env ./bsin-paas-os/targe-gateway -rvf
 
-##
-cp -r /home/leonard/ssd12/bsin-paas/prj/sea/bsin-ui-sea-condition/dist/* ./bsin-paas-os/ui-apps/sea-condition/dist/
-
 ## jiujiu-paas，业务闭源
-cp -rvf ../../jiujiu-paas-yue17/jiujiu-paas-server/bsin-server-oms/oms-server/target/oms-server-3.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/oms/jar/oms-server-3.0.0-SNAPSHOT.jar
-cp -rvf ../../jiujiu-paas-yue17/jiujiu-paas-server/bsin-server-community/community-server/target/community-server-3.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/community/jar/community-server-3.0.0-SNAPSHOT.jar
+cp -rvf ../../jiujiu-paas-server/bsin-server-oms/oms-server/target/oms-server-3.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/oms/jar/oms-server-3.0.0-SNAPSHOT.jar
+cp -rvf ../../jiujiu-paas-server/bsin-server-community/community-server/target/community-server-3.0.0-SNAPSHOT.jar ./bsin-paas-os/server-apps/community/jar/community-server-3.0.0-SNAPSHOT.jar
 
-cp ../../jiujiu-paas-yue17/.env ./bsin-paas-os/server-apps/community -rvf
-cp ../../jiujiu-paas-yue17/.env ./bsin-paas-os/server-apps/oms -rvf
+cp ../../.env ./bsin-paas-os/server-apps/community -rvf
+cp ../../.env ./bsin-paas-os/server-apps/oms -rvf
 
 echo "6. end copy jar "
 
@@ -104,6 +101,9 @@ cp -rvf  ../bsin-ui-apps/bsin-ui-data-warehouse/dist/* ./bsin-paas-os/ui-apps/da
 
 ## jiujiu-paas，业务闭源
 cp -rvf  ../../jiujiu-paas/jiujiu-paas-ui/bsin-ui-bigan/dist/* ./bsin-paas-os/ui-apps/bigan/dist/
+
+##
+## cp -r /home/leonard/ssd12/bsin-paas/prj/sea/bsin-ui-sea-condition/dist/* ./bsin-paas-os/ui-apps/sea-condition/dist/
 
 echo "8. end copy frontend dist"
 
