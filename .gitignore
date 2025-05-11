@@ -64,35 +64,35 @@ bsin-ui-apps/bsin-ui-ai-agent/dist/
 
 bsin-ui-apps/bsin-ui-waas/dist/
 
-docker/bsin-paas-os/server-apps/ai-agent/jar/
+docker/app-service/server-apps/ai-agent/jar/
 
-docker/bsin-paas-os/server-apps/brms/jar/
+docker/app-service/server-apps/brms/jar/
 
-docker/bsin-paas-os/server-apps/upms/jar/
+docker/app-service/server-apps/upms/jar/
 
-docker/bsin-paas-os/server-apps/crm/jar/
+docker/app-service/server-apps/crm/jar/
 
-docker/bsin-paas-os/server-apps/workflow/jar/
+docker/app-service/server-apps/workflow/jar/
 
-docker/bsin-paas-os/server-apps/workflow-admin/jar/
+docker/app-service/server-apps/workflow-admin/jar/
 
-docker/bsin-paas-os/server-apps/waas/jar/
+docker/app-service/server-apps/waas/jar/
 
-docker/bsin-paas-os/server-apps/search/jar/
+docker/app-service/server-apps/search/jar/
 
-docker/bsin-paas-os/server-apps/file/jar/
+docker/app-service/server-apps/file/jar/
 
-docker/bsin-paas-os/ui-apps/ai-agent/dist/
+docker/app-service/ui-apps/ai-agent/dist/
 
-docker/bsin-paas-os/ui-apps/upms/dist/
+docker/app-service/ui-apps/upms/dist/
 
-docker/bsin-paas-os/ui-apps/waas/dist/
+docker/app-service/ui-apps/waas/dist/
 
-docker/bsin-paas-os/targe-gateway/jar/
+docker/app-service/targe-gateway/jar/
 
 docker/middleware/mysql/db/
 
-docker/bsin-paas-os/targe-gateway-admin/jar/
+docker/app-service/targe-gateway-admin/jar/
 
 docker/middleware/mysql/data
 
@@ -100,27 +100,27 @@ docker/middleware/redis/data
 
 bsin-targe-gateway-admin/logs
 
-docker/bsin-paas-os/targe-gateway/logs/
+docker/app-service/targe-gateway/logs/
 
-docker/bsin-paas-os/targe-gateway-admin/logs/
+docker/app-service/targe-gateway-admin/logs/
 
-docker/bsin-paas-os/apps-container/dist/
+docker/app-service/apps-container/dist/
 
-docker/bsin-paas-os/ui-apps/decision-admin/dist/
+docker/app-service/ui-apps/decision-admin/dist/
 
 bsin-ui-apps/bsin-ui-decision-admin/dist/
 
 docker/middleware/emqx/data/
 
-docker/bsin-paas-os/server-apps/community/jar/
+docker/app-service/server-apps/community/jar/
 
-docker/bsin-paas-os/server-apps/oms/jar/
+docker/app-service/server-apps/oms/jar/
 
-docker/bsin-paas-os/ui-apps/bigan/dist/
+docker/app-service/ui-apps/bigan/dist/
 
 docker/middleware/emqx/log/
 
-docker/bsin-paas-os/server-apps/iot/jar/iot-server-2.0.0-SNAPSHOT.jar
+docker/app-service/server-apps/iot/jar/iot-server-2.0.0-SNAPSHOT.jar
 
 bsin-ui-apps/bsin-ui-sea-condition
 
@@ -128,6 +128,6 @@ bsin-ui-apps/bsin-ui-sea-condition
 
 .env.yue17
 
-docker/bsin-paas-os/ui-apps/sea-condition/dist/
+docker/app-service/ui-apps/sea-condition/dist/
 
-docker/bsin-paas-os/ui-apps/bigan/dist/
+docker/app-service/ui-apps/bigan/dist/

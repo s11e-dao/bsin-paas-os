@@ -18,9 +18,9 @@
 package me.flyray.bsin.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
 import me.flyray.bsin.validate.AddGroup;
 
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.StringJoiner;

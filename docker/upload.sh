@@ -15,4 +15,4 @@ rsync -arv --progress \
 	--exclude=./middleware/redis/data/* \
 	--exclude=./middleware/mysql/data/* \
 	--exclude=*.log \
-	./* $REMOTE:~/bsin-paas-os/
+	./* $REMOTE:~/app-service/

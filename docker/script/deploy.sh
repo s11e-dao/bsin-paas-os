@@ -13,10 +13,14 @@ build(){
 	docker-compose build
 }
 
-
 # clean程序
 clean(){
   ./script/package.sh
+}
+
+# mkdir程序
+mkdir(){
+  ./script/mkdir.sh
 }
 
 # copy程序
@@ -153,6 +157,9 @@ case "$1" in
 ;;
 "clean")
 	clean
+;;
+"mkdir")
+	mkdir
 ;;
 "copy")
 	copy

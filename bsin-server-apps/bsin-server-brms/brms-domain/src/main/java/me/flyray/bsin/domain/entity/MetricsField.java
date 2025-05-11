@@ -1,14 +1,14 @@
     package me.flyray.bsin.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 import me.flyray.bsin.validate.AddGroup;
 import me.flyray.bsin.validate.EditGroup;
 
-import javax.validation.constraints.NotBlank;
 
-/**
+    /**
  * 指标字段实体
  */
 @Data
