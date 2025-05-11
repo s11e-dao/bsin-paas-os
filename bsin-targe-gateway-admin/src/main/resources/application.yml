@@ -70,7 +70,7 @@ shenyu:
     websocket:
       enabled: true
       messageMaxSize: 10240
-      allowOrigins: ws://${BSIN_WEBSOCKET_HOST}:9195;ws://${BSIN_WEBSOCKET_HOST}:9195;
+      allowOrigins: "*"
 #    apollo:
 #      meta: http://localhost:8080
 #      appId: shenyu

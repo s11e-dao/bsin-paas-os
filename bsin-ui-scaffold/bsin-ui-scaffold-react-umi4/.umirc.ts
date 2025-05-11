@@ -1,6 +1,7 @@
 import routes from './config/routes'
 
 export default {
+  esbuildMinifyIIFE: true,
   // 开启request
   request: {
     dataField: '', //空为拿到后端的原始数据

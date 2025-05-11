@@ -29,14 +29,14 @@ mkdir -p ./app-service/server-apps/iot/jar
 mkdir -p ./app-service/targe-gateway/jar
 mkdir -p ./app-service/targe-gateway-admin/jar
 
-mkdir -p ./app-service/apps-container/dist/
-mkdir -p ./app-service/ui-apps/ai-agent/dist/
-mkdir -p ./app-service/ui-apps/decision-admin/dist/
-mkdir -p ./app-service/ui-apps/upms/dist/
-mkdir -p ./app-service/ui-apps/waas/dist/
-mkdir -p ./app-service/ui-apps/bigan/dist/
-mkdir -p ./app-service/ui-apps/sea-condition/dist/
-mkdir -p ./app-service/ui-apps/data-warehouse/dist/
+#mkdir -p ./app-service/apps-container/dist/
+#mkdir -p ./app-service/ui-apps/ai-agent/dist/
+#mkdir -p ./app-service/ui-apps/decision-admin/dist/
+#mkdir -p ./app-service/ui-apps/upms/dist/
+#mkdir -p ./app-service/ui-apps/waas/dist/
+#mkdir -p ./app-service/ui-apps/bigan/dist/
+#mkdir -p ./app-service/ui-apps/sea-condition/dist/
+#mkdir -p ./app-service/ui-apps/data-warehouse/dist/
 
 echo "2. create dir finished!!!"
 

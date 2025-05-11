@@ -168,9 +168,9 @@ services:
       interval: 5s
       timeout: 25s
       retries: 5
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.17
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.17
 
   bsin-nginx:
     container_name: bsin-nginx
@@ -189,9 +189,9 @@ services:
       - ./middleware/nginx/cert:/home/bsin-paas-os/middleware/nginx/cert
       # 添加HLS目录挂载
       - /home/leonard/ssd12/bsin-paas/bsin-paas-os/hls:/home/bsin-paas-os/middleware/nginx/hls
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.18
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.18
 
 #  bsin-srs:
 #    container_name: bsin-srs
@@ -255,9 +255,11 @@ services:
       - bsin-nacos-standalone
       - bsin-redis
       - bsin-mysql
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.20
+    environment:
+      shenyu.httpPath: http://43.137.62.23:9095
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.20
 
   # targe-gateway
   bsin-targe-gateway:
@@ -287,9 +289,9 @@ services:
       - bsin-mysql
 #      - bsin-nginx
       - bsin-targe-gateway-admin
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.21
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.21
 
   # server-apps
   bsin-server-upms:
@@ -313,9 +315,9 @@ services:
       - bsin-redis
       - bsin-mysql
       - bsin-targe-gateway
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.22
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.22
 
   bsin-server-crm:
     container_name: bsin-server-crm
@@ -338,9 +340,9 @@ services:
       - bsin-redis
       - bsin-mysql
       - bsin-targe-gateway
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.23
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.23
 
   bsin-server-brms:
     container_name: bsin-server-brms
@@ -363,9 +365,9 @@ services:
       - bsin-redis
       - bsin-mysql
       - bsin-targe-gateway
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.24
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.24
 
   bsin-server-app-agent:
     container_name: bsin-server-app-agent
@@ -388,9 +390,9 @@ services:
       - bsin-redis
       - bsin-mysql
       - bsin-targe-gateway
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.25
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.25
 
   bsin-server-waas:
     container_name: bsin-server-waas
