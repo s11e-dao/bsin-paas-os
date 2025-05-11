@@ -42,7 +42,6 @@ mkdir -p ./bsin-paas-os/ui-apps/data-warehouse/dist/
 echo "2. create dir finished!!!"
 
 
-
 # 复制sql文件
 echo "3. begin copy sql "
 #cp ../sql/timeless_seckill.sql ./mysql/db
