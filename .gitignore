@@ -108,6 +108,8 @@ docker/app-service/apps-container/dist/
 
 docker/app-service/ui-apps/decision-admin/dist/
 
+docker/app-service/ui-apps/data-warehouse/dist/
+
 bsin-ui-apps/bsin-ui-decision-admin/dist/
 
 docker/middleware/emqx/data/

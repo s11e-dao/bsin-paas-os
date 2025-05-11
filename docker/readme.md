@@ -86,7 +86,7 @@ bash ./script/package.sh all
 nginx镜像配置: 如果不需要域名访问，则不需要配置，注释掉deploy.sh脚本里面得bsin-nginx
 /docker/middleware/nginx/conf/nginx.conf
 
-## 修改完配置文件
+## 镜像环境准备
 .env配置文件
 
 ### 创建镜像目录
@@ -107,7 +107,7 @@ sh upload.sh root@47.105.xx.xxx
 ```
 
 
-## bsin-paas-os docker 镜像构建
+## 镜像构建
 ### 一键构建前后端程序镜像
 
 ```shell
