@@ -82,7 +82,7 @@ bash ./script/package.sh server_apps
 bash ./script/package.sh all
 ```
 
-## 四、修改 Docker 镜像中 IP 与环境
+## 三、修改 Docker 镜像中 IP 与环境
 
 1. **Nginx**（域名访问情况配置）
     - 若无需域名，注释或移除 `deploy.sh` 中对 `bsin-nginx` 镜像的域名配置。
@@ -94,7 +94,7 @@ bash ./script/package.sh all
 3**环境变量**
    - 修改 docker-compose.yml 中的 shenyu.httpPath地址
 
-## 五、部署脚本与目录
+## 四、部署脚本与目录
 
 ### 1. 创建镜像构建目录
 ```bash
@@ -112,7 +112,7 @@ bash ./script/deploy.sh copy
 sh upload.sh root@47.105.xx.xxx
 ```
 
-## 六、镜像构建与容器管理
+## 五、镜像构建与容器管理
 
 在镜像构建目录下执行：
 ```bash
@@ -130,14 +130,14 @@ bash ./script/deploy.sh down   # 如需在脚本中自定义，可添加该命�
 ```
 - 启动成功后访问：<http://localhost:8000>
 
-## 七、Docker UI 服务（可选）
+## 六、Docker UI 服务（可选）
 使用 Portainer 管理容器：
 ```bash
 docker-compose -f portainer.yml up -d
 ```
 访问：<http://localhost:9000>
 
-## 八、常见问题 (FAQ)
+## 七、常见问题 (FAQ)
 
 1. **镜像构建失败**
     - 设置 Docker 代理：[Docker 代理快速配置指南](https://cloud-atlas.readthedocs.io/zh-cn/latest/docker/network/docker_proxy_quickstart.html)
@@ -170,7 +170,7 @@ docker-compose -f portainer.yml up -d
 5. **云服务器访问不到服务**
     - 检查安全组／防火墙，确保放通必要端口。
 
-## 九、端口说明
+## 八、端口说明
 
 | 端口   | 服务名称             |
 |------|------------------|
