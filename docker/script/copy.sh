@@ -39,7 +39,7 @@ cp ../.env ./app-service/server-apps/upms -rvf
 cp ../.env ./app-service/server-apps/waas -rvf
 cp ../.env ./app-service/server-apps/workflow -rvf
 cp ../.env ./app-service/server-apps/workflow-admin -rvf
-cp ../.env ./app-service/server-apps/oms -rvf
+#cp ../.env ./app-service/server-apps/oms -rvf
 cp ../.env ./app-service/server-apps/iot -rvf
 cp ../.env ./app-service/targe-gateway-admin -rvf
 cp ../.env ./app-service/targe-gateway -rvf

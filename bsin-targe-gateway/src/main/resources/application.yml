@@ -232,7 +232,8 @@ shenyu:
   sync:
     websocket:
       urls: ws://${BSIN_WEBSOCKET_HOST_PORT}/websocket
-      allowOrigin: '*'
+      allowOrigin: ws://${BSIN_WEBSOCKET_HOST}:9195
+#      allowOrigin: '*'
 #    apollo:
 #      appId: shenyu
 #      meta: http://localhost:8080
