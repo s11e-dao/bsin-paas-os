@@ -21,7 +21,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     volumes:
-      # - ./config:/usr/share/elasticsearch/config
+#      - es_config:/usr/share/elasticsearch/config
       - es_data:/usr/share/elasticsearch/data
       - es_plugins:/usr/share/elasticsearch/plugins
     networks:

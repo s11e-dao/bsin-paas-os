@@ -298,6 +298,12 @@ POST /vector_index/_search
 
 ## compose安装
 
+# 启动 
+docker-compose up -d
+
+停止
+docker-compose down
+
 查看容器日志
 sudo docker logs es01
 
