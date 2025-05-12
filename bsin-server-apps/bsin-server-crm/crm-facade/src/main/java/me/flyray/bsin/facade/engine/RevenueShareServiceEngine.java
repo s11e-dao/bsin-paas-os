@@ -24,7 +24,7 @@ package me.flyray.bsin.facade.engine;
  *             └───┬──────────┘
  *                 │
  *     ┌───────────┴───────────┐
- *     │ 分账规则提供者（DB/配置）│
+ *     │ 分账规则提供者（DB/配置） │
  *     └───────────────────────┘
  */
 public interface RevenueShareServiceEngine {
