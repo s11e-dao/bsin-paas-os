@@ -52,7 +52,7 @@ wx:
     useRedis: false
     redisConfig:
       host: ${CRM_REDIS_HOST}
-      port: 6380
+      port: ${CRM_REDIS_PORT}
     configs:
       - appId: 11 # 第一个公众号的appid
         secret: 11 # 公众号的appsecret
@@ -65,7 +65,7 @@ wx:
   config-storage:
     redis:
       host: ${CRM_REDIS_HOST}
-      port: 6380
+      port: ${CRM_REDIS_PORT}
       password: ${CRM_REDIS_PASSWORD}
 --- # redis 单机配置(单机与集群只能开启一个另一个需要注释掉)
 
