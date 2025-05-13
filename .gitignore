@@ -127,8 +127,7 @@ docker/app-service/server-apps/iot/jar/iot-server-2.0.0-SNAPSHOT.jar
 bsin-ui-apps/bsin-ui-sea-condition
 
 .env
-
-.env.yue17
+.env.prd
 
 docker/app-service/ui-apps/sea-condition/dist/
 
