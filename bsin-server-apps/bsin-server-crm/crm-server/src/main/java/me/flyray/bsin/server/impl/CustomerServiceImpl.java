@@ -88,7 +88,6 @@ public class CustomerServiceImpl implements CustomerService {
   @Autowired private CustomerBiz customerBiz;
   @Autowired private MemberMapper memberMapper;
   @Autowired private AccountBiz customerAccountBiz;
-  @Autowired private BondingCurveTokenParamMapper bondingCurveTokenParamMapper;
   @Autowired private SignUtils signUtils;
   @Autowired private WxPortalController wxPortalController;
   @Autowired
@@ -796,10 +795,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     // 2.商户发行的劳动价值捕获积分(基于联合曲线发行)
-    BondingCurveTokenParam bondingCurveTokenParam =
-        bondingCurveTokenParamMapper.selectOne(
-            new LambdaQueryWrapper<BondingCurveTokenParam>()
-                .eq(BondingCurveTokenParam::getMerchantNo, merchantNo));
+    BondingCurveTokenParam bondingCurveTokenParam = null;
+//        bondingCurveTokenParamMapper.selectOne(
+//            new LambdaQueryWrapper<BondingCurveTokenParam>()
+//                .eq(BondingCurveTokenParam::getMerchantNo, merchantNo));
     if (bondingCurveTokenParam != null) {
       // 根据币种查询对应账户余额
       // .1 联合曲线余额账户： 扣除释放的账户

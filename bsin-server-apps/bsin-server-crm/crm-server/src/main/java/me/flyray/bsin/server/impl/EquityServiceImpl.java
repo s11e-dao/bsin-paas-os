@@ -31,7 +31,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import static me.flyray.bsin.constants.ResponseCode.EQUITY_NOT_EXISTS;
-import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
 
 /**
  * @author bolei
@@ -50,6 +49,7 @@ public class EquityServiceImpl implements EquityService {
   @DubboReference(version = "${dubbo.provider.version}")
   private DigitalAssetsItemService digitalAssetsItemService;
 
+  // TODO 改造成泛化调用
   @DubboReference(version = "${dubbo.provider.version}")
   private BondingCurveTokenService bondingCurveTokenService;
 
