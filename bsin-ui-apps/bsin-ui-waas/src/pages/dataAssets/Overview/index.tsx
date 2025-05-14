@@ -33,8 +33,8 @@ export default function SaaSDashboard() {
   return (
     <Card>
       <header>
-        <h1 style={{ marginBottom: "0" }}>RWA数据资产总览</h1>
-        <p style={{ color: "#6b7280" }} className="text-gray-500 mb-4">实时监控链上真实世界资产的表现与趋势</p>
+        <h1 style={{ marginBottom: "0" }}>RDA数据资产总览</h1>
+        <p style={{ color: "#6b7280" }} className="text-gray-500 mb-4">实时监控链上真实数据资产的表现与趋势</p>
       </header>
 
       <div style={{}}>
@@ -59,12 +59,12 @@ export default function SaaSDashboard() {
         {/* Content Cards */}
         <div style={{ display: 'flex', gap: '16px' }}>
           {/* Overview Card */}
-          <Card title="rwa资产" style={{ flex: 1 }}>
+          <Card title="RDA资产" style={{ flex: 1 }}>
             <div>
               <Text type="secondary" style={{ fontSize: '12px', display: 'block' }}>余额</Text>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Avatar size="small" style={{ backgroundColor: '#faad14', marginRight: '8px' }}>R</Avatar>
-                <Text>0 RWA</Text>
+                <Text>0 RDA</Text>
               </div>
             </div>
             <Divider style={{ margin: '12px 0' }} />
