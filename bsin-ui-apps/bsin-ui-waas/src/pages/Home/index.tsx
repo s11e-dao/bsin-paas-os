@@ -1,80 +1,151 @@
-import React, { useState } from 'react';
-import { Card, Row, Col, Typography } from 'antd';
-import {
-  IdcardOutlined,
-  DollarOutlined,
-  BgColorsOutlined,
-} from '@ant-design/icons';
-import {
-  getLocalStorageInfo
-} from '@/utils/localStorageInfo';
+import { ProCard, StatisticCard } from '@ant-design/pro-components';
+const { Statistic } = StatisticCard;
+import RcResizeObserver from 'rc-resize-observer';
+import { useState } from 'react';
 
-import Authentication from '../../components/Authentication';
-
-// Your component
-const FeatureCards = () => {
-
-  const [merchantInfo, setMerchantInfo] = useState<{}>();
-  const [userInfo, setUserInfo] = useState<{}>();
-  React.useEffect(() => {
-    // 获取商户信息
-    setMerchantInfo(getLocalStorageInfo('merchantInfo'))
-    setUserInfo(getLocalStorageInfo('userInfo'))
-    console.log(getLocalStorageInfo('merchantInfo')?.authenticationStatus)
-    console.log(getLocalStorageInfo('userInfo')?.type)
-  }, []);
-
-  const cardStyle = {
-    borderRadius: '10px', // Adjust as necessary
-    margin: '10px',
-    textAlign: 'center',
-    boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)', // Example shadow effect
-  };
-
-  return (
-    <>
-      {/* 判断用户是否已经认证 */}
-      {!userInfo && merchantInfo?.authenticationStatus != 2 ? (
-        <Authentication />
-      ) : (
-        <Card>
-          <div style={{ padding: '30px', height: "80vh" }}>
-            <div style={{ margin: "auto", width: "300px", textAlign: "center", marginTop: "100px" }}>
-              <Typography.Title level={1} style={{ margin: 0 }}>
-                欢迎使用
-              </Typography.Title>
-              <p>
-                现在，从阅读文档开启使用之旅
-              </p>
-            </div>
-            <Row gutter={16}>
-              <Col span={8}>
-                <Card style={cardStyle}>
-                  <IdcardOutlined style={{ fontSize: '48px', color: '#08c' }} />
-                  <h3>功能描述文案</h3>
-                  <p>附属信息、更多细节</p>
-                </Card>
-              </Col>
-              <Col span={8}>
-                <Card style={cardStyle}>
-                  <DollarOutlined style={{ fontSize: '48px', color: '#8c0' }} />
-                  <h3>功能描述文案</h3>
-                  <p>附属信息、更多细节</p>
-                </Card>
-              </Col>
-              <Col span={8}>
-                <Card style={cardStyle}>
-                  <BgColorsOutlined style={{ fontSize: '48px', color: '#c80' }} />
-                  <h3>功能描述文案</h3>
-                  <p>附属信息、更多细节</p>
-                </Card>
-              </Col>
-            </Row>
-          </div>
-        </Card>
-      )}
-    </>
-  );
+const imgStyle = {
+  display: 'block',
+  width: 42,
+  height: 42,
 };
 
-export default FeatureCards;
+export default () => {
+  const [responsive, setResponsive] = useState(false);
+
+  return (
+    <RcResizeObserver
+      key="resize-observer"
+      onResize={(offset) => {
+        setResponsive(offset.width < 596);
+      }}
+    >
+      <StatisticCard.Group direction={responsive ? 'column' : 'row'}>
+        <StatisticCard
+          statistic={{
+            title: '支付金额',
+            value: 2176,
+            icon: (
+              <img
+                style={imgStyle}
+                src="https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*dr_0RKvVzVwAAAAAAAAAAABkARQnAQ"
+                alt="icon"
+              />
+            ),
+          }}
+        />
+        <StatisticCard
+          statistic={{
+            title: '访客数',
+            value: 475,
+            icon: (
+              <img
+                style={imgStyle}
+                src="https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*-jVKQJgA1UgAAAAAAAAAAABkARQnAQ"
+                alt="icon"
+              />
+            ),
+          }}
+        />
+        <StatisticCard
+          statistic={{
+            title: '成功订单数',
+            value: 87,
+            icon: (
+              <img
+                style={imgStyle}
+                src="https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*FPlYQoTNlBEAAAAAAAAAAABkARQnAQ"
+                alt="icon"
+              />
+            ),
+          }}
+        />
+        <StatisticCard
+          statistic={{
+            title: '浏览量',
+            value: 1754,
+            icon: (
+              <img
+                style={imgStyle}
+                src="https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*pUkAQpefcx8AAAAAAAAAAABkARQnAQ"
+                alt="icon"
+              />
+            ),
+          }}
+        />
+      </StatisticCard.Group>
+
+      <ProCard
+        title="数据概览"
+        extra="2019年9月28日 星期五"
+        split={responsive ? 'horizontal' : 'vertical'}
+        headerBordered
+        bordered
+      >
+        <ProCard split="horizontal">
+          <ProCard split="horizontal">
+            <ProCard split="vertical">
+              <StatisticCard
+                statistic={{
+                  title: '昨日全部流量',
+                  value: 234,
+                  description: (
+                    <Statistic
+                      title="较本月平均流量"
+                      value="8.04%"
+                      trend="down"
+                    />
+                  ),
+                }}
+              />
+              <StatisticCard
+                statistic={{
+                  title: '本月累计流量',
+                  value: 234,
+                  description: (
+                    <Statistic title="月同比" value="8.04%" trend="up" />
+                  ),
+                }}
+              />
+            </ProCard>
+            <ProCard split="vertical">
+              <StatisticCard
+                statistic={{
+                  title: '运行中实验',
+                  value: '12/56',
+                  suffix: '个',
+                }}
+              />
+              <StatisticCard
+                statistic={{
+                  title: '历史实验总数',
+                  value: '134',
+                  suffix: '个',
+                }}
+              />
+            </ProCard>
+          </ProCard>
+          <StatisticCard
+            title="流量走势"
+            chart={
+              <img
+                src="https://gw.alipayobjects.com/zos/alicdn/_dZIob2NB/zhuzhuangtu.svg"
+                width="100%"
+              />
+            }
+          />
+        </ProCard>
+        <StatisticCard
+          title="流量占用情况"
+          chart={
+            <img
+              src="https://gw.alipayobjects.com/zos/alicdn/qoYmFMxWY/jieping2021-03-29%252520xiawu4.32.34.png"
+              alt="大盘"
+              width="100%"
+            />
+          }
+        />
+      </ProCard>
+      
+    </RcResizeObserver>
+  );
+};
