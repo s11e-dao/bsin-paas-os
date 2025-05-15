@@ -199,19 +199,6 @@ public interface TrustedDataSpaceConnector {
                     .addCustomHeader("X-Client-Version", "1.0.0")
                     .build();
 
-            // 使用连接器
-            connector.connect(); // 显式连接 (如果需要)
-
-            if (connector.isConnected()) {
-                String uploadReceipt = connector.uploadData("doc001", "This is the content of document 001.");
-                System.out.println("Upload receipt: " + uploadReceipt);
-
-                Object downloadedData = connector.downloadData("doc001");
-                System.out.println("Downloaded data: " + downloadedData);
-
-                connector.disconnect();
-            }
-
             // 示例：使用 OAuth2 客户端凭据 (概念性，实际实现需要HTTP客户端支持)
             TrustedDataSpaceConnector oauthConnector = TrustedDataSpaceConnector.builder()
                     .endpointUrl("https://auth.mytrusteddataspace.com/token") // 通常是 token 端点
