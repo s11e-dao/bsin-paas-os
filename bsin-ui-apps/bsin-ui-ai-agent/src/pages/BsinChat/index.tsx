@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { chats } from './mocks/threebody';
 import { Card } from 'antd';
 
 import { ChatBox } from 'bsin-agent-ui'
