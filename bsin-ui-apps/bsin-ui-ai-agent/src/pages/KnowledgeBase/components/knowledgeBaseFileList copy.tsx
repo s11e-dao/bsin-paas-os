@@ -42,7 +42,7 @@ import {
 } from '../../../utils/localStorageInfo'
 
 const KnowledgeBaseFile: React.FC = ({ routeChange, chatUIProps }) => {
-
+  
   let bsinFileUploadUrl = process.env.bsinFileUploadUrl
   let tenantAppType = process.env.tenantAppType
   let storeMethod = process.env.storeMethod
@@ -142,7 +142,7 @@ const KnowledgeBaseFile: React.FC = ({ routeChange, chatUIProps }) => {
     onDrop(e) {
       console.log('Dropped files', e.dataTransfer.files)
     },
-    onRemove(e) { },
+    onRemove(e) {},
   }
 
   useEffect(() => {
@@ -183,7 +183,27 @@ const KnowledgeBaseFile: React.FC = ({ routeChange, chatUIProps }) => {
 
   // 点击新增
   const confirmAdd = () => {
-    routeChange(null, 'knowledgeBaseFileUpload')
+    addFormRef
+      .validateFields()
+      .then(async () => {
+        var response = addFormRef?.getFieldsValue()
+        // 11只用于前端区分，本质上还是 url
+        if (selectType == '11') {
+          response.type = '1'
+        }
+        console.log(response)
+        let res = await addKnowledgeBaseFile({ ...response })
+        if (res.code == '000000') {
+          message.success('新增成功')
+          // 重置表单
+          addFormRef.resetFields()
+          setIsAddFormModal(false)
+          actionRef.current?.reload()
+        } else {
+          message.error(res.message)
+        }
+      })
+      .catch(() => {})
   }
 
   // 点击编辑
@@ -216,7 +236,7 @@ const KnowledgeBaseFile: React.FC = ({ routeChange, chatUIProps }) => {
           message.error(res.message)
         }
       })
-      .catch(() => { })
+      .catch(() => {})
   }
 
   // 点击详情
@@ -241,7 +261,7 @@ const KnowledgeBaseFile: React.FC = ({ routeChange, chatUIProps }) => {
           message.error(res.message)
         }
       })
-      .catch(() => { })
+      .catch(() => {})
   }
 
   // 点击删除
@@ -275,37 +295,6 @@ const KnowledgeBaseFile: React.FC = ({ routeChange, chatUIProps }) => {
     console.log(value)
     setSelectType(value)
   }
-
-  const [selectedOption, setSelectedOption] = useState('file');
-
-  const handleOptionChange = (e) => {
-    setSelectedOption(e.target.value);
-  };
-
-  const renderContent = () => {
-    switch (selectedOption) {
-      case 'file':
-        return (
-          <div className="p-4 text-gray-500 text-sm">
-            上传 PDF、TXT、DOCX 等格式的文件
-          </div>
-        );
-      case 'url':
-        return (
-          <div className="p-4 text-gray-500 text-sm">
-            读取静态网页内容作为数据集
-          </div>
-        );
-      case 'text':
-        return (
-          <div className="p-4 text-gray-500 text-sm">
-            手动输入一段文本作为数据集
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
 
   return (
     <>
@@ -370,98 +359,109 @@ const KnowledgeBaseFile: React.FC = ({ routeChange, chatUIProps }) => {
         }}
         centered
       >
-        <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-          <div style={{ margin: '20px 0' }}>
-            <Radio.Group onChange={handleOptionChange} value={selectedOption} style={{ width: '100%' }}>
-              <div
-                style={{
-                  border: `1px solid ${selectedOption === 'file' ? '#1890ff' : '#d9d9d9'}`,
-                  borderRadius: '8px',
-                  padding: '20px',
-                  marginBottom: '16px',
-                  backgroundColor: selectedOption === 'file' ? '#e6f7ff' : 'white',
-                  transition: 'all 0.3s',
-                  cursor: 'pointer'
-                }}
-                onMouseEnter={(e) => {
-                  if (selectedOption !== 'file') {
-                    e.currentTarget.style.borderColor = '#40a9ff';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (selectedOption !== 'file') {
-                    e.currentTarget.style.borderColor = '#d9d9d9';
-                  }
-                }}
-              >
-                <Radio value="file" style={{ width: '100%' }}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <span style={{ marginLeft: '8px', fontSize: '16px' }}>本地文件</span>
-                  </div>
-                </Radio>
-                {selectedOption === 'file' && renderContent()}
-              </div>
+        <Form
+          name="basic"
+          form={addFormRef}
+          labelCol={{ span: 7 }}
+          wrapperCol={{ span: 14 }}
+          // 表单默认值
+          initialValues={{
+            type: '1',
+            knowledgeBaseNo: knowledgeBase,
+          }}
+        >
+          <Form.Item label="绑定知识库ID" name="knowledgeBaseNo">
+            <Input disabled />
+          </Form.Item>
+          {/* 类型：1、url 2、文件(FileSystemDocumentLoader) 3、文件夹 4、公众号 */}
+          <Form.Item
+            label="方式"
+            name="type"
+            rules={[{ required: true, message: '请选择添加方式!' }]}
+          >
+            {/* // 类型：1、url-不需要上传文件，直接提供url 2、文件(FileSystemDocumentLoader)-前端先上传至OSS，url的形式提交至后台 3、文件夹 4、公众号 */}
+            <Select
+              value="1"
+              onChange={(value) => {
+                typeChange(value)
+              }}
+            >
+              <Option value="1">url</Option>
+              <Option value="2">文件</Option>
+              {/* <Option value="11">文件</Option> */}
+              <Option value="4">公众号</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="名称"
+            name="name"
+            rules={[{ required: true, message: '请输入名称!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="文件类型"
+            name="fileType"
+            rules={[{ required: true, message: '请输入文件类型!' }]}
+          >
+            {/* // 文件类型： pdf|md|doc|... */}
+            <Input disabled placeholder="根据上传文件自动填充" />
+          </Form.Item>
+          {selectType == '2' || selectType == '11' ? (
+            <Form.Item label="知识库文件" name="fileUri">
+              <Dragger {...uploadProps} listType="text">
+                <p className="ant-upload-drag-icon">
+                  <InboxOutlined />
+                </p>
+                <p className="ant-upload-text">点击上传</p>
+              </Dragger>
+              <Form.Item style={{marginTop: "20px"}} label="文件" name="content">
+                <Input disabled />
+              </Form.Item>
+              <Form.Item label="本地路径" name="localPath">
+                <Input disabled />
+              </Form.Item>
+            </Form.Item>
+          ) : selectType == '1' ? (
+            <Form.Item
+              label="知识库文件URL"
+              name="fileUri"
+              rules={[{ required: true, message: '请输入知识库文件URL!' }]}
+            >
+              <Input placeholder="输入知识库文件的url" />
+            </Form.Item>
+          ) : selectType == '4' ? (
+            <Form.Item
+              label="公众号名称"
+              name="mpName"
+              rules={[{ required: true, message: '请输入公众号名称!' }]}
+            >
+              <Input placeholder="请输入公众号名称" />
+            </Form.Item>
+          ) : (
+            <Form.Item
+              label="文件夹"
+              name="filePath"
+              rules={[{ required: true, message: '请选择文件夹!' }]}
+            >
+              <Input placeholder="输入知识文件夹" />
+            </Form.Item>
+          )}
+          <Form.Item
+            label="知识库内容"
+            name="content"
+            rules={[{ required: true, message: '请输入文件内容!' }]}
+          >
+            <TextArea placeholder="自动根据上传的文件填充，亦可手动修改" />
+          </Form.Item>
 
-              <div
-                style={{
-                  border: `1px solid ${selectedOption === 'text' ? '#1890ff' : '#d9d9d9'}`,
-                  borderRadius: '8px',
-                  padding: '20px',
-                  marginBottom: '16px',
-                  backgroundColor: selectedOption === 'text' ? '#e6f7ff' : 'white',
-                  transition: 'all 0.3s',
-                  cursor: 'pointer'
-                }}
-                onMouseEnter={(e) => {
-                  if (selectedOption !== 'text') {
-                    e.currentTarget.style.borderColor = '#40a9ff';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (selectedOption !== 'text') {
-                    e.currentTarget.style.borderColor = '#d9d9d9';
-                  }
-                }}
-              >
-                <Radio value="text" style={{ width: '100%' }}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <span style={{ marginLeft: '8px', fontSize: '16px' }}>自定义文本</span>
-                  </div>
-                </Radio>
-                {selectedOption === 'text' && renderContent()}
-              </div>
-
-              <div
-                style={{
-                  border: `1px solid ${selectedOption === 'url' ? '#1890ff' : '#d9d9d9'}`,
-                  borderRadius: '8px',
-                  padding: '20px',
-                  marginBottom: '16px',
-                  backgroundColor: selectedOption === 'url' ? '#e6f7ff' : 'white',
-                  transition: 'all 0.3s',
-                  cursor: 'pointer'
-                }}
-                onMouseEnter={(e) => {
-                  if (selectedOption !== 'url') {
-                    e.currentTarget.style.borderColor = '#40a9ff';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (selectedOption !== 'url') {
-                    e.currentTarget.style.borderColor = '#d9d9d9';
-                  }
-                }}
-              >
-                <Radio value="url" style={{ width: '100%' }}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <span style={{ marginLeft: '8px', fontSize: '16px' }}>网页链接</span>
-                  </div>
-                </Radio>
-                {selectedOption === 'url' && renderContent()}
-              </div>
-            </Radio.Group>
-          </div>
-        </div>
+          <Form.Item label="描述" name="description">
+            <TextArea
+              placeholder="请输入相关描述信息"
+              autoSize={{ minRows: 2, maxRows: 8 }}
+            />
+          </Form.Item>
+        </Form>
       </Modal>
       {/* 编辑模态框 */}
       <Modal

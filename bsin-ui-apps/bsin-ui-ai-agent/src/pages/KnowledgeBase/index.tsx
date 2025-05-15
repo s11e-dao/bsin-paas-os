@@ -8,6 +8,7 @@ import {
 } from '../../utils/localStorageInfo'
 
 export default () => {
+  
   // 控制是否展示详情组件
   const [isLoadKnowledgeBaseDetail, setIsLoadKnowledgeBaseDetail] = useState(
     false,

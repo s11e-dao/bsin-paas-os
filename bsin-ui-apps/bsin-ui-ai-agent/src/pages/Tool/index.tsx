@@ -10,7 +10,7 @@ const contentMap = {
     <PageContainer>
       <Descriptions title="我的工具集合" />
       <Tabs defaultActiveKey="1">
-        <Tabs.TabPane tab="通用工具集" key="1">
+        <Tabs.TabPane tab="MCP通用工具" key="1">
           <ToolList />
         </Tabs.TabPane>
         <Tabs.TabPane tab="微信平台" key="3">

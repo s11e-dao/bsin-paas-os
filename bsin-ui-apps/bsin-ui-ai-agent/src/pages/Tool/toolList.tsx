@@ -225,7 +225,7 @@ export default () => {
         actionRef={actionRef}
         scroll={{ x: 900 }}
         bordered
-        headerTitle={<TableTitle title="AI工具集" />}
+        headerTitle={<TableTitle title="MCP通用工具" />}
         columns={columns}
         // 请求数据
         request={async (params) => {

@@ -38,6 +38,7 @@ const KnowledgeBaseFileDetail: React.FC = ({
   routeChange,
   knowledgeBaseFileRecord,
 }) => {
+  
   // 新增模态框
   const [isAddFormModal, setIsAddFormModal] = useState(false)
   // 编辑模态框

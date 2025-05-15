@@ -11,24 +11,6 @@ import java.util.concurrent.TimeUnit;
 public interface TrustedDataSpaceConnector {
 
     /**
-     * (示例方法) 连接到可信数据空间。
-     * 实际实现中可能在首次调用操作时隐式连接，或提供显式连接方法。
-     * @throws ConnectionException 如果连接失败
-     */
-    void connect() throws ConnectionException;
-
-    /**
-     * (示例方法) 关闭与可信数据空间的连接。
-     */
-    void disconnect();
-
-    /**
-     * (示例方法) 检查连接状态。
-     * @return 如果已连接则返回 true，否则返回 false。
-     */
-    boolean isConnected();
-
-    /**
      * (示例方法) 上传数据到可信数据空间。
      * @param dataId 数据唯一标识符
      * @param payload 要上传的数据

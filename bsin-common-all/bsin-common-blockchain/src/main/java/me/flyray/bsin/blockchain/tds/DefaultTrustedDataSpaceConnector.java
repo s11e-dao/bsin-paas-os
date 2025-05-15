@@ -52,36 +52,7 @@ class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnector {
     }
 
     @Override
-    public void connect() throws ConnectionException {
-        System.out.println("Attempting to connect to " + endpointUrl + "...");
-        // 实际的连接逻辑 (例如，建立HTTP/2连接, 执行握手等)
-        // 此处仅为模拟
-        if (endpointUrl.contains("fail")) { // 模拟连接失败
-            throw new ConnectionException("Failed to connect to " + endpointUrl);
-        }
-        this.connected = true;
-        System.out.println("Successfully connected.");
-    }
-
-    @Override
-    public void disconnect() {
-        System.out.println("Disconnecting from " + endpointUrl + "...");
-        this.connected = false;
-        // 实际的断开连接逻辑
-        System.out.println("Disconnected.");
-    }
-
-    @Override
-    public boolean isConnected() {
-        return this.connected;
-    }
-
-    @Override
     public String uploadData(String dataId, Object payload) throws DataOperationException {
-        if (!isConnected()) {
-            // 或者尝试自动连接： connect();
-            throw new DataOperationException("Not connected. Cannot upload data.");
-        }
         System.out.println("Uploading data with ID '" + dataId + "' to " + endpointUrl);
         // 实际的上传逻辑
         return "upload-receipt-" + dataId + "-" + System.currentTimeMillis();
@@ -89,9 +60,6 @@ class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnector {
 
     @Override
     public Object downloadData(String dataId) throws DataOperationException {
-        if (!isConnected()) {
-            throw new DataOperationException("Not connected. Cannot download data.");
-        }
         System.out.println("Downloading data with ID '" + dataId + "' from " + endpointUrl);
         // 实际的下载逻辑
         return "Downloaded data for " + dataId;
@@ -121,4 +89,5 @@ class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnector {
     // 在这里可以添加其他 getter 方法来暴露配置信息，如果需要的话。
     // 例如: getClientId(), getConnectTimeoutMillis() 等。
     // 密码和证书内容通常不应通过 getter 直接暴露。
+
 }

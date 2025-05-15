@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import KnowledgeBaseFileList from './knowledgeBaseFileList'
 import KnowledgeBaseFileDetail from './knowledgeBaseFileDetail'
+import KnowledgeBaseFileUpload from './knowledgeBaseFileUpload'
+
 
 const KnowledgeBaseFile: React.FC = ({ chatUIProps }) => {
   const [currentContent, setCurrentContent] = useState('knowledgeBaseFileList')
@@ -23,6 +25,14 @@ const KnowledgeBaseFile: React.FC = ({ chatUIProps }) => {
     if (currentContent == 'knowledgeBaseFileDetail') {
       conentComp = (
         <KnowledgeBaseFileDetail
+          routeChange={routeChange}
+          knowledgeBaseFileRecord={knowledgeBaseFileRecord}
+        />
+      )
+    }
+    if (currentContent == 'knowledgeBaseFileUpload') {
+      conentComp = (
+        <KnowledgeBaseFileUpload
           routeChange={routeChange}
           knowledgeBaseFileRecord={knowledgeBaseFileRecord}
         />

@@ -27,15 +27,15 @@ export default ({
   chatUIProps,
 }) => {
   const menuMap: Record<string, React.ReactNode> = {
-    base: '基本设置',
-    modelSetting: '模型设置',
     knowledgeBaseFile: '知识库文件',
     dataRecallTest: '召回测试',
+    base: '基本设置',
+    modelSetting: '模型设置',
   }
 
   const [initConfig, setInitConfig] = useState<SettingsState>({
     mode: 'inline',
-    selectKey: 'base',
+    selectKey: 'knowledgeBaseFile',
   })
   const dom = useRef<HTMLDivElement>()
 
