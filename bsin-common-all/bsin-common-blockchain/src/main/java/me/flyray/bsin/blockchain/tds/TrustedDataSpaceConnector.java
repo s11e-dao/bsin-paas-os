@@ -218,10 +218,7 @@ public interface TrustedDataSpaceConnector {
             System.out.println("Proxied Connector Endpoint: " + proxiedConnector.getEndpointUrl());
 
 
-        } catch (TrustedDataSpaceConnector.ConnectionException | TrustedDataSpaceConnector.DataOperationException e) {
-            System.err.println("Operation failed: " + e.getMessage());
-            // e.printStackTrace(); // 打印完整堆栈跟踪以进行调试
-        } catch (IllegalStateException e) {
+        }catch (IllegalStateException e) {
             System.err.println("Configuration error: " + e.getMessage());
         }
     }
