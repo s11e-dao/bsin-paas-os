@@ -96,7 +96,7 @@ bash ./script/package.sh all
 
 ## 四、部署脚本与目录
 
-### 1. 创建镜像构建目录
+### 1. 创建镜像构建目录（创建一次）
 ```bash
 bash ./script/deploy.sh mkdir
 ```
