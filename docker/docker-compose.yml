@@ -45,8 +45,8 @@ services:
       - ./middleware/mysql/db:/docker-entrypoint-initdb.d/
     command: 
       - mysqld
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_general_ci
+      - --character-set-server=utf8
+      - --collation-server=utf8_general_ci
       - --explicit_defaults_for_timestamp=true
       - --lower_case_table_names=1
       - --host_cache_size=0
@@ -56,9 +56,40 @@ services:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_USER: bsin
       MYSQL_PASSWORD: 123456
+      MYSQL_DATABASE: bsin_paas  # 添加默认数据库
     networks:
       compose-network:
         ipv4_address: 172.28.0.12
+
+
+  # bsin-mysql-5-7:
+  #   container_name: bsin-mysql-5-7
+  #   image: bsin-mysql:2.0.0
+  #   build:
+  #     context: middleware/mysql_5_7
+  #   ports:
+  #     - "3307:3306"
+  #   volumes:
+  #     - ./middleware/mysql_5_7/conf:/etc/mysql/conf.d
+  #     - ./middleware/mysql_5_7/logs:/logs
+  #     - ./middleware/mysql_5_7/data:/var/lib/mysql
+  #     - ./middleware/mysql_5_7/db:/docker-entrypoint-initdb.d/
+  #   command: 
+  #     - mysqld
+  #     - --character-set-server=utf8
+  #     - --collation-server=utf8_general_ci
+  #     - --explicit_defaults_for_timestamp=true
+  #     - --lower_case_table_names=1
+  #     - --host_cache_size=0
+  #     - --authentication_policy=caching_sha2_password
+  #   environment:
+  #     TZ: Asia/Shanghai
+  #     MYSQL_ROOT_PASSWORD: 123456
+  #     MYSQL_USER: bsin
+  #     MYSQL_PASSWORD: 123456
+  #   networks:
+  #     compose-network:
+  #       ipv4_address: 172.28.0.14
 
   bsin-redis:
     container_name: bsin-redis
@@ -182,6 +213,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "9011:9011"
     #    restart: always
     privileged: true                                              # 获取宿主机root权限
     volumes:
@@ -193,6 +225,7 @@ services:
       # 挂载 iot 的 hls 文件
       - ./bsin-paas-os/server-apps/iot/hls:/home/bsin-paas-os/middleware/nginx/hls
 #      - /root/bsin-paas-os/bsin-paas-os/server-apps/iot/hls:/home/bsin-paas-os/middleware/nginx/hls
+      - ./middleware/nginx/images:/home/bsin-paas-os/middleware/nginx/images
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.18
