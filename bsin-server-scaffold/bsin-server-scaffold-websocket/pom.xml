@@ -62,9 +62,15 @@
         <dependency>
             <groupId>me.flyray.bsin</groupId>
             <artifactId>bsin-common-security</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>${dubbo.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

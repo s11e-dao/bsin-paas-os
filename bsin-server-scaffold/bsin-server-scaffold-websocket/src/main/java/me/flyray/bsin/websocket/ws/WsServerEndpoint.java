@@ -51,7 +51,7 @@ public class WsServerEndpoint {
      * @param session session
      */
     @OnOpen
-    public void onOpen(@PathParam("key") String key, final Session session, EndpointConfig config) {
+    public void onOpen(@PathParam("toNo") String toNo, final Session session, EndpointConfig config) {
         String bizRoleType =  (String) config.getUserProperties().get("bizRoleType");
         String bizRoleTypeNo =  (String) config.getUserProperties().get("bizRoleTypeNo");
         String username =  (String) config.getUserProperties().get("username");

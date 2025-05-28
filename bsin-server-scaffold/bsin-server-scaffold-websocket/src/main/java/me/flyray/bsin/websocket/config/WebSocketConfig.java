@@ -37,4 +37,5 @@ public class WebSocketConfig {
     public ServerEndpointExporter serverEndpoint() {
         return new ServerEndpointExporter();
     }
+
 }

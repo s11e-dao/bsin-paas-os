@@ -58,7 +58,6 @@
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
             <version>${dubbo.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

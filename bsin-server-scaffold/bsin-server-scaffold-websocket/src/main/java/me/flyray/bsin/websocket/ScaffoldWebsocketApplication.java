@@ -38,7 +38,6 @@ public class ScaffoldWebsocketApplication {
      * @param args startup arguments
      */
     public static void main(final String[] args) {
-        SpringApplication.run(ScaffoldWebsocketApplication.class, args);
         ConfigurableApplicationContext applicationContext =
                 SpringApplication.run(ScaffoldWebsocketApplication.class, args);
         WsServerEndpoint.setApplicationContext(applicationContext);
