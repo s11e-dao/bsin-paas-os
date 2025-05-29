@@ -105,6 +105,7 @@ docker/app-service/targe-gateway/logs/
 docker/app-service/targe-gateway-admin/logs/
 
 docker/app-service/apps-container/dist/
+docker/bsin-paas-os/apps-container/dist-bsin/
 
 docker/app-service/ui-apps/decision-admin/dist/
 
@@ -133,3 +134,29 @@ docker/app-service/ui-apps/sea-condition/dist/
 
 docker/app-service/ui-apps/bigan/dist/
 /docker/app-service/server-apps/app-agent/jar/app-agent-server-3.0.0-SNAPSHOT.jar
+
+docker/bsin-paas-os/ui-apps/bigan/dist/
+
+hls/
+
+docker/bsin-paas-os/apps-container/dist/
+
+docker/bsin-paas-os/ui-apps/ai-agent/dist/
+
+docker/bsin-paas-os/ui-apps/decision-admin/dist/
+
+docker/bsin-paas-os/ui-apps/sea-condition/dist/
+
+docker/bsin-paas-os/ui-apps/waas/dist/
+
+docker/bsin-paas-os/ui-apps/upms/dist/
+
+docker/bsin-paas-os/targe-gateway/logs/
+
+docker/bsin-paas-os/targe-gateway-admin/jar/
+
+docker/bsin-paas-os/targe-gateway/jar/
+
+docker/bsin-paas-os/targe-gateway-admin/logs/
+
+.env.prod
