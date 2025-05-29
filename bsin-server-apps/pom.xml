@@ -6,6 +6,7 @@
     <parent>
         <groupId>me.flyray.bsin</groupId>
         <artifactId>bsin-paas-dependencies</artifactId>
+<!--        <version>${revision}</version>-->
         <version>3.0.0-SNAPSHOT</version>
         <relativePath>../bsin-paas-dependencies/pom.xml</relativePath>
     </parent>
@@ -14,14 +15,15 @@
     <artifactId>bsin-server-apps</artifactId>
     <packaging>pom</packaging>
     <name>bsin-server-apps</name>
-    <version>${revision}</version>
+    <version>3.0.0-SNAPSHOT</version>
+<!--    <version>${revision}</version>-->
     <description>bsin-paas平台：子应用</description>
 
     <modules>
         <module>bsin-server-upms</module>
         <module>bsin-server-crm</module>
         <module>bsin-server-waas</module>
-        <module>bsin-server-app-agent</module>
+<!--        <module>bsin-server-app-agent</module>-->
         <module>bsin-server-file</module>
         <module>bsin-server-brms</module>
         <module>bsin-server-workflow</module>
