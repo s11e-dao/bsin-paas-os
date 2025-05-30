@@ -22,7 +22,7 @@
         <shenyu.version>2.7.0</shenyu.version>
         <spring-boot.version>3.2.0</spring-boot.version>
         <spring.version>6.1.1</spring.version>
-        <spring-ai.version>1.0.0-M7</spring-ai.version>
+        <spring-ai.version>1.0.0</spring-ai.version>
         <spring-ai-alibaba.version>1.0.0.1</spring-ai-alibaba.version>
         <dubbo.version>3.3.4</dubbo.version>
         <pagehelper.version>1.4.6</pagehelper.version>
