@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class AiToolsConfig {
+public class AiMcpToolsConfig {
 
     @Bean
     ToolCallbackProvider tools(OpenMeteoService openMeteoService) {
