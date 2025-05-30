@@ -40,29 +40,29 @@
             <version>1.4</version>
         </dependency>
 
-        <!--ipfs存储-->
-        <dependency>
-            <groupId>com.github.ipfs</groupId>
-            <artifactId>java-ipfs-api</artifactId>
-            <version>v1.3.3</version>
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${project.basedir}/doc/libs/ipfs/java-ipfs-api-1.3.3.jar</systemPath>-->
-        </dependency>
+<!--        &lt;!&ndash;ipfs存储&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.github.ipfs</groupId>-->
+<!--            <artifactId>java-ipfs-api</artifactId>-->
+<!--            <version>v1.3.3</version>-->
+<!--&lt;!&ndash;            <scope>system</scope>&ndash;&gt;-->
+<!--&lt;!&ndash;            <systemPath>${project.basedir}/doc/libs/ipfs/java-ipfs-api-1.3.3.jar</systemPath>&ndash;&gt;-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.github.multiformats</groupId>
-            <artifactId>java-multihash</artifactId>
-            <version>v1.3.0</version>
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${project.basedir}/doc/libs/ipfs/multihash-v1.3.0.jar</systemPath>-->
-        </dependency>
-        <dependency>
-            <groupId>com.github.multiformats</groupId>
-            <artifactId>java-multibase</artifactId>
-            <version>v1.1.0</version>
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${project.basedir}/doc/libs/ipfs/multibase-v1.1.0.jar</systemPath>-->
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.github.multiformats</groupId>-->
+<!--            <artifactId>java-multihash</artifactId>-->
+<!--            <version>v1.3.0</version>-->
+<!--&lt;!&ndash;            <scope>system</scope>&ndash;&gt;-->
+<!--&lt;!&ndash;            <systemPath>${project.basedir}/doc/libs/ipfs/multihash-v1.3.0.jar</systemPath>&ndash;&gt;-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.github.multiformats</groupId>-->
+<!--            <artifactId>java-multibase</artifactId>-->
+<!--            <version>v1.1.0</version>-->
+<!--&lt;!&ndash;            <scope>system</scope>&ndash;&gt;-->
+<!--&lt;!&ndash;            <systemPath>${project.basedir}/doc/libs/ipfs/multibase-v1.1.0.jar</systemPath>&ndash;&gt;-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.github.multiformats</groupId>

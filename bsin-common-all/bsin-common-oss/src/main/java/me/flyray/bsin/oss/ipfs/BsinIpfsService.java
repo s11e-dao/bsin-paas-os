@@ -23,8 +23,6 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.UUID;
 
-import io.ipfs.api.Multipart;
-import io.ipfs.api.NamedStreamable;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
@@ -55,84 +53,84 @@ public class BsinIpfsService {
    * @return
    * @throws IOException
    */
-  public JSONObject ipfsAdd(byte[] bytes, String fileName) throws IOException {
-
-    String apiName = "/add";
-    String url = ipfsApi + apiName;
-    String suffixName = fileName.substring(fileName.lastIndexOf("."));
-    String newUUID = UUID.randomUUID().toString().replaceAll("-", "");
-    String newFileName = newUUID + suffixName;
-    Multipart m = new Multipart(url, "UTF-8");
-    NamedStreamable.ByteArrayWrapper filew =
-        new NamedStreamable.ByteArrayWrapper(newFileName, bytes);
-    m.addFilePart(fileName, Paths.get(""), filew);
-    String res = m.finish();
-    JSONObject result = JSONObject.parseObject(res);
-    String Hash = result.get("Hash").toString();
-    result.put("fileUrl", ipfsGateway + Hash);
-    result.put("fileHash", Hash);
-    return result;
-  }
-
-  public String mkDir(String dirpath) throws IOException {
-    // http://ipfsadmin.s11edao.com/api/v0/files/mkdir?parents=true&arg=%2Fjiujiu-ipfs%2F%E4%BD%9C%E4%B8%BA
-    String encodedDdirpath = URLEncoder.encode(dirpath, "UTF-8");
-    String apiName = "/files/mkdir";
-    String argument = "parents=true" + "&arg=" + encodedDdirpath;
-    String url = ipfsApi + apiName + "?" + argument;
-    System.out.println(url);
-    Multipart cpm = new Multipart(url, "UTF-8");
-    return cpm.finish();
-  }
-
-  public JSONObject fileStat(String currentPath) throws IOException {
-
-    String apiName = "/files/stat";
-    String argument = "arg=" + currentPath;
-    String url = ipfsApi + apiName + "?" + argument;
-    System.out.println(url);
-    Multipart cpm = new Multipart(url, "UTF-8");
-    try {
-      String req = cpm.finish();
-      return JSONObject.parseObject(req);
-    } catch (RuntimeException e) {
-      this.mkDir(currentPath);
-      String req = new Multipart(url, "UTF-8").finish();
-      return JSONObject.parseObject(req);
-    }
-  }
-
-  public JSONObject fileLS(String hashDir) throws IOException {
-    String apiName = "/ls";
-    String argument = "arg=" + hashDir;
-    String url = ipfsApi + apiName + "?" + argument;
-    // System.out.println(url);
-    Multipart cpm = new Multipart(url, "UTF-8");
-    String req = cpm.finish();
-    JSONObject result = JSONObject.parseObject(req);
-    Object objs = result.getJSONArray("Objects").get(0);
-    if (objs instanceof JSONObject) {
-      JSONArray links = ((JSONObject) objs).getJSONArray("Links");
-      for (Object e : links) {
-        if (e instanceof JSONObject) {
-          ((JSONObject) e).put("Url", ipfsGateway + ((Map) e).get("Hash").toString());
-        }
-      }
-    }
-    return result;
-  }
-
-  public void ipfdCP(String hash, String currentPath, String filename) throws IOException {
-    String cpTarget = currentPath + "/" + filename;
-    String apiName = "/files/cp";
-    String arguments = "arg=%s&arg=%s";
-    String fileHash = "/ipfs/" + hash;
-    String argument = String.format(arguments, fileHash, cpTarget);
-    String url = ipfsApi + apiName + "?" + argument;
-    // System.out.println(url);
-    Multipart cpm = new Multipart(url, "UTF-8");
-    cpm.finish();
-  }
+//  public JSONObject ipfsAdd(byte[] bytes, String fileName) throws IOException {
+//
+//    String apiName = "/add";
+//    String url = ipfsApi + apiName;
+//    String suffixName = fileName.substring(fileName.lastIndexOf("."));
+//    String newUUID = UUID.randomUUID().toString().replaceAll("-", "");
+//    String newFileName = newUUID + suffixName;
+//    Multipart m = new Multipart(url, "UTF-8");
+//    NamedStreamable.ByteArrayWrapper filew =
+//        new NamedStreamable.ByteArrayWrapper(newFileName, bytes);
+//    m.addFilePart(fileName, Paths.get(""), filew);
+//    String res = m.finish();
+//    JSONObject result = JSONObject.parseObject(res);
+//    String Hash = result.get("Hash").toString();
+//    result.put("fileUrl", ipfsGateway + Hash);
+//    result.put("fileHash", Hash);
+//    return result;
+//  }
+//
+//  public String mkDir(String dirpath) throws IOException {
+//    // http://ipfsadmin.s11edao.com/api/v0/files/mkdir?parents=true&arg=%2Fjiujiu-ipfs%2F%E4%BD%9C%E4%B8%BA
+//    String encodedDdirpath = URLEncoder.encode(dirpath, "UTF-8");
+//    String apiName = "/files/mkdir";
+//    String argument = "parents=true" + "&arg=" + encodedDdirpath;
+//    String url = ipfsApi + apiName + "?" + argument;
+//    System.out.println(url);
+//    Multipart cpm = new Multipart(url, "UTF-8");
+//    return cpm.finish();
+//  }
+//
+//  public JSONObject fileStat(String currentPath) throws IOException {
+//
+//    String apiName = "/files/stat";
+//    String argument = "arg=" + currentPath;
+//    String url = ipfsApi + apiName + "?" + argument;
+//    System.out.println(url);
+//    Multipart cpm = new Multipart(url, "UTF-8");
+//    try {
+//      String req = cpm.finish();
+//      return JSONObject.parseObject(req);
+//    } catch (RuntimeException e) {
+//      this.mkDir(currentPath);
+//      String req = new Multipart(url, "UTF-8").finish();
+//      return JSONObject.parseObject(req);
+//    }
+//  }
+//
+//  public JSONObject fileLS(String hashDir) throws IOException {
+//    String apiName = "/ls";
+//    String argument = "arg=" + hashDir;
+//    String url = ipfsApi + apiName + "?" + argument;
+//    // System.out.println(url);
+//    Multipart cpm = new Multipart(url, "UTF-8");
+//    String req = cpm.finish();
+//    JSONObject result = JSONObject.parseObject(req);
+//    Object objs = result.getJSONArray("Objects").get(0);
+//    if (objs instanceof JSONObject) {
+//      JSONArray links = ((JSONObject) objs).getJSONArray("Links");
+//      for (Object e : links) {
+//        if (e instanceof JSONObject) {
+//          ((JSONObject) e).put("Url", ipfsGateway + ((Map) e).get("Hash").toString());
+//        }
+//      }
+//    }
+//    return result;
+//  }
+//
+//  public void ipfdCP(String hash, String currentPath, String filename) throws IOException {
+//    String cpTarget = currentPath + "/" + filename;
+//    String apiName = "/files/cp";
+//    String arguments = "arg=%s&arg=%s";
+//    String fileHash = "/ipfs/" + hash;
+//    String argument = String.format(arguments, fileHash, cpTarget);
+//    String url = ipfsApi + apiName + "?" + argument;
+//    // System.out.println(url);
+//    Multipart cpm = new Multipart(url, "UTF-8");
+//    cpm.finish();
+//  }
 
   /**
    * ipfsAndServiceUpload 1.IPFS存储： storeMethod = 1 需要同时指定 backup 存储平台 2.aliOSS存储： storeMethod = 2
@@ -146,87 +144,87 @@ public class BsinIpfsService {
    * @param tenantAppType： 软件平台
    * @return
    */
-  public JSONObject ipfsAndServiceUpload(
-      MultipartFile file,
-      String tenantId,
-      String relativePath,
-      String storeMethod,
-      String tenantAppType)
-      throws IOException {
-    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-
-    if (tenantId == null) {
-      tenantId = loginUser.getTenantId();
-    }
-    String customerNo = loginUser.getCustomerNo();
-    String merchantNo = loginUser.getMerchantNo();
-
-    if (file.isEmpty()) {
-      throw new IllegalArgumentException("File is empty");
-    }
-    String fileName = file.getOriginalFilename();
-    if (fileName == null) {
-      return null;
-    }
-    // 根据用户类型判断用户属于哪个平台
-    String dev = "bigan-ipfs";
-    if (tenantAppType != null) {
-      dev = tenantAppType + "-ipfs";
-    }
-
-    String tmpRelativePath = "";
-    if (tenantId != null) {
-      tmpRelativePath += tenantId + "/";
-    }
-    if (merchantNo != null) {
-      tmpRelativePath += merchantNo + "/";
-    }
-    if (customerNo != null) {
-      tmpRelativePath += customerNo + "/";
-    }
-    if (relativePath != null) {
-      relativePath = tmpRelativePath + relativePath + "/";
-    } else {
-      relativePath = tmpRelativePath;
-    }
-    String absolutePath = dev + "/" + relativePath;
-
-    if (storeMethod == null) {
-      storeMethod = "3"; // 默认备份在aliOSS
-    }
-    int storeMethodInt = Integer.parseInt(storeMethod);
-
-    // IPFS存储
-    JSONObject result = new JSONObject();
-    byte[] fileByte = file.getBytes();
-    // 上传文件到ipfs----会有 java.lang.RuntimeException: ipfsadmin.s11edao.com 异常，忽略
-    result = ipfsAdd(fileByte, fileName);
-    try {
-      // 检查当前文件夹是否存在-不存在则创建
-      String hashDir = fileStat("/" + absolutePath).get("Hash").toString();
-      log.info("fileStat: ", hashDir);
-      // 移植到一个目录文件夹
-      ipfdCP(result.get("Hash").toString(), relativePath, fileName);
-    } catch (Exception e) {
-      // TODO 目录移植失败不影响使用，目录下文件存在则会抛出异常
-      System.out.println("ipfdCP error...." + e.toString());
-    }
-
-    String url = null;
-    String newFileName = null;
-    // aliOSS 和 localServer 二选一
-    if ((storeMethodInt & 0x02) == 0x02) {
-      FileInfo fileInfo = fileStorageService.of(file).setPath(absolutePath).upload();
-      url = fileInfo.getUrl();
-      newFileName = fileInfo.getFilename();
-    } else if ((storeMethodInt & 0x04) == 0x04) {
-      url = localServerStore(file, absolutePath);
-    }
-    result.put(url, url);
-    result.put(newFileName, newFileName);
-
-    return result;
-  }
+//  public JSONObject ipfsAndServiceUpload(
+//      MultipartFile file,
+//      String tenantId,
+//      String relativePath,
+//      String storeMethod,
+//      String tenantAppType)
+//      throws IOException {
+//    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+//
+//    if (tenantId == null) {
+//      tenantId = loginUser.getTenantId();
+//    }
+//    String customerNo = loginUser.getCustomerNo();
+//    String merchantNo = loginUser.getMerchantNo();
+//
+//    if (file.isEmpty()) {
+//      throw new IllegalArgumentException("File is empty");
+//    }
+//    String fileName = file.getOriginalFilename();
+//    if (fileName == null) {
+//      return null;
+//    }
+//    // 根据用户类型判断用户属于哪个平台
+//    String dev = "bigan-ipfs";
+//    if (tenantAppType != null) {
+//      dev = tenantAppType + "-ipfs";
+//    }
+//
+//    String tmpRelativePath = "";
+//    if (tenantId != null) {
+//      tmpRelativePath += tenantId + "/";
+//    }
+//    if (merchantNo != null) {
+//      tmpRelativePath += merchantNo + "/";
+//    }
+//    if (customerNo != null) {
+//      tmpRelativePath += customerNo + "/";
+//    }
+//    if (relativePath != null) {
+//      relativePath = tmpRelativePath + relativePath + "/";
+//    } else {
+//      relativePath = tmpRelativePath;
+//    }
+//    String absolutePath = dev + "/" + relativePath;
+//
+//    if (storeMethod == null) {
+//      storeMethod = "3"; // 默认备份在aliOSS
+//    }
+//    int storeMethodInt = Integer.parseInt(storeMethod);
+//
+//    // IPFS存储
+//    JSONObject result = new JSONObject();
+//    byte[] fileByte = file.getBytes();
+//    // 上传文件到ipfs----会有 java.lang.RuntimeException: ipfsadmin.s11edao.com 异常，忽略
+//    result = ipfsAdd(fileByte, fileName);
+//    try {
+//      // 检查当前文件夹是否存在-不存在则创建
+//      String hashDir = fileStat("/" + absolutePath).get("Hash").toString();
+//      log.info("fileStat: ", hashDir);
+//      // 移植到一个目录文件夹
+//      ipfdCP(result.get("Hash").toString(), relativePath, fileName);
+//    } catch (Exception e) {
+//      // TODO 目录移植失败不影响使用，目录下文件存在则会抛出异常
+//      System.out.println("ipfdCP error...." + e.toString());
+//    }
+//
+//    String url = null;
+//    String newFileName = null;
+//    // aliOSS 和 localServer 二选一
+//    if ((storeMethodInt & 0x02) == 0x02) {
+//      FileInfo fileInfo = fileStorageService.of(file).setPath(absolutePath).upload();
+//      url = fileInfo.getUrl();
+//      newFileName = fileInfo.getFilename();
+//    } else if ((storeMethodInt & 0x04) == 0x04) {
+//      url = localServerStore(file, absolutePath);
+//    }
+//    result.put(url, url);
+//    result.put(newFileName, newFileName);
+//
+//    return result;
+//  }
 
   private String localServerStore(MultipartFile file, String relativePath) {
     String localPath = upPath + relativePath;
