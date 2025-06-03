@@ -23,7 +23,7 @@
         <module>bsin-server-upms</module>
         <module>bsin-server-crm</module>
         <module>bsin-server-waas</module>
-<!--        <module>bsin-server-app-agent</module>-->
+        <module>bsin-server-app-agent</module>
         <module>bsin-server-file</module>
         <module>bsin-server-brms</module>
         <module>bsin-server-workflow</module>
