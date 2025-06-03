@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@ant-design/plots": "^2.1.12",
-    "@ant-design/x": "^1.0.1",
+    "@ant-design/x": "^1.2.0",
     "@ant-design/pro-components": "^2.7.9",
     "@antv/g2": "^5.1.14",
     "@emotion/css": "^11.11.2",
