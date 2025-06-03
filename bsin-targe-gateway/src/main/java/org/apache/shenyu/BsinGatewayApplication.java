@@ -34,4 +34,5 @@ public class BsinGatewayApplication {
     public static void main(final String[] args) {
         SpringApplication.run(BsinGatewayApplication.class, args);
     }
+
 }
