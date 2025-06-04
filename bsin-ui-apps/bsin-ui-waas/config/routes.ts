@@ -168,6 +168,21 @@ const routes = [
         path: '/pay/pay-way',
         component: '@/pages/pay/PayWay/index',
       },
+      // ***********************分账***********************
+      {
+        path: '/revenue-share',
+        redirect: '/revenue-share/revenue-share-list',
+      },
+      // 分账明细
+      {
+        path: '/revenue-share/revenue-share-list',
+        component: '@/pages/revenueShare/RevenueShareList/index',
+      },
+      // 分账配置
+      {
+        path: '/revenue-share/revenue-share-config',
+        component: '@/pages/revenueShare/RevenueShareConfig/index',
+      },
       // **************************交易*************************
       {
         path: '/transaction',
