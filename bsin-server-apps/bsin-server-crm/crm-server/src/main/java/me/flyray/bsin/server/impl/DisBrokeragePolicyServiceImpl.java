@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.DisBrokeragePolicy;
-import me.flyray.bsin.domain.entity.PayChannelConfig;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisBrokeragePolicyService;
 import me.flyray.bsin.infrastructure.mapper.DisBrokeragePolicyMapper;
