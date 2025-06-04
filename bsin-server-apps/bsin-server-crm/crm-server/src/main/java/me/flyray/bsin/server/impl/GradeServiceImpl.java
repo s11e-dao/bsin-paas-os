@@ -7,10 +7,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.response.GradeVO;
 import me.flyray.bsin.facade.service.GradeService;
-import me.flyray.bsin.facade.service.TokenParamService;
 import me.flyray.bsin.infrastructure.mapper.*;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
@@ -46,6 +46,9 @@ import static me.flyray.bsin.constants.ResponseCode.*;
 public class GradeServiceImpl implements GradeService {
 
     @Autowired
+    private BsinServiceInvoke bsinServiceInvoke;
+
+    @Autowired
     private GradeMapper gradeMapper;
     @Autowired
     private MemberGradeMapper memberGradeMapper;
@@ -59,9 +62,6 @@ public class GradeServiceImpl implements GradeService {
     private ConditionMapper conditionMapper;
     @Autowired
     private AccountBiz customerAccountBiz;
-
-    @DubboReference(version = "${dubbo.provider.version}")
-    private TokenParamService tokenParamService;
 
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
@@ -239,12 +239,16 @@ public class GradeServiceImpl implements GradeService {
         List<Grade> gradeList = gradeMapper.selectList(warapper);
 
         // 1.商户发行的数字积分(查询tokenParam) TODO 处理会员在商户下的积分和余额
-        TokenParam tokenParamMap = tokenParamService.getDetailByMerchantNo(requestMap);
+        // 泛化调用解耦
+        // 泛化调用解耦
+        Object object = bsinServiceInvoke.genericInvoke("TokenParamService", "getDetailByMerchantNo", "dev", requestMap);
+        Map<String, Object> tokenParamMap = BeanUtil.beanToMap(object);
+
         if(tokenParamMap != null){
             // TODO 如果商户发行了积分，则查询会员的积分余额
             Integer decimals = Integer.valueOf(2);
-            String ccy = tokenParamMap.getSymbol();
-            decimals = tokenParamMap.getDecimals();
+            String ccy = (String) tokenParamMap.get("symbol");
+            decimals = (Integer) tokenParamMap.get("decimals");
 
 
         }

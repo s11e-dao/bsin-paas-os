@@ -16,13 +16,10 @@ import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.AccountCategory;
 import me.flyray.bsin.domain.enums.CustomerType;
+import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.enums.AuthMethod;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.engine.PassCardServiceEngine;
-import me.flyray.bsin.facade.engine.DigitalPointsServiceEngine;
 import me.flyray.bsin.facade.response.CustomerAccountVO;
-import me.flyray.bsin.facade.response.DigitalAssetsDetailRes;
-import me.flyray.bsin.facade.response.DigitalAssetsItemRes;
 import me.flyray.bsin.facade.service.*;
 import me.flyray.bsin.infrastructure.mapper.*;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
@@ -72,6 +69,9 @@ import static me.flyray.bsin.constants.ResponseCode.*;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
+  @Autowired
+  private BsinServiceInvoke bsinServiceInvoke;
+
   @Value("${bsin.security.authentication-secretKey}")
   private String authSecretKey;
 
@@ -100,18 +100,6 @@ public class CustomerServiceImpl implements CustomerService {
 
   @DubboReference(version = "${dubbo.provider.version}")
   private UserService userService;
-
-  @DubboReference(version = "${dubbo.provider.version}")
-  private WalletService walletService;
-
-  @DubboReference(version = "${dubbo.provider.version}")
-  private DigitalPointsServiceEngine digitalPointsService;
-
-  @DubboReference(version = "${dubbo.provider.version}")
-  private TokenParamService tokenParamService;
-
-  @DubboReference(version = "${dubbo.provider.version}")
-  private PassCardServiceEngine customerPassCardService;
 
   /**
    * @param requestMap
@@ -667,7 +655,10 @@ public class CustomerServiceImpl implements CustomerService {
   public CustomerBase certification(Map<String, Object> requestMap) throws Exception {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
-    Map<String, Object> walletData = walletService.createWallet(requestMap);
+
+    // 泛化调用解耦
+    Object object = bsinServiceInvoke.genericInvoke("WalletService", "createWallet", "dev", requestMap);
+    Map<String, Object> walletData = BeanUtil.beanToMap(object);
     // 查找资产客户 --> 获取私钥
     customerBase.setWalletAddress((String) walletData.get("walletAddress"));
     SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, aesKey.getBytes());
@@ -747,11 +738,15 @@ public class CustomerServiceImpl implements CustomerService {
     CustomerAccountVO customerAccountVO = new CustomerAccountVO();
 
     // 2.商户发行的数字积分(查询tokenParam)
-    TokenParam tokenParamMap = tokenParamService.getDetailByMerchantNo(requestMap);
+
+    // 泛化调用解耦
+    Object object = bsinServiceInvoke.genericInvoke("TokenParamService", "getDetailByMerchantNo", "dev", requestMap);
+    Map<String, Object> tokenParamMap = BeanUtil.beanToMap(object);
+
     BigDecimal balance = new BigDecimal("0");
     if (tokenParamMap != null) {
-      String digitalPointsSymbol = tokenParamMap.getSymbol();
-      String digitalPointsName = tokenParamMap.getName();
+      String digitalPointsSymbol = (String) tokenParamMap.get("symbol");
+      String digitalPointsName = (String) tokenParamMap.get("name");
       Account digitalPointsAccount =
           customerAccountBiz.getAccountDetail(
               merchantNo, customerNo, digitalPointsSymbol, AccountCategory.BALANCE.getCode());
@@ -769,16 +764,16 @@ public class CustomerServiceImpl implements CustomerService {
       customerAccountVO.setDigitalPointsName(digitalPointsName);
       customerAccountVO.setDigitalPointsSymbol(digitalPointsSymbol);
       customerAccountVO.setDigitalPointsSupply(
-          ((BigDecimal) tokenParamMap.getTotalSupply())
+              new BigDecimal((String) tokenParamMap.get("totalSupply"))
               .divide(
-                  BigDecimal.valueOf(Math.pow(10, (tokenParamMap.getDecimals()))),
+                  BigDecimal.valueOf(Math.pow(10, Double.parseDouble((String) tokenParamMap.get("decimals")))),
                   2,
                   ROUND_HALF_UP));
       // 设置数字积分流通量
       customerAccountVO.setDigitalPointsCirculation(
-          (tokenParamMap.getCirculation())
+              new BigDecimal((String) tokenParamMap.get("circulation"))
               .divide(
-                  BigDecimal.valueOf(Math.pow(10, (tokenParamMap.getDecimals()))),
+                  BigDecimal.valueOf(Math.pow(10,Double.parseDouble((String) tokenParamMap.get("decimals")))),
                   2,
                   ROUND_HALF_UP));
       // TODO: 浮点数比较
@@ -795,7 +790,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     // 2.商户发行的劳动价值捕获积分(基于联合曲线发行)
-    BondingCurveTokenParam bondingCurveTokenParam = null;
+    Map bondingCurveTokenParam = new HashMap<>();
 //        bondingCurveTokenParamMapper.selectOne(
 //            new LambdaQueryWrapper<BondingCurveTokenParam>()
 //                .eq(BondingCurveTokenParam::getMerchantNo, merchantNo));
@@ -806,14 +801,14 @@ public class CustomerServiceImpl implements CustomerService {
           customerAccountBiz.getAccountDetail(
               merchantNo,
               customerNo,
-              bondingCurveTokenParam.getSymbol(),
+                  (String) bondingCurveTokenParam.get("symbol"),
               AccountCategory.BALANCE.getCode());
       // .2 联合曲线累计账户： 累计贡献值
       Account bondingCurveAccumulatedIncomeBalanceAccount =
           customerAccountBiz.getAccountDetail(
               merchantNo,
               customerNo,
-              bondingCurveTokenParam.getSymbol(),
+                  (String) bondingCurveTokenParam.get("symbol"),
               AccountCategory.ACCUMULATED_INCOME.getCode());
 
       if (bondingCurveBalanceAccount != null) {
@@ -821,15 +816,14 @@ public class CustomerServiceImpl implements CustomerService {
             bondingCurveBalanceAccount
                 .getBalance()
                 .divide(
-                    BigDecimal.valueOf(Math.pow(10, bondingCurveTokenParam.getDecimals())),
+                    BigDecimal.valueOf(Math.pow(10, Double.parseDouble((String) bondingCurveTokenParam.get("decimals")))),
                     2,
                     ROUND_HALF_UP);
 
         customerAccountVO.setBondingCurveCirculation(
-            bondingCurveTokenParam
-                .getCirculation()
+                new BigDecimal((String) tokenParamMap.get("circulation"))
                 .divide(
-                    BigDecimal.valueOf(Math.pow(10, bondingCurveTokenParam.getDecimals())),
+                    BigDecimal.valueOf(Math.pow(10, Double.parseDouble((String) bondingCurveTokenParam.get("decimals")))),
                     2,
                     ROUND_HALF_UP));
       }
@@ -838,7 +832,7 @@ public class CustomerServiceImpl implements CustomerService {
             bondingCurveAccumulatedIncomeBalanceAccount
                 .getBalance()
                 .divide(
-                    BigDecimal.valueOf(Math.pow(10, bondingCurveTokenParam.getDecimals())),
+                    BigDecimal.valueOf(Math.pow(10, Double.parseDouble((String) bondingCurveTokenParam.get("decimals")))),
                     2,
                     ROUND_HALF_UP));
 
@@ -848,9 +842,9 @@ public class CustomerServiceImpl implements CustomerService {
                 .divide(customerAccountVO.getBondingCurveCirculation(), 6, ROUND_HALF_UP));
       }
 
-      customerAccountVO.setBondingCurveSymbol(bondingCurveTokenParam.getSymbol());
-      customerAccountVO.setBondingCurveName(bondingCurveTokenParam.getName());
-      customerAccountVO.setBondingCurveSupply(bondingCurveTokenParam.getCap());
+      customerAccountVO.setBondingCurveSymbol((String) bondingCurveTokenParam.get("symbol"));
+      customerAccountVO.setBondingCurveName((String) bondingCurveTokenParam.get("name"));
+      customerAccountVO.setBondingCurveSupply(new BigDecimal((String) bondingCurveTokenParam.get("cap")));
     }
     customerAccountVO.setBondingCurveBalance(balance);
 
@@ -872,12 +866,12 @@ public class CustomerServiceImpl implements CustomerService {
     }
     customerAccountVO.setCnyBalance(balance);
 
-    // 4. 商户PassCard的TBA账户地址
-    DigitalAssetsDetailRes digitalAssetsDetailRes = customerPassCardService.getDetail(requestMap);
+    // 4. 商户PassCard的TBA账户地址 泛化调用解耦
+    Object digitalAssetsDetailObject = bsinServiceInvoke.genericInvoke("CustomerPassCardService", "getDetail", "dev", requestMap);
+    Map<String, Object> digitalAssetsDetailRes = BeanUtil.beanToMap(digitalAssetsDetailObject);
     if (digitalAssetsDetailRes != null) {
-      DigitalAssetsItemRes customerPassCard =
-          (DigitalAssetsItemRes) digitalAssetsDetailRes.getCustomerPassCard();
-      customerAccountVO.setTbaAddress((String) customerPassCard.getTbaAddress());
+      Map customerPassCard = (Map) digitalAssetsDetailRes.get("customerPassCard");
+      customerAccountVO.setTbaAddress((String) customerPassCard.get("tbaAddress"));
     }
 
     return customerAccountVO;

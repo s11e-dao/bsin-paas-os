@@ -18,7 +18,6 @@ import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisTeamRelationService;
 import me.flyray.bsin.facade.service.SysAgentService;
-import me.flyray.bsin.facade.service.WalletService;
 import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberConfigMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberMapper;

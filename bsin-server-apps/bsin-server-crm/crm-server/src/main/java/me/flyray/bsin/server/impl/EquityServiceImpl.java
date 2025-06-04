@@ -9,9 +9,8 @@ import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.Equity;
 import me.flyray.bsin.domain.enums.EquityType;
+import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.BondingCurveTokenService;
-import me.flyray.bsin.facade.service.DigitalAssetsItemService;
 import me.flyray.bsin.facade.service.EquityService;
 import me.flyray.bsin.infrastructure.mapper.EquityMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
@@ -46,12 +45,8 @@ public class EquityServiceImpl implements EquityService {
 
   @Autowired private EquityMapper equityMapper;
 
-  @DubboReference(version = "${dubbo.provider.version}")
-  private DigitalAssetsItemService digitalAssetsItemService;
-
-  // TODO 改造成泛化调用
-  @DubboReference(version = "${dubbo.provider.version}")
-  private BondingCurveTokenService bondingCurveTokenService;
+  @Autowired
+  private BsinServiceInvoke bsinServiceInvoke;
 
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
@@ -143,7 +138,8 @@ public class EquityServiceImpl implements EquityService {
         // 数字资产铸造: ERC721/1155 等智能合约相关
         requestMap.put("serialNo", equity.getTypeNo()); // DigitalAssetsItem 资产编号
         try {
-          digitalAssetsItemService.claim(requestMap);
+          // 泛化调用解耦
+          bsinServiceInvoke.genericInvoke("DigitalAssetsItemService", "claim", "dev", requestMap);
         } catch (Exception e) {
           throw new BusinessException("100000", e.toString());
         }
@@ -151,7 +147,8 @@ public class EquityServiceImpl implements EquityService {
       case BC:
         requestMap.put("bcCurveNo", equity.getTypeNo());
         // 捕获劳动价值的联合曲线积分若绑定了商户发行的数字积分，mint BC 积分是需要查询tokenParam配置参数，按照配置参数进行数字积分释放铸造
-        bondingCurveTokenService.mint(requestMap);
+        // 泛化调用解耦
+        bsinServiceInvoke.genericInvoke("BondingCurveTokenService", "mint", "dev", requestMap);
         break;
       case DP:
         throw new BusinessException(ResponseCode.STATUS_NOT_EXISTS);

@@ -7,9 +7,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MemberService;
-import me.flyray.bsin.facade.service.TokenParamService;
 import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberConfigMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberGradeMapper;
@@ -45,6 +45,9 @@ import static me.flyray.bsin.constants.ResponseCode.*;
 public class MemberServiceImpl implements MemberService {
 
     @Autowired
+    private BsinServiceInvoke bsinServiceInvoke;
+
+    @Autowired
     private MemberGradeMapper memberGradeMapper;
 
     @Autowired
@@ -55,9 +58,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     private MemberConfigMapper memberConfigMapper;
-
-    @DubboReference(version = "${dubbo.provider.version}")
-    private TokenParamService tokenParamService;
 
     /**
      * 开通会员，创建会员购买订单后调用
@@ -189,8 +189,9 @@ public class MemberServiceImpl implements MemberService {
             requestMap.put("merchantNo", LoginInfoContextHelper.getMerchantNo());
         }
         // 1.商户发行的数字积分(查询tokenParam)
-        TokenParam tokenParamMap = tokenParamService.getDetailByMerchantNo(requestMap);
-        String ccy = tokenParamMap.getSymbol();
+        Object object = bsinServiceInvoke.genericInvoke("TokenParamService", "getDetailByMerchantNo", "dev", requestMap);
+        Map<String, Object> tokenParamMap = BeanUtil.beanToMap(object);
+        String ccy = (String) tokenParamMap.get("symbol");
 
         List<CustomerBase> memberList = memberGradeMapper.selectMemberListByGrade(gradeNo);
         for (CustomerBase customer : memberList) {

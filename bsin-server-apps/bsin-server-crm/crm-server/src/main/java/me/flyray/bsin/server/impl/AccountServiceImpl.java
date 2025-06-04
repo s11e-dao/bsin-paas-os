@@ -12,15 +12,14 @@ import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.Account;
 import me.flyray.bsin.domain.entity.AccountFreezeJournal;
 import me.flyray.bsin.domain.entity.AccountJournal;
-import me.flyray.bsin.domain.entity.TokenParam;
 import me.flyray.bsin.domain.enums.AccountCategory;
 import me.flyray.bsin.domain.enums.CcyType;
+import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.enums.TransactionType;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.enums.FreezeStatus;
 import me.flyray.bsin.facade.response.CommunityLedgerVO;
 import me.flyray.bsin.facade.service.AccountService;
-import me.flyray.bsin.facade.service.TokenParamService;
 import me.flyray.bsin.infrastructure.mapper.AccountFreezeJournalMapper;
 import me.flyray.bsin.infrastructure.mapper.AccountJournalMapper;
 import me.flyray.bsin.infrastructure.mapper.AccountMapper;
@@ -32,7 +31,6 @@ import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
@@ -67,8 +65,8 @@ public class AccountServiceImpl implements AccountService {
   @Autowired private AccountBiz accountBiz;
   @Autowired private AccountFreezeJournalMapper accountFreezeJournalMapper;
 
-  @DubboReference(version = "${dubbo.provider.version}")
-  private TokenParamService tokenParamService;
+  @Autowired
+  private BsinServiceInvoke bsinServiceInvoke;
 
   @ShenyuDubboClient("/openAccount")
   @ApiDoc(desc = "openAccount")
@@ -505,11 +503,15 @@ public class AccountServiceImpl implements AccountService {
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     Map<String, Object> tokenReq = new HashMap();
     tokenReq.put("merchantNo", merchantNo);
-    TokenParam tokenParamMap = tokenParamService.getDetailByMerchantNo(tokenReq);
+
+    // 泛化调用解耦
+    Object object = bsinServiceInvoke.genericInvoke("TokenParamService", "getDetailByMerchantNo", "dev", requestMap);
+    Map<String, Object> tokenParamMap = BeanUtil.beanToMap(object);
+
     Account accountDetail = null;
     if(tokenParamMap != null){
-      String ccy = tokenParamMap.getSymbol();
-      BigDecimal anchoringValue = tokenParamMap.getAnchoringValue();
+      String ccy = (String) tokenParamMap.get("symbol");
+      BigDecimal anchoringValue = new BigDecimal(String.valueOf(tokenParamMap.get("anchoringValue")));
       // 查询用户在该币种下的余额
       LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
       warapper.eq(Account::getTenantId, tenantId);

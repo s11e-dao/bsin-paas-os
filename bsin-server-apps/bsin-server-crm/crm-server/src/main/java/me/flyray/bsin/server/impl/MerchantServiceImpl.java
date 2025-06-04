@@ -12,6 +12,7 @@ import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.*;
 import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.domain.response.UserResp;
+import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.*;
 import me.flyray.bsin.infrastructure.mapper.*;
@@ -53,8 +54,8 @@ import static me.flyray.bsin.constants.ResponseCode.*;
 @Service
 public class MerchantServiceImpl implements MerchantService {
 
-  @DubboReference(version = "${dubbo.provider.version}")
-  private WalletService walletService;
+  @Autowired
+  private BsinServiceInvoke bsinServiceInvoke;
 
   @Value("${bsin.security.authentication-secretKey}")
   private String authSecretKey;
@@ -240,7 +241,7 @@ public class MerchantServiceImpl implements MerchantService {
     // 如果商户是web3商户
     if(merchant.getCategory() == "2"){
       // TODO: 创建钱包
-      walletService.createWallet(requestMap);
+      bsinServiceInvoke.genericInvoke("WalletService", "createWallet", "dev", requestMap);
     }
     // TODO RPC调用创建总店，store
     requestMap.put("businessModel", BusinessModel.FRANCHISE.getCode());

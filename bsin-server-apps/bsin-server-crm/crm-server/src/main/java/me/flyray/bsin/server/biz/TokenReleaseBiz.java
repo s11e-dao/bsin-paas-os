@@ -1,9 +1,10 @@
 package me.flyray.bsin.server.biz;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.BeanToMapCopier;
 import me.flyray.bsin.domain.entity.Account;
-import me.flyray.bsin.domain.entity.TokenReleaseJournal;
 import me.flyray.bsin.domain.enums.AccountCategory;
-import me.flyray.bsin.facade.service.TokenParamService;
+import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.infrastructure.mapper.AccountMapper;
 import me.flyray.bsin.redis.provider.BsinCacheProvider;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -26,8 +27,8 @@ public class TokenReleaseBiz {
 
   @Autowired private AccountBiz customerAccountBiz;
 
-  @DubboReference(version = "${dubbo.provider.version}")
-  private TokenParamService tokenReleaseParamService;
+  @Autowired
+  private BsinServiceInvoke bsinServiceInvoke;
 
   /**
    * 根据tokenParam参数进行数字积分链上铸造
@@ -65,10 +66,11 @@ public class TokenReleaseBiz {
     requestMap.put("customerNo", account.getBizRoleTypeNo());
     requestMap.put("customerAccount", customerAccountRet);
 
-    // 2.请求token释放分配
-    TokenReleaseJournal tokenReleaseJournal = tokenReleaseParamService.releaseBcPointToVirtualAccount(requestMap);
+    // 2.泛化调用解耦 请求token释放分配
+    Object object = bsinServiceInvoke.genericInvoke("TokenParamService", "releaseBcPointToVirtualAccount", "dev", requestMap);
+    Map<String, Object> resultMap = BeanUtil.beanToMap(object);
 
-    BigDecimal releaseAmount = tokenReleaseJournal.getAmout();
+    BigDecimal releaseAmount = new BigDecimal(String.valueOf(resultMap.get("amout")));
 
     // 3.用户BC积分释放账户出账
     // TODO: 释放成功才出账
