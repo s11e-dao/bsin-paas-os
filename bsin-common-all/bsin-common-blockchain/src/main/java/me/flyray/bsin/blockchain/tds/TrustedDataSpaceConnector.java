@@ -11,21 +11,27 @@ import java.util.concurrent.TimeUnit;
 public interface TrustedDataSpaceConnector {
 
     /**
+     * 在可信数据空间创建可信身份
+     * @param dataId 数据唯一标识符
+     * @param payload 要上传的数据
+     * @return 操作结果或凭证
+     */
+    String createDidProfile(Map<String, Object> requestMap) ;
+
+    /**
      * (示例方法) 上传数据到可信数据空间。
      * @param dataId 数据唯一标识符
      * @param payload 要上传的数据
      * @return 操作结果或凭证
-     * @throws DataOperationException 如果操作失败
      */
-    String uploadData(String dataId, Object payload) throws DataOperationException;
+    String uploadData(String dataId, Object payload) ;
 
     /**
      * (示例方法) 从可信数据空间下载数据。
      * @param dataId 数据唯一标识符
      * @return 下载的数据
-     * @throws DataOperationException 如果操作失败
      */
-    Object downloadData(String dataId) throws DataOperationException;
+    Object downloadData(String dataId);
 
 
     // --- 配置获取方法 (用于演示Builder的参数传递) ---
@@ -174,15 +180,6 @@ public interface TrustedDataSpaceConnector {
             super(message);
         }
         public ConnectionException(String message, Throwable cause) {
-            super(message, cause);
-        }
-    }
-
-    class DataOperationException extends Exception {
-        public DataOperationException(String message) {
-            super(message);
-        }
-        public DataOperationException(String message, Throwable cause) {
             super(message, cause);
         }
     }

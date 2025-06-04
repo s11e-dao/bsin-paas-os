@@ -9,7 +9,9 @@ import java.util.Map;
  * {@link TrustedDataSpaceConnector} 的一个默认/内部实现。
  * 这个类是私有的，外部用户只能通过 Builder 来创建。
  */
+
 class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnector {
+
     private final String endpointUrl;
     private final String apiKey;
     private final String clientId;
@@ -51,15 +53,22 @@ class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnector {
         // ... 其他配置信息的日志输出
     }
 
+
     @Override
-    public String uploadData(String dataId, Object payload) throws DataOperationException {
+    public String createDidProfile(Map<String, Object> requestMap) {
+
+        return null;
+    }
+
+    @Override
+    public String uploadData(String dataId, Object payload) {
         System.out.println("Uploading data with ID '" + dataId + "' to " + endpointUrl);
         // 实际的上传逻辑
         return "upload-receipt-" + dataId + "-" + System.currentTimeMillis();
     }
 
     @Override
-    public Object downloadData(String dataId) throws DataOperationException {
+    public Object downloadData(String dataId) {
         System.out.println("Downloading data with ID '" + dataId + "' from " + endpointUrl);
         // 实际的下载逻辑
         return "Downloaded data for " + dataId;
