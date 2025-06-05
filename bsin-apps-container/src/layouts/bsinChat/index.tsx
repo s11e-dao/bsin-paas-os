@@ -666,10 +666,10 @@ const Independent = ({ customerInfo }) => {
                               <Flex justify="space-between" align="center">
                                   <Flex gap="small" align="center">
                                       {/* <Button style={iconStyle} type="text" icon={<LinkOutlined />} />
-                                      <span style={{ fontSize: 14 }}>深度思考</span>
+                                      <span style={{ fontSize: 14 }}>沉思</span>
                                       <Switch size="small" checked={deepThinking} onChange={setDeepThinking} /> */}
                                       <Button style={iconStyle} type="text" icon={<SearchOutlined />} onClick={globalSearchClick}>
-                                          <span style={{ fontSize: 14 }}>联网搜索</span>
+                                          <span style={{ fontSize: 14 }}>联网</span>
                                           <Switch size="small" checked={globalSearch} />
                                       </Button>
                                       <Dropdown
@@ -780,7 +780,7 @@ const Independent = ({ customerInfo }) => {
                                               }}
                                               icon={<ApiOutlined />}
                                           >
-                                              提示词模板
+                                              提示词
                                           </Button>
                                       </Dropdown>
                                   </Flex>
