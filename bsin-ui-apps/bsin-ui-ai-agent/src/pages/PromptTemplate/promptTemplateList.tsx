@@ -93,6 +93,47 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
   // 获取复制表单信息
   const [copyFormRef] = Form.useForm()
 
+  // 处理标签页切换
+  const handleTabChange = (activeKey: string) => {
+    setLoading(true)
+    // 查询协议
+    let params = {
+      current: '1',
+      pageSize: '99',
+    }
+    getPromptTemplatePageList(params).then((res) => {
+      if (res?.code == '000000') {
+        setPromptTemplateList(res?.data)
+        addPromptTemplateList(res?.data)
+        let customerPromptTemplateListTmp: any[] = []
+        let sysPromptTemplateListTmp: any[] = []
+        res?.data.map((promptTemplate) => {
+          if (promptTemplate.type == '0') {
+            customerPromptTemplateListTmp.push(promptTemplate)
+          } else if (promptTemplate.type == '1') {
+            sysPromptTemplateListTmp.push(promptTemplate)
+          }
+        })
+        setCustomerPromptTemplateList(customerPromptTemplateListTmp)
+        setSysPromptTemplateList(sysPromptTemplateListTmp)
+        const promptTemplateTypeList = [
+          {
+            id: 1,
+            name: '我的提示词模版',
+            promptTemplateList: customerPromptTemplateListTmp,
+          },
+          {
+            id: 2,
+            name: '平台提示词模版',
+            promptTemplateList: sysPromptTemplateListTmp,
+          },
+        ]
+        setPromptTemplateTypeList(promptTemplateTypeList)
+      }
+      setLoading(false)
+    })
+  }
+
   useEffect(() => {
     // 查询协议
     let params = {
@@ -398,7 +439,7 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
         新增
       </Button>
       <Descriptions title="提示词模版"></Descriptions>
-      <Tabs defaultActiveKey="1">
+      <Tabs defaultActiveKey="1" onChange={handleTabChange}>
         {promptTemplateTypeList.map((type) => (
           <Tabs.TabPane tab={type.name} key={type.id}>
             <Space

@@ -3,7 +3,7 @@ let aiPath = process.env.contextPath_aiAgent;
 
 // 列表数据请求
 export const getToolPageList = (params) => {
-  return request(aiPath + '/tool/getPageList', {
+  return request(aiPath + '/mcpTool/getPageList', {
     serviceName: 'ToolService',
     methodName: 'getPageList',
     version: '1.0',
@@ -13,7 +13,7 @@ export const getToolPageList = (params) => {
   })
 }
 export const getToolList = (params) => {
-  return request(aiPath + '/tool/getList', {
+  return request(aiPath + '/mcpTool/getList', {
     serviceName: 'ToolService',
     methodName: 'getList',
     version: '1.0',
@@ -25,7 +25,7 @@ export const getToolList = (params) => {
 
 // 删除
 export const delTool = (params) => {
-  return request(aiPath + '/tool/delete', {
+  return request(aiPath + '/mcpTool/delete', {
     serviceName: 'ToolService',
     methodName: 'delete',
     version: '1.0',
@@ -37,7 +37,7 @@ export const delTool = (params) => {
 
 //添加
 export const addTool = (params) => {
-  return request(aiPath + '/tool/add', {
+  return request(aiPath + '/mcpTool/add', {
     serviceName: 'ToolService',
     methodName: 'add',
     version: '1.0',
@@ -49,7 +49,7 @@ export const addTool = (params) => {
 
 //编辑
 export const editTool = (params) => {
-  return request(aiPath + '/tool/edit', {
+  return request(aiPath + '/mcpTool/edit', {
     serviceName: 'ToolService',
     methodName: 'edit',
     version: '1.0',
@@ -61,7 +61,7 @@ export const editTool = (params) => {
 
 // 详情
 export const getToolDetail = (params) => {
-  return request(aiPath + '/tool/getDetail', {
+  return request(aiPath + '/mcpTool/getDetail', {
     serviceName: 'ToolService',
     methodName: 'getDetail',
     version: '1.0',
