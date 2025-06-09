@@ -11,8 +11,8 @@ networks:
 
 # 定义服务
 services:
-  bsin-nacos-standalone:
-    container_name: bsin-nacos-standalone
+  bsin-nacos-standalone-3.0:
+    container_name: bsin-nacos-standalone-3.0
     image: nacos/nacos-server:v2.4.2
     environment:
       - PREFER_HOST_MODE=hostname
@@ -31,8 +31,8 @@ services:
       compose-network: #指定network
         ipv4_address: 172.28.0.11
 
-  bsin-mysql:
-    container_name: bsin-mysql
+  bsin-mysql-3.0:
+    container_name: bsin-mysql-3.0
     image: bsin-mysql:3.0.0
     build:
       context: middleware/mysql
@@ -75,8 +75,8 @@ services:
       compose-network: #指定network
         ipv4_address: 172.28.0.12
 
-  bsin-redis:
-    container_name: bsin-redis
+  bsin-redis-3.0:
+    container_name: bsin-redis-3.0
     image: bsin-redis:3.0.0
     build:
       context: middleware/redis
@@ -93,8 +93,8 @@ services:
       compose-network: #指定network
         ipv4_address: 172.28.0.13
 
-  #  bsin-rabbitmq:
-  #    container_name: bsin-rabbitmq
+  #  bsin-rabbitmq-3.0:
+  #    container_name: bsin-rabbitmq-3.0
   #    image: bsin-rabbitmq:3.0.0
   #    build:
   #      context: middleware/rabbitmq
@@ -108,8 +108,8 @@ services:
   #    compose-network: #指定network
   #      ipv4_address: 172.28.0.14
   #
-  #  bsin-milvus:
-  #    container_name: bsin-milvus
+  #  bsin-milvus-3.0:
+  #    container_name: bsin-milvus-3.0
   #    image: bsin-milvus:3.0.0
   #    build:
   #      context: middleware/milvus
@@ -123,8 +123,8 @@ services:
   #    compose-network: #指定network
   #      ipv4_address: 172.28.0.15
   #
-  #    bsin-elasticsearch:
-  #      container_name: bsin-elasticsearch
+  #    bsin-elasticsearch-3.0:
+  #      container_name: bsin-elasticsearch-3.0
   #      image: bsin-elasticsearch:3.0.0
   #      build:
   #        context: middleware/elasticsearch
@@ -141,8 +141,8 @@ services:
   # bsin-emqx默认初始账号和密码
   # username：admin
   # password：public
-  bsin-emqx:
-    container_name: bsin-emqx
+  bsin-emqx-3.0:
+    container_name: bsin-emqx-3.0
     image: bsin-emqx:3.0.0
     build:
       context: middleware/emqx
@@ -172,8 +172,8 @@ services:
       compose-network: #指定network
         ipv4_address: 172.28.0.17
 
-  bsin-nginx:
-    container_name: bsin-nginx
+  bsin-nginx-3.0:
+    container_name: bsin-nginx-3.0
     image: bsin-nginx:3.0.0
     build:
       context: middleware/nginx
@@ -193,8 +193,8 @@ services:
       compose-network: #指定network
         ipv4_address: 172.28.0.18
 
-#  bsin-srs:
-#    container_name: bsin-srs
+#  bsin-srs-3.0:
+#    container_name: bsin-srs-3.0
 #    image: bsin-srs:3.0.0
 #    build:
 #      context: middleware/srs
@@ -221,7 +221,7 @@ services:
 #      compose-network: #指定network
 #        ipv4_address: 172.28.0.19
 #
-#  bsin-ffmpeg-helper:
+#  bsin-ffmpeg-helper-3.0:
 #    image: jrottenberg/ffmpeg:4.4-ubuntu
 #    container_name: bsin-ffmpeg-helper
 #    restart: always
@@ -233,9 +233,10 @@ services:
 #        ipv4_address: 172.28.0.19
 #    depends_on:
 #      - bsin-srs
+
   # targe-gateway-admin
-  bsin-targe-gateway-admin:
-    container_name: bsin-targe-gateway-admin
+  bsin-targe-gateway-admin-3.0:
+    container_name: bsin-targe-gateway-admin-3.0
     image: bsin-targe-gateway-admin:3.0.0
     build:
       context: ./app-service/targe-gateway-admin
@@ -248,13 +249,13 @@ services:
     volumes:
       - ./app-service/targe-gateway-admin/logs:/home/bsin-paas-os/targe-gateway-admin/logs
     depends_on:
-      - bsin-nacos-standalone
-      - bsin-redis
-      - bsin-mysql
+      - bsin-nacos-standalone-3.0
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
     links:
-      - bsin-nacos-standalone
-      - bsin-redis
-      - bsin-mysql
+      - bsin-nacos-standalone-3.0
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
     environment:
       shenyu.httpPath: http://43.137.62.23:9095
     networks:
@@ -262,8 +263,8 @@ services:
         ipv4_address: 172.28.0.20
 
   # targe-gateway
-  bsin-targe-gateway:
-    container_name: bsin-targe-gateway
+  bsin-targe-gateway-3.0:
+    container_name: bsin-targe-gateway-3.0
     image: bsin-targe-gateway:3.0.0
     build:
       context: ./app-service/targe-gateway
@@ -278,24 +279,24 @@ services:
       - ./app-service/targe-gateway/logs:/home/bsin-paas-os/targe-gateway/logs
       - ./app-service/targe-gateway/conf/hosts:/etc/hosts
     depends_on:
-      - bsin-nacos-standalone
-      - bsin-redis
-      - bsin-mysql
+      - bsin-nacos-standalone-3.0
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
 #      - bsin-nginx
-      - bsin-targe-gateway-admin
+      - bsin-targe-gateway-admin-3.0
     links:
-      - bsin-nacos-standalone
-      - bsin-redis
-      - bsin-mysql
+      - bsin-nacos-standalone-3.0
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
 #      - bsin-nginx
-      - bsin-targe-gateway-admin
+      - bsin-targe-gateway-admin-3.0
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.21
 
   # server-apps
-  bsin-server-upms:
-    container_name: bsin-server-upms
+  bsin-server-upms-3.0:
+    container_name: bsin-server-upms-3.0
     image: bsin-server-upms:3.0.0
     build:
       context: ./app-service/server-apps/upms
@@ -308,19 +309,19 @@ services:
     volumes:
       - ./app-service/server-apps/upms/logs:/home/bsin-paas-os/server-apps/upms/logs
     depends_on:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
     links:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.22
 
-  bsin-server-crm:
-    container_name: bsin-server-crm
+  bsin-server-crm-3.0:
+    container_name: bsin-server-crm-3.0
     image: bsin-server-crm:3.0.0
     build:
       context: ./app-service/server-apps/crm
@@ -333,19 +334,19 @@ services:
     volumes:
       - ./app-service/server-apps/crm/logs:/home/bsin-paas-os/server-apps/crm/logs
     depends_on:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
     links:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.23
 
-  bsin-server-brms:
-    container_name: bsin-server-brms
+  bsin-server-brms-3.0:
+    container_name: bsin-server-brms-3.0
     image: bsin-server-brms:3.0.0
     build:
       context: ./app-service/server-apps/brms
@@ -358,19 +359,19 @@ services:
     volumes:
       - ./app-service/server-apps/brms/logs:/home/bsin-paas-os/server-apps/brms/logs
     depends_on:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
     links:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.24
 
-  bsin-server-app-agent:
-    container_name: bsin-server-app-agent
+  bsin-server-app-agent-3.0:
+    container_name: bsin-server-app-agent-3.0
     image: bsin-server-app-agent:3.0.0
     build:
       context: ./app-service/server-apps/app-agent
@@ -383,19 +384,19 @@ services:
     volumes:
       - ./app-service/server-apps/app-agent/logs:/home/bsin-paas-os/server-apps/app-agent/logs
     depends_on:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
     links:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.25
 
-  bsin-server-waas:
-    container_name: bsin-server-waas
+  bsin-server-waas-3.0:
+    container_name: bsin-server-waas-3.0
     image: bsin-server-waas:3.0.0
     build:
       context: ./app-service/server-apps/waas
@@ -408,45 +409,70 @@ services:
     volumes:
       - ./app-service/server-apps/waas/logs:/home/bsin-paas-os/server-apps/waas/logs
     depends_on:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
     links:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
 #    networks:
 #      compose-network: #指定network
 #        ipv4_address: 172.28.0.28
 
 
-  bsin-server-community:
-    container_name: bsin-server-community
-    image: bsin-server-community:3.0.0
+  bsin-server-file-3.0:
+    container_name: bsin-server-file-3.0
+    image: bsin-server-file:3.0.0
     build:
-      context: ./app-service/server-apps/community
+      context: ./app-service/server-apps/file
       dockerfile: dockerfile
     env_file:
-      - ./app-service/server-apps/community/.env
+      - ./app-service/server-apps/file/.env
     ports:
-      - "9110:9110"
-#    restart: always
+      - "9108:9108"
+    #    restart: always
     volumes:
-      - ./app-service/server-apps/community/logs:/home/bsin-paas-os/server-apps/community/logs
+      - ./app-service/server-apps/file/logs:/home/bsin-paas-os/server-apps/file/logs
     depends_on:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
     links:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.31
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
+  #    networks:
+  #      compose-network: #指定network
+  #        ipv4_address: 172.28.0.29
 
-  bsin-server-oms:
-    container_name: bsin-server-oms
+#  bsin-server-community-3.0:
+#    container_name: bsin-server-community-3.0
+#    image: bsin-server-community:3.0.0
+#    build:
+#      context: ./app-service/server-apps/community
+#      dockerfile: dockerfile
+#    env_file:
+#      - ./app-service/server-apps/community/.env
+#    ports:
+#      - "9110:9110"
+##    restart: always
+#    volumes:
+#      - ./app-service/server-apps/community/logs:/home/bsin-paas-os/server-apps/community/logs
+#    depends_on:
+#      - bsin-redis-3.0
+#      - bsin-mysql-3.0
+#      - bsin-targe-gateway-3.0
+#    links:
+#      - bsin-redis-3.0
+#      - bsin-mysql-3.0
+#      - bsin-targe-gateway-3.0
+##    networks:
+##      compose-network: #指定network
+##        ipv4_address: 172.28.0.31
+
+  bsin-server-oms-3.0:
+    container_name: bsin-server-oms-3.0
     image: bsin-server-oms:3.0.0
     build:
       context: ./app-service/server-apps/oms
@@ -459,19 +485,19 @@ services:
     volumes:
       - ./app-service/server-apps/oms/logs:/home/bsin-paas-os/server-apps/oms/logs
     depends_on:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
     links:
-      - bsin-redis
-      - bsin-mysql
-      - bsin-targe-gateway
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
 #    networks:
 #      compose-network: #指定network
 #        ipv4_address: 172.28.0.32
 
-#  bsin-server-iot:
-#    container_name: bsin-server-iot
+#  bsin-server-iot-3.0:
+#    container_name: bsin-server-iot-3.0
 #    image: bsin-server-iot:3.0.0
 #    build:
 #      context: ./app-service/server-apps/iot
@@ -484,21 +510,21 @@ services:
 #    volumes:
 #      - ./app-service/server-apps/iot/logs:/home/bsin-paas-os/server-apps/iot/logs
 #    depends_on:
-#      - bsin-redis
-#      - bsin-mysql
-#      - bsin-targe-gateway
+#      - bsin-redis-3.0
+#      - bsin-mysql-3.0
+#      - bsin-targe-gateway-3.0
 #    links:
-#      - bsin-redis
-#      - bsin-mysql
-#      - bsin-targe-gateway
+#      - bsin-redis-3.0
+#      - bsin-mysql-3.0
+#      - bsin-targe-gateway-3.0
 #    networks:
 #      compose-network: #指定network
 #        ipv4_address: 172.28.0.33
 
 
   # apps-container
-  bsin-apps-container:
-    container_name: bsin-apps-container
+  bsin-apps-container-3.0:
+    container_name: bsin-apps-container-3.0
     image: bsin-apps-container:3.0.0
     build:
       context: ./app-service/apps-container
@@ -516,8 +542,8 @@ services:
 #        ipv4_address: 172.28.0.40
 
   # ui-apps
-  bsin-ui-upms:
-    container_name: bsin-ui-upms
+  bsin-ui-upms-3.0:
+    container_name: bsin-ui-upms-3.0
     image: bsin-ui-upms:3.0.0
     build:
       context: ./app-service/ui-apps/upms
@@ -534,8 +560,8 @@ services:
 #      compose-network: #指定network
 #        ipv4_address: 172.28.0.41
 
-  bsin-ui-ai-agent:
-    container_name: bsin-ui-ai-agent
+  bsin-ui-ai-agent-3.0:
+    container_name: bsin-ui-ai-agent-3.0
     image: bsin-ui-ai-agent:3.0.0
     build:
       context: ./app-service/ui-apps/ai-agent
@@ -552,8 +578,8 @@ services:
 #      compose-network: #指定network
 #        ipv4_address: 172.28.0.42
 
-  bsin-ui-waas:
-    container_name: bsin-ui-waas
+  bsin-ui-waas-3.0:
+    container_name: bsin-ui-waas-3.0
     image: bsin-ui-waas:3.0.0
     build:
       context: ./app-service/ui-apps/waas
@@ -571,8 +597,8 @@ services:
 #        ipv4_address: 172.28.0.43
 
 
-  bsin-ui-decision-admin:
-    container_name: bsin-ui-decision-admin
+  bsin-ui-decision-admin-3.0:
+    container_name: bsin-ui-decision-admin-3.0
     image: bsin-ui-decision-admin:3.0.0
     build:
       context: ./app-service/ui-apps/decision-admin
@@ -589,8 +615,8 @@ services:
 #      compose-network: #指定network
 #        ipv4_address: 172.28.0.44
 
-  bsin-ui-bigan:
-    container_name: bsin-ui-bigan
+  bsin-ui-bigan-3.0:
+    container_name: bsin-ui-bigan-3.0
     image: bsin-ui-bigan:3.0.0
     build:
       context: ./app-service/ui-apps/bigan
@@ -607,8 +633,8 @@ services:
 #      compose-network: #指定network
 #        ipv4_address: 172.28.0.45
 
-  bsin-ui-data-warehouse:
-    container_name: bsin-ui-data-warehouse
+  bsin-ui-data-warehouse-3.0:
+    container_name: bsin-ui-data-warehouse-3.0
     image: bsin-ui-data-warehouse:3.0.0
     build:
       context: ./app-service/ui-apps/data-warehouse
@@ -625,8 +651,26 @@ services:
 #      compose-network: #指定network
 #        ipv4_address: 172.28.0.46
 
-  bsin-ui-sea-condition:
-    container_name: bsin-ui-sea-condition
+  bsin-ui-doc-3.0:
+    container_name: bsin-ui-doc-3.0
+    image: bsin-ui-doc:3.0.0
+    build:
+      context: ./app-service/ui-apps/doc
+      dockerfile: dockerfile
+    ports:
+      - "8888:80"
+    #    expose:
+    #      - "80"
+    volumes:
+      - ./app-service/ui-apps/doc/dist:/home/bsin-paas-os/ui-apps/doc/dist
+      - ./app-service/ui-apps/doc/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./app-service/ui-apps/doc/logs:/var/log/nginx
+#    networks:
+#      compose-network: #指定network
+#        ipv4_address: 172.28.0.47
+
+  bsin-ui-sea-condition-3.0:
+    container_name: bsin-ui-sea-condition-3.0
     image: bsin-ui-sea-condition:3.0.0
     build:
       context: ./app-service/ui-apps/sea-condition

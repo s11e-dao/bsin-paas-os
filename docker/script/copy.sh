@@ -5,6 +5,45 @@
 echo "0. clean target dir start..."
 bash clean.sh
 
+echo "1. create dir start..."
+mkdir -p ./middleware/mysql/db
+mkdir -p ./middleware/mysql/logs
+mkdir -p ./middleware/mysql/data
+mkdir -p ./middleware/milvus/logs
+mkdir -p ./middleware/nacos/logs
+mkdir -p ./middleware/rabbitmq/logs
+mkdir -p ./middleware/redis/logs
+
+
+mkdir -p ./app-service/server-apps/app-agent/jar
+mkdir -p ./app-service/server-apps/brms/jar
+mkdir -p ./app-service/server-apps/crm/jar
+mkdir -p ./app-service/server-apps/http/jar
+mkdir -p ./app-service/server-apps/file/jar
+mkdir -p ./app-service/server-apps/search/jar
+mkdir -p ./app-service/server-apps/upms/jar
+mkdir -p ./app-service/server-apps/waas/jar
+mkdir -p ./app-service/server-apps/workflow/jar
+mkdir -p ./app-service/server-apps/workflow-admin/jar
+mkdir -p ./app-service/server-apps/oms/jar
+mkdir -p ./app-service/server-apps/community/jar
+mkdir -p ./app-service/server-apps/iot/jar
+
+
+mkdir -p ./app-service/targe-gateway/jar
+mkdir -p ./app-service/targe-gateway-admin/jar
+
+mkdir -p ./app-service/apps-container/dist/
+mkdir -p ./app-service/ui-apps/ai-agent/dist/
+mkdir -p ./app-service/ui-apps/decision-admin/dist/
+mkdir -p ./app-service/ui-apps/upms/dist/
+mkdir -p ./app-service/ui-apps/waas/dist/
+mkdir -p ./app-service/ui-apps/bigan/dist/
+mkdir -p ./app-service/ui-apps/doc/dist/
+mkdir -p ./app-service/ui-apps/sea-condition/dist/
+
+echo "2. create dir finished!!!"
+
 # 复制sql文件
 echo "3. begin copy sql "
 #cp ../sql/test.sql ../middleware/mysql/db
@@ -23,11 +62,11 @@ echo "5.3 begin copy server-apps"
 cp -rvf ../bsin-server-apps/bsin-server-app-agent/app-agent-server/target/app-agent-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/app-agent/jar/app-agent-server-3.0.0-SNAPSHOT.jar
 cp -rvf ../bsin-server-apps/bsin-server-brms/brms-server/target/brms-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/brms/jar/brms-server-3.0.0-SNAPSHOT.jar
 cp -rvf ../bsin-server-apps/bsin-server-crm/crm-server/target/crm-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/crm/jar/crm-server-3.0.0-SNAPSHOT.jar
-#cp -rvf ../bsin-server-apps/bsin-server-file/target/bsin-server-file.jar ./app-service/server-apps/file/jar/bsin-file-server-3.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-server-apps/bsin-server-file/target/file-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/file/jar/file-server-3.0.0-SNAPSHOT.jar
 cp -rvf ../bsin-server-apps/bsin-server-upms/upms-server/target/upms-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/upms/jar/upms-server-3.0.0-SNAPSHOT.jar
 cp -rvf ../bsin-server-apps/bsin-server-waas/waas-server/target/waas-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/waas/jar/waas-server-3.0.0-SNAPSHOT.jar
-#cp -rvf ../bsin-server-apps/bsin-server-workflow/workflow-server/target/workflow-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/workflow/jar/workflow-server-3.0.0-SNAPSHOT.jar
-#cp -rvf ../bsin-server-apps/bsin-server-workflow-admin/workflow-admin-server/target/workflow-admin-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/workflow-admin/jar/workflow-admin-server-3.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-server-apps/bsin-server-workflow/workflow-server/target/workflow-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/workflow/jar/workflow-server-3.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-server-apps/bsin-server-workflow-admin/workflow-admin-server/target/workflow-admin-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/workflow-admin/jar/workflow-admin-server-3.0.0-SNAPSHOT.jar
 #cp -rvf ../bsin-server-apps/bsin-server-iot/iot-server/target/iot-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/iot/jar/iot-server-3.0.0-SNAPSHOT.jar
 
 
@@ -39,10 +78,15 @@ cp ../.env ./app-service/server-apps/upms -rvf
 cp ../.env ./app-service/server-apps/waas -rvf
 cp ../.env ./app-service/server-apps/workflow -rvf
 cp ../.env ./app-service/server-apps/workflow-admin -rvf
-#cp ../.env ./app-service/server-apps/oms -rvf
+cp ../.env ./app-service/server-apps/oms -rvf
+cp ../.env ./app-service/server-apps/file -rvf
 cp ../.env ./app-service/server-apps/iot -rvf
 cp ../.env ./app-service/targe-gateway-admin -rvf
 cp ../.env ./app-service/targe-gateway -rvf
+
+
+##
+cp -rvf /home/leonard/ssd12/bsin-paas/prj/sea/bsin-ui-sea-condition/dist/* ./app-service/ui-apps/sea-condition/dist/
 
 ## jiujiu-paas，业务闭源
 #cp -rvf ../../jiujiu-paas-server/bsin-server-oms/oms-server/target/oms-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/oms/jar/oms-server-3.0.0-SNAPSHOT.jar
@@ -60,6 +104,7 @@ cp -rvf  ../bsin-ui-apps/bsin-ui-decision-admin/dist/* ./app-service/ui-apps/dec
 cp -rvf  ../bsin-ui-apps/bsin-ui-upms/dist/* ./app-service/ui-apps/upms/dist/
 cp -rvf  ../bsin-ui-apps/bsin-ui-waas/dist/* ./app-service/ui-apps/waas/dist/
 cp -rvf  ../bsin-ui-apps/bsin-ui-data-warehouse/dist/* ./app-service/ui-apps/data-warehouse/dist/
+cp -rvf  ../bsin-paas-doc/dist/* ./app-service/ui-apps/doc/dist/
 
 ## jiujiu-paas，业务闭源
 # cp -rvf  ../../jiujiu-paas/jiujiu-paas-ui/bsin-ui-bigan/dist/* ./app-service/ui-apps/bigan/dist/

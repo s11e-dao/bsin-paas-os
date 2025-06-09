@@ -14,7 +14,7 @@
 # limitations under the License.
 
 server:
-  port: 8189
+  port: 9108
   address: 0.0.0.0
   tomcat:
     max-http-form-post-size: 100MB
@@ -32,7 +32,7 @@ shenyu:
           contextPath: /http
           appName: http
 #          host: 192.168.198.168
-#          port: 8189
+#          port: 9108
 
 spring:
   servlet:
@@ -43,9 +43,9 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/shenyu?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
-    username: root
-    password: 12345678
+    url: ${FILE_MYSQL_DB_URL}?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+    username: ${FILE_MYSQL_DB_USERNAME}
+    password: ${FILE_MYSQL_DB_PASSWORD}
 
 logging:
   level:

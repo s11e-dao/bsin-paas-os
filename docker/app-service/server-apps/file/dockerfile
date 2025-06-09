@@ -6,12 +6,12 @@ MAINTAINER bsin-paas
 LABEL version=3.0.0
 
 # 挂载目录
-VOLUME /home/bsin-paas-os/server-apps/http
+VOLUME /home/bsin-paas-os/server-apps/file
 # 创建目录
-RUN mkdir -p /home/bsin-paas-os/server-apps/http
+RUN mkdir -p /home/bsin-paas-os/server-apps/file
 # 指定路径
-WORKDIR /home/bsin-paas-os/server-apps/http
+WORKDIR /home/bsin-paas-os/server-apps/file
 # 复制jar文件到路径
-COPY ./jar/http-server-2.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/file/bsin-server-file-3.0.0-SNAPSHOT.jar
+COPY ./jar/file-server-3.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/file/file-server-3.0.0-SNAPSHOT.jar
 # 启动用户服务
 ENTRYPOINT ["java","-jar","file-server-3.0.0-SNAPSHOT.jar"]
