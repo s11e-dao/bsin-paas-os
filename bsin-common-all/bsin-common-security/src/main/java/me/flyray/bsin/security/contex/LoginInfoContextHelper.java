@@ -86,7 +86,8 @@ public class LoginInfoContextHelper {
     }
 
     public static String getAppId() {
-        return getLoginUser().getAppId();
+        Map<String, Object> map = LOGIN_INFO.get();
+        return (String) map.get("appKey");
     }
 
     public static String getJsonString() {

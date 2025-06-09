@@ -30,6 +30,7 @@ public class DubboLoginInfoFilter implements Filter {
         log.info("dubbo-获取当前登录信息attachments :{}", attachments);
         // 国际化支持
         LoginInfoContextHelper.set("locale", attachments.get("locale"));
+        LoginInfoContextHelper.set("appKey", attachments.get("appKey"));
         if (attachments.size() > 0) {
             LoginUser loginUser = new LoginUser();
             for (Field field : loginUser.getClass().getDeclaredFields()) {

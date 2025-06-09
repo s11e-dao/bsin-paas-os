@@ -9,5 +9,4 @@ package me.flyray.bsin.security.sign;
 
 public class SignProvider {
 
-
 }
