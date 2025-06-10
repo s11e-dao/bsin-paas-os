@@ -3,6 +3,7 @@ package me.flyray.bsin.facade.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.DisInviteRelation;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,5 +43,12 @@ public interface DisInviteRelationService {
      * @return
      */
     public IPage<?> getMyInviteCustormerPageList(Map<String, Object> requestMap);
+
+    /**
+     * 获取分销角色和等级及分佣比列数据
+     * @param requestMap
+     * @return
+     */
+    public List<?> getDistributionRoleAndRateList(Map<String, Object> requestMap);
 
 }
