@@ -446,30 +446,30 @@ services:
   #      compose-network: #指定network
   #        ipv4_address: 172.28.0.29
 
-#  bsin-server-community-3.0:
-#    container_name: bsin-server-community-3.0
-#    image: bsin-server-community:3.0.0
-#    build:
-#      context: ./app-service/server-apps/community
-#      dockerfile: dockerfile
-#    env_file:
-#      - ./app-service/server-apps/community/.env
-#    ports:
-#      - "9110:9110"
-##    restart: always
-#    volumes:
-#      - ./app-service/server-apps/community/logs:/home/bsin-paas-os/server-apps/community/logs
-#    depends_on:
-#      - bsin-redis-3.0
-#      - bsin-mysql-3.0
-#      - bsin-targe-gateway-3.0
-#    links:
-#      - bsin-redis-3.0
-#      - bsin-mysql-3.0
-#      - bsin-targe-gateway-3.0
-##    networks:
-##      compose-network: #指定network
-##        ipv4_address: 172.28.0.31
+  bsin-server-community-3.0:
+    container_name: bsin-server-community-3.0
+    image: bsin-server-community:3.0.0
+    build:
+      context: ./app-service/server-apps/community
+      dockerfile: dockerfile
+    env_file:
+      - ./app-service/server-apps/community/.env
+    ports:
+      - "9110:9110"
+#    restart: always
+    volumes:
+      - ./app-service/server-apps/community/logs:/home/bsin-paas-os/server-apps/community/logs
+    depends_on:
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
+    links:
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
+#    networks:
+#      compose-network: #指定network
+#        ipv4_address: 172.28.0.31
 
   bsin-server-oms-3.0:
     container_name: bsin-server-oms-3.0
@@ -496,30 +496,30 @@ services:
 #      compose-network: #指定network
 #        ipv4_address: 172.28.0.32
 
-#  bsin-server-iot-3.0:
-#    container_name: bsin-server-iot-3.0
-#    image: bsin-server-iot:3.0.0
-#    build:
-#      context: ./app-service/server-apps/iot
-#      dockerfile: dockerfile
-#    env_file:
-#      - ./app-service/server-apps/iot/.env
-#    ports:
-#      - "9120:9120"
-##    restart: always
-#    volumes:
-#      - ./app-service/server-apps/iot/logs:/home/bsin-paas-os/server-apps/iot/logs
-#    depends_on:
-#      - bsin-redis-3.0
-#      - bsin-mysql-3.0
-#      - bsin-targe-gateway-3.0
-#    links:
-#      - bsin-redis-3.0
-#      - bsin-mysql-3.0
-#      - bsin-targe-gateway-3.0
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.33
+  bsin-server-iot-3.0:
+    container_name: bsin-server-iot-3.0
+    image: bsin-server-iot:3.0.0
+    build:
+      context: ./app-service/server-apps/iot
+      dockerfile: dockerfile
+    env_file:
+      - ./app-service/server-apps/iot/.env
+    ports:
+      - "9120:9120"
+#    restart: always
+    volumes:
+      - ./app-service/server-apps/iot/logs:/home/bsin-paas-os/server-apps/iot/logs
+    depends_on:
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
+    links:
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-targe-gateway-3.0
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.33
 
 
   # apps-container

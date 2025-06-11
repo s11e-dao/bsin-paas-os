@@ -29,62 +29,62 @@ copy(){
 }
 # 启动基础环境（必须）
 middleware(){
-	docker-compose up -d bsin-mysql bsin-redis bsin-nacos-standalone bsin-emqx #bsin-nginx #bsin-rabbitmq bsin-milvus
+	docker-compose up -d bsin-mysql-3.0 bsin-redis-3.0 bsin-nacos-standalone-3.0 bsin-emqx-3.0 #bsin-nginx-3.0 #bsin-rabbitmq-3.0 bsin-milvus-3.0
 }
 
 # 启动网关模块（必须）
 gateway(){
-	docker-compose up -d bsin-targe-gateway-admin bsin-targe-gateway
+	docker-compose up -d bsin-targe-gateway-admin-3.0 bsin-targe-gateway-3.0
 }
 # 启动server-apps模块
 server_apps(){
-	docker-compose up -d bsin-server-upms bsin-server-waas bsin-server-crm bsin-server-app-agent bsin-server-oms bsin-server-community bsin-server-brms #bsin-server-iot bsin-server-workflow bsin-server-workflow-admin
+	docker-compose up -d bsin-server-upms-3.0 bsin-server-waas-3.0 bsin-server-crm-3.0 bsin-server-app-agent-3.0 bsin-server-oms-3.0 bsin-server-community-3.0 bsin-server-brms-3.0 #bsin-server-iot-3.0 bsin-server-workflow-3.0 bsin-server-workflow-admin-3.0
 }
 
 # 启动upms模块
 upms(){
-	docker-compose up -d bsin-server-upms
+	docker-compose up -d bsin-server-upms-3.0
 }
 # 启动crm模块
 crm(){
-	docker-compose up -d bsin-server-crm
+	docker-compose up -d bsin-server-crm-3.0
 }
 # 启动waas模块
 waas(){
-	docker-compose up -d bsin-server-waas
+	docker-compose up -d bsin-server-waas-3.0
 }
 # 启动waas模块
 oms(){
-  docker-compose up -d bsin-server-oms
+  docker-compose up -d bsin-server-oms-3.0
 }
 # 启动community模块
 community(){
-  docker-compose up -d bsin-server-community
+  docker-compose up -d bsin-server-community-3.0
 }
 # 启动ai_agent模块
 app_agent(){
-	docker-compose up -d bsin-server-app-agent
+	docker-compose up -d bsin-server-app-agent-3.0
 }
 # 启动brms模块
 brms(){
-	docker-compose up -d bsin-server-brms
+	docker-compose up -d bsin-server-brms-3.0
 }
 
 # 启动workflow模块
 workflow(){
-	docker-compose up -d bsin-server-workflow
+	docker-compose up -d bsin-server-workflow-3.0
 }
 # 启动workflow-admin模块
 workflow_admin(){
-	docker-compose up -d bsin-server-workflow-admin
+	docker-compose up -d bsin-server-workflow-admin-3.0
 }
 # 启动iot模块
 iot(){
-	docker-compose up -d bsin-server-iot
+	docker-compose up -d bsin-server-iot-3.0
 }
 # 启动ui-apps模块
 ui_apps(){
-	docker-compose up -d bsin-apps-container bsin-ui-upms bsin-ui-ai-agent bsin-ui-waas bsin-ui-bigan bsin-ui-data-warehouse bsin-ui-decision-admin bsin-ui-sea-condition
+	docker-compose up -d bsin-apps-container-3.0 bsin-ui-upms-3.0 bsin-ui-ai-agent-3.0 bsin-ui-waas-3.0 bsin-ui-bigan-3.0 bsin-ui-data-warehouse-3.0 bsin-ui-decision-admin-3.0 bsin-ui-sea-condition-3.0
 }
 # 关闭所有环境/模块
 stop(){

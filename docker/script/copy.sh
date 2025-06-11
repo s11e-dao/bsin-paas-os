@@ -41,6 +41,7 @@ mkdir -p ./app-service/ui-apps/waas/dist/
 mkdir -p ./app-service/ui-apps/bigan/dist/
 mkdir -p ./app-service/ui-apps/doc/dist/
 mkdir -p ./app-service/ui-apps/sea-condition/dist/
+mkdir -p ./app-service/ui-apps/data-warehouse/dist/
 
 echo "2. create dir finished!!!"
 
@@ -67,7 +68,7 @@ cp -rvf ../bsin-server-apps/bsin-server-upms/upms-server/target/upms-server-3.0.
 cp -rvf ../bsin-server-apps/bsin-server-waas/waas-server/target/waas-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/waas/jar/waas-server-3.0.0-SNAPSHOT.jar
 cp -rvf ../bsin-server-apps/bsin-server-workflow/workflow-server/target/workflow-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/workflow/jar/workflow-server-3.0.0-SNAPSHOT.jar
 cp -rvf ../bsin-server-apps/bsin-server-workflow-admin/workflow-admin-server/target/workflow-admin-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/workflow-admin/jar/workflow-admin-server-3.0.0-SNAPSHOT.jar
-#cp -rvf ../bsin-server-apps/bsin-server-iot/iot-server/target/iot-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/iot/jar/iot-server-3.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-server-apps/bsin-server-iot/iot-server/target/iot-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/iot/jar/iot-server-3.0.0-SNAPSHOT.jar
 
 
 echo "5.3 begin copy .env files"
@@ -79,18 +80,35 @@ cp ../.env ./app-service/server-apps/waas -rvf
 cp ../.env ./app-service/server-apps/workflow -rvf
 cp ../.env ./app-service/server-apps/workflow-admin -rvf
 cp ../.env ./app-service/server-apps/oms -rvf
+cp ../.env ./app-service/server-apps/community -rvf
 cp ../.env ./app-service/server-apps/file -rvf
+cp ../.env ./app-service/server-apps/http -rvf
 cp ../.env ./app-service/server-apps/iot -rvf
 cp ../.env ./app-service/targe-gateway-admin -rvf
 cp ../.env ./app-service/targe-gateway -rvf
+
+
+echo "5.3 begin copy .sql files"
+
+cp ../bsin-targe-gateway-admin/script/bsin-shenyu-gateway.sql ./middleware/mysql/db/ -rvf
+cp ../bsin-server-apps/bsin-server-app-agent/script/bsin-ai.sql ./middleware/mysql/db/ -rvf
+cp ../bsin-server-apps/bsin-server-brms/script/bsin-brms.sql ./middleware/mysql/db/ -rvf
+cp ../bsin-server-apps/bsin-server-crm/script/bsin-crm.sql ./middleware/mysql/db/ -rvf
+cp ../bsin-server-apps/bsin-server-file/script/bsin-file.sql ./middleware/mysql/db/ -rvf
+cp ../bsin-server-apps/bsin-server-iot/script/bsin-iot.sql ./middleware/mysql/db/ -rvf
+cp ../bsin-server-apps/bsin-server-upms/script/bsin-upms.sql ./middleware/mysql/db/ -rvf
+cp ../bsin-server-apps/bsin-server-waas/script/bsin-waas.sql ./middleware/mysql/db/ -rvf
+cp ../bsin-server-apps/bsin-server-workflow/script/bsin-workflow.sql ./middleware/mysql/db/ -rvf
+cp ../bsin-server-apps/bsin-server-workflow-admin/script/bsin-workflow-admin.sql ./middleware/mysql/db/ -rvf
+
 
 
 ##
 cp -rvf /home/leonard/ssd12/bsin-paas/prj/sea/bsin-ui-sea-condition/dist/* ./app-service/ui-apps/sea-condition/dist/
 
 ## jiujiu-paas，业务闭源
-#cp -rvf ../../jiujiu-paas-server/bsin-server-oms/oms-server/target/oms-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/oms/jar/oms-server-3.0.0-SNAPSHOT.jar
-#cp -rvf ../../jiujiu-paas-server/bsin-server-community/community-server/target/community-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/community/jar/community-server-3.0.0-SNAPSHOT.jar
+cp -rvf ../../jiujiu-paas-3.0/jiujiu-paas-server/bsin-server-oms/oms-server/target/oms-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/oms/jar/oms-server-3.0.0-SNAPSHOT.jar
+cp -rvf ../../jiujiu-paas-3.0/jiujiu-paas-server/bsin-server-community/community-server/target/community-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/community/jar/community-server-3.0.0-SNAPSHOT.jar
 
 cp ../../.env ./app-service/server-apps/community -rvf
 cp ../../.env ./app-service/server-apps/oms -rvf
@@ -107,7 +125,7 @@ cp -rvf  ../bsin-ui-apps/bsin-ui-data-warehouse/dist/* ./app-service/ui-apps/dat
 cp -rvf  ../bsin-paas-doc/dist/* ./app-service/ui-apps/doc/dist/
 
 ## jiujiu-paas，业务闭源
-# cp -rvf  ../../jiujiu-paas/jiujiu-paas-ui/bsin-ui-bigan/dist/* ./app-service/ui-apps/bigan/dist/
+ cp -rvf  ../../jiujiu-paas-3.0/jiujiu-paas-ui/bsin-ui-bigan/dist/* ./app-service/ui-apps/bigan/dist/
 
 ## 拷贝自定义项目脚本
 ## cp -r /home/leonard/ssd12/bsin-paas/prj/sea/bsin-ui-sea-condition/dist/* ./app-service/ui-apps/sea-condition/dist/
