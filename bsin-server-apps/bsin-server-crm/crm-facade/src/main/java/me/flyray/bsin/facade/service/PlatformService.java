@@ -48,4 +48,10 @@ public interface PlatformService {
      */
     public IPage<?> getPageList(Map<String, Object> requestMap);
 
+    /**
+     * 获取平台的生态价值分配模型
+     * @param requestMap
+     */
+    public Platform getEcologicalValueAllocationModel(Map<String, Object> requestMap);
+
 }

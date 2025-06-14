@@ -152,6 +152,11 @@ public class Platform implements Serializable {
      */
     private String googleSecretKey;
 
+    /**
+     * 生态价值分配模型
+     */
+    private String ecoValueAllocationModel;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
