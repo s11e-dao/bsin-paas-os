@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.time.*;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static me.flyray.bsin.constants.ResponseCode.*;
@@ -174,6 +175,17 @@ public class DisInviteRelationServiceImpl implements DisInviteRelationService {
         IPage<CustomerBase> pageList = disInviteRelationMapper.selectMyInviteCustormerPageList(page, loginUser.getBizRoleTypeNo());
         return pageList;
     }
+
+
+    /**
+     * 获取分销角色和等级及分佣比列数据
+     * @param requestMap
+     * @return
+     */
+    public List<?> getDistributionRoleAndRateList(Map<String, Object> requestMap) {
+        return null;
+    }
+
 
 }
 

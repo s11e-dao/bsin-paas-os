@@ -162,3 +162,5 @@ docker/bsin-paas-os/targe-gateway-admin/logs/
 .env.prod
 
 docker/app-service/ui-apps/doc/dist/
+
+docker/app-service/server-apps/iot/jar/
