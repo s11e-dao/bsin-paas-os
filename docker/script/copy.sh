@@ -3,16 +3,8 @@
 # 创建目标目录
 
 echo "0. clean target dir start..."
-bash clean.sh
+bash ./script/mkdir.sh
 
-echo "1. create dir start..."
-mkdir -p ./middleware/mysql/db
-mkdir -p ./middleware/mysql/logs
-mkdir -p ./middleware/mysql/data
-mkdir -p ./middleware/milvus/logs
-mkdir -p ./middleware/nacos/logs
-mkdir -p ./middleware/rabbitmq/logs
-mkdir -p ./middleware/redis/logs
 
 
 mkdir -p ./app-service/server-apps/app-agent/jar
