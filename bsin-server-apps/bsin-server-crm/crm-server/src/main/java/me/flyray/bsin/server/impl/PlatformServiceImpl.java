@@ -253,4 +253,11 @@ public class PlatformServiceImpl implements PlatformService {
         return pageList;
     }
 
+    @ApiDoc(desc = "getEcologicalValueAllocationModel")
+    @ShenyuDubboClient("/getEcologicalValueAllocationModel")
+    @Override
+    public Platform getEcologicalValueAllocationModel(Map<String, Object> requestMap) {
+        return null;
+    }
+
 }
