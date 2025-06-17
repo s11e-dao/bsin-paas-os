@@ -2,6 +2,7 @@ package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.DisInviteRelation;
+import me.flyray.bsin.domain.response.DistributionRoleAndRateDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,6 @@ public interface DisInviteRelationService {
      * @param requestMap
      * @return
      */
-    public List<?> getDistributionRoleAndRateList(Map<String, Object> requestMap);
+    public List<DistributionRoleAndRateDTO> getDistributionRoleAndRateList(Map<String, Object> requestMap);
 
 }

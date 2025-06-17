@@ -257,7 +257,9 @@ public class PlatformServiceImpl implements PlatformService {
     @ShenyuDubboClient("/getEcologicalValueAllocationModel")
     @Override
     public Platform getEcologicalValueAllocationModel(Map<String, Object> requestMap) {
-        return null;
+        String platformNo = MapUtils.getString(requestMap, "platformNo");
+        Platform platform = platformMapper.selectById(platformNo);
+        return platform;
     }
 
 }
