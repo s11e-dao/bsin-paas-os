@@ -90,7 +90,7 @@ docker/app-service/ui-apps/waas/dist/
 
 docker/app-service/targe-gateway/jar/
 
-docker/middleware/mysql/db/
+#docker/middleware/mysql/db/
 
 docker/app-service/targe-gateway-admin/jar/
 
@@ -164,3 +164,5 @@ docker/bsin-paas-os/targe-gateway-admin/logs/
 docker/app-service/ui-apps/doc/dist/
 
 docker/app-service/server-apps/iot/jar/
+
+docker/middleware/mysql/db.bak/

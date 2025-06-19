@@ -38,42 +38,35 @@ services:
       context: middleware/mysql
     ports:
       - "3306:3306"
-    #restart: always
+    privileged: true
     volumes:
-      # 绝对路径
-      # - "/mydata/docker_mysql/data:/var/lib/mysql"
-      # 相对路径，相对当前 docker-compose.yml 文件所在目录
-      # - "./conf:/etc/mysql/conf.d"
-      # - "./docker_volume/mysql:/var/lib/mysql"
-      # 匿名挂载，匿名挂载只需要写容器目录即可，容器外对应的目录会在 /var/lib/docker/volume 中生成
-      # - "/var/lib/mysql"
-      # 具名挂载，就是给数据卷起了个名字，容器外对应的目录会在 /var/lib/docker/volume 中生成
-      # - "mysql-data-volume:/var/lib/mysql"
       - ./middleware/mysql/conf:/etc/mysql/conf.d
       - ./middleware/mysql/logs:/logs
       - ./middleware/mysql/data:/var/lib/mysql
       - ./middleware/mysql/db:/docker-entrypoint-initdb.d/
+      - ./middleware/mysql/db/sqls:/docker-entrypoint-initdb.d/sqls
     command: [
       'mysqld',
       '--innodb-buffer-pool-size=80M',
       '--character-set-server=utf8mb4',
       '--collation-server=utf8mb4_unicode_ci',
       '--default-time-zone=+8:00',
-      '--lower-case-table-names=1'
+      '--lower-case-table-names=1',
+      '--sql-mode=NO_ENGINE_SUBSTITUTION'
     ]
-    privileged: true
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      timeout: 20s
-      retries: 5
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123456" ]
+      timeout: 30s
+      retries: 10
+      start_period: 60s
     environment:
       MYSQL_ROOT_PASSWORD: 123456
-    #      MYSQL_DATABASE: bsin-mpc
-    #      MYSQL_USER: bsin
-    #      MYSQL_PASSWORD: 123456
-    networks:
-      compose-network: #指定network
-        ipv4_address: 172.28.0.12
+      MYSQL_MULTIPLE_DATABASES: bsin-ai,bsin-upms,bsin-crm,bsin-shenyu-gateway,bsin-damp,bsin-flowable,bsin-workflow,bsin-orchestration,bsin-gateway,bsin-intelligent-decision
+      MYSQL_INITDB_SKIP_TZINFO: 1
+      MYSQL_ROOT_HOST: '%'
+    # networks:
+    #   compose-network: #指定network
+    #     ipv4_address: 172.28.0.12
 
   bsin-redis-3.0:
     container_name: bsin-redis-3.0

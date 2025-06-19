@@ -9,6 +9,7 @@ import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.CustomerBase;
 import me.flyray.bsin.domain.entity.DisInviteRelation;
 import me.flyray.bsin.domain.entity.SysDict;
+import me.flyray.bsin.domain.response.DistributionRoleAndRateDTO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisInviteRelationService;
 import me.flyray.bsin.infrastructure.mapper.DisInviteRelationMapper;
@@ -182,7 +183,7 @@ public class DisInviteRelationServiceImpl implements DisInviteRelationService {
      * @param requestMap
      * @return
      */
-    public List<?> getDistributionRoleAndRateList(Map<String, Object> requestMap) {
+    public List<DistributionRoleAndRateDTO> getDistributionRoleAndRateList(Map<String, Object> requestMap) {
         return null;
     }
 

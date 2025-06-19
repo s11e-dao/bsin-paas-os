@@ -6,7 +6,7 @@ echo "0. clean target dir start..."
 bash clean.sh
 
 echo "1. create dir start..."
-mkdir -p ./middleware/mysql/db
+mkdir -p ./middleware/mysql/db/sqls
 mkdir -p ./middleware/mysql/logs
 mkdir -p ./middleware/mysql/data
 mkdir -p ./middleware/milvus/logs
