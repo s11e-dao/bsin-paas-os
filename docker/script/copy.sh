@@ -90,9 +90,10 @@ cp ../bsin-server-apps/bsin-server-file/script/bsin-file.sql ./middleware/mysql/
 cp ../bsin-server-apps/bsin-server-iot/script/bsin-iot.sql ./middleware/mysql/db/sqls/ -rvf
 cp ../bsin-server-apps/bsin-server-upms/script/bsin-upms.sql ./middleware/mysql/db/sqls/ -rvf
 cp ../bsin-server-apps/bsin-server-waas/script/bsin-waas.sql ./middleware/mysql/db/sqls/ -rvf
+cp ../../jiujiu-paas-3.0/jiujiu-paas-server/bsin-server-oms/script/bsin-oms.sql ./middleware/mysql/db/sqls/ -rvf
+cp ../../jiujiu-paas-3.0/jiujiu-paas-server/bsin-server-community/script/bsin-community.sql ./middleware/mysql/db/sqls/ -rvf
 cp ../bsin-server-apps/bsin-server-workflow/script/bsin-workflow.sql ./middleware/mysql/db/sqls/ -rvf
 cp ../bsin-server-apps/bsin-server-workflow-admin/script/bsin-workflow-admin.sql ./middleware/mysql/db/sqls/ -rvf
-
 
 ##
 cp -rvf /home/leonard/ssd12/bsin-paas/prj/sea/bsin-ui-sea-condition/dist/* ./app-service/ui-apps/sea-condition/dist/
