@@ -33,6 +33,8 @@ spring:
     nacos:
       discovery:
         server-addr: ${BSIN_NACOS_SERVER_ADDR} # Spring Cloud Alibaba Dubbo use this.
+        username: ${BSIN_NACOS_USERNAME}
+        password: ${BSIN_NACOS_PASSWORD}
         enabled: false
         namespace: ShenyuRegisterCenter
 

@@ -14,10 +14,10 @@ rm -f ./app-service/server-apps/workflow/jar/workflow-serve-3.0.0-SNAPSHOT.jar
 rm -f ./app-service/server-apps/workflow-admin/jar/workflow-admin-serve-3.0.0-SNAPSHOT.jar
 
 # gateway
-rm -f ./app-service/targe-gateway/jar/targe-gateway-admin-3.0.0-SNAPSHOT.jar
+rm -f ./app-service/targe-gateway/jar/bsin-targe-gateway-3.0.0-SNAPSHOT.jar
 
 # gateway-admin
-rm -f ./app-service/targe-gateway/jar/targe-gateway-admin-3.0.0-SNAPSHOT.jar
+rm -f ./app-service/targe-gateway-admin/jar/bsin-targe-gateway-admin-3.0.0-SNAPSHOT.jar
 
 
 echo "2.remove *.jar finished!!!"

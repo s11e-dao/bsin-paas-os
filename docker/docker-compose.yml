@@ -270,7 +270,7 @@ services:
 #    restart: always
     volumes:
       - ./app-service/targe-gateway/logs:/home/bsin-paas-os/targe-gateway/logs
-      - ./app-service/targe-gateway/conf/hosts:/etc/hosts
+#      - ./app-service/targe-gateway/conf/hosts:/etc/hosts
     depends_on:
       - bsin-nacos-standalone-3.0
       - bsin-redis-3.0
