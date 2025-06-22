@@ -39,6 +39,7 @@ mkdir -p ./app-service/ui-apps/decision-admin/dist/
 mkdir -p ./app-service/ui-apps/upms/dist/
 mkdir -p ./app-service/ui-apps/waas/dist/
 mkdir -p ./app-service/ui-apps/bigan/dist/
+mkdir -p ./app-service/ui-apps/data-warehouse/dist/
 mkdir -p ./app-service/ui-apps/doc/dist/
 mkdir -p ./app-service/ui-apps/sea-condition/dist/
 

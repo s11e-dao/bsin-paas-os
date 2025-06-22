@@ -36,7 +36,7 @@
 | bsin-ui-decision-admin |  是   | [bsin-ui-decision-admin](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-ui-apps/bsin-ui-decision-admin) | Bsin-PaaS 智能决策引擎后台管理子应用前端       | 8003 |    
 |    bsin-ui-ai-agent    |  是   |       [bsin-ui-ai-agent](https://gitee.com/s11e-DAO/bsin-paas-os/tree/master/bsin-ui-apps/bsin-ui-ai-agent)       | Bsin-PaaS 通用人工智后台管理子应用前端        | 8004 |      
 |     bsin-paas-doc      |  是   |             [bsin-paas-doc](https://gitee.com/s11e-DAO/bsin-paas-doc.git)                                         | Bsin-PaaS 帮助文档                    | 8888 |
-| bsin-ui-data-warehouse |  否   |                       [bsin-ui-ai-agent](https://gitee.com/s11e-DAO/bsin-ui-data-warehouse)                       | Bsin-PaaS 数据中台前端                | ???  |
+| bsin-ui-data-warehouse |  否   |                       [bsin-ui-ai-agent](https://gitee.com/s11e-DAO/bsin-ui-data-warehouse)                       | Bsin-PaaS 数据中台前端                | 8009  |
 
 ## Bsin-PaaS 开发脚手架仓库
 

@@ -8,9 +8,9 @@ LABEL version=3.0.0
 # 挂载目录
 VOLUME /home/bsin-paas-os/server-apps/ai-agent
 # 创建目录
-RUN mkdir -p /home/bsin-paas-os/server-apps/ai-agent
+RUN mkdir -p /home/bsin-paas-os/server-apps/app-agent
 # 指定路径
-WORKDIR /home/bsin-paas-os/server-apps/ai-agent
+WORKDIR /home/bsin-paas-os/server-apps/app-agent
 # 复制jar文件到路径
 COPY ./jar/app-agent-server-3.0.0-SNAPSHOT.jar /home/bsin-paas-os/server-apps/app-agent/app-agent-server-3.0.0-SNAPSHOT.jar
 # 启动用户服务

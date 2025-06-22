@@ -166,3 +166,5 @@ docker/app-service/ui-apps/doc/dist/
 docker/app-service/server-apps/iot/jar/
 
 docker/middleware/mysql/db.bak/
+
+docker/middleware/mysql/db/sqls/
