@@ -149,10 +149,10 @@ const Dashboard = () => {
         <Col xs={24} sm={12} md={6}>
           <Card>
             <Statistic
-              title="权限管理"
+              title="事件数量"
               value={mockData.overview.totalUsers}
               prefix={<UserOutlined style={{ color: '#1890ff' }} />}
-              suffix="个用户"
+              suffix="个事件"
             />
             <Progress 
               percent={Math.round((mockData.overview.activeUsers / mockData.overview.totalUsers) * 100)} 
