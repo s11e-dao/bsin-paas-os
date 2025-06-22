@@ -69,9 +69,14 @@ const routes = [
         redirect: '/assets/di-overview',
       },
       // 资产总览
+      // {
+      //   path: '/assets/di-overview',
+      //   component: '@/pages/Assets/Overview/index',
+      // },
+      // 数字资产总览
       {
         path: '/assets/di-overview',
-        component: '@/pages/Assets/Overview/index',
+        component: '@/pages/Assets/DIDRWADashboard/index',
       },
       // 资产集合
       {

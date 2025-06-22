@@ -18,6 +18,7 @@
     "build": "max build"
   },
   "dependencies": {
+    "@ant-design/charts": "^2.4.0",
     "@ant-design/icons": "^5.3.7",
     "@ant-design/pro-table": "^3.18.2",
     "@umijs/max": "^4.1.10",
