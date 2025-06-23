@@ -1,7 +1,7 @@
 package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import me.flyray.bsin.domain.entity.DisBrokerageRule;
+import me.flyray.bsin.domain.entity.DisCommissionRule;
 
 /**
 * @author rednet
@@ -9,7 +9,7 @@ import me.flyray.bsin.domain.entity.DisBrokerageRule;
 * @createDate 2024-10-25 17:14:01
 * @Entity generator.domain.DisBrokerageRule
 */
-public interface DisBrokerageRuleMapper extends BaseMapper<DisBrokerageRule> {
+public interface DisCommissionRuleMapper extends BaseMapper<DisCommissionRule> {
 
 }
 

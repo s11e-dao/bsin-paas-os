@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.DisBrokerageJournalService;
+import me.flyray.bsin.facade.service.DisCommissionJournalService;
 import me.flyray.bsin.infrastructure.mapper.*;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
@@ -22,13 +22,9 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
-import com.alibaba.fastjson.JSON;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 import me.flyray.bsin.server.biz.AccountBiz;
 
 import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
@@ -42,23 +38,23 @@ import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
 @ShenyuDubboService(path = "/disBrokerageJournal", timeout = 6000)
 @ApiModule(value = "disBrokerageJournal")
 @Service
-public class DisBrokerageJournalServiceImpl implements DisBrokerageJournalService {
+public class DisCommissionJournalServiceImpl implements DisCommissionJournalService {
 
     @Autowired
-    private DisBrokerageJournalMapper disBrokerageJournalMapper;
+    private DisCommissionJournalMapper disBrokerageJournalMapper;
     @Autowired
     private CustomerIdentityMapper CustomerIdentityMapper;
 
     @Autowired
-    private DisBrokerageRuleMapper disBrokerageRuleMapper;
+    private DisCommissionRuleMapper disBrokerageRuleMapper;
     @Autowired
-    private DisBrokeragePolicyMapper disBrokeragePolicyMapper;
+    private DisCommissionPolicyMapper disBrokeragePolicyMapper;
 
     @Autowired
     private DisTeamRelationMapper disTeamRelationMapper;
 
     @Autowired
-    private DisBrokerageConfigMapper disBrokerageConfigMapper;
+    private DisCommissionConfigMapper disBrokerageConfigMapper;
 
     @Autowired
     private AccountBiz accountBiz;
@@ -66,9 +62,9 @@ public class DisBrokerageJournalServiceImpl implements DisBrokerageJournalServic
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
     @Override
-    public DisBrokerageJournal add(Map<String, Object> requestMap) {
+    public DisCommissionJournal add(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        DisBrokerageJournal disBrokerageJournal = BsinServiceContext.getReqBodyDto(DisBrokerageJournal.class, requestMap);
+        DisCommissionJournal disBrokerageJournal = BsinServiceContext.getReqBodyDto(DisCommissionJournal.class, requestMap);
         disBrokerageJournal.setSerialNo(BsinSnowflake.getId());
         disBrokerageJournalMapper.insert(disBrokerageJournal);
         return disBrokerageJournal;
@@ -92,11 +88,11 @@ public class DisBrokerageJournalServiceImpl implements DisBrokerageJournalServic
         Object paginationObj =  requestMap.get("pagination");
         Pagination pagination = new Pagination();
         BeanUtil.copyProperties(paginationObj,pagination);
-        Page<DisBrokerageJournal> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-        DisBrokerageJournal disBrokerageJournal = BsinServiceContext.getReqBodyDto(DisBrokerageJournal.class, requestMap);
-        LambdaQueryWrapper<DisBrokerageJournal> warapper = new LambdaQueryWrapper<>();
-        warapper.orderByDesc(DisBrokerageJournal::getCreateTime);
-        IPage<DisBrokerageJournal> pageList = disBrokerageJournalMapper.selectPage(page, warapper);
+        Page<DisCommissionJournal> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+        DisCommissionJournal disBrokerageJournal = BsinServiceContext.getReqBodyDto(DisCommissionJournal.class, requestMap);
+        LambdaQueryWrapper<DisCommissionJournal> warapper = new LambdaQueryWrapper<>();
+        warapper.orderByDesc(DisCommissionJournal::getCreateTime);
+        IPage<DisCommissionJournal> pageList = disBrokerageJournalMapper.selectPage(page, warapper);
         return pageList;
     }
 
@@ -109,9 +105,9 @@ public class DisBrokerageJournalServiceImpl implements DisBrokerageJournalServic
     @ApiDoc(desc = "getDetail")
     @ShenyuDubboClient("/getDetail")
     @Override
-    public DisBrokerageJournal getDetail(Map<String, Object> requestMap){
+    public DisCommissionJournal getDetail(Map<String, Object> requestMap){
         String serialNo = MapUtils.getString(requestMap, "serialNo");
-        DisBrokerageJournal disBrokerageJournal = disBrokerageJournalMapper.selectById(serialNo);
+        DisCommissionJournal disBrokerageJournal = disBrokerageJournalMapper.selectById(serialNo);
         return disBrokerageJournal;
     }
 

@@ -6,11 +6,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.DisBrokeragePolicy;
+import me.flyray.bsin.domain.entity.DisCommissionGoods;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.DisBrokeragePolicyService;
-import me.flyray.bsin.infrastructure.mapper.DisBrokeragePolicyMapper;
-import me.flyray.bsin.infrastructure.mapper.DisModelMapper;
+import me.flyray.bsin.facade.service.DisCommissionGoodsService;
+import me.flyray.bsin.infrastructure.mapper.DisCommissionGoodsMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
@@ -29,29 +28,27 @@ import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
 
 /**
 * @author bolei
-* @description 针对表【crm_dis_brokerage_policy】的数据库操作Service实现
-* @createDate 2024-10-25 17:13:57
+* @description 针对表【crm_dis_brokerage_goods】的数据库操作Service实现
+* @createDate 2024-10-25 17:13:47
 */
 @Slf4j
-@ShenyuDubboService(path = "/disBrokeragePolicy", timeout = 6000)
-@ApiModule(value = "disBrokeragePolicy")
+@ShenyuDubboService(path = "/disBrokerageGoods", timeout = 6000)
+@ApiModule(value = "disBrokerageGoods")
 @Service
-public class DisBrokeragePolicyServiceImpl implements DisBrokeragePolicyService {
+public class DisCommissionGoodsServiceImpl implements DisCommissionGoodsService {
 
     @Autowired
-    private DisBrokeragePolicyMapper disBrokeragePolicyMapper;
+    private DisCommissionGoodsMapper disBrokerageGoodsMapper;
 
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
     @Override
-    public DisBrokeragePolicy add(Map<String, Object> requestMap) {
+    public DisCommissionGoods add(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        DisBrokeragePolicy disBrokeragePolicy = BsinServiceContext.getReqBodyDto(DisBrokeragePolicy.class, requestMap);
-        disBrokeragePolicy.setTenantId(loginUser.getTenantId());
-        disBrokeragePolicy.setSerialNo(BsinSnowflake.getId());
-        disBrokeragePolicy.setCreateBy(loginUser.getUserId());
-        disBrokeragePolicyMapper.insert(disBrokeragePolicy);
-        return disBrokeragePolicy;
+        DisCommissionGoods disBrokerageGoods = BsinServiceContext.getReqBodyDto(DisCommissionGoods.class, requestMap);
+        disBrokerageGoods.setSerialNo(BsinSnowflake.getId());
+        disBrokerageGoodsMapper.insert(disBrokerageGoods);
+        return disBrokerageGoods;
     }
 
     @ApiDoc(desc = "delete")
@@ -59,7 +56,7 @@ public class DisBrokeragePolicyServiceImpl implements DisBrokeragePolicyService 
     @Override
     public void delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
-        if (disBrokeragePolicyMapper.deleteById(serialNo) == 0){
+        if (disBrokerageGoodsMapper.deleteById(serialNo) == 0){
             throw new BusinessException(GRADE_NOT_EXISTS);
         }
     }
@@ -67,14 +64,13 @@ public class DisBrokeragePolicyServiceImpl implements DisBrokeragePolicyService 
     @ApiDoc(desc = "edit")
     @ShenyuDubboClient("/edit")
     @Override
-    public DisBrokeragePolicy edit(Map<String, Object> requestMap) {
+    public DisCommissionGoods edit(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        DisBrokeragePolicy disBrokeragePolicy = BsinServiceContext.getReqBodyDto(DisBrokeragePolicy.class, requestMap);
-        disBrokeragePolicy.setTenantId(loginUser.getTenantId());
-        if (disBrokeragePolicyMapper.updateById(disBrokeragePolicy) == 0){
+        DisCommissionGoods disBrokerageGoods = BsinServiceContext.getReqBodyDto(DisCommissionGoods.class, requestMap);
+        if (disBrokerageGoodsMapper.updateById(disBrokerageGoods) == 0){
             throw new BusinessException(GRADE_NOT_EXISTS);
         }
-        return disBrokeragePolicy;
+        return disBrokerageGoods;
     }
 
     @ApiDoc(desc = "getPageList")
@@ -85,12 +81,11 @@ public class DisBrokeragePolicyServiceImpl implements DisBrokeragePolicyService 
         Object paginationObj =  requestMap.get("pagination");
         Pagination pagination = new Pagination();
         BeanUtil.copyProperties(paginationObj,pagination);
-        Page<DisBrokeragePolicy> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-        DisBrokeragePolicy disBrokeragePolicy = BsinServiceContext.getReqBodyDto(DisBrokeragePolicy.class, requestMap);
-        LambdaQueryWrapper<DisBrokeragePolicy> warapper = new LambdaQueryWrapper<>();
-        warapper.orderByDesc(DisBrokeragePolicy::getCreateTime);
-        warapper.eq(DisBrokeragePolicy::getTenantId, loginUser.getTenantId());
-        IPage<DisBrokeragePolicy> pageList = disBrokeragePolicyMapper.selectPage(page, warapper);
+        Page<DisCommissionGoods> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+        DisCommissionGoods payChannelConfig = BsinServiceContext.getReqBodyDto(DisCommissionGoods.class, requestMap);
+        LambdaQueryWrapper<DisCommissionGoods> warapper = new LambdaQueryWrapper<>();
+        warapper.orderByDesc(DisCommissionGoods::getCreateTime);
+        IPage<DisCommissionGoods> pageList = disBrokerageGoodsMapper.selectPage(page, warapper);
         return pageList;
     }
 
@@ -103,10 +98,10 @@ public class DisBrokeragePolicyServiceImpl implements DisBrokeragePolicyService 
     @ApiDoc(desc = "getDetail")
     @ShenyuDubboClient("/getDetail")
     @Override
-    public DisBrokeragePolicy getDetail(Map<String, Object> requestMap){
+    public DisCommissionGoods getDetail(Map<String, Object> requestMap){
         String serialNo = MapUtils.getString(requestMap, "serialNo");
-        DisBrokeragePolicy disBrokeragePolicy = disBrokeragePolicyMapper.selectById(serialNo);
-        return disBrokeragePolicy;
+        DisCommissionGoods disBrokerageGoods = disBrokerageGoodsMapper.selectById(serialNo);
+        return disBrokerageGoods;
     }
 
 }

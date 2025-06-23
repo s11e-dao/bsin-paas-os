@@ -35,17 +35,17 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
     @Value("${bsin.supersTenantId}")
     private String supersTenantId;
     @Autowired
-    private DisBrokerageJournalMapper disBrokerageJournalMapper;
+    private DisCommissionJournalMapper disBrokerageJournalMapper;
     @Autowired
     private CustomerIdentityMapper customerIdentityMapper;
     @Autowired
-    private DisBrokerageRuleMapper disBrokerageRuleMapper;
+    private DisCommissionRuleMapper disBrokerageRuleMapper;
     @Autowired
-    private DisBrokeragePolicyMapper disBrokeragePolicyMapper;
+    private DisCommissionPolicyMapper disBrokeragePolicyMapper;
     @Autowired
     private DisTeamRelationMapper disTeamRelationMapper;
     @Autowired
-    private DisBrokerageConfigMapper disBrokerageConfigMapper;
+    private DisCommissionConfigMapper disBrokerageConfigMapper;
     @Autowired
     private AccountBiz accountBiz;
 
@@ -104,11 +104,11 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
         String customerNo = MapUtils.getString(requestMap, "customerNo");
 
         // 验证和获取分佣配置
-        DisBrokerageConfig config = validateAndGetConfig(requestMap);
+        DisCommissionConfig config = validateAndGetConfig(requestMap);
         // 验证和获取分佣规则
-        DisBrokerageRule rule = validateAndGetBrokerageRule(requestMap);
+        DisCommissionRule rule = validateAndGetBrokerageRule(requestMap);
         // 验证和获取分佣政策
-        DisBrokeragePolicy policy = validateAndGetBrokeragePolicy(rule);
+        DisCommissionPolicy policy = validateAndGetBrokeragePolicy(rule);
 
         // TODO 统一规则引擎处理 判断触发事件编码是否一致, 不一致则直接返回
         if(!policy.getTriggerEventCode().equals(eventCode)){
@@ -155,10 +155,10 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
     /**
      * 验证并获取分佣配置
      */
-    private DisBrokerageConfig validateAndGetConfig(Map<String, Object> requestMap) {
+    private DisCommissionConfig validateAndGetConfig(Map<String, Object> requestMap) {
         String tenantId = MapUtils.getString(requestMap, "tenantId");
-        DisBrokerageConfig config = disBrokerageConfigMapper.selectOne(
-                new LambdaQueryWrapper<DisBrokerageConfig>().eq(DisBrokerageConfig::getTenantId, tenantId)
+        DisCommissionConfig config = disBrokerageConfigMapper.selectOne(
+                new LambdaQueryWrapper<DisCommissionConfig>().eq(DisCommissionConfig::getTenantId, tenantId)
         );
         if (config == null) {
             throw new BusinessException("111","未找到分佣配置, tenantId: " + tenantId);
@@ -169,13 +169,13 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
     /**
      * 验证并获取分佣规则
      */
-    private DisBrokerageRule validateAndGetBrokerageRule(Map<String, Object> requestMap) {
+    private DisCommissionRule validateAndGetBrokerageRule(Map<String, Object> requestMap) {
         String goodsCategoryNo = MapUtils.getString(requestMap, "goodsCategoryNo");
         String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-        DisBrokerageRule rule = disBrokerageRuleMapper.selectOne(
-                new LambdaQueryWrapper<DisBrokerageRule>()
-                        .eq(DisBrokerageRule::getGoodsCategoryNo, goodsCategoryNo)
-                        .eq(DisBrokerageRule::getMerchantNo, merchantNo)
+        DisCommissionRule rule = disBrokerageRuleMapper.selectOne(
+                new LambdaQueryWrapper<DisCommissionRule>()
+                        .eq(DisCommissionRule::getGoodsCategoryNo, goodsCategoryNo)
+                        .eq(DisCommissionRule::getMerchantNo, merchantNo)
         );
         if (rule == null) {
             throw new BusinessException("111","未找到分佣规则, goodsCategoryNo: " + goodsCategoryNo);
@@ -186,10 +186,10 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
     /**
      * 验证并获取分佣政策
      */
-    private DisBrokeragePolicy validateAndGetBrokeragePolicy(DisBrokerageRule rule) {
-        DisBrokeragePolicy policy = disBrokeragePolicyMapper.selectOne(
-                new LambdaQueryWrapper<DisBrokeragePolicy>()
-                        .eq(DisBrokeragePolicy::getSerialNo, rule.getBrokeragePolicyNo())
+    private DisCommissionPolicy validateAndGetBrokeragePolicy(DisCommissionRule rule) {
+        DisCommissionPolicy policy = disBrokeragePolicyMapper.selectOne(
+                new LambdaQueryWrapper<DisCommissionPolicy>()
+                        .eq(DisCommissionPolicy::getSerialNo, rule.getBrokeragePolicyNo())
         );
         if (policy == null || policy.getStatus() != 1 || isPolicyExpired(policy)) {
             throw new BusinessException("111","分佣政策无效或已过期");
@@ -200,7 +200,7 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
     /**
      * 检查分佣政策是否过期
      */
-    private boolean isPolicyExpired(DisBrokeragePolicy policy) {
+    private boolean isPolicyExpired(DisCommissionPolicy policy) {
         java.util.Date now = new java.util.Date();
         return policy.getStartTime().after(now) || policy.getEndTime().before(now);
     }
@@ -208,7 +208,7 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
     /**
      * 计算商户分佣金额
      */
-    private BigDecimal calculateSharingAmount(Map<String, Object> requestMap, DisBrokerageConfig config) {
+    private BigDecimal calculateSharingAmount(Map<String, Object> requestMap, DisCommissionConfig config) {
         String goodsSkuPayAmount = MapUtils.getString(requestMap, "goodsSkuPayAmount");
         return new BigDecimal(goodsSkuPayAmount).multiply(config.getMerchantSharingRate().divide(new BigDecimal(100)));
     }
@@ -217,10 +217,10 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
      *
      * 处理平台分佣
      */
-    private void handleBrokerage(String bizRoleType, String bizRoleTypeNo, BigDecimal rate, DisBrokeragePolicy policy, DisBrokerageRule rule,
-                                            BigDecimal brokerageAmount, Map<String, Object> requestMap) throws UnsupportedEncodingException {
+    private void handleBrokerage(String bizRoleType, String bizRoleTypeNo, BigDecimal rate, DisCommissionPolicy policy, DisCommissionRule rule,
+                                 BigDecimal brokerageAmount, Map<String, Object> requestMap) throws UnsupportedEncodingException {
         // 创建分佣流水
-        DisBrokerageJournal journal = BsinServiceContext.getReqBodyDto(DisBrokerageJournal.class, requestMap);
+        DisCommissionJournal journal = BsinServiceContext.getReqBodyDto(DisCommissionJournal.class, requestMap);
         journal.setSerialNo(BsinSnowflake.getId());
         journal.setTenantId(policy.getTenantId());
         journal.setTriggerEventCode(policy.getTriggerEventCode());
@@ -253,8 +253,8 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
     /**
      * 处理代理商分佣逻辑，包括一级和二级分佣
      */
-    private void handleSysAgentBrokerage(String sysAgentNo, DisBrokeragePolicy policy, DisBrokerageRule rule, DisBrokerageConfig config,
-                                 BigDecimal sysAgentBrokerageAmount, Map<String, Object> requestMap) throws UnsupportedEncodingException {
+    private void handleSysAgentBrokerage(String sysAgentNo, DisCommissionPolicy policy, DisCommissionRule rule, DisCommissionConfig config,
+                                         BigDecimal sysAgentBrokerageAmount, Map<String, Object> requestMap) throws UnsupportedEncodingException {
         Integer isPreview = MapUtils.getInteger(requestMap, "isPreview");
         // 一级分佣
         processBrokerage(1, policy, rule, config, sysAgentBrokerageAmount, isPreview, sysAgentNo, requestMap);
@@ -266,7 +266,7 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
      * 根据等级处理具体的分佣逻辑
      * 计算一级分销或二级分销
      */
-    private void processBrokerage(int level, DisBrokeragePolicy policy, DisBrokerageRule rule, DisBrokerageConfig config,
+    private void processBrokerage(int level, DisCommissionPolicy policy, DisCommissionRule rule, DisCommissionConfig config,
                                   BigDecimal sysAgentBrokerageAmount, Integer isPreview, String sysAgentNo, Map<String, Object> requestMap)
             throws UnsupportedEncodingException {
         Integer salePer = level == 1 ? rule.getFirstSalePer() : rule.getSecondSalePer();
@@ -274,7 +274,7 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
         if (salePer == null || agentNo == null) {
             throw new BusinessException("111","分佣等级 {} 无效或代理商编号为空");
         }
-        DisBrokerageJournal journal = createBrokerageJournal(policy, rule, config, sysAgentBrokerageAmount, level, salePer, isPreview, agentNo, requestMap);
+        DisCommissionJournal journal = createBrokerageJournal(policy, rule, config, sysAgentBrokerageAmount, level, salePer, isPreview, agentNo, requestMap);
         disBrokerageJournalMapper.insert(journal);
         // 处理账户交易
         processAccountTransaction(agentNo, journal, isPreview, requestMap);
@@ -293,10 +293,10 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
     /**
      * 创建分佣流水记录
      */
-    private DisBrokerageJournal createBrokerageJournal(DisBrokeragePolicy policy, DisBrokerageRule rule, DisBrokerageConfig config,
-                                                       BigDecimal sysAgentBrokerageAmount, int disLevel, Integer salePer,
-                                                       Integer isPreview, String agentNo, Map<String, Object> requestMap) {
-        DisBrokerageJournal journal = BsinServiceContext.getReqBodyDto(DisBrokerageJournal.class, requestMap);
+    private DisCommissionJournal createBrokerageJournal(DisCommissionPolicy policy, DisCommissionRule rule, DisCommissionConfig config,
+                                                        BigDecimal sysAgentBrokerageAmount, int disLevel, Integer salePer,
+                                                        Integer isPreview, String agentNo, Map<String, Object> requestMap) {
+        DisCommissionJournal journal = BsinServiceContext.getReqBodyDto(DisCommissionJournal.class, requestMap);
         journal.setSerialNo(BsinSnowflake.getId());
         journal.setTriggerEventCode(policy.getTriggerEventCode());
         journal.setRuleNo(rule.getSerialNo());
@@ -314,7 +314,7 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
     /**
      * 处理账户交易记录
      */
-    private void processAccountTransaction(String sysAgentNo, DisBrokerageJournal journal, Integer isPreview, Map<String, Object> requestMap) throws UnsupportedEncodingException {
+    private void processAccountTransaction(String sysAgentNo, DisCommissionJournal journal, Integer isPreview, Map<String, Object> requestMap) throws UnsupportedEncodingException {
         String orderNo = MapUtils.getString(requestMap, "orderNo");
         String transactionType = MapUtils.getString(requestMap, "transactionType");
         String remark = MapUtils.getString(requestMap, "remark");

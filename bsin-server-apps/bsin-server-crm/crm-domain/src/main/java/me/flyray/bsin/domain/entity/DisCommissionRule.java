@@ -1,13 +1,11 @@
 package me.flyray.bsin.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -15,8 +13,8 @@ import java.util.Date;
  * @TableName crm_dis_brokerage_rule
  */
 @Data
-@TableName(value ="crm_dis_brokerage_rule")
-public class DisBrokerageRule implements Serializable {
+@TableName(value ="crm_dis_commission_rule")
+public class DisCommissionRule implements Serializable {
     /**
      * 商品分佣比例ID
      */

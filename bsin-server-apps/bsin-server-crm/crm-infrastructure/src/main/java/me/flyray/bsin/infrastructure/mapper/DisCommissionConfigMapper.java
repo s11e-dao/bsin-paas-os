@@ -1,7 +1,7 @@
 package me.flyray.bsin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import me.flyray.bsin.domain.entity.DisBrokerageConfig;
+import me.flyray.bsin.domain.entity.DisCommissionConfig;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 */
 @Repository
 @Mapper
-public interface DisBrokerageConfigMapper extends BaseMapper<DisBrokerageConfig> {
+public interface DisCommissionConfigMapper extends BaseMapper<DisCommissionConfig> {
 
 }
 

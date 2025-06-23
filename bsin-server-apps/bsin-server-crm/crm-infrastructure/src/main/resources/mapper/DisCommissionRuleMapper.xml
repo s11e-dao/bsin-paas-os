@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="me.flyray.bsin.infrastructure.mapper.DisBrokerageRuleMapper">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.DisCommissionRuleMapper">
 
-    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.DisBrokerageRule">
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.DisCommissionRule">
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="brokeragePolicyNo" column="brokerage_policy_no" jdbcType="VARCHAR"/>

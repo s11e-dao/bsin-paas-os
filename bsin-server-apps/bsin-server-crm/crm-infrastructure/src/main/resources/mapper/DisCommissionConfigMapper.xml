@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="me.flyray.bsin.infrastructure.mapper.DisBrokerageConfigMapper">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.DisCommissionConfigMapper">
 
-    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.DisBrokerageConfig">
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.DisCommissionConfig">
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="superTenantRate" column="super_tenant_rate" jdbcType="DECIMAL"/>

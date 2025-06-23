@@ -1,7 +1,5 @@
 package me.flyray.bsin.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import jakarta.validation.constraints.NotBlank;
@@ -16,8 +14,8 @@ import java.math.BigDecimal;
  * @TableName crm_dis_brokerage_config
  */
 @Data
-@TableName(value ="crm_dis_brokerage_config")
-public class DisBrokerageConfig implements Serializable {
+@TableName(value ="crm_dis_commission_config")
+public class DisCommissionConfig implements Serializable {
     /**
      * 
      */

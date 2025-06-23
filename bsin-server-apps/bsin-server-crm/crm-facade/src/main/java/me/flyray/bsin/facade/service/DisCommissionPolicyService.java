@@ -1,7 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import me.flyray.bsin.domain.entity.DisBrokeragePolicy;
+import me.flyray.bsin.domain.entity.DisCommissionPolicy;
 
 import java.util.Map;
 
@@ -10,12 +10,12 @@ import java.util.Map;
 * @description 针对表【crm_dis_brokerage_policy】的数据库操作Service
 * @createDate 2024-10-25 17:13:57
 */
-public interface DisBrokeragePolicyService {
+public interface DisCommissionPolicyService {
 
     /**
      * 添加
      */
-    public DisBrokeragePolicy add(Map<String, Object> requestMap);
+    public DisCommissionPolicy add(Map<String, Object> requestMap);
 
     /**
      * 删除
@@ -25,13 +25,13 @@ public interface DisBrokeragePolicyService {
     /**
      * 编辑
      */
-    public DisBrokeragePolicy edit(Map<String, Object> requestMap);
+    public DisCommissionPolicy edit(Map<String, Object> requestMap);
 
 
     /**
      * 详情
      */
-    public DisBrokeragePolicy getDetail(Map<String, Object> requestMap);
+    public DisCommissionPolicy getDetail(Map<String, Object> requestMap);
 
     /**
      * 租户下所有

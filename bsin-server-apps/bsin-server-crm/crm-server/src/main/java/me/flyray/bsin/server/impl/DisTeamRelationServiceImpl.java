@@ -50,7 +50,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
     @Autowired
     private DisInviteRelationMapper disInviteRelationMapper;
     @Autowired
-    private DisBrokerageConfigMapper disBrokerageConfigMapper;
+    private DisCommissionConfigMapper disBrokerageConfigMapper;
     @Autowired
     private DisModelMapper disModelMapper;
 

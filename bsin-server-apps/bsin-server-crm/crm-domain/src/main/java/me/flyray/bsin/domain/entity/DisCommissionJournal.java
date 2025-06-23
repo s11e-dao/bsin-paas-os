@@ -1,6 +1,5 @@
 package me.flyray.bsin.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -15,8 +14,8 @@ import java.util.Date;
  * @TableName crm_dis_brokerage_journal
  */
 @Data
-@TableName(value ="crm_dis_brokerage_journal")
-public class DisBrokerageJournal implements Serializable {
+@TableName(value ="crm_dis_commission_journal")
+public class DisCommissionJournal implements Serializable {
     /**
      * 
      */

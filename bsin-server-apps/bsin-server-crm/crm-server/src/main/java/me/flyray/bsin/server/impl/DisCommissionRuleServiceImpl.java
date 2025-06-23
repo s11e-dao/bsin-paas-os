@@ -6,11 +6,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.entity.DisBrokerageRule;
+import me.flyray.bsin.domain.entity.DisCommissionRule;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.DisBrokerageRuleService;
-import me.flyray.bsin.infrastructure.mapper.DisBrokerageRuleMapper;
-import me.flyray.bsin.infrastructure.mapper.DisModelMapper;
+import me.flyray.bsin.facade.service.DisCommissionRuleService;
+import me.flyray.bsin.infrastructure.mapper.DisCommissionRuleMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.utils.Pagination;
@@ -23,7 +22,6 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
 import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
@@ -37,17 +35,17 @@ import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
 @ShenyuDubboService(path = "/disBrokerageRule", timeout = 6000)
 @ApiModule(value = "disBrokerageRule")
 @Service
-public class DisBrokerageRuleServiceImpl implements DisBrokerageRuleService {
+public class DisCommissionRuleServiceImpl implements DisCommissionRuleService {
 
     @Autowired
-    private DisBrokerageRuleMapper disBrokerageRuleMapper;
+    private DisCommissionRuleMapper disBrokerageRuleMapper;
 
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
     @Override
-    public DisBrokerageRule add(Map<String, Object> requestMap) {
+    public DisCommissionRule add(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        DisBrokerageRule disBrokerageRule = BsinServiceContext.getReqBodyDto(DisBrokerageRule.class, requestMap);
+        DisCommissionRule disBrokerageRule = BsinServiceContext.getReqBodyDto(DisCommissionRule.class, requestMap);
         // 分佣比例加起来等于100
         if(disBrokerageRule.getFirstSalePer() + disBrokerageRule.getSecondSalePer() != 100){
             throw new BusinessException("999","比例设置不等于100");
@@ -71,9 +69,9 @@ public class DisBrokerageRuleServiceImpl implements DisBrokerageRuleService {
     @ApiDoc(desc = "edit")
     @ShenyuDubboClient("/edit")
     @Override
-    public DisBrokerageRule edit(Map<String, Object> requestMap) {
+    public DisCommissionRule edit(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        DisBrokerageRule disBrokerageRule = BsinServiceContext.getReqBodyDto(DisBrokerageRule.class, requestMap);
+        DisCommissionRule disBrokerageRule = BsinServiceContext.getReqBodyDto(DisCommissionRule.class, requestMap);
         disBrokerageRule.setTenantId(loginUser.getTenantId());
         if (disBrokerageRuleMapper.updateById(disBrokerageRule) == 0){
             throw new BusinessException(GRADE_NOT_EXISTS);
@@ -90,13 +88,13 @@ public class DisBrokerageRuleServiceImpl implements DisBrokerageRuleService {
         Object paginationObj =  requestMap.get("pagination");
         Pagination pagination = new Pagination();
         BeanUtil.copyProperties(paginationObj,pagination);
-        Page<DisBrokerageRule> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-        DisBrokerageRule disBrokerageRule = BsinServiceContext.getReqBodyDto(DisBrokerageRule.class, requestMap);
-        LambdaQueryWrapper<DisBrokerageRule> warapper = new LambdaQueryWrapper<>();
-        warapper.orderByDesc(DisBrokerageRule::getCreateTime);
-        warapper.eq(DisBrokerageRule::getTenantId, loginUser.getTenantId());
-        warapper.eq(DisBrokerageRule::getBrokeragePolicyNo, brokeragePolicyNo);
-        IPage<DisBrokerageRule> pageList = disBrokerageRuleMapper.selectPage(page, warapper);
+        Page<DisCommissionRule> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+        DisCommissionRule disBrokerageRule = BsinServiceContext.getReqBodyDto(DisCommissionRule.class, requestMap);
+        LambdaQueryWrapper<DisCommissionRule> warapper = new LambdaQueryWrapper<>();
+        warapper.orderByDesc(DisCommissionRule::getCreateTime);
+        warapper.eq(DisCommissionRule::getTenantId, loginUser.getTenantId());
+        warapper.eq(DisCommissionRule::getBrokeragePolicyNo, brokeragePolicyNo);
+        IPage<DisCommissionRule> pageList = disBrokerageRuleMapper.selectPage(page, warapper);
         return pageList;
     }
 
@@ -108,9 +106,9 @@ public class DisBrokerageRuleServiceImpl implements DisBrokerageRuleService {
     @ApiDoc(desc = "getDetail")
     @ShenyuDubboClient("/getDetail")
     @Override
-    public DisBrokerageRule getDetail(Map<String, Object> requestMap){
+    public DisCommissionRule getDetail(Map<String, Object> requestMap){
         String serialNo = MapUtils.getString(requestMap, "serialNo");
-        DisBrokerageRule disBrokerageRule = disBrokerageRuleMapper.selectById(serialNo);
+        DisCommissionRule disBrokerageRule = disBrokerageRuleMapper.selectById(serialNo);
         return disBrokerageRule;
     }
 

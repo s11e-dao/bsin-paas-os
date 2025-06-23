@@ -1,10 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import me.flyray.bsin.domain.entity.DisBrokerageConfig;
-import me.flyray.bsin.domain.entity.DisModel;
-import me.flyray.bsin.validate.AddGroup;
-import org.springframework.validation.annotation.Validated;
+import me.flyray.bsin.domain.entity.DisCommissionConfig;
 
 import java.util.Map;
 
@@ -14,12 +11,12 @@ import java.util.Map;
 * @createDate 2024-10-25 17:13:34
 */
 
-public interface DisBrokerageConfigService {
+public interface DisCommissionConfigService {
 
     /**
      * 添加
      */
-    public DisBrokerageConfig config(DisBrokerageConfig disBrokerageConfig);
+    public DisCommissionConfig config(DisCommissionConfig disBrokerageConfig);
 
     /**
      * 删除
@@ -29,13 +26,13 @@ public interface DisBrokerageConfigService {
     /**
      * 编辑
      */
-    public DisBrokerageConfig edit(Map<String, Object> requestMap);
+    public DisCommissionConfig edit(Map<String, Object> requestMap);
 
 
     /**
      * 详情
      */
-    public DisBrokerageConfig getDetail(Map<String, Object> requestMap);
+    public DisCommissionConfig getDetail(Map<String, Object> requestMap);
 
     /**
      * 租户下所有
@@ -43,5 +40,5 @@ public interface DisBrokerageConfigService {
     public IPage<?> getPageList(Map<String, Object> requestMap);
 
 
-    DisBrokerageConfig settingSharingRate(Map<String, Object> requestMap);
+    DisCommissionConfig settingSharingRate(Map<String, Object> requestMap);
 }
