@@ -88,5 +88,4 @@ public class AccountFreezeJournal implements Serializable {
     private Date updateTime;
 
 
-
 }
