@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import QRCode from 'qrcode.react';
-import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
+import { ArrowDownOutlined, ArrowUpOutlined, AreaChartOutlined, DotChartOutlined, FundOutlined } from '@ant-design/icons';
 import {
   Form,
   Input,
@@ -195,7 +195,7 @@ export default ({ setCurrentContent, configAssetsItem }) => {
   };
   return (
     <div>
-      <Row gutter={16} style={{ marginBottom: '16px' }}>
+      <Row gutter={24} style={{ marginBottom: '16px' }}>
         <Col span={6}>
           <Card bordered={false}>
             <Statistic
@@ -228,8 +228,35 @@ export default ({ setCurrentContent, configAssetsItem }) => {
               prefix={<ArrowDownOutlined />}
               suffix="%"
             />
-            <Button style={{ marginTop: 16 }} type="primary">
-              配置规则
+            <Button style={{ marginTop: 16 }} icon={<FundOutlined />}>
+            </Button>
+          </Card>
+        </Col>
+        <Col span={6}>
+          <Card bordered={false}>
+            <Statistic
+              title="交易次数"
+              value={9.3}
+              precision={2}
+              valueStyle={{ color: '#cf1322' }}
+              prefix={<ArrowDownOutlined />}
+              suffix="%"
+            />
+            <Button style={{ marginTop: 16 }} icon={<AreaChartOutlined />}>
+            </Button>
+          </Card>
+        </Col>
+        <Col span={6}>
+          <Card bordered={false}>
+            <Statistic
+              title="总价值"
+              value={9.3}
+              precision={2}
+              valueStyle={{ color: '#cf1322' }}
+              prefix={<ArrowDownOutlined />}
+              suffix="%"
+            />
+            <Button style={{ marginTop: 16 }} icon={<DotChartOutlined />} >
             </Button>
           </Card>
         </Col>
