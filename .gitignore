@@ -168,3 +168,5 @@ docker/app-service/server-apps/iot/jar/
 docker/middleware/mysql/db.bak/
 
 docker/middleware/mysql/db/sqls/
+
+docker/middleware/nacos/logs/
