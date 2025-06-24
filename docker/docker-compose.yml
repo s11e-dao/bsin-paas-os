@@ -61,7 +61,7 @@ services:
       start_period: 60s
     environment:
       MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_MULTIPLE_DATABASES: bsin-shenyu-gateway,bsin-upms,bsin-crm,bsin-ai,bsin-waas,bsin-oms,bsin-community,bsin-brms,bsin-iot,bsin-damp,bsin-flowable,bsin-workflow,bsin-workflow-admin,bsin-orchestration,bsin-gateway,bsin-intelligent-decision
+      MYSQL_MULTIPLE_DATABASES: bsin-nacos-config,bsin-shenyu-gateway,bsin-upms,bsin-crm,bsin-ai,bsin-waas,bsin-oms,bsin-community,bsin-brms,bsin-iot,bsin-damp,bsin-flowable,bsin-workflow,bsin-workflow-admin,bsin-orchestration,bsin-gateway,bsin-intelligent-decision
       MYSQL_INITDB_SKIP_TZINFO: 1
       MYSQL_ROOT_HOST: '%'
     # networks:
