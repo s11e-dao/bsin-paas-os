@@ -40,6 +40,7 @@ echo "2. create dir finished!!!"
 # 复制sql文件
 echo "3. begin copy sql "
 #cp ../sql/test.sql ../middleware/mysql/db
+cp ./middleware/nacos/mysql/bsin-nacos-config.sql ./middleware/mysql/db/sqls/
 echo "4. end copy sql "
 
 # 复制jar文件
@@ -78,6 +79,7 @@ cp ../.env ./app-service/server-apps/http -rvf
 cp ../.env ./app-service/server-apps/iot -rvf
 cp ../.env ./app-service/targe-gateway-admin -rvf
 cp ../.env ./app-service/targe-gateway -rvf
+cp ../.env ./middleware/nacos -rvf
 
 
 echo "5.3 begin copy .sql files"

@@ -13,20 +13,33 @@ networks:
 services:
   bsin-nacos-standalone-3.0:
     container_name: bsin-nacos-standalone-3.0
-    image: nacos/nacos-server:v2.4.2
-    environment:
-      - PREFER_HOST_MODE=hostname
-      - MODE=standalone
-      - NACOS_AUTH_IDENTITY_KEY=serverIdentity
-      - NACOS_AUTH_IDENTITY_VALUE=security
-      - NACOS_AUTH_TOKEN=SecretKey012345678901234567890123456789012345678901234567890123456789
+#    image: nacos/nacos-server:${BSIN_NACOS_VERSION}
+    image: nacos/nacos-server:v3.0.1
+    env_file:
+      - ./middleware/nacos/.env
+#    environment:
+#      - PREFER_HOST_MODE=hostname
+#      - MODE=${BSIN_NACOS_MODE}
+#      - SPRING_DATASOURCE_PLATFORM=mysql
+#      - MYSQL_SERVICE_HOST=mysql
+#      - MYSQL_SERVICE_DB_NAME=bsin-nacos-config
+#      - MYSQL_SERVICE_PORT=3306
+#      - MYSQL_SERVICE_USER=${NACOS_MYSQL_DB_USERNAME}
+#      - MYSQL_SERVICE_PASSWORD=${NACOS_MYSQL_DB_PASSWORD}
+#      - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useUnicode=true&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+#      - NACOS_AUTH_IDENTITY_KEY=${BSIN_NACOS_USERNAME}
+#      - NACOS_AUTH_IDENTITY_VALUE=${BSIN_NACOS_PASSWORD}
+#      - NACOS_AUTH_TOKEN=VGhpc0lzTXlDdXN0b21TZWNyZXRLZXkwMTIzNDU2Nzg=
     volumes:
-      - ./middleware/nacos/logs/:/home/bsin-paas-os/middleware/nacos/logs
-    #      - ./middleware/nacos/conf/application.properties:/home/bsin-paas-os/middleware/nacos/conf/application.properties
+      - ./middleware/nacos/logs/:/home/nacos/logs
     ports:
+      - "8080:8080"
       - "8848:8848"
       - "9848:9848"
-      - "9849:9849"
+#    restart: always
+#    depends_on:
+#      bsin-mysql-3.0:
+#        condition: service_healthy
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.11
