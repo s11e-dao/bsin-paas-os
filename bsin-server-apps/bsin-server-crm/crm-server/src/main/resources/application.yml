@@ -93,6 +93,18 @@ spring:
         type: ASYNC
         sse-endpoint: /sse
         sse-message-endpoint: /mcp/message
+    # 配置mcp nacos
+    alibaba:
+      mcp:
+        nacos:
+          namespace: public
+          server-addr: 127.0.0.1:8848
+          username: nacos
+          password: nacos
+          registry:
+            enabled: true
+            service-group: mcp-server
+            service-name: crm-mcp-server
 
 redisson:
   # redis key前缀
