@@ -95,6 +95,7 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
   useEffect(() => {
     // 查询协议
     let params = {
+      type: '1',
       current: '1',
       pageSize: '99',
     }
@@ -449,7 +450,21 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
                         />
                       }
                       title={item.name}
-                      description={item.description}
+                      description={
+                        <div
+                          style={{
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            lineHeight: '1.4',
+                            height: '2.8em', // 2行的高度
+                          }}
+                        >
+                          {item.description}
+                        </div>
+                      }
                     />
                   </Card>
                 </List.Item>
