@@ -55,7 +55,7 @@ export default () => {
   const columns: ProColumns<AppColumnsItem>[] = columnsData
   // 操作列渲染
   const optionRender = (text: any, record: any, index: number) => [
-    <div key={record.roleId}>
+    <div key={record.serialNo}>
       <a onClick={() => edit(record)}>编辑</a>
       <Divider type="vertical" />
       <Popconfirm
@@ -103,7 +103,7 @@ export default () => {
   }
 
   // 点击编辑
-  const edit = (record) => {
+  const edit = (record: any) => {
     setIsEditFormModal(true)
     // 存储id
     setToolId(record.serialNo)
@@ -133,7 +133,7 @@ export default () => {
   }
 
   // 点击删除
-  const confirmDel = async (record) => {
+  const confirmDel = async (record: any) => {
     if (record.editable == false) {
       message.warning('该配置不支持删除！！')
       return
@@ -154,7 +154,7 @@ export default () => {
   }
 
   // 菜单授权
-  const detail = async (record) => {
+  const detail = async (record: any) => {
     const { serialNo } = record
     // 请求出全部的数据
     const { data: treeData } = await getToolDetail({ serialNo })
@@ -229,17 +229,35 @@ export default () => {
         columns={columns}
         // 请求数据
         request={async (params) => {
-          let res = await getToolPageList({
-            ...params,
-            appId,
-          })
-          console.log(res)
+          try {
+            let res = await getToolPageList({
+              ...params,
+              appId,
+            })
+            console.log(res)
 
-          const result = {
-            data: res.data,
-            total: res.pagination?.totalSize,
+            // 确保返回的数据格式正确
+            if (!res) {
+              return { data: [], total: 0, success: false }
+            }
+
+            // 验证 data 字段是数组
+            const data = Array.isArray(res.data) ? res.data : []
+            const total = res.pagination?.totalSize || 0
+
+            return {
+              data,
+              total,
+              success: true,
+            }
+          } catch (error) {
+            console.error('获取工具列表失败:', error)
+            return {
+              data: [],
+              total: 0,
+              success: false,
+            }
           }
-          return result
         }}
         toolBarRender={() => [
           <Button
@@ -257,7 +275,7 @@ export default () => {
           persistenceType: 'localStorage',
         }}
         // 每行表格的key
-        rowKey="roleId"
+        rowKey="serialNo"
         // 搜索表单布局配置
         search={{
           labelWidth: 'auto',
@@ -286,7 +304,7 @@ export default () => {
           wrapperCol={{ span: 14 }}
           initialValues={{ remember: true }}
         >
-          {formItemComponent}
+          {formItemComponent()}
         </Form>
       </Modal>
       {/* 编辑模态框 */}
@@ -304,7 +322,7 @@ export default () => {
           wrapperCol={{ span: 14 }}
           initialValues={{ remember: true }}
         >
-          {formItemComponent}
+          {formItemComponent()}
         </Form>
       </Modal>
     </div>

@@ -187,7 +187,7 @@ const KnowledgeBaseFile: React.FC = ({ routeChange, chatUIProps }) => {
   }
 
   // 点击编辑
-  const toEdit = (record) => {
+  const toEdit = (record: any) => {
     // message.warning('不支持编辑！！')
     // return
     if (record.editable == false) {
@@ -220,7 +220,7 @@ const KnowledgeBaseFile: React.FC = ({ routeChange, chatUIProps }) => {
   }
 
   // 点击详情
-  const toDetail = (record) => {
+  const toDetail = (record: any) => {
     routeChange(record, 'knowledgeBaseFileDetail')
   }
 
@@ -261,7 +261,7 @@ const KnowledgeBaseFile: React.FC = ({ routeChange, chatUIProps }) => {
   }
 
   // 点击召回测试
-  const toRetrival = (record) => {
+  const toRetrival = (record: any) => {
     setIsRetrivalFormModal(true)
   }
   const confirmRetrival = () => {
@@ -271,14 +271,14 @@ const KnowledgeBaseFile: React.FC = ({ routeChange, chatUIProps }) => {
     setIsRetrivalFormModal(false)
   }
 
-  const typeChange = (value) => {
+  const typeChange = (value: any) => {
     console.log(value)
     setSelectType(value)
   }
 
   const [selectedOption, setSelectedOption] = useState('file');
 
-  const handleOptionChange = (e) => {
+  const handleOptionChange = (e: any) => {
     setSelectedOption(e.target.value);
   };
 
@@ -318,18 +318,39 @@ const KnowledgeBaseFile: React.FC = ({ routeChange, chatUIProps }) => {
         columns={columns}
         // 请求数据
         request={async (params) => {
-          params.knowledgeBaseNo = knowledgeBase
-          console.log(params)
-          let res = await getKnowledgeBaseFileList({
-            ...params,
-          })
-          console.log(res)
-          setKnowledgeBaseFileList(res.data)
-          const result = {
-            data: res.data,
-            total: res.pagination?.totalSize,
+          try {
+            params.knowledgeBaseNo = knowledgeBase
+            console.log(params)
+            let res = await getKnowledgeBaseFileList({
+              ...params,
+            })
+            console.log(res)
+            
+            // 确保返回的数据格式正确
+            if (!res) {
+              return { data: [], total: 0, success: false }
+            }
+
+            // 验证 data 字段是数组
+            const data = Array.isArray(res.data) ? res.data : []
+            const total = res.pagination?.totalSize || 0
+            
+            setKnowledgeBaseFileList(data)
+            
+            return {
+              data,
+              total,
+              success: true,
+            }
+          } catch (error) {
+            console.error('获取知识库文件列表失败:', error)
+            setKnowledgeBaseFileList([])
+            return {
+              data: [],
+              total: 0,
+              success: false,
+            }
           }
-          return result
         }}
         toolBarRender={() => [
           <Button
@@ -521,7 +542,6 @@ const KnowledgeBaseFile: React.FC = ({ routeChange, chatUIProps }) => {
       >
         <Retrival
           chatUIProps={chatUIProps}
-          knowledgeBaseFileList={knowledgeBaseFileList}
           knowledgeBaseNo={knowledgeBase}
         />
       </Modal>

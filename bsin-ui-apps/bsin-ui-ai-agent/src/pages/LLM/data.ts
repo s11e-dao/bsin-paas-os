@@ -2,7 +2,7 @@ import type { ProColumns } from '@ant-design/pro-table'
 import { message } from 'antd'
 
 //点击复制
-const copy = (e) => {
+const copy = (e: any) => {
   console.log(e)
   const range = document.createRange()
 
@@ -23,17 +23,27 @@ const copy = (e) => {
 
 // 定义请求返回数据类型
 export type AppColumnsItem = {
-  roleName: string
-  roleCode: string
-  appId: string
-  appName: string
-  roleId: string
-  remark: string
+  serialNo: string
+  name: string
+  type: string
+  status: string
+  accessAuthority: string
+  apiKey: string
+  secretKey: string
+  apiBaseUrl: string
+  proxyUrl: string
+  proxyPort: string
+  temperature: number
+  maxMessages: number
+  maxSummaryMessages: number
+  maxRequestTokens: number
+  maxRespTokens: number
+  streaming: boolean
+  enableSearch: boolean
+  editable: boolean
+  description: string
   updateTime: string
   createBy: string
-  templateEnable: boolean
-  systemRoleEnable: boolean
-  contextEnable: boolean
   createTime: string
   option: string
   updateBy: string

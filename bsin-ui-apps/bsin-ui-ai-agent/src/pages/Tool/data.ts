@@ -3,17 +3,17 @@ import { Space, Table, Tag } from 'antd'
 
 // 定义请求返回数据类型
 export type AppColumnsItem = {
-  roleName: string
-  roleCode: string
-  appId: string
-  appName: string
-  roleId: string
-  remark: string
+  serialNo: string
+  name: string
+  code: string
+  key: string
+  url: string
+  exceptionResponse: string
+  selfIntroductionCopyWriting: string
+  editable: boolean
+  description: string
   updateTime: string
   createBy: string
-  templateEnable: boolean
-  systemRoleEnable: boolean
-  contextEnable: boolean
   createTime: string
   option: string
   updateBy: string
