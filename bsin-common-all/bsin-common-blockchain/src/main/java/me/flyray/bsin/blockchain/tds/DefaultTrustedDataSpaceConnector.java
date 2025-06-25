@@ -83,7 +83,13 @@ class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnector {
 
         System.out.println(diddoc.toJson(true));
 
-        return null;
+        // 返回包含 DID 信息的 Map
+        Map<String, String> result = new HashMap<>();
+        result.put("did", did.toString());
+        result.put("didDocument", diddoc.toJson());
+        result.put("status", "success");
+        
+        return result;
     }
 
     @Override

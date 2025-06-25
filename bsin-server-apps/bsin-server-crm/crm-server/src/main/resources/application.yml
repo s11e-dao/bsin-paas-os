@@ -101,10 +101,11 @@ spring:
     alibaba:
       mcp:
         nacos:
-          namespace: 142f0696-b004-45ca-ae95-0b17dc3496f5
-          server-addr: 127.0.0.1:8848
-          username: nacos
-          password: nacos
+#          namespace: 142f0696-b004-45ca-ae95-0b17dc3496f5
+          namespace: ${BSIN_NACOS_NAMESPACE}
+          server-addr: ${BSIN_NACOS_SERVER_ADDR}
+          username: ${BSIN_NACOS_USERNAME}
+          password: ${BSIN_NACOS_PASSWORD}
           registry:
             enabled: true
             service-group: mcp-server

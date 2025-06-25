@@ -23,8 +23,8 @@ dubbo:
     username: ${BSIN_DOUBBO_REGISTRY_USERNAME}
     password: ${BSIN_DOUBBO_REGISTRY_PASSWORD}
     parameters:
-      namespace:
-      group:
+      namespace: ${BSIN_NACOS_GROUP}
+      group: ${BSIN_NACOS_GROUP}
   protocol:
     name: dubbo
     port: -1
@@ -49,21 +49,21 @@ seata:
   config:
     type: nacos
     nacos:
-      server-addr: ${nacos.server-addr}
+      server-addr: ${BSIN_NACOS_SERVER_ADDR}
       group: SEATA_GROUP
-      namespace: ${nacos.seata-namespace}
+      namespace: ${BSIN_NACOS_NAMESPACE}
       data-id: seataServer.properties
-      username: ${nacos.username}
-      password: ${nacos.password}
+      username: ${BSIN_NACOS_USERNAME}
+      password: ${BSIN_NACOS_PASSWORD}
   registry:
     type: nacos
     nacos:
       application: seata-server
-      server-addr: ${nacos.server-addr}
+      server-addr: ${BSIN_NACOS_SERVER_ADDR}
       group: SEATA_GROUP
-      namespace: ${nacos.seata-namespace}
-      username: ${nacos.username}
-      password: ${nacos.password}
+      namespace: ${BSIN_NACOS_NAMESPACE}
+      username: ${BSIN_NACOS_USERNAME}
+      password: ${BSIN_NACOS_PASSWORD}
 
 #数据库配置
 spring:
