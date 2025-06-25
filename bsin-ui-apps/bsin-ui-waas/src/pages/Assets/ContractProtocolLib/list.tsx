@@ -50,7 +50,14 @@ export default ({ contactProtocolRouter, addCurrentRecord }) => {
   const [contractProtocolList, setContractProtocolList] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [contractCategoryList, setContractCategoryList] = useState([]);
+  const [contractCategoryList, setContractCategoryList] = useState([
+    { id: 1, name: '核心合约', contractList: [] },
+    { id: 2, name: '工厂合约', contractList: [] },
+    { id: 3, name: '插件合约', contractList: [] },
+    { id: 4, name: '装饰器合约', contractList: [] },
+    { id: 5, name: '代理合约', contractList: [] },
+    { id: 6, name: '其他合约', contractList: [] },
+  ]);
 
   useEffect(() => {
     // 查询协议
@@ -59,28 +66,19 @@ export default ({ contactProtocolRouter, addCurrentRecord }) => {
       pageSize: '99',
     };
     getContractProtocolList(params).then((res) => {
-      if (res?.code == 0) {
+      setLoading(false);
+      
+      if (res?.code == 0 && res?.data) {
         setContractProtocolList(res?.data);
-        setLoading(false);
 
-        let coreContractListTmp: any[] | ((prevState: never[]) => never[]) = [];
-        let factoryContractListTmp:
-          | any[]
-          | ((prevState: never[]) => never[]) = [];
-        let extensionContractListTmp:
-          | any[]
-          | ((prevState: never[]) => never[]) = [];
-        let wrapperContractListTmp:
-          | any[]
-          | ((prevState: never[]) => never[]) = [];
-        let proxyContractListTmp:
-          | any[]
-          | ((prevState: never[]) => never[]) = [];
-        let otherContractListTmp:
-          | any[]
-          | ((prevState: never[]) => never[]) = [];
+        let coreContractListTmp = [];
+        let factoryContractListTmp = [];
+        let extensionContractListTmp = [];
+        let wrapperContractListTmp = [];
+        let proxyContractListTmp = [];
+        let otherContractListTmp = [];
 
-        res?.data?.map((contract) => {
+        res.data.forEach((contract) => {
           if (contract.category == '1') {
             coreContractListTmp.push(contract);
           } else if (contract.category == '2') {
@@ -95,6 +93,7 @@ export default ({ contactProtocolRouter, addCurrentRecord }) => {
             otherContractListTmp.push(contract);
           }
         });
+        
         const contractCategoryListTmp = [
           { id: 1, name: '核心合约', contractList: coreContractListTmp },
           { id: 2, name: '工厂合约', contractList: factoryContractListTmp },
@@ -105,6 +104,9 @@ export default ({ contactProtocolRouter, addCurrentRecord }) => {
         ];
         setContractCategoryList(contractCategoryListTmp);
       }
+    }).catch((error) => {
+      console.error('获取合约协议列表失败:', error);
+      setLoading(false);
     });
   }, []);
 
@@ -132,111 +134,103 @@ export default ({ contactProtocolRouter, addCurrentRecord }) => {
 
   return (
     <Card title="我的合约协议库" bordered={false}>
-      <Tabs
-        defaultActiveKey="1"
-        centered
-        items={contractCategoryList?.map((category) => {
-          return {
-            label: category.name,
-            key: category.id,
-            children: <Space
+      <Tabs defaultActiveKey="1" centered>
+        {contractCategoryList.map((category) => (
+          <Tabs.TabPane tab={category.name} key={String(category.id)}>
+            <Space
               size="middle"
               direction={'vertical'}
-              style={{ display: 'flex', flexWrap: 'wrap' }}
+              style={{ display: 'flex', flexWrap: 'wrap', minHeight: 200 }}
             >
-              <List
-                loading={loading}
-                rowKey="id"
-                grid={{ gutter: 16, column: 4 }}
-                dataSource={category.contractList}
-                renderItem={(item) => {
-                  if (item && item.serialNo) {
-                    return (
-                      <List.Item key={item.serialNo}>
-                        <Card
-                          hoverable
-                          className={styles.card}
-                          cover={
-                            <img
-                              style={{ width: '100%', height: '180px' }}
-                              alt="example"
-                              src={item.coverImage}
-                            />
-                          }
-                          actions={[
-                            // <a
-                            //   key="deploy"
-                            //   onClick={() => {
-                            //     toDeployContractProtocol(item);
-                            //   }}
-                            // >
-                            //   发行
-                            // </a>,
-
-                            // <a
-                            //   key="detail"
-                            //   onClick={() => {
-                            //     toViewContractProtocolDetail(item);
-                            //   }}
-                            // >
-                            //   详情
-                            // </a>,
-                            // <a
-                            //   key="help"
-                            //   onClick={() => {
-                            //     toViewContractProtocolDoc(item);
-                            //   }}
-                            // >
-                            //   说明
-                            // </a>,
-                            <EditOutlined
-                              key="setting"
-                              onClick={() => {
-                                toDeployContractProtocol(item);
-                              }}
-                            />,
-                            <SettingOutlined
-                              key="setting"
-                              onClick={() => {
-                                toViewContractProtocolDetail(item);
-                              }}
-                            />,
-                            <EllipsisOutlined
-                              key="setting"
-                              onClick={() => {
-                                toViewContractProtocolDoc(item);
-                              }}
-                            />,
-                          ]}
-                        >
-                          <Card.Meta
-                            avatar={
-                              <img
-                                alt=""
-                                className={styles.cardAvatar}
-                                src="https://s11edao.oss-cn-beijing.aliyuncs.com/jiujiu/1737841274272223232/1737841352147968001/s11eDao-logo.png"
-                              />
-                            }
-                            title={<a>{item.protocolName}</a>}
-                            description={
-                              <Paragraph
-                                className={styles.item}
-                                ellipsis={{ rows: 3 }}
+              {loading ? (
+                <div style={{ textAlign: 'center', padding: 50 }}>
+                  加载中...
+                </div>
+              ) : (
+                <>
+                  {category.contractList && category.contractList.length > 0 ? (
+                    <List
+                      loading={false}
+                      rowKey="id"
+                      grid={{ gutter: 16, column: 4 }}
+                      dataSource={category.contractList}
+                      renderItem={(item) => {
+                        if (item && item.serialNo) {
+                          return (
+                            <List.Item key={item.serialNo}>
+                              <Card
+                                hoverable
+                                className={styles.card}
+                                cover={
+                                  <img
+                                    style={{ width: '100%', height: '180px' }}
+                                    alt="example"
+                                    src={item.coverImage}
+                                  />
+                                }
+                                actions={[
+                                  <EditOutlined
+                                    key="edit"
+                                    onClick={() => {
+                                      toDeployContractProtocol(item);
+                                    }}
+                                  />,
+                                  <SettingOutlined
+                                    key="setting"
+                                    onClick={() => {
+                                      toViewContractProtocolDetail(item);
+                                    }}
+                                  />,
+                                  <EllipsisOutlined
+                                    key="more"
+                                    onClick={() => {
+                                      toViewContractProtocolDoc(item);
+                                    }}
+                                  />,
+                                ]}
                               >
-                                {item.description}
-                              </Paragraph>
-                            }
-                          />
-                        </Card>
-                      </List.Item>
-                    );
-                  }
-                }}
-              />
-            </Space>,
-          };
-        })}
-      />
+                                <Card.Meta
+                                  avatar={
+                                    <img
+                                      alt=""
+                                      className={styles.cardAvatar}
+                                      src="https://s11edao.oss-cn-beijing.aliyuncs.com/jiujiu/1737841274272223232/1737841352147968001/s11eDao-logo.png"
+                                    />
+                                  }
+                                  title={<a>{item.protocolName}</a>}
+                                  description={
+                                    <Paragraph
+                                      className={styles.item}
+                                      ellipsis={{ rows: 3 }}
+                                    >
+                                      {item.description}
+                                    </Paragraph>
+                                  }
+                                />
+                              </Card>
+                            </List.Item>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                  ) : (
+                    <div style={{ 
+                      textAlign: 'center', 
+                      padding: 50, 
+                      color: '#999',
+                      background: '#fafafa',
+                      borderRadius: 8 
+                    }}>
+                      暂无{category.name}数据
+                    </div>
+                  )}
+                </>
+              )}
+            </Space>
+          </Tabs.TabPane>
+        ))}
+      </Tabs>
     </Card>
   );
 };

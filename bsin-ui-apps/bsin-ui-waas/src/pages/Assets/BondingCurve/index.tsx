@@ -40,6 +40,10 @@ export default () => {
 
   // 表头数据
   const [allData, setAllData] = React.useState<AllData>();
+  // 添加activeTab状态来控制当前激活的Tab
+  const [activeTab, setActiveTab] = React.useState<string>('1');
+  // 添加刷新触发器，用于通知子组件刷新数据
+  const [refreshTrigger, setRefreshTrigger] = React.useState<number>(0);
 
   /**
    * 监听页面路径设置布局
@@ -104,7 +108,7 @@ export default () => {
   /**
    * 查看详情
    */
-  const toViewTransaction = async (record) => {
+  const toViewTransaction = async (record: any) => {
     let { serialNo } = record;
     let viewRes = await getTransactionDetail({ serialNo });
     setIsViewTemplateModal(true);
@@ -112,15 +116,28 @@ export default () => {
     setIsViewRecord(viewRes.data);
   };
 
+  /**
+   * Tab切换处理函数
+   */
+  const handleTabChange = (key: string) => {
+    setActiveTab(key);
+    // 触发子组件刷新数据
+    setRefreshTrigger(prev => prev + 1);
+  };
+
   return (
     <div>
       <Card>
-        <Tabs defaultActiveKey="1">
+        <Tabs 
+          defaultActiveKey="1" 
+          activeKey={activeTab}
+          onChange={handleTabChange}
+        >
           <Tabs.TabPane tab="社区劳动价值捕获曲线" key="1">
-            <SettingBondingCurve />
+            <SettingBondingCurve refreshTrigger={activeTab === '1' ? refreshTrigger : 0} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="积分铸造曲线" key="2">
-            <BondingCurveMintRecord />
+            <BondingCurveMintRecord refreshTrigger={activeTab === '2' ? refreshTrigger : 0} />
           </Tabs.TabPane>
         </Tabs>
       </Card>{' '}

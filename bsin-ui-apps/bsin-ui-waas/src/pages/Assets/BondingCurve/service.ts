@@ -1,11 +1,12 @@
 import { request } from '@umijs/max'
 let crmPath = process.env.contextPath_crm;
+let waasPath = process.env.contextPath_waas;
 
 // 分页查询曲线配置
 export const getCurvePageList = (params) => {
-  return request(crmPath + '/bondingCurveToken/getCurvePageList', {
+  return request(waasPath + '/bondingCurveToken/getPageList', {
     serviceName: 'BondingCurveTokenService',
-    methodName: 'getCurvePageList',
+    methodName: 'getPageList',
     version: '1.0',
     bizParams: {
       ...params,
@@ -15,9 +16,9 @@ export const getCurvePageList = (params) => {
 
 // 查询曲线配置
 export const getCurveList = (params) => {
-  return request(crmPath + '/bondingCurveToken/getCurveList', {
+  return request(waasPath + '/bondingCurveToken/getList', {
     serviceName: 'BondingCurveTokenService',
-    methodName: 'getCurveList',
+    methodName: 'getList',
     version: '1.0',
     bizParams: {
       ...params,
@@ -27,9 +28,9 @@ export const getCurveList = (params) => {
 
 // 创建曲线配置
 export const addCurve = (params) => {
-  return request(crmPath + '/bondingCurveToken/addCurve', {
+  return request(waasPath + '/bondingCurveToken/add', {
     serviceName: 'BondingCurveTokenService',
-    methodName: 'addCurve',
+    methodName: 'add',
     version: '1.0',
     bizParams: {
       ...params,
@@ -39,9 +40,9 @@ export const addCurve = (params) => {
 
 // 创建曲线配置
 export const editCurve = (params) => {
-  return request(crmPath + '/bondingCurveToken/editCurve', {
+  return request(waasPath + '/bondingCurveToken/edit', {
     serviceName: 'BondingCurveTokenService',
-    methodName: 'editCurve',
+    methodName: 'edit',
     version: '1.0',
     bizParams: {
       ...params,
@@ -51,9 +52,9 @@ export const editCurve = (params) => {
 
 // 删除曲线配置
 export const deleteCurve = (params) => {
-  return request(crmPath + '/bondingCurveToken/deleteCurve', {
+  return request(waasPath + '/bondingCurveToken/delete', {
     serviceName: 'BondingCurveTokenService',
-    methodName: 'deleteCurve',
+    methodName: 'delete',
     version: '1.0',
     bizParams: {
       ...params,
@@ -64,9 +65,9 @@ export const deleteCurve = (params) => {
 // 查询曲线配置详情
 export const getCurveDetail = (params) => {
   console.log('params', params);
-  return request(crmPath + '/bondingCurveToken/getCurveDetail', {
+  return request(waasPath + '/bondingCurveToken/getDetail', {
     serviceName: 'BondingCurveTokenService',
-    methodName: 'getCurveDetail',
+    methodName: 'getDetail',
     version: '1.0',
     bizParams: {
       ...params,
@@ -77,7 +78,7 @@ export const getCurveDetail = (params) => {
 // 查询积分铸造明细
 export const getBondingCurveTokenJournalPageList = (params) => {
   console.log('params', params);
-  return request(crmPath + '/bondingCurveToken/getBondingCurveTokenJournalPageList', {
+  return request(waasPath + '/bondingCurveToken/getJournalPageList', {
     serviceName: 'BondingCurveTokenService',
     methodName: 'getBondingCurveTokenJournalPageList',
     version: '1.0',
@@ -90,9 +91,9 @@ export const getBondingCurveTokenJournalPageList = (params) => {
 // 查询积分曲线点
 export const getBondingCurveTokenJournalList = (params) => {
   console.log('params', params);
-  return request(crmPath + '/bondingCurveToken/getBondingCurveTokenJournalList', {
+  return request(waasPath + '/bondingCurveToken/getTrendList', {
     serviceName: 'BondingCurveTokenService',
-    methodName: 'getBondingCurveTokenJournalList',
+    methodName: 'getTrendList',
     version: '1.0',
     bizParams: {
       ...params,
@@ -103,7 +104,7 @@ export const getBondingCurveTokenJournalList = (params) => {
 // 查询铸造/销毁详情
 export const getTransactionDetail = (params) => {
   console.log('params', params);
-  return request(crmPath + '/bondingCurveToken/getTransactionDetail', {
+  return request(waasPath + '/bondingCurveToken/getTransactionDetail', {
     serviceName: 'BondingCurveTokenService',
     methodName: 'getTransactionDetail',
     version: '1.0',
@@ -117,7 +118,7 @@ export const getTransactionDetail = (params) => {
 export const addTransaction = (params) => {
   console.log('params', params);
   if (params.method == 'mint') {
-    return request(crmPath + '/bondingCurveToken/mint', {
+    return request(waasPath + '/bondingCurveToken/mint', {
       serviceName: 'BondingCurveTokenService',
       methodName: 'mint',
       version: '1.0',
@@ -126,7 +127,7 @@ export const addTransaction = (params) => {
       },
     });
   } else if (params.method == 'redeem') {
-    return request(crmPath + '/bondingCurveToken/redeem', {
+    return request(waasPath + '/bondingCurveToken/redeem', {
       serviceName: 'BondingCurveTokenService',
       methodName: 'redeem',
       version: '1.0',

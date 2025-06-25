@@ -38,12 +38,19 @@ type AllData = {
   excRateChangeList: ExcRateChangeList[];
 };
 
-export default () => {
+interface BondingCurveMintRecordProps {
+  refreshTrigger?: number;
+}
+
+export default ({ refreshTrigger }: BondingCurveMintRecordProps) => {
   const { TextArea } = Input;
   const { Option } = Select;
 
   // 表头数据
   const [allData, setAllData] = React.useState<AllData>();
+
+  // Table action 的引用，便于自定义触发
+  const actionRef = React.useRef<ActionType>();
 
   /**
    * 监听页面路径设置布局
@@ -51,6 +58,14 @@ export default () => {
   React.useEffect(() => {
     getBondingCurveTokenJournal();
   }, []);
+
+  // 监听refreshTrigger变化，触发数据刷新
+  React.useEffect(() => {
+    if (refreshTrigger && refreshTrigger > 0) {
+      getBondingCurveTokenJournal();
+      actionRef.current?.reload();
+    }
+  }, [refreshTrigger]);
 
   const getBondingCurveTokenJournal = async () => {
     const reqParams = {
@@ -61,7 +76,7 @@ export default () => {
     };
     const res = await getBondingCurveTokenJournalList(reqParams);
     console.log(res);
-    let excRateChangeList = res.data?.map((item: ExcRateChangeList) => {
+    let excRateChangeList = res.data?.map((item: any) => {
       return {
         supply: item.supply,
         excRate: Number(item.price),
@@ -76,7 +91,7 @@ export default () => {
   // 查看模态框
   const [isViewTransactionModal, setIsViewTransactionModal] = useState(false);
   // 查看
-  const [isViewRecord, setIsViewRecord] = useState({});
+  const [isViewRecord, setIsViewRecord] = useState<any>({});
   // 获取表单
   const [FormRef] = Form.useForm();
   // 表头数据
@@ -103,9 +118,6 @@ export default () => {
   columns.forEach((item: any) => {
     item.dataIndex === 'action' ? (item.render = actionRender) : undefined;
   });
-
-  // Table action 的引用，便于自定义触发
-  const actionRef = React.useRef<ActionType>();
 
   /**
    * 以下内容为操作相关
@@ -158,7 +170,7 @@ export default () => {
   /**
    * 查看详情
    */
-  const toViewTransaction = async (record) => {
+  const toViewTransaction = async (record: any) => {
     let { serialNo } = record;
     let viewRes = await getTransactionDetail({ serialNo });
     setIsViewTransactionModal(true);

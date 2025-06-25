@@ -11,7 +11,7 @@ import {
   Select,
   InputNumber,
 } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons';
@@ -28,9 +28,16 @@ import {
   deleteCurve,
 } from './service';
 
-export default () => {
+interface SettingBondingCurveProps {
+  refreshTrigger?: number;
+}
+
+export default ({ refreshTrigger }: SettingBondingCurveProps) => {
   const { TextArea } = Input;
   const { Option } = Select;
+
+  // Table action 的引用，便于自定义触发
+  const actionRef = React.useRef<ActionType>();
 
   const getCurve = async () => {
     const reqParams = {
@@ -42,6 +49,13 @@ export default () => {
     console.log(res);
   };
 
+  // 监听refreshTrigger变化，触发表格刷新
+  React.useEffect(() => {
+    if (refreshTrigger && refreshTrigger > 0) {
+      actionRef.current?.reload();
+    }
+  }, [refreshTrigger]);
+
   // 控制新增模态框
   const [isCurveModal, setIsCurveModal] = useState(false);
 
@@ -51,7 +65,7 @@ export default () => {
   // 查看模态框
   const [isViewCurveModal, setIsViewCurveModal] = useState(false);
   // 查看
-  const [isViewRecord, setIsViewRecord] = useState({});
+  const [isViewRecord, setIsViewRecord] = useState<any>({});
   // 获取表单
   const [FormRef] = Form.useForm();
   // 表头数据
@@ -106,9 +120,6 @@ export default () => {
   columns.forEach((item: any) => {
     item.dataIndex === 'action' ? (item.render = actionRender) : undefined;
   });
-
-  // Table action 的引用，便于自定义触发
-  const actionRef = React.useRef<ActionType>();
 
   /**
    * 以下内容为操作相关
@@ -181,7 +192,7 @@ export default () => {
   /**
    * 查看详情
    */
-  const toViewCurve = async (record) => {
+  const toViewCurve = async (record: any) => {
     let { serialNo } = record;
     let viewRes = await getCurveDetail({ serialNo });
     setIsViewCurveModal(true);
@@ -192,7 +203,7 @@ export default () => {
   /**
    * 编辑
    */
-  const toEditCurve = async (record) => {
+  const toEditCurve = async (record: any) => {
     let { serialNo } = record;
     let viewRes = await getCurveDetail({ serialNo });
     console.log('viewRes', viewRes);
@@ -203,15 +214,16 @@ export default () => {
   /**
    * 删除
    */
-  const toDeleteCurve = async (record) => {
+  const toDeleteCurve = async (record: any) => {
     let { serialNo } = record;
     let res = await deleteCurve({ serialNo });
     console.log('res', res);
     if (res.code === 0 ) {
       message.success('删除成功');
     } else {
-      message.error('删除成功');
+      message.error('删除失败');
     }
+    actionRef.current?.reload();
   };
   /**
    * 详情，模板类型对应
