@@ -68,17 +68,17 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
   const [isDeleteFormModal, setIsDeleteFormModal] = useState(false)
   // 复制模态框
   const [isCopyFormModal, setIsCopyFormModal] = useState(false)
-  const [customerPromptTemplateList, setCustomerPromptTemplateList] = useState(
+  const [customerPromptTemplateList, setCustomerPromptTemplateList] = useState<any[]>(
     [],
   )
-  const [sysPromptTemplateList, setSysPromptTemplateList] = useState([])
-  const [promptTemplateTypeList, setPromptTemplateTypeList] = useState([])
+  const [sysPromptTemplateList, setSysPromptTemplateList] = useState<any[]>([])
+  const [promptTemplateTypeList, setPromptTemplateTypeList] = useState<any[]>([])
   const [coverImage, setCoverImage] = useState('')
-  const [promptTemplateList, setPromptTemplateList] = useState([])
+  const [promptTemplateList, setPromptTemplateList] = useState<any[]>([])
   // 存储编辑的ID
   const [promptTemplateNo, setPromptTemplateNo] = useState('')
 
-  const [currentRecord, setCurrentRecord] = useState({})
+  const [currentRecord, setCurrentRecord] = useState<any>({})
 
   // 获取新增表单信息
   const addFormRef: any = React.createRef()
@@ -102,11 +102,12 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
       pageSize: '99',
     }
     getPromptTemplatePageList(params).then((res) => {
-      if (res?.code == '000000') {
+      let customerPromptTemplateListTmp: any[] = []
+      let sysPromptTemplateListTmp: any[] = []
+      
+      if (res?.code == '000000' && res?.data) {
         setPromptTemplateList(res?.data)
         addPromptTemplateList(res?.data)
-        let customerPromptTemplateListTmp: any[] = []
-        let sysPromptTemplateListTmp: any[] = []
         res?.data.map((promptTemplate) => {
           if (promptTemplate.type == '0') {
             customerPromptTemplateListTmp.push(promptTemplate)
@@ -114,22 +115,47 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
             sysPromptTemplateListTmp.push(promptTemplate)
           }
         })
-        setCustomerPromptTemplateList(customerPromptTemplateListTmp)
-        setSysPromptTemplateList(sysPromptTemplateListTmp)
-        const promptTemplateTypeList = [
-          {
-            id: 1,
-            name: '我的提示词模版',
-            promptTemplateList: customerPromptTemplateListTmp,
-          },
-          {
-            id: 2,
-            name: '平台提示词模版',
-            promptTemplateList: sysPromptTemplateListTmp,
-          },
-        ]
-        setPromptTemplateTypeList(promptTemplateTypeList)
+      } else {
+        // 即使没有数据也要清空列表
+        setPromptTemplateList([])
+        addPromptTemplateList([])
       }
+      
+      setCustomerPromptTemplateList(customerPromptTemplateListTmp)
+      setSysPromptTemplateList(sysPromptTemplateListTmp)
+      const promptTemplateTypeList = [
+        {
+          id: 1,
+          name: '我的提示词模版',
+          promptTemplateList: customerPromptTemplateListTmp,
+        },
+        {
+          id: 2,
+          name: '平台提示词模版',
+          promptTemplateList: sysPromptTemplateListTmp,
+        },
+      ]
+      setPromptTemplateTypeList(promptTemplateTypeList)
+      setLoading(false)
+    }).catch(() => {
+      // 处理请求异常
+      setCustomerPromptTemplateList([])
+      setSysPromptTemplateList([])
+      setPromptTemplateList([])
+      addPromptTemplateList([])
+      const promptTemplateTypeList = [
+        {
+          id: 1,
+          name: '我的提示词模版',
+          promptTemplateList: [],
+        },
+        {
+          id: 2,
+          name: '平台提示词模版',
+          promptTemplateList: [],
+        },
+      ]
+      setPromptTemplateTypeList(promptTemplateTypeList)
       setLoading(false)
     })
   }
@@ -141,15 +167,12 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
       pageSize: '99',
     }
     getPromptTemplatePageList(params).then((res) => {
-      if (res?.code == '000000') {
+      let customerPromptTemplateListTmp: any[] = []
+      let sysPromptTemplateListTmp: any[] = []
+      
+      if (res?.code == '000000' && res?.data) {
         setPromptTemplateList(res?.data)
         addPromptTemplateList(res?.data)
-        let customerPromptTemplateListTmp:
-          | any[]
-          | ((prevState: never[]) => never[]) = []
-        let sysPromptTemplateListTmp:
-          | any[]
-          | ((prevState: never[]) => never[]) = []
         res?.data.map((promptTemplate) => {
           if (promptTemplate.type == '0') {
             customerPromptTemplateListTmp.push(promptTemplate)
@@ -157,22 +180,47 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
             sysPromptTemplateListTmp.push(promptTemplate)
           }
         })
-        setCustomerPromptTemplateList(customerPromptTemplateListTmp)
-        setSysPromptTemplateList(sysPromptTemplateListTmp)
-        const promptTemplateTypeList = [
-          {
-            id: 1,
-            name: '我的提示词模版',
-            promptTemplateList: customerPromptTemplateListTmp,
-          },
-          {
-            id: 2,
-            name: '平台提示词模版',
-            promptTemplateList: sysPromptTemplateListTmp,
-          },
-        ]
-        setPromptTemplateTypeList(promptTemplateTypeList)
+      } else {
+        // 即使没有数据也要清空列表
+        setPromptTemplateList([])
+        addPromptTemplateList([])
       }
+      
+      setCustomerPromptTemplateList(customerPromptTemplateListTmp)
+      setSysPromptTemplateList(sysPromptTemplateListTmp)
+      const promptTemplateTypeList = [
+        {
+          id: 1,
+          name: '我的提示词模版',
+          promptTemplateList: customerPromptTemplateListTmp,
+        },
+        {
+          id: 2,
+          name: '平台提示词模版',
+          promptTemplateList: sysPromptTemplateListTmp,
+        },
+      ]
+      setPromptTemplateTypeList(promptTemplateTypeList)
+      setLoading(false)
+    }).catch(() => {
+      // 处理请求异常
+      setCustomerPromptTemplateList([])
+      setSysPromptTemplateList([])
+      setPromptTemplateList([])
+      addPromptTemplateList([])
+      const promptTemplateTypeList = [
+        {
+          id: 1,
+          name: '我的提示词模版',
+          promptTemplateList: [],
+        },
+        {
+          id: 2,
+          name: '平台提示词模版',
+          promptTemplateList: [],
+        },
+      ]
+      setPromptTemplateTypeList(promptTemplateTypeList)
       setLoading(false)
     })
   }, [promptTemplateNo])
@@ -197,7 +245,7 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
   }
 
   // 点击编辑
-  const toEdit = async (record) => {
+  const toEdit = async (record: any) => {
     if (record.editable == false) {
       message.warning('该配置不支持编辑！！')
       return
@@ -209,7 +257,7 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
   }
 
   // 编辑确认
-  const confirmEdit = (record) => {
+  const confirmEdit = (record: any) => {
     editFormRef
       .validateFields()
       .then(async () => {
@@ -230,7 +278,7 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
       .catch(() => {})
   }
   // 点击删除
-  const toDelete = (record) => {
+  const toDelete = (record: any) => {
     if (record.editable == false) {
       message.warning('该配置不支持删除！！')
       return
@@ -269,7 +317,7 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
   /**
    * 查看详情
    */
-  const toDetail = async (record) => {
+  const toDetail = async (record: any) => {
     addCurrentRecord(record)
     setIsCopyFormModal(true)
   }
@@ -277,7 +325,7 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
   /**
    * 复制
    */
-  const toCopy = async (record) => {
+  const toCopy = async (record: any) => {
     setCurrentRecord(record)
     copyFormRef.setFieldsValue(record)
     setIsCopyFormModal(true)
@@ -440,8 +488,8 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
       </Button>
       <Descriptions title="提示词模版"></Descriptions>
       <Tabs defaultActiveKey="1" onChange={handleTabChange}>
-        {promptTemplateTypeList.map((type) => (
-          <Tabs.TabPane tab={type.name} key={type.id}>
+        {promptTemplateTypeList.map((promptTemplate) => (
+          <Tabs.TabPane tab={promptTemplate.name} key={promptTemplate.id}>
             <Space
               size="middle"
               direction={'vertical'}
@@ -459,7 +507,7 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
                   xl: 4,
                   xxl: 5,
                 }}
-                dataSource={type.promptTemplateList}
+                dataSource={promptTemplate.promptTemplateList}
                 renderItem={(item) => {
                   if (item && item.serialNo) {
                     return (

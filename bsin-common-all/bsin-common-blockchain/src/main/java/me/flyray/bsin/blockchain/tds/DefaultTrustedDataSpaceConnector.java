@@ -1,6 +1,11 @@
 package me.flyray.bsin.blockchain.tds;
 
 
+import foundation.identity.did.DIDDocument;
+import foundation.identity.did.Service;
+import foundation.identity.did.VerificationMethod;
+
+import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +60,28 @@ class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnector {
 
 
     @Override
-    public String createDidProfile(Map<String, Object> requestMap) {
+    public Map<String, String> createDidProfile(Map<String, Object> requestMap) {
+
+        URI did = URI.create("did:ex:1234");
+
+        Service service = Service.builder()
+                .type("ServiceEndpointProxyService")
+                .serviceEndpoint("https://myservice.com/myendpoint")
+                .build();
+
+        VerificationMethod verificationMethod = VerificationMethod.builder()
+                .id(URI.create(did + "#key-1"))
+                .type("Ed25519VerificationKey2018")
+                .publicKeyBase58("FyfKP2HvTKqDZQzvyL38yXH7bExmwofxHf2NR5BrcGf1")
+                .build();
+
+        DIDDocument diddoc = DIDDocument.builder()
+                .id(did)
+                .service(service)
+                .verificationMethod(verificationMethod)
+                .build();
+
+        System.out.println(diddoc.toJson(true));
 
         return null;
     }

@@ -16,7 +16,7 @@ public interface TrustedDataSpaceConnector {
      * @param payload 要上传的数据
      * @return 操作结果或凭证
      */
-    String createDidProfile(Map<String, Object> requestMap) ;
+    Map<String, String> createDidProfile(Map<String, Object> requestMap) ;
 
     /**
      * (示例方法) 上传数据到可信数据空间。

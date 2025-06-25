@@ -27,6 +27,12 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>decentralized-identity</groupId>
+            <artifactId>did-common-java</artifactId>
+            <version>1.17.0</version>
+        </dependency>
+
         <!-- polygon公链 -->
         <dependency>
             <groupId>org.web3j</groupId>
@@ -81,5 +87,12 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>danubetech-maven-public</id>
+            <url>https://repo.danubetech.com/repository/maven-public/</url>
+        </repository>
+    </repositories>
 
 </project>

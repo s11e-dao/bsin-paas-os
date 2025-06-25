@@ -189,13 +189,13 @@ export default ({ routerChange }) => {
   }
 
   const [loading, setLoading] = useState(true)
-  const [copilotList, setCopilotList] = useState([])
-  const [wxPlatformList, setWxPlatformList] = useState([])
-  const [wxMpPlatformList, setMpWxPlatformList] = useState([])
-  const [wxPlatformMenuTemplateList, setWxPlatformMenuTemplateList] = useState(
+  const [copilotList, setCopilotList] = useState<any[]>([])
+  const [wxPlatformList, setWxPlatformList] = useState<any[]>([])
+  const [wxMpPlatformList, setMpWxPlatformList] = useState<any[]>([])
+  const [wxPlatformMenuTemplateList, setWxPlatformMenuTemplateList] = useState<any[]>(
     [],
   )
-  const [wxPlatformTypeList, setWxPlatformTypeList] = useState([])
+  const [wxPlatformTypeList, setWxPlatformTypeList] = useState<any[]>([])
 
   // 查询Copilot文件列表
   useEffect(() => {
@@ -212,16 +212,14 @@ export default ({ routerChange }) => {
       }
     })
 
-    let mpWxPlatformListTmp: any[] | ((prevState: never[]) => never[]) = []
-    let miniappWxPlatformListTmp: any[] | ((prevState: never[]) => never[]) = []
-    let cpWxPlatformListTmp: any[] | ((prevState: never[]) => never[]) = []
-    let payWxPlatformListTmp: any[] | ((prevState: never[]) => never[]) = []
-    let openWxPlatformListTmp: any[] | ((prevState: never[]) => never[]) = []
-    let wechatWxPlatformListTmp: any[] | ((prevState: never[]) => never[]) = []
-    let wxPlatformMenuTenplateListTmp:
-      | any[]
-      | ((prevState: never[]) => never[]) = []
-    let wxPlatformMenuListTmp: never[] = []
+    let mpWxPlatformListTmp: any[] = []
+    let miniappWxPlatformListTmp: any[] = []
+    let cpWxPlatformListTmp: any[] = []
+    let payWxPlatformListTmp: any[] = []
+    let openWxPlatformListTmp: any[] = []
+    let wechatWxPlatformListTmp: any[] = []
+    let wxPlatformMenuTenplateListTmp: any[] = []
+    let wxPlatformMenuListTmp: any[] = []
 
     // 查询协议
     let params = {
@@ -229,10 +227,10 @@ export default ({ routerChange }) => {
       pageSize: '99',
     }
     getWxPlatformList(params).then((res) => {
-      if (res?.code == 0) {
+      if (res?.code == 0 && res?.data) {
         setWxPlatformList(res?.data)
 
-        res?.data.map((wxPlatform) => {
+        res?.data.map((wxPlatform: any) => {
           if (wxPlatform.type == 'mp') {
             mpWxPlatformListTmp.push(wxPlatform)
           } else if (wxPlatform.type == 'miniapp') {
@@ -249,58 +247,108 @@ export default ({ routerChange }) => {
             wxPlatformMenuTenplateListTmp.push(wxPlatform)
           }
         })
-
-        setWxPlatformMenuTemplateList(wxPlatformMenuTenplateListTmp)
-
-        const wxPlatformTypeList = [
-          {
-            id: 1,
-            name: '订阅|服务号',
-            wxPlatformList: mpWxPlatformListTmp,
-          },
-          {
-            id: 2,
-            name: '小程序',
-            wxPlatformList: miniappWxPlatformListTmp,
-          },
-          {
-            id: 3,
-            name: '企业微信',
-            wxPlatformList: cpWxPlatformListTmp,
-          },
-          {
-            id: 4,
-            name: '微信支付',
-            wxPlatformList: payWxPlatformListTmp,
-          },
-          {
-            id: 5,
-            name: '微信开发平台',
-            wxPlatformList: openWxPlatformListTmp,
-          },
-          {
-            id: 6,
-            name: '个人微信',
-            wxPlatformList: wechatWxPlatformListTmp,
-          },
-          {
-            id: 7,
-            name: '菜单模版',
-            wxPlatformList: wxPlatformMenuTenplateListTmp,
-          },
-          // {
-          //   id: 8,
-          //   name: '菜单',
-          //   wxPlatformList: wxPlatformMenuListTmp,
-          // },
-        ]
-
-        console.log(wxPlatformTypeList)
-        setMpWxPlatformList(mpWxPlatformListTmp)
-        setWxPlatformTypeList(wxPlatformTypeList)
       } else {
-        message.error(res.message)
+        // 即使没有数据也要清空列表
+        setWxPlatformList([])
+        if (res?.message) {
+          message.error(res.message)
+        }
       }
+
+      setWxPlatformMenuTemplateList(wxPlatformMenuTenplateListTmp)
+
+      const wxPlatformTypeList = [
+        {
+          id: 1,
+          name: '订阅|服务号',
+          wxPlatformList: mpWxPlatformListTmp,
+        },
+        {
+          id: 2,
+          name: '小程序',
+          wxPlatformList: miniappWxPlatformListTmp,
+        },
+        {
+          id: 3,
+          name: '企业微信',
+          wxPlatformList: cpWxPlatformListTmp,
+        },
+        {
+          id: 4,
+          name: '微信支付',
+          wxPlatformList: payWxPlatformListTmp,
+        },
+        {
+          id: 5,
+          name: '微信开发平台',
+          wxPlatformList: openWxPlatformListTmp,
+        },
+        {
+          id: 6,
+          name: '个人微信',
+          wxPlatformList: wechatWxPlatformListTmp,
+        },
+        {
+          id: 7,
+          name: '菜单模版',
+          wxPlatformList: wxPlatformMenuTenplateListTmp,
+        },
+        // {
+        //   id: 8,
+        //   name: '菜单',
+        //   wxPlatformList: wxPlatformMenuListTmp,
+        // },
+      ]
+
+      console.log(wxPlatformTypeList)
+      setMpWxPlatformList(mpWxPlatformListTmp)
+      setWxPlatformTypeList(wxPlatformTypeList)
+      setLoading(false)
+    }).catch(() => {
+      // 处理请求异常
+      setWxPlatformList([])
+      setWxPlatformMenuTemplateList([])
+      
+      const wxPlatformTypeList = [
+        {
+          id: 1,
+          name: '订阅|服务号',
+          wxPlatformList: [],
+        },
+        {
+          id: 2,
+          name: '小程序',
+          wxPlatformList: [],
+        },
+        {
+          id: 3,
+          name: '企业微信',
+          wxPlatformList: [],
+        },
+        {
+          id: 4,
+          name: '微信支付',
+          wxPlatformList: [],
+        },
+        {
+          id: 5,
+          name: '微信开发平台',
+          wxPlatformList: [],
+        },
+        {
+          id: 6,
+          name: '个人微信',
+          wxPlatformList: [],
+        },
+        {
+          id: 7,
+          name: '菜单模版',
+          wxPlatformList: [],
+        },
+      ]
+      
+      setMpWxPlatformList([])
+      setWxPlatformTypeList(wxPlatformTypeList)
       setLoading(false)
     })
   }, [wxPlatformNo, tabIndex])
