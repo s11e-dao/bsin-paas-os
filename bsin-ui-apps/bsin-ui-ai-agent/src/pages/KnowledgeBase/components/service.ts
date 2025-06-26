@@ -39,9 +39,9 @@ export const delKnowledgeBaseFile = (params) => {
 
 //添加知识库操作
 export const addKnowledgeBaseFile = (params) => {
-  return request(aiAgent + '/knowledgeBaseFile/add', {
+  return request(aiAgent + '/knowledgeBaseFile/importFile', {
     serviceName: 'KnowledgeBaseFileService',
-    methodName: 'add',
+    methodName: 'importFile',
     version: '1.0',
     bizParams: {
       ...params,

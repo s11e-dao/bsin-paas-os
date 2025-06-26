@@ -5,42 +5,17 @@ import { BackwardOutlined, InboxOutlined, SettingOutlined, EditOutlined } from '
 
 const { Dragger } = Upload;
 
-const steps = [
-    {
-        title: '选择文件',
-    },
-    {
-        title: '文本分段与清洗',
-    },
-    {
-        title: '确认上传',
-    },
-];
+import { getSessionStorageInfo } from '@/utils/localStorageInfo';
+import { addKnowledgeBaseFile } from './service';
 
-const props: UploadProps = {
-    name: 'file',
-    multiple: true,
-    action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-    onChange(info) {
-        const { status } = info.file;
-        if (status !== 'uploading') {
-            console.log(info.file, info.fileList);
-        }
-        if (status === 'done') {
-            message.success(`${info.file.name} file uploaded successfully.`);
-        } else if (status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-        }
-    },
-    onDrop(e) {
-        console.log('Dropped files', e.dataTransfer.files);
-    },
-};
 
-const KnowledgeBaseFileUpload: React.FC = ({
+const KnowledgeBaseFileUpload: React.FC<any> = ({
     routeChange,
     knowledgeBaseFileRecord,
 }) => {
+
+    let bsinFileUploadUrl = process.env.bsinFileUploadUrl;
+    let tenantAppType = process.env.tenantAppType;
 
     const { token } = theme.useToken();
     const [current, setCurrent] = useState(0);
@@ -79,8 +54,11 @@ const KnowledgeBaseFileUpload: React.FC = ({
 
     const uploadProps: UploadProps = {
         name: 'file',
-        multiple: true,
-        action: '/api/knowledge-base/upload',
+        multiple: false,
+        headers: {
+            Authorization: getSessionStorageInfo('token')?.token,
+        },
+        action: bsinFileUploadUrl,
         onChange(info) {
             const { status } = info.file;
             if (status !== 'uploading') {
@@ -88,6 +66,7 @@ const KnowledgeBaseFileUpload: React.FC = ({
             }
             if (status === 'done') {
                 message.success(`${info.file.name} 文件上传成功`);
+                const imageUrl = info.file?.response?.data?.url;
             } else if (status === 'error') {
                 message.error(`${info.file.name} 文件上传失败`);
             }
@@ -148,6 +127,64 @@ const KnowledgeBaseFileUpload: React.FC = ({
             ...cleaningOptions,
             [option]: checked
         });
+    };
+
+    // 处理确认上传
+    const handleConfirmUpload = async () => {
+        try {
+            // 验证是否有文件上传
+            if (fileList.length === 0) {
+                message.error('请先上传文件！');
+                return;
+            }
+
+            // 检查是否有成功上传的文件
+            const uploadedFiles = fileList.filter(file => file.status === 'done');
+            if (uploadedFiles.length === 0) {
+                message.error('没有成功上传的文件！');
+                return;
+            }
+
+            message.loading('正在处理文件，请稍候...', 0);
+
+            // 准备提交数据
+            for (const file of uploadedFiles) {
+                const fileData = {
+                    name: file.name,
+                    fileType: file.type || file.name.split('.').pop() || 'unknown',
+                    fileUrl: file.response?.data?.url || file.url,
+                    localPath: file.response?.data?.localPath,
+                    knowledgeBaseNo: knowledgeBaseFileRecord?.aiNo || knowledgeBaseFileRecord?.knowledgeBaseNo,
+                    segmentMethod: segmentMethod,
+                    segmentSize: segmentMethod === 'fixed' ? segmentSize : undefined,
+                    type: '1', // 文件类型
+                    description: file.name,
+                };
+
+                console.log('提交文件数据:', fileData);
+
+                const res = await addKnowledgeBaseFile(fileData);
+                
+                if (res.code === '000000') {
+                    console.log(`文件 ${file.name} 处理成功`);
+                } else {
+                    throw new Error(res.message || `文件 ${file.name} 处理失败`);
+                }
+            }
+
+            message.destroy();
+            message.success('所有文件处理完成！');
+            
+            // 返回文件列表页面
+            setTimeout(() => {
+                routeChange?.(knowledgeBaseFileRecord, 'knowledgeBaseFileList');
+            }, 1500);
+            
+        } catch (error: any) {
+            message.destroy();
+            console.error('文件处理失败:', error);
+            message.error(error.message || '文件处理失败，请重试！');
+        }
     };
 
     const renderStepContent = () => {
@@ -258,7 +295,7 @@ const KnowledgeBaseFileUpload: React.FC = ({
                     </Button>
                 )}
                 {current === steps.length - 1 && (
-                    <Button type="primary" onClick={() => message.success('文件已开始处理!')}>
+                    <Button type="primary" onClick={handleConfirmUpload}>
                         确认上传
                     </Button>
                 )}

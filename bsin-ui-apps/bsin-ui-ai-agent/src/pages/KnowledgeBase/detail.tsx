@@ -26,6 +26,7 @@ export default ({
   knowledgeBaseList,
   chatUIProps,
 }) => {
+  
   const menuMap: Record<string, React.ReactNode> = {
     knowledgeBaseFile: '知识库文件',
     dataRecallTest: '召回测试',
