@@ -17,6 +17,11 @@ const routes = [
         path: '/uncontainer',
         component: '@/pages/uncontainer'
       },
+      // AI应用 （接入应用）
+      {
+        path: '/ai-application',
+        component: '@/pages/Application/index',
+      },
       // LLM模型
       {
         path: '/ai-llm',

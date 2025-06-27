@@ -1,0 +1,256 @@
+.application-page {
+  padding: 24px;
+  background-color: #ffffff;
+  min-height: 100vh;
+
+  .section {
+    margin-bottom: 48px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .app-card {
+    height: 120px;
+    border-radius: 12px;
+    border: 1px solid #e8e8e8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .app-card-content {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      height: 100%;
+
+      .app-icon {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 64px;
+        height: 64px;
+        background-color: #f8f9fa;
+        border-radius: 12px;
+      }
+
+      .app-info {
+        flex: 1;
+        min-width: 0;
+        padding-right: 16px;
+
+        .app-title {
+          margin-bottom: 8px !important;
+          font-size: 17px;
+          font-weight: 600;
+          color: #262626;
+          line-height: 1.4;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .app-description {
+          font-size: 14px;
+          color: #8c8c8c;
+          line-height: 1.5;
+          display: block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          display: -webkit-box;
+        }
+      }
+
+      .app-actions {
+        flex-shrink: 0;
+        
+        .ant-space {
+          flex-direction: column;
+          gap: 8px !important;
+          
+          .ant-space-item {
+            width: 100%;
+            
+            .ant-btn {
+              width: 88px;
+              height: 36px;
+              font-size: 14px;
+              border-radius: 8px;
+              font-weight: 500;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// 响应式设计
+@media (max-width: 1400px) {
+  .application-page {
+    .app-card {
+      .app-card-content {
+        gap: 16px;
+        
+        .app-icon {
+          width: 56px;
+          height: 56px;
+        }
+        
+        .app-info {
+          .app-title {
+            font-size: 16px;
+          }
+        }
+        
+        .app-actions {
+          .ant-space {
+            .ant-space-item {
+              .ant-btn {
+                width: 80px;
+                height: 32px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .application-page {
+    .app-card {
+      height: 110px;
+      
+      .app-card-content {
+        gap: 14px;
+        
+        .app-icon {
+          width: 52px;
+          height: 52px;
+        }
+        
+        .app-info {
+          .app-title {
+            font-size: 15px;
+          }
+          
+          .app-description {
+            font-size: 13px;
+          }
+        }
+        
+        .app-actions {
+          .ant-space {
+            flex-direction: row;
+            gap: 6px !important;
+            
+            .ant-space-item {
+              width: auto;
+              
+              .ant-btn {
+                width: 72px;
+                height: 30px;
+                font-size: 13px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .application-page {
+    padding: 16px;
+    
+    .app-card {
+      height: 140px;
+      
+      .app-card-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+        padding: 4px 0;
+
+        .app-icon {
+          width: 48px;
+          height: 48px;
+        }
+
+        .app-info {
+          padding-right: 0;
+          
+          .app-title {
+            font-size: 15px;
+            white-space: normal;
+            margin-bottom: 4px !important;
+          }
+
+          .app-description {
+            font-size: 13px;
+            -webkit-line-clamp: 1;
+          }
+        }
+
+        .app-actions {
+          width: 100%;
+          
+          .ant-space {
+            width: 100%;
+            justify-content: center;
+            flex-direction: row;
+            gap: 8px !important;
+            
+            .ant-space-item {
+              width: auto;
+              
+              .ant-btn {
+                width: 70px;
+                height: 28px;
+                font-size: 12px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// 自定义按钮样式
+.app-card {
+  .ant-btn {
+    &.ant-btn-primary {
+      background: #1890ff;
+      border-color: #1890ff;
+      
+      &:hover {
+        background: #40a9ff;
+        border-color: #40a9ff;
+      }
+    }
+    
+    &:not(.ant-btn-primary) {
+      color: #1890ff;
+      border-color: #1890ff;
+      background: transparent;
+      
+      &:hover {
+        color: #40a9ff;
+        border-color: #40a9ff;
+        background: rgba(24, 144, 255, 0.06);
+      }
+    }
+  }
+} 

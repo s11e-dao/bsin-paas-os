@@ -69,6 +69,11 @@ public class SysAgentServiceImpl implements SysAgentService {
   @DubboReference(version = "${dubbo.provider.version}")
   private DisTeamRelationService disTeamRelationService;
 
+  /**
+   * 企业代理商登录，个人代理商无法登录PC端
+   * @param requestMap
+   * @return
+   */
   @ApiDoc(desc = "login")
   @ShenyuDubboClient("/login")
   @Override
@@ -77,6 +82,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     // 查询代理商信息
     LambdaQueryWrapper<SysAgent> warapper = new LambdaQueryWrapper<>();
     warapper.eq(SysAgent::getUsername, username);
+    warapper.eq(SysAgent::getType, CustomerType.ENTERPRISE.getCode());
     SysAgent sysAgent = sysAgentMapper.selectOne(warapper);
 
     // TODO 判断是否是代理商员工
@@ -99,7 +105,10 @@ public class SysAgentServiceImpl implements SysAgentService {
     return res;
   }
 
-  /** 开通代理商 */
+  /**
+   * 开通代理商
+   * 开通个人代理商
+   * */
   @ApiDoc(desc = "openSysAgent")
   @ShenyuDubboClient("/openSysAgent")
   @Override
@@ -158,6 +167,11 @@ public class SysAgentServiceImpl implements SysAgentService {
     return sysAgent;
   }
 
+  /**
+   *
+   * @param requestMap
+   * @return
+   */
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
@@ -165,7 +179,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
     String tenantId = LoginInfoContextHelper.getTenantId();
     sysAgent.setTenantId(tenantId);
-    sysAgent.setType(CustomerType.PERSONAL.getCode());
+    sysAgent.setType(CustomerType.ENTERPRISE.getCode());
     sysAgent = addSysAgent(sysAgent, NULL, NULL);
     return sysAgent;
   }
@@ -264,4 +278,5 @@ public class SysAgentServiceImpl implements SysAgentService {
 
     return sysAgent;
   }
+
 }
