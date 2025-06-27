@@ -165,12 +165,6 @@ bsin-paas-os
 ![avatar](./doc/images/sys/bsin-thems1.png)
 
 * 菜单主题
-![avatar](./doc/images/sys/菜单主题.png)
-
-* 菜单主题上
-![avatar](./doc/images/sys/菜单主题上.png)
-
-* 菜单主题
 ![avatar](./doc/images/sys/菜单主题1.png)
 
 * 菜单主题
@@ -192,15 +186,18 @@ bsin-paas-os
 ![avatar](./doc/images/sys/智能决策引擎.png)
 
 * 通用人工智能
+  ![avatar](./doc/images/sys/通用人工智能模块1.png)
+* 
+* 通用人工智能
 ![avatar](./doc/images/sys/通用人工智能模块.png)
 
-* AI员工.png
+* AI编排.png
 ![avatar](./doc/images/sys/AI员工.png)
 
 * 火源钱包
   ![avatar](./doc/images/sys/火源钱包.png)
 
-  ![avatar](./doc/images/sys/aiWorkflow.png)
+  ![avatar](./doc/images/sys/火源钱包1.png)
 
 * bsin-bot低代码平台
 ![avatar](./doc/images/sys/前端低代码.png)
@@ -208,7 +205,7 @@ bsin-paas-os
 * bsin-bot 表单设计
 ![avatar](./doc/images/sys/form.png)
 
-* 数字资产管理平台
+* web3品牌管理-bigan
 ![avatar](./doc/images/sys/数字资产管理平台.png)
 
 * 数据大屏
