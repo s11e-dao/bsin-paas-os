@@ -84,7 +84,7 @@ iot(){
 }
 # 启动ui-apps模块
 ui_apps(){
-	docker-compose up -d bsin-apps-container-3.0 bsin-ui-upms-3.0 bsin-ui-ai-agent-3.0 bsin-ui-waas-3.0 bsin-ui-bigan-3.0 bsin-ui-data-warehouse-3.0 bsin-ui-decision-admin-3.0 bsin-ui-sea-condition-3.0
+	docker-compose up -d bsin-apps-container-3.0 bsin-ui-upms-3.0 bsin-ui-ai-agent-3.0 bsin-ui-doc-3.0 bsin-ui-waas-3.0 bsin-ui-bigan-3.0 bsin-ui-data-warehouse-3.0 bsin-ui-decision-admin-3.0 bsin-ui-sea-condition-3.0
 }
 # 关闭所有环境/模块
 stop(){
