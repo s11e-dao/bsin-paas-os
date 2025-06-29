@@ -262,8 +262,6 @@ services:
       - bsin-nacos-standalone-3.0
       - bsin-redis-3.0
       - bsin-mysql-3.0
-    environment:
-      shenyu.httpPath: http://43.137.62.23:9095
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.20

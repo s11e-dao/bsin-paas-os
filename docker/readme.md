@@ -183,9 +183,5 @@ docker-compose -f portainer.yml up -d
 
 ## 注意事项
 
-### 1 网关管理后台docker配置需要配置请求路径
-```shell
-environment:
-      shenyu.httpPath: http://43.137.62.23:9095
-```
+### 1 .env环境变量配置：需要将配置文件中的IP地址，数据库地址，redis地址，nacos地址修改为实际IP地址
     
