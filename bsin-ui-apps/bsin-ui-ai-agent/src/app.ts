@@ -1,6 +1,7 @@
 import type { RequestConfig } from 'umi';
 import { notification } from 'antd';
 import { getSessionStorageInfo, getLocalStorageInfo } from '@/utils/localStorageInfo';
+// 判断子应用运行环境
 import "./public-path";
 
 // src/app.ts
@@ -97,7 +98,32 @@ export const request: RequestConfig = {
       } else if (error.response) {
         // Axios 的错误
         // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-        notification.error(`Response status:${error.response.status}`);
+        const status = error.response.status;
+        let errorMessage = '';
+        
+        switch (status) {
+          case 500:
+          case 502:
+          case 503:
+            errorMessage = '服务端异常，程序员小哥哥正在全力抢修～';
+            break;
+          case 404:
+            errorMessage = '请求的资源不存在';
+            break;
+          case 403:
+            errorMessage = '权限不足，请联系管理员';
+            break;
+          case 401:
+            errorMessage = '登录已过期，请重新登录';
+            break;
+          default:
+            errorMessage = `请求失败，状态码：${status}`;
+        }
+        
+        notification.error({
+          message: '请求错误',
+          description: errorMessage,
+        });
       } else if (error.request) {
         // 请求已经成功发起，但没有收到响应
         // \`error.request\` 在浏览器中是 XMLHttpRequest 的实例，
@@ -185,10 +211,25 @@ export const request: RequestConfig = {
       const { data } = response;
       console.log(response)
       if (data?.code !== 0) {
+        let errorMessage = data?.message || '请求失败';
+        
+        // 针对特定业务错误码显示友好提示
+        if (data?.code === 500) {
+          errorMessage = '服务端异常，程序员小哥哥正在全力抢修～';
+        }
+        
         notification.error({
-          message: data?.message,
-          description: data?.message,
+          message: '操作失败',
+          description: errorMessage,
         });
+        
+        // 修改响应数据，防止 errorThrower 再次处理导致重复提示
+        response.data = {
+          ...data,
+          success: true, // 标记为成功，避免 errorThrower 抛出错误
+          _errorHandled: true // 添加标记表示已处理错误
+        };
+        
         return response
       }
       return response

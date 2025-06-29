@@ -1,4 +1,3 @@
-import { useModel } from 'umi';
 import type { RequestConfig } from 'umi';
 import { notification } from 'antd';
 import { getSessionStorageInfo, getLocalStorageInfo } from '@/utils/localStorageInfo';
@@ -7,34 +6,26 @@ import "./public-path";
 
 // src/app.ts
 export const qiankun = {
-  // 应用加载之前
-  async bootstrap(props) {
-    console.log('upms bootstrap', props);
-  },
-  // 应用 render 之前触发
-  async mount(props) {
-    console.log('upms mount', props);
-    props.onGlobalStateChange((state, prev) => {
-      // state: 变更后的状态; prev 变更前的状态
-      console.log(state, prev);
-    });
-
-  },
-  // 应用卸载之后触发
-  async unmount(props) {
-    console.log('upms unmount', props);
-  },
-};
-
-// 向子应用传递参数
-export const useQiankunStateForSlave = () => {
-  let data = useModel('@@qiankunStateFromMaster');
-  let appId = data?.appId;
-  return {
-    appId,
+    // 应用加载之前
+    async bootstrap(props) {
+      console.log('upms bootstrap', props);
+    },
+    // 应用 render 之前触发
+    async mount(props) {
+      console.log('upms mount', props);
+      props.onGlobalStateChange((state, prev) => {
+        // state: 变更后的状态; prev 变更前的状态
+        console.log(state, prev);
+      });
+      
+    },
+    // 应用卸载之后触发
+    async unmount(props) {
+      console.log('upms unmount', props);
+    },
   };
-};
 
+  
 // 错误处理方案： 错误类型
 enum ErrorShowType {
   SILENT = 0,
@@ -107,7 +98,32 @@ export const request: RequestConfig = {
       } else if (error.response) {
         // Axios 的错误
         // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-        notification.error(`Response status:${error.response.status}`);
+        const status = error.response.status;
+        let errorMessage = '';
+        
+        switch (status) {
+          case 500:
+          case 502:
+          case 503:
+            errorMessage = '服务端异常，程序员小哥哥正在全力抢修～';
+            break;
+          case 404:
+            errorMessage = '请求的资源不存在';
+            break;
+          case 403:
+            errorMessage = '权限不足，请联系管理员';
+            break;
+          case 401:
+            errorMessage = '登录已过期，请重新登录';
+            break;
+          default:
+            errorMessage = `请求失败，状态码：${status}`;
+        }
+        
+        notification.error({
+          message: '请求错误',
+          description: errorMessage,
+        });
       } else if (error.request) {
         // 请求已经成功发起，但没有收到响应
         // \`error.request\` 在浏览器中是 XMLHttpRequest 的实例，
@@ -124,11 +140,11 @@ export const request: RequestConfig = {
   // 请求拦截器
   requestInterceptors: [
 
-    (config: any) => {
+    (config:any) => {
       // 请求方法统一为 POST
       config.method = 'POST';
       // 获取userInfo和token
-      let userInfo = getLocalStorageInfo('userInformation');
+      let userInfo = getLocalStorageInfo('userInfo');
       let token = getSessionStorageInfo('token')?.token;
 
       // 判断token和用户信息是否存在
@@ -149,6 +165,7 @@ export const request: RequestConfig = {
         'Content-Type': 'application/json',
         Accept: 'application/json',
         Authorization: token || "",
+        version: "1.0.0",
       };
 
       let pagination;
@@ -157,52 +174,63 @@ export const request: RequestConfig = {
           pageSize: config?.bizParams?.pageSize,
           pageNum: config?.bizParams?.current,
         };
-        delete config?.bizParams.pageSize;
-        delete config?.bizParams.current;
+        delete config?.bizParams?.pageSize;
+        delete config?.bizParams?.current;
       }
       // 组装报文
       let data = {}
       if (config?.version) {
-        data = {
-          serviceName: config?.serviceName,
-          methodName: config?.methodName,
-          bizParams: config?.bizParams,
-          version: config?.version,
-        };
-      } else {
-        data = {
-          serviceName: config?.serviceName,
-          methodName: config?.methodName,
-          bizParams: config?.bizParams,
-        };
+        headers.version = config?.version;
       }
 
       if (pagination) {
         data = {
-          ...data,
+          ...config.bizParams,
           pagination,
+        };
+      }else{
+        data = {
+          ...config.bizParams
         };
       }
       config.headers = {
         ...headers,
       };
       // 拦截请求配置，进行个性化处理。
-      const url = gatewayUrl;
+      console.log("config")
+      console.log(config)
+      const url = gatewayUrl + config.url;
       return { ...config, data, url };
     }
   ],
 
   // 响应拦截器
   responseInterceptors: [
-    (response: any) => {
+    (response : any) => {
       // 拦截响应数据，进行个性化处理
       const { data } = response;
-      if (data?.code !== '000000') {
+      console.log(response)
+      if (data?.code !== 0) {
+        let errorMessage = data?.message || '请求失败';
+        
+        // 针对特定业务错误码显示友好提示
+        if (data?.code === 500) {
+          errorMessage = '服务端异常，程序员小哥哥正在全力抢修～';
+        }
+        
         notification.error({
-          message: '',
-          description: data?.message,
+          message: '操作失败',
+          description: errorMessage,
         });
-        return false;
+        
+        // 修改响应数据，防止 errorThrower 再次处理导致重复提示
+        response.data = {
+          ...data,
+          success: true, // 标记为成功，避免 errorThrower 抛出错误
+          _errorHandled: true // 添加标记表示已处理错误
+        };
+        
+        return response
       }
       return response
     }
