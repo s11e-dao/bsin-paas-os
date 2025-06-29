@@ -180,3 +180,12 @@ docker-compose -f portainer.yml up -d
 | 554  | RTSP 协议   |
 | 1935 | RTMP      |
 | 8865 | easymedia |
+
+## 注意事项
+
+### 1 网关管理后台docker配置需要配置请求路径
+```shell
+environment:
+      shenyu.httpPath: http://43.137.62.23:9095
+```
+    
