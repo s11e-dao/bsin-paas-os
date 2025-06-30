@@ -241,10 +241,19 @@ export default ({ setCurrentContent, putOnShelves }: Props) => {
         pageSize: params.pageSize || 10,
       });
       console.log('😒', res);
-      setDataSource(res.data || []);
-      setTotal(res.pagination?.totalSize || 0);
+      
+      if (res && res.code === 0) {
+        setDataSource(res.data || []);
+        setTotal(res.pagination?.totalSize || 0);
+      } else {
+        console.error('API返回错误:', res);
+        setDataSource([]);
+        setTotal(0);
+      }
     } catch (error) {
       console.error('获取数据失败:', error);
+      setDataSource([]);
+      setTotal(0);
     } finally {
       setLoading(false);
     }
