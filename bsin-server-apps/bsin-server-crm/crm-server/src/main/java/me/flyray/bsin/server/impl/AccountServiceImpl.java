@@ -472,12 +472,22 @@ public class AccountServiceImpl implements AccountService {
     return accountFreezeJournal;
   }
 
+  /**
+   * 查询每个租户的账本数据
+   * 1、总积分
+   * 2、已分配积分
+   * 3、待分配积分
+   * 4、领卡数据： 发行卡数量、领卡数量
+   * @param requestMap
+   * @return
+   */
   @ShenyuDubboClient("/getCommunityLedgerInfo")
   @ApiDoc(desc = "getCommunityLedgerInfo")
   @Override
   public CommunityLedgerVO getCommunityLedgerInfo(Map<String, Object> requestMap) {
     // 查询社区账本账户的余额信息
     CommunityLedgerVO communityLedgerVO = new CommunityLedgerVO();
+
     return communityLedgerVO;
   }
 
@@ -539,7 +549,7 @@ public class AccountServiceImpl implements AccountService {
 
   /**
    * @see AccountCategory
-   * 按账户分类查询账户
+   * 根据币种 按账户分类查询账户
    * @param requestMap
    * @return
    */
@@ -547,6 +557,7 @@ public class AccountServiceImpl implements AccountService {
   @ApiDoc(desc = "getCategoryAccounts")
   @Override
   public Map<String, Object> getCategoryAccounts(Map<String, Object> requestMap) {
+    String ccy = MapUtils.getString(requestMap, "ccy");
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     // 遍历AccountCategory枚举查询对应账户
     Map<String, Object> accountList = new HashMap<>();
@@ -556,7 +567,7 @@ public class AccountServiceImpl implements AccountService {
       warapper.eq(Account::getTenantId, loginUser.getTenantId());
       warapper.eq(Account::getBizRoleTypeNo, loginUser.getBizRoleTypeNo());
       warapper.eq(Account::getCategory, category.getCode());
-      warapper.eq(Account::getCcy, CcyType.CNY.getCode());
+      warapper.eq(Account::getCcy, ccy);
       Account account = accountMapper.selectOne(warapper);
       accountList.put(category.getCode(), account);
     }

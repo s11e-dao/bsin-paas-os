@@ -61,7 +61,7 @@ public interface AccountService {
   public AccountFreezeJournal getAccountFreezeJournalDetail(Map<String, Object> requestMap);
 
   /**
-   * 查询社区账本
+   * 查询社区账本：基于租户查询
    * 1、社区总收入账户
    * 2、社区已支出账户
    * 3、社区待支出账户
