@@ -15,7 +15,7 @@ interface LindeChartProps {
   width?: number;
 }
 
-const LindeChart: React.FC<LindeChartProps> = ({
+const LindeChartSimple: React.FC<LindeChartProps> = ({
   data,
   height = 400,
   width = 600,
@@ -49,4 +49,4 @@ const LindeChart: React.FC<LindeChartProps> = ({
   return <Line {...config} />;
 };
 
-export default LindeChart; 
+export default LindeChartSimple; 

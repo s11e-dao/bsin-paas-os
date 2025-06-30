@@ -86,7 +86,7 @@ export default ({ refreshTrigger }: SettingBondingCurveProps) => {
         <em className="ant-list-item-action-split"></em>
       </li>
       <li>
-        <Popconfirm
+        {/* <Popconfirm
           title="确定编辑此条记录？"
           okText="是"
           cancelText="否"
@@ -97,7 +97,16 @@ export default ({ refreshTrigger }: SettingBondingCurveProps) => {
           // onCancel={cancel}
         >
           <a>编辑</a>
-        </Popconfirm>
+        </Popconfirm> */}
+        <a
+          onClick={() => {
+            // 调用方法
+            toEditCurve(record);
+          }}
+        >
+          编辑
+        </a>
+        <em className="ant-list-item-action-split"></em>
       </li>
       <li>
         <Popconfirm
@@ -108,7 +117,7 @@ export default ({ refreshTrigger }: SettingBondingCurveProps) => {
             // 调用方法
             toDeleteCurve(record);
           }}
-          // onCancel={cancel}
+        // onCancel={cancel}
         >
           <a>删除</a>
         </Popconfirm>
@@ -142,7 +151,7 @@ export default ({ refreshTrigger }: SettingBondingCurveProps) => {
         console.log(response);
         addCurve(response).then((res) => {
           console.log('add', res);
-          if (res.code === 0 ) {
+          if (res.code === 0) {
             // 重置输入的表单
             FormRef.resetFields();
             // 刷新proTable
@@ -153,7 +162,7 @@ export default ({ refreshTrigger }: SettingBondingCurveProps) => {
           }
         });
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   /**
@@ -176,7 +185,7 @@ export default ({ refreshTrigger }: SettingBondingCurveProps) => {
         actionRef.current?.reload();
         setIsEditCurveModal(false);
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   /**
@@ -205,9 +214,9 @@ export default ({ refreshTrigger }: SettingBondingCurveProps) => {
    */
   const toEditCurve = async (record: any) => {
     let { serialNo } = record;
-    let viewRes = await getCurveDetail({ serialNo });
-    console.log('viewRes', viewRes);
-    setIsViewRecord(viewRes.data);
+    let editRes = await getCurveDetail({ serialNo });
+    console.log('editRes', editRes);
+    setIsViewRecord(editRes.data);
     setIsEditCurveModal(true);
   };
 
@@ -218,7 +227,7 @@ export default ({ refreshTrigger }: SettingBondingCurveProps) => {
     let { serialNo } = record;
     let res = await deleteCurve({ serialNo });
     console.log('res', res);
-    if (res.code === 0 ) {
+    if (res.code === 0) {
       message.success('删除成功');
     } else {
       message.error('删除失败');
@@ -405,6 +414,7 @@ export default ({ refreshTrigger }: SettingBondingCurveProps) => {
             decimals: isViewRecord?.decimals,
             initialPrice: isViewRecord?.initialPrice,
             finalPrice: isViewRecord?.finalPrice,
+            flexible: isViewRecord?.flexible,
             cap: isViewRecord?.cap,
             type: isViewRecord?.type,
             description: isViewRecord?.description,

@@ -80,7 +80,7 @@ export const getBondingCurveTokenJournalPageList = (params) => {
   console.log('params', params);
   return request(waasPath + '/bondingCurveToken/getJournalPageList', {
     serviceName: 'BondingCurveTokenService',
-    methodName: 'getBondingCurveTokenJournalPageList',
+    methodName: 'getJournalPageList',
     version: '1.0',
     bizParams: {
       ...params,
@@ -89,11 +89,23 @@ export const getBondingCurveTokenJournalPageList = (params) => {
 };
 
 // 查询积分曲线点
-export const getBondingCurveTokenJournalList = (params) => {
+export const getBondingCurveTokenTrendList = (params) => {
   console.log('params', params);
   return request(waasPath + '/bondingCurveToken/getTrendList', {
     serviceName: 'BondingCurveTokenService',
     methodName: 'getTrendList',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
+export const getBondingCurveTokenJournalList = (params) => {
+  console.log('params', params);
+  return request(waasPath + '/bondingCurveToken/getJournalList', {
+    serviceName: 'BondingCurveTokenService',
+    methodName: 'getJournalList',
     version: '1.0',
     bizParams: {
       ...params,

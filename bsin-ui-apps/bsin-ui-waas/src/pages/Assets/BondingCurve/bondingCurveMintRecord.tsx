@@ -15,7 +15,7 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons';
 
-import LindeChart from './lindeChart';
+import LindeChart, { DataPoint } from './lindeChart';
 
 import TableTitle from '../../../components/TableTitle';
 import columnsData, { columnsDataType } from './data';
@@ -23,20 +23,12 @@ import columnsData, { columnsDataType } from './data';
 import {
   getBondingCurveTokenJournalPageList,
   getBondingCurveTokenJournalList,
+  getBondingCurveTokenTrendList,
   getTransactionDetail,
   addTransaction,
 } from './service';
+import LindeChartSimple from './lindeChartSimple';
 
-type ExcRateChangeList = {
-  supply: number | string;
-  excRate: number | string;
-};
-
-type AllData = {
-  ccyPair: string;
-  curExcRate: number;
-  excRateChangeList: ExcRateChangeList[];
-};
 
 interface BondingCurveMintRecordProps {
   refreshTrigger?: number;
@@ -46,8 +38,10 @@ export default ({ refreshTrigger }: BondingCurveMintRecordProps) => {
   const { TextArea } = Input;
   const { Option } = Select;
 
-  // 表头数据
-  const [allData, setAllData] = React.useState<AllData>();
+  // 表头数据 
+  const [curveTrendData, setCurveTrendData] = React.useState<DataPoint[]>([]);
+  const [curveJournalData, setCurveJournalData] = React.useState<DataPoint[]>([]);
+  const [allData, setAllData] = React.useState<DataPoint[]>([]);
 
   // Table action 的引用，便于自定义触发
   const actionRef = React.useRef<ActionType>();
@@ -57,6 +51,7 @@ export default ({ refreshTrigger }: BondingCurveMintRecordProps) => {
    */
   React.useEffect(() => {
     getBondingCurveTokenJournal();
+    getBondingCurveTokenTrend();
   }, []);
 
   // 监听refreshTrigger变化，触发数据刷新
@@ -68,22 +63,76 @@ export default ({ refreshTrigger }: BondingCurveMintRecordProps) => {
   }, [refreshTrigger]);
 
   const getBondingCurveTokenJournal = async () => {
-    const reqParams = {
-      merchantNo: '',
-      pageSize: '100',
-      current: '1',
-      limit: '1000',
-    };
-    const res = await getBondingCurveTokenJournalList(reqParams);
-    console.log(res);
-    let excRateChangeList = res.data?.map((item: any) => {
-      return {
-        supply: item.supply,
-        excRate: Number(item.price),
+    try {
+      const reqParams = {
+        merchantNo: '',
+        pageSize: '20',
+        current: '1',
+        limit: '40',
       };
-    });
-    let data = { ...res.data, excRateChangeList: excRateChangeList || [] };
-    setAllData(data);
+      // const res = await getBondingCurveTokenJournalList(reqParams);
+      const res = await getBondingCurveTokenJournalPageList(reqParams);
+      console.log(res);
+      
+      // 确保 res.data 存在且是数组
+      if (res && res.data && Array.isArray(res.data)) {
+        let curveJournalData = res.data.map((item: any) => {
+          return {
+            supply: Number(item.supply) || 0,
+            price: Number(item.price) || 0,
+            series: "curveJournal",
+          };
+        });
+        console.log('curveJournalData', curveJournalData);
+        setCurveJournalData(curveJournalData);
+        // 合并曲线数据
+        setAllData([...curveJournalData, ...(curveTrendData || [])]);
+      } else {
+        console.warn('getBondingCurveTokenJournal: 数据格式不正确', res);
+        setCurveJournalData([]);
+        setAllData([...(curveTrendData || [])]);
+      }
+    } catch (error) {
+      console.error('获取曲线日志数据失败:', error);
+      setCurveJournalData([]);
+      setAllData([...(curveTrendData || [])]);
+    }
+  };
+
+  const getBondingCurveTokenTrend = async () => {
+    try {
+      const reqParams = {
+        merchantNo: '',
+        pageSize: '10',
+        current: '1',
+        limit: '10',
+      };
+      const res = await getBondingCurveTokenTrendList(reqParams);
+      console.log(res);
+      
+      // 确保 res.data 存在且是数组
+      if (res && res.data && Array.isArray(res.data)) {
+        let curveTrendData = res.data.map((item: any) => {
+          return {
+            supply: Number(item.supply) || 0,
+            price: Number(item.price) || 0,
+            series: "curveTrend",
+          };
+        });
+        console.log('curveTrendData', curveTrendData);
+        setCurveTrendData(curveTrendData);
+        // 合并曲线数据
+        setAllData([...curveTrendData, ...(curveJournalData || [])]);
+      } else {
+        console.warn('getBondingCurveTokenTrend: 数据格式不正确', res);
+        setCurveTrendData([]);
+        setAllData([...(curveJournalData || [])]);
+      }
+    } catch (error) {
+      console.error('获取曲线趋势数据失败:', error);
+      setCurveTrendData([]);
+      setAllData([...(curveJournalData || [])]);
+    }
   };
 
   // 控制新增模态框
@@ -142,20 +191,24 @@ export default ({ refreshTrigger }: BondingCurveMintRecordProps) => {
         // 获取表单结果
         let response = FormRef.getFieldsValue();
         console.log(response);
-        addTransaction(response).then((res) => {
+        try {
+          const res = await addTransaction(response);
           console.log('add', res);
-          if (res.code === 0 ) {
+          if (res && res.code === 0) {
             // 重置输入的表单
             FormRef.resetFields();
             // 刷新proTable
             actionRef.current?.reload();
             setIsTransactionModal(false);
           } else {
-            message.error(`失败： ${res?.message}`);
+            message.error(`失败： ${res?.message || '未知错误'}`);
           }
-        });
+        } catch (error) {
+          console.error('添加交易失败:', error);
+          message.error('添加交易失败');
+        }
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   /**
@@ -187,9 +240,50 @@ export default ({ refreshTrigger }: BondingCurveMintRecordProps) => {
     return typeText;
   };
 
+  const sampleData = [
+    // 第一条线：产品A的价格曲线
+    { supply: 0, price: 100, series: '产品A' },
+    { supply: 100, price: 95, series: '产品A' },
+    { supply: 200, price: 90, series: '产品A' },
+    { supply: 300, price: 85, series: '产品A' },
+    { supply: 400, price: 80, series: '产品A' },
+    { supply: 500, price: 75, series: '产品A' },
+
+    // 第二条线：产品B的价格曲线
+    { supply: 0, price: 120, series: '产品B' },
+    { supply: 100, price: 115, series: '产品B' },
+    { supply: 200, price: 110, series: '产品B' },
+    { supply: 300, price: 105, series: '产品B' },
+    { supply: 400, price: 100, series: '产品B' },
+    { supply: 500, price: 95, series: '产品B' },
+
+    // 第三条线：产品C的价格曲线
+    { supply: 0, price: 80, series: '产品C' },
+    { supply: 100, price: 78, series: '产品C' },
+    { supply: 200, price: 76, series: '产品C' },
+    { supply: 300, price: 74, series: '产品C' },
+    { supply: 400, price: 72, series: '产品C' },
+    { supply: 500, price: 70, series: '产品C' },
+  ];
   return (
     <div>
-      <LindeChart data={allData ? allData.excRateChangeList : []} />
+      {/* <LindeChart data={allData ? allData.excRateChangeList : []} /> */}
+
+      <LindeChartSimple
+        // data={sampleData}
+        data={allData}
+        height={500}
+        width={800}
+      />
+      {/* <LindeChart 
+        data={sampleData}
+        height={500}
+        width={800}
+        colors={['#1890ff', '#52c41a', '#faad14']}
+        showLegend={true}
+        showGrid={true}
+        smooth={true}
+      /> */}
       <Button
         style={{ marginTop: '20px' }}
         onClick={() => {
