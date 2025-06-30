@@ -877,7 +877,6 @@ const Independent = ({ customerInfo }) => {
     //TODO: 获取租户对应的appAgent
     getAppAgent(params).then((res) => {
       if (res?.code != 0) {
-        message.error('查询默认copilot失败！！！')
         return
       }
       setDefaultCopilot(res?.data)

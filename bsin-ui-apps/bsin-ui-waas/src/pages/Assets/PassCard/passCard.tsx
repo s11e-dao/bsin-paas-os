@@ -27,7 +27,7 @@ import columnsTransferData, { columnsTransferDataType } from './transferData';
 import columnsItemData, { columnsItemDataType } from './itemData';
 import columnsObtainCodeData, {
   columnsObtainCodeDataType,
-} from '../AssetsList/obtaincodeData';
+} from '../AssetsItem/obtaincodeData';
 
 import {
   addDigitalAssetsItem,
@@ -35,7 +35,7 @@ import {
   getDigitalAssetsItemDetail,
   getDigitalAssetsItemObtainCodePageList,
   getDigitalAssetsItemPageList,
-} from '../AssetsList/service';
+} from '../AssetsItem/service';
 
 import {
   getDigitalAssetsCollectionPageList,

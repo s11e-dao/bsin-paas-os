@@ -29,14 +29,14 @@ import columnsItemData, { columnsItemDataType } from './itemData';
 
 import columnsObtainCodeData, {
   columnsObtainCodeDataType,
-} from '../AssetsList/obtaincodeData';
+} from '../AssetsItem/obtaincodeData';
 
 import {
   deleteDigitalAssetsItem,
   getDigitalAssetsItemDetail,
   getDigitalAssetsItemObtainCodePageList,
   getDigitalAssetsItemPageList,
-} from '../AssetsList/service';
+} from '../AssetsItem/service';
 
 import {
   getDigitalAssetsCollectionPageList,

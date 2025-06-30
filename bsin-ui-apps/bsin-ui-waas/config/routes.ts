@@ -85,8 +85,8 @@ const routes = [
       },
       // 资产列表
       {
-        path: '/assets/assets-list',
-        component: '@/pages/Assets/AssetsList/index',
+        path: '/assets/assets-item',
+        component: '@/pages/Assets/AssetsItem/index',
       },
       // 数字积分
       {

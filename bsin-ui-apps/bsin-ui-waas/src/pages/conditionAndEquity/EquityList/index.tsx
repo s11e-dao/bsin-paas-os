@@ -25,7 +25,7 @@ import {
   getDigitalAssetsItemPageList,
   getDigitalAssetsItemList,
   getBondingCurveTokenList,
-} from '../../Assets/AssetsList/service';
+} from '../../Assets/AssetsItem/service';
 
 import { getGradeList } from '../../Grade/service';
 

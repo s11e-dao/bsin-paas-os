@@ -11,7 +11,7 @@ import {
   Input,
   Select,
 } from 'antd';
-import AssetsList from './assetsList';
+import AssetsList from './assetsItemList';
 import ConfigCondition from '../../conditionAndEquity/ConditionList/configCondition';
 import ConfigEquity from '../../conditionAndEquity/EquityList/configEquity';
 

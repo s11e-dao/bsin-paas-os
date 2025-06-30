@@ -278,10 +278,25 @@ export const request: RequestConfig = {
       const { data } = response;
       console.log(response);
       if (data?.code !== 0) {
+        let errorMessage = data?.message || '请求失败';
+        
+        // 针对特定业务错误码显示友好提示
+        if (data?.code === 500) {
+          errorMessage = '服务端异常，程序员小哥哥正在全力抢修～';
+        }
+        
         notification.error({
-          message: data?.message,
-          description: data?.message,
+          message: '操作失败',
+          description: errorMessage,
         });
+        
+        // 修改响应数据，防止 errorThrower 再次处理导致重复提示
+        response.data = {
+          ...data,
+          success: true, // 标记为成功，避免 errorThrower 抛出错误
+          _errorHandled: true // 添加标记表示已处理错误
+        };
+        
         return response;
       }
       return response;
