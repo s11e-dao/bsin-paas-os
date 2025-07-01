@@ -11,9 +11,11 @@ import {
   Typography,
   message,
   Table,
+  Switch,
+  Tooltip,
 } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { CalculatorOutlined, ReloadOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { CalculatorOutlined, ReloadOutlined, InfoCircleOutlined, BulbOutlined } from '@ant-design/icons';
 import LindeChartSimple, { DataPoint } from './lindeChartSimple';
 import {
   SimulationParams,
@@ -22,6 +24,9 @@ import {
   validateSimulationParams,
   formatNumber,
   calculateTheoreticalTotal,
+  getRecommendedParams,
+  getCompleteRecommendedParams,
+  optimizeSimulationParams,
 } from './simulationUtils';
 
 const { Title, Text, Paragraph } = Typography;
@@ -36,18 +41,21 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
   const [levelData, setLevelData] = useState<LevelData[]>([]);
   const [isCalculating, setIsCalculating] = useState(false);
   const [summary, setSummary] = useState<any>(null);
+  const [calculatedParams, setCalculatedParams] = useState<any>(null);
+  const [autoCalculate, setAutoCalculate] = useState(true);
 
   // 默认参数
   const defaultParams: SimulationParams = {
     totalTarget: 21000000,
     levelWidth: 2100000,
     decayFactor: 0.9975,
+    estimatedLaborValue: 105000000, // 新增：预估劳动价值
   };
 
   // 计算联合曲线仿真
   const calculateSimulation = (params: SimulationParams) => {
     setIsCalculating(true);
-    
+
     try {
       // 验证参数
       const validation = validateSimulationParams(params);
@@ -56,14 +64,15 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
         setIsCalculating(false);
         return;
       }
-      
+
       // 执行仿真计算
       const result = calculateBondingCurveSimulation(params);
-      
+
       setLevelData(result.levels);
       setSimulationData(result.chartData);
       setSummary(result.summary);
-      
+      setCalculatedParams(result.calculatedParams);
+
       message.success('仿真计算完成');
     } catch (error) {
       console.error('仿真计算失败:', error);
@@ -82,6 +91,55 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
   const handleReset = () => {
     form.setFieldsValue(defaultParams);
     calculateSimulation(defaultParams);
+  };
+
+  // 自动计算推荐参数
+  const handleAutoCalculate = () => {
+    const currentValues = form.getFieldsValue();
+
+    // 使用完整的推荐参数计算（包含优化）
+    const recommendations = getCompleteRecommendedParams(currentValues);
+
+    if (Object.keys(recommendations).length > 0) {
+      const newValues = { ...currentValues, ...recommendations };
+      form.setFieldsValue(newValues);
+
+      // 显示推荐值提示
+      const recommendationMessages = [];
+      if (recommendations.levelWidth) {
+        recommendationMessages.push(`推荐档位宽度: ${formatNumber(recommendations.levelWidth)}`);
+      }
+      if (recommendations.totalLevels) {
+        recommendationMessages.push(`推荐档位总数: ${recommendations.totalLevels}`);
+      }
+      if (recommendations.firstLevelReward) {
+        recommendationMessages.push(`推荐首档奖励: ${formatNumber(recommendations.firstLevelReward)}`);
+      }
+      if (recommendations.decayFactor) {
+        recommendationMessages.push(`推荐衰减系数: ${recommendations.decayFactor.toFixed(4)}`);
+      }
+
+      if (recommendationMessages.length > 0) {
+        message.info(`已计算推荐值: ${recommendationMessages.join(', ')}`);
+      }
+
+      // 如果自动计算开关打开，立即执行仿真
+      if (autoCalculate) {
+        setTimeout(() => {
+          calculateSimulation(newValues);
+        }, 100);
+      }
+    }
+  };
+
+  // 处理表单值变化
+  const handleFormValuesChange = (changedValues: any, allValues: any) => {
+    if (autoCalculate) {
+      // 延迟执行，避免频繁计算
+      setTimeout(() => {
+        handleAutoCalculate();
+      }, 500);
+    }
   };
 
   // 组件初始化时计算默认参数
@@ -131,12 +189,20 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
       align: 'right' as const,
       render: (value: number) => formatNumber(value),
     },
+    {
+      title: '累计劳动价值',
+      dataIndex: 'cumulativeLaborValue',
+      key: 'cumulativeLaborValue',
+      width: 150,
+      align: 'right' as const,
+      render: (value: number) => formatNumber(value),
+    },
   ];
 
   return (
     <div style={{ padding: '20px' }}>
       <Title level={2}>联合曲线仿真系统</Title>
-      
+
       <Alert
         message="仿真原理"
         description={
@@ -152,6 +218,7 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
               <li>档期奖励：Rₙ = R₀ × k^(n-1)</li>
               <li>劳动价值：C = δC × n</li>
               <li>理论总积分：ΣR = T / (1 - k)</li>
+              <li>档位宽度：δC = Tv / N (N为档位总数)</li>
             </ul>
           </div>
         }
@@ -168,6 +235,7 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
           layout="vertical"
           onFinish={handleSubmit}
           initialValues={defaultParams}
+          onValuesChange={handleFormValuesChange}
         >
           <Row gutter={16}>
             <Col span={8}>
@@ -185,14 +253,14 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
             </Col>
             <Col span={8}>
               <Form.Item
-                label="档位宽度 (δC)"
-                name="levelWidth"
-                rules={[{ required: true, message: '请输入档位宽度' }]}
+                label="预估劳动价值 (Tv)"
+                name="estimatedLaborValue"
+                rules={[{ required: true, message: '请输入预估劳动价值' }]}
               >
                 <InputNumber
                   style={{ width: '100%' }}
                   min={1}
-                  placeholder="2100000"
+                  placeholder="105000000"
                 />
               </Form.Item>
             </Col>
@@ -216,7 +284,67 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
               </Form.Item>
             </Col>
           </Row>
-          
+
+          <Row gutter={16}>
+            <Col span={8}>
+              <Form.Item
+                label={
+                  <Space>
+                    <span>档位宽度 (δC)</span>
+                    <Tooltip title="留空可自动计算">
+                      <BulbOutlined style={{ color: '#1890ff' }} />
+                    </Tooltip>
+                  </Space>
+                }
+                name="levelWidth"
+              >
+                <InputNumber
+                  style={{ width: '100%' }}
+                  min={1}
+                  placeholder="自动计算"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                label={
+                  <Space>
+                    <span>档位总数 (N)</span>
+                    <Tooltip title="留空可自动计算">
+                      <BulbOutlined style={{ color: '#1890ff' }} />
+                    </Tooltip>
+                  </Space>
+                }
+                name="totalLevels"
+              >
+                <InputNumber
+                  style={{ width: '100%' }}
+                  min={1}
+                  placeholder="自动计算"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                label={
+                  <Space>
+                    <span>首档奖励 (R₀)</span>
+                    <Tooltip title="留空可自动计算">
+                      <BulbOutlined style={{ color: '#1890ff' }} />
+                    </Tooltip>
+                  </Space>
+                }
+                name="firstLevelReward"
+              >
+                <InputNumber
+                  style={{ width: '100%' }}
+                  min={1}
+                  placeholder="自动计算"
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+
           <Row>
             <Col span={24}>
               <Space>
@@ -234,11 +362,64 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
                 >
                   重置参数
                 </Button>
+                <Button
+                  icon={<BulbOutlined />}
+                  onClick={handleAutoCalculate}
+                  disabled={!autoCalculate}
+                >
+                  计算推荐值
+                </Button>
+                <Switch
+                  checked={autoCalculate}
+                  onChange={setAutoCalculate}
+                  checkedChildren="自动计算"
+                  unCheckedChildren="手动计算"
+                />
+                <Text type="secondary">
+                  {autoCalculate ? '参数变化时自动计算推荐值' : '手动点击计算推荐值'}
+                </Text>
               </Space>
             </Col>
           </Row>
         </Form>
       </Card>
+
+      {/* 计算推导的参数展示 */}
+      {calculatedParams && Object.keys(calculatedParams).length > 0 && (
+        <Card title="计算推导的参数" style={{ marginBottom: '20px' }}>
+          <Row gutter={16}>
+            {calculatedParams.calculatedLevelWidth && (
+              <Col span={8}>
+                <Statistic
+                  title="推导档位宽度"
+                  value={calculatedParams.calculatedLevelWidth}
+                  precision={0}
+                  formatter={(value) => formatNumber(Number(value))}
+                />
+              </Col>
+            )}
+            {calculatedParams.calculatedTotalLevels && (
+              <Col span={8}>
+                <Statistic
+                  title="推导档位总数"
+                  value={calculatedParams.calculatedTotalLevels}
+                  suffix="档"
+                />
+              </Col>
+            )}
+            {calculatedParams.calculatedFirstLevelReward && (
+              <Col span={8}>
+                <Statistic
+                  title="推导首档奖励"
+                  value={calculatedParams.calculatedFirstLevelReward}
+                  precision={0}
+                  formatter={(value) => formatNumber(Number(value))}
+                />
+              </Col>
+            )}
+          </Row>
+        </Card>
+      )}
 
       {/* 关键指标展示 */}
       {summary && (
@@ -269,7 +450,7 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
             </Col>
             <Col span={6}>
               <Statistic
-                title="目标达成率"
+                title="积分释放达成率"
                 value={summary.targetAchievement}
                 precision={2}
                 suffix="%"
@@ -277,7 +458,23 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
             </Col>
           </Row>
           <Row gutter={16} style={{ marginTop: '16px' }}>
-            <Col span={12}>
+            <Col span={6}>
+              <Statistic
+                title="累计劳动价值"
+                value={summary.totalLaborValue}
+                precision={0}
+                formatter={(value) => formatNumber(Number(value))}
+              />
+            </Col>
+            <Col span={6}>
+              <Statistic
+                title="劳动价值达成率"
+                value={summary.laborValueAchievement}
+                precision={2}
+                suffix="%"
+              />
+            </Col>
+            <Col span={6}>
               <Statistic
                 title="理论总积分（无限档期）"
                 value={calculateTheoreticalTotal(form.getFieldsValue())}
@@ -285,7 +482,7 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
                 formatter={(value) => formatNumber(Number(value))}
               />
             </Col>
-            <Col span={12}>
+            <Col span={6}>
               <Statistic
                 title="实际/理论比率"
                 value={(summary.totalReward / calculateTheoreticalTotal(form.getFieldsValue())) * 100}
@@ -307,7 +504,7 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
           />
           <div style={{ marginTop: '10px' }}>
             <Text type="secondary">
-              横轴：劳动价值（档位宽度 × 档位序号），纵轴：积分奖励
+              横轴：劳动价值（档位宽度 × 档位序号），纵轴：积分奖励/劳动价值
             </Text>
           </div>
         </Card>
@@ -326,7 +523,7 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
               showQuickJumper: true,
               showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
             }}
-            scroll={{ x: 600 }}
+            scroll={{ x: 800 }}
             size="small"
           />
         </Card>
