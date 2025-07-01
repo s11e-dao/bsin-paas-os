@@ -1,0 +1,1232 @@
+/* 渐变统计卡片样式 */
+.gradient-stat-card .ant-statistic-title {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  margin-bottom: 12px !important;
+}
+
+.gradient-stat-card .ant-statistic-content {
+  color: #fff !important;
+}
+
+/* 卡片阴影动画效果 */
+.custom-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.custom-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 表格样式优化 */
+.custom-table .ant-table-thead > tr > th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #262626;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.custom-table .ant-table-tbody > tr:hover > td {
+  background: #e6f7ff !important;
+}
+
+.custom-table .ant-table-tbody > tr > td {
+  padding: 16px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+/* 进度条样式优化 */
+.custom-progress .ant-progress-bg {
+  border-radius: 6px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-progress .ant-progress-inner {
+  border-radius: 6px !important;
+  background-color: #f5f5f5;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 标签样式优化 */
+.custom-tag {
+  border: none;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 16px;
+}
+
+/* 按钮样式优化 */
+.custom-button {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.custom-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
+}
+
+/* 页面标题样式 */
+.page-header-title {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+/* 图表容器样式 */
+.chart-container {
+  position: relative;
+  padding: 20px;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 12px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* 数据流程图样式 */
+.flow-chart-container {
+  background: linear-gradient(145deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  overflow: hidden !important;
+  position: relative;
+}
+
+/* 禁用流程图交互 */
+.flow-chart-container canvas {
+  pointer-events: none !important;
+  user-select: none !important;
+  touch-action: none !important;
+}
+
+.flow-chart-container svg {
+  pointer-events: none !important;
+  user-select: none !important;
+  touch-action: none !important;
+}
+
+/* 防止图表缩放和拖拽 */
+.flow-chart-container * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+}
+
+/* 固定流程图尺寸 */
+.flow-chart-container .g6-component-canvas {
+  width: 100% !important;
+  height: 520px !important;
+  max-width: 100% !important;
+  max-height: 520px !important;
+}
+
+/* 强制固定流程图 */
+.fixed-flow-graph {
+  width: 800px !important;
+  height: 520px !important;
+  max-width: 800px !important;
+  max-height: 520px !important;
+  min-width: 800px !important;
+  min-height: 520px !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.fixed-flow-graph * {
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
+  zoom: 1 !important;
+}
+
+.fixed-flow-graph canvas,
+.fixed-flow-graph svg {
+  width: 800px !important;
+  height: 520px !important;
+  max-width: 800px !important;
+  max-height: 520px !important;
+  transform: none !important;
+  transform-origin: 0 0 !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  touch-action: none !important;
+}
+
+/* 禁用G6内部的所有变换和缩放 */
+.fixed-flow-graph .g6-graph,
+.fixed-flow-graph .g6-canvas,
+.fixed-flow-graph .g6-component {
+  transform: none !important;
+  transform-origin: 0 0 !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+/* 防止任何鼠标和触摸事件 */
+.fixed-flow-graph {
+  -webkit-user-drag: none !important;
+  -khtml-user-drag: none !important;
+  -moz-user-drag: none !important;
+  -o-user-drag: none !important;
+  user-drag: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  -khtml-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .gradient-stat-card .ant-statistic-title {
+    font-size: 14px !important;
+  }
+  
+  .gradient-stat-card .ant-statistic-content-value {
+    font-size: 24px !important;
+  }
+  
+  .custom-card {
+    margin-bottom: 16px;
+  }
+}
+
+/* Loading状态样式 */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  z-index: 10;
+}
+
+/* 数据质量分数动画 */
+@keyframes scoreAnimation {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.score-animation {
+  animation: scoreAnimation 0.6s ease-out;
+}
+
+/* 渐变文字效果 */
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+}
+
+/* 状态指示器样式 */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-success {
+  background: #f6ffed;
+  color: #52c41a;
+  border: 1px solid #b7eb8f;
+}
+
+.status-processing {
+  background: #e6f7ff;
+  color: #1890ff;
+  border: 1px solid #91d5ff;
+}
+
+.status-warning {
+  background: #fffbe6;
+  color: #faad14;
+  border: 1px solid #ffe58f;
+}
+
+.status-error {
+  background: #fff2f0;
+  color: #f5222d;
+  border: 1px solid #ffccc7;
+}
+
+/* 滚动条美化 */
+.custom-card ::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-card ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.custom-card ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #1890ff, #096dd9);
+  border-radius: 3px;
+}
+
+.custom-card ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #40a9ff, #1890ff);
+}
+
+/* 卡片标题样式增强 */
+.ant-card-head {
+  position: relative;
+  overflow: hidden;
+}
+
+.ant-card-head::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: -1;
+}
+
+/* 文字渐变效果增强 */
+.gradient-text-enhanced {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Modern glass-morphism design styles */
+.gradient-stat-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  position: relative;
+}
+
+.gradient-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.gradient-stat-card:hover::before {
+  opacity: 1;
+}
+
+.gradient-stat-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.modern-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.modern-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.modern-card .ant-card-head {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.modern-card .ant-card-head-title {
+  color: #262626 !important;
+  font-weight: 600 !important;
+}
+
+.modern-table .ant-table {
+  background: transparent !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
+.modern-table .ant-table-thead > tr > th {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%) !important;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.2) !important;
+  color: #262626 !important;
+  font-weight: 600 !important;
+  padding: 16px 24px !important;
+}
+
+.modern-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: 16px 24px !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+.modern-table .ant-table-tbody > tr:hover > td {
+  background: rgba(102, 126, 234, 0.05) !important;
+}
+
+.modern-table .ant-pagination {
+  margin-top: 24px !important;
+}
+
+.modern-table .ant-pagination .ant-pagination-item {
+  border: 1px solid rgba(102, 126, 234, 0.2) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.3s ease !important;
+}
+
+.modern-table .ant-pagination .ant-pagination-item:hover {
+  border-color: #667eea !important;
+  background: rgba(102, 126, 234, 0.1) !important;
+}
+
+.modern-table .ant-pagination .ant-pagination-item-active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border-color: #667eea !important;
+}
+
+.modern-table .ant-pagination .ant-pagination-item-active a {
+  color: #fff !important;
+}
+
+/* Chart container styling */
+.chart-container {
+  position: relative;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+}
+
+/* Tag enhancements */
+.ant-tag {
+  transition: all 0.3s ease !important;
+  border: none !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.ant-tag:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Button enhancements */
+.ant-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.ant-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Progress bar enhancements */
+.ant-progress {
+  backdrop-filter: blur(10px);
+}
+
+.ant-progress-bg {
+  border-radius: 10px !important;
+}
+
+.ant-progress-outer {
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Badge enhancements */
+.ant-badge {
+  transition: all 0.3s ease !important;
+}
+
+.ant-badge:hover {
+  transform: scale(1.05) !important;
+}
+
+/* Statistic card animations */
+.ant-statistic-title {
+  font-weight: 500 !important;
+  opacity: 0.9 !important;
+}
+
+.ant-statistic-content {
+  font-weight: 700 !important;
+}
+
+/* Avatar enhancements */
+.ant-avatar {
+  transition: all 0.3s ease !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.ant-avatar:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 4px 16px rgba(24, 144, 255, 0.4) !important;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+/* Loading and skeleton animations */
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+.loading-shimmer {
+  animation: shimmer 1.2s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 1000px 100%;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .gradient-stat-card {
+    margin-bottom: 16px;
+  }
+  
+  .modern-card {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .gradient-stat-card {
+    height: 120px !important;
+  }
+  
+  .gradient-stat-card .ant-statistic-content-value {
+    font-size: 28px !important;
+  }
+  
+  .modern-card {
+    border-radius: 16px !important;
+  }
+  
+  .modern-table .ant-table-thead > tr > th,
+  .modern-table .ant-table-tbody > tr > td {
+    padding: 12px 16px !important;
+    font-size: 13px !important;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .modern-card {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .modern-table .ant-table-thead > tr > th {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: #fff !important;
+  }
+  
+  .modern-table .ant-table-tbody > tr > td {
+    background: rgba(255, 255, 255, 0.02) !important;
+    color: #fff !important;
+  }
+}
+
+/* 数据生命周期页面样式优化 */
+
+.data-lifecycle-page {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 0 !important;
+}
+
+.data-lifecycle-page .ant-pro-page-container-children-content {
+  margin: 0;
+  padding: 24px;
+}
+
+/* 统计卡片组样式 */
+.statistics-group {
+  margin-bottom: 0;
+}
+
+.statistic-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  position: relative;
+}
+
+.statistic-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.statistic-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(31, 38, 135, 0.5);
+}
+
+.statistic-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #7f8c8d;
+  letter-spacing: 0.5px;
+}
+
+/* 卡片通用样式 */
+.ant-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ant-card:hover {
+  box-shadow: 0 16px 48px rgba(31, 38, 135, 0.5);
+}
+
+.card-title {
+  color: #2c3e50;
+  margin: 0;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 生命周期流程卡片 */
+.lifecycle-flow-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.lifecycle-flow-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #1890ff 0%, #36cfc9 100%);
+}
+
+/* 阶段统计卡片 */
+.stage-stats-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.stage-stats-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #52c41a 0%, #73d13d 100%);
+}
+
+.stage-row {
+  padding: 8px 0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.stage-row:hover {
+  background: rgba(102, 126, 234, 0.05);
+  transform: translateX(4px);
+}
+
+.stage-name {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 13px;
+}
+
+.stage-count {
+  font-size: 16px;
+  color: #667eea;
+}
+
+.stage-progress .ant-progress-bg {
+  border-radius: 6px !important;
+}
+
+/* 图表卡片 */
+.chart-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #722ed1 0%, #eb2f96 100%);
+}
+
+/* 表格样式 */
+.events-table-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #fa8c16 0%, #ffc53d 100%);
+}
+
+.governance-table-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #f5222d 0%, #ff7875 100%);
+}
+
+.lifecycle-events-table .ant-table-thead > tr > th {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 700;
+  color: #495057;
+  font-size: 14px;
+}
+
+.governance-table .ant-table-thead > tr > th {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 700;
+  color: #495057;
+  font-size: 14px;
+}
+
+.table-row-even {
+  background-color: rgba(102, 126, 234, 0.02);
+}
+
+.table-row-odd {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.table-row-even:hover,
+.table-row-odd:hover {
+  background-color: rgba(102, 126, 234, 0.08) !important;
+  transform: scale(1.01);
+  transition: all 0.2s ease;
+}
+
+/* 表格内容样式 */
+.dataset-name {
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.event-type {
+  color: #6c757d;
+  font-size: 13px;
+}
+
+.time-text {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 12px;
+}
+
+.metric-name {
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.action-btn {
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  transform: scale(1.05);
+  color: #667eea !important;
+}
+
+.department-tag {
+  transition: all 0.2s ease;
+}
+
+.department-tag:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* 进度条样式优化 */
+.ant-progress-line {
+  position: relative;
+  overflow: hidden;
+}
+
+.ant-progress-bg {
+  border-radius: 10px !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.ant-progress-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Badge样式优化 */
+.ant-badge-status-dot {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+}
+
+.ant-badge-status-success {
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%) !important;
+}
+
+.ant-badge-status-processing {
+  background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%) !important;
+}
+
+.ant-badge-status-warning {
+  background: linear-gradient(135deg, #faad14 0%, #ffc53d 100%) !important;
+}
+
+.ant-badge-status-error {
+  background: linear-gradient(135deg, #f5222d 0%, #ff7875 100%) !important;
+}
+
+/* 标签样式优化 */
+.ant-tag {
+  transition: all 0.2s ease;
+}
+
+.ant-tag:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .data-lifecycle-page .ant-pro-page-container-children-content {
+    padding: 16px;
+  }
+  
+  .statistic-card {
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .data-lifecycle-page .ant-pro-page-container-children-content {
+    padding: 12px;
+  }
+  
+  .lifecycle-flow-card,
+  .stage-stats-card {
+    height: auto !important;
+    min-height: 300px;
+  }
+  
+  .chart-card {
+    margin-bottom: 16px;
+  }
+  
+  .stage-name {
+    font-size: 12px;
+  }
+  
+  .stage-count {
+    font-size: 14px;
+  }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* 加载动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ant-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.statistic-card:nth-child(1) { animation-delay: 0.1s; }
+.statistic-card:nth-child(2) { animation-delay: 0.2s; }
+.statistic-card:nth-child(3) { animation-delay: 0.3s; }
+.statistic-card:nth-child(4) { animation-delay: 0.4s; }
+.statistic-card:nth-child(5) { animation-delay: 0.5s; }
+
+/* 表格分页样式 */
+.ant-pagination {
+  text-align: center;
+  margin-top: 24px;
+}
+
+.ant-pagination-item {
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  transition: all 0.2s ease;
+}
+
+.ant-pagination-item:hover {
+  border-color: #667eea;
+  transform: scale(1.1);
+}
+
+.ant-pagination-item-active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+}
+
+.ant-pagination-item-active a {
+  color: white;
+}
+
+/* 选择器样式 */
+.ant-select-selector {
+  border-radius: 8px !important;
+  border: 1px solid #d9d9d9 !important;
+  transition: all 0.2s ease !important;
+}
+
+.ant-select-focused .ant-select-selector {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2) !important;
+}
+
+/* 按钮样式优化 */
+.ant-btn {
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.ant-btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+}
+
+.ant-btn-primary:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* 标题样式 */
+.ant-typography h4 {
+  margin-bottom: 0 !important;
+}
+
+/* 卡片头部样式 */
+.ant-card-head {
+  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+}
+
+.ant-card-head-title {
+  padding: 16px 0;
+}
+
+/* ProCard样式覆盖 */
+.ant-pro-card {
+  border-radius: 16px !important;
+}
+
+.ant-pro-card-body {
+  padding: 24px !important;
+}
+
+/* 统计数值样式 */
+.ant-statistic-content {
+  color: #2c3e50 !important;
+}
+
+.ant-statistic-title {
+  margin-bottom: 8px !important;
+}
+
+/* 自定义流程容器样式 */
+.custom-flow-container {
+  padding: 10px 20px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* 生命周期步骤样式 */
+.lifecycle-steps {
+  height: 100%;
+}
+
+.lifecycle-steps .ant-steps-item {
+  padding-bottom: 20px;
+}
+
+.lifecycle-steps .ant-steps-item-icon {
+  width: 40px !important;
+  height: 40px !important;
+  line-height: 38px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: 2px solid #fff !important;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.lifecycle-steps .ant-steps-item-icon .anticon {
+  color: #fff !important;
+  font-size: 16px !important;
+}
+
+.lifecycle-steps .ant-steps-item-tail::after {
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%) !important;
+  width: 3px !important;
+  border-radius: 2px !important;
+}
+
+.lifecycle-steps .ant-steps-item:hover .ant-steps-item-icon {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5) !important;
+}
+
+/* 步骤标题样式 */
+.step-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 步骤内容样式 */
+.step-content {
+  margin-top: 8px;
+  padding-left: 8px;
+}
+
+.step-content .ant-typography {
+  font-size: 13px;
+  color: #6c757d;
+  line-height: 1.5;
+}
+
+/* 步骤标签样式 */
+.step-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.step-tags .ant-tag {
+  margin: 0;
+  border-radius: 12px;
+  font-size: 11px;
+  padding: 2px 8px;
+  line-height: 1.4;
+  font-weight: 500;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+}
+
+.step-tags .ant-tag:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 步骤项悬停效果 */
+.lifecycle-steps .ant-steps-item {
+  padding: 12px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  margin-bottom: 8px;
+}
+
+.lifecycle-steps .ant-steps-item:hover {
+  background: rgba(102, 126, 234, 0.03);
+  transform: translateX(4px);
+}
+
+/* 活动步骤样式 */
+.lifecycle-steps .ant-steps-item-active .ant-steps-item-icon,
+.lifecycle-steps .ant-steps-item-finish .ant-steps-item-icon {
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%) !important;
+}
+
+.lifecycle-steps .ant-steps-item-active .step-title,
+.lifecycle-steps .ant-steps-item-finish .step-title {
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 流程容器滚动条 */
+.custom-flow-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-flow-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.custom-flow-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 3px;
+}
+
+.custom-flow-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+  .custom-flow-container {
+    padding: 5px 10px;
+  }
+  
+  .lifecycle-steps .ant-steps-item-icon {
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 30px !important;
+  }
+  
+  .lifecycle-steps .ant-steps-item-icon .anticon {
+    font-size: 14px !important;
+  }
+  
+  .step-title {
+    font-size: 14px;
+  }
+  
+  .step-content .ant-typography {
+    font-size: 12px;
+  }
+  
+  .step-tags .ant-tag {
+    font-size: 10px;
+    padding: 1px 6px;
+  }
+} 

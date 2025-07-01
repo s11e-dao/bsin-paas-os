@@ -7,7 +7,6 @@ import {
   WarningOutlined, ExclamationCircleOutlined
 } from '@ant-design/icons';
 import { PageContainer, ProCard, StatisticCard } from '@ant-design/pro-components';
-import { FlowGraph } from '@ant-design/graphs';
 import { Gauge, Liquid } from '@antv/g2plot';
 
 const { Title, Text, Paragraph } = Typography;
@@ -35,27 +34,7 @@ const DataLifecyclePage = () => {
     }
   });
 
-  // Flow chart data
-  const [flowChartData, setFlowChartData] = useState({
-    nodes: [
-      { id: 'collection', value: { text: '数据采集', type: 'circle', status: 'active' } },
-      { id: 'processing', value: { text: '数据处理', type: 'rect', status: 'active' } },
-      { id: 'storage', value: { text: '数据存储', type: 'diamond', status: 'active' } },
-      { id: 'analysis', value: { text: '数据分析', type: 'ellipse', status: 'active' } },
-      { id: 'distribution', value: { text: '数据分发', type: 'rect', status: 'active' } },
-      { id: 'archive', value: { text: '数据归档', type: 'capsule', status: 'inactive' } },
-      { id: 'delete', value: { text: '数据销毁', type: 'rect', status: 'warning' } },
-    ],
-    edges: [
-      { source: 'collection', target: 'processing', value: { text: '实时/批量' } },
-      { source: 'processing', target: 'storage', value: { text: '写入' } },
-      { source: 'storage', target: 'analysis', value: { text: '读取' } },
-      { source: 'analysis', target: 'distribution', value: { text: '输出' } },
-      { source: 'distribution', target: 'archive', value: { text: '归档' } },
-      { source: 'archive', target: 'delete', value: { text: '清理' } },
-      { source: 'storage', target: 'archive', value: { text: '长期存储' } },
-    ]
-  });
+
 
   // Table data for lifecycle events
   const lifecycleEventsColumns = [
@@ -425,46 +404,95 @@ const DataLifecyclePage = () => {
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col span={16}>
           <Card title="数据生命周期流程" bordered={false} style={{ height: 300 }}>
-            <FlowGraph
-              data={flowChartData}
-              nodeCfg={{
-                style: (node) => {
-                  const { status } = node.value;
-                  return {
-                    fill: 
-                      status === 'active' ? '#e6f7ff' :
-                      status === 'inactive' ? '#f5f5f5' : 
-                      '#fff7e6',
-                    stroke: 
-                      status === 'active' ? '#1890ff' :
-                      status === 'inactive' ? '#d9d9d9' : 
-                      '#faad14',
-                    radius: 8,
-                  };
-                },
-              }}
-              edgeCfg={{
-                style: (edge) => {
-                  return {
-                    stroke: '#1890ff',
-                    lineWidth: 2,
-                    endArrow: {
-                      fill: '#1890ff',
-                    },
-                  };
-                },
-              }}
-              markerCfg={{
-                position: 'right',
-                show: true,
-              }}
-              autoFit={true}
-              fitCenter={true}
-              height={300}
-              draggable={false}
-              minZoom={1}
-              maxZoom={1}
-            />
+            <div className="custom-flow-container" style={{ height: '100%', padding: '20px 10px' }}>
+              <Steps
+                direction="horizontal"
+                size="small"
+                current={5}
+                className="lifecycle-steps-horizontal"
+                style={{ width: '100%' }}
+                items={[
+                  {
+                    title: <span className="step-title">数据采集</span>,
+                    description: (
+                      <div className="step-content">
+                        <Text type="secondary">从各种数据源收集原始数据</Text>
+                        <div className="step-tags" style={{ marginTop: 4 }}>
+                          <Tag color="blue" size="small">实时采集</Tag>
+                          <Tag color="cyan" size="small">批量导入</Tag>
+                        </div>
+                      </div>
+                    ),
+                    icon: <DatabaseOutlined style={{ color: '#1890ff' }} />,
+                  },
+                  {
+                    title: <span className="step-title">数据处理</span>,
+                    description: (
+                      <div className="step-content">
+                        <Text type="secondary">清洗、转换和标准化数据</Text>
+                        <div className="step-tags" style={{ marginTop: 4 }}>
+                          <Tag color="cyan" size="small">数据清洗</Tag>
+                          <Tag color="blue" size="small">格式转换</Tag>
+                        </div>
+                      </div>
+                    ),
+                    icon: <ToolOutlined style={{ color: '#13c2c2' }} />,
+                  },
+                  {
+                    title: <span className="step-title">数据存储</span>,
+                    description: (
+                      <div className="step-content">
+                        <Text type="secondary">将处理后的数据存储到数据仓库</Text>
+                        <div className="step-tags" style={{ marginTop: 4 }}>
+                          <Tag color="green" size="small">冷热分层</Tag>
+                          <Tag color="lime" size="small">备份保护</Tag>
+                        </div>
+                      </div>
+                    ),
+                    icon: <SafetyCertificateOutlined style={{ color: '#52c41a' }} />,
+                  },
+                  {
+                    title: <span className="step-title">数据分析</span>,
+                    description: (
+                      <div className="step-content">
+                        <Text type="secondary">基于数据进行分析和挖掘</Text>
+                        <div className="step-tags" style={{ marginTop: 4 }}>
+                          <Tag color="purple" size="small">模型训练</Tag>
+                          <Tag color="magenta" size="small">统计分析</Tag>
+                        </div>
+                      </div>
+                    ),
+                    icon: <LineChartOutlined style={{ color: '#722ed1' }} />,
+                  },
+                  {
+                    title: <span className="step-title">数据分发</span>,
+                    description: (
+                      <div className="step-content">
+                        <Text type="secondary">通过API和报表提供数据服务</Text>
+                        <div className="step-tags" style={{ marginTop: 4 }}>
+                          <Tag color="magenta" size="small">API发布</Tag>
+                          <Tag color="red" size="small">报表生成</Tag>
+                        </div>
+                      </div>
+                    ),
+                    icon: <ApartmentOutlined style={{ color: '#eb2f96' }} />,
+                  },
+                  {
+                    title: <span className="step-title">数据归档</span>,
+                    description: (
+                      <div className="step-content">
+                        <Text type="secondary">长期保存历史数据</Text>
+                        <div className="step-tags" style={{ marginTop: 4 }}>
+                          <Tag color="orange" size="small">压缩存储</Tag>
+                          <Tag color="gold" size="small">合规保留</Tag>
+                        </div>
+                      </div>
+                    ),
+                    icon: <HistoryOutlined style={{ color: '#fa8c16' }} />,
+                  },
+                ]}
+              />
+            </div>
           </Card>
         </Col>
         <Col span={8}>
