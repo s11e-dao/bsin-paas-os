@@ -27,6 +27,8 @@ import {
   getRecommendedParams,
   getCompleteRecommendedParams,
   optimizeSimulationParams,
+  recalculateParamsBasedOnChange,
+  validateParamChange,
 } from './simulationUtils';
 
 const { Title, Text, Paragraph } = Typography;
@@ -41,7 +43,12 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
   const [levelData, setLevelData] = useState<LevelData[]>([]);
   const [isCalculating, setIsCalculating] = useState(false);
   const [summary, setSummary] = useState<any>(null);
-  const [calculatedParams, setCalculatedParams] = useState<any>(null);
+  const [calculatedParams, setCalculatedParams] = useState<{
+    calculatedLevelWidth?: number;
+    calculatedTotalLevels?: number;
+    calculatedFirstLevelReward?: number;
+    calculatedDecayFactor?: number;
+  } | null>(null);
   const [autoCalculate, setAutoCalculate] = useState(true);
 
   // 默认参数
@@ -137,9 +144,77 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
     if (autoCalculate) {
       // 延迟执行，避免频繁计算
       setTimeout(() => {
-        handleAutoCalculate();
+        // 找出用户修改的参数
+        const changedParam = Object.keys(changedValues)[0] as keyof SimulationParams;
+        const changedValue = changedValues[changedParam];
+        
+        if (changedParam && changedValue !== undefined && changedValue !== null) {
+          // 验证参数修改的合理性
+          const validation = validateParamChange(changedParam, changedValue, allValues);
+          
+          if (!validation.valid) {
+            message.error(`参数验证失败: ${validation.errors.join(', ')}`);
+            return;
+          }
+          
+          if (validation.warnings.length > 0) {
+            message.warning(`参数警告: ${validation.warnings.join(', ')}`);
+          }
+          
+          // 根据用户修改的参数重新计算其他参数的推荐值
+          const recommendations = recalculateParamsBasedOnChange(changedParam, changedValue, allValues);
+          
+          if (Object.keys(recommendations).length > 0) {
+            // 更新表单值（排除用户刚修改的参数）
+            const newValues = { ...allValues };
+            Object.keys(recommendations).forEach(key => {
+              if (key !== changedParam) {
+                newValues[key] = recommendations[key as keyof SimulationParams];
+              }
+            });
+            
+            form.setFieldsValue(newValues);
+            
+            // 显示推荐值提示
+            const recommendationMessages = [];
+            if (recommendations.levelWidth && recommendations.levelWidth !== allValues.levelWidth) {
+              recommendationMessages.push(`推荐档位宽度: ${formatNumber(recommendations.levelWidth)}`);
+            }
+            if (recommendations.totalLevels && recommendations.totalLevels !== allValues.totalLevels) {
+              recommendationMessages.push(`推荐档位总数: ${recommendations.totalLevels}`);
+            }
+            if (recommendations.firstLevelReward && recommendations.firstLevelReward !== allValues.firstLevelReward) {
+              recommendationMessages.push(`推荐首档奖励: ${formatNumber(recommendations.firstLevelReward)}`);
+            }
+            if (recommendations.decayFactor && recommendations.decayFactor !== allValues.decayFactor) {
+              recommendationMessages.push(`推荐衰减系数: ${recommendations.decayFactor.toFixed(4)}`);
+            }
+            
+            if (recommendationMessages.length > 0) {
+              message.info(`已根据${getParamDisplayName(changedParam)}重新计算: ${recommendationMessages.join(', ')}`);
+            }
+            
+            // 执行仿真计算
+            setTimeout(() => {
+              calculateSimulation(newValues);
+            }, 100);
+          }
+        }
       }, 500);
     }
+  };
+
+  // 获取参数显示名称
+  const getParamDisplayName = (paramName: keyof SimulationParams): string => {
+    const displayNames: Record<keyof SimulationParams, string> = {
+      totalTarget: '总积分目标',
+      estimatedLaborValue: '预估劳动价值',
+      decayFactor: '衰减系数',
+      levelWidth: '档位宽度',
+      totalLevels: '档位总数',
+      firstLevelReward: '首档奖励'
+    };
+    return displayNames[paramName] || paramName;
   };
 
   // 组件初始化时计算默认参数
@@ -266,10 +341,17 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
             </Col>
             <Col span={8}>
               <Form.Item
-                label="衰减系数 (k)"
+                label={
+                  <Space>
+                    <span>衰减系数 (k)</span>
+                    <Tooltip title="留空可自动计算">
+                      <BulbOutlined style={{ color: '#1890ff' }} />
+                    </Tooltip>
+                  </Space>
+                }
                 name="decayFactor"
                 rules={[
-                  { required: true, message: '请输入衰减系数' },
+                  // { required: true, message: '请输入衰减系数' },
                   { type: 'number', min: 0, max: 1, message: '衰减系数应在0-1之间' }
                 ]}
               >
@@ -279,7 +361,7 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
                   max={1}
                   step={0.0001}
                   precision={4}
-                  placeholder="0.9975"
+                  placeholder="自动计算"
                 />
               </Form.Item>
             </Col>
@@ -389,7 +471,7 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
         <Card title="计算推导的参数" style={{ marginBottom: '20px' }}>
           <Row gutter={16}>
             {calculatedParams.calculatedLevelWidth && (
-              <Col span={8}>
+              <Col span={6}>
                 <Statistic
                   title="推导档位宽度"
                   value={calculatedParams.calculatedLevelWidth}
@@ -399,7 +481,7 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
               </Col>
             )}
             {calculatedParams.calculatedTotalLevels && (
-              <Col span={8}>
+              <Col span={6}>
                 <Statistic
                   title="推导档位总数"
                   value={calculatedParams.calculatedTotalLevels}
@@ -408,12 +490,21 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
               </Col>
             )}
             {calculatedParams.calculatedFirstLevelReward && (
-              <Col span={8}>
+              <Col span={6}>
                 <Statistic
                   title="推导首档奖励"
                   value={calculatedParams.calculatedFirstLevelReward}
                   precision={0}
                   formatter={(value) => formatNumber(Number(value))}
+                />
+              </Col>
+            )}
+            {calculatedParams.calculatedDecayFactor && (
+              <Col span={6}>
+                <Statistic
+                  title="推导衰减系数"
+                  value={calculatedParams.calculatedDecayFactor}
+                  precision={4}
                 />
               </Col>
             )}

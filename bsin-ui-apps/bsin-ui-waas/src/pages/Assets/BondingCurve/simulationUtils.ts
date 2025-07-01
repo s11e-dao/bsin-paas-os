@@ -35,6 +35,7 @@ export interface SimulationResult {
         calculatedLevelWidth?: number;
         calculatedTotalLevels?: number;
         calculatedFirstLevelReward?: number;
+        calculatedDecayFactor?: number;
     };
 }
 
@@ -166,6 +167,7 @@ export const calculateBondingCurveSimulation = (params: SimulationParams): Simul
         calculatedLevelWidth: !levelWidth ? actualLevelWidth : undefined,
         calculatedTotalLevels: !userTotalLevels ? actualTotalLevels : undefined,
         calculatedFirstLevelReward: !userFirstLevelReward ? actualFirstLevelReward : undefined,
+        calculatedDecayFactor: undefined, // 衰减系数通常由用户提供，暂不自动计算
     };
 
     return {
@@ -246,7 +248,7 @@ export const calculateTheoreticalTotal = (params: SimulationParams): number => {
 };
 
 /**
- * 获取参数推荐值 - 优化目标达成率和劳动价值达成率
+ * 获取参数推荐值 - 优化积分释放达成率和劳动价值达成率
  * @param params 当前参数
  * @returns 推荐参数
  */
@@ -289,11 +291,18 @@ export const getRecommendedParams = (params: Partial<SimulationParams>): Partial
         recommendations.firstLevelReward = calculateFirstLevelReward(params.totalTarget, recommendedDecayFactor);
     }
 
+    // 如果只缺少衰减系数，根据总积分目标计算推荐值
+    if (!params.decayFactor && params.totalTarget) {
+        // 基于积分释放达成率优化的衰减系数推荐
+        const recommendedDecayFactor = 0.9975; // 默认推荐值
+        recommendations.decayFactor = recommendedDecayFactor;
+    }
+
     return recommendations;
 };
 
 /**
- * 智能优化参数 - 使目标达成率和劳动价值达成率都接近100%
+ * 智能优化参数 - 使积分释放达成率和劳动价值达成率都接近100%
  * @param params 当前参数
  * @returns 优化后的参数
  */
@@ -305,9 +314,10 @@ export const optimizeSimulationParams = (params: SimulationParams): Partial<Simu
     const currentTargetAchievement = currentResult.summary.targetAchievement;
     const currentLaborValueAchievement = currentResult.summary.laborValueAchievement;
 
-    // 优化目标达成率
+    // 优化积分释放达成率
     if (currentTargetAchievement < 99.5) {
-        // 如果目标达成率过低，调整衰减系数
+        // 如果积分释放达成率过低，调整衰减系数
+        // 衰减系数越小，积分释放达成率越高
         const targetDecayFactor = Math.max(0.99, params.decayFactor - 0.001);
         optimizations.decayFactor = targetDecayFactor;
 
@@ -319,7 +329,7 @@ export const optimizeSimulationParams = (params: SimulationParams): Partial<Simu
     if (currentLaborValueAchievement < 99.5) {
         // 如果劳动价值达成率过低，调整档位宽度
         const currentLevelWidth = params.levelWidth || calculateLevelWidth(params.estimatedLaborValue, params.totalLevels || 50);
-        const targetLevelWidth = currentLevelWidth * (currentLaborValueAchievement / 100);
+        const targetLevelWidth = currentLevelWidth * (100 / currentLaborValueAchievement);
         optimizations.levelWidth = targetLevelWidth;
 
         // 重新计算档位总数
@@ -330,7 +340,15 @@ export const optimizeSimulationParams = (params: SimulationParams): Partial<Simu
     if (currentTargetAchievement < 99.5 || currentLaborValueAchievement < 99.5) {
         // 综合优化策略
         const currentLevelWidth = params.levelWidth || calculateLevelWidth(params.estimatedLaborValue, params.totalLevels || 50);
-        const targetDecayFactor = Math.max(0.99, Math.min(0.999, params.decayFactor * (100 / currentTargetAchievement)));
+        
+        // 基于积分释放达成率优化衰减系数
+        let targetDecayFactor = params.decayFactor;
+        if (currentTargetAchievement < 99.5) {
+            // 积分释放达成率过低时，减小衰减系数
+            targetDecayFactor = Math.max(0.99, Math.min(0.999, params.decayFactor * (currentTargetAchievement / 100)));
+        }
+        
+        // 基于劳动价值达成率优化档位宽度
         const targetLevelWidth = currentLevelWidth * (100 / currentLaborValueAchievement);
 
         optimizations.decayFactor = targetDecayFactor;
@@ -364,4 +382,169 @@ export const getCompleteRecommendedParams = (params: Partial<SimulationParams>):
     }
 
     return basicRecommendations;
+};
+
+/**
+ * 根据用户修改的参数重新计算其他参数的推荐值
+ * @param changedParam 用户修改的参数名
+ * @param changedValue 用户修改的参数值
+ * @param currentParams 当前所有参数
+ * @returns 重新计算的推荐参数
+ */
+export const recalculateParamsBasedOnChange = (
+    changedParam: keyof SimulationParams,
+    changedValue: number,
+    currentParams: Partial<SimulationParams>
+): Partial<SimulationParams> => {
+    const recommendations: Partial<SimulationParams> = {};
+    const updatedParams = { ...currentParams, [changedParam]: changedValue };
+
+    // 根据修改的参数类型，重新计算其他参数
+    switch (changedParam) {
+        case 'totalTarget':
+            // 用户修改了总积分目标，重新计算首档奖励和衰减系数
+            if (updatedParams.decayFactor) {
+                recommendations.firstLevelReward = calculateFirstLevelReward(changedValue, updatedParams.decayFactor);
+            } else if (updatedParams.firstLevelReward) {
+                recommendations.decayFactor = 1 - (updatedParams.firstLevelReward / changedValue);
+            } else {
+                // 如果都没有，推荐默认衰减系数
+                const recommendedDecayFactor = 0.9975;
+                recommendations.decayFactor = recommendedDecayFactor;
+                recommendations.firstLevelReward = calculateFirstLevelReward(changedValue, recommendedDecayFactor);
+            }
+            break;
+
+        case 'estimatedLaborValue':
+            // 用户修改了预估劳动价值，重新计算档位宽度和档位总数
+            if (updatedParams.levelWidth) {
+                recommendations.totalLevels = calculateTotalLevels(changedValue, updatedParams.levelWidth);
+            } else if (updatedParams.totalLevels) {
+                recommendations.levelWidth = calculateLevelWidth(changedValue, updatedParams.totalLevels);
+            } else {
+                // 如果都没有，推荐默认档位总数
+                const recommendedTotalLevels = 50;
+                recommendations.totalLevels = recommendedTotalLevels;
+                recommendations.levelWidth = calculateLevelWidth(changedValue, recommendedTotalLevels);
+            }
+            break;
+
+        case 'decayFactor':
+            // 用户修改了衰减系数，重新计算首档奖励
+            if (updatedParams.totalTarget) {
+                recommendations.firstLevelReward = calculateFirstLevelReward(updatedParams.totalTarget, changedValue);
+            }
+            break;
+
+        case 'levelWidth':
+            // 用户修改了档位宽度，重新计算档位总数
+            if (updatedParams.estimatedLaborValue) {
+                recommendations.totalLevels = calculateTotalLevels(updatedParams.estimatedLaborValue, changedValue);
+            }
+            break;
+
+        case 'totalLevels':
+            // 用户修改了档位总数，重新计算档位宽度
+            if (updatedParams.estimatedLaborValue) {
+                recommendations.levelWidth = calculateLevelWidth(updatedParams.estimatedLaborValue, changedValue);
+            }
+            break;
+
+        case 'firstLevelReward':
+            // 用户修改了首档奖励，重新计算衰减系数
+            if (updatedParams.totalTarget) {
+                recommendations.decayFactor = 1 - (changedValue / updatedParams.totalTarget);
+            }
+            break;
+    }
+
+    // 如果所有必要参数都已具备，进行优化计算
+    if (updatedParams.totalTarget && updatedParams.estimatedLaborValue && 
+        updatedParams.decayFactor && updatedParams.levelWidth && 
+        updatedParams.totalLevels && updatedParams.firstLevelReward) {
+        
+        const completeParams = { ...updatedParams, ...recommendations };
+        const optimizations = optimizeSimulationParams(completeParams as SimulationParams);
+        return { ...recommendations, ...optimizations };
+    }
+
+    return recommendations;
+};
+
+/**
+ * 验证参数修改的合理性
+ * @param changedParam 用户修改的参数名
+ * @param changedValue 用户修改的参数值
+ * @param currentParams 当前所有参数
+ * @returns 验证结果
+ */
+export const validateParamChange = (
+    changedParam: keyof SimulationParams,
+    changedValue: number,
+    currentParams: Partial<SimulationParams>
+): { valid: boolean; errors: string[]; warnings: string[] } => {
+    const errors: string[] = [];
+    const warnings: string[] = [];
+
+    // 基础验证
+    if (changedValue <= 0) {
+        errors.push(`${getParamDisplayName(changedParam)}必须大于0`);
+    }
+
+    // 特定参数验证
+    switch (changedParam) {
+        case 'decayFactor':
+            if (changedValue <= 0 || changedValue >= 1) {
+                errors.push('衰减系数必须在0到1之间');
+            }
+            if (changedValue < 0.95) {
+                warnings.push('衰减系数过小可能导致奖励衰减过快');
+            }
+            if (changedValue > 0.999) {
+                warnings.push('衰减系数过大可能导致奖励衰减过慢');
+            }
+            break;
+
+        case 'totalLevels':
+            if (changedValue < 10) {
+                warnings.push('档位总数过少可能影响计算精度');
+            }
+            if (changedValue > 200) {
+                warnings.push('档位总数过多可能影响性能');
+            }
+            break;
+
+        case 'levelWidth':
+            if (currentParams.estimatedLaborValue && currentParams.totalLevels) {
+                const calculatedLaborValue = changedValue * currentParams.totalLevels;
+                const deviation = Math.abs(calculatedLaborValue - currentParams.estimatedLaborValue) / currentParams.estimatedLaborValue;
+                if (deviation > 0.1) {
+                    warnings.push('档位宽度与预估劳动价值可能不匹配');
+                }
+            }
+            break;
+    }
+
+    return {
+        valid: errors.length === 0,
+        errors,
+        warnings
+    };
+};
+
+/**
+ * 获取参数显示名称
+ * @param paramName 参数名
+ * @returns 显示名称
+ */
+const getParamDisplayName = (paramName: keyof SimulationParams): string => {
+    const displayNames: Record<keyof SimulationParams, string> = {
+        totalTarget: '总积分目标',
+        estimatedLaborValue: '预估劳动价值',
+        decayFactor: '衰减系数',
+        levelWidth: '档位宽度',
+        totalLevels: '档位总数',
+        firstLevelReward: '首档奖励'
+    };
+    return displayNames[paramName] || paramName;
 }; 
