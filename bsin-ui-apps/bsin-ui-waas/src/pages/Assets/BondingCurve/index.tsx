@@ -15,6 +15,7 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import SettingBondingCurve from './settingBondingCurve';
 import BondingCurveMintRecord from './bondingCurveMintRecord';
+import BondingCurveSimulate from './bondingCurveSimulate';
 
 import columnsData, { columnsDataType } from './data';
 
@@ -138,6 +139,9 @@ export default () => {
           </Tabs.TabPane>
           <Tabs.TabPane tab="积分铸造曲线" key="2">
             <BondingCurveMintRecord refreshTrigger={activeTab === '2' ? refreshTrigger : 0} />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="曲线仿真" key="3">
+            <BondingCurveSimulate refreshTrigger={activeTab === '3' ? refreshTrigger : 0} />
           </Tabs.TabPane>
         </Tabs>
       </Card>{' '}
