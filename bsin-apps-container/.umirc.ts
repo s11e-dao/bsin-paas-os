@@ -9,8 +9,8 @@ export default {
     'process.env.title': 'Bsin-Paas',
     'process.env.subtitle': 'BsinPaaS一站式开发平台',
     'process.env.paasDescription': 's11e network web3品牌',
-    'process.env.saasTitle': "bigan",
-    'process.env.saasDescrition': "一站式分布式商业生态构建服务网络",
+    'process.env.saasTitle': "bigan", // 一站式分布式商业生态构建服务网络
+    'process.env.saasDescrition': "分布式可信产业生态数据价值网络",
     // 后台访问地址
     'process.env.baseUrl': process.env.BSIN_GATEWAY_BASE_URL || 'http://127.0.0.1:9195',
     'process.env.ipfsApiUrl': 'https://ipfsadmin.s11edao.com/api/v0', // ipfs API
