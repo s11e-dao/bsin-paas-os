@@ -6,6 +6,8 @@ import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.rpc.service.GenericService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -19,6 +21,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class BsinServiceInvoke {
 
+    @Value("${dubbo.registry.address}")
+    private String nacosAddess;
+
+    @Value("${dubbo.registry.username}")
+    private String nacosUsername;
+
+    @Value("${dubbo.registry.password}")
+    private String nacosPassword;
+
     private static ConcurrentHashMap<String, GenericService> concurrentHashMapBolt = new ConcurrentHashMap<>();
 
     public Object genericInvoke(String serviceName, String methodName, String version, Map<String, Object> reqParam) {
@@ -31,9 +42,9 @@ public class BsinServiceInvoke {
 
             //注册中心
             RegistryConfig registry = new RegistryConfig();
-            registry.setAddress("nacos://127.0.0.1:8848");
-            registry.setUsername("nacos");
-            registry.setPassword("nacos");
+            registry.setAddress(nacosAddess);
+            registry.setUsername(nacosUsername);
+            registry.setPassword(nacosPassword);
             application.setRegistry(registry);
 
             // 引用远程服务

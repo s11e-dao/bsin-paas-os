@@ -246,8 +246,8 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
         </div>
         <div className={styles['form-holder']}>
           <div className={styles['form-content']}>
-            <h3>{process.env.saasTitle}</h3>
-            <p>{process.env.saasDescrition}</p>
+            <h3 style={{ marginBottom: '14px' }}>{process.env.saasTitle}</h3>
+            <p style={{ marginBottom: '14px' }}> {process.env.saasDescrition}</p>
             {pagesWitching === 'register' ? (
               <form className={styles['form']} >
                 <Select
