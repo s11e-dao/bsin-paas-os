@@ -1,6 +1,7 @@
 package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -114,7 +115,7 @@ public class EquityServiceImpl implements EquityService {
     Pagination pagination = new Pagination();
     BeanUtil.copyProperties(paginationObj,pagination);
     Page<Equity> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-    LambdaUpdateWrapper<Equity> warapper = new LambdaUpdateWrapper<>();
+    LambdaQueryWrapper<Equity> warapper = new LambdaQueryWrapper<>();
     warapper.orderByDesc(Equity::getCreateTime);
     warapper.eq(Equity::getTenantId, loginUser.getTenantId());
     warapper.eq(Equity::getMerchantNo, loginUser.getMerchantNo());

@@ -91,7 +91,7 @@ public class CustomerServiceImpl implements CustomerService {
   @Autowired private SignUtils signUtils;
   @Autowired private WxPortalController wxPortalController;
   @Autowired
-  private MemberConfigMapper memberConfigMapper;
+  private MerchantConfigMapper merchantConfigMapper;
   @Autowired
   private DisInviteRelationMapper disInviteRelationMapper;
 
@@ -123,11 +123,11 @@ public class CustomerServiceImpl implements CustomerService {
     loginUser.setBizRoleType(BizRoleType.CUSTOMER.getCode());
     loginUser.setBizRoleTypeNo(customerInfo.getCustomerNo());
     // 根据商户号查询会员配置信息表的会员模型
-    LambdaQueryWrapper<MemberConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
-    memberConfigWrapper.eq(MemberConfig::getTenantId, tenantId);
+    LambdaQueryWrapper<MerchantConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
+    memberConfigWrapper.eq(MerchantConfig::getTenantId, tenantId);
     memberConfigWrapper.last("limit 1");
-    MemberConfig memberConfig = memberConfigMapper.selectOne(memberConfigWrapper);
-    loginUser.setMemberModel(memberConfig.getModel());
+    MerchantConfig merchantConfig = merchantConfigMapper.selectOne(memberConfigWrapper);
+    loginUser.setMemberModel(merchantConfig.getMemberModel());
     // 查询租户的默认直属商户号
     Merchant merchant =
         merchantMapper.selectOne(
@@ -135,7 +135,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .eq(Merchant::getTenantId, customerInfo.getTenantId())
                 .eq(Merchant::getType, CustomerType.UNDER_TENANT_MEMBER.getCode()));
     loginUser.setTenantMerchantNo(merchant.getSerialNo());
-    if (TenantMemberModel.UNDER_MERCHANT.getCode().equals(memberConfig.getModel()) || TenantMemberModel.UNDER_STORE.getCode().equals(memberConfig.getModel())) {
+    if (TenantMemberModel.UNDER_MERCHANT.getCode().equals(merchantConfig.getMemberModel()) || TenantMemberModel.UNDER_STORE.getCode().equals(merchantConfig.getMemberModel())) {
       loginUser.setMerchantNo(merchantNo);
     }
 
@@ -262,11 +262,11 @@ public class CustomerServiceImpl implements CustomerService {
     loginOrinUser.setBizRoleType(bizRoleType);
     loginOrinUser.setBizRoleTypeNo(bizRoleTypeNo);
     // 根据商户号查询会员配置信息表的会员模型
-    LambdaQueryWrapper<MemberConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
-    memberConfigWrapper.eq(MemberConfig::getTenantId, tenantId);
+    LambdaQueryWrapper<MerchantConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
+    memberConfigWrapper.eq(MerchantConfig::getTenantId, tenantId);
     memberConfigWrapper.last("limit 1");
-    MemberConfig memberConfig = memberConfigMapper.selectOne(memberConfigWrapper);
-    loginOrinUser.setMemberModel(memberConfig.getModel());
+    MerchantConfig memberConfig = merchantConfigMapper.selectOne(memberConfigWrapper);
+    loginOrinUser.setMemberModel(memberConfig.getMemberModel());
     // 查询租户的默认直属商户号
     Merchant merchant =
         merchantMapper.selectOne(
@@ -275,7 +275,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .eq(Merchant::getType, CustomerType.UNDER_TENANT_MEMBER.getCode()));
     loginOrinUser.setTenantMerchantNo(merchant.getSerialNo());
     loginOrinUser.setTenantMerchantNo(merchant.getSerialNo());
-    if (TenantMemberModel.UNDER_MERCHANT.getCode().equals(memberConfig.getModel()) || TenantMemberModel.UNDER_STORE.getCode().equals(memberConfig.getModel())) {
+    if (TenantMemberModel.UNDER_MERCHANT.getCode().equals(memberConfig.getMemberModel()) || TenantMemberModel.UNDER_STORE.getCode().equals(memberConfig.getMemberModel())) {
       loginOrinUser.setMerchantNo(merchantNo);
     }
     String token = AuthenticationProvider.createToken(loginOrinUser, authSecretKey, authExpiration);
@@ -372,14 +372,14 @@ public class CustomerServiceImpl implements CustomerService {
     loginUser.setBizRoleTypeNo(customerBaseRegister.getCustomerNo());
     // 平台会员模型
     // 根据商户号查询会员配置信息表的会员模型
-    LambdaQueryWrapper<MemberConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
-    memberConfigWrapper.eq(MemberConfig::getTenantId, tenantId);
+    LambdaQueryWrapper<MerchantConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
+    memberConfigWrapper.eq(MerchantConfig::getTenantId, tenantId);
     memberConfigWrapper.last("limit 1");
-    MemberConfig memberConfig = memberConfigMapper.selectOne(memberConfigWrapper);
+    MerchantConfig memberConfig = merchantConfigMapper.selectOne(memberConfigWrapper);
     if (memberConfig == null) {
       throw new BusinessException(ResponseCode.PLATFOEM_MODEL_NOT_EXISTS);
     }
-    loginUser.setMemberModel(memberConfig.getModel());
+    loginUser.setMemberModel(memberConfig.getMemberModel());
     // 查询租户的默认直属商户号
     Merchant merchant =
         merchantMapper.selectOne(
@@ -388,7 +388,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .eq(Merchant::getType, CustomerType.UNDER_TENANT_MEMBER.getCode()));
     loginUser.setTenantMerchantNo(merchant.getSerialNo());
     loginUser.setTenantMerchantNo(merchant.getSerialNo());
-    if (TenantMemberModel.UNDER_MERCHANT.getCode().equals(memberConfig.getModel()) || TenantMemberModel.UNDER_STORE.getCode().equals(memberConfig.getModel())) {
+    if (TenantMemberModel.UNDER_MERCHANT.getCode().equals(memberConfig.getMemberModel()) || TenantMemberModel.UNDER_STORE.getCode().equals(memberConfig.getMemberModel())) {
       loginUser.setMerchantNo(merchantNo);
     }
     if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {

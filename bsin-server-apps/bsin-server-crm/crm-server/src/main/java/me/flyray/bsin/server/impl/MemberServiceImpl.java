@@ -11,16 +11,15 @@ import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MemberService;
 import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
-import me.flyray.bsin.infrastructure.mapper.MemberConfigMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberGradeMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberMapper;
+import me.flyray.bsin.infrastructure.mapper.MerchantConfigMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.security.enums.TenantMemberModel;
 import me.flyray.bsin.server.utils.Pagination;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
@@ -57,7 +56,7 @@ public class MemberServiceImpl implements MemberService {
     private CustomerBaseMapper customerBaseMapper;
 
     @Autowired
-    private MemberConfigMapper memberConfigMapper;
+    private MerchantConfigMapper merchantConfigMapper;
 
     /**
      * 开通会员，创建会员购买订单后调用
@@ -96,14 +95,14 @@ public class MemberServiceImpl implements MemberService {
         }else {
             String storeNo = MapUtils.getString(requestMap, "storeNo");
             // 根据商户号查询会员配置信息表的会员模型
-            LambdaQueryWrapper<MemberConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
-            memberConfigWrapper.eq(MemberConfig::getMerchantId, merchantNo);
-            memberConfigWrapper.eq(MemberConfig::getTenantId, tenantId);
+            LambdaQueryWrapper<MerchantConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
+            memberConfigWrapper.eq(MerchantConfig::getMerchantNo, merchantNo);
+            memberConfigWrapper.eq(MerchantConfig::getTenantId, tenantId);
             memberConfigWrapper.last("limit 1");
-            MemberConfig memberConfig = memberConfigMapper.selectOne(memberConfigWrapper);
-            if (TenantMemberModel.UNDER_MERCHANT.getCode().equals(memberConfig.getModel())) {
+            MerchantConfig memberConfig = merchantConfigMapper.selectOne(memberConfigWrapper);
+            if (TenantMemberModel.UNDER_MERCHANT.getCode().equals(memberConfig.getMemberModel())) {
                 member.setMerchantNo(merchantNo);
-            } else if (TenantMemberModel.UNDER_STORE.getCode().equals(memberConfig.getModel())) {
+            } else if (TenantMemberModel.UNDER_STORE.getCode().equals(memberConfig.getMemberModel())) {
                 member.setStoreNo(storeNo);
             }
         }

@@ -2,25 +2,19 @@ package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
-import me.flyray.bsin.domain.enums.AuthenticationStatus;
 import me.flyray.bsin.domain.enums.CustomerType;
-import me.flyray.bsin.domain.enums.MemberStatus;
-import me.flyray.bsin.domain.enums.MerchantStatus;
-import me.flyray.bsin.domain.request.SysUserDTO;
-import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisTeamRelationService;
 import me.flyray.bsin.facade.service.SysAgentService;
 import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
-import me.flyray.bsin.infrastructure.mapper.MemberConfigMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberMapper;
+import me.flyray.bsin.infrastructure.mapper.MerchantConfigMapper;
 import me.flyray.bsin.infrastructure.mapper.SysAgentMapper;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
@@ -64,7 +58,7 @@ public class SysAgentServiceImpl implements SysAgentService {
   @Autowired private MemberMapper memberMapper;
   @Autowired private CustomerIdentityMapper customerIdentityMapper;
   @Autowired
-  private MemberConfigMapper memberConfigMapper;
+  private MerchantConfigMapper merchantConfigMapper;
 
   @DubboReference(version = "${dubbo.provider.version}")
   private DisTeamRelationService disTeamRelationService;
@@ -129,12 +123,12 @@ public class SysAgentServiceImpl implements SysAgentService {
     if (!ObjectUtils.isEmpty(merchantNo)) {
       String storeNo = MapUtils.getString(requestMap, "storeNo");
       // 根据商户号查询会员配置信息表的会员模型
-      LambdaQueryWrapper<MemberConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
-      memberConfigWrapper.eq(MemberConfig::getMerchantId, merchantNo);
-      memberConfigWrapper.eq(MemberConfig::getTenantId, loginUser.getTenantId());
+      LambdaQueryWrapper<MerchantConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
+      memberConfigWrapper.eq(MerchantConfig::getMerchantNo, merchantNo);
+      memberConfigWrapper.eq(MerchantConfig::getTenantId, loginUser.getTenantId());
       memberConfigWrapper.last("limit 1");
-      MemberConfig memberConfig = memberConfigMapper.selectOne(memberConfigWrapper);
-      if (TenantMemberModel.UNDER_TENANT.getCode().equals(memberConfig.getModel())) {
+      MerchantConfig memberConfig = merchantConfigMapper.selectOne(memberConfigWrapper);
+      if (TenantMemberModel.UNDER_TENANT.getCode().equals(memberConfig.getMemberModel())) {
         merchantNo = LoginInfoContextHelper.getTenantMerchantNo();
       }
     }else {
