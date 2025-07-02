@@ -23,6 +23,7 @@ import {
   getBondingCurveTokenJournalList,
   getTransactionDetail,
 } from './service';
+import SigmoidSimulate from './sigmoidSimulate';
 
 type ExcRateChangeList = {
   supply: number | string;
@@ -142,6 +143,9 @@ export default () => {
           </Tabs.TabPane>
           <Tabs.TabPane tab="曲线仿真" key="3">
             <BondingCurveSimulate refreshTrigger={activeTab === '3' ? refreshTrigger : 0} />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="联合曲线仿真" key="4">
+            <SigmoidSimulate refreshTrigger={activeTab === '4' ? refreshTrigger : 0} />
           </Tabs.TabPane>
         </Tabs>
       </Card>{' '}
