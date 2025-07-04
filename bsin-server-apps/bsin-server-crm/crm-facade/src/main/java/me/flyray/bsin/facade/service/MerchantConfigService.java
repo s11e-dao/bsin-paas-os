@@ -31,7 +31,7 @@ public interface MerchantConfigService {
      * @return 实例对象
      */
     @Validated(AddGroup.class)
-    boolean config(@Valid MerchantConfig bo);
+    MerchantConfig config(@Valid MerchantConfig bo);
 
     /**
      * 修改数据

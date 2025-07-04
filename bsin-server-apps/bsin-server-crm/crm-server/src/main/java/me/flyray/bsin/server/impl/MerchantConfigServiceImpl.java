@@ -59,19 +59,25 @@ public class MerchantConfigServiceImpl implements MerchantConfigService {
     }
 
     /**
-     * 新增数据
-     *
-     * @param bo 实例对象
+     * 商户让利配置和商户会员模型配置
      * @return 实例对象
      */
     @Override
     @ShenyuDubboClient("/config")
-    public boolean config(MerchantConfig bo) {
-        MerchantConfig bean = BeanUtil.toBean(bo, MerchantConfig.class);
-        bean.setCreateTime(new Date());
-        bean.setTenantId(LoginInfoContextHelper.getTenantId());
-        boolean flag = merchantConfigMapper.insert(bean) > 0;
-        return flag;
+    public MerchantConfig config(MerchantConfig merchantConfigRequest) {
+        merchantConfigRequest.setCreateTime(new Date());
+        merchantConfigRequest.setTenantId(LoginInfoContextHelper.getTenantId());
+        merchantConfigRequest.setMerchantNo(LoginInfoContextHelper.getMerchantNo());
+        // 先查询更新
+        LambdaQueryWrapper<MerchantConfig> warapper = new LambdaQueryWrapper<>();
+        MerchantConfig merchantConfig = merchantConfigMapper.selectOne(warapper);
+        if(merchantConfig != null){
+            merchantConfig.setProfitSharingRate(merchantConfigRequest.getProfitSharingRate());
+            merchantConfigMapper.updateById(merchantConfig);
+        }else {
+            merchantConfigMapper.insert(merchantConfigRequest);
+        }
+        return merchantConfigRequest;
     }
 
     /**
