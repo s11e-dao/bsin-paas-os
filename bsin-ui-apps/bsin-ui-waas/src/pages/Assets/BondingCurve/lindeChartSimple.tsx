@@ -6,6 +6,7 @@ export type DataPoint = {
   supply: number;
   price: number;
   series: string;
+  group?: string; // 添加数据组标识
 };
 
 // 组件属性类型
@@ -13,12 +14,16 @@ interface LindeChartProps {
   data: DataPoint[];
   height?: number;
   width?: number;
+  showLegend?: boolean;
+  colors?: string[];
 }
 
 const LindeChartSimple: React.FC<LindeChartProps> = ({
   data,
   height = 400,
   width = 600,
+  showLegend = true,
+  colors,
 }) => {
   const config = {
     data,
@@ -40,13 +45,22 @@ const LindeChartSimple: React.FC<LindeChartProps> = ({
     },
     legend: {
       position: 'top-right' as const,
+      visible: showLegend,
     },
     tooltip: {
       showCrosshairs: true,
+      shared: true,
+    },
+    color: colors,
+    animation: {
+      appear: {
+        animation: 'path-in',
+        duration: 1000,
+      },
     },
   };
 
   return <Line {...config} />;
 };
 
-export default LindeChartSimple; 
+export default LindeChartSimple;

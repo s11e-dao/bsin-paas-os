@@ -32,6 +32,7 @@ import {
   calculateBurnAmount,
   calculateOptimalMintTiming,
   calculatePriceChangeRate,
+  calculateMultiSigmoidSimulation,
 } from './sigmoidUtils';
 
 const { Title, Text, Paragraph } = Typography;
@@ -49,6 +50,8 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
   const [autoCalculate, setAutoCalculate] = useState(true);
   const [testResults, setTestResults] = useState<any>(null);
   const [analysisData, setAnalysisData] = useState<any>(null);
+  const [flexibleList, setFlexibleList] = useState<number[]>([5]);
+  const [multiChartData, setMultiChartData] = useState<DataPoint[]>([]);
 
   // 默认参数
   const defaultParams: SigmoidParams = {
@@ -94,13 +97,41 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
       setIsCalculating(false);
     }
   };
+  const handleMultiSimulate = () => {
+    const baseParams = form.getFieldsValue();
+    const paramArray = flexibleList.map(flex => ({
+      params: { ...baseParams, flexible: flex },
+      name: `flexible=${flex}`,
+    }));
+    const { chartData, summaries, dataPoints } = calculateMultiSigmoidSimulation(paramArray);
+    setMultiChartData(chartData);
+    
+    // 使用第一组数据进行分析
+    if (summaries.length > 0 && dataPoints.length > 0) {
+      const firstGroupParams = paramArray[0].params;
+      const firstGroupSummary = summaries[0].summary;
+      const firstGroupDataPoints = dataPoints[0].data;
+      
+      setSummary(firstGroupSummary);
+      setDataPoints(firstGroupDataPoints);
+      
+      // 计算分析数据
+      calculateAnalysisData(firstGroupParams, {
+        chartData: chartData.filter(d => d.group === paramArray[0].name),
+        summary: firstGroupSummary,
+        dataPoints: firstGroupDataPoints
+      });
+    }
+    
+    message.success('多组flexible仿真完成');
+  };
 
   // 计算分析数据
   const calculateAnalysisData = (params: SigmoidParams, result: SigmoidSimulationResult) => {
     const currentPrice = calculateSigmoidPrice(params, params.currentSupply);
     const midPointPrice = calculateSigmoidPrice(params, params.cap / 2);
     const priceChangeRate = calculatePriceChangeRate(params, params.currentSupply);
-    
+
     // 计算不同供应量下的价格变化
     const supplyPoints = [0, params.cap * 0.25, params.cap * 0.5, params.cap * 0.75, params.cap];
     const pricePoints = supplyPoints.map(supply => ({
@@ -125,13 +156,13 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
 
   // 处理表单提交
   const handleSubmit = (values: SigmoidParams) => {
-    calculateSimulation(values);
+    handleMultiSimulate();
   };
 
   // 重置为默认值
   const handleReset = () => {
     form.setFieldsValue(defaultParams);
-    calculateSimulation(defaultParams);
+    handleMultiSimulate();
   };
 
   // 计算推荐参数
@@ -162,7 +193,7 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
       // 如果自动计算开启，立即执行仿真
       if (autoCalculate) {
         setTimeout(() => {
-          calculateSimulation(newValues);
+          handleMultiSimulate();
         }, 100);
       }
     }
@@ -173,44 +204,47 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
     if (autoCalculate) {
       // 延迟执行，避免频繁计算
       setTimeout(() => {
-        calculateSimulation(allValues);
+        handleMultiSimulate();
       }, 500);
     }
   };
-
+  
   // 交互式测试功能
   const handleInteractiveTest = () => {
-    const values = form.getFieldsValue();
+    // 使用第一组flexible参数进行测试
+    const baseParams = form.getFieldsValue();
+    const firstFlexible = flexibleList[0] || 5;
+    const testParams = { ...baseParams, flexible: firstFlexible };
+    
     const testLaborValues = [100, 500, 1000, 5000, 10000];
     const testBurnAmounts = [1000, 5000, 10000, 50000, 100000];
-    
+
     const mintResults = testLaborValues.map(laborValue => ({
       laborValue,
-      mintAmount: calculateMintAmount(values, values.currentSupply, laborValue),
-      avgPrice: laborValue / calculateMintAmount(values, values.currentSupply, laborValue)
+      mintAmount: calculateMintAmount(testParams, testParams.currentSupply, laborValue),
+      avgPrice: laborValue / calculateMintAmount(testParams, testParams.currentSupply, laborValue)
     }));
 
     const burnResults = testBurnAmounts.map(burnAmount => ({
       burnAmount,
-      burnValue: calculateBurnAmount(values, values.currentSupply, burnAmount),
-      avgPrice: calculateBurnAmount(values, values.currentSupply, burnAmount) / burnAmount
+      burnValue: calculateBurnAmount(testParams, testParams.currentSupply, burnAmount),
+      avgPrice: calculateBurnAmount(testParams, testParams.currentSupply, burnAmount) / burnAmount
     }));
 
     setTestResults({ mintResults, burnResults });
-    message.success('交互式测试完成');
+    message.success(`交互式测试完成 (使用flexible=${firstFlexible})`);
   };
 
   // 组件初始化时计算默认参数
   useEffect(() => {
     form.setFieldsValue(defaultParams);
-    calculateSimulation(defaultParams);
+    handleMultiSimulate();
   }, []);
 
   // 监听refreshTrigger变化
   useEffect(() => {
     if (refreshTrigger && refreshTrigger > 0) {
-      const values = form.getFieldsValue();
-      calculateSimulation(values);
+      handleMultiSimulate();
     }
   }, [refreshTrigger]);
 
@@ -337,7 +371,7 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
 
       {/* 参数输入区域 */}
       <Card title="Sigmoid参数设置" style={{ marginBottom: '20px' }}>
-      <Form
+        <Form
           form={form}
           layout="vertical"
           onFinish={handleSubmit}
@@ -395,6 +429,39 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
               <Form.Item
                 label={
                   <Space>
+                    <span>拉伸变换值组 (flexible)</span>
+                    <Tooltip title="可输入多个flexible值进行对比">
+                      <BulbOutlined style={{ color: '#1890ff' }} />
+                    </Tooltip>
+                  </Space>
+                }
+              >
+                <Space>
+                  {flexibleList.map((f, idx) => (
+                    <InputNumber
+                      key={idx}
+                      min={1}
+                      max={10}
+                      step={0.1}
+                      value={f}
+                      onChange={val => {
+                        const arr = [...flexibleList];
+                        arr[idx] = val || 1;
+                        setFlexibleList(arr);
+                      }}
+                    />
+                  ))}
+                  <Button onClick={() => setFlexibleList([...flexibleList, 5])}>添加</Button>
+                  {flexibleList.length > 1 && (
+                    <Button danger onClick={() => setFlexibleList(flexibleList.slice(0, -1))}>删除</Button>
+                  )}
+                </Space>
+              </Form.Item>
+            </Col>
+            {/* <Col span={8}>
+              <Form.Item
+                label={
+                  <Space>
                     <span>拉伸变换值 (flexible)</span>
                     <Tooltip title="4-6为理想S曲线值，越大曲线越陡峭">
                       <BulbOutlined style={{ color: '#1890ff' }} />
@@ -413,7 +480,7 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
                   placeholder="5.0"
                 />
               </Form.Item>
-            </Col>
+            </Col> */}
             <Col span={8}>
               <Form.Item
                 label="当前供应量 (currentSupply)"
@@ -450,10 +517,10 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
                 <Button
                   type="primary"
                   icon={<CalculatorOutlined />}
-                  onClick={() => form.submit()}
+                  onClick={handleMultiSimulate}
                   loading={isCalculating}
                 >
-                  开始仿真
+                  仿真
                 </Button>
                 <Button
                   icon={<ReloadOutlined />}
@@ -575,9 +642,9 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
               />
             </Col>
           </Row>
-          
+
           <Divider />
-          
+
           <Row gutter={16}>
             <Col span={12}>
               <Title level={5}>价格分布</Title>
@@ -614,7 +681,7 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
       )}
 
       {/* 仿真图表 */}
-      {simulationData.length > 0 && (
+      {/* {simulationData.length > 0 && (
         <Card title="Sigmoid仿真结果图表" style={{ marginBottom: '20px' }}>
           <LindeChartSimple
             data={simulationData}
@@ -627,8 +694,23 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
             </Text>
           </div>
         </Card>
-      )}
+      )} */}
 
+      {/* 多组仿真图表 */}
+      {multiChartData.length > 0 && (
+        <Card title="多组flexible仿真结果对比图表" style={{ marginBottom: '20px' }}>
+          <LindeChartSimple
+            data={multiChartData}
+            height={500}
+            width={800}
+          />
+          <div style={{ marginTop: '10px' }}>
+            <Text type="secondary">
+              横轴：代币供应量，纵轴：价格/收益（多组flexible参数对比）
+            </Text>
+          </div>
+        </Card>
+      )}
       {/* 交互式测试结果 */}
       {testResults && (
         <Card title="交互式测试结果" style={{ marginBottom: '20px' }}>

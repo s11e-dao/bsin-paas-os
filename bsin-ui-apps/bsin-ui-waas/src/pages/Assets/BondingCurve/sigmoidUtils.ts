@@ -435,3 +435,156 @@ export const calculateRiskMetrics = (params: SigmoidParams): {
         riskFactors
     };
 };
+
+/**
+ * 生成多组sigmoid仿真数据
+ * @param paramsArray 多组sigmoid参数
+ * @returns 多组仿真结果
+ */
+export const calculateMultiSigmoidSimulation = (paramsArray: Array<{ params: SigmoidParams; name: string; color?: string }>): {
+    chartData: DataPoint[];
+    summaries: Array<{ name: string; summary: any; color?: string }>;
+    dataPoints: Array<{ name: string; data: any[] }>;
+} => {
+    const chartData: DataPoint[] = [];
+    const summaries: Array<{ name: string; summary: any; color?: string }> = [];
+    const dataPoints: Array<{ name: string; data: any[] }> = [];
+
+    paramsArray.forEach(({ params, name, color }) => {
+        const { cap, initialPrice, finalPrice, flexible } = params;
+        const groupDataPoints: any[] = [];
+        
+        // 生成数据点，从0到cap
+        const stepSize = cap / 100; // 100个数据点
+        
+        for (let i = 0; i <= 100; i++) {
+            const supply = i * stepSize;
+            const price = calculateSigmoidPrice(params, supply);
+            
+            // 计算示例铸造和销毁
+            const exampleMintValue = 1000; // 1000元劳动价值
+            const exampleBurnAmount = 10000; // 10000积分
+            
+            const mintAmount = calculateMintAmount(params, supply, exampleMintValue);
+            const burnAmount = calculateBurnAmount(params, supply, exampleBurnAmount);
+            
+            groupDataPoints.push({
+                supply,
+                price,
+                mintAmount,
+                burnAmount
+            });
+            
+            // 为图表添加数据点，添加组标识
+            chartData.push({
+                supply,
+                price,
+                series: `${name}-价格曲线`,
+                group: name,
+            });
+            
+            chartData.push({
+                supply,
+                price: mintAmount,
+                series: `${name}-铸造收益`,
+                group: name,
+            });
+            
+            chartData.push({
+                supply,
+                price: burnAmount,
+                series: `${name}-销毁收益`,
+                group: name,
+            });
+        }
+        
+        // 计算汇总信息
+        const currentPrice = calculateSigmoidPrice(params, params.currentSupply);
+        const midPointPrice = calculateSigmoidPrice(params, cap / 2);
+        const priceRange = finalPrice - initialPrice;
+        
+        let flexibleEffect = '';
+        if (flexible < 4) {
+            flexibleEffect = '曲线较平缓，接近线性';
+        } else if (flexible >= 4 && flexible <= 6) {
+            flexibleEffect = '理想S曲线，中间加速明显';
+        } else {
+            flexibleEffect = '曲线较陡峭，中间压缩严重';
+        }
+        
+        const summary = {
+            currentPrice,
+            totalSupply: cap,
+            priceRange,
+            flexibleEffect,
+            midPointPrice,
+        };
+        
+        summaries.push({ name, summary, color });
+        dataPoints.push({ name, data: groupDataPoints });
+    });
+    
+    return {
+        chartData,
+        summaries,
+        dataPoints,
+    };
+};
+
+/**
+ * 比较多组sigmoid参数
+ * @param paramsArray 多组sigmoid参数
+ * @returns 比较结果
+ */
+export const compareSigmoidParams = (paramsArray: Array<{ params: SigmoidParams; name: string }>): {
+    priceComparison: Array<{ name: string; currentPrice: number; midPointPrice: number; priceRange: number }>;
+    supplyComparison: Array<{ name: string; currentSupply: number; totalSupply: number; utilization: number }>;
+    flexibleComparison: Array<{ name: string; flexible: number; effect: string }>;
+} => {
+    const priceComparison = paramsArray.map(({ params, name }) => {
+        const currentPrice = calculateSigmoidPrice(params, params.currentSupply);
+        const midPointPrice = calculateSigmoidPrice(params, params.cap / 2);
+        const priceRange = params.finalPrice - params.initialPrice;
+        
+        return {
+            name,
+            currentPrice,
+            midPointPrice,
+            priceRange,
+        };
+    });
+    
+    const supplyComparison = paramsArray.map(({ params, name }) => {
+        const utilization = (params.currentSupply / params.cap) * 100;
+        
+        return {
+            name,
+            currentSupply: params.currentSupply,
+            totalSupply: params.cap,
+            utilization,
+        };
+    });
+    
+    const flexibleComparison = paramsArray.map(({ params, name }) => {
+        let effect = '';
+        if (params.flexible < 4) {
+            effect = '较平缓';
+        } else if (params.flexible >= 4 && params.flexible <= 6) {
+            effect = '理想S曲线';
+        } else {
+            effect = '较陡峭';
+        }
+        
+        return {
+            name,
+            flexible: params.flexible,
+            effect,
+        };
+    });
+    
+    return {
+        priceComparison,
+        supplyComparison,
+        flexibleComparison,
+    };
+};
