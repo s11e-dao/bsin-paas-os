@@ -1,4 +1,4 @@
-import { DataPoint } from './lindeChart';
+import { DataPoint } from './lindeChartSimple';
 
 // Sigmoid联合曲线参数接口
 export interface SigmoidParams {
@@ -48,6 +48,19 @@ export const calculateSigmoidPrice = (params: SigmoidParams, currentSupply: numb
     
     // 计算当前价格
     const currentPrice = initialPrice - (initialPrice - finalPrice) * deno;
+    
+    // // 添加调试信息
+    // console.log('calculateSigmoidPrice debug:', {
+    //     supply,
+    //     cap,
+    //     initialPrice,
+    //     finalPrice,
+    //     flexible,
+    //     midPoint,
+    //     melo,
+    //     deno,
+    //     currentPrice
+    // });
     
     return currentPrice;
 };
@@ -275,17 +288,72 @@ export const getRecommendedSigmoidParams = (partialParams: Partial<SigmoidParams
 };
 
 /**
- * 计算价格变化率
+ * 计算价格变化率 - 基于sigmoid函数的数学特性
  * @param params sigmoid参数
  * @param supply 供应量
  * @returns 价格变化率
  */
 export const calculatePriceChangeRate = (params: SigmoidParams, supply: number): number => {
-    const delta = supply * 0.01; // 1%的变化
-    const price1 = calculateSigmoidPrice(params, supply - delta);
+    const { cap, initialPrice, finalPrice, flexible } = params;
+    
+    // 使用更合适的delta值，确保数值微分的准确性
+    const delta = Math.max(cap * 0.0001, supply * 0.01); // 最小为cap的0.01%，确保有足够的变化
+    
+    const price1 = calculateSigmoidPrice(params, Math.max(0, supply - delta));
     const price2 = calculateSigmoidPrice(params, supply + delta);
     
-    return (price2 - price1) / (2 * delta);
+    const result = (price2 - price1) / (2 * delta);
+    
+    // 添加调试信息
+    console.log('calculatePriceChangeRate debug:', {
+        supply,
+        delta,
+        price1,
+        price2,
+        result,
+        params
+    });
+    
+    return result;
+};
+
+/**
+ * 计算价格变化率 - 使用解析方法（更准确）
+ * @param params sigmoid参数
+ * @param supply 供应量
+ * @returns 价格变化率
+ */
+export const calculatePriceChangeRateAnalytical = (params: SigmoidParams, supply: number): number => {
+    const { cap, initialPrice, finalPrice, flexible } = params;
+    
+    // 确保供应量在有效范围内
+    const s = Math.max(0, Math.min(supply, cap));
+    
+    // 计算中点
+    const midPoint = cap / 2;
+    
+    // 计算sigmoid变换
+    const melo = flexible * (s - midPoint) / midPoint;
+    const expMelo = Math.exp(melo);
+    const deno = 1.0 / (1 + expMelo);
+    
+    // 计算sigmoid函数的导数
+    const sigmoidDerivative = (expMelo * flexible) / (midPoint * Math.pow(1 + expMelo, 2));
+    
+    // 计算价格变化率
+    const priceChangeRate = (finalPrice - initialPrice) * sigmoidDerivative;
+    
+    console.log('calculatePriceChangeRateAnalytical debug:', {
+        supply: s,
+        melo,
+        expMelo,
+        deno,
+        sigmoidDerivative,
+        priceChangeRate,
+        params
+    });
+    
+    return priceChangeRate;
 };
 
 /**
