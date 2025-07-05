@@ -628,11 +628,30 @@ export default ({ refreshTrigger }: SegmentedCurveSimulateProps) => {
               <strong>核心参数：</strong>
             </Paragraph>
             <ul style={{ margin: 0, paddingLeft: '20px' }}>
-              <li><strong>分段类型</strong>：linear（线性）、exponential（指数）、logarithmic（对数）、custom（自定义）</li>
               <li><strong>分段分布</strong>：uniform（均匀）、progressive（渐进）、regressive（回归）、custom（自定义）</li>
               <li><strong>价格函数</strong>：linear（线性）、exponential（指数）、polynomial（多项式）</li>
               <li><strong>波动因子</strong>：控制价格曲线的随机波动程度</li>
               <li><strong>平滑因子</strong>：控制分段间的平滑过渡</li>
+            </ul>
+            <Paragraph style={{ marginTop: '8px', marginBottom: '8px' }}>
+              <strong>核心公式：</strong>
+            </Paragraph>
+            <ul style={{ margin: 0, paddingLeft: '20px' }}>
+              <li><strong>分段点计算</strong>：
+                <ul>
+                  <li>均匀分布：segmentPoint[i] = (totalSupply × i) / segmentCount</li>
+                  <li>渐进分布：segmentPoint[i] = totalSupply × (i / segmentCount)^0.7</li>
+                  <li>回归分布：segmentPoint[i] = totalSupply × (i / segmentCount)^1.3</li>
+                </ul>
+              </li>
+              <li><strong>价格函数</strong>：
+                <ul>
+                  <li>线性函数：price = slope × supply + intercept</li>
+                  <li>指数函数：price = startPrice × exp(growthRate × supply)</li>
+                  <li>多项式函数：price = a × supply² + slope × supply + intercept</li>
+                </ul>
+              </li>
+              <li><strong>波动应用</strong>：finalPrice = calculatedPrice × (1 + volatility)</li>
             </ul>
             <Paragraph style={{ marginTop: '8px', marginBottom: '8px' }}>
               <strong>应用场景：</strong>
@@ -857,7 +876,7 @@ export default ({ refreshTrigger }: SegmentedCurveSimulateProps) => {
               <Col span={6}>
                 <Form.Item
                   label={
-                    <Tooltip title="控制价格曲线的随机波动程度，0为无波动，1为最大波动">
+                    <Tooltip title="波动因子：控制价格曲线的随机波动程度&#10;公式：price = calculatedPrice × (1 + volatility)&#10;范围：0-1，0为无波动，1为最大波动&#10;建议：保守策略0.05-0.1，平衡策略0.1-0.15，激进策略0.15-0.25">
                       <span>波动因子</span>
                     </Tooltip>
                   }
@@ -876,7 +895,7 @@ export default ({ refreshTrigger }: SegmentedCurveSimulateProps) => {
               <Col span={6}>
                 <Form.Item
                   label={
-                    <Tooltip title="控制分段间的平滑过渡程度，0为无平滑，1为完全平滑">
+                    <Tooltip title="平滑因子：控制分段间的平滑过渡程度&#10;作用：减少分段间的价格跳跃&#10;范围：0-1，0为无平滑，1为完全平滑&#10;建议：分段明显0.1-0.3，平滑过渡0.3-0.7，完全平滑0.7-1.0">
                       <span>平滑因子</span>
                     </Tooltip>
                   }

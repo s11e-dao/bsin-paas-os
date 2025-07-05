@@ -15,7 +15,7 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import SettingBondingCurve from './settingBondingCurve';
 import BondingCurveMintRecord from './bondingCurveMintRecord';
-import BondingCurveSimulate from './bondingCurveSimulate';
+import SegmentationAttenuationReleaseSimulate from './segmentationAttenuationReleaseSimulate';
 
 import columnsData, { columnsDataType } from './data';
 
@@ -25,6 +25,7 @@ import {
 } from './service';
 import SigmoidSimulate from './sigmoidSimulate';
 import SegmentedCurveSimulate from './segmentedCurveSimulate';
+import LaborValueReleaseSimulate from './laborValueReleaseSimulate';
 
 type ExcRateChangeList = {
   supply: number | string;
@@ -149,8 +150,11 @@ export default () => {
           <Tabs.TabPane tab="分段联合曲线仿真系统" key="4">
             <SegmentedCurveSimulate refreshTrigger={activeTab === '4' ? refreshTrigger : 0} />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="劳动价值释放曲线仿真" key="5">
-            <BondingCurveSimulate refreshTrigger={activeTab === '5' ? refreshTrigger : 0} />
+          <Tabs.TabPane tab="定档衰减劳动价值释放曲线仿真" key="5">
+            <SegmentationAttenuationReleaseSimulate refreshTrigger={activeTab === '5' ? refreshTrigger : 0} />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="劳动价值释放模型" key="6">
+            <LaborValueReleaseSimulate refreshTrigger={activeTab === '6' ? refreshTrigger : 0} />
           </Tabs.TabPane>
         </Tabs>
       </Card>{' '}
