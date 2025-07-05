@@ -276,24 +276,30 @@ export default ({ refreshTrigger }: BondingCurveMintSimulateProps) => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <Title level={2}>联合曲线仿真系统</Title>
+      <Title level={2}>RWA 联合曲线价值模型</Title>
 
       <Alert
         message="仿真原理"
         description={
           <div>
             <Paragraph style={{ marginBottom: '8px' }}>
-              基于衰减系数的积分发放模型，确保总积分发放数量等于目标值。每个档期的奖励按指数衰减，劳动价值与档位宽度成正比。
+            <li>本模型基于 Token Bonding Curve（联合曲线） 理论，将 RWA 产业中用户的劳动与数据贡献映射为曲线价值 C，按固定档位触发积分 rₙ 发放，并采用可调指数衰减系数确保初期高激励、后期平滑递减，从而实现总发放积分 T = 2.1 × 10^8 的精准控制</li> 
+            <li>基于衰减系数的劳动价值与数据贡献转换：参与者的工作量、数据上链、社区治理等行为，经算法或 Oracles 转换为联合曲线价值:C（单位：贡献分）。</li>
+            <li>价值累计：随着平台运行，所有贡献累计的曲线价值 C 不断增长。</li>
+            <li>保证早期激励最强，后期自然递减,同时，引入生态利润回购与销毁机制，以项目收益为积分价值提供稳定托底，保障通缩与价值可持续增长。</li>
             </Paragraph>
             <Paragraph style={{ marginBottom: '8px' }}>
               <strong>计算公式：</strong>
             </Paragraph>
             <ul style={{ margin: 0, paddingLeft: '20px' }}>
-              <li>首档奖励：R₀ = T × (1 - k)</li>
-              <li>档期奖励：Rₙ = R₀ × k^(n-1)</li>
-              <li>劳动价值：C = δC × n</li>
-              <li>理论总积分：ΣR = T / (1 - k)</li>
-              <li>档位宽度：δC = Tv / N (N为档位总数)</li>
+              <li>预估捕获劳动价值：Tv = 105000000 (法币价值)</li> 
+              <li>总积分发放目标：T = 2.1 × 10^8</li>
+              <li>档位宽度：ΔC = 2.1 × 10^7 = Tv / N </li>
+              <li>档位索引：n = ⌈C/ΔC⌉</li>
+              <li>首档奖励：R₀ = T × (1 - k) = 2.1 × 10^8 × (1 - 0.9975) = 5250000</li>
+              <li>衰减系数：k = 0.9975 （每档递减 0.25% 可调整：激励衰减：平滑指数）</li>
+              <li>当期奖励：rₙ = R₀ × k^(n-1)</li>
+              <li>累计发放：Sₙ = Σᵢ₌₁ⁿ rᵢ = R₀ × (1 - k^n) / (1 - k)</li>
             </ul>
           </div>
         }

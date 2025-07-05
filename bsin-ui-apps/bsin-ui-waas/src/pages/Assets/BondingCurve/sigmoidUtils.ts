@@ -371,6 +371,13 @@ export const calculateOptimalMintTiming = (params: SigmoidParams, targetSupply: 
     const currentPrice = calculateSigmoidPrice(params, params.currentSupply);
     const targetPrice = calculateSigmoidPrice(params, targetSupply);
     const priceIncrease = ((targetPrice - currentPrice) / currentPrice) * 100;
+    console.log('calculateOptimalMintTiming debug:', {
+        currentSupply: params.currentSupply,
+        targetSupply,
+        currentPrice,
+        targetPrice,
+        priceIncrease
+    });
     
     let recommendation = '';
     if (priceIncrease > 10) {

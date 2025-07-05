@@ -24,10 +24,12 @@ import {
   getTransactionDetail,
 } from './service';
 import SigmoidSimulate from './sigmoidSimulate';
+import SegmentedCurveSimulate from './segmentedCurveSimulate';
 
 type ExcRateChangeList = {
   supply: number | string;
   excRate: number | string;
+  price?: number | string;
 };
 
 type AllData = {
@@ -135,17 +137,20 @@ export default () => {
           activeKey={activeTab}
           onChange={handleTabChange}
         >
-          <Tabs.TabPane tab="社区劳动价值捕获曲线" key="1">
+          <Tabs.TabPane tab="商户劳动价值捕获联合曲线" key="1">
             <SettingBondingCurve refreshTrigger={activeTab === '1' ? refreshTrigger : 0} />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="积分铸造曲线" key="2">
+          <Tabs.TabPane tab="商户积分铸造释放曲线" key="2">
             <BondingCurveMintRecord refreshTrigger={activeTab === '2' ? refreshTrigger : 0} />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="曲线仿真" key="3">
-            <BondingCurveSimulate refreshTrigger={activeTab === '3' ? refreshTrigger : 0} />
+          <Tabs.TabPane tab="Sigmoid联合曲线仿真系统" key="3">
+            <SigmoidSimulate refreshTrigger={activeTab === '3' ? refreshTrigger : 0} />
+          </Tabs.TabPane> 
+          <Tabs.TabPane tab="分段联合曲线仿真系统" key="4">
+            <SegmentedCurveSimulate refreshTrigger={activeTab === '4' ? refreshTrigger : 0} />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="联合曲线仿真" key="4">
-            <SigmoidSimulate refreshTrigger={activeTab === '4' ? refreshTrigger : 0} />
+          <Tabs.TabPane tab="劳动价值释放曲线仿真" key="5">
+            <BondingCurveSimulate refreshTrigger={activeTab === '5' ? refreshTrigger : 0} />
           </Tabs.TabPane>
         </Tabs>
       </Card>{' '}

@@ -100,7 +100,6 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
         dataPoints: firstGroupDataPoints
       });
     }
-    
     message.success('多组flexible仿真完成');
   };
 
@@ -119,7 +118,8 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
     }));
 
     // 计算最优铸造时机
-    const optimalTiming = calculateOptimalMintTiming(params, params.cap * 0.5);
+    // const optimalTiming = calculateOptimalMintTiming(params, params.cap * 0.5);
+    const optimalTiming = calculateOptimalMintTiming(params, params.cap);
 
     setAnalysisData({
       currentPrice,
