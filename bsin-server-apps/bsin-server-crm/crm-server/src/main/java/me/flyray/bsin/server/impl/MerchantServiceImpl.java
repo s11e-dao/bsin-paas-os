@@ -177,7 +177,7 @@ public class MerchantServiceImpl implements MerchantService {
 
   /**
    * 付费认证，一年认证一次
-   *
+   * 商户：资料进件，基础信息，营业执照信息，法人信息
    * <p>1、付费
    *
    * <p>2、为商户添加基础的功能（添加应用角色，为角色添加菜单，将角色授权给岗位）

@@ -32,7 +32,7 @@ public class SettlementAccount extends BaseEntity implements Serializable {
     @NotBlank(message = "账户类型不能为空！", groups = AddGroup.class)
     private Integer accountType ;
 
-    /** 银行名称 */
+    /** 银行支行名称 */
     private String bankName ;
 
     /** 银行识别码;（电子账户也会制定相应的识别码） */

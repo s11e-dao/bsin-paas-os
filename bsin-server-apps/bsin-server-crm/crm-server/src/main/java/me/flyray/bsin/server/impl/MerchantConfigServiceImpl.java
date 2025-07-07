@@ -36,8 +36,8 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
-@ApiModule(value = "/crmMemberConfig")
-@ShenyuDubboService(path = "/crmMemberConfig", timeout = 10000)
+@ApiModule(value = "/merchantConfig")
+@ShenyuDubboService(path = "/merchantConfig", timeout = 10000)
 public class MerchantConfigServiceImpl implements MerchantConfigService {
 
     private final MerchantConfigMapper merchantConfigMapper;
