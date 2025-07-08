@@ -54,6 +54,8 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
   const [multiChartData, setMultiChartData] = useState<DataPoint[]>([]);
   const [hiddenSeries, setHiddenSeries] = useState<string[]>([]);
   const [prevFlexibleList, setPrevFlexibleList] = useState<number[]>([5]);
+  const [simulationResults, setSimulationResults] = useState<any>(null);
+  const [slippageAnalysis, setSlippageAnalysis] = useState<any>(null);
 
   // 默认参数
   const defaultParams: SigmoidParams = {
@@ -211,6 +213,129 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
 
     setTestResults({ mintResults, burnResults });
     message.success(`交互式测试完成 (使用flexible=${firstFlexible})`);
+  };
+
+  // DEX滑点分析功能
+  const handleSlippageAnalysis = () => {
+    const baseParams = form.getFieldsValue();
+    const firstFlexible = flexibleList[0] || 5;
+    const testParams = { ...baseParams, flexible: firstFlexible };
+    const currentSupply = form.getFieldValue('currentSupply') || 0;
+    
+    // 测试不同规模的铸造和销毁操作
+    const mintScenarios = [
+      { name: '小额铸造', laborValue: 100, description: '小额铸造，滑点较小' },
+      { name: '中额铸造', laborValue: 1000, description: '中等规模铸造，滑点适中' },
+      { name: '大额铸造', laborValue: 10000, description: '大规模铸造，滑点明显' },
+      { name: '超大额铸造', laborValue: 100000, description: '超大规模铸造，滑点严重' }
+    ];
+
+    const burnScenarios = [
+      { name: '小额销毁', burnAmount: 1000, description: '小额销毁，滑点较小' },
+      { name: '中额销毁', burnAmount: 10000, description: '中等规模销毁，滑点适中' },
+      { name: '大额销毁', burnAmount: 100000, description: '大规模销毁，滑点明显' },
+      { name: '超大额销毁', burnAmount: 1000000, description: '超大规模销毁，滑点严重' }
+    ];
+
+    // 计算铸造滑点
+    const mintSlippageResults = mintScenarios.map(scenario => {
+      const { laborValue } = scenario;
+      
+      // 计算理想价格（无滑点）
+      const idealPrice = calculateSigmoidPrice(testParams, currentSupply);
+      const idealMintAmount = laborValue / idealPrice;
+      
+      // 计算实际价格（有滑点）
+      const actualMintAmount = calculateMintAmount(testParams, currentSupply, laborValue);
+      const actualAvgPrice = laborValue / actualMintAmount;
+      
+      // 计算滑点
+      const slippage = ((actualAvgPrice - idealPrice) / idealPrice) * 100;
+      const priceImpact = ((actualAvgPrice - idealPrice) / idealPrice) * 100;
+      
+      return {
+        ...scenario,
+        laborValue,
+        idealPrice,
+        idealMintAmount,
+        actualAvgPrice,
+        actualMintAmount,
+        slippage,
+        priceImpact,
+        efficiency: (idealMintAmount / actualMintAmount) * 100
+      };
+    });
+
+    // 计算销毁滑点
+    const burnSlippageResults = burnScenarios.map(scenario => {
+      const { burnAmount } = scenario;
+      
+      // 计算理想价格（无滑点）
+      const idealPrice = calculateSigmoidPrice(testParams, currentSupply);
+      const idealBurnValue = burnAmount * idealPrice;
+      
+      // 计算实际价格（有滑点）
+      const actualBurnValue = calculateBurnAmount(testParams, currentSupply, burnAmount);
+      const actualAvgPrice = actualBurnValue / burnAmount;
+      
+      // 计算滑点
+      const slippage = ((idealPrice - actualAvgPrice) / idealPrice) * 100;
+      const priceImpact = ((actualAvgPrice - idealPrice) / idealPrice) * 100;
+      
+      return {
+        ...scenario,
+        burnAmount,
+        idealPrice,
+        idealBurnValue,
+        actualAvgPrice,
+        actualBurnValue,
+        slippage,
+        priceImpact,
+        efficiency: (actualBurnValue / idealBurnValue) * 100
+      };
+    });
+
+    // 计算理论分析
+    const theoreticalAnalysis = {
+      // 流动性分析
+      liquidityAnalysis: {
+        currentLiquidity: currentSupply * calculateSigmoidPrice(testParams, currentSupply),
+        depthAnalysis: `当前流动性深度: ${(currentSupply * calculateSigmoidPrice(testParams, currentSupply)).toFixed(2)}元`,
+        impactThreshold: currentSupply * 0.01, // 1%的供应量变化
+        largeTradeThreshold: currentSupply * 0.05, // 5%的供应量变化
+      },
+      
+      // 滑点理论
+      slippageTheory: {
+        smallTradeSlippage: '< 1%',
+        mediumTradeSlippage: '1-5%',
+        largeTradeSlippage: '5-15%',
+        veryLargeTradeSlippage: '> 15%',
+        explanation: '滑点与交易规模成正比，与流动性深度成反比'
+      },
+      
+      // 价格影响
+      priceImpact: {
+        mintImpact: '铸造增加供应量，导致价格下降',
+        burnImpact: '销毁减少供应量，导致价格上涨',
+        curveEffect: `当前flexible=${firstFlexible}，曲线${firstFlexible < 4 ? '平缓' : firstFlexible > 6 ? '陡峭' : '适中'}`
+      },
+      
+      // 优化建议
+      recommendations: {
+        optimalTradeSize: `建议单次交易不超过当前供应量的${firstFlexible < 4 ? '2%' : firstFlexible > 6 ? '0.5%' : '1%'}`,
+        timingAdvice: '在价格变化率较低时进行大额交易',
+        strategyAdvice: '分批交易可以减少滑点影响'
+      }
+    };
+
+    setSlippageAnalysis({
+      mintSlippageResults,
+      burnSlippageResults,
+      theoreticalAnalysis
+    });
+    
+    message.success('DEX滑点分析完成');
   };
 
   // 组件初始化时计算默认参数
@@ -583,6 +708,14 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
                     交互式测试
                   </Button>
                 </Tooltip>
+                <Tooltip title="执行DEX滑点分析，展示不同规模交易的价格影响和滑点情况">
+                  <Button
+                    icon={<LineChartOutlined />}
+                    onClick={handleSlippageAnalysis}
+                  >
+                    滑点分析
+                  </Button>
+                </Tooltip>
               </Space>
             </Col>
           </Row>
@@ -644,6 +777,202 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
               />
             </Col>
           </Row>
+        </Card>
+      )}
+
+      {/* 模拟铸造Card */}
+      {summary && (
+        <Card title="模拟铸造与销毁" style={{ marginBottom: '20px' }}>
+          <Row gutter={16}>
+            <Col span={8}>
+              <Form.Item
+                label={
+                  <Tooltip title="当前代币的供应量，用于计算当前价格和铸造/销毁后的新价格">
+                    <span>当前供应量</span>
+                  </Tooltip>
+                }
+              >
+                <InputNumber
+                  style={{ width: '100%' }}
+                  min={0}
+                  value={form.getFieldValue('currentSupply') || 0}
+                  disabled
+                  addonAfter="积分"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                label={
+                  <Tooltip title="投入的劳动价值金额，用于计算铸造获得的积分数量">
+                    <span>铸造劳动价值</span>
+                  </Tooltip>
+                }
+              >
+                <InputNumber
+                  style={{ width: '100%' }}
+                  min={0}
+                  step={100}
+                  placeholder="1000"
+                  addonAfter="元"
+                  onChange={(value) => {
+                    if (value && value > 0) {
+                      const currentParams = form.getFieldsValue();
+                      const firstFlexible = flexibleList[0] || 5;
+                      const testParams = { ...currentParams, flexible: firstFlexible };
+                      const currentSupply = form.getFieldValue('currentSupply') || 0;
+                      const mintAmount = calculateMintAmount(testParams, currentSupply, value);
+                      setSimulationResults({
+                        ...simulationResults,
+                        laborValue: value,
+                        mintAmount: mintAmount,
+                        avgMintPrice: value / mintAmount
+                      });
+                    }
+                  }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                label={
+                  <Tooltip title="要销毁的积分数量，用于计算销毁后获得的法币金额">
+                    <span>销毁积分数量</span>
+                  </Tooltip>
+                }
+              >
+                <InputNumber
+                  style={{ width: '100%' }}
+                  min={0}
+                  step={1000}
+                  placeholder="10000"
+                  addonAfter="积分"
+                  onChange={(value) => {
+                    if (value && value > 0) {
+                      const currentParams = form.getFieldsValue();
+                      const firstFlexible = flexibleList[0] || 5;
+                      const testParams = { ...currentParams, flexible: firstFlexible };
+                      const currentSupply = form.getFieldValue('currentSupply') || 0;
+                      const burnValue = calculateBurnAmount(testParams, currentSupply, value);
+                      setSimulationResults({
+                        ...simulationResults,
+                        burnAmount: value,
+                        burnValue: burnValue,
+                        avgBurnPrice: burnValue / value
+                      });
+                    }
+                  }}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          {/* 计算结果展示 */}
+          {simulationResults && (simulationResults.laborValue || simulationResults.burnAmount) && (
+            <Row gutter={16} style={{ marginTop: '16px' }}>
+              <Col span={12}>
+                {simulationResults.laborValue && (
+                  <Card size="small" title="铸造计算结果" style={{ marginBottom: '10px' }}>
+                    <Row gutter={8}>
+                      <Col span={12}>
+                        <Tooltip title="投入的劳动价值金额">
+                          <Statistic
+                            title="投入金额"
+                            value={simulationResults.laborValue}
+                            precision={2}
+                            suffix="元"
+                          />
+                        </Tooltip>
+                      </Col>
+                      <Col span={12}>
+                        <Tooltip title="基于当前价格计算获得的积分数量：mintAmount = laborValue / currentPrice">
+                          <Statistic
+                            title="获得积分"
+                            value={simulationResults.mintAmount}
+                            precision={0}
+                            formatter={(value) => formatNumber(Number(value))}
+                          />
+                        </Tooltip>
+                      </Col>
+                    </Row>
+                    <Row gutter={8} style={{ marginTop: '8px' }}>
+                      <Col span={24}>
+                        <Tooltip title="劳动价值与获得积分的比值，即平均价格">
+                          <Statistic
+                            title="平均价格"
+                            value={simulationResults.avgMintPrice}
+                            precision={4}
+                            suffix="元/积分"
+                          />
+                        </Tooltip>
+                      </Col>
+                    </Row>
+                  </Card>
+                )}
+              </Col>
+              <Col span={12}>
+                {simulationResults.burnAmount && (
+                  <Card size="small" title="销毁计算结果" style={{ marginBottom: '10px' }}>
+                    <Row gutter={8}>
+                      <Col span={12}>
+                        <Tooltip title="要销毁的积分数量">
+                          <Statistic
+                            title="销毁积分"
+                            value={simulationResults.burnAmount}
+                            precision={0}
+                            formatter={(value) => formatNumber(Number(value))}
+                          />
+                        </Tooltip>
+                      </Col>
+                      <Col span={12}>
+                        <Tooltip title="销毁积分后获得的法币金额，基于销毁后的新价格计算">
+                          <Statistic
+                            title="获得法币"
+                            value={simulationResults.burnValue}
+                            precision={2}
+                            suffix="元"
+                          />
+                        </Tooltip>
+                      </Col>
+                    </Row>
+                    <Row gutter={8} style={{ marginTop: '8px' }}>
+                      <Col span={24}>
+                        <Tooltip title="获得法币与销毁积分的比值，即平均价格">
+                          <Statistic
+                            title="平均价格"
+                            value={simulationResults.avgBurnPrice}
+                            precision={4}
+                            suffix="元/积分"
+                          />
+                        </Tooltip>
+                      </Col>
+                    </Row>
+                  </Card>
+                )}
+              </Col>
+            </Row>
+          )}
+
+          {/* 操作提示 */}
+          <Alert
+            message="操作说明"
+            description={
+              <div>
+                <Paragraph style={{ marginBottom: '8px' }}>
+                  <strong>铸造操作：</strong>输入劳动价值金额，系统将基于当前价格计算获得的积分数量。
+                </Paragraph>
+                <Paragraph style={{ marginBottom: '8px' }}>
+                  <strong>销毁操作：</strong>输入要销毁的积分数量，系统将基于销毁后的新价格计算获得的法币金额。
+                </Paragraph>
+                <Paragraph style={{ marginBottom: '0px' }}>
+                  <strong>价格计算：</strong>使用第一组flexible参数进行价格计算，确保结果的一致性。
+                </Paragraph>
+              </div>
+            }
+            type="info"
+            showIcon
+            style={{ marginTop: '16px' }}
+          />
         </Card>
       )}
 
@@ -830,6 +1159,284 @@ export default ({ refreshTrigger }: SigmoidSimulateProps) => {
                 dataSource={testResults.burnResults}
                 pagination={false}
                 size="small"
+              />
+            </Col>
+          </Row>
+        </Card>
+      )}
+
+      {/* DEX滑点分析结果 */}
+      {slippageAnalysis && (
+        <Card title="DEX滑点分析结果" style={{ marginBottom: '20px' }}>
+          {/* 理论分析 */}
+          <Alert
+            message="DEX滑点理论分析"
+            description={
+              <div>
+                <Row gutter={16}>
+                  <Col span={8}>
+                    <Tooltip title="当前流动性深度，影响大额交易的价格影响">
+                      <Statistic
+                        title="流动性深度"
+                        value={slippageAnalysis.theoreticalAnalysis.liquidityAnalysis.currentLiquidity}
+                        precision={2}
+                        suffix="元"
+                      />
+                    </Tooltip>
+                  </Col>
+                  <Col span={8}>
+                    <Tooltip title="建议的单次交易规模上限">
+                      <Statistic
+                        title="建议交易规模"
+                        value={slippageAnalysis.theoreticalAnalysis.recommendations.optimalTradeSize}
+                      />
+                    </Tooltip>
+                  </Col>
+                  <Col span={8}>
+                    <Tooltip title="当前曲线特性对滑点的影响">
+                      <Statistic
+                        title="曲线特性"
+                        value={slippageAnalysis.theoreticalAnalysis.priceImpact.curveEffect}
+                      />
+                    </Tooltip>
+                  </Col>
+                </Row>
+                <Divider />
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Tooltip title="不同规模交易的滑点等级分类，帮助用户理解交易规模对价格影响的程度">
+                      <Title level={5}>滑点理论</Title>
+                    </Tooltip>
+                    <ul>
+                      <li>
+                        <Tooltip title="小额交易通常滑点较小，适合日常交易，对价格影响微乎其微">
+                          <span>小额交易滑点: {slippageAnalysis.theoreticalAnalysis.slippageTheory.smallTradeSlippage}</span>
+                        </Tooltip>
+                      </li>
+                      <li>
+                        <Tooltip title="中额交易滑点适中，需要谨慎考虑，可能对价格产生一定影响">
+                          <span>中额交易滑点: {slippageAnalysis.theoreticalAnalysis.slippageTheory.mediumTradeSlippage}</span>
+                        </Tooltip>
+                      </li>
+                      <li>
+                        <Tooltip title="大额交易滑点明显，建议分批执行，避免对市场造成冲击">
+                          <span>大额交易滑点: {slippageAnalysis.theoreticalAnalysis.slippageTheory.largeTradeSlippage}</span>
+                        </Tooltip>
+                      </li>
+                      <li>
+                        <Tooltip title="超大额交易滑点严重，风险较高，需要特别谨慎处理">
+                          <span>超大额交易滑点: {slippageAnalysis.theoreticalAnalysis.slippageTheory.veryLargeTradeSlippage}</span>
+                        </Tooltip>
+                      </li>
+                    </ul>
+                  </Col>
+                  <Col span={12}>
+                    <Tooltip title="基于当前参数和滑点分析结果提供的交易策略建议">
+                      <Title level={5}>优化建议</Title>
+                    </Tooltip>
+                    <ul>
+                      <li>
+                        <Tooltip title="选择合适的时间进行大额交易，减少滑点影响">
+                          <span>{slippageAnalysis.theoreticalAnalysis.recommendations.timingAdvice}</span>
+                        </Tooltip>
+                      </li>
+                      <li>
+                        <Tooltip title="采用分批交易策略，分散风险，提高交易效率">
+                          <span>{slippageAnalysis.theoreticalAnalysis.recommendations.strategyAdvice}</span>
+                        </Tooltip>
+                      </li>
+                      <li>
+                        <Tooltip title="铸造操作会增加供应量，导致价格下降，影响后续交易">
+                          <span>价格影响: {slippageAnalysis.theoreticalAnalysis.priceImpact.mintImpact}</span>
+                        </Tooltip>
+                      </li>
+                      <li>
+                        <Tooltip title="销毁操作会减少供应量，导致价格上涨，影响后续交易">
+                          <span>销毁影响: {slippageAnalysis.theoreticalAnalysis.priceImpact.burnImpact}</span>
+                        </Tooltip>
+                      </li>
+                    </ul>
+                  </Col>
+                </Row>
+              </div>
+            }
+            type="info"
+            showIcon
+            style={{ marginBottom: '16px' }}
+          />
+
+          {/* 铸造滑点分析 */}
+          <Row gutter={16}>
+            <Col span={12}>
+              <Tooltip title="不同规模铸造操作的滑点分析，展示价格影响和效率损失">
+                <Title level={5}>铸造滑点分析</Title>
+              </Tooltip>
+              <Table
+                columns={[
+                  { 
+                    title: (
+                      <Tooltip title="不同规模的铸造交易类型，从小额到超大额">
+                        <span>交易类型</span>
+                      </Tooltip>
+                    ), 
+                    dataIndex: 'name', 
+                    key: 'name',
+                    width: 100
+                  },
+                  { 
+                    title: (
+                      <Tooltip title="投入的劳动价值金额，用于计算铸造获得的积分数量">
+                        <span>投入金额</span>
+                      </Tooltip>
+                    ), 
+                    dataIndex: 'laborValue', 
+                    key: 'laborValue',
+                    render: (v) => `${v}元`,
+                    width: 100
+                  },
+                  { 
+                    title: (
+                      <Tooltip title="基于当前供应量计算的理想价格，无滑点影响的理论价格">
+                        <span>理想价格</span>
+                      </Tooltip>
+                    ), 
+                    dataIndex: 'idealPrice', 
+                    key: 'idealPrice',
+                    render: (v) => v.toFixed(4),
+                    width: 100
+                  },
+                  { 
+                    title: (
+                      <Tooltip title="考虑滑点影响后的实际平均价格，反映真实交易成本">
+                        <span>实际价格</span>
+                      </Tooltip>
+                    ), 
+                    dataIndex: 'actualAvgPrice', 
+                    key: 'actualAvgPrice',
+                    render: (v) => v.toFixed(4),
+                    width: 100
+                  },
+                  { 
+                    title: (
+                      <Tooltip title="实际平均价格与理想价格的差异百分比：slippage = (actualPrice - idealPrice) / idealPrice × 100%。正值表示价格上升，负值表示价格下降">
+                        <span>滑点(%)</span>
+                      </Tooltip>
+                    ), 
+                    dataIndex: 'slippage', 
+                    key: 'slippage',
+                    render: (v) => (
+                      <Tag color={Math.abs(v) < 1 ? 'green' : Math.abs(v) < 5 ? 'orange' : 'red'}>
+                        {v.toFixed(2)}%
+                      </Tag>
+                    ),
+                    width: 80
+                  },
+                  { 
+                    title: (
+                      <Tooltip title="理想获得积分与实际获得积分的比值：efficiency = (idealMintAmount / actualMintAmount) × 100%。反映铸造效率损失，越高越好">
+                        <span>效率(%)</span>
+                      </Tooltip>
+                    ), 
+                    dataIndex: 'efficiency', 
+                    key: 'efficiency',
+                    render: (v) => (
+                      <Tag color={v > 95 ? 'green' : v > 90 ? 'orange' : 'red'}>
+                        {v.toFixed(1)}%
+                      </Tag>
+                    ),
+                    width: 80
+                  }
+                ]}
+                dataSource={slippageAnalysis.mintSlippageResults}
+                pagination={false}
+                size="small"
+                scroll={{ x: 600 }}
+              />
+            </Col>
+            <Col span={12}>
+              <Tooltip title="不同规模销毁操作的滑点分析，展示价格影响和效率损失">
+                <Title level={5}>销毁滑点分析</Title>
+              </Tooltip>
+              <Table
+                columns={[
+                  { 
+                    title: (
+                      <Tooltip title="不同规模的销毁交易类型，从小额到超大额">
+                        <span>交易类型</span>
+                      </Tooltip>
+                    ), 
+                    dataIndex: 'name', 
+                    key: 'name',
+                    width: 100
+                  },
+                  { 
+                    title: (
+                      <Tooltip title="要销毁的积分数量，销毁后供应量会减少，影响价格计算">
+                        <span>销毁积分</span>
+                      </Tooltip>
+                    ), 
+                    dataIndex: 'burnAmount', 
+                    key: 'burnAmount',
+                    render: (v) => formatNumber(v),
+                    width: 100
+                  },
+                  { 
+                    title: (
+                      <Tooltip title="基于当前供应量计算的理想价格，无滑点影响的理论价格">
+                        <span>理想价格</span>
+                      </Tooltip>
+                    ), 
+                    dataIndex: 'idealPrice', 
+                    key: 'idealPrice',
+                    render: (v) => v.toFixed(4),
+                    width: 100
+                  },
+                  { 
+                    title: (
+                      <Tooltip title="考虑滑点影响后的实际平均价格，反映真实交易收益">
+                        <span>实际价格</span>
+                      </Tooltip>
+                    ), 
+                    dataIndex: 'actualAvgPrice', 
+                    key: 'actualAvgPrice',
+                    render: (v) => v.toFixed(4),
+                    width: 100
+                  },
+                  { 
+                    title: (
+                      <Tooltip title="理想价格与实际平均价格的差异百分比：slippage = (idealPrice - actualPrice) / idealPrice × 100%。正值表示价格下降，负值表示价格上升">
+                        <span>滑点(%)</span>
+                      </Tooltip>
+                    ), 
+                    dataIndex: 'slippage', 
+                    key: 'slippage',
+                    render: (v) => (
+                      <Tag color={Math.abs(v) < 1 ? 'green' : Math.abs(v) < 5 ? 'orange' : 'red'}>
+                        {v.toFixed(2)}%
+                      </Tag>
+                    ),
+                    width: 80
+                  },
+                  { 
+                    title: (
+                      <Tooltip title="实际获得法币与理想获得法币的比值：efficiency = (actualBurnValue / idealBurnValue) × 100%。反映销毁效率损失，越高越好">
+                        <span>效率(%)</span>
+                      </Tooltip>
+                    ), 
+                    dataIndex: 'efficiency', 
+                    key: 'efficiency',
+                    render: (v) => (
+                      <Tag color={v > 95 ? 'green' : v > 90 ? 'orange' : 'red'}>
+                        {v.toFixed(1)}%
+                      </Tag>
+                    ),
+                    width: 80
+                  }
+                ]}
+                dataSource={slippageAnalysis.burnSlippageResults}
+                pagination={false}
+                size="small"
+                scroll={{ x: 600 }}
               />
             </Col>
           </Row>
