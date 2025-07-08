@@ -13,7 +13,7 @@ import {
 
 const TestSimulation: React.FC = () => {
     const testParams: SimulationParams = {
-        totalTarget: 21000000,
+        totalTargetToken: 21000000,
         levelWidth: 2100000,
         decayFactor: 0.9975,
         estimatedLaborValue: 105000000,
@@ -27,7 +27,7 @@ const TestSimulation: React.FC = () => {
 
             // 测试基础推荐参数计算（包含衰减系数）
             const basicRecommendations = getRecommendedParams({
-                totalTarget: 21000000,
+                totalTargetToken: 21000000,
                 estimatedLaborValue: 105000000,
                 // 不提供衰减系数，测试自动计算
             });
@@ -35,7 +35,7 @@ const TestSimulation: React.FC = () => {
 
             // 测试完整推荐参数计算（包含优化）
             const completeRecommendations = getCompleteRecommendedParams({
-                totalTarget: 21000000,
+                totalTargetToken: 21000000,
                 estimatedLaborValue: 105000000,
                 // 不提供衰减系数，测试自动计算和优化
             });
@@ -49,7 +49,7 @@ const TestSimulation: React.FC = () => {
             console.log('=== 测试动态重新计算功能 ===');
             
             // 测试修改总积分目标
-            const recalcForTotalTarget = recalculateParamsBasedOnChange('totalTarget', 25000000, testParams);
+            const recalcForTotalTarget = recalculateParamsBasedOnChange('totalTargetToken', 25000000, testParams);
             console.log('修改总积分目标后的重新计算:', recalcForTotalTarget);
             
             // 测试修改预估劳动价值

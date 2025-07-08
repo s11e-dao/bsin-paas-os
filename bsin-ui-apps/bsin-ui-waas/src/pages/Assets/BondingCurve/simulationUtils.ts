@@ -2,7 +2,7 @@ import { DataPoint } from './lindeChart';
 
 // 仿真参数接口
 export interface SimulationParams {
-    totalTarget: number;      // 总积分目标 T
+    totalTargetToken: number;      // 总积分目标 T
     levelWidth: number;       // 档位宽度 δC
     decayFactor: number;      // 衰减系数 k
     estimatedLaborValue: number; // 预估捕获劳动价值 Tv
@@ -61,12 +61,12 @@ export const calculateTotalLevels = (estimatedLaborValue: number, levelWidth: nu
 
 /**
  * 根据总积分目标和衰减系数计算首档奖励
- * @param totalTarget 总积分目标
+ * @param totalTargetToken 总积分目标
  * @param decayFactor 衰减系数
  * @returns 首档奖励
  */
-export const calculateFirstLevelReward = (totalTarget: number, decayFactor: number): number => {
-    return totalTarget * (1 - decayFactor);
+export const calculateFirstLevelReward = (totalTargetToken: number, decayFactor: number): number => {
+    return totalTargetToken * (1 - decayFactor);
 };
 
 /**
@@ -86,7 +86,7 @@ export const calculateTotalTarget = (firstLevelReward: number, decayFactor: numb
  */
 export const calculateBondingCurveSimulation = (params: SimulationParams): SimulationResult => {
     const {
-        totalTarget,    // 总积分目标 T
+        totalTargetToken,    // 总积分目标 T
         levelWidth,     // 档位宽度 δC
         decayFactor,    // 衰减系数 k
         estimatedLaborValue,  // 预估捕获劳动价值 Tv
@@ -95,7 +95,7 @@ export const calculateBondingCurveSimulation = (params: SimulationParams): Simul
     } = params;
 
     // 计算或使用用户提供的首档奖励
-    const actualFirstLevelReward = userFirstLevelReward || calculateFirstLevelReward(totalTarget, decayFactor);
+    const actualFirstLevelReward = userFirstLevelReward || calculateFirstLevelReward(totalTargetToken, decayFactor);
 
     // 计算或使用用户提供的档位总数
     const actualTotalLevels = userTotalLevels || calculateTotalLevels(estimatedLaborValue, levelWidth);
@@ -111,7 +111,7 @@ export const calculateBondingCurveSimulation = (params: SimulationParams): Simul
     let level = 1;  // 档位序号
 
     // 计算档位数据
-    while (level <= actualTotalLevels && cumulativeReward < totalTarget * 0.999) {
+    while (level <= actualTotalLevels && cumulativeReward < totalTargetToken * 0.999) {
         // 档期奖励：Rn = R₀ * k^(n-1)
         const reward = actualFirstLevelReward * Math.pow(decayFactor, level - 1);
         cumulativeReward += reward;
@@ -157,7 +157,7 @@ export const calculateBondingCurveSimulation = (params: SimulationParams): Simul
         firstLevelReward: actualFirstLevelReward,
         totalLevels: levels.length,
         totalReward: cumulativeReward,
-        targetAchievement: (cumulativeReward / totalTarget) * 100,  // 积分释放达成率
+        targetAchievement: (cumulativeReward / totalTargetToken) * 100,  // 积分释放达成率
         totalLaborValue: cumulativeLaborValue,
         laborValueAchievement: (cumulativeLaborValue / estimatedLaborValue) * 100,  // 劳动价值达成率
     };
@@ -186,7 +186,7 @@ export const calculateBondingCurveSimulation = (params: SimulationParams): Simul
 export const validateSimulationParams = (params: SimulationParams): { valid: boolean; errors: string[] } => {
     const errors: string[] = [];
 
-    if (params.totalTarget <= 0) {
+    if (params.totalTargetToken <= 0) {
         errors.push('总积分目标必须大于0');
     }
 
@@ -242,9 +242,9 @@ export const formatNumber = (value: number): string => {
  * @returns 理论釋放总积分
  */
 export const calculateTheoreticalTotal = (params: SimulationParams): number => {
-    const { totalTarget, decayFactor } = params;
+    const { totalTargetToken, decayFactor } = params;
     // 理论釋放总积分 = T / (1 - k)
-    return totalTarget / (1 - decayFactor);
+    return totalTargetToken / (1 - decayFactor);
 };
 
 /**
@@ -266,13 +266,13 @@ export const getRecommendedParams = (params: Partial<SimulationParams>): Partial
     }
 
     // 如果缺少首档奖励，根据总积分目标和衰减系数计算
-    if (!params.firstLevelReward && params.totalTarget && params.decayFactor) {
-        recommendations.firstLevelReward = calculateFirstLevelReward(params.totalTarget, params.decayFactor);
+    if (!params.firstLevelReward && params.totalTargetToken && params.decayFactor) {
+        recommendations.firstLevelReward = calculateFirstLevelReward(params.totalTargetToken, params.decayFactor);
     }
 
     // 如果缺少衰减系数，根据总积分目标和首档奖励计算
-    if (!params.decayFactor && params.totalTarget && params.firstLevelReward) {
-        recommendations.decayFactor = 1 - (params.firstLevelReward / params.totalTarget);
+    if (!params.decayFactor && params.totalTargetToken && params.firstLevelReward) {
+        recommendations.decayFactor = 1 - (params.firstLevelReward / params.totalTargetToken);
     }
 
     // 智能优化：如果同时缺少档位宽度和档位总数，计算最优组合
@@ -284,15 +284,15 @@ export const getRecommendedParams = (params: Partial<SimulationParams>): Partial
     }
 
     // 智能优化：如果同时缺少衰减系数和首档奖励，计算最优组合
-    if (!params.decayFactor && !params.firstLevelReward && params.totalTarget) {
+    if (!params.decayFactor && !params.firstLevelReward && params.totalTargetToken) {
         // 推荐衰减系数在0.99-0.999之间，优先选择0.9975
         const recommendedDecayFactor = 0.9975;
         recommendations.decayFactor = recommendedDecayFactor;
-        recommendations.firstLevelReward = calculateFirstLevelReward(params.totalTarget, recommendedDecayFactor);
+        recommendations.firstLevelReward = calculateFirstLevelReward(params.totalTargetToken, recommendedDecayFactor);
     }
 
     // 如果只缺少衰减系数，根据总积分目标计算推荐值
-    if (!params.decayFactor && params.totalTarget) {
+    if (!params.decayFactor && params.totalTargetToken) {
         // 基于积分释放达成率优化的衰减系数推荐
         const recommendedDecayFactor = 0.9975; // 默认推荐值
         recommendations.decayFactor = recommendedDecayFactor;
@@ -314,47 +314,128 @@ export const optimizeSimulationParams = (params: SimulationParams): Partial<Simu
     const currentTargetAchievement = currentResult.summary.targetAchievement;
     const currentLaborValueAchievement = currentResult.summary.laborValueAchievement;
 
-    // 优化积分释放达成率
-    if (currentTargetAchievement < 99.5) {
-        // 如果积分释放达成率过低，调整衰减系数
-        // 衰减系数越小，积分释放达成率越高
-        const targetDecayFactor = Math.max(0.99, params.decayFactor - 0.001);
-        optimizations.decayFactor = targetDecayFactor;
+    // 优先保证积分释放达成率=100%
+    if (Math.abs(currentTargetAchievement - 100) > 0.1) {
+        // 根据测试结果，需要同时优化档位数量和衰减系数
+        let bestTotalLevels = params.totalLevels || calculateTotalLevels(params.estimatedLaborValue, params.levelWidth);
+        let bestDecayFactor = params.decayFactor;
+        let bestLevelWidth = params.levelWidth;
+        let bestFirstLevelReward = params.firstLevelReward || calculateFirstLevelReward(params.totalTargetToken, params.decayFactor);
+        let bestTargetAchievement = currentTargetAchievement;
+        let minDiff = Math.abs(currentTargetAchievement - 100);
 
-        // 重新计算首档奖励
-        optimizations.firstLevelReward = calculateFirstLevelReward(params.totalTarget, targetDecayFactor);
+        // 策略1: 同时优化档位数量和衰减系数
+        // 测试不同的档位数量（从50到500）
+        for (let levels = 50; levels <= 500; levels += 10) {
+            // 计算对应的档位宽度
+            const newLevelWidth = params.estimatedLaborValue / levels;
+            
+            // 测试不同的衰减系数（从0.95到0.999）
+            for (let k = 0.95; k <= 0.999; k += 0.001) {
+                const newFirstLevelReward = calculateFirstLevelReward(params.totalTargetToken, k);
+                
+                const testParams = {
+                    ...params,
+                    totalLevels: levels,
+                    levelWidth: newLevelWidth,
+                    decayFactor: k,
+                    firstLevelReward: newFirstLevelReward
+                };
+                
+                const testResult = calculateBondingCurveSimulation(testParams);
+                const testTargetAchievement = testResult.summary.targetAchievement;
+                const diff = Math.abs(testTargetAchievement - 100);
+                
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    bestTotalLevels = levels;
+                    bestDecayFactor = k;
+                    bestLevelWidth = newLevelWidth;
+                    bestFirstLevelReward = newFirstLevelReward;
+                    bestTargetAchievement = testTargetAchievement;
+                }
+                
+                // 如果已经非常接近100%，提前结束搜索
+                if (diff < 0.01) {
+                    break;
+                }
+            }
+            
+            // 如果已经找到很好的解，提前结束
+            if (minDiff < 0.01) {
+                break;
+            }
+        }
+
+        // 应用最佳参数
+        optimizations.totalLevels = bestTotalLevels;
+        optimizations.levelWidth = bestLevelWidth;
+        optimizations.decayFactor = bestDecayFactor;
+        optimizations.firstLevelReward = bestFirstLevelReward;
     }
 
-    // 优化劳动价值达成率
-    if (currentLaborValueAchievement < 99.5) {
-        // 如果劳动价值达成率过低，调整档位宽度
+    // 其次保证累计劳动价值=100%
+    if (Math.abs(currentLaborValueAchievement - 100) > 0.1) {
+        // 使用迭代方法精确调整档位宽度，使劳动价值达成率接近100%
         const currentLevelWidth = params.levelWidth || calculateLevelWidth(params.estimatedLaborValue, params.totalLevels || 50);
-        const targetLevelWidth = currentLevelWidth * (100 / currentLaborValueAchievement);
-        optimizations.levelWidth = targetLevelWidth;
+        let bestLevelWidth = currentLevelWidth;
+        let bestLaborValueAchievement = currentLaborValueAchievement;
+        let minDiff = Math.abs(currentLaborValueAchievement - 100);
 
-        // 重新计算档位总数
-        optimizations.totalLevels = calculateTotalLevels(params.estimatedLaborValue, targetLevelWidth);
+        // 在合理范围内搜索最优档位宽度
+        const minLevelWidth = currentLevelWidth * 0.1;
+        const maxLevelWidth = currentLevelWidth * 10.0;
+        const step = currentLevelWidth * 0.001;
+
+        for (let width = minLevelWidth; width <= maxLevelWidth; width += step) {
+            const testParams = { 
+                ...params, 
+                levelWidth: width,
+                decayFactor: optimizations.decayFactor || params.decayFactor,
+                firstLevelReward: optimizations.firstLevelReward || params.firstLevelReward
+            };
+            const testResult = calculateBondingCurveSimulation(testParams);
+            const testLaborValueAchievement = testResult.summary.laborValueAchievement;
+            const diff = Math.abs(testLaborValueAchievement - 100);
+
+            if (diff < minDiff) {
+                minDiff = diff;
+                bestLevelWidth = width;
+                bestLaborValueAchievement = testLaborValueAchievement;
+            }
+
+            // 如果已经非常接近100%，提前结束搜索
+            if (diff < 0.001) {
+                break;
+            }
+        }
+
+        optimizations.levelWidth = bestLevelWidth;
+        optimizations.totalLevels = calculateTotalLevels(params.estimatedLaborValue, bestLevelWidth);
     }
 
-    // 平衡优化：确保两个达成率都接近100%
-    if (currentTargetAchievement < 99.5 || currentLaborValueAchievement < 99.5) {
-        // 综合优化策略
-        const currentLevelWidth = params.levelWidth || calculateLevelWidth(params.estimatedLaborValue, params.totalLevels || 50);
+    // 最终微调：确保积分释放达成率尽可能接近100%
+    const finalParams = { ...params, ...optimizations };
+    const finalResult = calculateBondingCurveSimulation(finalParams);
+    
+    if (Math.abs(finalResult.summary.targetAchievement - 100) > 0.01) {
+        // 如果积分释放达成率仍然不够精确，进行微调
+        const currentDecayFactor = optimizations.decayFactor || params.decayFactor;
         
-        // 基于积分释放达成率优化衰减系数
-        let targetDecayFactor = params.decayFactor;
-        if (currentTargetAchievement < 99.5) {
-            // 积分释放达成率过低时，减小衰减系数
-            targetDecayFactor = Math.max(0.99, Math.min(0.999, params.decayFactor * (currentTargetAchievement / 100)));
+        // 根据当前达成率调整衰减系数
+        let adjustment = 0;
+        if (finalResult.summary.targetAchievement < 100) {
+            // 达成率过低，需要减小衰减系数（增加积分释放）
+            adjustment = (100 - finalResult.summary.targetAchievement) * 0.0001;
+        } else {
+            // 达成率过高，需要增加衰减系数（减少积分释放）
+            adjustment = (finalResult.summary.targetAchievement - 100) * 0.0001;
         }
         
-        // 基于劳动价值达成率优化档位宽度
-        const targetLevelWidth = currentLevelWidth * (100 / currentLaborValueAchievement);
-
-        optimizations.decayFactor = targetDecayFactor;
-        optimizations.levelWidth = targetLevelWidth;
-        optimizations.firstLevelReward = calculateFirstLevelReward(params.totalTarget, targetDecayFactor);
-        optimizations.totalLevels = calculateTotalLevels(params.estimatedLaborValue, targetLevelWidth);
+        const newDecayFactor = Math.max(0.95, Math.min(0.9999, currentDecayFactor - adjustment));
+        
+        optimizations.decayFactor = newDecayFactor;
+        optimizations.firstLevelReward = calculateFirstLevelReward(params.totalTargetToken, newDecayFactor);
     }
 
     return optimizations;
@@ -372,16 +453,37 @@ export const getCompleteRecommendedParams = (params: Partial<SimulationParams>):
     // 合并当前参数和基础推荐
     const completeParams = { ...params, ...basicRecommendations };
 
-    // 如果所有必要参数都已具备，进行优化
-    if (completeParams.totalTarget && completeParams.estimatedLaborValue &&
-        completeParams.decayFactor && completeParams.levelWidth &&
-        completeParams.totalLevels && completeParams.firstLevelReward) {
+    // 确保所有必要参数都存在，如果缺少则使用默认值
+    const paramsForOptimization: SimulationParams = {
+        totalTargetToken: completeParams.totalTargetToken || 21000000,
+        estimatedLaborValue: completeParams.estimatedLaborValue || 105000000,
+        decayFactor: completeParams.decayFactor || 0.9975,
+        levelWidth: completeParams.levelWidth || 2100000,
+        totalLevels: completeParams.totalLevels || 50,
+        firstLevelReward: completeParams.firstLevelReward || 52500,
+    };
 
-        const optimizations = optimizeSimulationParams(completeParams as SimulationParams);
-        return { ...completeParams, ...optimizations };
+    // 进行优化
+    const optimizations = optimizeSimulationParams(paramsForOptimization);
+    
+    // 返回优化后的参数，但只包含实际需要优化的参数
+    const result: Partial<SimulationParams> = { ...basicRecommendations };
+    
+    // 只返回实际发生变化的参数
+    if (optimizations.decayFactor && optimizations.decayFactor !== paramsForOptimization.decayFactor) {
+        result.decayFactor = optimizations.decayFactor;
+    }
+    if (optimizations.firstLevelReward && optimizations.firstLevelReward !== paramsForOptimization.firstLevelReward) {
+        result.firstLevelReward = optimizations.firstLevelReward;
+    }
+    if (optimizations.levelWidth && optimizations.levelWidth !== paramsForOptimization.levelWidth) {
+        result.levelWidth = optimizations.levelWidth;
+    }
+    if (optimizations.totalLevels && optimizations.totalLevels !== paramsForOptimization.totalLevels) {
+        result.totalLevels = optimizations.totalLevels;
     }
 
-    return basicRecommendations;
+    return result;
 };
 
 /**
@@ -401,7 +503,7 @@ export const recalculateParamsBasedOnChange = (
 
     // 根据修改的参数类型，重新计算其他参数
     switch (changedParam) {
-        case 'totalTarget':
+        case 'totalTargetToken':
             // 用户修改了总积分目标，重新计算首档奖励和衰减系数
             if (updatedParams.decayFactor) {
                 recommendations.firstLevelReward = calculateFirstLevelReward(changedValue, updatedParams.decayFactor);
@@ -431,8 +533,8 @@ export const recalculateParamsBasedOnChange = (
 
         case 'decayFactor':
             // 用户修改了衰减系数，重新计算首档奖励
-            if (updatedParams.totalTarget) {
-                recommendations.firstLevelReward = calculateFirstLevelReward(updatedParams.totalTarget, changedValue);
+            if (updatedParams.totalTargetToken) {
+                recommendations.firstLevelReward = calculateFirstLevelReward(updatedParams.totalTargetToken, changedValue);
             }
             break;
 
@@ -452,14 +554,14 @@ export const recalculateParamsBasedOnChange = (
 
         case 'firstLevelReward':
             // 用户修改了首档奖励，重新计算衰减系数
-            if (updatedParams.totalTarget) {
-                recommendations.decayFactor = 1 - (changedValue / updatedParams.totalTarget);
+            if (updatedParams.totalTargetToken) {
+                recommendations.decayFactor = 1 - (changedValue / updatedParams.totalTargetToken);
             }
             break;
     }
 
     // 如果所有必要参数都已具备，进行优化计算
-    if (updatedParams.totalTarget && updatedParams.estimatedLaborValue && 
+    if (updatedParams.totalTargetToken && updatedParams.estimatedLaborValue && 
         updatedParams.decayFactor && updatedParams.levelWidth && 
         updatedParams.totalLevels && updatedParams.firstLevelReward) {
         
@@ -539,7 +641,7 @@ export const validateParamChange = (
  */
 const getParamDisplayName = (paramName: keyof SimulationParams): string => {
     const displayNames: Record<keyof SimulationParams, string> = {
-        totalTarget: '总积分目标',
+        totalTargetToken: '总积分目标',
         estimatedLaborValue: '预估劳动价值',
         decayFactor: '衰减系数',
         levelWidth: '档位宽度',
