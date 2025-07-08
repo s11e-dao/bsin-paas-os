@@ -7,8 +7,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
-import me.flyray.bsin.domain.constants.WithdrawalErrorCode;
-import me.flyray.bsin.domain.entity.SysAgent;
 import me.flyray.bsin.domain.entity.WithdrawalRecord;
 import me.flyray.bsin.domain.enums.WithdrawalAuditStatus;
 import me.flyray.bsin.domain.enums.WithdrawalStatus;

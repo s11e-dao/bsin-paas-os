@@ -19,7 +19,7 @@ import java.security.spec.X509EncodedKeySpec;
  */
 public class DIDGeneratorUtil {
 
-    private static final String DID_METHOD = "ex"; // 可以替换为其他方法如 "key", "web" 等
+    private static final String DID_METHOD = "s11e"; // 可以替换为其他方法如 "key", "web" 等
     private static final String KEY_TYPE = "Ed25519VerificationKey2018";
     private static final String SIGNATURE_ALGORITHM = "Ed25519";
     private static final String KEY_ALGORITHM = "Ed25519";
