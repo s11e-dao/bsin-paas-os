@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.WithdrawalRecordMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.WithdrawalRecord">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="INTEGER"/>
+            <result property="bizRoleType" column="biz_role_type" jdbcType="VARCHAR"/>
+            <result property="bizRoleTypeNo" column="biz_role_type_no" jdbcType="INTEGER"/>
+            <result property="accountNo" column="account_no" jdbcType="VARCHAR"/>
+            <result property="withdrawalType" column="withdrawal_type" jdbcType="VARCHAR"/>
+            <result property="amount" column="amount" jdbcType="VARCHAR"/>
+            <result property="fee" column="fee" jdbcType="VARCHAR"/>
+            <result property="settlementAccountNo" column="settlement_account_no" jdbcType="VARCHAR"/>
+            <result property="settlementAccountJson" column="settlement_account_json" jdbcType="OTHER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="auditStatus" column="audit_status" jdbcType="VARCHAR"/>
+            <result property="auditTime" column="audit_time" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,tenant_id,biz_role_type,
+        biz_role_type_no,account_no,withdrawal_type,
+        amount,fee,settlement_account_no,
+        settlement_account_json,create_time,audit_status,
+        audit_time,status,remark
+    </sql>
+
+</mapper>
