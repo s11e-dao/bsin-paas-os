@@ -347,6 +347,7 @@ public class MerchantServiceImpl implements MerchantService {
         log.error("商户功能开通失败: {}", e.getMessage());
       }
     }
+
   }
 
   /**
