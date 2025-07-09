@@ -93,6 +93,7 @@ public class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnect
             // 身份证号
             String idNumber = MapUtils.getString(requestMap, "idNumber");
 
+            // 从请求参数中获取盐值
             String salt = MapUtils.getString(requestMap, "salt");
 
             // 根据用户信息生成唯一的DID标识符
@@ -151,6 +152,7 @@ public class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnect
      * 用DID签名数据
      * @param did DID标识符
      * @param salt 盐值，用于解密
+     * @param encryptedDidKeyData 加密的密钥数据
      * @param data 要签名的数据
      * @return 签名结果的Base64编码字符串，失败返回null
      */
@@ -180,6 +182,7 @@ public class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnect
      * 用DID验证签名
      * @param did DID标识符
      * @param salt 盐值，用于解密
+     * @param encryptedDidKeyData 加密的密钥数据
      * @param data 原始数据
      * @param signature Base64编码的签名数据
      * @return 验证结果，true表示验证成功，false表示验证失败
@@ -284,6 +287,52 @@ public class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnect
             
         } catch (Exception e) {
             throw new RuntimeException("Failed to rebuild KeyPair from encrypted JSON", e);
+        }
+    }
+
+    /**
+     * 从加密的JSON字符串中解析公钥
+     * @param encryptedKeyDataJson 加密的密钥数据JSON字符串
+     * @param did DID标识符
+     * @param salt 盐值
+     * @return Base58编码的公钥字符串
+     */
+    public static String parsePublicKeyBase58FromJson(String encryptedKeyDataJson, String did, String salt) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            
+            // 解密JSON字符串
+            String keyDataJson = decryptKeyDataJson(encryptedKeyDataJson, did, salt);
+            
+            // 解析JSON
+            KeyData keyData = mapper.readValue(keyDataJson, KeyData.class);
+            
+            return keyData.getPublicKeyBase58();
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse public key from encrypted JSON", e);
+        }
+    }
+
+    /**
+     * 从加密的JSON字符串中解析密钥数据
+     * @param encryptedKeyDataJson 加密的密钥数据JSON字符串
+     * @param did DID标识符
+     * @param salt 盐值
+     * @return 解析后的KeyData对象
+     */
+    public static KeyData parseKeyDataFromJson(String encryptedKeyDataJson, String did, String salt) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            
+            // 解密JSON字符串
+            String keyDataJson = decryptKeyDataJson(encryptedKeyDataJson, did, salt);
+            
+            // 解析JSON
+            return mapper.readValue(keyDataJson, KeyData.class);
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse key data from encrypted JSON", e);
         }
     }
 

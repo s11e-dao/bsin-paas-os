@@ -77,6 +77,7 @@ public class AesEncryptionTest {
         Map<String, String> result = connector.createDidProfile(requestMap);
         String did = result.get("did");
         String salt = "sign-test-salt";
+        String encryptedDidKeyData = result.get("didKeyData");
         String testData = "Hello, World!";
 
         System.out.println("=== 测试签名和验证 ===");
@@ -84,18 +85,19 @@ public class AesEncryptionTest {
         System.out.println("测试数据: " + testData);
 
         // 测试签名
-        String signature = connector.signData(did, salt, testData);
+        String signature = DefaultTrustedDataSpaceConnector.signData(did, salt, encryptedDidKeyData, testData);
         assertNotNull("Signature should not be null", signature);
         System.out.println("✓ 签名成功: " + signature.substring(0, 20) + "...");
 
         // 测试验证
-        boolean verified = connector.verifySign(did, salt, testData, signature);
+        boolean verified = DefaultTrustedDataSpaceConnector.verifySign(did, salt, encryptedDidKeyData, testData, signature);
         assertTrue("Signature should be verified", verified);
         System.out.println("✓ 签名验证成功");
 
         // 测试错误数据的验证
-        boolean verifiedFalse = connector.verifySign(did, salt, "Wrong data", signature);
+        boolean verifiedFalse = DefaultTrustedDataSpaceConnector.verifySign(did, salt, encryptedDidKeyData, "Wrong data", signature);
         assertFalse("Wrong data should not be verified", verifiedFalse);
         System.out.println("✓ 错误数据验证失败（正确行为）");
     }
+    
 } 

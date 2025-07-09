@@ -49,8 +49,13 @@ public class WithdrawalRecordServiceImpl implements WithdrawalRecordService {
     @ShenyuDubboClient("/apply")
     @Override
     public WithdrawalRecord apply(Map<String, Object> requestMap) {
+        String tenantId = MapUtils.getString(requestMap, "tenantId");
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        if (StringUtils.isEmpty(tenantId)){
+            tenantId = LoginInfoContextHelper.getTenantId();
+        }
         WithdrawalRecord withdrawalRecord = BsinServiceContext.getReqBodyDto(WithdrawalRecord.class, requestMap);
+        withdrawalRecord.setTenantId(tenantId);
         withdrawalRecordMapper.insert(withdrawalRecord);
         return withdrawalRecord;
     }
