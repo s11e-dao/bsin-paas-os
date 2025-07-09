@@ -19,7 +19,10 @@ import {
   ShareAltOutlined,
   SmileOutlined,
   OpenAIFilled,
-  ApiOutlined, LinkOutlined, SearchOutlined
+  ApiOutlined, 
+  LinkOutlined, 
+  SearchOutlined,
+  CloseOutlined
 } from '@ant-design/icons';
 import {
   Attachments,
@@ -32,8 +35,7 @@ import {
   useXAgent,
   useXChat,
 } from '@ant-design/x';
-import { Avatar, Button, Flex, Space, Spin, message, theme, Divider, Switch, Dropdown, FloatButton, Drawer } from 'antd';
-import type { DrawerProps } from 'antd'
+import { Avatar, Button, Flex, Space, Spin, message, theme, Divider, Switch, Dropdown, FloatButton, Modal } from 'antd';
 import { createStyles } from 'antd-style';
 import dayjs from 'dayjs';
 import React, { useEffect, useRef, useState } from 'react';
@@ -320,7 +322,7 @@ const useStyle = createStyles(({ token, css }) => {
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      padding-block: ${token.paddingLG}px;
+      padding: ${token.paddingLG}px;
       gap: 16px;
     `,
       chatPrompt: css`
@@ -837,8 +839,7 @@ const Independent = ({ customerInfo }) => {
   let defaultMerchantNo = process.env.defaultMerchantNo
 
 
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const [size, setSize] = useState<DrawerProps['size']>()
+  const [chatModalOpen, setChatModalOpen] = useState(false)
   const [defaultCopilot, setDefaultCopilot] = useState({})
 
   let chatData = {
@@ -863,12 +864,11 @@ const Independent = ({ customerInfo }) => {
     // },
   }
 
-  const showDrawer = () => {
+  const showChatModal = () => {
 
     setMessages([])
     setChatStatus(true)
-    setSize('large')
-    setDrawerOpen(true)
+    setChatModalOpen(true)
 
     let params = {
       merchantNo: defaultMerchantNo,
@@ -912,9 +912,9 @@ const Independent = ({ customerInfo }) => {
     })
   }
 
-  const onDrawerClose = () => {
+  const onChatModalClose = () => {
     setChatStatus(false)
-    setDrawerOpen(false)
+    setChatModalOpen(false)
   }
 
   // ==================== Render =================
@@ -925,23 +925,71 @@ const Independent = ({ customerInfo }) => {
         style={{ right: 24 }}
         type="primary"
         icon={<CommentOutlined />}
-        onClick={showDrawer}
+        onClick={showChatModal}
       />
 
-      <Drawer
-        maskClosable={false}
-        title="bsin app agent"
-        onClose={onDrawerClose}
-        open={drawerOpen}
-        size={size}
-      >
-        <div className={styles.layout}>
-          <div className={styles.chat}>
-              {chatList}
-              {chatSender}
+      {chatModalOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            right: 24,
+            bottom: 24,
+            width: 580,
+            height: 800,
+            maxWidth: 'calc(100vw - 48px)',
+            maxHeight: 'calc(100vh - 48px)',
+            backgroundColor: '#fff',
+            borderRadius: 8,
+            boxShadow: '0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05)',
+            zIndex: 1000,
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            pointerEvents: 'auto'
+          }}
+        >
+          {/* 标题栏 */}
+          <div
+            style={{
+              padding: '16px 24px',
+              borderBottom: '1px solid #f0f0f0',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              backgroundColor: '#fafafa',
+              borderTopLeftRadius: 8,
+              borderTopRightRadius: 8
+            }}
+          >
+            <span style={{ fontSize: 16, fontWeight: 600 }}>bsin app agent</span>
+            <Button
+              type="text"
+              icon={<CloseOutlined />}
+              onClick={onChatModalClose}
+              style={{
+                border: 'none',
+                padding: 0,
+                width: 24,
+                height: 24,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#666'
+              }}
+            />
           </div>
-      </div>
-      </Drawer>
+          
+          {/* 聊天内容 */}
+          <div style={{ flex: 1, overflow: 'hidden' }}>
+            <div className={styles.layout} style={{ height: '100%' }}>
+              <div className={styles.chat} style={{ height: '100%' }}>
+                  {chatList}
+                  {chatSender}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
       
   );
