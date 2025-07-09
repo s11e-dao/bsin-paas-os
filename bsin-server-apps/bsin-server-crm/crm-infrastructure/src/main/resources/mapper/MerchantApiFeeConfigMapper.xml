@@ -8,11 +8,11 @@
         <result column="free_times" jdbcType="INTEGER" property="freeTimes"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
-        <result column="product_id" jdbcType="VARCHAR" property="productId"/>
+        <result column="app_id" jdbcType="VARCHAR" property="appId"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        serial_no, tenant_id, fee, free_times, create_time, status, product_id
+        serial_no, tenant_id, fee, free_times, create_time, status, app_id
     </sql>
 
     <insert id="insert" parameterType="me.flyray.bsin.domain.entity.BizRoleAppApiFeeConfig">

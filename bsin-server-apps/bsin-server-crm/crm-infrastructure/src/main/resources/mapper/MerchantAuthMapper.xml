@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.MerchantAuthMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.MerchantAuth">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="merchantName" column="merchant_name" jdbcType="VARCHAR"/>
+            <result property="baseInfoAuthStatus" column="base_info_auth_status" jdbcType="VARCHAR"/>
+            <result property="legalPersonName" column="legal_person_name" jdbcType="VARCHAR"/>
+            <result property="legalPersonCredType" column="legal_person_cred_type" jdbcType="VARCHAR"/>
+            <result property="legalPersonCredNo" column="legal_person_cred_no" jdbcType="VARCHAR"/>
+            <result property="legalPersonPhone" column="legal_person_phone" jdbcType="VARCHAR"/>
+            <result property="legalPersonInfoAuthStatus" column="legal_person_info_auth_status" jdbcType="VARCHAR"/>
+            <result property="businessLicenceImg" column="business_licence_img" jdbcType="VARCHAR"/>
+            <result property="businessNo" column="business_no" jdbcType="VARCHAR"/>
+            <result property="businessScope" column="business_scope" jdbcType="VARCHAR"/>
+            <result property="businessType" column="business_type" jdbcType="VARCHAR"/>
+            <result property="businessInfoAuthStatus" column="business_info_auth_status" jdbcType="VARCHAR"/>
+            <result property="logoUrl" column="logo_url" jdbcType="VARCHAR"/>
+            <result property="contactPhone" column="contact_phone" jdbcType="VARCHAR"/>
+            <result property="website" column="website" jdbcType="VARCHAR"/>
+            <result property="merchantAddress" column="merchant_address" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="OTHER"/>
+            <result property="category" column="category" jdbcType="OTHER"/>
+            <result property="merchantType" column="merchant_type" jdbcType="OTHER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="authStatus" column="auth_status" jdbcType="OTHER"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+            <result property="delFlag" column="del_flag" jdbcType="TINYINT"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,tenant_id,username,
+        password,merchant_name,base_info_auth_status,
+        legal_person_name,legal_person_cred_type,legal_person_cred_no,
+        legal_person_phone,legal_person_info_auth_status,business_licence_img,
+        business_no,business_scope,business_type,
+        business_info_auth_status,logo_url,contact_phone,
+        website,merchant_address,status,
+        category,merchant_type,create_time,
+        update_time,auth_status,description,
+        version,del_flag,remark
+    </sql>
+
+</mapper>
