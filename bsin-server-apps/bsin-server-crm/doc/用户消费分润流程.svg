@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1600" height="1000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .node { fill: #e1f5fe; stroke: #0277bd; stroke-width: 2; rx: 8; }
+      .decision { fill: #fff3e0; stroke: #f57c00; stroke-width: 2; rx: 8; }
+      .process { fill: #f3e5f5; stroke: #7b1fa2; stroke-width: 2; rx: 8; }
+      .result { fill: #e8f5e8; stroke: #388e3c; stroke-width: 2; rx: 8; }
+      .text { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .arrow { stroke: #333; stroke-width: 2; fill: none; }
+      .label { font-family: Arial, sans-serif; font-size: 10px; fill: #666; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+    </marker>
+  </defs>
+
+  <!-- 第一行：用户下单流程 -->
+  <rect x="50" y="50" width="120" height="60" class="node"/>
+  <text x="110" y="85" class="text">用户下单</text>
+
+  <rect x="200" y="40" width="120" height="80" class="decision"/>
+  <text x="260" y="65" class="text">订单类型</text>
+  <text x="260" y="80" class="text">线下买单</text>
+  <text x="260" y="95" class="text">线上商品</text>
+
+  <rect x="350" y="30" width="120" height="60" class="process"/>
+  <text x="410" y="55" class="text">商户让利配置</text>
+  <rect x="350" y="110" width="120" height="60" class="process"/>
+  <text x="410" y="135" class="text">商品推广佣金配置</text>
+
+  <rect x="500" y="70" width="120" height="60" class="node"/>
+  <text x="560" y="105" class="text">生成订单</text>
+
+  <rect x="650" y="70" width="120" height="60" class="node"/>
+  <text x="710" y="105" class="text">支付完成</text>
+
+  <rect x="800" y="70" width="120" height="60" class="node"/>
+  <text x="860" y="105" class="text">查找分佣关系链</text>
+
+  <!-- 第二行：分润配置 -->
+  <rect x="50" y="200" width="120" height="60" class="node"/>
+  <text x="110" y="235" class="text">获取分润配置</text>
+
+  <rect x="200" y="200" width="120" height="60" class="node"/>
+  <text x="260" y="235" class="text">分润金额计算</text>
+
+  <rect x="350" y="190" width="120" height="80" class="decision"/>
+  <text x="410" y="215" class="text">分润参与角色</text>
+  <text x="410" y="230" class="text">商户</text>
+  <text x="410" y="245" class="text">分销商多级</text>
+  <text x="410" y="260" class="text">代理商</text>
+
+  <!-- 第三行：分润执行 -->
+  <rect x="500" y="180" width="120" height="60" class="result"/>
+  <text x="560" y="215" class="text">商户分润入账</text>
+
+  <rect x="500" y="260" width="120" height="60" class="result"/>
+  <text x="560" y="295" class="text">根据分销模型分配</text>
+  <text x="560" y="310" class="text">分销商分润</text>
+
+  <rect x="500" y="340" width="120" height="60" class="result"/>
+  <text x="560" y="375" class="text">根据分销模型分配</text>
+  <text x="560" y="390" class="text">代理商分润</text>
+
+  <rect x="500" y="420" width="120" height="60" class="result"/>
+  <text x="560" y="455" class="text">生态价值分配</text>
+
+  <!-- 第四行：分销商层级 -->
+  <rect x="700" y="240" width="100" height="40" class="result"/>
+  <text x="750" y="260" class="text">一级分销商分润</text>
+  <rect x="700" y="290" width="100" height="40" class="result"/>
+  <text x="750" y="310" class="text">二级分销商分润</text>
+  <rect x="700" y="340" width="100" height="40" class="result"/>
+  <text x="750" y="360" class="text">更多层级...</text>
+
+  <!-- 第五行：代理商层级 -->
+  <rect x="700" y="420" width="100" height="40" class="result"/>
+  <text x="750" y="440" class="text">省级代理分润</text>
+  <text x="750" y="455" class="text">战略层</text>
+  <rect x="700" y="470" width="100" height="40" class="result"/>
+  <text x="750" y="490" class="text">市级代理分润</text>
+  <text x="750" y="505" class="text">商圈层</text>
+  <rect x="700" y="520" width="100" height="40" class="result"/>
+  <text x="750" y="540" class="text">县级代理分润</text>
+  <text x="750" y="555" class="text">挖掘层</text>
+  <rect x="700" y="570" width="100" height="40" class="result"/>
+  <text x="750" y="590" class="text">区级代理分润</text>
+  <text x="750" y="605" class="text">运营层</text>
+  <rect x="700" y="620" width="100" height="40" class="result"/>
+  <text x="750" y="640" class="text">镇级代理分润</text>
+  <text x="750" y="655" class="text">管理层</text>
+
+  <!-- 价值转换 -->
+  <rect x="850" y="680" width="100" height="40" class="result"/>
+  <text x="900" y="700" class="text">曲线价值计算</text>
+  <rect x="970" y="680" width="100" height="40" class="result"/>
+  <text x="1020" y="700" class="text">数字积分生成</text>
+
+  <!-- 记录结果 -->
+  <rect x="1200" y="400" width="120" height="60" class="result"/>
+  <text x="1260" y="435" class="text">记录分润结果</text>
+  <text x="1260" y="450" class="text">与流水</text>
+
+  <!-- 流程结束 -->
+  <rect x="1200" y="500" width="120" height="60" class="result"/>
+  <text x="1260" y="535" class="text">分润流程结束</text>
+
+  <!-- 连接线 - 第一行流程 -->
+  <path d="M 170 80 L 200 80" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 260 60 L 350 60" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 260 100 L 350 140" class="arrow" marker-end="url(#arrowhead)"/>
+  <text x="305" y="75" class="label">线下买单</text>
+  <text x="305" y="125" class="label">线上商品</text>
+  <path d="M 470 60 L 500 100" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 470 140 L 500 100" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 620 100 L 650 100" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 770 100 L 800 100" class="arrow" marker-end="url(#arrowhead)"/>
+
+  <!-- 连接线 - 第二行流程 -->
+  <path d="M 860 130 L 110 200" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 170 230 L 200 230" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 320 230 L 350 230" class="arrow" marker-end="url(#arrowhead)"/>
+
+  <!-- 连接线 - 分润参与角色到各分润节点 -->
+  <path d="M 410 210 L 500 210" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 410 250 L 500 290" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 410 290 L 500 370" class="arrow" marker-end="url(#arrowhead)"/>
+  <text x="455" y="220" class="label">商户</text>
+  <text x="455" y="270" class="label">分销商多级</text>
+  <text x="455" y="330" class="label">代理商</text>
+
+  <!-- 连接线 - 分销商分润到各层级 -->
+  <path d="M 620 290 L 700 260" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 620 290 L 700 310" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 620 290 L 700 360" class="arrow" marker-end="url(#arrowhead)"/>
+
+  <!-- 连接线 - 代理商分润到各层级 -->
+  <path d="M 620 370 L 700 440" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 620 370 L 700 490" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 620 370 L 700 540" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 620 370 L 700 590" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 620 370 L 700 640" class="arrow" marker-end="url(#arrowhead)"/>
+
+  <!-- 连接线 - 生态价值分配到价值转换 -->
+  <path d="M 560 480 L 900 680" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 900 720 L 1020 720" class="arrow" marker-end="url(#arrowhead)"/>
+
+  <!-- 连接线 - 所有结果到记录 -->
+  <path d="M 560 240 L 1200 430" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 800 260 L 1200 430" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 800 310 L 1200 430" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 800 360 L 1200 430" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 800 440 L 1200 430" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 800 490 L 1200 430" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 800 540 L 1200 430" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 800 590 L 1200 430" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 800 640 L 1200 430" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 1020 720 L 1200 430" class="arrow" marker-end="url(#arrowhead)"/>
+
+  <!-- 连接线 - 记录到结束 -->
+  <path d="M 1260 460 L 1260 500" class="arrow" marker-end="url(#arrowhead)"/>
+
+</svg>
