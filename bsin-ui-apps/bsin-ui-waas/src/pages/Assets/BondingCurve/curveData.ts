@@ -1,16 +1,32 @@
 import type { ProColumns } from '@ant-design/pro-table';
 
 export type columnsDataType = {
-  order: number;
-  acName: string;
-  custNo: string;
-  acNo: string;
-  balance: string;
-  custType: string;
-  openAcDate: string;
+  // 基础字段
+  serialNo: string;
+  merchantNo: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+  version: string;
+  cap: string;
+  initialPrice: string;
+  finalPrice: string;
+  flexible: number;
+  type: string;
   status: string;
-  startTime: string;
-  endTime: string;
+  description: string;
+  createTime: string;
+  tenantId: string;
+  accountNo: string;
+  
+  // 分段衰减释放参数
+  totalTargetToken: number;
+  estimatedLaborValue: number;
+  decayFactor: number;
+  levelWidth: number;
+  totalLevels: number;
+  firstLevelReward: number;
+  releaseThreshold: number;
 };
 
 const columnsCurveData: ProColumns<columnsDataType>[] = [
@@ -41,6 +57,18 @@ const columnsCurveData: ProColumns<columnsDataType>[] = [
       '1': {
         text: 'sigmoid',
       },
+      '2': {
+        text: 'cny',
+      },
+    },
+  },
+  {
+    title: '曲线名称',
+    dataIndex: 'name',
+    hideInTable: true,
+    width: 120,
+    fieldProps: {
+      maxLength: 50,
     },
   },
 
@@ -72,7 +100,7 @@ const columnsCurveData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '小数点',
-    width: 160,
+    width: 100,
     dataIndex: 'decimals',
     hideInSearch: true,
   },
@@ -81,35 +109,30 @@ const columnsCurveData: ProColumns<columnsDataType>[] = [
     width: 100,
     hideInSearch: true,
     dataIndex: 'version',
-    fixed: 'right',
   },
   {
     title: '供应上限',
-    width: 100,
+    width: 120,
     hideInSearch: true,
     dataIndex: 'cap',
-    fixed: 'right',
   },
   {
     title: '初始定价',
     width: 100,
     hideInSearch: true,
     dataIndex: 'initialPrice',
-    fixed: 'right',
   },
   {
     title: '最终定价',
     width: 100,
     hideInSearch: true,
     dataIndex: 'finalPrice',
-    fixed: 'right',
   },
   {
     title: '拉伸变换',
     width: 100,
     hideInSearch: true,
     dataIndex: 'flexible',
-    fixed: 'right',
   },
   {
     title: '类型',
@@ -124,6 +147,9 @@ const columnsCurveData: ProColumns<columnsDataType>[] = [
       '1': {
         text: 'sigmoid',
       },
+      '2': {
+        text: 'cny',
+      },
     },
     fixed: 'right',
   },
@@ -131,7 +157,6 @@ const columnsCurveData: ProColumns<columnsDataType>[] = [
     title: '状态',
     width: 80,
     hideInSearch: true,
-    //
     valueEnum: {
       '0': {
         text: '冻结',
@@ -141,13 +166,62 @@ const columnsCurveData: ProColumns<columnsDataType>[] = [
       },
     },
     dataIndex: 'status',
-    fixed: 'right',
   },
   {
     title: '描述',
     width: 160,
     dataIndex: 'description',
     hideInSearch: true,
+    ellipsis: true,
+  },
+  {
+    title: '总积分目标',
+    width: 120,
+    dataIndex: 'totalTargetToken',
+    hideInSearch: true,
+    render: (_, record) => record.totalTargetToken ? record.totalTargetToken.toLocaleString() : '-',
+  },
+  {
+    title: '预估劳动价值',
+    width: 120,
+    dataIndex: 'estimatedLaborValue',
+    hideInSearch: true,
+    render: (_, record) => record.estimatedLaborValue ? record.estimatedLaborValue.toLocaleString() : '-',
+  },
+  {
+    title: '衰减系数',
+    width: 100,
+    dataIndex: 'decayFactor',
+    hideInSearch: true,
+    render: (_, record) => record.decayFactor ? record.decayFactor.toFixed(4) : '-',
+  },
+  {
+    title: '档位宽度',
+    width: 100,
+    dataIndex: 'levelWidth',
+    hideInSearch: true,
+    render: (_, record) => record.levelWidth ? record.levelWidth.toLocaleString() : '-',
+  },
+  {
+    title: '档位总数',
+    width: 100,
+    dataIndex: 'totalLevels',
+    hideInSearch: true,
+    render: (_, record) => record.totalLevels ? `${record.totalLevels}档` : '-',
+  },
+  {
+    title: '首档奖励',
+    width: 120,
+    dataIndex: 'firstLevelReward',
+    hideInSearch: true,
+    render: (_, record) => record.firstLevelReward ? record.firstLevelReward.toLocaleString() : '-',
+  },
+  {
+    title: '释放阈值',
+    width: 100,
+    dataIndex: 'releaseThreshold',
+    hideInSearch: true,
+    render: (_, record) => record.releaseThreshold ? record.releaseThreshold.toLocaleString() : '-',
   },
   {
     title: '创建时间',

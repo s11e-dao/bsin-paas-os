@@ -14,7 +14,7 @@ import React, { useState } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import SettingBondingCurve from './settingBondingCurve';
-import BondingCurveMintRecord from './bondingCurveMintRecord';
+import BondingCurveMinReleasetRecord from './bondingCurveMintReleaseRecord';
 import SegmentationAttenuationReleaseSimulate from './segmentationAttenuationReleaseSimulate';
 
 import columnsData, { columnsDataType } from './data';
@@ -142,7 +142,7 @@ export default () => {
             <SettingBondingCurve refreshTrigger={activeTab === '1' ? refreshTrigger : 0} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="商户积分铸造释放曲线" key="2">
-            <BondingCurveMintRecord refreshTrigger={activeTab === '2' ? refreshTrigger : 0} />
+            <BondingCurveMinReleasetRecord refreshTrigger={activeTab === '2' ? refreshTrigger : 0} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Sigmoid联合曲线仿真系统" key="3">
             <SigmoidSimulate refreshTrigger={activeTab === '3' ? refreshTrigger : 0} />
