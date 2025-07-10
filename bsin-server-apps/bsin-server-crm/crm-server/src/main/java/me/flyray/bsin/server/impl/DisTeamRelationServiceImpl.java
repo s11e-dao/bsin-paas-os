@@ -106,13 +106,20 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
                         .eq(CustomerIdentity::getBizRoleType, BizRoleType.SYS_AGENT.getCode())
         );
         String parentSysAgentNo = null;
-        // 2、根据邀请关系加入代理商团队：邀请关系中直接邀请人是代理商（直接邀请人代理商、或直接邀请人的上级代理商（递归选找））
-        DisTeamRelation parantDisTeamRelation = disTeamRelationMapper.selectOne(
-                new LambdaQueryWrapper<DisTeamRelation>()
-                        .eq(DisTeamRelation::getSysAgentNo, parentSysAgentNo));
-        // 邀请人有代理商身份并且当前代理商没有上级, 当前代理商则加入邀请人的团队
-        if(parentIdentity != null && parantDisTeamRelation != null){
+        DisTeamRelation parentDisTeamRelation = null;
+
+        // 先判断邀请人是否有代理商身份
+        if(parentIdentity != null){
             parentSysAgentNo = parentIdentity.getBizRoleTypeNo();
+            // 有了parentSysAgentNo后再查询团队关系
+            parentDisTeamRelation = disTeamRelationMapper.selectOne(
+                    new LambdaQueryWrapper<DisTeamRelation>()
+                            .eq(DisTeamRelation::getSysAgentNo, parentSysAgentNo));
+        }
+
+        // 2、根据邀请关系加入代理商团队：邀请关系中直接邀请人是代理商（直接邀请人代理商、或直接邀请人的上级代理商（递归选找））
+        if(parentIdentity != null && parentDisTeamRelation != null){
+            // 加入邀请人的团队
             disTeamRelation.setPrarentSysAgentNo(parentSysAgentNo); // 邀请人为上级代理商
             disTeamRelation.setDisAgentType(DisAgentType.DISTRIBUTOR.getCode());
             disTeamRelation.setSysAgentNo(agent.getSerialNo());
@@ -133,7 +140,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         // 不同的分销模型做不同的处理: 链动2+1，走人和留人
         if (DisModelEnum.DIS_LEVEL21.getCode().equals(disModel.getModel()) && parentSysAgentNo != null) {
             // 如果邀请人还不是老板,进行链路2+1逻辑
-            if (!DisAgentType.BOSS.getCode().equals(parantDisTeamRelation.getDisAgentType())) {
+            if (!DisAgentType.BOSS.getCode().equals(parentDisTeamRelation.getDisAgentType())) {
                 // 查询邀请人的下级是否已经大于设置的链动人数
                 LambdaQueryWrapper<DisTeamRelation> wrapper = new LambdaQueryWrapper<>();
                 wrapper.eq(DisTeamRelation::getPrarentSysAgentNo, parentSysAgentNo);
@@ -142,13 +149,13 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
                 if (list.size() >= disModel.getQuitCurrentLimit()) {
                     // 邀请人名下的所有人，都给邀请人的上级
                     for (DisTeamRelation item : list) {
-                        item.setPrarentSysAgentNo(parantDisTeamRelation.getPrarentSysAgentNo());
+                        item.setPrarentSysAgentNo(parentDisTeamRelation.getPrarentSysAgentNo());
                         disTeamRelationMapper.updateById(item);
                     }
                     // 邀请人走人成为老板
-                    disTeamRelation.setDisAgentType(DisAgentType.BOSS.getCode());
-                    disTeamRelation.setPrarentSysAgentNo("-1");
-                    disTeamRelationMapper.updateById(disTeamRelation);
+                    parentDisTeamRelation.setDisAgentType(DisAgentType.BOSS.getCode());
+                    parentDisTeamRelation.setPrarentSysAgentNo("-1");
+                    disTeamRelationMapper.updateById(parentDisTeamRelation);
                 }
             }
         }
