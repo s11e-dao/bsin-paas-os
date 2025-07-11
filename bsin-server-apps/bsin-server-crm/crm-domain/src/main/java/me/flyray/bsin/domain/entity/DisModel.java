@@ -21,8 +21,12 @@ public class DisModel implements Serializable {
     /**
      * 租户CODE
      */
-    @TableId
     private String tenantId;
+
+    /**
+     * 商户号
+     */
+    private String merchantNo;
 
     /**
      * 模型类型:一级分销:level1, 二级分销:level2, 链路2+1: level2_1

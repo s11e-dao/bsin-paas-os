@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.DisModel">
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
             <result property="model" column="model" jdbcType="VARCHAR"/>
             <result property="quitCurrentLimit" column="quit_current_limit" jdbcType="INTEGER"/>
             <result property="firstInviteBrokerage" column="first_invite_brokerage" jdbcType="INTEGER"/>
@@ -13,7 +14,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        serial_no,tenant_id,model,
+        serial_no,tenant_id,merchant_no,model,
         quit_current_limit,first_invite_brokerage,second_invite_brokerage
     </sql>
+
 </mapper>
