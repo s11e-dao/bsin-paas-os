@@ -81,6 +81,16 @@ public class Store implements Serializable {
     private String type;
 
     /**
+     * 门店所属区域边码
+     */
+    private String regionCode;
+
+    /**
+     * 等级序列号（关联crm_grade）
+     */
+    private String gradeNo;
+
+    /**
      * 经营模式  1、直营，2、加盟
      * @see BusinessModel
      */

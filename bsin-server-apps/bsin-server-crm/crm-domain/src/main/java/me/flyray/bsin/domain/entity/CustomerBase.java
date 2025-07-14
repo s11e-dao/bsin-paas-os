@@ -217,17 +217,20 @@ public class CustomerBase implements Serializable {
     @TableField(exist = false)
     private BigDecimal cnyBalance;
 
-
     /**
      * tba账户地址
      */
     @TableField(exist = false)
     private String tbaAddress;
 
-
     /**
      * 邀请码
      */
     private String inviteCode;
+
+    /**
+     * 等级序列号（关联crm_grade）
+     */
+    private String gradeNo;
 
 }

@@ -32,7 +32,7 @@ public interface MerchantService {
     public Map<String, Object> login(Map<String, Object> requestMap);
 
     /**
-     * 认证
+     * 商户资料进件认证
      */
     public void authentication(Map<String, Object> requestMap);
 

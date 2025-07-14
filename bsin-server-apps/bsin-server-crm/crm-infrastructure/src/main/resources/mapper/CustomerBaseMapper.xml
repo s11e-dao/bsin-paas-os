@@ -36,6 +36,7 @@
             <result property="evmProfileAddress" column="evm_profile_address" jdbcType="VARCHAR"/>
             <result property="evmWalletPrivateKey" column="evm_wallet_private_key" jdbcType="VARCHAR"/>
             <result property="inviteCode" column="invite_code" jdbcType="VARCHAR"/>
+            <result property="gradeNo" column="grade_no" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -46,7 +47,8 @@
         phone,email,avatar,info,
         type,create_time,update_time,copilot_no,
         del_flag,vip_flag,tenant_id,profile_address,evm_profile_address,
-        certification_status,wallet_address,wallet_private_key,evm_wallet_address,evm_wallet_private_key,invite_code
+        certification_status,wallet_address,wallet_private_key,evm_wallet_address,
+        evm_wallet_private_key,invite_code,grade_no
     </sql>
 
     <select id="getCustomerInfoByTenantIdAndType" resultMap="BaseResultMap">

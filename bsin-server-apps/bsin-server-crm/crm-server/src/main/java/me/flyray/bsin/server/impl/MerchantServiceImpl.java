@@ -230,8 +230,7 @@ public class MerchantServiceImpl implements MerchantService {
       if (temp.getLegalPersonName() != null) merchantAuth.setLegalPersonName(temp.getLegalPersonName());
       if (temp.getLegalPersonCredType() != null) merchantAuth.setLegalPersonCredType(temp.getLegalPersonCredType());
       if (temp.getLegalPersonCredNo() != null) merchantAuth.setLegalPersonCredNo(temp.getLegalPersonCredNo());
-      if (temp.getLegalPersonPhone() != null) merchantAuth.setLegalPersonPhone(temp.getLegalPersonPhone());
-      
+
       merchantAuth.setLegalPersonInfoAuthStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
       hasUpdate = true;
     }
@@ -248,6 +247,22 @@ public class MerchantServiceImpl implements MerchantService {
       
       merchantAuth.setBusinessInfoAuthStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
       hasUpdate = true;
+    }
+
+    // 处理结算信息
+    Object settlementInfo = MapUtils.getObject(requestMap, "settlementInfo");
+    if (settlementInfo != null) {
+      MerchantAuth temp = BsinServiceContext.getReqBodyDto(MerchantAuth.class, (Map<String, Object>) settlementInfo);
+      // 只复制营业信息相关字段
+      if (temp.getBusinessLicenceImg() != null) merchantAuth.setBusinessLicenceImg(temp.getBusinessLicenceImg());
+      if (temp.getBusinessNo() != null) merchantAuth.setBusinessNo(temp.getBusinessNo());
+      if (temp.getBusinessScope() != null) merchantAuth.setBusinessScope(temp.getBusinessScope());
+      if (temp.getBusinessType() != null) merchantAuth.setBusinessType(temp.getBusinessType());
+
+      merchantAuth.setBusinessInfoAuthStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
+      hasUpdate = true;
+      // TODO 保存到结算表里面
+
     }
 
     // 有更新就设置为待审核

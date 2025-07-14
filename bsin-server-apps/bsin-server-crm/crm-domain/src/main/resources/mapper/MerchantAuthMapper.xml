@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="me.flyray.bsin.infrastructure.mapper.MerchantAuthMapper">
+<mapper namespace="generator.mapper.MerchantAuthMapper">
 
-    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.MerchantAuth">
+    <resultMap id="BaseResultMap" type="generator.domain.MerchantAuth">
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
@@ -16,6 +16,7 @@
             <result property="legalPersonIdCardNational" column="legal_person_id_card_national" jdbcType="VARCHAR"/>
             <result property="legalPersonIdCardCopy" column="legal_person_id_card_copy" jdbcType="VARCHAR"/>
             <result property="legalPersonCredNo" column="legal_person_cred_no" jdbcType="VARCHAR"/>
+            <result property="legalPersonPhone" column="legal_person_phone" jdbcType="VARCHAR"/>
             <result property="legalPersonInfoAuthStatus" column="legal_person_info_auth_status" jdbcType="VARCHAR"/>
             <result property="businessLicenceImg" column="business_licence_img" jdbcType="VARCHAR"/>
             <result property="businessNo" column="business_no" jdbcType="VARCHAR"/>
@@ -23,7 +24,6 @@
             <result property="businessType" column="business_type" jdbcType="VARCHAR"/>
             <result property="businessInfoAuthStatus" column="business_info_auth_status" jdbcType="VARCHAR"/>
             <result property="logoUrl" column="logo_url" jdbcType="VARCHAR"/>
-            <result property="contactName" column="contact_name" jdbcType="VARCHAR"/>
             <result property="contactPhone" column="contact_phone" jdbcType="VARCHAR"/>
             <result property="website" column="website" jdbcType="VARCHAR"/>
             <result property="merchantAddress" column="merchant_address" jdbcType="VARCHAR"/>
@@ -52,5 +52,4 @@
         auth_status,description,version,
         del_flag,remark
     </sql>
-
 </mapper>

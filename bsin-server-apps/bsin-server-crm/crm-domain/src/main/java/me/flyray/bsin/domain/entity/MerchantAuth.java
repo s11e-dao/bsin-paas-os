@@ -1,6 +1,9 @@
 package me.flyray.bsin.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -56,14 +59,19 @@ public class MerchantAuth implements Serializable {
     private String legalPersonCredType;
 
     /**
+     * 法人证件国徽面
+     */
+    private String legalPersonIdCardNational;
+
+    /**
+     * 法人证件正面
+     */
+    private String legalPersonIdCardCopy;
+
+    /**
      * 法人证件号码
      */
     private String legalPersonCredNo;
-
-    /**
-     * 法人电话
-     */
-    private String legalPersonPhone;
 
     /**
      * 法人信息认证状态
@@ -104,6 +112,11 @@ public class MerchantAuth implements Serializable {
      * 联系手机号
      */
     private String contactPhone;
+
+    /**
+     * 联系人电话
+     */
+    private String contactName;
 
     /**
      * 企业官网

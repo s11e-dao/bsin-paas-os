@@ -17,14 +17,17 @@
             <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="regionCode" column="region_code" jdbcType="VARCHAR"/>
             <result property="businessModel" column="business_model" jdbcType="VARCHAR"/>
             <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+            <result property="gradeNo" column="grade_no" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         serial_no,store_name,password,address,
-        longitude,latitude,business_hours,
+        longitude,latitude,business_hours,region_code,
         description,logo,merchant_no,business_model,type,
-        tenant_id,del_flag
+        tenant_id,del_flag,grade_no
     </sql>
+
 </mapper>

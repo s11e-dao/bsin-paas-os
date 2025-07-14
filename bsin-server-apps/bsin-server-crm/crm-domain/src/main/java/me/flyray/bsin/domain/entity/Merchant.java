@@ -152,4 +152,9 @@ public class Merchant implements Serializable {
 
     private String username;
 
+    /**
+     * 等级序列号（关联crm_grade）
+     */
+    private String gradeNo;
+
 }
