@@ -68,6 +68,7 @@ public class MerchantServiceImpl implements MerchantService {
   @Autowired private CustomerIdentityMapper customerIdentityMapper;
   @Autowired public MerchantSubscribeJournalMapper merchantSubscribeJournalMapper;
   @Autowired private MemberMapper memberMapper;
+  @Autowired private SettlementAccountMapper settlementAccountMapper;
 
   @DubboReference(version = "${dubbo.provider.version}")
   private CustomerService customerService;
@@ -252,17 +253,11 @@ public class MerchantServiceImpl implements MerchantService {
     // 处理结算信息
     Object settlementInfo = MapUtils.getObject(requestMap, "settlementInfo");
     if (settlementInfo != null) {
-      MerchantAuth temp = BsinServiceContext.getReqBodyDto(MerchantAuth.class, (Map<String, Object>) settlementInfo);
-      // 只复制营业信息相关字段
-      if (temp.getBusinessLicenceImg() != null) merchantAuth.setBusinessLicenceImg(temp.getBusinessLicenceImg());
-      if (temp.getBusinessNo() != null) merchantAuth.setBusinessNo(temp.getBusinessNo());
-      if (temp.getBusinessScope() != null) merchantAuth.setBusinessScope(temp.getBusinessScope());
-      if (temp.getBusinessType() != null) merchantAuth.setBusinessType(temp.getBusinessType());
-
+      SettlementAccount settlementAccount = BsinServiceContext.getReqBodyDto(SettlementAccount.class, (Map<String, Object>) settlementInfo);
       merchantAuth.setBusinessInfoAuthStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
       hasUpdate = true;
       // TODO 保存到结算表里面
-
+      settlementAccountMapper.insert(settlementAccount);
     }
 
     // 有更新就设置为待审核
