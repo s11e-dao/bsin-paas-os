@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.SettlementAccountMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.SettlementAccount">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="bizRoleType" column="biz_role_type" jdbcType="VARCHAR"/>
+            <result property="bizRoleTypeNo" column="biz_role_type_no" jdbcType="VARCHAR"/>
+            <result property="accountNum" column="account_num" jdbcType="VARCHAR"/>
+            <result property="accountName" column="account_name" jdbcType="VARCHAR"/>
+            <result property="accountType" column="account_type" jdbcType="INTEGER"/>
+            <result property="bankName" column="bank_name" jdbcType="VARCHAR"/>
+            <result property="bankBranch" column="bank_branch" jdbcType="VARCHAR"/>
+            <result property="swiftCode" column="swift_code" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+            <result property="category" column="category" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,tenant_id,biz_role_type,
+        biz_role_type_no,account_num,account_name,
+        account_type,bank_name,bank_branch,
+        swift_code,remark,create_by,
+        create_time,update_by,update_time,
+        del_flag,category
+    </sql>
+
+</mapper>

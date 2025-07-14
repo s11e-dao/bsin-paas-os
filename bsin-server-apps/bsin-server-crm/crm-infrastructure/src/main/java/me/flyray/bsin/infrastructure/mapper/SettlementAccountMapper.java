@@ -13,4 +13,5 @@ public interface SettlementAccountMapper extends BaseMapper<SettlementAccount> {
     int batchDeleteByMerchantId(@Param("merchantId") String merchantId);
 
     int updateDelFlag(@Param("params") SettlementAccount settlementAccount);
+
 }
