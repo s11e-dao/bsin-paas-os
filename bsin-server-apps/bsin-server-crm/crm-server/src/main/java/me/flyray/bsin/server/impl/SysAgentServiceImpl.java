@@ -73,8 +73,10 @@ public class SysAgentServiceImpl implements SysAgentService {
   @Override
   public Map<String, Object> login(Map<String, Object> requestMap) {
     String username = MapUtils.getString(requestMap, "username");
+    String tenantId = MapUtils.getString(requestMap, "tenantId");
     // 查询代理商信息
     LambdaQueryWrapper<SysAgent> warapper = new LambdaQueryWrapper<>();
+    warapper.eq(SysAgent::getTenantId, tenantId);
     warapper.eq(SysAgent::getUsername, username);
     warapper.eq(SysAgent::getType, CustomerType.ENTERPRISE.getCode());
     SysAgent sysAgent = sysAgentMapper.selectOne(warapper);

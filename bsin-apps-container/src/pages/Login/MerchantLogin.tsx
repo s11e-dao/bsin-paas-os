@@ -72,7 +72,7 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
   const getVerifyCode = () => {
     // 获取用户的用户名，请求后台
     if (!tenantId) {
-      return message.info('请选择节点');
+      return message.info('请选择联盟节点');
     }
     const {
       registerMerchantName: merchantName,
@@ -131,7 +131,7 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
   // 登录按钮调用
   const login = async (event: any) => {
     if (!tenantId) {
-      return message.info('请选择节点');
+      return message.info('请选择联盟节点');
     }
     // 如果用户名和密码为空，则提示
     if (!loginState.username) {
@@ -181,7 +181,7 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
   // 注册按钮调用
   const register = async (event: any) => {
     if (!tenantId) {
-      return message.info('请选择节点');
+      return message.info('请选择联盟节点');
     }
     const {
       registerMerchantName: merchantName,
@@ -264,7 +264,7 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
                   }}
                   className={styles['form-control']}
                   showSearch
-                  placeholder="请选择节点"
+                  placeholder="请选择联盟节点"
                   optionFilterProp="children"
                   onChange={onChangeTenant}
                   filterOption={(input, option) =>
@@ -361,7 +361,7 @@ let registerNotNeedAudit = process.env.registerNotNeedAudit;
                     padding: '3px 10px'
                   }}
                   showSearch
-                  placeholder="请选择节点"
+                  placeholder="请选择联盟节点"
                   optionFilterProp="children"
                   onChange={onChangeTenant}
                   filterOption={(input, option) =>

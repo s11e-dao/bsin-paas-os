@@ -79,17 +79,28 @@ export default function () {
       history.push("/home")
     }
   }
-  //@see me.flyray.bsin.security.enums.bizRoleType  用户角色类型，1.运营平台 2.租户平台 3.租户商户 4.代理商 5.租户客户 6.门店 99.无
+  //@see me.flyray.bsin.security.enums.bizRoleType  用户角色类型，1.运营平台 2.租户平台 3.租户商户 4.合伙人 5.租户客户 6.门店 99.无
   const [bizRoleType, setBizRoleType] = useState('2');
+  // 合伙人类型（节点合伙人或平台合伙人）
+  const [partnerType, setPartnerType] = useState('node');
 
   const handleBizRoleTypeChange = (e: RadioChangeEvent) => {
     setBizRoleType(e.target.value);
   };
 
+  const handlePartnerTypeChange = (e: RadioChangeEvent) => {
+    setPartnerType(e.target.value);
+    // 切换到平台合伙人时，清空租户选择
+    if (e.target.value === 'platform') {
+      setTenantId(undefined);
+    }
+  };
+
   // 节点登录
   async function nodeLogin(event: MouseEvent) {
     event.preventDefault();
-    if (bizRoleType == "2" && !tenantId) return message.info('请选择节点');
+    if (bizRoleType == "2" && !tenantId) return message.info('请选择联盟节点');
+    if (bizRoleType == "4" && partnerType === 'node' && !tenantId) return message.info('请选择联盟节点');
     if (!nodeLoginState.username) return message.info('请输入用户名');
     if (!nodeLoginState.password) return message.info('请输入密码');
     setLoadings(true);
@@ -110,7 +121,7 @@ export default function () {
       res = await sysAgentLogin({
         ...nodeLoginState,
         password: hex_md5(nodeLoginState.password),
-        tenantId: defaultTenantNo,
+        tenantId: (bizRoleType == "4" && partnerType === 'node') ? tenantId : defaultTenantNo,
       });
     }
 
@@ -173,11 +184,11 @@ export default function () {
     //   value: '21',
     // },
     {
-      label: '节点',
+      label: '联盟节点',
       value: '2',
     },
     {
-      label: '代理商',
+      label: '合伙人',
       value: '4',
     }
   ];
@@ -218,41 +229,51 @@ export default function () {
                           <Radio.Group block options={options} defaultValue="2" optionType="button" onChange={handleBizRoleTypeChange} />
                         </Flex>
                       </div>
-                      {bizRoleType === '4' ? (null) : (<div className={styles.input_wrap}>
-                        <Select
-                          bordered={false}
-                          style={{
-                            background: "none",
-                            outline: "none",
-                            borderBottom: "1px solid #bbb",
-                            border: 'none',
-                            height: '38px',
-                            margin: '8px 0',
-                            width: '100%',
-                            textAlign: 'left',
-                          }}
-                          showSearch
-                          placeholder="请选择节点"
-                          optionFilterProp="children"
-                          onChange={onChange}
-                          filterOption={(input, option) =>
-                            option?.children
-                              ?.toLowerCase()
-                              .indexOf(input.toLowerCase()) >= 0
-                          }
-                        >
-                          {tenantList?.map((item: any) => {
-                            return (
-                              <Option key={item.tenantId} value={item.tenantId}>
-                                {item.tenantName}
-                              </Option>
-                            );
-                          })}
-                        </Select>
-                      </div>
-                      )}
+                      {bizRoleType === '4' ? (
+                        // 合伙人类型选择：节点合伙人或平台合伙人
+                        <div className={styles.input_wrap_radio}>
+                          <Radio.Group onChange={handlePartnerTypeChange} value={partnerType} style={{ width: '100%' }}>
+                            <Radio value="node">节点合伙人</Radio>
+                            <Radio value="platform">平台合伙人</Radio>
+                          </Radio.Group>
+                        </div>
+                      ) : null}
+                      {(bizRoleType === '2' || (bizRoleType === '4' && partnerType === 'node')) ? (
+                        <div className={styles.input_wrap}>
+                          <Select
+                            bordered={false}
+                            style={{
+                              background: "none",
+                              outline: "none",
+                              borderBottom: "1px solid #bbb",
+                              border: 'none',
+                              height: '38px',
+                              margin: '8px 0',
+                              width: '100%',
+                              padding: '0 0 0 0',
+                            }}
+                            showSearch
+                            placeholder="请选择联盟节点"
+                            optionFilterProp="children"
+                            onChange={onChange}
+                            filterOption={(input, option) =>
+                              option?.children
+                                ?.toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            }
+                          >
+                            {tenantList?.map((item: any) => {
+                              return (
+                                <Option style={{padding: '0'}} key={item.tenantId} value={item.tenantId}>
+                                  {item.tenantName}
+                                </Option>
+                              );
+                            })}
+                          </Select>
+                        </div>
+                      ) : null}
                       <div className={styles.input_wrap}>
-                        <input type="text" minLength="4" className={styles.input_field} autoComplete="off" required
+                        <input type="text" minLength={4} className={styles.input_field} autoComplete="off" required
                           name="username"
                           placeholder="用户名"
                           onChange={nodeLoginInputChange} />
@@ -287,13 +308,13 @@ export default function () {
                     <div className={styles.actual_form}>
 
                       <div className={styles.input_wrap}>
-                        <input type="text" minLength="4" className={styles.input_field} autoComplete="off" required
+                        <input type="text" minLength={4} className={styles.input_field} autoComplete="off" required
                           name="username"
                           placeholder="用户名"
                           onChange={rootLoginInputChange} />
                       </div>
                       <div className={styles.input_wrap}>
-                        <input type="password" minLength="4" className={styles.input_field} autoComplete="off" required
+                        <input type="password" minLength={4} className={styles.input_field} autoComplete="off" required
                           name="password"
                           placeholder="密码"
                           onChange={rootLoginInputChange} />
@@ -306,7 +327,7 @@ export default function () {
                         登录
                       </Button>
                       <p className={styles.text}>
-                        {process.env.paasDescription} <a className={styles.toggle} onClick={() => setPagesWitching('node')}>节点登录</a>
+                        {process.env.paasDescription} <a className={styles.toggle} onClick={() => setPagesWitching('node')}>联盟节点登录</a>
                       </p>
 
                     </div>

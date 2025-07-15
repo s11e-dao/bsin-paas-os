@@ -11,7 +11,7 @@ export const userLogin = (params: any) => {
   });
 };
 
-// 节点租户登录
+// 联盟节点租户登录
 export const nodeUserLogin = (params: any) => {
   return request(crmPath + '/platform/login', {
     serviceName: 'PlatformService',
@@ -23,7 +23,7 @@ export const nodeUserLogin = (params: any) => {
   });
 };
 
-// 系统代理商登录
+// 节点合伙人登录
 export const sysAgentLogin = (params: any) => {
   return request(crmPath + '/sysAgent/login', {
     serviceName: 'SysAgentService',

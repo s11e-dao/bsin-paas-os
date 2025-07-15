@@ -138,8 +138,15 @@ body {
 .input_wrap {
     position: relative;
     height: 37px;
-    margin-top: 1.5rem;
     margin-bottom: 2rem;
+    /* background-color: red; */
+}
+
+.input_wrap_radio {
+    position: relative;
+    height: 37px;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
     /* background-color: red; */
 }
 
