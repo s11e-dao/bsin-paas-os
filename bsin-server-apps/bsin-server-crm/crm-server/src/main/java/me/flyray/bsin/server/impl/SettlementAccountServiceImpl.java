@@ -48,7 +48,6 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
             LoginUser loginUser = LoginInfoContextHelper.getLoginUser();  // 用户信息
             settlementAccount.setSerialNo(BsinSnowflake.getId());
             settlementAccount.setTenantId(loginUser.getTenantId());
-            settlementAccount.setMerchantNo(loginUser.getMerchantNo());
             settlementAccount.setBizRoleTypeNo(loginUser.getBizRoleTypeNo());
             settlementAccount.setBizRoleType(loginUser.getBizRoleType());
             settlementAccount.setCreateBy(loginUser.getBizRoleTypeNo());
