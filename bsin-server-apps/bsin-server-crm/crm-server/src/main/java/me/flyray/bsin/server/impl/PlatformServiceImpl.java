@@ -9,6 +9,7 @@ import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.CustomerType;
+import me.flyray.bsin.domain.enums.StoreType;
 import me.flyray.bsin.domain.request.PlatformDTO;
 import me.flyray.bsin.domain.request.SysTenantDTO;
 import me.flyray.bsin.domain.response.UserResp;
@@ -39,6 +40,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
 
 /**
  * 平台服务实现类
@@ -250,19 +253,20 @@ public class PlatformServiceImpl implements PlatformService {
     }
 
     /**
-     * 编辑平台信息
-     * TODO: 待实现
-     * 
      * @param requestMap 编辑请求参数
      * @return 编辑结果
      */
     @ApiDoc(desc = "edit")
     @ShenyuDubboClient("/edit")
     @Override
-    public Map<String, Object> edit(Map<String, Object> requestMap) {
-        // TODO: 实现平台信息编辑功能
-        log.warn("平台编辑功能尚未实现");
-        return Collections.emptyMap();
+    public Platform edit(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        Platform platform = BsinServiceContext.getReqBodyDto(Platform.class, requestMap);
+        platform.setTenantId(loginUser.getTenantId());
+        if (platformMapper.updateById(platform) == 0) {
+            throw new BusinessException(GRADE_NOT_EXISTS);
+        }
+        return platform;
     }
 
     /**

@@ -34,7 +34,7 @@ public interface PlatformService {
     public Map<String, Object> login(Map<String, Object> requestMap);
 
 
-    public Map<String, Object> edit(Map<String, Object> requestMap);
+    public Platform edit(Map<String, Object> requestMap);
 
     /**
      * 根据tenantId获取租户详情
