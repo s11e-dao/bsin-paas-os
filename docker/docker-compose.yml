@@ -77,9 +77,9 @@ services:
       MYSQL_MULTIPLE_DATABASES: bsin-nacos-config,bsin-shenyu-gateway,bsin-upms,bsin-crm,bsin-ai,bsin-waas,bsin-oms,bsin-community,bsin-brms,bsin-iot,bsin-damp,bsin-flowable,bsin-workflow,bsin-workflow-admin,bsin-orchestration,bsin-gateway,bsin-intelligent-decision
       MYSQL_INITDB_SKIP_TZINFO: 1
       MYSQL_ROOT_HOST: '%'
-    # networks:
-    #   compose-network: #指定network
-    #     ipv4_address: 172.28.0.12
+    networks:
+     compose-network: #指定network
+       ipv4_address: 172.28.0.12
 
   bsin-redis-3.0:
     container_name: bsin-redis-3.0
@@ -420,9 +420,9 @@ services:
       - bsin-redis-3.0
       - bsin-mysql-3.0
       - bsin-targe-gateway-3.0
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.28
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.28
 
 
   bsin-server-file-3.0:
@@ -446,9 +446,9 @@ services:
       - bsin-redis-3.0
       - bsin-mysql-3.0
       - bsin-targe-gateway-3.0
-  #    networks:
-  #      compose-network: #指定network
-  #        ipv4_address: 172.28.0.29
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.29
 
   bsin-server-community-3.0:
     container_name: bsin-server-community-3.0
@@ -471,9 +471,9 @@ services:
       - bsin-redis-3.0
       - bsin-mysql-3.0
       - bsin-targe-gateway-3.0
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.31
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.31
 
   bsin-server-oms-3.0:
     container_name: bsin-server-oms-3.0
@@ -496,9 +496,9 @@ services:
       - bsin-redis-3.0
       - bsin-mysql-3.0
       - bsin-targe-gateway-3.0
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.32
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.32
 
   bsin-server-iot-3.0:
     container_name: bsin-server-iot-3.0
@@ -541,9 +541,9 @@ services:
       - ./app-service/apps-container/dist:/home/bsin-paas-os/apps-container/dist
       - ./app-service/apps-container/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./app-service/apps-container/logs:/var/log/nginx
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.40
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.40
 
   # ui-apps
   bsin-ui-upms-3.0:
@@ -560,9 +560,9 @@ services:
       - ./app-service/ui-apps/upms/dist:/home/bsin-paas-os/ui-apps/upms/dist
       - ./app-service/ui-apps/upms/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./app-service/ui-apps/upms/logs:/var/log/nginx
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.41
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.41
 
   bsin-ui-ai-agent-3.0:
     container_name: bsin-ui-ai-agent-3.0
@@ -578,9 +578,9 @@ services:
       - ./app-service/ui-apps/ai-agent/dist:/home/bsin-paas-os/ui-apps/ai-agent/dist
       - ./app-service/ui-apps/ai-agent/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./app-service/ui-apps/ai-agent/logs:/var/log/nginx
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.42
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.42
 
   bsin-ui-waas-3.0:
     container_name: bsin-ui-waas-3.0
@@ -596,9 +596,9 @@ services:
       - ./app-service/ui-apps/waas/dist:/home/bsin-paas-os/ui-apps/waas/dist
       - ./app-service/ui-apps/waas/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./app-service/ui-apps/waas/logs:/var/log/nginx
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.43
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.43
 
 
   bsin-ui-decision-admin-3.0:
@@ -615,9 +615,9 @@ services:
       - ./app-service/ui-apps/decision-admin/dist:/home/bsin-paas-os/ui-apps/decision-admin/dist
       - ./app-service/ui-apps/decision-admin/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./app-service/ui-apps/decision-admin/logs:/var/log/nginx
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.44
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.44
 
   bsin-ui-bigan-3.0:
     container_name: bsin-ui-bigan-3.0
@@ -633,9 +633,9 @@ services:
       - ./app-service/ui-apps/bigan/dist:/home/bsin-paas-os/ui-apps/bigan/dist
       - ./app-service/ui-apps/bigan/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./app-service/ui-apps/bigan/logs:/var/log/nginx
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.45
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.45
 
   bsin-ui-data-warehouse-3.0:
     container_name: bsin-ui-data-warehouse-3.0
@@ -651,9 +651,9 @@ services:
       - ./app-service/ui-apps/data-warehouse/dist:/home/bsin-paas-os/ui-apps/data-warehouse/dist
       - ./app-service/ui-apps/data-warehouse/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./app-service/ui-apps/data-warehouse/logs:/var/log/nginx
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.46
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.46
 
   bsin-ui-doc-3.0:
     container_name: bsin-ui-doc-3.0
@@ -669,9 +669,9 @@ services:
       - ./app-service/ui-apps/doc/dist:/home/bsin-paas-os/ui-apps/doc/dist
       - ./app-service/ui-apps/doc/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./app-service/ui-apps/doc/logs:/var/log/nginx
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.47
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.47
 
   bsin-ui-sea-condition-3.0:
     container_name: bsin-ui-sea-condition-3.0
@@ -687,6 +687,6 @@ services:
       - ./app-service/ui-apps/sea-condition/dist:/home/bsin-paas-os/ui-apps/sea-condition/dist
       - ./app-service/ui-apps/sea-condition/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./app-service/ui-apps/sea-condition/logs:/var/log/nginx
-#    networks:
-#      compose-network: #指定network
-#        ipv4_address: 172.28.0.48
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.48
