@@ -21,7 +21,7 @@
         <maven-compiler-plugin.verison>3.11.0</maven-compiler-plugin.verison>
         <shenyu.version>2.7.0</shenyu.version>
         <spring-boot.version>3.2.0</spring-boot.version>
-        <spring.version>6.1.1</spring.version>
+        <spring.version>6.2.8</spring.version>
         <spring-ai.version>1.0.0</spring-ai.version>
         <spring-ai-alibaba.version>1.0.0.2</spring-ai-alibaba.version>
         <dubbo.version>3.3.4</dubbo.version>
