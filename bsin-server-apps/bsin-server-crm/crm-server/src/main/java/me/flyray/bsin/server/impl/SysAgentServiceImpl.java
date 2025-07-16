@@ -72,8 +72,10 @@ public class SysAgentServiceImpl implements SysAgentService {
   @ShenyuDubboClient("/login")
   @Override
   public Map<String, Object> login(Map<String, Object> requestMap) {
-    String username = MapUtils.getString(requestMap, "username");
     String tenantId = MapUtils.getString(requestMap, "tenantId");
+    String username = MapUtils.getString(requestMap, "username");
+    String password = MapUtils.getString(requestMap, "password");
+
     // 查询代理商信息
     LambdaQueryWrapper<SysAgent> warapper = new LambdaQueryWrapper<>();
     warapper.eq(SysAgent::getTenantId, tenantId);
@@ -85,6 +87,16 @@ public class SysAgentServiceImpl implements SysAgentService {
     if (sysAgent == null) {
       throw new BusinessException(ResponseCode.SYS_AGENT_NOT_EXISTS);
     }
+    // 判断是否是企业客户，非企业客户无法登录
+    if ("2".equals(sysAgent.getType())) {
+      throw new BusinessException("999","该账号不支持PC登录");
+    }
+
+    // 校验用户密码
+    if (!sysAgent.getPassword().equals(password)) {
+      throw new BusinessException(ResponseCode.USERNAME_PASSWORD_ERROR);
+    }
+
     LoginUser loginUser = new LoginUser();
     BeanUtil.copyProperties(sysAgent, loginUser);
 
@@ -270,7 +282,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     // 加入分销团队
     requestMap.put("sysAgentNo", sysAgent.getSerialNo());
     requestMap.put("tenantId", sysAgent.getTenantId());
-    DisTeamRelation disTeamRelation = disTeamRelationService.add(requestMap);
+    disTeamRelationService.add(requestMap);
 
     return sysAgent;
   }

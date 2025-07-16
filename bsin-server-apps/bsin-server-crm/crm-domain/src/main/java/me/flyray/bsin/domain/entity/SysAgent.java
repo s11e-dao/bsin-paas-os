@@ -26,6 +26,8 @@ public class SysAgent implements Serializable {
     @TableId
     private String serialNo;
 
+    private String parentAgentNo;
+
     /**
      * 
      */
@@ -143,10 +145,6 @@ public class SysAgent implements Serializable {
     )
     private String delFlag;
 
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
-
-    @TableField(exist = false)
     private String password;
 
     private String username;
@@ -155,5 +153,18 @@ public class SysAgent implements Serializable {
      * 等级序列号（关联crm_grade）
      */
     private String gradeNo;
+
+    /**
+     * 区域编码
+     */
+    private String regionCode;
+
+    /**
+     * 代理商级别：PROVINCE-省代理 CITY-市代理 COUNTY-县代理 DISTRICT-区代理 TOWN-镇代理 NONE-无
+     */
+    private String agentLevel;
+
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
 
 }

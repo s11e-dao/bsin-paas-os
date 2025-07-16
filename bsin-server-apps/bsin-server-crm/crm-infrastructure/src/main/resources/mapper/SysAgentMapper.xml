@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.SysAgent">
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="parentAgentNo" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
             <result property="agentName" column="agent_name" jdbcType="VARCHAR"/>
@@ -29,6 +30,8 @@
             <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>
             <result property="gradeNo" column="grade_no" jdbcType="VARCHAR"/>
+            <result property="regionCode" column="region_code" jdbcType="VARCHAR"/>
+            <result property="agentLevel" column="agent_level" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
