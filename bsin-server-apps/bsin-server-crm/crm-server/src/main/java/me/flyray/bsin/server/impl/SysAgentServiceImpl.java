@@ -9,9 +9,11 @@ import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.CustomerType;
+import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisTeamRelationService;
 import me.flyray.bsin.facade.service.SysAgentService;
+import me.flyray.bsin.facade.service.UserService;
 import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
 import me.flyray.bsin.infrastructure.mapper.MemberMapper;
 import me.flyray.bsin.infrastructure.mapper.MerchantConfigMapper;
@@ -62,6 +64,8 @@ public class SysAgentServiceImpl implements SysAgentService {
 
   @DubboReference(version = "${dubbo.provider.version}")
   private DisTeamRelationService disTeamRelationService;
+  @DubboReference(version = "${dubbo.provider.version}")
+  private UserService userService;
 
   /**
    * 企业代理商登录，个人代理商无法登录PC端
@@ -100,7 +104,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     LoginUser loginUser = new LoginUser();
     BeanUtil.copyProperties(sysAgent, loginUser);
 
-    // 查询upms用户
+    // 查询upms用户, 菜单权限是根据upms用户处理的
     Map res = new HashMap<>();
     loginUser.setUsername(sysAgent.getUsername());
     loginUser.setPhone(sysAgent.getPhone());
@@ -189,6 +193,10 @@ public class SysAgentServiceImpl implements SysAgentService {
     sysAgent.setTenantId(tenantId);
     sysAgent.setType(CustomerType.ENTERPRISE.getCode());
     sysAgent = addSysAgent(sysAgent, NULL, NULL);
+
+    // TODO 调用upms进行组织架构和权限控制处理
+    SysUserDTO sysUserDTO = new SysUserDTO();
+    userService.addSysAgentUser(sysUserDTO);
     return sysAgent;
   }
 

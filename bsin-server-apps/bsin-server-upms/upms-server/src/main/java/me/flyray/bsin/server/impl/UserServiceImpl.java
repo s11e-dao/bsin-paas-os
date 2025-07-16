@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-import me.flyray.bsin.log.annotation.Log;
+import me.flyray.bsin.log.annotation.BsinLog;
 import me.flyray.bsin.log.enums.OperateType;
 import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.biz.LoginBiz;
@@ -184,7 +184,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 新增
      */
-    @Log(title = "权限管理-用户-新增",operateType = OperateType.INSERT)
+    @BsinLog(title = "权限管理-用户-新增",operateType = OperateType.INSERT)
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
     @Override
@@ -241,7 +241,7 @@ public class UserServiceImpl implements UserService {
         SysUser sysUser = new SysUser();
         BeanUtil.copyProperties(sysUserReq, sysUser);
 
-        String merchantNo = sysUserReq.getMerchantNo();
+        String bizRoleTypeNo = sysUserReq.getBizRoleTypeNo();
         String tenantId = sysUserReq.getTenantId();
         // TODO 1、查询租户顶级机构，在租户顶级机构下添加一个部门，如果是门店根据商户的信息查询门店的上级机构
         SysOrg sysOrg = orgMapper.selectTopOrgByTenantId(sysUser.getTenantId());
@@ -253,16 +253,13 @@ public class UserServiceImpl implements UserService {
         merchantOrg.setOrgId(orgId);
         merchantOrg.setParentId(sysOrg.getOrgId());
         merchantOrg.setOrgName(sysUser.getUsername());
-        merchantOrg.setOrgCode(merchantNo);
+        merchantOrg.setOrgCode(bizRoleTypeNo);
         orgMapper.insertOrg(merchantOrg);
 
         // 2、添加添加商户部门用户
         sysUser.setType(UserType.MERCHANT.getCode());
         sysUser.setOrgId(orgId);
-        Snowflake snowflake = IdUtil.createSnowflake(1, 1);
-        sysUser.setUserId(snowflake.nextIdStr());
-        sysUser.setStoreId(sysUserReq.getStoreId());
-    //        sysUser.setMerchantId(merchantNo);
+        sysUser.setUserId(BsinSnowflake.getId());
         // 初始化密码 123456
         if (StringUtils.isEmpty(sysUser.getPassword())) {
             sysUser.setPassword("e10adc3949ba59abbe56e057f20f883e");
@@ -274,7 +271,7 @@ public class UserServiceImpl implements UserService {
         SysPost sysPost = new SysPost();
         sysPost.setPostId(postId);
         sysPost.setTenantId(sysUser.getTenantId());
-        sysPost.setPostCode(merchantNo);
+        sysPost.setPostCode(bizRoleTypeNo);
         sysPost.setPostName(sysUser.getUsername() + "岗");
         postMapper.insertPost(sysPost);
         List<String> postIds = new ArrayList<>();
@@ -282,7 +279,7 @@ public class UserServiceImpl implements UserService {
         orgPostMapper.assignPosts(orgId, postIds);
 
         // 4、给用户分配新岗位
-        userPostMapper.assignPosts(merchantNo, postIds);
+        userPostMapper.assignPosts(bizRoleTypeNo, postIds);
 
         // TODO 一个租户代理两个产品会存在两个基础应用
         // 5、查询商户对应租户代理的产品的基础应用 一个租户对应一个产品
@@ -323,9 +320,53 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 添加代理商用户
+     * 1、在顶级机构下添加一个部门： 合作伙伴
+     * 2、在合作伙伴下添加具体的合作伙伴部门
+     * 3、给具体合作伙伴部门添加用户
+     * 运营人员手动给改用户分配用户岗位角色和权限
+     * @param sysUserReq
+     * @return
+     */
+    @ApiDoc(desc = "addSysAgentUser")
+    @ShenyuDubboClient("/addSysAgentUser")
+    @Override
+    public SysUser addSysAgentUser(SysUserDTO sysUserReq){
+        log.info("请求 addMerchantUser 参数: {}", sysUserReq);
+        SysUser sysUser = new SysUser();
+        BeanUtil.copyProperties(sysUserReq, sysUser);
+
+        String bizRoleTypeNo = sysUserReq.getBizRoleTypeNo();
+        // TODO 1、查询租户顶级机构，在租户顶级机构下添加一个部门，如果是门店根据商户的信息查询门店的上级机构
+        SysOrg sysOrg = orgMapper.selectTopOrgByTenantId(sysUser.getTenantId());
+
+        // 在租户下添加商户部门
+        SysOrg merchantOrg = new SysOrg();
+        String orgId = BsinSnowflake.getId();
+        merchantOrg.setTenantId(sysUser.getTenantId());
+        merchantOrg.setOrgId(orgId);
+        merchantOrg.setParentId(sysOrg.getOrgId());
+        merchantOrg.setOrgName(sysUser.getUsername());
+        merchantOrg.setOrgCode(bizRoleTypeNo);
+        orgMapper.insertOrg(merchantOrg);
+
+        // 2、添加添加代理商部门用户
+        sysUser.setType(UserType.SYS_AGENT.getCode());
+        sysUser.setOrgId(orgId);
+        sysUser.setUserId(BsinSnowflake.getId());
+        sysUser.setBizRoleType(BizRoleType.SYS_AGENT.getCode());
+        // 初始化密码 123456
+        if (StringUtils.isEmpty(sysUser.getPassword())) {
+            sysUser.setPassword("e10adc3949ba59abbe56e057f20f883e");
+        }
+        userMapper.insertUser(sysUser);
+        return sysUser;
+    }
+
+    /**
      * 删除
      */
-    @Log(title = "权限管理-用户-删除",operateType = OperateType.DELETE)
+    @BsinLog(title = "权限管理-用户-删除",operateType = OperateType.DELETE)
     @ApiDoc(desc = "delete")
     @ShenyuDubboClient("/delete")
     @Override

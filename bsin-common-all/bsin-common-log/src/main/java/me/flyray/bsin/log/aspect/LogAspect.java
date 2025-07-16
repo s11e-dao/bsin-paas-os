@@ -10,7 +10,7 @@ import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSON;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import me.flyray.bsin.log.annotation.Log;
+import me.flyray.bsin.log.annotation.BsinLog;
 import me.flyray.bsin.log.enums.OperateStatus;
 import me.flyray.bsin.log.event.OperLogEvent;
 import io.netty.handler.codec.http.HttpMethod;
@@ -28,7 +28,6 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
-import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,7 +59,7 @@ public class LogAspect {
      * 处理请求前执行
      */
     @Before(value = "@annotation(controllerLog)")
-    public void doBefore(JoinPoint joinPoint, Log controllerLog) {
+    public void doBefore(JoinPoint joinPoint, BsinLog controllerLog) {
         StopWatch stopWatch = new StopWatch();
         KEY_CACHE.set(stopWatch);
         stopWatch.start();
@@ -72,7 +71,7 @@ public class LogAspect {
      * @param joinPoint 切点
      */
     @AfterReturning(pointcut = "@annotation(controllerLog)", returning = "outputParams")
-    public void doAfterReturning(JoinPoint joinPoint, Log controllerLog, Object outputParams) {
+    public void doAfterReturning(JoinPoint joinPoint, BsinLog controllerLog, Object outputParams) {
         handleLog(joinPoint, controllerLog, null, outputParams);
     }
 
@@ -83,11 +82,11 @@ public class LogAspect {
      * @param e         异常
      */
     @AfterThrowing(value = "@annotation(controllerLog)", throwing = "e")
-    public void doAfterThrowing(JoinPoint joinPoint, Log controllerLog, Exception e) {
+    public void doAfterThrowing(JoinPoint joinPoint, BsinLog controllerLog, Exception e) {
         handleLog(joinPoint, controllerLog, e, null);
     }
 
-    protected void handleLog(final JoinPoint joinPoint, Log controllerLog, final Exception e, Object outputParams) {
+    protected void handleLog(final JoinPoint joinPoint, BsinLog controllerLog, final Exception e, Object outputParams) {
         try {
             Map<String, Object> attachments = RpcContext.getServiceContext().getObjectAttachments();
             // *========数据库日志=========*//
@@ -140,7 +139,7 @@ public class LogAspect {
      * @param operLog 操作日志
      * @throws Exception
      */
-    public void getControllerMethodDescription(JoinPoint joinPoint, Log log, OperLogEvent operLog, Object outputParams) throws Exception {
+    public void getControllerMethodDescription(JoinPoint joinPoint, BsinLog log, OperLogEvent operLog, Object outputParams) throws Exception {
         // 设置标题
         operLog.setMethodTitle(log.title());
         // 是否需要保存request，参数和值

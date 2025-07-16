@@ -44,6 +44,8 @@ public interface UserService {
 
     public SysUser addMerchantOrStoreUser(SysUserDTO sysUserReq);
 
+    public SysUser addSysAgentUser(SysUserDTO sysUserReq);
+
     /**
      * 删除
      *
