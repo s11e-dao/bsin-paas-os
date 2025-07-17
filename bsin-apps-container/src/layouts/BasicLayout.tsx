@@ -652,7 +652,7 @@ export default () => {
             >
               {/* 内容渲染 */}
               <div style={{ display: 'flex' }}>
-                {layoutMode == 'side' && showSideMenu && appMenus && (
+                {layoutMode == 'side' && showSideMenu && appMenus && Object.keys(appMenus).length > 0 && (
                   <MenuComp appMenus={appMenus} />
                 )}
                 <div

@@ -348,7 +348,7 @@ public class UserServiceImpl implements UserService {
         sysAgentOrg.setTenantId(sysUser.getTenantId());
         sysAgentOrg.setOrgId(orgId);
         sysAgentOrg.setParentId(sysOrg.getOrgId());
-        sysAgentOrg.setOrgName(sysUser.getUsername());
+        sysAgentOrg.setOrgName(sysUser.getOrgName());
         sysAgentOrg.setOrgCode(bizRoleTypeNo);
         orgMapper.insertOrg(sysAgentOrg);
 
@@ -636,8 +636,6 @@ public class UserServiceImpl implements UserService {
         SysApp baseApp = null;
         if(BizRoleType.SYS_AGENT.getCode().equals(bizRoleType)){
             baseApp = appMapper.selectOneByAppId(sysAgentAppId);
-            sysApps = new ArrayList<>();
-            sysApps.add(baseApp);
         }else {
             // upms应用中添加租户没有sysProduct，一般从crm中添加平台的方式添加租户
             if(sysProduct != null){
@@ -646,13 +644,14 @@ public class UserServiceImpl implements UserService {
                     baseApp = tenantAppMapper.selectTenantBaseApp(tenantId, sysProduct.getProductId(), null);
                 }
             }
-            if (StringUtils.isEmpty(userId)) {
-                sysApps = new ArrayList<>();
-                sysApps.add(baseApp);
-            } else {
-                SysUser sysUser = userMapper.selectById(userId);
-                sysApps = appMapper.selectListByOrgId(sysUser.getOrgId());
-            }
+        }
+
+        if (StringUtils.isEmpty(userId)) {
+            sysApps = new ArrayList<>();
+            sysApps.add(baseApp);
+        } else {
+            SysUser sysUser = userMapper.selectById(userId);
+            sysApps = appMapper.selectListByOrgId(sysUser.getOrgId());
         }
 
         AppListResp appListResp = new AppListResp();

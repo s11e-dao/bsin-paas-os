@@ -11,6 +11,7 @@ import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.CustomerType;
 import me.flyray.bsin.domain.enums.SysAgentCategory;
 import me.flyray.bsin.domain.request.SysUserDTO;
+import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisTeamRelationService;
 import me.flyray.bsin.facade.service.SysAgentService;
@@ -107,7 +108,20 @@ public class SysAgentServiceImpl implements SysAgentService {
     BeanUtil.copyProperties(sysAgent, loginUser);
 
     // 查询upms用户, 菜单权限是根据upms用户处理的
-    Map res = new HashMap<>();
+     Map res = new HashMap<>();
+    // userService
+    SysUser sysUserReq = new SysUser();
+    BeanUtil.copyProperties(requestMap, sysUserReq);
+    UserResp userResp = userService.getUserInfo(sysUserReq);
+    Map data = new HashMap();
+    BeanUtil.copyProperties(userResp, data);
+    res.putAll(data);
+    SysUser sysUser = userResp.getSysUser();
+    // 商户认证之后不为空
+    if (sysUser != null) {
+      loginUser.setUserId(sysUser.getUserId());
+    }
+
     loginUser.setUsername(sysAgent.getUsername());
     loginUser.setPhone(sysAgent.getPhone());
     loginUser.setBizRoleTypeNo(sysAgent.getSerialNo());
@@ -203,7 +217,8 @@ public class SysAgentServiceImpl implements SysAgentService {
     sysUserDTO.setTenantId(loginUser.getTenantId());
     // 用户名称
     sysUserDTO.setBizRoleTypeNo(sysAgent.getSerialNo());
-    sysUserDTO.setUsername(sysAgent.getAgentName());
+    sysUserDTO.setUsername(sysAgent.getUsername());
+    sysUserDTO.setOrgName(sysAgent.getAgentName());
     userService.addSysAgentUser(sysUserDTO);
     return sysAgent;
   }
