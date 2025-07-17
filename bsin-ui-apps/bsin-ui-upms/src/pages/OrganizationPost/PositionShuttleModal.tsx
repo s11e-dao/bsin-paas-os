@@ -65,7 +65,7 @@ const PositionShuttleModal: FC<PositionFormModalPropsType> = ({
     });
     // 刷新proTable
     actionRef.current?.reload();
-    code === '000000'
+    code === 0
       ? message.success('分配岗位成功')
       : message.error(`错误：${messageInfo}！`);
     // 刷新proTable
@@ -86,7 +86,7 @@ const PositionShuttleModal: FC<PositionFormModalPropsType> = ({
   return (
     <Modal
       title="机构分配岗位"
-      visible={isAssignModal}
+      open={isAssignModal}
       onOk={confirmAssignPost}
       onCancel={() => {
         closeAssignModal(false);

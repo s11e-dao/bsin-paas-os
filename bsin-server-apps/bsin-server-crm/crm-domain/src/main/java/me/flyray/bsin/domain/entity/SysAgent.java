@@ -102,7 +102,7 @@ public class SysAgent implements Serializable {
     private String type;
 
     /**
-     * 代理商类型：1、系统级代理 2、租户级代理
+     * 代理商类别：1、平台代理 2、分销代理
      */
     private String category;
 

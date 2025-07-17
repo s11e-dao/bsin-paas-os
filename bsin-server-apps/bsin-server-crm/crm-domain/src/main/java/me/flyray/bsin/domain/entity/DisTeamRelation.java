@@ -16,13 +16,13 @@ import java.io.Serializable;
 @TableName(value ="crm_dis_team_relation")
 public class DisTeamRelation implements Serializable {
     /**
-     * 
+     * 上级分销员ID
      */
     @TableId
     private String serialNo;
 
     /**
-     * 上级分销员ID
+     * 租户ID
      */
     private String tenantId;
 

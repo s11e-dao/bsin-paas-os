@@ -18,6 +18,7 @@ import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
@@ -70,10 +71,14 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         // 生成crm_sys_agent 数据后调用,requestMap ->{"sysAgentNo": 成为分销后的serial_no, "tenantId":租户ID}
         DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
         String customerNo = MapUtils.getString(requestMap, "customerNo");
+        String merchantNo = MapUtils.getString(requestMap, "merchantNo");
         String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
         String tenantId = MapUtils.getString(requestMap, "tenantId");
         // 查询分销模型配置信息
-        DisModel disModel = disModelMapper.selectById(tenantId);
+        LambdaQueryWrapper queryWrapper =new LambdaQueryWrapper<DisModel>()
+                .eq(DisModel::getTenantId, tenantId)
+                .eq(ObjectUtils.isNotEmpty(merchantNo),DisModel::getMerchantNo, merchantNo);
+        DisModel disModel = disModelMapper.selectOne(queryWrapper);
         if (disModel == null) {
             throw new BusinessException(DIS_MODEL_NOT_EXISTS);
         }

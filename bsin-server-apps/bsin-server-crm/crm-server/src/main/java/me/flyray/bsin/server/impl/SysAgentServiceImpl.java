@@ -9,6 +9,7 @@ import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.CustomerType;
+import me.flyray.bsin.domain.enums.SysAgentCategory;
 import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.DisTeamRelationService;
@@ -36,6 +37,7 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -187,7 +189,9 @@ public class SysAgentServiceImpl implements SysAgentService {
   @ApiDoc(desc = "add")
   @ShenyuDubboClient("/add")
   @Override
+  @Transactional
   public SysAgent add(Map<String, Object> requestMap) {
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
     String tenantId = LoginInfoContextHelper.getTenantId();
     sysAgent.setTenantId(tenantId);
@@ -196,6 +200,10 @@ public class SysAgentServiceImpl implements SysAgentService {
 
     // TODO 调用upms进行组织架构和权限控制处理
     SysUserDTO sysUserDTO = new SysUserDTO();
+    sysUserDTO.setTenantId(loginUser.getTenantId());
+    // 用户名称
+    sysUserDTO.setBizRoleTypeNo(sysAgent.getSerialNo());
+    sysUserDTO.setUsername(sysAgent.getAgentName());
     userService.addSysAgentUser(sysUserDTO);
     return sysAgent;
   }
@@ -287,10 +295,12 @@ public class SysAgentServiceImpl implements SysAgentService {
       customerIdentityMapper.insert(customerIdentity);
     }
 
-    // 加入分销团队
-    requestMap.put("sysAgentNo", sysAgent.getSerialNo());
-    requestMap.put("tenantId", sysAgent.getTenantId());
-    disTeamRelationService.add(requestMap);
+    // 如果是平台代理，不需要加入分销团队
+    if(SysAgentCategory.DIS_AGENT.getCode().equals(sysAgent.getCategory())){
+      requestMap.put("sysAgentNo", sysAgent.getSerialNo());
+      requestMap.put("tenantId", sysAgent.getTenantId());
+      disTeamRelationService.add(requestMap);
+    }
 
     return sysAgent;
   }

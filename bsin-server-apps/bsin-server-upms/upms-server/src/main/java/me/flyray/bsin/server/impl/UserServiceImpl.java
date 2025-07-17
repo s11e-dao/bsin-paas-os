@@ -335,20 +335,22 @@ public class UserServiceImpl implements UserService {
         log.info("请求 addMerchantUser 参数: {}", sysUserReq);
         SysUser sysUser = new SysUser();
         BeanUtil.copyProperties(sysUserReq, sysUser);
-
         String bizRoleTypeNo = sysUserReq.getBizRoleTypeNo();
+        if(bizRoleTypeNo  ==null){
+            throw new BusinessException("999", "业务角色类型编号不能为空！");
+        }
         // TODO 1、查询租户顶级机构，在租户顶级机构下添加一个部门，如果是门店根据商户的信息查询门店的上级机构
         SysOrg sysOrg = orgMapper.selectTopOrgByTenantId(sysUser.getTenantId());
 
         // 在租户下添加商户部门
-        SysOrg merchantOrg = new SysOrg();
+        SysOrg sysAgentOrg = new SysOrg();
         String orgId = BsinSnowflake.getId();
-        merchantOrg.setTenantId(sysUser.getTenantId());
-        merchantOrg.setOrgId(orgId);
-        merchantOrg.setParentId(sysOrg.getOrgId());
-        merchantOrg.setOrgName(sysUser.getUsername());
-        merchantOrg.setOrgCode(bizRoleTypeNo);
-        orgMapper.insertOrg(merchantOrg);
+        sysAgentOrg.setTenantId(sysUser.getTenantId());
+        sysAgentOrg.setOrgId(orgId);
+        sysAgentOrg.setParentId(sysOrg.getOrgId());
+        sysAgentOrg.setOrgName(sysUser.getUsername());
+        sysAgentOrg.setOrgCode(bizRoleTypeNo);
+        orgMapper.insertOrg(sysAgentOrg);
 
         // 2、添加添加代理商部门用户
         sysUser.setType(UserType.SYS_AGENT.getCode());
