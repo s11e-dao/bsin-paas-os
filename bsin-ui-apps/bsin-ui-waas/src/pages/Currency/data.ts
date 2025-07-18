@@ -17,7 +17,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   // 配置搜索框
   {
     title: '币种名称',
-    dataIndex: 'agentName',
+    dataIndex: 'chainCoinName',
     hideInTable: true,
     fieldProps: {
       maxLength: 20,
@@ -25,7 +25,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '币种符号',
-    dataIndex: 'tenantId',
+    dataIndex: 'coin',
     hideInTable: true,
     fieldProps: {
       maxLength: 20,
@@ -42,19 +42,19 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '币种名称',
     width: 160,
-    dataIndex: 'agentName',
+    dataIndex: 'chainCoinName',
     hideInSearch: true,
   },
   {
     title: '币种符号',
     width: 160,
-    dataIndex: 'username',
+    dataIndex: 'coin',
     hideInSearch: true,
   },
   {
     title: '币种描述',
     width: 160,
-    dataIndex: 'description',
+    dataIndex: 'remark',
     hideInSearch: true,
   },
   {

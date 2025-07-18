@@ -208,7 +208,7 @@ export default () => {
       />
       {/* 新增合约模板模态框 */}
       <Modal
-        title="添加代理商"
+        title="添加币种"
         centered
         open={isTemplateModal}
         onOk={confirmTemplate}
@@ -223,9 +223,9 @@ export default () => {
           initialValues={{ productCode: '0' }}
         >
           <Form.Item
-            label="代理商名称"
-            name="agentName"
-            rules={[{ required: true, message: '请输入代理商名称!' }]}
+            label="币种名称"
+            name="chainCoinName"
+            rules={[{ required: true, message: '请输入币种名称!' }]}
           >
             <Input />
           </Form.Item>
