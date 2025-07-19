@@ -54,9 +54,6 @@ public class DisCommissionJournalServiceImpl implements DisCommissionJournalServ
     private DisTeamRelationMapper disTeamRelationMapper;
 
     @Autowired
-    private DisCommissionConfigMapper disBrokerageConfigMapper;
-
-    @Autowired
     private AccountBiz accountBiz;
 
     @ApiDoc(desc = "add")
