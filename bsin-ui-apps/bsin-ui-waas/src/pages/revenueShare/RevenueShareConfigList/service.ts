@@ -13,18 +13,6 @@ export const getProfitSharingConfigPageList = (params: any) => {
   });
 };
 
-// 配置分账规则
-export const configProfitSharingConfig = (params: any) => {
-  return request(waasPath + '/profitSharingConfig/config', {
-    serviceName: 'ProfitSharingConfigService',
-    methodName: 'config',
-    version: '1.0',
-    bizParams: {
-      ...params,
-    },
-  });
-};
-
 // 查询分账配置详情
 export const getProfitSharingConfigDetail = (params: any) => {
   return request(waasPath + '/profitSharingConfig/getDetail', {
@@ -36,4 +24,3 @@ export const getProfitSharingConfigDetail = (params: any) => {
     },
   });
 };
-

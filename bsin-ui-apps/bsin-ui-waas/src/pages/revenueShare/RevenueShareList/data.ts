@@ -1,103 +1,145 @@
 import type { ProColumns } from '@ant-design/pro-table';
 
-export type columnsDataType = {
-  order: number;
-  acName: string;
-  custNo: string;
-  acNo: string;
-  balance: string;
-  custType: string;
-  openAcDate: string;
+export type RevenueShareDataType = {
+  serialNo: string;
+  transactionNo: string;
+  tenantId: string;
+  amount: number;
+  superTenantAmount: number;
+  tenantAmount: number;
+  sysAgentAmount: number;
+  customerAmount: number;
+  distributorAmount: number;
+  exchangeDigitalPointsAmount: number;
   status: string;
-  startTime: string;
-  endTime: string;
+  createTime: string;
 };
 
-const columnsData: ProColumns<columnsDataType>[] = [
+const columnsData: ProColumns<RevenueShareDataType>[] = [
   // 配置搜索框
   {
-    title: '协议类型',
-    dataIndex: 'type',
+    title: '交易编号',
+    dataIndex: 'transactionNo',
+    hideInTable: true,
+    fieldProps: {
+      maxLength: 32,
+    },
+  },
+  {
+    title: '租户ID',
+    dataIndex: 'tenantId',
+    hideInTable: true,
+    fieldProps: {
+      maxLength: 32,
+    },
+  },
+  {
+    title: '状态',
+    dataIndex: 'status',
     valueType: 'select',
     hideInTable: true,
     valueEnum: {
-      0: {
-        text: 'ERC20',
+      'PENDING': {
+        text: '待处理',
       },
-      1: {
-        text: 'ERC721',
+      'SUCCESS': {
+        text: '成功',
       },
-      2: {
-        text: 'ERC1155',
+      'FAILED': {
+        text: '失败',
       },
-    },
-  },
-  {
-    title: '协议名称',
-    dataIndex: 'protocolName',
-    hideInTable: true,
-    fieldProps: {
-      maxLength: 20,
-    },
-  },
-  {
-    title: '协议编号',
-    dataIndex: 'protocolCode',
-    hideInTable: true,
-    fieldProps: {
-      maxLength: 20,
     },
   },
 
   // table里面的内容
   {
-    title: '协议ID',
+    title: '分账ID',
     width: 190,
     dataIndex: 'serialNo',
     fixed: 'left',
     hideInSearch: true,
   },
   {
-    title: '协议名称',
+    title: '交易编号',
     width: 160,
-    dataIndex: 'protocolName',
+    dataIndex: 'transactionNo',
     hideInSearch: true,
   },
   {
-    title: '协议编号',
+    title: '租户ID',
     width: 160,
-    dataIndex: 'protocolCode',
+    dataIndex: 'tenantId',
     hideInSearch: true,
   },
   {
-    title: '协议类型',
+    title: '交易金额',
+    width: 120,
+    dataIndex: 'amount',
+    hideInSearch: true,
+    render: (text) => `¥${text}`,
+  },
+  {
+    title: '运营平台分账',
+    width: 140,
+    dataIndex: 'superTenantAmount',
+    hideInSearch: true,
+    render: (text) => `¥${text}`,
+  },
+  {
+    title: '租户平台分账',
+    width: 140,
+    dataIndex: 'tenantAmount',
+    hideInSearch: true,
+    render: (text) => `¥${text}`,
+  },
+  {
+    title: '代理商分账',
+    width: 120,
+    dataIndex: 'sysAgentAmount',
+    hideInSearch: true,
+    render: (text) => `¥${text}`,
+  },
+  {
+    title: '消费者返利',
+    width: 120,
+    dataIndex: 'customerAmount',
+    hideInSearch: true,
+    render: (text) => `¥${text}`,
+  },
+  {
+    title: '分销者分账',
+    width: 120,
+    dataIndex: 'distributorAmount',
+    hideInSearch: true,
+    render: (text) => `¥${text}`,
+  },
+  {
+    title: '数字积分兑换',
+    width: 140,
+    dataIndex: 'exchangeDigitalPointsAmount',
+    hideInSearch: true,
+    render: (text) => `¥${text}`,
+  },
+  {
+    title: '状态',
     width: 100,
     hideInSearch: true,
-    dataIndex: 'type',
+    dataIndex: 'status',
     valueType: 'select',
     valueEnum: {
-      0: {
-        text: 'ERC20',
+      'PENDING': {
+        text: '待处理',
+        status: 'Processing',
       },
-      1: {
-        text: 'ERC721',
+      'SUCCESS': {
+        text: '成功',
+        status: 'Success',
       },
-      2: {
-        text: 'ERC1155',
+      'FAILED': {
+        text: '失败',
+        status: 'Error',
       },
     },
-  },
-  {
-    title: '协议描述',
-    width: 160,
-    dataIndex: 'description',
-    hideInSearch: true,
-  },
-  {
-    title: '创建者',
-    width: 160,
-    dataIndex: 'createBy',
-    hideInSearch: true,
   },
   {
     title: '创建时间',

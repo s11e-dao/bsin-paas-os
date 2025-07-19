@@ -1,10 +1,10 @@
 import { request } from '@umijs/max'
 let waasPath = process.env.contextPath_waas;
 
-// 分页查询合约配置
-export const getContractProtocolPageList = (params) => {
+// 分页查询分账明细
+export const getRevenueSharePageList = (params: any) => {
   return request(waasPath + '/transaction/getPageList', {
-    serviceName: 'profitSharingConfigprofitSharingConfig',
+    serviceName: 'TransactionService',
     methodName: 'getPageList',
     version: '1.0',
     bizParams: {
@@ -13,36 +13,11 @@ export const getContractProtocolPageList = (params) => {
   });
 };
 
-// 创建合约配置
-export const addContractProtocol = (params) => {
-  return request(waasPath + '/transaction/add', {
-    serviceName: 'ContractProtocolService',
-    methodName: 'add',
-    version: '1.0',
-    bizParams: {
-      ...params,
-    },
-  });
-};
-
-// 删除合约配置
-export const deleteContractProtocol = (params) => {
-  return request(waasPath + '/transaction/del', {
-    serviceName: 'ContractProtocolService',
-    methodName: 'delete',
-    version: '1.0',
-    bizParams: {
-      ...params,
-    },
-  });
-};
-
-// 查询合约配置详情
-export const getContractProtocolDetail = (params) => {
-  console.log('params', params);
-  return request(waasPath + '/transaction/view', {
-    serviceName: 'ContractProtocolService',
-    methodName: 'getContractProtocolDetail',
+// 查询分账明细详情
+export const getRevenueShareDetail = (params: any) => {
+  return request(waasPath + '/transaction/getDetail', {
+    serviceName: 'TransactionService',
+    methodName: 'getDetail',
     version: '1.0',
     bizParams: {
       ...params,
