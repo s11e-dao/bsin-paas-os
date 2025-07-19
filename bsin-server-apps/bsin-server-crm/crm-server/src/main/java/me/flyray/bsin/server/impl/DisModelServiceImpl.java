@@ -89,7 +89,7 @@ public class DisModelServiceImpl implements DisModelService {
     @Override
     public DisModel getDetail(Map<String, Object> requestMap){
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        DisModel disModel = disModelMapper.selectById(loginUser.getTenantId());
+        DisModel disModel = disModelMapper.selectOne(new LambdaQueryWrapper<DisModel>().eq(DisModel::getTenantId, loginUser.getTenantId()));
         return disModel;
     }
 
