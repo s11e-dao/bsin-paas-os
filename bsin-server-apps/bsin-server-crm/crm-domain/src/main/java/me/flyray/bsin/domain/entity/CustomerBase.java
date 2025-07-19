@@ -108,7 +108,7 @@ public class CustomerBase implements Serializable {
     private String avatar;
 
     /**
-     * 客户|租户|商户|代理商类型 0、个人客户 1、企业客户
+     * 客户|租户|商户|合伙人类型 0、个人客户 1、企业客户
      * @see CustomerType
      */
     private String type;

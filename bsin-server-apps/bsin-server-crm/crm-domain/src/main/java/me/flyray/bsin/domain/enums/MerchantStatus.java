@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * @author bolei
  * @date 2023/8/22
  *
- * @desc 商户|平台|代理商状态：0 正常 1 冻结 2 待审核
+ * @desc 商户|平台|合伙人状态：0 正常 1 冻结 2 待审核
  */
 public enum MerchantStatus {
 

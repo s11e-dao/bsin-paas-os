@@ -40,9 +40,9 @@ public class DisCommissionConfig implements Serializable {
     private BigDecimal tenantRate;
 
     /**
-     * 代理商分佣比例
+     * 合伙人分佣比例
      */
-    @NotBlank(message = "代理商分佣比例不能为空！", groups = AddGroup.class)
+    @NotBlank(message = "合伙人分佣比例不能为空！", groups = AddGroup.class)
     private BigDecimal sysAgentRate;
 
     /**

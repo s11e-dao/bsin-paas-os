@@ -7,18 +7,18 @@ import me.flyray.bsin.domain.entity.SysAgent;
 import java.util.Map;
 
 /**
- * 系统代理商服务
+ * 系统合伙人服务
  */
 
 public interface SysAgentService {
 
     /**
-     * 代理商登录
+     * 合伙人登录
      */
     public Map<String, Object> login(Map<String, Object> requestMap);
 
     /**
-     * 开通代理商
+     * 开通合伙人
      */
     public SysAgent openSysAgent(Map<String, Object> requestMap);
 

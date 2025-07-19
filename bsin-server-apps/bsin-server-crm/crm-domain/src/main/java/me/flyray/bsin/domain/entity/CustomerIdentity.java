@@ -30,13 +30,13 @@ public class CustomerIdentity implements Serializable {
   private String username;
 
   /**
-   * 身份类型：商户|客户|代理商
+   * 身份类型：商户|客户|合伙人
    *
    * @see me.flyray.bsin.security.enums.BizRoleType
    */
   private String bizRoleType;
 
-  /** 身份类型编号：商户号|代理商号 */
+  /** 身份类型编号：商户号|合伙人号 */
   private String bizRoleTypeNo;
 
   /** 逻辑删除 0、未删除 1、已删除 */

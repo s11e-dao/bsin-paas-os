@@ -26033,7 +26033,7 @@ CREATE TABLE `sys_user` (
   `status` int(11) NOT NULL DEFAULT '0' COMMENT '状态 0，在岗 1，离职 ',
   `org_id` varchar(100) NOT NULL COMMENT '所属机构编号',
   `tenant_id` varchar(30) NOT NULL COMMENT '租户id',
-  `biz_role_type` varchar(255) DEFAULT '99' COMMENT '业务角色类型，用户角色类型，1.运营平台 2.租户平台 3.租户商户 4.代理商 5.租户客户 6.门店 99.无',
+  `biz_role_type` varchar(255) DEFAULT '99' COMMENT '业务角色类型，用户角色类型，1.运营平台 2.租户平台 3.租户商户 4.合伙人 5.租户客户 6.门店 99.无',
   `nickname` varchar(255) DEFAULT NULL COMMENT '用户昵称',
   `phone` varchar(20) DEFAULT NULL COMMENT '用户手机号',
   `sex` int(2) DEFAULT NULL COMMENT '性别',

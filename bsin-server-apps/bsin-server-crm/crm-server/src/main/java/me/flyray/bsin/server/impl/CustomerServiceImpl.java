@@ -150,7 +150,7 @@ public class CustomerServiceImpl implements CustomerService {
     List<CustomerIdentity> identityList =
         customerBiz.getCustomerIdentityList(customerInfo.getCustomerNo());
     log.info("identityList: " + identityList.toString());
-    // 代理商信息
+    // 合伙人信息
     SysAgent sysAgentInfo = disInviteRelationMapper.selectSysAgent(customerInfo.getCustomerNo());
 
     String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
@@ -212,7 +212,7 @@ public class CustomerServiceImpl implements CustomerService {
       }
       phone = customerInfo.getPhone();
       res.put("customerInfo", customerInfo);
-      // 代理商信息
+      // 合伙人信息
       SysAgent sysAgentInfo = disInviteRelationMapper.selectSysAgent(customerInfo.getCustomerNo());
       res.put("sysAgentInfo", sysAgentInfo);
     } else if (BizRoleType.MERCHANT.getCode().equals(bizRoleType)) {
@@ -235,7 +235,7 @@ public class CustomerServiceImpl implements CustomerService {
       res.put("merchantInfo", merchantInfo);
       phone = merchantInfo.getPhone();
     } else if (BizRoleType.SYS_AGENT.getCode().equals(bizRoleType)) {
-      // 查询代理商信息
+      // 查询合伙人信息
       SysAgent sysAgentInfo = null;
       if (StringUtils.isNotEmpty(bizRoleTypeNo)) {
         sysAgentInfo = sysAgentMapper.selectById(bizRoleTypeNo);
@@ -417,7 +417,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);
     log.info("identityList: " + identityList.toString());
-    // 代理商信息
+    // 合伙人信息
     SysAgent sysAgentInfo = disInviteRelationMapper.selectSysAgent(customerBaseRegister.getCustomerNo());
     // 查询客户的角色信息，是否是dao创建者
     // 查询用户加入的dao信息

@@ -38,7 +38,7 @@ public class DisInviteRelation implements Serializable {
     private String parentNo;
 
     /**
-     * 所属代理商编号
+     * 所属合伙人编号
      */
     private String sysAgentNo;
 
