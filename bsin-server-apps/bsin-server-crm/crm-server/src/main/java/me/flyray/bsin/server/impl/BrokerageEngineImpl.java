@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.AccountCategory;
+import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.engine.BrokerageServiceEngine;
 import me.flyray.bsin.infrastructure.mapper.*;
@@ -32,6 +33,7 @@ import java.util.Map;
 @Service
 public class BrokerageEngineImpl implements BrokerageServiceEngine {
 
+    @Autowired private BsinServiceInvoke bsinServiceInvoke;
     @Value("${bsin.supersTenantId}")
     private String supersTenantId;
     @Autowired
@@ -157,11 +159,13 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
     private DisCommissionConfig validateAndGetConfig(Map<String, Object> requestMap) {
         String tenantId = MapUtils.getString(requestMap, "tenantId");
         // 泛化调用
-        DisCommissionConfig config = null;
-        if (config == null) {
+
+        // 4、异步调用（泛化调用解耦）订单完成方法统一处理： 根据订单类型后续处理
+        DisCommissionConfig disCommissionConfig = (DisCommissionConfig) bsinServiceInvoke.genericInvoke("ProfitSharingConfigService", "getDetailForCrm", "dev", requestMap);
+        if (disCommissionConfig == null) {
             throw new BusinessException("111","未找到分佣配置, tenantId: " + tenantId);
         }
-        return config;
+        return disCommissionConfig;
     }
 
     /**
