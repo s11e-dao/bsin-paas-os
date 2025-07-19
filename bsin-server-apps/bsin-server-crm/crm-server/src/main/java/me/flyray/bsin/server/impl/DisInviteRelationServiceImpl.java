@@ -142,7 +142,7 @@ public class DisInviteRelationServiceImpl implements DisInviteRelationService {
     }
 
     /**
-     * 查询代理商下面的客户列表
+     * 查询合伙人下面的客户列表
      * @param requestMap
      * @return
      */

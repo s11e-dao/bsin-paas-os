@@ -94,7 +94,7 @@
   <text x="320" y="482" class="node-text-en">Multi-level Distributor</text>
   
   <rect x="430" y="455" width="80" height="40" rx="6" fill="#E91E63" filter="url(#shadow)"/>
-  <text x="470" y="470" class="node-text">代理商</text>
+  <text x="470" y="470" class="node-text">合伙人</text>
   <text x="470" y="482" class="node-text-en">Agent</text>
   
   <!-- 详细分润项 -->
@@ -111,13 +111,13 @@
   <text x="290" y="612" class="node-text">更多层级...</text>
   
   <rect x="360" y="515" width="80" height="30" rx="5" fill="#AD1457" filter="url(#shadow)"/>
-  <text x="400" y="532" class="node-text">省级代理商</text>
+  <text x="400" y="532" class="node-text">省级合伙人</text>
   
   <rect x="360" y="555" width="80" height="30" rx="5" fill="#AD1457" filter="url(#shadow)"/>
-  <text x="400" y="572" class="node-text">市级代理商</text>
+  <text x="400" y="572" class="node-text">市级合伙人</text>
   
   <rect x="360" y="595" width="80" height="30" rx="5" fill="#AD1457" filter="url(#shadow)"/>
-  <text x="400" y="612" class="node-text">县级代理商</text>
+  <text x="400" y="612" class="node-text">县级合伙人</text>
   
   <!-- 分润结算 Section -->
   <text x="725" y="375" class="section-title">分润结算</text>

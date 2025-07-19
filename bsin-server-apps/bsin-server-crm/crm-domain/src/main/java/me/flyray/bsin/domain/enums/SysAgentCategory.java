@@ -3,7 +3,7 @@ package me.flyray.bsin.domain.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
- * 代理商类别：1、平台代理 2、分销代理
+ * 合伙人类别：1、平台代理 2、分销代理
  */
 public enum SysAgentCategory {
 

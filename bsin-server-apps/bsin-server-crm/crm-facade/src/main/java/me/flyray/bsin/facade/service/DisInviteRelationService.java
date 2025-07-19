@@ -32,7 +32,7 @@ public interface DisInviteRelationService {
     public Map<String, Integer> inviteStatistics(Map<String, Object> requestMap);
 
     /**
-     * 查询代理商下面的客户列表
+     * 查询合伙人下面的客户列表
      * @param requestMap
      * @return
      */

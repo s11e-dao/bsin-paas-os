@@ -1,5 +1,6 @@
 import { request } from '@umijs/max'
 let crmPath = process.env.contextPath_crm;
+let waasPath = process.env.contextPath_waas;
 
 // 分页查询客户账户
 export const getCustomerAccountPageList = (params) => {

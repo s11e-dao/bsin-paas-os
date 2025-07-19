@@ -320,7 +320,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 添加代理商用户
+     * 添加合伙人用户
      * 1、在顶级机构下添加一个部门： 合作伙伴
      * 2、在合作伙伴下添加具体的合作伙伴部门
      * 3、给具体合作伙伴部门添加用户
@@ -352,7 +352,7 @@ public class UserServiceImpl implements UserService {
         sysAgentOrg.setOrgCode(bizRoleTypeNo);
         orgMapper.insertOrg(sysAgentOrg);
 
-        // 2、添加添加代理商部门用户
+        // 2、添加添加合伙人部门用户
         sysUser.setType(UserType.SYS_AGENT.getCode());
         sysUser.setOrgId(orgId);
         sysUser.setUserId(BsinSnowflake.getId());
@@ -632,7 +632,7 @@ public class UserServiceImpl implements UserService {
         SysTenant sysTenant = tenantMapper.selectTenantInfoByTenantId(tenantId);
         SysProduct sysProduct = productMapper.selectByProductCode(sysTenant.getProductCode());
         // 根据业务角色查询默认应用，商户角色默认应用不存在是跟租户相同
-        // TODO 如果是代理商角色，则查询配置的代理商应用 sysAgentAppId
+        // TODO 如果是合伙人角色，则查询配置的合伙人应用 sysAgentAppId
         SysApp baseApp = null;
         if(BizRoleType.SYS_AGENT.getCode().equals(bizRoleType)){
             baseApp = appMapper.selectOneByAppId(sysAgentAppId);

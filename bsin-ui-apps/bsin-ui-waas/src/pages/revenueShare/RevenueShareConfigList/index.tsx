@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import {
   Modal,
+  message,
   Descriptions,
 } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import columnsData, { RevenueShareDataType } from './data';
+import columnsData, { ProfitSharingConfigDataType } from './data';
 import {
-  getRevenueSharePageList,
-  getRevenueShareDetail,
+  getProfitSharingConfigPageList,
+  getProfitSharingConfigDetail,
 } from './service';
 import TableTitle from '../../../components/TableTitle';
 
@@ -16,14 +17,14 @@ export default () => {
   // 查看模态框
   const [isViewModal, setIsViewModal] = useState(false);
   // 查看记录
-  const [viewRecord, setViewRecord] = useState<RevenueShareDataType>({} as RevenueShareDataType);
+  const [viewRecord, setViewRecord] = useState<ProfitSharingConfigDataType>({} as ProfitSharingConfigDataType);
 
   /**
    * 以下内容为表格相关
    */
 
   // 表头数据
-  const columns: ProColumns<RevenueShareDataType>[] = columnsData;
+  const columns: ProColumns<ProfitSharingConfigDataType>[] = columnsData;
 
   // 操作行数据 自定义操作行
   const actionRender: any = (text: any, record: any, index: number) => (
@@ -31,7 +32,7 @@ export default () => {
       <li>
         <a
           onClick={() => {
-            toViewDetail(record);
+            toViewConfig(record);
           }}
         >
           查看
@@ -55,9 +56,9 @@ export default () => {
   /**
    * 查看详情
    */
-  const toViewDetail = async (record: RevenueShareDataType) => {
+  const toViewConfig = async (record: ProfitSharingConfigDataType) => {
     let { serialNo } = record;
-    let viewRes = await getRevenueShareDetail({ serialNo });
+    let viewRes = await getProfitSharingConfigDetail({ serialNo });
     setIsViewModal(true);
     console.log('viewRes', viewRes);
     setViewRecord(viewRes.data || record);
@@ -66,23 +67,23 @@ export default () => {
   return (
     <div>
       {/* Pro表格 */}
-      <ProTable<RevenueShareDataType>
-        headerTitle={<TableTitle title="分账明细" />}
-        scroll={{ x: 1400 }}
+      <ProTable<ProfitSharingConfigDataType>
+        headerTitle={<TableTitle title="分账配置列表" />}
+        scroll={{ x: 1200 }}
         bordered
         // 表头
         columns={columns}
         actionRef={actionRef}
         // 请求获取的数据
         request={async (params) => {
-          let res = await getRevenueSharePageList({
+          let res = await getProfitSharingConfigPageList({
             ...params,
             pagination: {
               pageNum: params.current,
               pageSize: params.pageSize,
             },
           });
-          console.log('分账明细', res);
+          console.log('分账配置列表', res);
           const result = {
             data: res.data?.records || res.data || [],
             total: res.data?.total || res.pagination?.totalSize || 0,
@@ -105,7 +106,7 @@ export default () => {
       
       {/* 查看详情模态框 */}
       <Modal
-        title="查看分账明细详情"
+        title="查看分账配置详情"
         width={800}
         centered
         open={isViewModal}
@@ -113,43 +114,36 @@ export default () => {
         onCancel={() => setIsViewModal(false)}
       >
         {/* 详情信息 */}
-        <Descriptions title="分账明细信息" bordered>
-          <Descriptions.Item label="分账ID" span={2}>
+        <Descriptions title="分账配置信息" bordered>
+          <Descriptions.Item label="配置ID" span={2}>
             {viewRecord?.serialNo}
-          </Descriptions.Item>
-          <Descriptions.Item label="交易编号" span={2}>
-            {viewRecord?.transactionNo}
           </Descriptions.Item>
           <Descriptions.Item label="租户ID" span={2}>
             {viewRecord?.tenantId}
           </Descriptions.Item>
-          <Descriptions.Item label="交易金额">
-            ¥{viewRecord?.amount}
+          <Descriptions.Item label="运营平台分佣比例">
+            {viewRecord?.superTenantRate}%
           </Descriptions.Item>
-          <Descriptions.Item label="状态">
-            {viewRecord?.status === 'SUCCESS' ? '成功' : 
-             viewRecord?.status === 'PENDING' ? '待处理' : '失败'}
+          <Descriptions.Item label="租户平台分佣比例">
+            {viewRecord?.tenantRate}%
           </Descriptions.Item>
-          <Descriptions.Item label="运营平台分账">
-            ¥{viewRecord?.superTenantAmount}
+          <Descriptions.Item label="代理商分佣比例">
+            {viewRecord?.sysAgentRate}%
           </Descriptions.Item>
-          <Descriptions.Item label="租户平台分账">
-            ¥{viewRecord?.tenantAmount}
+          <Descriptions.Item label="消费者返利比例">
+            {viewRecord?.customerRate}%
           </Descriptions.Item>
-          <Descriptions.Item label="代理商分账">
-            ¥{viewRecord?.sysAgentAmount}
+          <Descriptions.Item label="分销者分佣比例">
+            {viewRecord?.distributorRate}%
           </Descriptions.Item>
-          <Descriptions.Item label="消费者返利">
-            ¥{viewRecord?.customerAmount}
-          </Descriptions.Item>
-          <Descriptions.Item label="分销者分账">
-            ¥{viewRecord?.distributorAmount}
-          </Descriptions.Item>
-          <Descriptions.Item label="数字积分兑换">
-            ¥{viewRecord?.exchangeDigitalPointsAmount}
+          <Descriptions.Item label="数字积分兑换比例">
+            {viewRecord?.exchangeDigitalPointsRate}%
           </Descriptions.Item>
           <Descriptions.Item label="创建时间" span={2}>
             {viewRecord?.createTime}
+          </Descriptions.Item>
+          <Descriptions.Item label="更新时间" span={2}>
+            {viewRecord?.updateTime}
           </Descriptions.Item>
         </Descriptions>
       </Modal>

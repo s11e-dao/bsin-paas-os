@@ -28,7 +28,7 @@ public class InviteRelationBiz {
         // 父级邀请人序列号
         disInviteRelation.setParentNo(parentCustomer.getCustomerNo());
         disInviteRelation.setInviteLevel(1);
-        // 邀请人代理商
+        // 邀请人合伙人
         if(sysAgent.getSerialNo() != null){
             disInviteRelation.setSysAgentNo(sysAgent.getSerialNo());
         }else {

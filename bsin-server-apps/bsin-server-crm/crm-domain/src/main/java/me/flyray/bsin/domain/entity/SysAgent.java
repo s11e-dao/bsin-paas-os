@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 系统代理商
+ * 系统合伙人
  * @TableName crm_sys_agent
  */
 
@@ -34,7 +34,7 @@ public class SysAgent implements Serializable {
     private String tenantId;
 
     /**
-     * 代理商名称
+     * 合伙人名称
      */
     private String agentName;
 
@@ -96,13 +96,13 @@ public class SysAgent implements Serializable {
 
 
     /**
-     * 客户|租户|商户|代理商类型 0、个人客户 1、企业客户
+     * 客户|租户|商户|合伙人类型 0、个人客户 1、企业客户
      * @see CustomerType
      */
     private String type;
 
     /**
-     * 代理商类别：1、平台代理 2、分销代理
+     * 合伙人类别：1、平台代理 2、分销代理
      */
     private String category;
 
@@ -160,7 +160,7 @@ public class SysAgent implements Serializable {
     private String regionCode;
 
     /**
-     * 代理商级别：PROVINCE-省代理 CITY-市代理 COUNTY-县代理 DISTRICT-区代理 TOWN-镇代理 NONE-无
+     * 合伙人级别：PROVINCE-省代理 CITY-市代理 COUNTY-县代理 DISTRICT-区代理 TOWN-镇代理 NONE-无
      */
     private String agentLevel;
 

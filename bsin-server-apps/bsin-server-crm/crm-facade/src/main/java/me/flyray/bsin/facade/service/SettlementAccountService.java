@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 用户（商户、客户、代理商）的结算提现账号
+ * 用户（商户、客户、合伙人）的结算提现账号
  */
 public interface SettlementAccountService {
 

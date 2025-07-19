@@ -32,7 +32,7 @@ public class DisTeamRelation implements Serializable {
     private String prarentSysAgentNo;
 
     /**
-     * 分销员ID(代理商ID)
+     * 分销员ID(合伙人ID)
      */
     private String sysAgentNo;
 

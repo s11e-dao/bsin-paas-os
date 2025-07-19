@@ -46,7 +46,7 @@ import java.util.Map;
 import static cn.hutool.core.text.CharSequenceUtil.NULL;
 import static me.flyray.bsin.constants.ResponseCode.*;
 
-/** 系统代理商服务 */
+/** 系统合伙人服务 */
 @Slf4j
 @ShenyuDubboService(path = "/sysAgent", timeout = 15000)
 @ApiModule(value = "sysAgent")
@@ -71,7 +71,7 @@ public class SysAgentServiceImpl implements SysAgentService {
   private UserService userService;
 
   /**
-   * 企业代理商登录，个人代理商无法登录PC端
+   * 企业合伙人登录，个人合伙人无法登录PC端
    * @param requestMap
    * @return
    */
@@ -83,14 +83,14 @@ public class SysAgentServiceImpl implements SysAgentService {
     String username = MapUtils.getString(requestMap, "username");
     String password = MapUtils.getString(requestMap, "password");
 
-    // 查询代理商信息
+    // 查询合伙人信息
     LambdaQueryWrapper<SysAgent> warapper = new LambdaQueryWrapper<>();
     warapper.eq(SysAgent::getTenantId, tenantId);
     warapper.eq(SysAgent::getUsername, username);
     warapper.eq(SysAgent::getType, CustomerType.ENTERPRISE.getCode());
     SysAgent sysAgent = sysAgentMapper.selectOne(warapper);
 
-    // TODO 判断是否是代理商员工
+    // TODO 判断是否是合伙人员工
     if (sysAgent == null) {
       throw new BusinessException(ResponseCode.SYS_AGENT_NOT_EXISTS);
     }
@@ -134,8 +134,8 @@ public class SysAgentServiceImpl implements SysAgentService {
   }
 
   /**
-   * 开通代理商
-   * 开通个人代理商
+   * 开通合伙人
+   * 开通个人合伙人
    * */
   @ApiDoc(desc = "openSysAgent")
   @ShenyuDubboClient("/openSysAgent")
@@ -296,7 +296,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     if (sysAgentMapper.insert(sysAgent) == 0) {
       throw new BusinessException(ResponseCode.DATA_BASE_UPDATE_FAILED);
     }
-    // 客户号不为空，则表示是会员申请成为代理商，需要插入客户身份表
+    // 客户号不为空，则表示是会员申请成为合伙人，需要插入客户身份表
     if (StringUtils.isNotEmpty(customerNo)) {
       // 身份表: crm_customer_identity插入数据
       CustomerIdentity customerIdentity = new CustomerIdentity();
