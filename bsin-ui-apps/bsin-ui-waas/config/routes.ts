@@ -193,6 +193,12 @@ const routes = [
         path: '/revenue-share/revenue-share-config-list',
         component: '@/pages/revenueShare/RevenueShareConfigList/index',
       },
+      // 让利配置
+      {
+        path: '/revenue-share/profit-sharing-config',
+        component: '@/pages/revenueShare/ProfitSharingConfig/index',
+      },
+
       // **************************交易*************************
       {
         path: '/transaction',

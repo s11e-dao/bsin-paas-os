@@ -45,8 +45,6 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
     @Autowired
     private DisTeamRelationMapper disTeamRelationMapper;
     @Autowired
-    private DisCommissionConfigMapper disBrokerageConfigMapper;
-    @Autowired
     private AccountBiz accountBiz;
 
     /**
@@ -154,12 +152,12 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
 
     /**
      * 验证并获取分佣配置
+     * DisCommissionConfig 是根据参数调用waas的服务获取
      */
     private DisCommissionConfig validateAndGetConfig(Map<String, Object> requestMap) {
         String tenantId = MapUtils.getString(requestMap, "tenantId");
-        DisCommissionConfig config = disBrokerageConfigMapper.selectOne(
-                new LambdaQueryWrapper<DisCommissionConfig>().eq(DisCommissionConfig::getTenantId, tenantId)
-        );
+        // 泛化调用
+        DisCommissionConfig config = null;
         if (config == null) {
             throw new BusinessException("111","未找到分佣配置, tenantId: " + tenantId);
         }
