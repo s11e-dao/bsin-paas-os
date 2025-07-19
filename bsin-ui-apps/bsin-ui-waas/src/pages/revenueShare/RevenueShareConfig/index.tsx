@@ -13,20 +13,35 @@ import {
   Progress,
   Statistic,
   message,
-  Modal
+  Modal,
+  Descriptions
 } from 'antd';
+import {
+  SaveOutlined,
+  CalculatorOutlined,
+  TableOutlined,
+  ReloadOutlined
+} from '@ant-design/icons';
+import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
+import { getLocalStorageInfo } from '../../../utils/localStorageInfo';
+import { configProfitSharingConfig, getProfitSharingConfigDetail, getProfitSharingConfigPageList } from './service';
+import { 
+  ProfitSharingConfigDataType, 
+  createProfitSharingConfigColumnsData, 
+  ConfigItemData, 
+  FormValues, 
+  defaultFormValues,
+  configItemsData
+} from './revenueShareConfigData';
 import {
   BankOutlined,
   ShopOutlined,
   TeamOutlined,
   UserOutlined,
-  SaveOutlined,
-  CalculatorOutlined,
   GiftOutlined,
   DollarOutlined
 } from '@ant-design/icons';
-import { getLocalStorageInfo } from '../../../utils/localStorageInfo';
-import { configProfitSharingConfig, getProfitSharingConfigDetail } from './service';
 
 const { Title, Text } = Typography;
 
@@ -34,27 +49,54 @@ export default () => {
   const userInfo = getLocalStorageInfo('userInfo');
   const [formRef] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  interface FormValues {
-    superTenantRate: number;
-    tenantRate: number;
-    sysAgentRate: number;
-    customerRate: number;
-    distributorRate: number;
-    exchangeDigitalPointsRate: number;
-  }
+  const [activeTab, setActiveTab] = useState<'config' | 'list'>('config');
+  
+  // 查看模态框
+  const [isViewModal, setIsViewModal] = useState(false);
+  // 查看记录
+  const [viewRecord, setViewRecord] = useState<ProfitSharingConfigDataType>({} as ProfitSharingConfigDataType);
 
-  const [formValues, setFormValues] = useState<FormValues>({
-    superTenantRate: 0,
-    tenantRate: 0,
-    sysAgentRate: 0,
-    customerRate: 0,
-    distributorRate: 0,
-    exchangeDigitalPointsRate: 0,
-  });
+  const [formValues, setFormValues] = useState<FormValues>(defaultFormValues);
 
   // 计算总比例
-  const totalRate = Object.values(formValues).reduce((sum, rate) => sum + (rate || 0), 0);
+  const totalRate = Object.values(formValues).reduce((sum: number, rate: any) => sum + (rate || 0), 0);
   const isValidTotal = totalRate === 100;
+
+  // Table action 的引用，便于自定义触发
+  const actionRef = React.useRef<ActionType>();
+
+  /**
+   * 查看详情
+   */
+  const toViewConfig = async (record: ProfitSharingConfigDataType) => {
+    let { serialNo } = record;
+    let viewRes = await getProfitSharingConfigDetail({ serialNo });
+    setIsViewModal(true);
+    console.log('viewRes', viewRes);
+    setViewRecord(viewRes.data || record);
+  };
+
+  // 创建表格列配置
+  const columnsData = createProfitSharingConfigColumnsData();
+  const columns = [
+    ...columnsData.slice(0, -1), // 除了操作列的所有列
+    {
+      ...columnsData[columnsData.length - 1], // 操作列
+      render: (text: any, record: any) => (
+        <ul className="ant-list-item-action" style={{ margin: 0 }}>
+          <li>
+            <a
+              onClick={() => {
+                toViewConfig(record);
+              }}
+            >
+              查看
+            </a>
+          </li>
+        </ul>
+      ),
+    }
+  ];
 
   React.useEffect(() => {
     getProfitSharingConfigDetail({}).then((res) => {
@@ -97,7 +139,7 @@ export default () => {
                     <Text strong>{formData.tenantRate || 0}%</Text>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Text><TeamOutlined style={{ color: '#faad14', marginRight: 8 }} />代理商：</Text>
+                    <Text><TeamOutlined style={{ color: '#faad14', marginRight: 8 }} />合伙人：</Text>
                     <Text strong>{formData.sysAgentRate || 0}%</Text>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -138,6 +180,8 @@ export default () => {
               configProfitSharingConfig(formData).then((res) => {
                 if (res.code === 0) {
                   message.success("分账配置保存成功！");
+                  // 刷新列表
+                  actionRef.current?.reload();
                   resolve(res);
                 } else {
                   message.error(`保存失败： ${res?.message}`);
@@ -165,195 +209,319 @@ export default () => {
     setFormValues(allValues);
   };
 
-  const configItems = [
-    {
-      name: 'superTenantRate',
-      label: '运营平台分佣比例',
-      icon: <BankOutlined />,
-      color: '#1890ff',
-      description: '平台运营方获得的分佣比例'
-    },
-    {
-      name: 'tenantRate',
-      label: '租户平台分佣比例',
-      icon: <ShopOutlined />,
-      color: '#52c41a',
-      description: '租户平台获得的分佣比例'
-    },
-    {
-      name: 'sysAgentRate',
-      label: '代理商分佣比例',
-      icon: <TeamOutlined />,
-      color: '#faad14',
-      description: '代理商获得的分佣比例'
-    },
-    {
-      name: 'customerRate',
-      label: '消费者返利比例',
-      icon: <UserOutlined />,
-      color: '#722ed1',
-      description: '消费者获得的返利比例'
-    },
-    {
-      name: 'distributorRate',
-      label: '分销者分佣比例',
-      icon: <GiftOutlined />,
-      color: '#eb2f96',
-      description: '分销者获得的分佣比例'
-    },
-    {
-      name: 'exchangeDigitalPointsRate',
-      label: '数字积分兑换比例',
-      icon: <DollarOutlined />,
-      color: '#13c2c2',
-      description: '佣金兑换数字积分的比例'
+  /**
+   * 读取配置
+   */
+  const loadProfitSharingConfig = async () => {
+    setLoading(true);
+    try {
+      const res = await getProfitSharingConfigDetail({});
+      if (res?.data) {
+        formRef.setFieldsValue(res?.data);
+        setFormValues(res?.data);
+        message.success('配置读取成功！');
+      } else {
+        message.info('暂无配置数据');
+      }
+    } catch (error) {
+      message.error('读取配置失败，请重试');
+      console.error('读取配置失败:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   return (
     <div style={{ padding: '24px', background: '#f5f5f5', minHeight: '100vh' }}>
       <Row gutter={[24, 24]}>
-
         <Col span={24}>
-          <Card title={
-            <Row justify="space-between" align="middle">
-              <Col>
-                <Space>
-                  <BankOutlined />
-                  分账比例设置
-                </Space>
-              </Col>
-              <Col>
-                <Space align="center">
-                  <Text type="secondary">总比例：</Text>
-                  <Text
-                    strong
-                    style={{
-                      color: isValidTotal ? '#52c41a' : '#ff4d4f',
-                      fontSize: 18,
-                    }}
-                  >
-                    {totalRate}%
-                  </Text>
-                  {isValidTotal ? (
-                    <Text type="success">✓</Text>
-                  ) : totalRate > 100 ? (
-                    <Text type="danger">⚠</Text>
-                  ) : (
-                    <Text type="warning">⚠</Text>
-                  )}
-                </Space>
-              </Col>
-            </Row>
-          }>
-            <Alert
-              message="设置规则"
-              description="所有角色的分账比例总和必须等于100%，请合理分配各角色比例"
-              type="info"
-              showIcon
-              style={{ marginBottom: 16 }}
-            />
-
-            <div style={{ marginBottom: 24 }}>
-              <Row justify="space-between" align="middle" style={{ marginBottom: 8 }}>
+          <Card 
+            title={
+              <Row justify="space-between" align="middle">
                 <Col>
-                  <Text strong>当前配置进度</Text>
+                  <Space>
+                    <BankOutlined />
+                    分账比例设置
+                  </Space>
                 </Col>
                 <Col>
-                  {isValidTotal ? (
-                    <Text type="success">✓ 比例配置正确</Text>
-                  ) : totalRate > 100 ? (
-                    <Text type="danger">⚠ 总比例超过100%</Text>
-                  ) : (
-                    <Text type="warning">⚠ 总比例不足100%</Text>
-                  )}
-                </Col>
-              </Row>
-              <Progress
-                percent={totalRate}
-                status={totalRate > 100 ? 'exception' : totalRate === 100 ? 'success' : 'active'}
-                strokeColor={totalRate > 100 ? '#ff4d4f' : totalRate === 100 ? '#52c41a' : '#1890ff'}
-                strokeWidth={8}
-              />
-            </div>
-
-            <Form
-              form={formRef}
-              layout="vertical"
-              onValuesChange={handleValuesChange}
-            >
-              <Row gutter={[16, 16]}>
-                {configItems.map((item, index) => (
-                  <Col xs={24} sm={12} md={8} key={item.name}>
-                    <Card
-                      size="small"
-                      style={{
-                        height: '100%',
-                        borderLeft: `4px solid ${item.color}`,
-                        transition: 'all 0.3s ease',
-                      }}
-                      hoverable
+                  <Space>
+                    <Button
+                      type={activeTab === 'config' ? 'primary' : 'default'}
+                      icon={<CalculatorOutlined />}
+                      onClick={() => setActiveTab('config')}
                     >
-                      <Space direction="vertical" style={{ width: '100%' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span style={{ color: item.color, fontSize: 18 }}>
-                            {item.icon}
-                          </span>
-                          <Text strong>{item.label}</Text>
-                        </div>
-
-                        <Text type="secondary" style={{ fontSize: 12 }}>
-                          {item.description}
-                        </Text>
-
-                        <Form.Item
-                          name={item.name}
-                          rules={[
-                            { required: true, message: `请输入${item.label}!` },
-                            { type: 'number', min: 0, max: 100, message: '比例应在0-100之间' }
-                          ]}
-                          style={{ margin: 0 }}
-                        >
-                          <InputNumber
-                            addonAfter="%"
-                            defaultValue={0}
-                            style={{ width: '100%' }}
-                            size="large"
-                            placeholder="输入比例"
-                          />
-                        </Form.Item>
-                      </Space>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-
-              <Divider />
-
-              <Row justify="center">
-                <Col>
-                  <Button
-                    type="primary"
-                    size="large"
-                    loading={loading}
-                    onClick={confirmActivity}
-                    icon={<SaveOutlined />}
-                    style={{
-                      height: 48,
-                      paddingLeft: 32,
-                      paddingRight: 32,
-                      fontSize: 16,
-                    }}
-                    disabled={!isValidTotal}
-                  >
-                    保存配置
-                  </Button>
+                      配置设置
+                    </Button>
+                    <Button
+                      type={activeTab === 'list' ? 'primary' : 'default'}
+                      icon={<TableOutlined />}
+                      onClick={() => setActiveTab('list')}
+                    >
+                      配置列表
+                    </Button>
+                  </Space>
                 </Col>
               </Row>
-            </Form>
+            }
+          >
+            {activeTab === 'config' && (
+              <>
+                <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
+                  <Col>
+                    <Space align="center">
+                      <Text type="secondary">总比例：</Text>
+                      <Text
+                        strong
+                        style={{
+                          color: isValidTotal ? '#52c41a' : '#ff4d4f',
+                          fontSize: 18,
+                        }}
+                      >
+                        {totalRate}%
+                      </Text>
+                      {isValidTotal ? (
+                        <Text type="success">✓</Text>
+                      ) : totalRate > 100 ? (
+                        <Text type="danger">⚠</Text>
+                      ) : (
+                        <Text type="warning">⚠</Text>
+                      )}
+                    </Space>
+                  </Col>
+                </Row>
+
+                <Alert
+                  message="设置规则"
+                  description="所有角色的分账比例总和必须等于100%，请合理分配各角色比例"
+                  type="info"
+                  showIcon
+                  style={{ marginBottom: 16 }}
+                />
+
+                <div style={{ marginBottom: 24 }}>
+                  <Row justify="space-between" align="middle" style={{ marginBottom: 8 }}>
+                    <Col>
+                      <Text strong>当前配置进度</Text>
+                    </Col>
+                    <Col>
+                      {isValidTotal ? (
+                        <Text type="success">✓ 比例配置正确</Text>
+                      ) : totalRate > 100 ? (
+                        <Text type="danger">⚠ 总比例超过100%</Text>
+                      ) : (
+                        <Text type="warning">⚠ 总比例不足100%</Text>
+                      )}
+                    </Col>
+                  </Row>
+                  <Progress
+                    percent={totalRate}
+                    status={totalRate > 100 ? 'exception' : totalRate === 100 ? 'success' : 'active'}
+                    strokeColor={totalRate > 100 ? '#ff4d4f' : totalRate === 100 ? '#52c41a' : '#1890ff'}
+                    strokeWidth={8}
+                  />
+                </div>
+
+                <Form
+                  form={formRef}
+                  layout="vertical"
+                  onValuesChange={handleValuesChange}
+                >
+                  <Row gutter={[16, 16]}>
+                    {configItemsData.map((item: ConfigItemData, index: number) => {
+                      // 根据iconName动态获取图标组件
+                      const getIcon = (iconName: string) => {
+                        switch (iconName) {
+                          case 'BankOutlined': return <BankOutlined />;
+                          case 'ShopOutlined': return <ShopOutlined />;
+                          case 'TeamOutlined': return <TeamOutlined />;
+                          case 'UserOutlined': return <UserOutlined />;
+                          case 'GiftOutlined': return <GiftOutlined />;
+                          case 'DollarOutlined': return <DollarOutlined />;
+                          default: return <BankOutlined />;
+                        }
+                      };
+                      
+                      return (
+                        <Col xs={24} sm={12} md={8} key={item.name}>
+                          <Card
+                            size="small"
+                            style={{
+                              height: '100%',
+                              borderLeft: `4px solid ${item.color}`,
+                              transition: 'all 0.3s ease',
+                            }}
+                            hoverable
+                          >
+                            <Space direction="vertical" style={{ width: '100%' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <span style={{ color: item.color, fontSize: 18 }}>
+                                  {getIcon(item.iconName)}
+                                </span>
+                                <Text strong>{item.label}</Text>
+                              </div>
+
+                              <Text type="secondary" style={{ fontSize: 12 }}>
+                                {item.description}
+                              </Text>
+
+                              <Form.Item
+                                name={item.name}
+                                rules={[
+                                  { required: true, message: `请输入${item.label}!` },
+                                  { type: 'number', min: 0, max: 100, message: '比例应在0-100之间' }
+                                ]}
+                                style={{ margin: 0 }}
+                              >
+                                <InputNumber
+                                  addonAfter="%"
+                                  defaultValue={0}
+                                  style={{ width: '100%' }}
+                                  size="large"
+                                  placeholder="输入比例"
+                                />
+                              </Form.Item>
+                            </Space>
+                          </Card>
+                        </Col>
+                      );
+                    })}
+                  </Row>
+
+                  <Divider />
+
+                  <Row justify="center" gutter={16}>
+                    <Col>
+                      <Button
+                        type="default"
+                        size="large"
+                        loading={loading}
+                        onClick={loadProfitSharingConfig}
+                        icon={<ReloadOutlined />}
+                        style={{
+                          height: 48,
+                          paddingLeft: 32,
+                          paddingRight: 32,
+                          fontSize: 16,
+                        }}
+                      >
+                        读取配置
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button
+                        type="primary"
+                        size="large"
+                        loading={loading}
+                        onClick={confirmActivity}
+                        icon={<SaveOutlined />}
+                        style={{
+                          height: 48,
+                          paddingLeft: 32,
+                          paddingRight: 32,
+                          fontSize: 16,
+                        }}
+                        disabled={!isValidTotal}
+                      >
+                        保存配置
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form>
+              </>
+            )}
+
+            {activeTab === 'list' && (
+              <ProTable<ProfitSharingConfigDataType>
+                scroll={{ x: 1200 }}
+                bordered
+                columns={columns}
+                actionRef={actionRef}
+                request={async (params) => {
+                  let res = await getProfitSharingConfigPageList({
+                    ...params,
+                    pagination: {
+                      pageNum: params.current,
+                      pageSize: params.pageSize,
+                    },
+                  });
+                  console.log('分账配置列表', res);
+                  const result = {
+                    data: res.data?.records || res.data || [],
+                    total: res.data?.total || res.pagination?.totalSize || 0,
+                  };
+                  return result;
+                }}
+                rowKey="serialNo"
+                search={{
+                  labelWidth: 'auto',
+                  collapsed: false,
+                  collapseRender: (collapsed) => (collapsed ? '展开' : '收起'),
+                }}
+                form={{
+                  ignoreRules: false,
+                }}
+                pagination={{
+                  pageSize: 10,
+                }}
+                toolBarRender={() => [
+                  <Button
+                    key="refresh"
+                    icon={<ReloadOutlined />}
+                    onClick={() => actionRef.current?.reload()}
+                  >
+                    刷新
+                  </Button>,
+                ]}
+              />
+            )}
           </Card>
         </Col>
       </Row>
+
+      {/* 查看详情模态框 */}
+      <Modal
+        title="查看分账配置详情"
+        width={800}
+        centered
+        open={isViewModal}
+        onOk={() => setIsViewModal(false)}
+        onCancel={() => setIsViewModal(false)}
+      >
+        {/* 详情信息 */}
+        <Descriptions title="分账配置信息" bordered>
+          <Descriptions.Item label="配置ID" span={2}>
+            {viewRecord?.serialNo}
+          </Descriptions.Item>
+          <Descriptions.Item label="租户ID" span={2}>
+            {viewRecord?.tenantId}
+          </Descriptions.Item>
+          <Descriptions.Item label="运营平台分佣比例">
+            {viewRecord?.superTenantRate}%
+          </Descriptions.Item>
+          <Descriptions.Item label="租户平台分佣比例">
+            {viewRecord?.tenantRate}%
+          </Descriptions.Item>
+          <Descriptions.Item label="合伙人分佣比例">
+            {viewRecord?.sysAgentRate}%
+          </Descriptions.Item>
+          <Descriptions.Item label="消费者返利比例">
+            {viewRecord?.customerRate}%
+          </Descriptions.Item>
+          <Descriptions.Item label="分销者分佣比例">
+            {viewRecord?.distributorRate}%
+          </Descriptions.Item>
+          <Descriptions.Item label="数字积分兑换比例">
+            {viewRecord?.exchangeDigitalPointsRate}%
+          </Descriptions.Item>
+          <Descriptions.Item label="创建时间" span={2}>
+            {viewRecord?.createTime}
+          </Descriptions.Item>
+          <Descriptions.Item label="更新时间" span={2}>
+            {viewRecord?.updateTime}
+          </Descriptions.Item>
+        </Descriptions>
+      </Modal>
     </div>
   );
 };
