@@ -1,297 +1,539 @@
 import React, { useState } from 'react';
 import {
-  Form,
-  Input,
-  Modal,
-  message,
-  Button,
-  Select,
-  Popconfirm,
-  Divider,
-  Descriptions,
+    Form,
+    Input,
+    Modal,
+    message,
+    Button,
+    Select,
+    Popconfirm,
+    Divider,
+    Descriptions,
+    Switch,
+    Tooltip,
+    Space,
+    Upload,
 } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import type { UploadProps } from 'antd/es/upload/interface';
 import ProTable from '@ant-design/pro-table';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, EyeOutlined, DeleteOutlined, ReloadOutlined, UploadOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './data';
 import {
-  getPayInterfacePageList,
-  addPayInterface,
-  deletePayInterface,
-  getPayInterfaceDetail,
+    getPayInterfacePageList,
+    addPayInterface,
+    editPayInterface,
+    deletePayInterface,
+    getPayInterfaceDetail,
 } from './service';
 import TableTitle from '../../../components/TableTitle';
-import { hex_md5 } from '../../../utils/md5';
+import { getSessionStorageInfo } from '../../../utils/localStorageInfo';
+const PayChannelInterface: React.FC = () => {
+    const { TextArea } = Input;
+    const { Option } = Select;
 
-export default () => {
+    // 文件上传相关配置
+    const bsinFileUploadUrl = process.env.bsinFileUploadUrl;
+    const tenantAppType = process.env.tenantAppType;
 
-  const { TextArea } = Input;
-  const { Option } = Select;
-  // 控制新增模态框
-  const [isTemplateModal, setIsTemplateModal] = useState(false);
-  // 查看模态框
-  const [isViewTemplateModal, setIsViewTemplateModal] = useState(false);
-  // 查看
-  const [isViewRecord, setIsViewRecord] = useState({});
-  // 获取表单
-  const [FormRef] = Form.useForm();
+    // 控制模态框状态
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isViewModalVisible, setIsViewModalVisible] = useState(false);
+    const [modalTitle, setModalTitle] = useState('添加支付接口');
+    const [isEdit, setIsEdit] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-  /**
-   * 以下内容为表格相关
-   */
+    // 数据状态
+    const [viewRecord, setViewRecord] = useState<columnsDataType>({} as columnsDataType);
+    const [currentRecord, setCurrentRecord] = useState<columnsDataType>({} as columnsDataType);
+    const [iconUrl, setIconUrl] = useState<string>('');
 
-  // 表头数据
-  const columns: ProColumns<columnsDataType>[] = columnsData;
+    // 获取表单
+    const [formRef] = Form.useForm();
+    // 图片上传配置
+    const uploadProps: UploadProps = {
+        name: 'file',
+        headers: {
+            Authorization: getSessionStorageInfo('token')?.token,
+        },
+        action: bsinFileUploadUrl,
+        data: {
+            tenantAppType: tenantAppType,
+            thumbnailSize: '100,100', // 缩略图尺寸
+        },
+        maxCount: 1,
+        accept: 'image/*',
+        onChange(info) {
+            const { file } = info;
+            if (file?.status === 'done') {
+                console.log('file.response:', file.response);
+                message.success(`${file.name} 图片上传成功`);
+                const uploadedUrl = file?.response?.data?.url;
+                setIconUrl(uploadedUrl);
+                formRef.setFieldValue('icon', uploadedUrl);
+            } else if (file?.status === 'error') {
+                message.error(`${file.name} 图片上传失败`);
+            }
+        },
+        onRemove() {
+            setIconUrl('');
+            formRef.setFieldValue('icon', '');
+        },
+        beforeUpload(file) {
+            const isImage = file.type.startsWith('image/');
+            if (!isImage) {
+                message.error('只能上传图片文件!');
+                return false;
+            }
+            const isLt2M = file.size / 1024 / 1024 < 2;
+            if (!isLt2M) {
+                message.error('图片大小不能超过2MB!');
+                return false;
+            }
+            return true;
+        },
+    };
+    /**
+     * 以下内容为表格相关
+     */
+    // 表头数据
+    const columns: ProColumns<columnsDataType>[] = columnsData;
+    // 操作行数据 自定义操作行
+    const actionRender = (text: any, record: columnsDataType, index: number) => (
+        <Space key={record.payChannelCode}>
+            <Tooltip title="查看详情">
+                <a onClick={() => handleView(record)}>
+                    <EyeOutlined />
+                </a>
+            </Tooltip>
+            <Divider type="vertical" />
+            <Tooltip title="编辑">
+                <a onClick={() => handleEdit(record)}>
+                    <EditOutlined />
+                </a>
+            </Tooltip>
+            <Divider type="vertical" />
+            <Tooltip title="启用/停用">
+                <Switch
+                    checked={record.status === 1}
+                    onChange={(checked) => handleStatusChange(record, checked)}
+                    size="small"
+                />
+            </Tooltip>
+            <Divider type="vertical" />
+            <Popconfirm
+                title="确定要删除这个支付接口吗？"
+                onConfirm={() => handleDelete(record)}
+                okText="确定"
+                cancelText="取消"
+            >
+                <Tooltip title="删除">
+                    <a style={{ color: '#ff4d4f' }}>
+                        <DeleteOutlined />
+                    </a>
+                </Tooltip>
+            </Popconfirm>
+        </Space>
+    );
+    // 自定义数据的表格头部数据
+    columns.forEach((item: any) => {
+        if (item.dataIndex === 'action') {
+            item.render = actionRender;
+        }
+        if (item.dataIndex === 'icon') {
+            item.render = (text: string) =>
+                text ? (
+                    <img src={text} alt="icon" style={{ width: 96, height: 96, objectFit: 'contain', borderRadius: '4px' }} />
+                ) : (
+                    <span>-</span>
+                );
+        }
+    });
+    // Table action 的引用，便于自定义触发
+    const actionRef = React.useRef<ActionType>();
+    /**
+ * 打开新增模态框
+ */
+    const handleAdd = () => {
+        setModalTitle('添加支付接口');
+        setIsEdit(false);
+        setCurrentRecord({} as columnsDataType);
+        setIconUrl('');
+        formRef.resetFields();
+        setIsModalVisible(true);
+    };
+    /**
+ * 打开编辑模态框
+ */
+    const handleEdit = (record: columnsDataType) => {
+        setModalTitle('编辑支付接口');
+        setIsEdit(true);
+        setCurrentRecord(record);
+        setIconUrl(record.icon || '');
+        formRef.setFieldsValue(record);
+        setIsModalVisible(true);
+    };
+    /**
+     * 查看详情
+     */
+    const handleView = async (record: columnsDataType) => {
+        try {
+            const res = await getPayInterfaceDetail({ payChannelCode: record.payChannelCode });
+            if (res?.data) {
+                setViewRecord(res.data);
+                setIsViewModalVisible(true);
+            }
+        } catch (error) {
+            message.error('获取详情失败');
+        }
+    };
+    /**
+     * 删除接口
+     */
+    const handleDelete = async (record: columnsDataType) => {
+        try {
+            const res = await deletePayInterface({ payChannelCode: record.payChannelCode });
+            if (res.code === 0 || res.code === '000000') {
+                message.success('删除成功');
+                actionRef.current?.reload();
+            } else {
+                message.error(res.message || '删除失败');
+            }
+        } catch (error) {
+            message.error('删除失败');
+        }
+    };
+    /**
+     * 状态变更
+     */
+    const handleStatusChange = async (record: columnsDataType, checked: boolean) => {
+        try {
+            const res = await editPayInterface({
+                payChannelCode: record.payChannelCode,
+                status: checked ? 1 : 0,
+            });
+            if (res.code === 0 || res.code === '000000') {
+                message.success(checked ? '启用成功' : '停用成功');
+                actionRef.current?.reload();
+            } else {
+                message.error(res.message || '操作失败');
+            }
+        } catch (error) {
+            message.error('操作失败');
+        }
+    };
+    /**
+ * 确认保存
+ */
+    const handleSave = async () => {
+        try {
+            await formRef.validateFields();
+            setLoading(true);
 
-  // 操作行数据 自定义操作行
-  const actionRender: any = (text: any, record: any, index: number) => (
-    <div key={record.dictType}>
-        <a onClick={() => toViewContractTemplate(record)}>查看</a>
-        <Divider type="vertical" />
-        <Popconfirm
-          title="是否删除此条数据?"
-          onConfirm={() => toDelContractTemplate(record.id)}
-          onCancel={() => {
-            message.warning(`取消删除`);
-          }}
-          okText="是"
-          cancelText="否"
-        >
-          <a>删除</a>
-        </Popconfirm>
-      </div>
-  );
-
-  // 自定义数据的表格头部数据
-  columns.forEach((item: any) => {
-    item.dataIndex === 'action' ? (item.render = actionRender) : undefined;
-  });
-
-  // Table action 的引用，便于自定义触发
-  const actionRef = React.useRef<ActionType>();
-
-  // 新增模板
-  const increaseTemplate = () => {
-    setIsTemplateModal(true);
-  };
-
-  /**
-   * 确认添加模板
-   */
-  const confirmTemplate = () => {
-    // 获取输入的表单值
-    FormRef.validateFields()
-      .then(async () => {
-        // 获取表单结果
-        let request = FormRef.getFieldsValue();
-        console.log(request);
-        // 将 wayCode 的值处理成数组
-        request.wayCode = request.wayCode ? request.wayCode.split(',') : [];
-        let reqParam = {
-          ...request
-        };
-        addPayInterface(reqParam).then((res) => {
-          console.log('add', res);
-          if (res.code === 0 || res.code === "000000") {
-            message.success('添加成功');
-            // 重置输入的表单
-            FormRef.resetFields();
-            setIsTemplateModal(false);
-            actionRef.current?.reload();
-          } else {
-            message.error(`失败： ${res?.message}`);
-          }
-        });
-      })
-      .catch(() => {});
-  };
-
-  /**
-   * 取消添加模板
-   */
-  const onCancelTemplate = () => {
-    // 重置输入的表单
-    FormRef.resetFields();
-    setIsTemplateModal(false);
-  };
-
-  /**
-   * 删除模板
-   */
-  const toDelContractTemplate = async (record) => {
-    console.log('record', record);
-    let { customerNo } = record;
-    let delRes = await deletePayInterface({ customerNo });
-    console.log('delRes', delRes);
-    if (delRes.code === 0) {
-      // 删除成功刷新表单
-      actionRef.current?.reload();
-    }
-  };
-
-  /**
-   * 查看详情
-   */
-  const toViewContractTemplate = async (record) => {
-    console.log(record);
-    let { serialNo } = record;
-    let viewRes = await getPayInterfaceDetail({ serialNo });
-    setIsViewTemplateModal(true);
-    console.log('viewRes', viewRes);
-    setIsViewRecord(viewRes.data);
-  };
-
-  /**
-   * 详情，模板类型对应
-   */
-  const handleViewRecordOfConfigPageType = () => {
-    let { configPageType } = isViewRecord;
-    // 支付参数配置页面类型:1-JSON渲染,2-自定义
-    let typeText = configPageType;
-    if (typeText == '1') {
-      return 'JSON渲染';
-    } else if (typeText == '2') {
-      return '自定义';
-    } else {
-      return typeText;
-    }
-  };
-
-  return (
-    <div>
-      {/* Pro表格 */}
-      <ProTable<columnsDataType>
-        headerTitle={<TableTitle title="支付接口" />}
-        scroll={{ x: 900 }}
-        bordered
-        // 表头
-        columns={columns}
-        actionRef={actionRef}
-        // 请求获取的数据
-        request={async (params) => {
-          // console.log(params);
-          let res = await getPayInterfacePageList({
-            ...params,
-          });
-          console.log('😒', res);
-          const result = {
-            data: res.data,
-            total: res.pagination.totalSize,
-          };
-          return result;
-        }}
-        rowKey="serialNo"
-        // 搜索框配置
-        search={{
-          labelWidth: 'auto',
-        }}
-        // 搜索表单的配置
-        form={{
-          ignoreRules: false,
-        }}
-        pagination={{
-          pageSize: 10,
-        }}
-        toolBarRender={() => [
-          <Button
-            onClick={() => {
-              increaseTemplate();
-            }}
-            key="button"
-            icon={<PlusOutlined />}
-            type="primary"
-          >
-            添加
-          </Button>,
-        ]}
-      />
-      {/* 新增合约模板模态框 */}
-      <Modal
-        title="添加"
-        centered
-        open={isTemplateModal}
-        onOk={confirmTemplate}
-        onCancel={onCancelTemplate}
-      >
-        <Form
-          name="basic"
-          form={FormRef}
-          labelCol={{ span: 7 }}
-          wrapperCol={{ span: 14 }}
-          // 表单默认值
-          initialValues={{ wayCode: 'WX_JSAPI' }}
-        >
-          <Form.Item
-            label="接口名称"
-            name="payChannelCode"
-            rules={[{ required: true, message: '请输入接口名称!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="接口代码"
-            name="payChannelName"
-            rules={[{ required: true, message: '请输入接口代码!' }]}
-          >
-            <Input />
-          </Form.Item>
-
-          {/* 支持的支付方式 ["WX_JSAPI", "WX_H5", "WX_APP", "ALI_BAR", "ALI_APP", "ALI_WAP"] ???? json*/}
-          <Form.Item
-            label="支付方式"
-            name="wayCode"
-            rules={[{ required: true, message: '请选择支付方式!' }]}
-          >
-            <Select style={{ width: '100%' }}>
-              <Option value="WX_JSAPI">微信JSAPI支付</Option>
-              <Option value="WX_H5">微信H5支付</Option>
-              <Option value="WX_APP">微信APP支付</Option>
-              <Option value="ALI_BAR">支付宝条码支付</Option>
-              <Option value="ALI_APP">支付宝APP支付</Option>
-              <Option value="ALI_WAP">支付宝WAP支付</Option>
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            label="备注"
-            name="remark"
-          >
-            <TextArea />
-          </Form.Item>
-        </Form>
-      </Modal>
-      {/* 查看详情模态框 */}
-      <Modal
-        title="详情"
-        width={800}
-        centered
-        open={isViewTemplateModal}
-        onOk={() => setIsViewTemplateModal(false)}
-        onCancel={() => setIsViewTemplateModal(false)}
-      >
-        {/* 详情信息 */}
-        <Descriptions title="支付接口详情">
-          <Descriptions.Item label="租户号">
-            {isViewRecord?.tenantId}
-          </Descriptions.Item>
-          <Descriptions.Item label="接口名称">
-            {isViewRecord?.payInterfaceName}
-          </Descriptions.Item>
-          <Descriptions.Item label="支付参数配置页面类型">
-            {/* 支付参数配置页面类型:1-JSON渲染,2-自定义 */}
-            {handleViewRecordOfConfigPageType()}
-          </Descriptions.Item>
-          <Descriptions.Item label="接口备注">
-            {isViewRecord?.remark}
-          </Descriptions.Item>
-          <Descriptions.Item label="创建者">
-            {isViewRecord?.createBy}
-          </Descriptions.Item>
-          <Descriptions.Item label="创建时间">
-            {isViewRecord?.createTime}
-          </Descriptions.Item>
-        </Descriptions>
-      </Modal>
-    </div>
-  );
+            const values = formRef.getFieldsValue();
+            const requestData = {
+                ...values,
+                icon: iconUrl, // 使用上传的图标URL
+                wayCode: Array.isArray(values.wayCode) ? values.wayCode.join(',') : values.wayCode,
+            };
+            const res = isEdit
+                ? await editPayInterface({ ...requestData, payChannelCode: currentRecord.payChannelCode })
+                : await addPayInterface(requestData);
+            if (res.code === 0 || res.code === '000000') {
+                message.success(isEdit ? '更新成功' : '添加成功');
+                setIsModalVisible(false);
+                actionRef.current?.reload();
+            } else {
+                message.error(res.message || '操作失败');
+            }
+        } catch (error) {
+            console.error('保存失败:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    /**
+ * 取消操作
+ */
+    const handleCancel = () => {
+        setIsModalVisible(false);
+        setIconUrl('');
+        formRef.resetFields();
+    };
+    return (
+        <div>
+            {/* Pro表格 */}
+            <ProTable<columnsDataType>
+                headerTitle={<TableTitle title="支付接口管理" />}
+                scroll={{ x: 1400 }}
+                bordered
+                columns={columns}
+                actionRef={actionRef}
+                request={async (params) => {
+                    try {
+                        const res = await getPayInterfacePageList({
+                            ...params,
+                            pagination: {
+                                pageNum: params.current,
+                                pageSize: params.pageSize,
+                            },
+                        });
+                        return {
+                            data: res.data?.records || res.data || [],
+                            total: res.data?.total || res.pagination?.totalSize || 0,
+                        };
+                    } catch (error) {
+                        console.error('获取列表失败:', error);
+                        return { data: [], total: 0 };
+                    }
+                }}
+                rowKey="payChannelCode"
+                search={{
+                    labelWidth: 'auto',
+                    collapsed: false,
+                    collapseRender: (collapsed) => (collapsed ? '展开' : '收起'),
+                }}
+                form={{
+                    ignoreRules: false,
+                }}
+                pagination={{
+                    pageSize: 10,
+                }}
+                toolBarRender={() => [
+                    <Button
+                        key="refresh"
+                        icon={<ReloadOutlined />}
+                        onClick={() => actionRef.current?.reload()}
+                    >
+                        刷新
+                    </Button>,
+                    <Button
+                        key="add"
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={handleAdd}
+                    >
+                        添加接口
+                    </Button>,
+                ]}
+            />
+            {/* 新增/编辑模态框 */}
+            <Modal
+                title={modalTitle}
+                open={isModalVisible}
+                onOk={handleSave}
+                onCancel={handleCancel}
+                confirmLoading={loading}
+                width={600}
+                destroyOnClose
+            >
+                <Form
+                    form={formRef}
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 16 }}
+                    layout="horizontal"
+                >
+                    <Form.Item
+                        label="接口代码"
+                        name="payChannelCode"
+                        rules={[
+                            { required: true, message: '请输入接口代码!' },
+                            { max: 32, message: '接口代码不能超过32个字符!' },
+                        ]}
+                        tooltip="支付接口的唯一标识代码，如：wxpay、alipay"
+                    >
+                        <Input
+                            placeholder="请输入接口代码"
+                            disabled={isEdit}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        label="接口名称"
+                        name="payChannelName"
+                        rules={[
+                            { required: true, message: '请输入接口名称!' },
+                            { max: 50, message: '接口名称不能超过50个字符!' },
+                        ]}
+                        tooltip="支付接口的显示名称"
+                    >
+                        <Input placeholder="请输入接口名称" />
+                    </Form.Item>
+                    <Form.Item
+                        label="配置页面类型"
+                        name="configPageType"
+                        rules={[{ required: true, message: '请选择配置页面类型!' }]}
+                        tooltip="支付参数配置页面的渲染方式"
+                    >
+                        <Select placeholder="请选择配置页面类型">
+                            <Option value={1}>JSON渲染</Option>
+                            <Option value={2}>自定义</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label="支付参数"
+                        name="params"
+                        tooltip="支付接口的参数配置定义，JSON格式"
+                    >
+                        <TextArea
+                            rows={4}
+                            placeholder="请输入JSON格式的支付参数配置"
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        label="支付方式"
+                        name="wayCode"
+                        rules={[{ required: true, message: '请选择支付方式!' }]}
+                        tooltip="支持的支付方式列表"
+                    >
+                        <Select
+                            mode="multiple"
+                            placeholder="请选择支付方式"
+                            style={{ width: '100%' }}
+                        >
+                            <Option value="wxpay_jsapi">微信JSAPI支付</Option>
+                            <Option value="wxpay_h5">微信H5支付</Option>
+                            <Option value="wxpay_app">微信APP支付</Option>
+                            <Option value="wxpay_bar">微信条码支付</Option>
+                            <Option value="alipay_jsapi">支付宝JSAPI支付</Option>
+                            <Option value="alipay_h5">支付宝H5支付</Option>
+                            <Option value="alipay_app">支付宝APP支付</Option>
+                            <Option value="alipay_bar">支付宝条码支付</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label="图标"
+                        name="icon"
+                        tooltip="页面展示的卡片图标"
+                    >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                            <Upload {...uploadProps} listType="picture-card" showUploadList={false}>
+                                {iconUrl ? (
+                                    <div style={{ position: 'relative' }}>
+                                        <img
+                                            src={iconUrl}
+                                            alt="图标"
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        />
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            right: 0,
+                                            bottom: 0,
+                                            background: 'rgba(0,0,0,0.5)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            opacity: 0,
+                                            transition: 'opacity 0.3s'
+                                        }} className="upload-hover">
+                                            <UploadOutlined style={{ color: 'white', fontSize: 20 }} />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                                        <UploadOutlined style={{ fontSize: 24, color: '#999' }} />
+                                        <div style={{ marginTop: 8, fontSize: 12, color: '#999' }}>上传图标</div>
+                                    </div>
+                                )}
+                            </Upload>
+                            {iconUrl && (
+                                <Button
+                                    type="link"
+                                    danger
+                                    onClick={() => {
+                                        setIconUrl('');
+                                        formRef.setFieldValue('icon', '');
+                                    }}
+                                >
+                                    删除
+                                </Button>
+                            )}
+                        </div>
+                    </Form.Item>
+                    <Form.Item
+                        label="状态"
+                        name="status"
+                        initialValue={1}
+                        tooltip="接口的启用状态"
+                    >
+                        <Select>
+                            <Option value={1}>启用</Option>
+                            <Option value={0}>停用</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label="备注"
+                        name="remark"
+                        tooltip="接口的备注信息"
+                    >
+                        <TextArea
+                            rows={3}
+                            placeholder="请输入备注信息"
+                        />
+                    </Form.Item>
+                </Form>
+            </Modal>
+            {/* 查看详情模态框 */}
+            <Modal
+                title="支付接口详情"
+                open={isViewModalVisible}
+                onCancel={() => setIsViewModalVisible(false)}
+                footer={[
+                    <Button key="close" onClick={() => setIsViewModalVisible(false)}>
+                        关闭
+                    </Button>,
+                ]}
+                width={800}
+            >
+                <Descriptions bordered column={2}>
+                    <Descriptions.Item label="接口代码" span={1}>
+                        {viewRecord.payChannelCode}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="接口名称" span={1}>
+                        {viewRecord.payChannelName}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="配置页面类型" span={1}>
+                        {viewRecord.configPageType === 1 ? 'JSON渲染' : viewRecord.configPageType === 2 ? '自定义' : '-'}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="状态" span={1}>
+                        {viewRecord.status === 1 ? '启用' : '停用'}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="支付参数" span={2}>
+                        <div style={{ maxHeight: 100, overflow: 'auto' }}>
+                            {viewRecord.params || '-'}
+                        </div>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="支付方式" span={2}>
+                        {viewRecord.wayCode || '-'}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="图标" span={1}>
+                        {viewRecord.icon ? (
+                            <img 
+                                src={viewRecord.icon} 
+                                alt="图标" 
+                                style={{ width: 64, height: 64, objectFit: 'contain', borderRadius: '4px' }} 
+                            />
+                        ) : (
+                            '-'
+                        )}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="租户ID" span={1}>
+                        {viewRecord.tenantId || '-'}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="备注" span={2}>
+                        {viewRecord.remark || '-'}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="创建时间" span={1}>
+                        {viewRecord.createTime || '-'}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="更新时间" span={1}>
+                        {viewRecord.updateTime || '-'}
+                    </Descriptions.Item>
+                </Descriptions>
+            </Modal>
+        </div>
+    );
 };
+
+export default PayChannelInterface;

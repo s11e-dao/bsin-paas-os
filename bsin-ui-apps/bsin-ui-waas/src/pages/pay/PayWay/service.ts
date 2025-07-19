@@ -1,7 +1,7 @@
 import { request } from '@umijs/max'
 let waasPath = process.env.contextPath_waas;
 
-// 分页查询
+// 分页查询支付方式列表
 export const getPayWayPageList = (params) => {
   return request(waasPath + '/payWay/getPageList', {
     serviceName: 'PayWayService',
@@ -13,7 +13,7 @@ export const getPayWayPageList = (params) => {
   });
 };
 
-
+// 获取支付方式列表（不分页）
 export const getPayWayList = (params) => {
   return request(waasPath + '/payWay/getList', {
     serviceName: 'PayWayService',
@@ -25,7 +25,7 @@ export const getPayWayList = (params) => {
   });
 };
 
-// 添加平台
+// 添加支付方式
 export const addPayWay = (params) => {
   return request(waasPath + '/payWay/add', {
     serviceName: 'PayWayService',
@@ -37,7 +37,19 @@ export const addPayWay = (params) => {
   });
 };
 
-// 删除
+// 编辑支付方式
+export const editPayWay = (params) => {
+  return request(waasPath + '/payWay/edit', {
+    serviceName: 'PayWayService',
+    methodName: 'edit',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
+// 删除支付方式
 export const deletePayWay = (params) => {
   return request(waasPath + '/payWay/delete', {
     serviceName: 'PayWayService',
@@ -49,9 +61,8 @@ export const deletePayWay = (params) => {
   });
 };
 
-// 查询详情
+// 查询支付方式详情
 export const getPayWayDetail = (params) => {
-  console.log('params', params);
   return request(waasPath + '/payWay/getDetail', {
     serviceName: 'PayWayService',
     methodName: 'getDetail',
