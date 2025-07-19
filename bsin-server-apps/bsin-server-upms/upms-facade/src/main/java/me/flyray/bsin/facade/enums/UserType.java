@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 /**
  * @author ：bolei
  * @date ：Created in 2022/02/05 16:19
- * @description：用户类型  0、超级租户用户 1、普通租户管理员 2、租户商户用户 3、租户代理商用户
+ * @description：用户类型  0、超级租户用户 1、普通租户管理员 2、租户商户用户 3、租户合伙人用户
  * @modified By：
  */
 public enum UserType {
@@ -25,9 +25,9 @@ public enum UserType {
     MERCHANT(2, "租户商户用户"),
 
     /**
-     * 租户代理商用户
+     * 租户合伙人用户
      */
-    SYS_AGENT(3, "租户代理商用户");
+    SYS_AGENT(3, "租户合伙人用户");
 
     private Integer code;
 

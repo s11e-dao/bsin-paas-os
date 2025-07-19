@@ -217,7 +217,7 @@ public class MenuServiceImpl implements MenuService {
         List<SysRole> userRoles = roleMapper.getRoleListByUserId(userId);
         roles.addAll(userRoles);
 
-        // 如果是代理商直接查询配置角色菜单
+        // 如果是合伙人直接查询配置角色菜单
         String bizRoleType = LoginInfoContextHelper.getBizRoleType();
         if(BizRoleType.SYS_AGENT.getCode().equals(bizRoleType)){
             SysRole sysAgentRole = new SysRole();

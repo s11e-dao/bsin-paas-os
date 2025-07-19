@@ -25,7 +25,7 @@ CREATE TABLE `crm_account` (
   `serial_no` varchar(32) NOT NULL COMMENT '账户编号',
   `name` varchar(255) DEFAULT NULL COMMENT '账户名称',
   `biz_role_type_no` varchar(32) NOT NULL COMMENT '业务角色类型编号',
-  `biz_role_type` varchar(255) DEFAULT NULL COMMENT '角色类型，1.运营平台 2.租户平台 4.代理商 5.租户客户 6.门店 99.无',
+  `biz_role_type` varchar(255) DEFAULT NULL COMMENT '角色类型，1.运营平台 2.租户平台 4.合伙人 5.租户客户 6.门店 99.无',
   `category` varchar(255) DEFAULT NULL COMMENT '账户类别： 1:余额账户 2:累计收入 3:累计支出 4:在途账户 ',
   `tenant_id` varchar(32) DEFAULT NULL COMMENT '租户id',
   `cumulative_amount` decimal(10,2) DEFAULT '0.00' COMMENT '累计金额',
@@ -161,7 +161,7 @@ DROP TABLE IF EXISTS `crm_biz_role_app`;
 CREATE TABLE `crm_biz_role_app` (
   `serial_no` varchar(255) NOT NULL COMMENT '序号',
   `tenant_id` varchar(255) NOT NULL COMMENT '租户号',
-  `biz_role_type` varchar(255) DEFAULT NULL COMMENT '业务角色类型：角色类型，1.运营平台 2.租户平台 4.代理商 5.租户客户 6.门店 99.无',
+  `biz_role_type` varchar(255) DEFAULT NULL COMMENT '业务角色类型：角色类型，1.运营平台 2.租户平台 4.合伙人 5.租户客户 6.门店 99.无',
   `biz_role_type_no` varchar(32) DEFAULT NULL COMMENT '业务角色类型编号',
   `app_name` varchar(255) DEFAULT NULL COMMENT '应用名称',
   `app_channel` varchar(255) DEFAULT NULL COMMENT '1: 应用 2：接口 3:mp(公众号服务订阅号)、4.miniapp(小程序)、 5.cp(企业号|企业微信)、6.pay(微信支付)、7.open(微信开放平台) 8wechat(个人微信) 9.menu(菜单模版)',
@@ -806,9 +806,9 @@ CREATE TABLE `crm_customer_identity` (
   `merchant_no` varchar(255) DEFAULT NULL COMMENT '商户号',
   `customer_no` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL COMMENT '身份登录名称',
-  `name` varchar(255) DEFAULT NULL COMMENT '身份名称：商户(3) 代理商(4) 客户(5)',
-  `biz_role_type` varchar(255) NOT NULL COMMENT '身份类型：商户|客户|代理商  见业务角色类型枚举',
-  `biz_role_type_no` varchar(255) NOT NULL COMMENT '身份类型编号：商户号|代理商号|客户号',
+  `name` varchar(255) DEFAULT NULL COMMENT '身份名称：商户(3) 合伙人(4) 客户(5)',
+  `biz_role_type` varchar(255) NOT NULL COMMENT '身份类型：商户|客户|合伙人  见业务角色类型枚举',
+  `biz_role_type_no` varchar(255) NOT NULL COMMENT '身份类型编号：商户号|合伙人号|客户号',
   `status` varchar(255) NOT NULL DEFAULT '1' COMMENT '状态： 0：禁用 1:启用',
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -822,7 +822,7 @@ CREATE TABLE `crm_customer_identity` (
 BEGIN;
 INSERT INTO `crm_customer_identity` VALUES ('1846190237240397824', '1846556049375875074', '1869566390399275008', 'oqASg7Q-eVuRqOr6OhDoa7Y8nMvg', '客户', '5', '1869566390399275008', '1', '2024-12-19 15:41:58', '2024-12-19 10:12:17', 0);
 INSERT INTO `crm_customer_identity` VALUES ('1846190237240397824', '1869637386607136768', '1869566390399275001', '商户', '商户', '3', '1869637386607136768', '1', '2024-12-25 20:42:22', '2024-12-19 14:54:25', 0);
-INSERT INTO `crm_customer_identity` VALUES ('1846190237240397824', '1846556049375875074', '1869566390399275001', '代理商', '代理商', '4', '1869649134244466689', '1', '2024-12-25 20:42:26', '2024-12-19 15:41:04', 0);
+INSERT INTO `crm_customer_identity` VALUES ('1846190237240397824', '1846556049375875074', '1869566390399275001', '合伙人', '合伙人', '4', '1869649134244466689', '1', '2024-12-25 20:42:26', '2024-12-19 15:41:04', 0);
 INSERT INTO `crm_customer_identity` VALUES ('1801458632269893632', NULL, '1894252987572948992', 'oJTwA7dVZBvHwWoi4qRtmmGkW8m8', '客户', '5', '1894252987572948992', '1', '2025-02-25 13:08:00', '2025-02-25 13:08:00', 0);
 INSERT INTO `crm_customer_identity` VALUES ('1801458632269893632', NULL, '1894339016384450560', 'oJTwA7T0BAikBkE9Q7ATSmufiv78', '客户', '5', '1894339016384450560', '1', '2025-02-25 18:49:51', '2025-02-25 18:49:51', 0);
 INSERT INTO `crm_customer_identity` VALUES ('1801458632269893632', NULL, '1894958621305999360', 'oJTwA7a1CUmvLrPVnmp4yKpJXhcQ', '客户', '5', '1894958621305999360', '1', '2025-02-27 11:51:56', '2025-02-27 11:51:56', 0);
@@ -1029,11 +1029,11 @@ INSERT INTO `crm_customer_identity` VALUES ('1801458632269893632', NULL, '191666
 INSERT INTO `crm_customer_identity` VALUES ('1801458632269893632', NULL, '1916665006481608704', 'oJTwA7Y2RO4PMS1_wr2dHfk1kCV0', '客户', '5', '1916665006481608704', '1', '2025-04-28 09:25:22', '2025-04-28 09:25:22', 0);
 INSERT INTO `crm_customer_identity` VALUES ('1801458632269893632', NULL, '1916665032276578304', 'oJTwA7dz9etv09EbozyJdCD1f7to', '客户', '5', '1916665032276578304', '1', '2025-04-28 09:25:28', '2025-04-28 09:25:28', 0);
 INSERT INTO `crm_customer_identity` VALUES ('1801458632269893632', NULL, '1916667241085145088', 'oJTwA7atDrkE0IZJ1CIQWwBUQmnE', '客户', '5', '1916667241085145088', '1', '2025-04-28 09:34:15', '2025-04-28 09:34:15', 0);
-INSERT INTO `crm_customer_identity` VALUES ('6345824413764157440', 'null', 'null', 'nan', '代理商', '4', '1945653500549664769', '1', '2025-07-17 09:15:17', '2025-07-17 09:15:17', 0);
-INSERT INTO `crm_customer_identity` VALUES ('6345824413764157440', 'null', 'null', 'nan', '代理商', '4', '1945654328639492097', '1', '2025-07-17 09:18:35', '2025-07-17 09:18:35', 0);
-INSERT INTO `crm_customer_identity` VALUES ('6345824413764157440', 'null', 'null', 'nan', '代理商', '4', '1945667691113222145', '1', '2025-07-17 10:11:41', '2025-07-17 10:11:41', 0);
-INSERT INTO `crm_customer_identity` VALUES ('6345824413764157440', 'null', 'null', 'nan', '代理商', '4', '1945735231181033473', '1', '2025-07-17 14:40:03', '2025-07-17 14:40:03', 0);
-INSERT INTO `crm_customer_identity` VALUES ('6345824413764157440', 'null', 'null', 'nanb', '代理商', '4', '1945759112415547393', '1', '2025-07-17 16:14:57', '2025-07-17 16:14:57', 0);
+INSERT INTO `crm_customer_identity` VALUES ('6345824413764157440', 'null', 'null', 'nan', '合伙人', '4', '1945653500549664769', '1', '2025-07-17 09:15:17', '2025-07-17 09:15:17', 0);
+INSERT INTO `crm_customer_identity` VALUES ('6345824413764157440', 'null', 'null', 'nan', '合伙人', '4', '1945654328639492097', '1', '2025-07-17 09:18:35', '2025-07-17 09:18:35', 0);
+INSERT INTO `crm_customer_identity` VALUES ('6345824413764157440', 'null', 'null', 'nan', '合伙人', '4', '1945667691113222145', '1', '2025-07-17 10:11:41', '2025-07-17 10:11:41', 0);
+INSERT INTO `crm_customer_identity` VALUES ('6345824413764157440', 'null', 'null', 'nan', '合伙人', '4', '1945735231181033473', '1', '2025-07-17 14:40:03', '2025-07-17 14:40:03', 0);
+INSERT INTO `crm_customer_identity` VALUES ('6345824413764157440', 'null', 'null', 'nanb', '合伙人', '4', '1945759112415547393', '1', '2025-07-17 16:14:57', '2025-07-17 16:14:57', 0);
 COMMIT;
 
 -- ----------------------------
@@ -1045,7 +1045,7 @@ CREATE TABLE `crm_dis_commission_config` (
   `tenant_id` varchar(255) NOT NULL COMMENT '设置规则的租户',
   `super_tenant_rate` decimal(10,2) DEFAULT '0.00' COMMENT '运营平台分佣比例',
   `tenant_rate` decimal(10,2) DEFAULT '0.00' COMMENT '租户平台分佣比例',
-  `sys_agent_rate` decimal(10,2) DEFAULT '0.00' COMMENT '代理商分佣比例',
+  `sys_agent_rate` decimal(10,2) DEFAULT '0.00' COMMENT '合伙人分佣比例',
   `customer_rate` decimal(10,2) DEFAULT NULL COMMENT '消费者返利比例',
   `merchant_no` varchar(255) DEFAULT NULL COMMENT '设置规则的商户',
   `merchant_sharing_rate` decimal(10,2) DEFAULT '0.00' COMMENT '商户让利比例',
@@ -1252,7 +1252,7 @@ CREATE TABLE `crm_dis_invite_relation` (
   `serial_no` varchar(32) NOT NULL COMMENT '序列号',
   `tenant_id` varchar(255) DEFAULT NULL,
   `customer_no` varchar(32) NOT NULL COMMENT '被邀请人序列号',
-  `sys_agent_no` varchar(255) DEFAULT '-1' COMMENT '被邀请人所属代理商： -1 说明没有代理商',
+  `sys_agent_no` varchar(255) DEFAULT '-1' COMMENT '被邀请人所属合伙人： -1 说明没有合伙人',
   `parent_no` varchar(32) NOT NULL COMMENT '被邀请人的父级序列号',
   `invite_level` int(11) NOT NULL DEFAULT '1' COMMENT '邀请等级 1、2、3级',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -1320,7 +1320,7 @@ CREATE TABLE `crm_dis_team_relation` (
   `serial_no` varchar(255) NOT NULL,
   `tenant_id` varchar(255) DEFAULT NULL,
   `prarent_sys_agent_no` varchar(45) DEFAULT '-1' COMMENT '上级分销员ID',
-  `sys_agent_no` varchar(45) DEFAULT NULL COMMENT '分销员ID(代理商ID)',
+  `sys_agent_no` varchar(45) DEFAULT NULL COMMENT '分销员ID(合伙人ID)',
   `dis_agent_type` int(11) DEFAULT '0' COMMENT '分销商类型 1(老板), 0(分销员)',
   `type` varchar(255) DEFAULT '1' COMMENT '成员类型：1 自己成员 2 贡献成员',
   PRIMARY KEY (`serial_no`) USING BTREE,
@@ -1871,7 +1871,7 @@ DROP TABLE IF EXISTS `crm_settlement_account`;
 CREATE TABLE `crm_settlement_account` (
   `serial_no` varchar(32) NOT NULL COMMENT '结算账户id',
   `tenant_id` varchar(32) DEFAULT NULL COMMENT '租户id',
-  `biz_role_type` varchar(10) DEFAULT NULL COMMENT '角色类型，1.运营平台 2.租户平台 4.代理商 5.租户客户 6.门店 99.无''',
+  `biz_role_type` varchar(10) DEFAULT NULL COMMENT '角色类型，1.运营平台 2.租户平台 4.合伙人 5.租户客户 6.门店 99.无''',
   `biz_role_type_no` varchar(32) DEFAULT NULL COMMENT '业务角色类型编号',
   `account_num` varchar(100) NOT NULL COMMENT '账户号',
   `account_name` varchar(100) NOT NULL COMMENT '账户名',
@@ -1948,8 +1948,8 @@ CREATE TABLE `crm_sys_agent` (
   `tenant_id` varchar(32) NOT NULL,
   `username` varchar(32) NOT NULL COMMENT '登录名称',
   `password` varchar(255) DEFAULT NULL COMMENT '登录密码',
-  `agent_name` varchar(255) DEFAULT NULL COMMENT '代理商名称',
-  `type` varchar(1) DEFAULT '1' COMMENT '代理商类型：1、个人客户  2、企业客户',
+  `agent_name` varchar(255) DEFAULT NULL COMMENT '合伙人名称',
+  `type` varchar(1) DEFAULT '1' COMMENT '合伙人类型：1、个人客户  2、企业客户',
   `business_no` varchar(255) DEFAULT NULL COMMENT '企业工商号',
   `legal_person_name` varchar(255) DEFAULT NULL COMMENT '法人姓名',
   `legal_person_cred_type` varchar(255) DEFAULT NULL COMMENT '法人证件类型',
@@ -1961,28 +1961,28 @@ CREATE TABLE `crm_sys_agent` (
   `net_address` varchar(255) DEFAULT NULL COMMENT '公司网址',
   `agent_address` varchar(255) DEFAULT NULL COMMENT '企业地址',
   `status` varchar(1) DEFAULT '1' COMMENT '状态：0 正常 1 冻结 2 待审核',
-  `category` varchar(255) DEFAULT NULL COMMENT '代理商类别：1、平台代理 2、分销代理',
+  `category` varchar(255) DEFAULT NULL COMMENT '合伙人类别：1、平台代理 2、分销代理',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   `authentication_status` varchar(1) DEFAULT '1' COMMENT '认证状态   1: 待认证  2：认证成功  3：认证失败',
   `business_type` varchar(255) DEFAULT NULL COMMENT '业态',
   `business_scope` text COMMENT '经营范围',
   `del_flag` varchar(1) NOT NULL DEFAULT '0' COMMENT '删除标识',
-  `description` text COMMENT '代理商介绍',
-  `agent_level` varchar(255) DEFAULT NULL COMMENT '代理商级别：PROVINCE-省代理 CITY-市代理 COUNTY-县代理 DISTRICT-区代理 TOWN-镇代理 NONE-无',
+  `description` text COMMENT '合伙人介绍',
+  `agent_level` varchar(255) DEFAULT NULL COMMENT '合伙人级别：PROVINCE-省代理 CITY-市代理 COUNTY-县代理 DISTRICT-区代理 TOWN-镇代理 NONE-无',
   `grade_no` varchar(255) DEFAULT NULL COMMENT '等级序列号（关联crm_grade）',
-  `parent_agent_no` varchar(255) DEFAULT NULL COMMENT '上级代理商编号',
+  `parent_agent_no` varchar(255) DEFAULT NULL COMMENT '上级合伙人编号',
   `region_code` varchar(255) DEFAULT NULL COMMENT '区域编码',
   PRIMARY KEY (`serial_no`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='代理商表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='合伙人表';
 
 -- ----------------------------
 -- Records of crm_sys_agent
 -- ----------------------------
 BEGIN;
-INSERT INTO `crm_sys_agent` VALUES ('1737853500064509954', '6345824413764157440', 'bolei', 'e10adc3949ba59abbe56e057f20f883e', '1号代理商', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, '2024-10-18 21:23:02', '2024-10-18 21:23:02', '1', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `crm_sys_agent` VALUES ('1800849143061680128', '6345824413764157440', 'jiujiu-agent', NULL, 'jiujiu产品代理商', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, '2024-06-12 19:14:28', '2024-06-12 19:14:28', '1', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `crm_sys_agent` VALUES ('1847267145117995008', '1846190237240397824', 'admin', NULL, '代理商1', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, '2024-10-23 00:36:40', '2024-10-23 00:36:40', '1', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `crm_sys_agent` VALUES ('1737853500064509954', '6345824413764157440', 'bolei', 'e10adc3949ba59abbe56e057f20f883e', '1号合伙人', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, '2024-10-18 21:23:02', '2024-10-18 21:23:02', '1', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `crm_sys_agent` VALUES ('1800849143061680128', '6345824413764157440', 'jiujiu-agent', NULL, 'jiujiu产品合伙人', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, '2024-06-12 19:14:28', '2024-06-12 19:14:28', '1', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `crm_sys_agent` VALUES ('1847267145117995008', '1846190237240397824', 'admin', NULL, '合伙人1', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, '2024-10-23 00:36:40', '2024-10-23 00:36:40', '1', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `crm_sys_agent` VALUES ('1859437024113725441', '1846190237240397824', 'admin', NULL, '汲国强', '0', NULL, NULL, NULL, NULL, NULL, NULL, 'https://avatars.githubusercontent.com/u/48413943', '13632521024', NULL, '上海市 南林市 黑山县 律中心1813号 11层', '1', NULL, '2024-11-21 11:21:47', '2024-11-21 11:21:47', '1', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `crm_sys_agent` VALUES ('1865794231566733313', '1846190237240397824', 'admin', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, '2024-12-09 00:23:04', '2024-12-09 00:23:04', '1', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `crm_sys_agent` VALUES ('1869649134244466689', '1846190237240397824', 'admin', NULL, '嬴三锋', '0', NULL, NULL, NULL, NULL, NULL, 'https://avatars.githubusercontent.com/u/35239891', 'https://avatars.githubusercontent.com/u/74002918', '52945202296', NULL, '黑龙江省 太汉市 斗门区 程侬9号 2号房间', '1', NULL, '2024-12-19 15:41:04', '2024-12-19 15:41:04', '1', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);

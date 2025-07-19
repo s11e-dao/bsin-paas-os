@@ -21,10 +21,12 @@ import {
   TeamOutlined,
   UserOutlined,
   SaveOutlined,
-  CalculatorOutlined
+  CalculatorOutlined,
+  GiftOutlined,
+  DollarOutlined
 } from '@ant-design/icons';
 import { getLocalStorageInfo } from '../../../utils/localStorageInfo';
-import { configDisBrokerageConfig, getDisBrokerageConfigDetail } from './service';
+import { configProfitSharingConfig, getProfitSharingConfigDetail } from './service';
 
 const { Title, Text } = Typography;
 
@@ -37,6 +39,8 @@ export default () => {
     tenantRate: number;
     sysAgentRate: number;
     customerRate: number;
+    distributorRate: number;
+    exchangeDigitalPointsRate: number;
   }
 
   const [formValues, setFormValues] = useState<FormValues>({
@@ -44,6 +48,8 @@ export default () => {
     tenantRate: 0,
     sysAgentRate: 0,
     customerRate: 0,
+    distributorRate: 0,
+    exchangeDigitalPointsRate: 0,
   });
 
   // 计算总比例
@@ -51,7 +57,7 @@ export default () => {
   const isValidTotal = totalRate === 100;
 
   React.useEffect(() => {
-    getDisBrokerageConfigDetail({}).then((res) => {
+    getProfitSharingConfigDetail({}).then((res) => {
       if (res?.data) {
         formRef.setFieldsValue(res?.data);
         setFormValues(res?.data);
@@ -98,6 +104,14 @@ export default () => {
                     <Text><UserOutlined style={{ color: '#722ed1', marginRight: 8 }} />消费者：</Text>
                     <Text strong>{formData.customerRate || 0}%</Text>
                   </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Text><GiftOutlined style={{ color: '#eb2f96', marginRight: 8 }} />分销者：</Text>
+                    <Text strong>{formData.distributorRate || 0}%</Text>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Text><DollarOutlined style={{ color: '#13c2c2', marginRight: 8 }} />数字积分：</Text>
+                    <Text strong>{formData.exchangeDigitalPointsRate || 0}%</Text>
+                  </div>
                   <Divider style={{ margin: '8px 0' }} />
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Text strong>总计：</Text>
@@ -121,7 +135,7 @@ export default () => {
           onOk() {
             return new Promise((resolve, reject) => {
               setLoading(true);
-              configDisBrokerageConfig(formData).then((res) => {
+              configProfitSharingConfig(formData).then((res) => {
                 if (res.code === 0) {
                   message.success("分账配置保存成功！");
                   resolve(res);
@@ -179,6 +193,20 @@ export default () => {
       icon: <UserOutlined />,
       color: '#722ed1',
       description: '消费者获得的返利比例'
+    },
+    {
+      name: 'distributorRate',
+      label: '分销者分佣比例',
+      icon: <GiftOutlined />,
+      color: '#eb2f96',
+      description: '分销者获得的分佣比例'
+    },
+    {
+      name: 'exchangeDigitalPointsRate',
+      label: '数字积分兑换比例',
+      icon: <DollarOutlined />,
+      color: '#13c2c2',
+      description: '佣金兑换数字积分的比例'
     }
   ];
 
@@ -256,7 +284,7 @@ export default () => {
             >
               <Row gutter={[16, 16]}>
                 {configItems.map((item, index) => (
-                  <Col xs={24} sm={12} md={6} key={item.name}>
+                  <Col xs={24} sm={12} md={8} key={item.name}>
                     <Card
                       size="small"
                       style={{

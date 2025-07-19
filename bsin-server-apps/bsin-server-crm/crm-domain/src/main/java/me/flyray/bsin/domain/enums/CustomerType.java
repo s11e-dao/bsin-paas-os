@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * @author
- * @description 客户|租户|商户|代理商类型 0、个人客户 1、企业客户
+ * @description 客户|租户|商户|合伙人类型 0、个人客户 1、企业客户
  * @createDate 2024/10/2024/10/13 /23/59
  */
 public enum CustomerType {

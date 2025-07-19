@@ -3,7 +3,7 @@ package me.flyray.bsin.security.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 /**
  * @author
- * @description 用户角色类型，1.系统运营 2.平台租户 3.商户 4.代理商 5.客户 6.门店 99.无
+ * @description 用户角色类型，1.系统运营 2.平台租户 3.商户 4.合伙人 5.客户 6.门店 99.无
  * @createDate 2024/10/2024/10/13 /23/59
  */
 public enum BizRoleType {
@@ -24,9 +24,9 @@ public enum BizRoleType {
     MERCHANT("3", "商户"),
 
     /**
-     * 系统代理商
+     * 系统合伙人
      */
-    SYS_AGENT("4", "代理商"),
+    SYS_AGENT("4", "合伙人"),
 
     /**
      * 租户客户

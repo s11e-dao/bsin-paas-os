@@ -137,7 +137,7 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
             if(tenantResult > 0){
                 handleBrokerage(BizRoleType.TENANT.getCode(), tenantId, config.getSuperTenantRate(), policy, rule, tenantBrokerageAmount, requestMap);
             }
-            //  处理代理商佣金
+            //  处理合伙人佣金
             BigDecimal sysAgentBrokerageAmount = merchantGoodsSkuSharingAmount.multiply(config.getSysAgentRate()).divide(new BigDecimal(100));
             int sysAgentResult = sysAgentBrokerageAmount.compareTo(BigDecimal.ZERO);
             if(sysAgentResult > 0){
@@ -237,7 +237,7 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
         String remark = MapUtils.getString(requestMap, "remark");
         // 入账操作
         if (isPreview == 0) {
-            // 入账到代理商待结算账户
+            // 入账到合伙人待结算账户
             accountBiz.inAccount(journal.getTenantId(), bizRoleType, bizRoleTypeNo,
                     AccountCategory.PENDING_SETTLEMENT.getCode(), AccountCategory.PENDING_SETTLEMENT.getDesc(),
                     "cny", orderNo, transactionType,2,  journal.getDisAmount(), remark);
@@ -251,7 +251,7 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
     }
 
     /**
-     * 处理代理商分佣逻辑，包括一级和二级分佣
+     * 处理合伙人分佣逻辑，包括一级和二级分佣
      */
     private void handleSysAgentBrokerage(String sysAgentNo, DisCommissionPolicy policy, DisCommissionRule rule, DisCommissionConfig config,
                                          BigDecimal sysAgentBrokerageAmount, Map<String, Object> requestMap) throws UnsupportedEncodingException {
@@ -272,7 +272,7 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
         Integer salePer = level == 1 ? rule.getFirstSalePer() : rule.getSecondSalePer();
         String agentNo = level == 1 ? sysAgentNo : getParentAgentNo(sysAgentNo);
         if (salePer == null || agentNo == null) {
-            throw new BusinessException("111","分佣等级 {} 无效或代理商编号为空");
+            throw new BusinessException("111","分佣等级 {} 无效或合伙人编号为空");
         }
         DisCommissionJournal journal = createBrokerageJournal(policy, rule, config, sysAgentBrokerageAmount, level, salePer, isPreview, agentNo, requestMap);
         disBrokerageJournalMapper.insert(journal);
@@ -281,7 +281,7 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
     }
 
     /**
-     * 获取上级代理商编号
+     * 获取上级合伙人编号
      */
     private String getParentAgentNo(String sysAgentNo) {
         DisTeamRelation teamRelation = disTeamRelationMapper.selectOne(
@@ -319,7 +319,7 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
         String transactionType = MapUtils.getString(requestMap, "transactionType");
         String remark = MapUtils.getString(requestMap, "remark");
         if (isPreview == 0) {
-            // 入账到代理商待结算账户
+            // 入账到合伙人待结算账户
             accountBiz.inAccount(journal.getTenantId(), BizRoleType.SYS_AGENT.getCode(), sysAgentNo,
                     AccountCategory.PENDING_SETTLEMENT.getCode(), AccountCategory.PENDING_SETTLEMENT.getDesc(),
                     "cny", orderNo, transactionType,2, journal.getDisAmount(), remark);

@@ -59,7 +59,7 @@ bsin:
     permission: sys
     path: /bsin-ui-upms
     parentId: -1
-  # 代理商应用角色配置
+  # 合伙人应用角色配置
   sysAgent:
     app-id: 1558027900958150656
     role-id: 1558027901704736768
