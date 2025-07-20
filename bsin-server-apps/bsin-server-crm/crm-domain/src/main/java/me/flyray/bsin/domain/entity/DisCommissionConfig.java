@@ -36,25 +36,32 @@ public class DisCommissionConfig implements Serializable {
     /**
      * 租户平台分佣比例
      */
-    @NotBlank(message = "租户平台分佣比例不能为空！", groups = AddGroup.class)
     private BigDecimal tenantRate;
 
     /**
      * 合伙人分佣比例
      */
-    @NotBlank(message = "合伙人分佣比例不能为空！", groups = AddGroup.class)
     private BigDecimal sysAgentRate;
 
     /**
      * 消费者返利比例
      */
-    @NotBlank(message = "消费者返利比例不能为空！", groups = AddGroup.class)
     private BigDecimal customerRate;
+
+    /**
+     * 分销模型的分销者比例
+     */
+    private BigDecimal distributorRate;
+
+    /**
+     * 佣金兑换数字积分比例
+     */
+    private BigDecimal exchangeDigitalPointsRate;
 
     /**
      * 商户让利比例
      */
-    private BigDecimal merchantSharingRate;
+    private BigDecimal merchantProfitSharingRate;
 
     /**
      * 设置规则的商户

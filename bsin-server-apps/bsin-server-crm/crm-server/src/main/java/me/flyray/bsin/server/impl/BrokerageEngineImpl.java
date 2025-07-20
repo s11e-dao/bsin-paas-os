@@ -104,50 +104,50 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
         String customerNo = MapUtils.getString(requestMap, "customerNo");
 
         // 验证和获取分佣配置
-        DisCommissionConfig config = validateAndGetConfig(requestMap);
+        DisCommissionConfig disCommissionConfig = validateAndGetConfig(requestMap);
         // 验证和获取分佣规则
-        DisCommissionRule rule = validateAndGetBrokerageRule(requestMap);
+        DisCommissionRule disCommissionRule = validateAndGetBrokerageRule(requestMap);
         // 验证和获取分佣政策
-        DisCommissionPolicy policy = validateAndGetBrokeragePolicy(rule);
+        DisCommissionPolicy disCommissionPolicy = validateAndGetBrokeragePolicy(disCommissionRule);
 
         // TODO 统一规则引擎处理 判断触发事件编码是否一致, 不一致则直接返回
-        if(!policy.getTriggerEventCode().equals(eventCode)){
+        if(!disCommissionPolicy.getTriggerEventCode().equals(eventCode)){
             return;
         }
         // TODO 统一规则引擎处理 存在, 一致则根据分佣时间扔给队列进行分佣（目前是根据时间直接进行分佣）
-        if(policy.getTriggerEventAfterDate() > 0){
+        if(disCommissionPolicy.getTriggerEventAfterDate() > 0){
             // 判断完成事件时间跟当前时间差是否小于triggerEventAfterDate
             // TODO 小于扔给延时队列进行处理，到到时间继续触发规则引擎
             
         }
         // 计算商户分佣金额
-        BigDecimal merchantGoodsSkuSharingAmount = calculateSharingAmount(requestMap, config);
+        BigDecimal merchantGoodsSkuSharingAmount = calculateSharingAmount(requestMap, disCommissionConfig);
         int comparisonResult = merchantGoodsSkuSharingAmount.compareTo(BigDecimal.ZERO);
         // 处理不同角色的佣金
         if(comparisonResult > 0){
-            BigDecimal superTenantBrokerageAmount = merchantGoodsSkuSharingAmount.multiply(config.getSuperTenantRate()).divide(new BigDecimal(100));
+            BigDecimal superTenantBrokerageAmount = merchantGoodsSkuSharingAmount.multiply(disCommissionConfig.getSuperTenantRate()).divide(new BigDecimal(100));
             int superTenantResult = superTenantBrokerageAmount.compareTo(BigDecimal.ZERO);
             if(superTenantResult > 0){
                 // 处理平台佣金
-                handleBrokerage(BizRoleType.TENANT.getCode(), supersTenantId, config.getSuperTenantRate(), policy, rule, superTenantBrokerageAmount, requestMap);
+                handleBrokerage(BizRoleType.TENANT.getCode(), supersTenantId, disCommissionConfig.getSuperTenantRate(), disCommissionPolicy, disCommissionRule, superTenantBrokerageAmount, requestMap);
             }
             // 处理租户佣金
-            BigDecimal tenantBrokerageAmount = merchantGoodsSkuSharingAmount.multiply(config.getTenantRate()).divide(new BigDecimal(100));
+            BigDecimal tenantBrokerageAmount = merchantGoodsSkuSharingAmount.multiply(disCommissionConfig.getTenantRate()).divide(new BigDecimal(100));
             int tenantResult = tenantBrokerageAmount.compareTo(BigDecimal.ZERO);
             if(tenantResult > 0){
-                handleBrokerage(BizRoleType.TENANT.getCode(), tenantId, config.getSuperTenantRate(), policy, rule, tenantBrokerageAmount, requestMap);
+                handleBrokerage(BizRoleType.TENANT.getCode(), tenantId, disCommissionConfig.getSuperTenantRate(), disCommissionPolicy, disCommissionRule, tenantBrokerageAmount, requestMap);
             }
             //  处理合伙人佣金
-            BigDecimal sysAgentBrokerageAmount = merchantGoodsSkuSharingAmount.multiply(config.getSysAgentRate()).divide(new BigDecimal(100));
+            BigDecimal sysAgentBrokerageAmount = merchantGoodsSkuSharingAmount.multiply(disCommissionConfig.getSysAgentRate()).divide(new BigDecimal(100));
             int sysAgentResult = sysAgentBrokerageAmount.compareTo(BigDecimal.ZERO);
             if(sysAgentResult > 0){
-                handleSysAgentBrokerage(sysAgentNo, policy, rule, config, sysAgentBrokerageAmount, requestMap);
+                handleSysAgentBrokerage(sysAgentNo, disCommissionPolicy, disCommissionRule, disCommissionConfig, sysAgentBrokerageAmount, requestMap);
             }
             // 处理客户佣金
-            BigDecimal customerBrokerageAmount = merchantGoodsSkuSharingAmount.multiply(config.getCustomerRate()).divide(new BigDecimal(100));
+            BigDecimal customerBrokerageAmount = merchantGoodsSkuSharingAmount.multiply(disCommissionConfig.getCustomerRate()).divide(new BigDecimal(100));
             int customerResult = customerBrokerageAmount.compareTo(BigDecimal.ZERO);
             if(customerResult > 0){
-                handleBrokerage(BizRoleType.CUSTOMER.getCode(), customerNo, config.getSuperTenantRate(), policy, rule, customerBrokerageAmount, requestMap);
+                handleBrokerage(BizRoleType.CUSTOMER.getCode(), customerNo, disCommissionConfig.getSuperTenantRate(), disCommissionPolicy, disCommissionRule, customerBrokerageAmount, requestMap);
             }
         }
     }
@@ -212,7 +212,7 @@ public class BrokerageEngineImpl implements BrokerageServiceEngine {
      */
     private BigDecimal calculateSharingAmount(Map<String, Object> requestMap, DisCommissionConfig config) {
         String goodsSkuPayAmount = MapUtils.getString(requestMap, "goodsSkuPayAmount");
-        return new BigDecimal(goodsSkuPayAmount).multiply(config.getMerchantSharingRate().divide(new BigDecimal(100)));
+        return new BigDecimal(goodsSkuPayAmount).multiply(config.getMerchantProfitSharingRate().divide(new BigDecimal(100)));
     }
 
     /**
