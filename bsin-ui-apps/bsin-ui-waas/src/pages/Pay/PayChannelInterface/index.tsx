@@ -66,6 +66,10 @@ const PayChannelInterface: React.FC = () => {
     // 支付方式数据
     const [payWayList, setPayWayList] = useState<any[]>([]);
     const [selectedPayWays, setSelectedPayWays] = useState<string[]>([]);
+    
+    // 商户模式状态
+    const [isNormalMerchantMode, setIsNormalMerchantMode] = useState<boolean>(true);
+    const [isServiceSubMerchantMode, setIsServiceSubMerchantMode] = useState<boolean>(false);
 
     // 获取表单
     const [formRef] = Form.useForm();
@@ -182,6 +186,8 @@ const PayChannelInterface: React.FC = () => {
         setCurrentRecord({} as columnsDataType);
         setIconUrl('');
         setSelectedPayWays([]);
+        setIsNormalMerchantMode(true);
+        setIsServiceSubMerchantMode(false);
         formRef.resetFields();
         setIsModalVisible(true);
     };
@@ -197,6 +203,9 @@ const PayChannelInterface: React.FC = () => {
         // 解析已选择的支付方式
         const selectedWays = record.wayCode ? record.wayCode.split(',') : [];
         setSelectedPayWays(selectedWays);
+        // 设置商户模式状态
+        setIsNormalMerchantMode(record.isNormalMerchanMode || false);
+        setIsServiceSubMerchantMode(record.isServiceSubMerchantMode || false);
         formRef.setFieldsValue({
             ...record,
             wayCode: selectedWays,
@@ -265,6 +274,28 @@ const PayChannelInterface: React.FC = () => {
     };
 
     /**
+     * 普通商户模式变更
+     */
+    const handleNormalMerchantModeChange = (value: boolean) => {
+        setIsNormalMerchantMode(value);
+        if (!value) {
+            // 如果不支持普通商户模式，清空相关参数
+            formRef.setFieldValue('normalMerchantParams', '');
+        }
+    };
+
+    /**
+     * 服务商子商户模式变更
+     */
+    const handleServiceSubMerchantModeChange = (value: boolean) => {
+        setIsServiceSubMerchantMode(value);
+        if (!value) {
+            // 如果不支持服务商子商户模式，清空相关参数
+            formRef.setFieldValue('serviceSubMerchantParams', '');
+        }
+    };
+
+    /**
      * 确认保存
      */
     const handleSave = async () => {
@@ -302,6 +333,8 @@ const PayChannelInterface: React.FC = () => {
         setIsModalVisible(false);
         setIconUrl('');
         setSelectedPayWays([]);
+        setIsNormalMerchantMode(true);
+        setIsServiceSubMerchantMode(false);
         formRef.resetFields();
     };
 
@@ -356,7 +389,7 @@ const PayChannelInterface: React.FC = () => {
                                     xxl: 5,
                                 }}
                                 dataSource={type.copilotList}
-                                renderItem={(item) => {
+                                renderItem={(item: columnsDataType) => {
                                     if (item && item.payChannelCode) {
                                         return (
                                             <List.Item key={item.payChannelCode}>
@@ -512,12 +545,12 @@ const PayChannelInterface: React.FC = () => {
                         <Input placeholder="请输入通道名称" />
                     </Form.Item>
                     <Form.Item
-                        label="配置页面类型"
+                        label="支付参数配置页面类型"
                         name="configPageType"
-                        rules={[{ required: true, message: '请选择配置页面类型!' }]}
+                        rules={[{ required: true, message: '请选择支付参数配置页面类型!' }]}
                         tooltip="支付参数配置页面的渲染方式"
                     >
-                        <Select placeholder="请选择配置页面类型">
+                        <Select placeholder="请选择支付参数配置页面类型">
                             <Option value={1}>JSON渲染</Option>
                             <Option value={2}>自定义</Option>
                         </Select>
@@ -532,6 +565,53 @@ const PayChannelInterface: React.FC = () => {
                             placeholder="请输入JSON格式的支付参数配置"
                         />
                     </Form.Item>
+                    
+                    {/* 商户模式配置 */}
+                    <div style={{ 
+                        border: '1px solid #d9d9d9', 
+                        borderRadius: '6px', 
+                        padding: '16px', 
+                        marginBottom: '16px',
+                        backgroundColor: '#fafafa'
+                    }}>
+                        <div style={{ 
+                            fontSize: '14px', 
+                            fontWeight: 'bold', 
+                            marginBottom: '12px',
+                            color: '#1890ff'
+                        }}>
+                            商户模式配置
+                        </div>
+                        <Row gutter={16}>
+                            <Col span={8}>
+                                <Form.Item
+                                    label="普通商户模式"
+                                    name="isNormalMerchanMode"
+                                    initialValue={true}
+                                    tooltip="是否支持普通商户模式"
+                                >
+                                    <Select onChange={handleNormalMerchantModeChange}>
+                                        <Option value={true}>支持</Option>
+                                        <Option value={false}>不支持</Option>
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                            <Col span={8}>
+                                <Form.Item
+                                    label="服务商子商户模式"
+                                    name="isServiceSubMerchantMode"
+                                    initialValue={false}
+                                    tooltip="是否支持服务商子商户模式"
+                                >
+                                    <Select onChange={handleServiceSubMerchantModeChange}>
+                                        <Option value={true}>支持</Option>
+                                        <Option value={false}>不支持</Option>
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                    </div>
+                    
                     <Form.Item
                         label="支持的支付方式"
                         name="wayCode"
@@ -607,6 +687,57 @@ const PayChannelInterface: React.FC = () => {
                             )}
                         </div>
                     </Form.Item>
+                    {/* 商户参数配置 */}
+                    <div style={{ 
+                        border: '1px solid #d9d9d9', 
+                        borderRadius: '6px', 
+                        padding: '16px', 
+                        marginBottom: '16px',
+                        backgroundColor: '#fafafa'
+                    }}>
+                        <div style={{ 
+                            fontSize: '14px', 
+                            fontWeight: 'bold', 
+                            marginBottom: '12px',
+                            color: '#1890ff'
+                        }}>
+                            商户参数配置
+                        </div>
+                        {isNormalMerchantMode && (
+                            <Form.Item
+                                label="普通商户参数"
+                                name="normalMerchantParams"
+                                tooltip="普通商户模式的参数配置，JSON格式"
+                            >
+                                <TextArea
+                                    rows={3}
+                                    placeholder="请输入普通商户模式的参数配置（JSON格式）"
+                                />
+                            </Form.Item>
+                        )}
+                        <Form.Item
+                            label="特殊商户参数"
+                            name="specialMerchantParams"
+                            tooltip="特殊商户模式的参数配置，JSON格式（始终可用）"
+                        >
+                            <TextArea
+                                rows={3}
+                                placeholder="请输入特殊商户模式的参数配置（JSON格式）"
+                            />
+                        </Form.Item>
+                        {isServiceSubMerchantMode && (
+                            <Form.Item
+                                label="服务商参数"
+                                name="serviceSubMerchantParams"
+                                tooltip="服务商子商户模式的参数配置，JSON格式"
+                            >
+                                <TextArea
+                                    rows={3}
+                                    placeholder="请输入服务商子商户模式的参数配置（JSON格式）"
+                                />
+                            </Form.Item>
+                        )}
+                    </div>
                     <Form.Item
                         label="状态"
                         name="status"
@@ -698,6 +829,27 @@ const PayChannelInterface: React.FC = () => {
                         ) : (
                             '-'
                         )}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="普通商户模式" span={1}>
+                        {viewRecord.isNormalMerchanMode ? '支持' : '不支持'}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="服务商子商户模式" span={1}>
+                        {viewRecord.isServiceSubMerchantMode ? '支持' : '不支持'}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="普通商户参数" span={2}>
+                        <div style={{ maxHeight: 100, overflow: 'auto' }}>
+                            {viewRecord.normalMerchantParams || '-'}
+                        </div>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="特殊商户参数" span={2}>
+                        <div style={{ maxHeight: 100, overflow: 'auto' }}>
+                            {viewRecord.specialMerchantParams || '-'}
+                        </div>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="服务商参数" span={2}>
+                        <div style={{ maxHeight: 100, overflow: 'auto' }}>
+                            {viewRecord.serviceSubMerchantParams || '-'}
+                        </div>
                     </Descriptions.Item>
                     <Descriptions.Item label="租户ID" span={1}>
                         {viewRecord.tenantId || '-'}

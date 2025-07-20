@@ -8,6 +8,11 @@ export type columnsDataType = {
   wayCode: string;
   icon: string;
   status: number;
+  isNormalMerchanMode: boolean;
+  isServiceSubMerchantMode: boolean;
+  normalMerchantParams: string;
+  specialMerchantParams: string;
+  serviceSubMerchantParams: string;
   remark: string;
   createTime: string;
   updateTime: string;
