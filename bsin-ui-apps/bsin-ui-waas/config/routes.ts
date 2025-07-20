@@ -146,17 +146,17 @@ const routes = [
       },
       {
         path: '/data-assets/overview',
-        component: '@/pages/dataAssets/Overview/index',
+        component: '@/pages/DataAssets/Overview/index',
       },
       // 数据分类
       {
         path: '/data-assets/data-category',
-        component: '@/pages/dataAssets/DataCategory/index',
+        component: '@/pages/DataAssets/DataCategory/index',
       },
       // 数据价值配置
       {
         path: '/data-assets/value-config',
-        component: '@/pages/dataAssets/DataValueConfig/index',
+        component: '@/pages/DataAssets/DataValueConfig/index',
       },
       // **************************支付*************************
       {
@@ -166,12 +166,12 @@ const routes = [
       // 支付接口
       {
         path: '/pay/pay-channel-interface',
-        component: '@/pages/pay/PayChannelInterface/index',
+        component: '@/pages/Pay/PayChannelInterface/index',
       },
       // 支付方式
       {
         path: '/pay/pay-way',
-        component: '@/pages/pay/PayWay/index',
+        component: '@/pages/Pay/PayWay/index',
       },
       // ***********************分账***********************
       {
@@ -181,12 +181,12 @@ const routes = [
       // 分账明细
       {
         path: '/revenue-share/revenue-share-list',
-        component: '@/pages/revenueShare/RevenueShareList/index',
+        component: '@/pages/RevenueShare/RevenueShareList/index',
       },
       // 分账配置
       {
         path: '/revenue-share/revenue-share-config',
-        component: '@/pages/revenueShare/RevenueShareConfig/index',
+        component: '@/pages/RevenueShare/RevenueShareConfig/index',
       },
       // // 分账配置列表
       // {
@@ -196,7 +196,7 @@ const routes = [
       // 让利配置
       {
         path: '/revenue-share/profit-sharing-config',
-        component: '@/pages/revenueShare/ProfitSharingConfig/index',
+        component: '@/pages/RevenueShare/ProfitSharingConfig/index',
       },
 
       // **************************交易*************************

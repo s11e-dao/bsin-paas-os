@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import DigitadlPoints from './digitalPoints';
 import IssueDigitalPoints from './issueDigitalPoints';
 import PutOnShelvesAssets from '../AssetsCollection/putOnShelvesAssets';
-import ConfigCondition from '../../conditionAndEquity/ConditionList/configCondition';
-import ConfigEquity from '../../conditionAndEquity/EquityList/configEquity';
+import ConfigCondition from '../../ConditionAndEquity/ConditionList/configCondition';
+import ConfigEquity from '../../ConditionAndEquity/EquityList/configEquity';
 
 export default () => {
   const [currentContent, setCurrentContent] = useState('digitalPoints');

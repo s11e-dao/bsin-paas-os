@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Profile from './profile';
 import CreateProfile from './createProfile';
-import ConfigCondition from '../conditionAndEquity/ConditionList/configCondition';
-import ConfigEquity from '../conditionAndEquity/EquityList/configEquity';
+import ConfigCondition from '../ConditionAndEquity/ConditionList/configCondition';
+import ConfigEquity from '../ConditionAndEquity/EquityList/configEquity';
 
 export default () => {
   

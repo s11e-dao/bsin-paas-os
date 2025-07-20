@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Form,
     Input,
@@ -13,10 +13,15 @@ import {
     Tooltip,
     Space,
     Upload,
+    Card,
+    List,
+    Tabs,
+    Avatar,
+    Checkbox,
+    Row,
+    Col,
 } from 'antd';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import type { UploadProps } from 'antd/es/upload/interface';
-import ProTable from '@ant-design/pro-table';
 import { PlusOutlined, EditOutlined, EyeOutlined, DeleteOutlined, ReloadOutlined, UploadOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './data';
 import {
@@ -26,8 +31,11 @@ import {
     deletePayInterface,
     getPayInterfaceDetail,
 } from './service';
-import TableTitle from '../../../components/TableTitle';
+import { getPayWayList } from '../PayWay/service';
 import { getSessionStorageInfo } from '../../../utils/localStorageInfo';
+
+const { Meta } = Card;
+
 const PayChannelInterface: React.FC = () => {
     const { TextArea } = Input;
     const { Option } = Select;
@@ -47,9 +55,21 @@ const PayChannelInterface: React.FC = () => {
     const [viewRecord, setViewRecord] = useState<columnsDataType>({} as columnsDataType);
     const [currentRecord, setCurrentRecord] = useState<columnsDataType>({} as columnsDataType);
     const [iconUrl, setIconUrl] = useState<string>('');
+    const [cardData, setCardData] = useState<columnsDataType[]>([]);
+    const [loadingData, setLoadingData] = useState(false);
+
+    // 分类数据
+    const [enabledInterfaceList, setEnabledInterfaceList] = useState<columnsDataType[]>([]);
+    const [disabledInterfaceList, setDisabledInterfaceList] = useState<columnsDataType[]>([]);
+    const [interfaceTypeList, setInterfaceTypeList] = useState<any[]>([]);
+
+    // 支付方式数据
+    const [payWayList, setPayWayList] = useState<any[]>([]);
+    const [selectedPayWays, setSelectedPayWays] = useState<string[]>([]);
 
     // 获取表单
     const [formRef] = Form.useForm();
+
     // 图片上传配置
     const uploadProps: UploadProps = {
         name: 'file',
@@ -93,86 +113,97 @@ const PayChannelInterface: React.FC = () => {
             return true;
         },
     };
+
+    // 获取支付方式列表
+    const fetchPayWayList = async () => {
+        try {
+            const res = await getPayWayList({});
+            if (res?.data) {
+                setPayWayList(res.data);
+            }
+        } catch (error) {
+            console.error('获取支付方式列表失败:', error);
+        }
+    };
+
+    // 获取卡片数据
+    const fetchCardData = async () => {
+        setLoadingData(true);
+        try {
+            const res = await getPayInterfacePageList({
+                pagination: {
+                    pageNum: 1,
+                    pageSize: 100, // 获取更多数据用于卡片展示
+                },
+            });
+            const data = res.data?.records || res.data || [];
+            setCardData(data);
+
+            // 按状态分类数据
+            let enabledList: columnsDataType[] = [];
+            let disabledList: columnsDataType[] = [];
+            
+            data.forEach((item: columnsDataType) => {
+                if (item.status === 1) {
+                    enabledList.push(item);
+                } else {
+                    disabledList.push(item);
+                }
+            });
+
+            setEnabledInterfaceList(enabledList);
+            setDisabledInterfaceList(disabledList);
+
+            // 设置分类列表
+            const typeList = [
+                { id: 1, name: '已启用接口', copilotList: enabledList },
+                { id: 2, name: '已停用接口', copilotList: disabledList },
+            ];
+            setInterfaceTypeList(typeList);
+        } catch (error) {
+            console.error('获取数据失败:', error);
+            message.error('获取数据失败');
+        } finally {
+            setLoadingData(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchCardData();
+        fetchPayWayList();
+    }, []);
+
     /**
-     * 以下内容为表格相关
+     * 打开新增模态框
      */
-    // 表头数据
-    const columns: ProColumns<columnsDataType>[] = columnsData;
-    // 操作行数据 自定义操作行
-    const actionRender = (text: any, record: columnsDataType, index: number) => (
-        <Space key={record.payChannelCode}>
-            <Tooltip title="查看详情">
-                <a onClick={() => handleView(record)}>
-                    <EyeOutlined />
-                </a>
-            </Tooltip>
-            <Divider type="vertical" />
-            <Tooltip title="编辑">
-                <a onClick={() => handleEdit(record)}>
-                    <EditOutlined />
-                </a>
-            </Tooltip>
-            <Divider type="vertical" />
-            <Tooltip title="启用/停用">
-                <Switch
-                    checked={record.status === 1}
-                    onChange={(checked) => handleStatusChange(record, checked)}
-                    size="small"
-                />
-            </Tooltip>
-            <Divider type="vertical" />
-            <Popconfirm
-                title="确定要删除这个支付接口吗？"
-                onConfirm={() => handleDelete(record)}
-                okText="确定"
-                cancelText="取消"
-            >
-                <Tooltip title="删除">
-                    <a style={{ color: '#ff4d4f' }}>
-                        <DeleteOutlined />
-                    </a>
-                </Tooltip>
-            </Popconfirm>
-        </Space>
-    );
-    // 自定义数据的表格头部数据
-    columns.forEach((item: any) => {
-        if (item.dataIndex === 'action') {
-            item.render = actionRender;
-        }
-        if (item.dataIndex === 'icon') {
-            item.render = (text: string) =>
-                text ? (
-                    <img src={text} alt="icon" style={{ width: 96, height: 96, objectFit: 'contain', borderRadius: '4px' }} />
-                ) : (
-                    <span>-</span>
-                );
-        }
-    });
-    // Table action 的引用，便于自定义触发
-    const actionRef = React.useRef<ActionType>();
-    /**
- * 打开新增模态框
- */
     const handleAdd = () => {
         setModalTitle('添加支付接口');
         setIsEdit(false);
         setCurrentRecord({} as columnsDataType);
         setIconUrl('');
+        setSelectedPayWays([]);
         formRef.resetFields();
         setIsModalVisible(true);
     };
+
     /**
- * 打开编辑模态框
- */
+     * 打开编辑模态框
+     */
     const handleEdit = (record: columnsDataType) => {
         setModalTitle('编辑支付接口');
         setIsEdit(true);
         setCurrentRecord(record);
         setIconUrl(record.icon || '');
-        formRef.setFieldsValue(record);
+        // 解析已选择的支付方式
+        const selectedWays = record.wayCode ? record.wayCode.split(',') : [];
+        setSelectedPayWays(selectedWays);
+        formRef.setFieldsValue({
+            ...record,
+            wayCode: selectedWays,
+        });
         setIsModalVisible(true);
     };
+
     /**
      * 查看详情
      */
@@ -187,6 +218,7 @@ const PayChannelInterface: React.FC = () => {
             message.error('获取详情失败');
         }
     };
+
     /**
      * 删除接口
      */
@@ -195,7 +227,7 @@ const PayChannelInterface: React.FC = () => {
             const res = await deletePayInterface({ payChannelCode: record.payChannelCode });
             if (res.code === 0 || res.code === '000000') {
                 message.success('删除成功');
-                actionRef.current?.reload();
+                fetchCardData(); // 重新获取数据
             } else {
                 message.error(res.message || '删除失败');
             }
@@ -203,6 +235,7 @@ const PayChannelInterface: React.FC = () => {
             message.error('删除失败');
         }
     };
+
     /**
      * 状态变更
      */
@@ -214,7 +247,7 @@ const PayChannelInterface: React.FC = () => {
             });
             if (res.code === 0 || res.code === '000000') {
                 message.success(checked ? '启用成功' : '停用成功');
-                actionRef.current?.reload();
+                fetchCardData(); // 重新获取数据
             } else {
                 message.error(res.message || '操作失败');
             }
@@ -222,9 +255,18 @@ const PayChannelInterface: React.FC = () => {
             message.error('操作失败');
         }
     };
+
     /**
- * 确认保存
- */
+     * 支付方式选择变更
+     */
+    const handlePayWayChange = (checkedValues: string[]) => {
+        setSelectedPayWays(checkedValues);
+        formRef.setFieldValue('wayCode', checkedValues);
+    };
+
+    /**
+     * 确认保存
+     */
     const handleSave = async () => {
         try {
             await formRef.validateFields();
@@ -234,7 +276,7 @@ const PayChannelInterface: React.FC = () => {
             const requestData = {
                 ...values,
                 icon: iconUrl, // 使用上传的图标URL
-                wayCode: Array.isArray(values.wayCode) ? values.wayCode.join(',') : values.wayCode,
+                wayCode: selectedPayWays.join(','), // 使用选中的支付方式
             };
             const res = isEdit
                 ? await editPayInterface({ ...requestData, payChannelCode: currentRecord.payChannelCode })
@@ -242,7 +284,7 @@ const PayChannelInterface: React.FC = () => {
             if (res.code === 0 || res.code === '000000') {
                 message.success(isEdit ? '更新成功' : '添加成功');
                 setIsModalVisible(false);
-                actionRef.current?.reload();
+                fetchCardData(); // 重新获取数据
             } else {
                 message.error(res.message || '操作失败');
             }
@@ -252,71 +294,172 @@ const PayChannelInterface: React.FC = () => {
             setLoading(false);
         }
     };
+
     /**
- * 取消操作
- */
+     * 取消操作
+     */
     const handleCancel = () => {
         setIsModalVisible(false);
         setIconUrl('');
+        setSelectedPayWays([]);
         formRef.resetFields();
     };
+
     return (
-        <div>
-            {/* Pro表格 */}
-            <ProTable<columnsDataType>
-                headerTitle={<TableTitle title="支付接口管理" />}
-                scroll={{ x: 1400 }}
-                bordered
-                columns={columns}
-                actionRef={actionRef}
-                request={async (params) => {
-                    try {
-                        const res = await getPayInterfacePageList({
-                            ...params,
-                            pagination: {
-                                pageNum: params.current,
-                                pageSize: params.pageSize,
-                            },
-                        });
-                        return {
-                            data: res.data?.records || res.data || [],
-                            total: res.data?.total || res.pagination?.totalSize || 0,
-                        };
-                    } catch (error) {
-                        console.error('获取列表失败:', error);
-                        return { data: [], total: 0 };
-                    }
-                }}
-                rowKey="payChannelCode"
-                search={{
-                    labelWidth: 'auto',
-                    collapsed: false,
-                    collapseRender: (collapsed) => (collapsed ? '展开' : '收起'),
-                }}
-                form={{
-                    ignoreRules: false,
-                }}
-                pagination={{
-                    pageSize: 10,
-                }}
-                toolBarRender={() => [
+        <Card>
+            {/* 工具栏 */}
+            <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Space>
                     <Button
-                        key="refresh"
                         icon={<ReloadOutlined />}
-                        onClick={() => actionRef.current?.reload()}
+                        onClick={fetchCardData}
+                        loading={loadingData}
                     >
                         刷新
-                    </Button>,
-                    <Button
-                        key="add"
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={handleAdd}
-                    >
-                        添加接口
-                    </Button>,
-                ]}
-            />
+                    </Button>
+                </Space>
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={handleAdd}
+                >
+                    新建支付接口
+                </Button>
+            </div>
+
+            {/* 页面标题和描述 */}
+            <Descriptions title="支付接口管理">
+                <Descriptions.Item>
+                    管理支付接口购买渠道，支持多种支付方式的配置和管理
+                </Descriptions.Item>
+            </Descriptions>
+
+            {/* 分类标签页 */}
+            <Tabs defaultActiveKey="1">
+                {interfaceTypeList.map((type) => (
+                    <Tabs.TabPane tab={type.name} key={type.id}>
+                        <Space
+                            size="middle"
+                            direction={'vertical'}
+                            style={{ display: 'flex', flexWrap: 'wrap' }}
+                        >
+                            <List
+                                loading={loadingData}
+                                rowKey="payChannelCode"
+                                grid={{
+                                    gutter: 16,
+                                    xs: 1,
+                                    sm: 2,
+                                    md: 2,
+                                    lg: 3,
+                                    xl: 4,
+                                    xxl: 5,
+                                }}
+                                dataSource={type.copilotList}
+                                renderItem={(item) => {
+                                    if (item && item.payChannelCode) {
+                                        return (
+                                            <List.Item key={item.payChannelCode}>
+                                                <Card
+                                                    style={{ width: 300 }}
+                                                    cover={
+                                                        <div style={{ 
+                                                            width: '100%', 
+                                                            height: '200px',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            backgroundColor: '#f5f5f5',
+                                                            borderRadius: '8px 8px 0 0'
+                                                        }}>
+                                                            {item.icon ? (
+                                                                <img
+                                                                    style={{ 
+                                                                        width: '100%', 
+                                                                        height: '100%',
+                                                                        objectFit: 'contain',
+                                                                        borderRadius: '8px 8px 0 0'
+                                                                    }}
+                                                                    alt={item.payChannelName}
+                                                                    src={item.icon}
+                                                                />
+                                                            ) : (
+                                                                <div style={{
+                                                                    fontSize: 48,
+                                                                    color: '#999'
+                                                                }}>
+                                                                    💰
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    }
+                                                    actions={[
+                                                        <Tooltip title="查看详情">
+                                                            <EyeOutlined
+                                                                key="view"
+                                                                onClick={() => handleView(item)}
+                                                            />
+                                                        </Tooltip>,
+                                                        <Tooltip title="编辑">
+                                                            <EditOutlined
+                                                                key="edit"
+                                                                onClick={() => handleEdit(item)}
+                                                            />
+                                                        </Tooltip>,
+                                                        <Tooltip title={item.status === 1 ? '停用' : '启用'}>
+                                                            <Switch
+                                                                key="status"
+                                                                checked={item.status === 1}
+                                                                onChange={(checked) => handleStatusChange(item, checked)}
+                                                                size="small"
+                                                            />
+                                                        </Tooltip>,
+                                                        <Popconfirm
+                                                            title="确定要删除这个支付接口吗？"
+                                                            onConfirm={() => handleDelete(item)}
+                                                            okText="确定"
+                                                            cancelText="取消"
+                                                        >
+                                                            <Tooltip title="删除">
+                                                                <DeleteOutlined
+                                                                    key="delete"
+                                                                    style={{ color: '#ff4d4f' }}
+                                                                />
+                                                            </Tooltip>
+                                                        </Popconfirm>,
+                                                    ]}
+                                                >
+                                                    <Meta
+                                                        avatar={
+                                                            <Avatar
+                                                                style={{
+                                                                    backgroundColor: item.status === 1 ? '#52c41a' : '#d9d9d9'
+                                                                }}
+                                                            >
+                                                                {item.status === 1 ? '✓' : '✗'}
+                                                            </Avatar>
+                                                        }
+                                                        title={item.payChannelName || '未命名接口'}
+                                                        description={
+                                                            <div>
+                                                                <div>{item.payChannelCode}</div>
+                                                                <div style={{ fontSize: 12, color: '#999', marginTop: 4 }}>
+                                                                    {item.status === 1 ? '已启用' : '已停用'}
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    />
+                                                </Card>
+                                            </List.Item>
+                                        );
+                                    }
+                                }}
+                            />
+                        </Space>
+                    </Tabs.TabPane>
+                ))}
+            </Tabs>
+
             {/* 新增/编辑模态框 */}
             <Modal
                 title={modalTitle}
@@ -324,7 +467,7 @@ const PayChannelInterface: React.FC = () => {
                 onOk={handleSave}
                 onCancel={handleCancel}
                 confirmLoading={loading}
-                width={600}
+                width={800}
                 destroyOnClose
             >
                 <Form
@@ -380,25 +523,28 @@ const PayChannelInterface: React.FC = () => {
                         />
                     </Form.Item>
                     <Form.Item
-                        label="支付方式"
+                        label="支持的支付方式"
                         name="wayCode"
                         rules={[{ required: true, message: '请选择支付方式!' }]}
                         tooltip="支持的支付方式列表"
                     >
-                        <Select
-                            mode="multiple"
-                            placeholder="请选择支付方式"
-                            style={{ width: '100%' }}
-                        >
-                            <Option value="wxpay_jsapi">微信JSAPI支付</Option>
-                            <Option value="wxpay_h5">微信H5支付</Option>
-                            <Option value="wxpay_app">微信APP支付</Option>
-                            <Option value="wxpay_bar">微信条码支付</Option>
-                            <Option value="alipay_jsapi">支付宝JSAPI支付</Option>
-                            <Option value="alipay_h5">支付宝H5支付</Option>
-                            <Option value="alipay_app">支付宝APP支付</Option>
-                            <Option value="alipay_bar">支付宝条码支付</Option>
-                        </Select>
+                        <div style={{ maxHeight: 300, overflow: 'auto', border: '1px solid #d9d9d9', borderRadius: '6px', padding: '12px' }}>
+                            <Checkbox.Group
+                                value={selectedPayWays}
+                                onChange={handlePayWayChange}
+                                style={{ width: '100%' }}
+                            >
+                                <Row gutter={[16, 8]}>
+                                    {payWayList.map((payWay) => (
+                                        <Col span={8} key={payWay.payWayCode}>
+                                            <Checkbox value={payWay.payWayCode}>
+                                                {payWay.payWayName}
+                                            </Checkbox>
+                                        </Col>
+                                    ))}
+                                </Row>
+                            </Checkbox.Group>
+                        </div>
                     </Form.Item>
                     <Form.Item
                         label="图标"
@@ -474,6 +620,7 @@ const PayChannelInterface: React.FC = () => {
                     </Form.Item>
                 </Form>
             </Modal>
+
             {/* 查看详情模态框 */}
             <Modal
                 title="支付接口详情"
@@ -504,8 +651,28 @@ const PayChannelInterface: React.FC = () => {
                             {viewRecord.params || '-'}
                         </div>
                     </Descriptions.Item>
-                    <Descriptions.Item label="支付方式" span={2}>
-                        {viewRecord.wayCode || '-'}
+                    <Descriptions.Item label="支持的支付方式" span={2}>
+                        <div style={{ maxHeight: 150, overflow: 'auto' }}>
+                            {viewRecord.wayCode ? (
+                                <Row gutter={[16, 8]}>
+                                    {viewRecord.wayCode.split(',').map((wayCode, index) => {
+                                        const payWay = payWayList.find(pw => pw.payWayCode === wayCode);
+                                        return (
+                                            <Col span={8} key={index}>
+                                                <div style={{ 
+                                                    padding: '4px 8px', 
+                                                    backgroundColor: '#f5f5f5', 
+                                                    borderRadius: '4px',
+                                                    fontSize: '12px'
+                                                }}>
+                                                    {payWay ? payWay.payWayName : wayCode}
+                                                </div>
+                                            </Col>
+                                        );
+                                    })}
+                                </Row>
+                            ) : '-'}
+                        </div>
                     </Descriptions.Item>
                     <Descriptions.Item label="图标" span={1}>
                         {viewRecord.icon ? (
@@ -532,7 +699,7 @@ const PayChannelInterface: React.FC = () => {
                     </Descriptions.Item>
                 </Descriptions>
             </Modal>
-        </div>
+        </Card>
     );
 };
 
