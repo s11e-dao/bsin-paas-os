@@ -93,7 +93,7 @@ const columnsData: ProColumns<RevenueShareDataType>[] = [
     render: (text) => `¥${text}`,
   },
   {
-    title: '代理商分账',
+    title: '合伙人分账',
     width: 120,
     dataIndex: 'sysAgentAmount',
     hideInSearch: true,

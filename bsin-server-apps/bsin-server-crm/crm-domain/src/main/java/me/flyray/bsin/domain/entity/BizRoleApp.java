@@ -87,7 +87,8 @@ public class BizRoleApp implements Serializable {
     private String token;
 
     /**
-     * 通知地址
+     * 通知地址：
+     * 微信支付成功回调地址
      */
     private String notifyUrl;
 

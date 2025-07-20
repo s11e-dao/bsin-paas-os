@@ -136,7 +136,7 @@ export default () => {
           <Descriptions.Item label="租户平台分账">
             ¥{viewRecord?.tenantAmount}
           </Descriptions.Item>
-          <Descriptions.Item label="代理商分账">
+          <Descriptions.Item label="合伙人分账">
             ¥{viewRecord?.sysAgentAmount}
           </Descriptions.Item>
           <Descriptions.Item label="消费者返利">

@@ -1,7 +1,7 @@
 import { request } from '@umijs/max'
 let waasPath = process.env.contextPath_waas;
 
-// 分页查询
+// 分页查询支付接口列表
 export const getPayInterfacePageList = (params) => {
   return request(waasPath + '/payChannelInterface/getPageList', {
     serviceName: 'PayChannelInterfaceService',
@@ -13,10 +13,11 @@ export const getPayInterfacePageList = (params) => {
   });
 };
 
+// 获取支付接口列表（不分页）
 export const getPayInterfaceList = (params) => {
   return request(waasPath + '/payChannelInterface/getList', {
     serviceName: 'PayChannelInterfaceService',
-    methodName: 'getPageList',
+    methodName: 'getList',
     version: '1.0',
     bizParams: {
       ...params,
@@ -24,7 +25,7 @@ export const getPayInterfaceList = (params) => {
   });
 };
 
-// 添加平台
+// 添加支付接口
 export const addPayInterface = (params) => {
   return request(waasPath + '/payChannelInterface/add', {
     serviceName: 'PayChannelInterfaceService',
@@ -36,7 +37,19 @@ export const addPayInterface = (params) => {
   });
 };
 
-// 删除
+// 编辑支付接口
+export const editPayInterface = (params) => {
+  return request(waasPath + '/payChannelInterface/edit', {
+    serviceName: 'PayChannelInterfaceService',
+    methodName: 'edit',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
+// 删除支付接口
 export const deletePayInterface = (params) => {
   return request(waasPath + '/payChannelInterface/delete', {
     serviceName: 'PayChannelInterfaceService',
@@ -48,9 +61,8 @@ export const deletePayInterface = (params) => {
   });
 };
 
-// 查询详情
+// 查询支付接口详情
 export const getPayInterfaceDetail = (params) => {
-  console.log('params', params);
   return request(waasPath + '/payChannelInterface/getDetail', {
     serviceName: 'PayChannelInterfaceService',
     methodName: 'getDetail',
@@ -61,17 +73,5 @@ export const getPayInterfaceDetail = (params) => {
   });
 };
 
-
-export const addAppPayChannel = (params) => {
-  console.log('params', params);
-  return request(waasPath + '/payChannelConfig/add', {
-    serviceName: 'PayChannelConfigService',
-    methodName: 'add',
-    version: '1.0',
-    bizParams: {
-      ...params,
-    },
-  });
-};
 
 
