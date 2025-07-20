@@ -17,22 +17,22 @@ export type columnsDataType = {
 const columnsData: ProColumns<columnsDataType>[] = [
   // 搜索字段
   {
-    title: '接口代码',
+    title: '通道代码',
     dataIndex: 'payChannelCode',
     hideInTable: true,
     fieldProps: {
       maxLength: 32,
     },
-    tooltip: '支付接口的唯一标识代码，如：wxpay、alipay',
+    tooltip: '支付通道的唯一标识代码，如：wxpay、alipay',
   },
   {
-    title: '接口名称',
+    title: '通道名称',
     dataIndex: 'payChannelName',
     hideInTable: true,
     fieldProps: {
       maxLength: 50,
     },
-    tooltip: '支付接口的显示名称',
+    tooltip: '支付通道的显示名称',
   },
   {
     title: '状态',
@@ -48,19 +48,19 @@ const columnsData: ProColumns<columnsDataType>[] = [
 
   // 表格显示字段
   {
-    title: '接口代码',
+    title: '通道代码',
     width: 120,
     dataIndex: 'payChannelCode',
     fixed: 'left',
     hideInSearch: true,
-    tooltip: '支付接口的唯一标识代码',
+    tooltip: '支付通道的唯一标识代码',
   },
   {
-    title: '接口名称',
+    title: '通道名称',
     width: 150,
     dataIndex: 'payChannelName',
     hideInSearch: true,
-    tooltip: '支付接口的显示名称',
+    tooltip: '支付通道的显示名称',
   },
   {
     title: '配置页面类型',
@@ -80,7 +80,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     dataIndex: 'params',
     hideInSearch: true,
     ellipsis: true,
-    tooltip: '支付接口的参数配置定义，JSON格式',
+    tooltip: '支付通道的参数配置定义，JSON格式',
   },
   {
     title: '支付方式',
@@ -107,7 +107,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
       0: { text: '停用', status: 'Error' },
       1: { text: '启用', status: 'Success' },
     },
-    tooltip: '接口的启用状态',
+    tooltip: '通道的启用状态',
   },
   {
     title: '备注',
@@ -115,7 +115,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     dataIndex: 'remark',
     hideInSearch: true,
     ellipsis: true,
-    tooltip: '接口的备注信息',
+    tooltip: '通道的备注信息',
   },
   {
     title: '租户ID',
@@ -130,7 +130,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     dataIndex: 'createTime',
     hideInSearch: true,
     valueType: 'dateTime',
-    tooltip: '接口创建时间',
+    tooltip: '通道创建时间',
   },
   {
     title: '更新时间',
@@ -138,7 +138,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     dataIndex: 'updateTime',
     hideInSearch: true,
     valueType: 'dateTime',
-    tooltip: '接口最后更新时间',
+    tooltip: '通道最后更新时间',
   },
   {
     title: '操作',
@@ -146,7 +146,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
     dataIndex: 'action',
     fixed: 'right',
-    tooltip: '对接口的操作选项',
+    tooltip: '对通道的操作选项',
   },
 ];
 

@@ -47,7 +47,7 @@ const PayChannelInterface: React.FC = () => {
     // 控制模态框状态
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isViewModalVisible, setIsViewModalVisible] = useState(false);
-    const [modalTitle, setModalTitle] = useState('添加支付接口');
+    const [modalTitle, setModalTitle] = useState('添加支付通道');
     const [isEdit, setIsEdit] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -156,8 +156,8 @@ const PayChannelInterface: React.FC = () => {
 
             // 设置分类列表
             const typeList = [
-                { id: 1, name: '已启用接口', copilotList: enabledList },
-                { id: 2, name: '已停用接口', copilotList: disabledList },
+                { id: 1, name: '已启用通道', copilotList: enabledList },
+                { id: 2, name: '已停用通道', copilotList: disabledList },
             ];
             setInterfaceTypeList(typeList);
         } catch (error) {
@@ -177,7 +177,7 @@ const PayChannelInterface: React.FC = () => {
      * 打开新增模态框
      */
     const handleAdd = () => {
-        setModalTitle('添加支付接口');
+        setModalTitle('添加支付通道');
         setIsEdit(false);
         setCurrentRecord({} as columnsDataType);
         setIconUrl('');
@@ -190,7 +190,7 @@ const PayChannelInterface: React.FC = () => {
      * 打开编辑模态框
      */
     const handleEdit = (record: columnsDataType) => {
-        setModalTitle('编辑支付接口');
+        setModalTitle('编辑支付通道');
         setIsEdit(true);
         setCurrentRecord(record);
         setIconUrl(record.icon || '');
@@ -323,14 +323,14 @@ const PayChannelInterface: React.FC = () => {
                     icon={<PlusOutlined />}
                     onClick={handleAdd}
                 >
-                    新建支付接口
+                    新建支付通道
                 </Button>
             </div>
 
             {/* 页面标题和描述 */}
-            <Descriptions title="支付接口管理">
+            <Descriptions title="支付通道管理">
                 <Descriptions.Item>
-                    管理支付接口购买渠道，支持多种支付方式的配置和管理
+                    管理支付通道购买渠道，支持多种支付方式的配置和管理
                 </Descriptions.Item>
             </Descriptions>
 
@@ -442,7 +442,13 @@ const PayChannelInterface: React.FC = () => {
                                                         title={item.payChannelName || '未命名接口'}
                                                         description={
                                                             <div>
-                                                                <div>{item.payChannelCode}</div>
+                                                                <div>
+                                                                    {item.payChannelCode === 'wxPay' ? '微信支付' :
+                                                                     item.payChannelCode === 'aliPay' ? '支付宝支付' :
+                                                                     item.payChannelCode === 'brandsPoint' ? '品牌积分支付' :
+                                                                     item.payChannelCode === 'fireDiamond' ? '火钻支付' :
+                                                                     item.payChannelCode}
+                                                                </div>
                                                                 <div style={{ fontSize: 12, color: '#999', marginTop: 4 }}>
                                                                     {item.status === 1 ? '已启用' : '已停用'}
                                                                 </div>
@@ -477,29 +483,33 @@ const PayChannelInterface: React.FC = () => {
                     layout="horizontal"
                 >
                     <Form.Item
-                        label="接口代码"
+                        label="通道代码"
                         name="payChannelCode"
                         rules={[
-                            { required: true, message: '请输入接口代码!' },
-                            { max: 32, message: '接口代码不能超过32个字符!' },
+                            { required: true, message: '请选择通道代码!' },
                         ]}
-                        tooltip="支付接口的唯一标识代码，如：wxpay、alipay"
+                        tooltip="支付通道的唯一标识代码"
                     >
-                        <Input
-                            placeholder="请输入接口代码"
+                        <Select
+                            placeholder="请选择通道代码"
                             disabled={isEdit}
-                        />
+                        >
+                            <Option value="wxPay">微信支付</Option>
+                            <Option value="aliPay">支付宝支付</Option>
+                            <Option value="brandsPoint">品牌积分支付</Option>
+                            <Option value="fireDiamond">火钻支付</Option>
+                        </Select>
                     </Form.Item>
                     <Form.Item
-                        label="接口名称"
+                        label="通道名称"
                         name="payChannelName"
                         rules={[
-                            { required: true, message: '请输入接口名称!' },
-                            { max: 50, message: '接口名称不能超过50个字符!' },
+                            { required: true, message: '请输入通道名称!' },
+                            { max: 50, message: '通道名称不能超过50个字符!' },
                         ]}
-                        tooltip="支付接口的显示名称"
+                        tooltip="支付通道的显示名称"
                     >
-                        <Input placeholder="请输入接口名称" />
+                        <Input placeholder="请输入通道名称" />
                     </Form.Item>
                     <Form.Item
                         label="配置页面类型"
@@ -515,7 +525,7 @@ const PayChannelInterface: React.FC = () => {
                     <Form.Item
                         label="支付参数"
                         name="params"
-                        tooltip="支付接口的参数配置定义，JSON格式"
+                        tooltip="支付通道的参数配置定义，JSON格式"
                     >
                         <TextArea
                             rows={4}
@@ -549,7 +559,7 @@ const PayChannelInterface: React.FC = () => {
                     <Form.Item
                         label="图标"
                         name="icon"
-                        tooltip="页面展示的卡片图标"
+                        tooltip="页面展示的通道图标"
                     >
                         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                             <Upload {...uploadProps} listType="picture-card" showUploadList={false}>
@@ -601,7 +611,7 @@ const PayChannelInterface: React.FC = () => {
                         label="状态"
                         name="status"
                         initialValue={1}
-                        tooltip="接口的启用状态"
+                        tooltip="通道的启用状态"
                     >
                         <Select>
                             <Option value={1}>启用</Option>
@@ -611,7 +621,7 @@ const PayChannelInterface: React.FC = () => {
                     <Form.Item
                         label="备注"
                         name="remark"
-                        tooltip="接口的备注信息"
+                        tooltip="通道的备注信息"
                     >
                         <TextArea
                             rows={3}
@@ -623,7 +633,7 @@ const PayChannelInterface: React.FC = () => {
 
             {/* 查看详情模态框 */}
             <Modal
-                title="支付接口详情"
+                title="支付通道详情"
                 open={isViewModalVisible}
                 onCancel={() => setIsViewModalVisible(false)}
                 footer={[
@@ -634,10 +644,14 @@ const PayChannelInterface: React.FC = () => {
                 width={800}
             >
                 <Descriptions bordered column={2}>
-                    <Descriptions.Item label="接口代码" span={1}>
-                        {viewRecord.payChannelCode}
+                    <Descriptions.Item label="支付通道代码" span={1}>
+                        {viewRecord.payChannelCode === 'wxPay' ? '微信支付' :
+                         viewRecord.payChannelCode === 'aliPay' ? '支付宝支付' :
+                         viewRecord.payChannelCode === 'brandsPoint' ? '品牌积分支付' :
+                         viewRecord.payChannelCode === 'fireDiamond' ? '火钻支付' :
+                         viewRecord.payChannelCode}
                     </Descriptions.Item>
-                    <Descriptions.Item label="接口名称" span={1}>
+                    <Descriptions.Item label="支付通道名称" span={1}>
                         {viewRecord.payChannelName}
                     </Descriptions.Item>
                     <Descriptions.Item label="配置页面类型" span={1}>

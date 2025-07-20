@@ -267,24 +267,62 @@ const PayWay: React.FC = () => {
           >
             <Input placeholder="请输入支付方式名称" />
           </Form.Item>
-          <Form.Item
-            label="支付方式编码"
-            name="payWayCode"
-            rules={[
-              { required: true, message: '请选择支付方式编码!' },
-            ]}
-            tooltip="支付方式的唯一标识代码"
-          >
-            <Select 
-              placeholder="请选择支付方式编码"
-              disabled={isEdit}
+                      <Form.Item
+              label="支付方式类型"
+              name="payWayType"
+              rules={[
+                { required: true, message: '请选择支付方式类型!' },
+              ]}
+              tooltip="支付方式的类型"
             >
-              <Option value="wxPay">微信支付</Option>
-              <Option value="aliPay">支付宝支付</Option>
-              <Option value="brandsPoint">品牌积分支付</Option>
-              <Option value="fireDiamond">火钻支付</Option>
-            </Select>
-          </Form.Item>
+              <Select 
+                placeholder="请选择支付方式类型"
+                disabled={isEdit}
+                onChange={(value) => {
+                  // 当选择支付方式类型时，自动设置对应的编码
+                  formRef.setFieldsValue({ payWayCode: value });
+                }}
+              >
+                <Option value="WX_H5">微信H5</Option>
+                <Option value="WX_JSAPI">微信公众号</Option>
+                <Option value="WX_LITE">微信小程序</Option>
+                <Option value="WX_NATIVE">微信扫码</Option>
+                <Option value="WX_BAR">微信条码</Option>
+                <Option value="WX_APP">微信APP</Option>
+                <Option value="WX">微信支付</Option>
+                <Option value="ALI">支付宝支付</Option>
+                <Option value="ALI_APP">支付宝App</Option>
+                <Option value="ALI_BAR">支付宝条码</Option>
+                <Option value="ALI_JSAPI">支付宝生活号</Option>
+                <Option value="ALI_LITE">支付宝小程序</Option>
+                <Option value="ALI_PC">支付宝PC网站</Option>
+                <Option value="ALI_QR">支付宝二维码</Option>
+                <Option value="ALI_WAP">支付宝WAP</Option>
+                <Option value="XLALILITE">信联支付宝支付</Option>
+                <Option value="YSF_BAR">云闪付条码</Option>
+                <Option value="YSF_JSAPI">云闪付jsapi</Option>
+                <Option value="YSF_LITE">云闪付小程序</Option>
+                <Option value="UP_QR">银联二维码(主扫)</Option>
+                <Option value="UP_BAR">银联二维码(被扫)</Option>
+                <Option value="UP_APP">银联App支付</Option>
+                <Option value="QR_CASHIER">聚合</Option>
+                <Option value="QQ_PAY">钱包</Option>
+                <Option value="PP_PC">PayPal支付</Option>
+                <Option value="ICBC_APP">工行APP支付</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              label="支付方式编码"
+              name="payWayCode"
+              rules={[
+                { required: true, message: '请输入支付方式编码!' },
+                { max: 50, message: '支付方式编码不能超过50个字符!' },
+              ]}
+              tooltip="支付方式的编码（根据选择的类型自动生成）"
+            >
+              <Input placeholder="支付方式编码将根据选择的类型自动生成" disabled={true}/>
+            </Form.Item>
         </Form>
       </Modal>
       
@@ -307,13 +345,38 @@ const PayWay: React.FC = () => {
           <Descriptions.Item label="支付方式名称" span={1}>
             {viewRecord.payWayName}
           </Descriptions.Item>
-          <Descriptions.Item label="支付方式编码" span={1}>
-            {viewRecord.payWayCode === 'wxPay' ? '微信支付' :
-             viewRecord.payWayCode === 'aliPay' ? '支付宝支付' :
-             viewRecord.payWayCode === 'brandsPoint' ? '品牌积分支付' :
-             viewRecord.payWayCode === 'fireDiamond' ? '火钻支付' :
-             viewRecord.payWayCode}
-          </Descriptions.Item>
+                      <Descriptions.Item label="支付方式类型" span={1}>
+                                     {viewRecord.payWayType === 'WX_H5' ? '微信H5' :
+                          viewRecord.payWayType === 'WX_JSAPI' ? '微信公众号' :
+                          viewRecord.payWayType === 'WX_LITE' ? '微信小程序' :
+                          viewRecord.payWayType === 'WX_NATIVE' ? '微信扫码' :
+                          viewRecord.payWayType === 'WX_BAR' ? '微信条码' :
+                          viewRecord.payWayType === 'WX_APP' ? '微信APP' :
+                          viewRecord.payWayType === 'WX' ? '微信支付' :
+                          viewRecord.payWayType === 'ALI' ? '支付宝支付' :
+                          viewRecord.payWayType === 'ALI_APP' ? '支付宝App' :
+                          viewRecord.payWayType === 'ALI_BAR' ? '支付宝条码' :
+                          viewRecord.payWayType === 'ALI_JSAPI' ? '支付宝生活号' :
+                          viewRecord.payWayType === 'ALI_LITE' ? '支付宝小程序' :
+                          viewRecord.payWayType === 'ALI_PC' ? '支付宝PC网站' :
+                          viewRecord.payWayType === 'ALI_QR' ? '支付宝二维码' :
+                          viewRecord.payWayType === 'ALI_WAP' ? '支付宝WAP' :
+                          viewRecord.payWayType === 'XLALILITE' ? '信联支付宝支付' :
+                          viewRecord.payWayType === 'YSF_BAR' ? '云闪付条码' :
+                          viewRecord.payWayType === 'YSF_JSAPI' ? '云闪付jsapi' :
+                          viewRecord.payWayType === 'YSF_LITE' ? '云闪付小程序' :
+                          viewRecord.payWayType === 'UP_QR' ? '银联二维码(主扫)' :
+                          viewRecord.payWayType === 'UP_BAR' ? '银联二维码(被扫)' :
+                          viewRecord.payWayType === 'UP_APP' ? '银联App支付' :
+                          viewRecord.payWayType === 'QR_CASHIER' ? '聚合' :
+                          viewRecord.payWayType === 'QQ_PAY' ? '钱包' :
+                          viewRecord.payWayType === 'PP_PC' ? 'PayPal支付' :
+                          viewRecord.payWayType === 'ICBC_APP' ? '工行APP支付' :
+                          viewRecord.payWayType}
+            </Descriptions.Item>
+            <Descriptions.Item label="支付方式编码" span={1}>
+              {viewRecord.payWayCode}
+            </Descriptions.Item>
           <Descriptions.Item label="租户ID" span={1}>
             {viewRecord.tenantId}
           </Descriptions.Item>
