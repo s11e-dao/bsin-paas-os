@@ -198,7 +198,11 @@ const routes = [
         path: '/revenue-share/profit-sharing-config',
         component: '@/pages/RevenueShare/ProfitSharingConfig/index',
       },
-
+      // 微信分账
+      {
+        path: '/revenue-share/wx-profit-share',
+        component: '@/pages/RevenueShare/WxProfitShare/index',
+      },
       // **************************交易*************************
       {
         path: '/transaction',
