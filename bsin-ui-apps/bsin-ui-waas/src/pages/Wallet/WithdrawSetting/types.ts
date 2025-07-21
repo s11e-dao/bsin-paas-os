@@ -1,11 +1,13 @@
 // 提现账户数据类型
 export interface WithdrawAccountType {
   serialNo: string;
-  accountType: 'bank' | 'alipay' | 'wechat';
+  accountType: 1 | 2 | 3; // 1=银行卡, 2=支付宝, 3=微信支付
   accountName: string;
   accountNumber: string;
+  accountNum?: string;
   bankName?: string;
-  bankBranch?: string;
+  swiftCode?: string;
+  remark?: string;
   status: 'active' | 'inactive' | 'pending';
   isDefault: boolean;
   createTime: string;
@@ -31,7 +33,7 @@ export interface WithdrawRecordType {
   serialNo: string;
   accountSerialNo: string;
   accountName: string;
-  accountType: 'bank' | 'alipay' | 'wechat';
+  accountType: 1 | 2 | 3; // 1=银行卡, 2=支付宝, 3=微信支付
   amount: number;
   fee: number;
   actualAmount: number;
@@ -43,11 +45,12 @@ export interface WithdrawRecordType {
 
 // 表单值类型
 export interface WithdrawAccountFormValues {
-  accountType: 'bank' | 'alipay' | 'wechat';
+  accountType: 1 | 2 | 3; // 1=银行卡, 2=支付宝, 3=微信支付
   accountName: string;
-  accountNumber: string;
+  accountNum: string;
   bankName: string;
-  bankBranch?: string;
+  swiftCode?: string;
+  remark?: string;
 }
 
 // API 响应类型

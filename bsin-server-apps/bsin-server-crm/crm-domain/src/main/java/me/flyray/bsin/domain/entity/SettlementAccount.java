@@ -67,5 +67,9 @@ public class SettlementAccount extends BaseEntity implements Serializable {
      */
     private String category;
 
+    /**
+     * 是否是默认结算账户
+     */
+    private String defaultFlag;
 
 }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.domain.entity.Merchant;
 import me.flyray.bsin.domain.entity.Platform;
 import me.flyray.bsin.domain.entity.SettlementAccount;
 import me.flyray.bsin.domain.entity.Store;
@@ -131,10 +132,10 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
     public List<SettlementAccount> getList(SettlementAccountDTO settlementAccountDTO) {
         log.debug("请求MerchantService.pageList,参数:{} ", settlementAccountDTO);
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        QueryWrapper queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("merchant_no", loginUser.getMerchantNo());
-        queryWrapper.eq("tenant_id", loginUser.getTenantId());
-        return settlementAccountMapper.selectList(queryWrapper);
+        LambdaQueryWrapper<SettlementAccount> warapper = new LambdaQueryWrapper<>();
+        warapper.eq(SettlementAccount::getBizRoleTypeNo, loginUser.getBizRoleTypeNo());
+        warapper.eq(SettlementAccount::getTenantId, loginUser.getTenantId());
+        return settlementAccountMapper.selectList(warapper);
     }
 
     @ShenyuDubboClient("/getPageList")
@@ -145,12 +146,12 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
         LoginUser user = LoginInfoContextHelper.getLoginUser();  // 用户信息
         int current = settlementAccountDTO.getCurrent() == null ? 1 : settlementAccountDTO.getCurrent();
         int size = settlementAccountDTO.getSize() == null ? 10 : settlementAccountDTO.getSize();
-        QueryWrapper queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("business_role_no", user.getBizRoleTypeNo());
-        queryWrapper.eq("business_role_type", user.getBizRoleType());
-        queryWrapper.eq("tenant_id", user.getTenantId());
-        queryWrapper.orderByDesc("create_time");
-        return settlementAccountMapper.selectPage(new Page<>(current, size), queryWrapper);
+        LambdaQueryWrapper<SettlementAccount> warapper = new LambdaQueryWrapper<>();
+        warapper.eq(SettlementAccount::getBizRoleTypeNo, user.getBizRoleTypeNo());
+        warapper.eq(SettlementAccount::getBizRoleType, user.getBizRoleType());
+        warapper.eq(SettlementAccount::getTenantId, user.getTenantId());
+        warapper.orderByDesc(SettlementAccount::getCreateTime);
+        return settlementAccountMapper.selectPage(new Page<>(current, size), warapper);
     }
 
 }

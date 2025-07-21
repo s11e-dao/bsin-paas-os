@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { withdrawService, withdrawAccountService } from './service';
 import { 
   Button, 
   Card, 
@@ -58,42 +59,33 @@ export default ({ setCurrentContent }: WithdrawProps) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [withdrawOrder, setWithdrawOrder] = useState<any>(null);
 
-  // 模拟提现账户数据
+  // 获取提现账户数据和可提现金额
   useEffect(() => {
-    const mockAccounts: WithdrawAccount[] = [
-      {
-        id: '1',
-        name: '张三',
-        accountNumber: '6222 **** **** 1234',
-        accountType: 'bank',
-        bankName: '中国工商银行',
-        isDefault: true,
-        status: 'active'
-      },
-      {
-        id: '2',
-        name: '张三',
-        accountNumber: '138****8888',
-        accountType: 'alipay',
-        isDefault: false,
-        status: 'active'
-      },
-      {
-        id: '3',
-        name: '张三',
-        accountNumber: 'wx_123456',
-        accountType: 'wechat',
-        isDefault: false,
-        status: 'active'
+    const fetchData = async () => {
+      try {
+        // 获取提现账户列表
+        const accountsResponse = await withdrawAccountService.getWithdrawAccountList();
+        if (accountsResponse.data) {
+          setWithdrawAccounts(accountsResponse.data);
+          const defaultAccount = accountsResponse.data.find((acc: any) => acc.isDefault);
+          if (defaultAccount) {
+            setSelectedAccount(defaultAccount.id);
+            form.setFieldsValue({ account: defaultAccount.id });
+          }
+        }
+
+        // 获取可提现金额
+        const amountResponse = await withdrawService.getAvailableWithdrawAmount();
+        if (amountResponse.data) {
+          setAvailableAmount(amountResponse.data.availableAmount || 0);
+        }
+      } catch (error) {
+        console.error('获取数据失败:', error);
+        message.error('获取数据失败，请重试');
       }
-    ];
-    setWithdrawAccounts(mockAccounts);
-    // 设置默认账户
-    const defaultAccount = mockAccounts.find(acc => acc.isDefault);
-    if (defaultAccount) {
-      setSelectedAccount(defaultAccount.id);
-      form.setFieldsValue({ account: defaultAccount.id });
-    }
+    };
+
+    fetchData();
   }, []);
 
   // 获取账户图标
@@ -158,26 +150,39 @@ export default ({ setCurrentContent }: WithdrawProps) => {
 
       setIsSubmitting(true);
 
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      try {
+        // 调用提现API
+        const response = await withdrawService.createWithdrawApplication({
+          amount: withdrawAmount,
+          accountId: selectedAccount,
+          remark: values.remark || ''
+        });
 
-      const order = {
-        id: `WD${Date.now()}`,
-        amount: withdrawAmount,
-        fee: calculateFee(withdrawAmount),
-        actualAmount,
-        account: withdrawAccounts.find(acc => acc.id === selectedAccount),
-        status: 'pending',
-        createTime: new Date().toLocaleString()
-      };
+        if (response.data) {
+          const order = {
+            id: response.data.id || `WD${Date.now()}`,
+            amount: withdrawAmount,
+            fee: calculateFee(withdrawAmount),
+            actualAmount,
+            account: withdrawAccounts.find(acc => acc.id === selectedAccount),
+            status: 'pending',
+            createTime: new Date().toLocaleString()
+          };
 
-      setWithdrawOrder(order);
-      setShowSuccessModal(true);
-      setIsSubmitting(false);
+          setWithdrawOrder(order);
+          setShowSuccessModal(true);
+          message.success('提现申请提交成功');
 
-      // 重置表单
-      form.resetFields();
-      setWithdrawAmount(null);
+          // 重置表单
+          form.resetFields();
+          setWithdrawAmount(null);
+        }
+      } catch (error) {
+        console.error('提现申请失败:', error);
+        message.error('提现申请失败，请重试');
+      } finally {
+        setIsSubmitting(false);
+      }
 
     } catch (error) {
       console.error('提现申请失败:', error);

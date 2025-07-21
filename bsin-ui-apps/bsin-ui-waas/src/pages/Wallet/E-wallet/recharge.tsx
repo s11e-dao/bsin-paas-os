@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { rechargeService } from './service';
 import { 
   Button, 
   Card, 
@@ -144,9 +145,25 @@ export default ({ setCurrentContent }: RechargeProps) => {
             size="large"
             block
             disabled={!amount || amount <= 0}
-            onClick={() => {
-              setOrderId(`ORDER${Date.now()}`);
-              setCurrentStep(1);
+            loading={isLoading}
+            onClick={async () => {
+              if (!amount || amount <= 0) return;
+              
+              setIsLoading(true);
+              try {
+                const result = await rechargeService.createRechargeOrder({
+                  amount,
+                  paymentMethod
+                });
+                setOrderId(result.orderId || `ORDER${Date.now()}`);
+                setCurrentStep(1);
+                message.success('订单创建成功');
+              } catch (error) {
+                message.error('创建订单失败，请重试');
+                console.error('创建充值订单失败:', error);
+              } finally {
+                setIsLoading(false);
+              }
             }}
             style={{ height: 50, fontSize: 16 }}
           >

@@ -42,10 +42,7 @@ export const eWalletService = {
 // 充值相关 API
 export const rechargeService = {
   // 创建充值订单
-  createRechargeOrder: (params: {
-    amount: number;
-    paymentMethod: string;
-  }): Promise<any> => {
+  createRechargeOrder: (params: any): Promise<any> => {
     return request(waasPath + '/wallet/recharge/createOrder', {
       serviceName: 'WalletService',
       methodName: 'createRechargeOrder',
@@ -108,11 +105,7 @@ export const rechargeService = {
 // 提现相关 API
 export const withdrawService = {
   // 创建提现申请
-  createWithdrawApplication: (params: {
-    amount: number;
-    accountId: string;
-    remark?: string;
-  }): Promise<any> => {
+  createWithdrawApplication: (params: any): Promise<any> => {
     return request(waasPath + '/wallet/withdraw/createApplication', {
       serviceName: 'WalletService',
       methodName: 'createWithdrawApplication',
@@ -160,10 +153,7 @@ export const withdrawService = {
   },
 
   // 获取提现手续费计算
-  calculateWithdrawFee: (params: {
-    amount: number;
-    accountType: string;
-  }): Promise<any> => {
+  calculateWithdrawFee: (params: any): Promise<any> => {
     return request(waasPath + '/wallet/withdraw/calculateFee', {
       serviceName: 'WalletService',
       methodName: 'calculateWithdrawFee',
@@ -198,13 +188,7 @@ export const withdrawAccountService = {
   },
 
   // 创建提现账户
-  createWithdrawAccount: (params: {
-    accountType: 'bank' | 'alipay' | 'wechat';
-    accountName: string;
-    accountNumber: string;
-    bankName?: string;
-    bankBranch?: string;
-  }): Promise<any> => {
+  createWithdrawAccount: (params: any): Promise<any> => {
     return request(waasPath + '/wallet/withdrawAccount/create', {
       serviceName: 'WalletService',
       methodName: 'createWithdrawAccount',
@@ -216,13 +200,7 @@ export const withdrawAccountService = {
   },
 
   // 更新提现账户
-  updateWithdrawAccount: (params: {
-    serialNo: string;
-    accountName?: string;
-    accountNumber?: string;
-    bankName?: string;
-    bankBranch?: string;
-  }): Promise<any> => {
+  updateWithdrawAccount: (params: any): Promise<any> => {
     return request(waasPath + '/wallet/withdrawAccount/update', {
       serviceName: 'WalletService',
       methodName: 'updateWithdrawAccount',
@@ -258,7 +236,7 @@ export const withdrawAccountService = {
   },
 
   // 切换提现账户状态
-  toggleWithdrawAccountStatus: (serialNo: string, status: 'active' | 'inactive'): Promise<any> => {
+  toggleWithdrawAccountStatus: (serialNo: string, status: string): Promise<any> => {
     return request(waasPath + '/wallet/withdrawAccount/toggleStatus', {
       serviceName: 'WalletService',
       methodName: 'toggleWithdrawAccountStatus',

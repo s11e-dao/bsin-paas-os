@@ -206,7 +206,7 @@ export default ({ setCurrentContent }: OverviewProps) => {
               // 请求获取的数据
               request={async (params) => {
                 // console.log(params);
-                let res = await getAccountJournalPageList({
+                let res = await eWalletService.getAccountJournalPageList({
                   ...params,
                   orderType: orderType,
                 });
@@ -241,7 +241,7 @@ export default ({ setCurrentContent }: OverviewProps) => {
               // 请求获取的数据
               request={async (params) => {
                 // console.log(params);
-                let res = await getAccountJournalPageList({
+                let res = await eWalletService.getAccountJournalPageList({
                   ...params,
                   orderType: orderType,
                 });

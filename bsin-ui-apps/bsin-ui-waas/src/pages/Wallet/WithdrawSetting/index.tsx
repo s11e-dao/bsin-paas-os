@@ -40,26 +40,26 @@ import {
   ReloadOutlined,
 } from '@ant-design/icons';
 import type { WithdrawAccountType } from './types';
-import { withdrawAccountService, withdrawSettingService } from './service';
+import { setUpWithdrawAccount, getWithdrawAccountList, updateWithdrawAccount, deleteWithdrawAccount, setDefaultWithdrawAccount } from './service';
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
 
 // 账号类型配置
 const accountTypeConfig = {
-  bank: {
+  1: {
     name: '银行卡',
     icon: <BankOutlined style={{ color: '#1890ff' }} />,
     color: '#1890ff',
     bgColor: '#f0f8ff',
   },
-  alipay: {
+  2: {
     name: '支付宝',
     icon: <CreditCardOutlined style={{ color: '#1677ff' }} />,
     color: '#1677ff',
     bgColor: '#f0f8ff',
   },
-  wechat: {
+  3: {
     name: '微信支付',
     icon: <CreditCardOutlined style={{ color: '#52c41a' }} />,
     color: '#52c41a',
@@ -79,52 +79,14 @@ const WithdrawSetting: React.FC = () => {
   const fetchAccounts = async () => {
     setLoading(true);
     try {
-      // Mock 数据
-      const mockAccounts: WithdrawAccountType[] = [
-        {
-          serialNo: '1',
-          accountType: 'bank',
-          accountName: '中国工商银行',
-          accountNumber: '6222 **** **** 1234',
-          bankName: '中国工商银行',
-          bankBranch: '北京分行',
-          status: 'active',
-          isDefault: true,
-          createTime: '2024-01-15 10:30:00',
-          updateTime: '2024-01-15 10:30:00',
-        },
-        {
-          serialNo: '2',
-          accountType: 'alipay',
-          accountName: '支付宝',
-          accountNumber: '138****8888',
-          bankName: '支付宝',
-          bankBranch: '',
-          status: 'active',
-          isDefault: false,
-          createTime: '2024-01-10 14:20:00',
-          updateTime: '2024-01-10 14:20:00',
-        },
-      ];
-
-      // 模拟网络延迟
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      setAccounts(mockAccounts);
-      
       // 注释掉真实 API 调用，使用 mock 数据
-      /*
-      const response = await withdrawAccountService.getWithdrawAccountList({
-        pageNum: 1,
-        pageSize: 100,
-      });
+      const response = await getWithdrawAccountList({});
       
       if (response.code === 0 && response.data) {
         setAccounts(response.data);
       } else {
         message.error(response.message || '获取账号列表失败');
       }
-      */
     } catch (error) {
       console.error('获取账号列表失败:', error);
       message.error('获取账号列表失败');
@@ -169,8 +131,9 @@ const WithdrawSetting: React.FC = () => {
   };
 
   // 获取账号类型信息
-  const getAccountTypeInfo = (type: string) => {
-    return accountTypeConfig[type as keyof typeof accountTypeConfig] || accountTypeConfig.bank;
+  const getAccountTypeInfo = (type: string | number) => {
+    const typeKey = typeof type === 'string' ? parseInt(type) : type;
+    return accountTypeConfig[typeKey as keyof typeof accountTypeConfig] || accountTypeConfig[1];
   };
 
   // 显示添加/编辑模态框
@@ -180,9 +143,10 @@ const WithdrawSetting: React.FC = () => {
       form.setFieldsValue({
         accountType: account.accountType,
         accountName: account.accountName,
-        accountNumber: account.accountNumber.replace(/\*/g, ''),
+        accountNum: account.accountNumber?.replace(/\*/g, ''),
         bankName: account.bankName,
-        bankBranch: account.bankBranch,
+        swiftCode: account.swiftCode,
+        remark: account.remark,
       });
     } else {
       setEditingAccount(null);
@@ -209,9 +173,9 @@ const WithdrawSetting: React.FC = () => {
             ? {
                 ...account,
                 ...values,
-                accountNumber: values.accountType === 'bank'
-                  ? values.accountNumber.slice(0, 4) + ' **** **** ' + values.accountNumber.slice(-4)
-                  : values.accountNumber.slice(0, 3) + '****' + values.accountNumber.slice(-4),
+                accountNumber: values.accountType === 1
+                  ? values.accountNum.slice(0, 4) + ' **** **** ' + values.accountNum.slice(-4)
+                  : values.accountNum.slice(0, 3) + '****' + values.accountNum.slice(-4),
                 updateTime: new Date().toLocaleString(),
               }
             : account
@@ -243,9 +207,9 @@ const WithdrawSetting: React.FC = () => {
         const newAccount: WithdrawAccountType = {
           serialNo: Date.now().toString(),
           ...values,
-          accountNumber: values.accountType === 'bank'
-            ? values.accountNumber.slice(0, 4) + ' **** **** ' + values.accountNumber.slice(-4)
-            : values.accountNumber.slice(0, 3) + '****' + values.accountNumber.slice(-4),
+          accountNumber: values.accountType === 1
+            ? values.accountNum.slice(0, 4) + ' **** **** ' + values.accountNum.slice(-4)
+            : values.accountNum.slice(0, 3) + '****' + values.accountNum.slice(-4),
           status: 'active',
           isDefault: (accounts?.length || 0) === 0,
           createTime: new Date().toLocaleString(),
@@ -255,9 +219,8 @@ const WithdrawSetting: React.FC = () => {
         message.success('账号添加成功');
         
         // 注释掉真实 API 调用
-        /*
         try {
-          const response = await withdrawAccountService.createWithdrawAccount({
+          const response = await setUpWithdrawAccount({
             ...values,
             status: 'active',
             isDefault: accounts.length === 0,
@@ -273,7 +236,7 @@ const WithdrawSetting: React.FC = () => {
           console.error('添加账号失败:', error);
           message.error('账号添加失败');
         }
-        */
+        
       }
       
       setIsModalVisible(false);
@@ -290,15 +253,11 @@ const WithdrawSetting: React.FC = () => {
       message.error('不能删除默认账号');
       return;
     }
+
+    console.log(serialNo);
     
-    // Mock 实现
-    setAccounts((accounts || []).filter(acc => acc.serialNo !== serialNo));
-    message.success('账号删除成功');
-    
-    // 注释掉真实 API 调用
-    /*
     try {
-      const response = await withdrawAccountService.deleteWithdrawAccount(serialNo);
+      const response = await deleteWithdrawAccount(serialNo);
       
       if (response.code === 0) {
         message.success('账号删除成功');
@@ -310,7 +269,6 @@ const WithdrawSetting: React.FC = () => {
       console.error('删除账号失败:', error);
       message.error('账号删除失败');
     }
-    */
   };
 
   // 设置默认账号
@@ -322,10 +280,8 @@ const WithdrawSetting: React.FC = () => {
     })));
     message.success('默认账号设置成功');
     
-    // 注释掉真实 API 调用
-    /*
     try {
-      const response = await withdrawAccountService.setDefaultWithdrawAccount(serialNo);
+      const response = await setDefaultWithdrawAccount(serialNo);
       
       if (response.code === 0) {
         message.success('默认账号设置成功');
@@ -337,7 +293,6 @@ const WithdrawSetting: React.FC = () => {
       console.error('设置默认账号失败:', error);
       message.error('设置默认账号失败');
     }
-    */
   };
 
   // 切换账号状态
@@ -435,6 +390,7 @@ const WithdrawSetting: React.FC = () => {
                       border: account.isDefault ? '2px solid #1890ff' : undefined,
                       background: account.isDefault ? '#f0f8ff' : undefined,
                       height: '220px',
+                      minWidth: '300px',
                       display: 'flex',
                       flexDirection: 'column',
                     }}
@@ -582,7 +538,7 @@ const WithdrawSetting: React.FC = () => {
           form={form}
           layout="vertical"
           initialValues={{
-            accountType: 'bank',
+            accountType: 1,
           }}
         >
           <Form.Item
@@ -591,19 +547,19 @@ const WithdrawSetting: React.FC = () => {
             rules={[{ required: true, message: '请选择账号类型' }]}
           >
             <Select placeholder="请选择账号类型">
-              <Option value="bank">
+              <Option value={1}>
                 <Space>
                   <BankOutlined style={{ color: '#1890ff' }} />
                   银行卡
                 </Space>
               </Option>
-              <Option value="alipay">
+              <Option value={2}>
                 <Space>
                   <CreditCardOutlined style={{ color: '#1677ff' }} />
                   支付宝
                 </Space>
               </Option>
-              <Option value="wechat">
+              <Option value={3}>
                 <Space>
                   <CreditCardOutlined style={{ color: '#52c41a' }} />
                   微信支付
@@ -617,11 +573,11 @@ const WithdrawSetting: React.FC = () => {
             label="账号名称"
             rules={[{ required: true, message: '请输入账号名称' }]}
           >
-            <Input placeholder="如：中国工商银行" />
+            <Input placeholder="如：王五的账户" />
           </Form.Item>
 
           <Form.Item
-            name="accountNumber"
+            name="accountNum"
             label="账号号码"
             rules={[
               { required: true, message: '请输入账号号码' },
@@ -640,10 +596,22 @@ const WithdrawSetting: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            name="bankBranch"
-            label="开户行"
+            name="swiftCode"
+            label="SWIFT代码"
           >
-            <Input placeholder="请输入开户行（选填）" />
+            <Input placeholder="请输入SWIFT代码（选填）" />
+          </Form.Item>
+
+          <Form.Item
+            name="remark"
+            label="备注"
+          >
+            <Input.TextArea 
+              placeholder="请输入备注信息（选填）" 
+              rows={3}
+              maxLength={200}
+              showCount
+            />
           </Form.Item>
         </Form>
       </Modal>
