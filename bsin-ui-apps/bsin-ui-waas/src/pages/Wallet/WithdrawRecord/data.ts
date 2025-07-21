@@ -1,16 +1,21 @@
 import type { ProColumns } from '@ant-design/pro-table';
 
 export type columnsDataType = {
-  order: number;
-  acName: string;
-  custNo: string;
-  acNo: string;
-  balance: string;
-  custType: string;
-  openAcDate: string;
+  serialNo: string;
+  customerNo: string;
+  payeeAccount: string;
+  amount: number;
   status: string;
-  startTime: string;
-  endTime: string;
+  createTime: string;
+  order?: number;
+  acName?: string;
+  custNo?: string;
+  acNo?: string;
+  balance?: string;
+  custType?: string;
+  openAcDate?: string;
+  startTime?: string;
+  endTime?: string;
 };
 
 const columnsData: ProColumns<columnsDataType>[] = [

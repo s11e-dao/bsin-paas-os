@@ -28,6 +28,19 @@ import WalletApprove from '../../../components/Wallet/Approve';
 
 type TabPosition = 'top' | 'right' | 'left' | 'bottom';
 
+// 提现记录详情类型
+interface WithdrawRecordDetail {
+  tenantId?: string;
+  serialNo?: string;
+  type?: string;
+  templateName?: string;
+  templateBytecode?: string;
+  templateAbi?: string;
+  createBy?: string;
+  createTime?: string;
+  description?: string;
+}
+
 export default () => {
   const { TextArea } = Input;
   const { Option } = Select;
@@ -36,7 +49,7 @@ export default () => {
   // 查看模态框
   const [isViewTemplateModal, setIsViewTemplateModal] = useState(false);
   // 查看
-  const [isViewRecord, setIsViewRecord] = useState({});
+  const [isViewRecord, setIsViewRecord] = useState<WithdrawRecordDetail>({});
   // 获取表单
   const [FormRef] = Form.useForm();
 
@@ -48,7 +61,7 @@ export default () => {
   const columns: ProColumns<columnsDataType>[] = columnsData;
 
   // 操作行数据 自定义操作行
-  const actionRender: any = (text: any, record: any, index: number) => (
+  const actionRender: any = (text: any, record: columnsDataType, index: number) => (
     <ul className="ant-list-item-action" style={{ margin: 0 }}>
       <li>
         <a
@@ -61,7 +74,7 @@ export default () => {
         <em className="ant-list-item-action-split"></em>
       </li>
       <li>
-        {record.status == 0 ? <Popconfirm
+        {record.status === "0" ? <Popconfirm
           title="确定同意此条信息？"
           okText="是"
           cancelText="否"
@@ -88,7 +101,7 @@ export default () => {
   /**
    * 去支付提现
    */
-  const toPayWithdraw = async (record) => {
+  const toPayWithdraw = async (record: columnsDataType) => {
     // 换起钱包支付，通知后台接口
     console.log('record', record);
     let { serialNo } = record;
@@ -97,14 +110,14 @@ export default () => {
     console.log('delRes', delRes);
     if (delRes.code === 0) {
       // 删除成功刷新表单
-      actionRef.current?.reload();
+      actionRef.current?.reload?.(true);
     }
   };
 
   /**
    * 查看详情
    */
-  const toViewContractTemplate = async (record) => {
+  const toViewContractTemplate = async (record: columnsDataType) => {
     let { serialNo } = record;
     let viewRes = await getWithdrawJournalDetail({ serialNo });
     setIsViewTemplateModal(true);
@@ -121,7 +134,7 @@ export default () => {
     return typeText;
   };
 
-  const [tabPosition, setTabPosition] = useState<TabPosition>('');
+  const [tabPosition, setTabPosition] = useState<string>('');
 
   const changeTabPosition = (e: RadioChangeEvent) => {
     setTabPosition(e.target.value);
@@ -129,7 +142,7 @@ export default () => {
     if (e.target.value == "10" || e.target.value == "11" || e.target.value == "12" || e.target.value == "13") {
 
     }
-    actionRef.current?.reload();
+    actionRef.current?.reload?.(true);
   };
 
   /**
@@ -148,17 +161,28 @@ export default () => {
         actionRef={actionRef}
         // 请求获取的数据
         request={async (params) => {
-          // console.log(params);
-          let res = await getWithdrawJournalPageList({
-            ...params,
-            // pageNum: params.current,
-          });
-          console.log('😒', res);
-          const result = {
-            data: res.data,
-            total: res.pagination?.totalSize,
-          };
-          return result;
+          try {
+            // console.log(params);
+            let res = await getWithdrawJournalPageList({
+              ...params,
+              // pageNum: params.current,
+            });
+            console.log('😒', res);
+            
+            // 安全地处理返回数据
+            const result = {
+              data: res?.data || [],
+              total: res?.pagination?.totalSize || 0,
+            };
+            return result;
+          } catch (error) {
+            console.error('获取提现记录失败:', error);
+            message.error('获取提现记录失败');
+            return {
+              data: [],
+              total: 0,
+            };
+          }
         }}
         rowKey="serialNo"
         // 搜索框配置
