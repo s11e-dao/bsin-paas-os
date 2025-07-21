@@ -1,6 +1,7 @@
 import { request } from '@umijs/max';
 
 const waasPath = process.env.contextPath_waas;
+const crmPath = process.env.contextPath_crm;
 
 // 电子钱包相关 API
 export const eWalletService = {
@@ -106,9 +107,9 @@ export const rechargeService = {
 export const withdrawService = {
   // 创建提现申请
   createWithdrawApplication: (params: any): Promise<any> => {
-    return request(waasPath + '/wallet/withdraw/createApplication', {
-      serviceName: 'WalletService',
-      methodName: 'createWithdrawApplication',
+    return request(crmPath + '/withdrawal/apply', {
+      serviceName: 'WithdrawalRecordService',
+      methodName: 'apply',
       version: '1.0',
       bizParams: {
         ...params,
@@ -118,9 +119,9 @@ export const withdrawService = {
 
   // 获取提现申请详情
   getWithdrawApplicationDetail: (applicationId: string): Promise<any> => {
-    return request(waasPath + '/wallet/withdraw/getApplicationDetail', {
-      serviceName: 'WalletService',
-      methodName: 'getWithdrawApplicationDetail',
+    return request(crmPath + '/withdrawal/getDetail', {
+      serviceName: 'WithdrawalRecordService',
+      methodName: 'getDetail',
       version: '1.0',
       bizParams: {
         applicationId,
@@ -175,76 +176,3 @@ export const withdrawService = {
   },
 };
 
-// 提现账户相关 API
-export const withdrawAccountService = {
-  // 获取提现账户列表
-  getWithdrawAccountList: (): Promise<any> => {
-    return request(waasPath + '/wallet/withdrawAccount/getList', {
-      serviceName: 'WalletService',
-      methodName: 'getWithdrawAccountList',
-      version: '1.0',
-      bizParams: {},
-    });
-  },
-
-  // 创建提现账户
-  createWithdrawAccount: (params: any): Promise<any> => {
-    return request(waasPath + '/wallet/withdrawAccount/create', {
-      serviceName: 'WalletService',
-      methodName: 'createWithdrawAccount',
-      version: '1.0',
-      bizParams: {
-        ...params,
-      },
-    });
-  },
-
-  // 更新提现账户
-  updateWithdrawAccount: (params: any): Promise<any> => {
-    return request(waasPath + '/wallet/withdrawAccount/update', {
-      serviceName: 'WalletService',
-      methodName: 'updateWithdrawAccount',
-      version: '1.0',
-      bizParams: {
-        ...params,
-      },
-    });
-  },
-
-  // 删除提现账户
-  deleteWithdrawAccount: (serialNo: string): Promise<any> => {
-    return request(waasPath + '/wallet/withdrawAccount/delete', {
-      serviceName: 'WalletService',
-      methodName: 'deleteWithdrawAccount',
-      version: '1.0',
-      bizParams: {
-        serialNo,
-      },
-    });
-  },
-
-  // 设置默认提现账户
-  setDefaultWithdrawAccount: (serialNo: string): Promise<any> => {
-    return request(waasPath + '/wallet/withdrawAccount/setDefault', {
-      serviceName: 'WalletService',
-      methodName: 'setDefaultWithdrawAccount',
-      version: '1.0',
-      bizParams: {
-        serialNo,
-      },
-    });
-  },
-
-  // 切换提现账户状态
-  toggleWithdrawAccountStatus: (serialNo: string, status: string): Promise<any> => {
-    return request(waasPath + '/wallet/withdrawAccount/toggleStatus', {
-      serviceName: 'WalletService',
-      methodName: 'toggleWithdrawAccountStatus',
-      version: '1.0',
-      bizParams: {
-        serialNo,
-        status,
-      },
-    });
-  },
-};

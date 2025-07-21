@@ -15,9 +15,9 @@ import { PlusOutlined } from '@ant-design/icons';
 
 import columnsData, { columnsDataType } from './data';
 import {
-  getWithdrawJournalPageList,
-  doWithdraw,
-  getWithdrawJournalDetail,
+  getRechargeRecordPageList,
+  doRecharge,
+  getRechargeRecordDetail,
 } from './service';
 import TableTitle from '../../../components/TableTitle';
 

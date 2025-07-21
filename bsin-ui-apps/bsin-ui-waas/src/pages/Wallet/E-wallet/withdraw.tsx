@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { withdrawService, withdrawAccountService } from './service';
+import { withdrawService } from './service';
+import { getWithdrawAccountList } from '../WithdrawSetting/service';
 import { 
   Button, 
   Card, 
@@ -39,10 +40,11 @@ interface WithdrawProps {
 }
 
 interface WithdrawAccount {
-  id: string;
-  name: string;
-  accountNumber: string;
-  accountType: 'bank' | 'alipay' | 'wechat';
+  serialNo: string;
+  accountName: string;
+  accountNum: string;
+  // 账户类型 账户类型：1.IBAN账户 2.电子账户 3 微信 4 支付宝
+  accountType: 1 | 2 | 3 | 4;
   bankName?: string;
   isDefault: boolean;
   status: 'active' | 'inactive';
@@ -64,13 +66,13 @@ export default ({ setCurrentContent }: WithdrawProps) => {
     const fetchData = async () => {
       try {
         // 获取提现账户列表
-        const accountsResponse = await withdrawAccountService.getWithdrawAccountList();
+        const accountsResponse = await getWithdrawAccountList({});
         if (accountsResponse.data) {
           setWithdrawAccounts(accountsResponse.data);
           const defaultAccount = accountsResponse.data.find((acc: any) => acc.isDefault);
           if (defaultAccount) {
-            setSelectedAccount(defaultAccount.id);
-            form.setFieldsValue({ account: defaultAccount.id });
+            setSelectedAccount(defaultAccount.serialNo);
+            form.setFieldsValue({ account: defaultAccount.serialNo });
           }
         }
 
@@ -89,13 +91,13 @@ export default ({ setCurrentContent }: WithdrawProps) => {
   }, []);
 
   // 获取账户图标
-  const getAccountIcon = (accountType: string) => {
+  const getAccountIcon = (accountType: number) => {
     switch (accountType) {
-      case 'bank':
+      case 1:
         return <BankOutlined style={{ color: '#1890ff' }} />;
-      case 'alipay':
+      case 2:
         return <AlipayCircleOutlined style={{ color: '#1677ff' }} />;
-      case 'wechat':
+      case 3:
         return <WechatOutlined style={{ color: '#07c160' }} />;
       default:
         return <BankOutlined />;
@@ -103,13 +105,13 @@ export default ({ setCurrentContent }: WithdrawProps) => {
   };
 
   // 获取账户类型名称
-  const getAccountTypeName = (accountType: string) => {
+  const getAccountTypeName = (accountType: number) => {
     switch (accountType) {
-      case 'bank':
+      case 1:
         return '银行卡';
-      case 'alipay':
+      case 2:
         return '支付宝';
-      case 'wechat':
+      case 3:
         return '微信';
       default:
         return '未知';
@@ -153,8 +155,9 @@ export default ({ setCurrentContent }: WithdrawProps) => {
       try {
         // 调用提现API
         const response = await withdrawService.createWithdrawApplication({
+          accountNo:"1",
           amount: withdrawAmount,
-          accountId: selectedAccount,
+          settlementAccountNo: selectedAccount,
           remark: values.remark || ''
         });
 
@@ -164,7 +167,7 @@ export default ({ setCurrentContent }: WithdrawProps) => {
             amount: withdrawAmount,
             fee: calculateFee(withdrawAmount),
             actualAmount,
-            account: withdrawAccounts.find(acc => acc.id === selectedAccount),
+            account: withdrawAccounts.find(acc => acc.serialNo === selectedAccount),
             status: 'pending',
             createTime: new Date().toLocaleString()
           };
@@ -314,12 +317,12 @@ export default ({ setCurrentContent }: WithdrawProps) => {
                     style={{ width: '100%' }}
                   >
                     {withdrawAccounts.map(account => (
-                      <Option key={account.id} value={account.id}>
+                      <Option key={account.serialNo} value={account.serialNo}>
                         <Space>
                           {getAccountIcon(account.accountType)}
                           <div>
                             <div style={{ fontSize: 12, color: '#666' }}>
-                              {account.accountType && ` - ${account.accountNumber}`}
+                              {account.accountType && ` - ${account.accountNum}`}
                               {account.isDefault && <Tag color="blue">默认</Tag>}
                             </div>
                           </div>

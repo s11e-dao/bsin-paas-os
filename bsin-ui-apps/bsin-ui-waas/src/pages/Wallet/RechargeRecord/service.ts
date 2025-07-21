@@ -35,5 +35,15 @@ export const getRechargeRecordDetail = (params: any) => {
     },
   });
 };
-
-
+  
+// 获取充值记录
+export const getRechargeRecord = (params: any) => {   
+  return request(waasPath + '/wallet/recharge/getRechargeJournalPageList', {
+    serviceName: 'WalletService',
+    methodName: 'getRechargeJournalPageList', 
+    version: '1.0', 
+    bizParams: {
+      ...params,
+    },
+  });
+};
