@@ -11,6 +11,5 @@ import org.springframework.stereotype.Service;
 @ApiModule(value = "sysAgentModel")
 @Service
 public class SysAgentModelServiceImpl implements SysAgentModelService {
-
-
+    
 }

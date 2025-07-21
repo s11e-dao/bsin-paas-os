@@ -81,6 +81,11 @@ public class Store implements Serializable {
     private String type;
 
     /**
+     * 地推人（代理商编号）
+     */
+    private String sysAgentNo;
+
+    /**
      * 门店所属区域边码
      */
     private String regionCode;

@@ -295,25 +295,25 @@ export default ({ setCurrentContent, putOnShelves }: Props) => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Title level={4} style={{ margin: 0 }}>数字资产集合</Title>
           <Space>
-            <Button
-              onClick={async () => {
-                console.log('res');
-                setCurrentContent('issueAssets');
-              }}
-              icon={<PlusOutlined />}
-              type="primary"
-            >
-              发行
+          <Button
+            onClick={async () => {
+              console.log('res');
+              setCurrentContent('issueAssets');
+            }}
+            icon={<PlusOutlined />}
+            type="primary"
+          >
+            发行
             </Button>
-            <Button
-              onClick={async () => {
-                console.log('res');
-                setCurrentContent('editor');
-              }}
-              icon={<PlusOutlined />}
-              type="primary"
-            >
-              editor
+          <Button
+            onClick={async () => {
+              console.log('res');
+              setCurrentContent('editor');
+            }}
+            icon={<PlusOutlined />}
+            type="primary"
+          >
+            editor
             </Button>
           </Space>
         </div>

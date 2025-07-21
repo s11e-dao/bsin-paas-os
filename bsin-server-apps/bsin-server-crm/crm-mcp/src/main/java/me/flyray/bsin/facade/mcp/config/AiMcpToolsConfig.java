@@ -1,7 +1,6 @@
 package me.flyray.bsin.facade.mcp.config;
 
-import me.flyray.bsin.facade.mcp.OpenMeteoService;
-import me.flyray.bsin.facade.mcp.tools.CustomerToolService;
+import me.flyray.bsin.facade.mcp.tools.OpenMeteoService;
 import org.springframework.ai.support.ToolCallbacks;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbackProvider;

@@ -21,13 +21,14 @@
             <result property="businessModel" column="business_model" jdbcType="VARCHAR"/>
             <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
             <result property="gradeNo" column="grade_no" jdbcType="VARCHAR"/>
+            <result property="sysAgentNo" column="sys_agent_no" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         serial_no,store_name,password,address,
         longitude,latitude,business_hours,region_code,
         description,logo,merchant_no,business_model,type,
-        tenant_id,del_flag,grade_no
+        tenant_id,del_flag,grade_no, sys_agent_no
     </sql>
 
 </mapper>

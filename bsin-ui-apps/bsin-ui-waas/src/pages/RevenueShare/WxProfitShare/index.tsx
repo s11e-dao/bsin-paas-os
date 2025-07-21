@@ -301,15 +301,7 @@ const WxProfitShare: React.FC = () => {
             search={{
               labelWidth: 120,
             }}
-            toolBarRender={() => [
-              <Button
-                key="refresh"
-                icon={<ReloadOutlined />}
-                onClick={() => actionRef.current?.reload()}
-              >
-                刷新
-              </Button>,
-            ]}
+            toolBarRender={() => []}
             request={async (params) => {
               const response = await getBizRoleAppList({
                 ...params,

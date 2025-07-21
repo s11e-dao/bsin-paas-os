@@ -464,15 +464,7 @@ export default () => {
                 pagination={{
                   pageSize: 10,
                 }}
-                toolBarRender={() => [
-                  <Button
-                    key="refresh"
-                    icon={<ReloadOutlined />}
-                    onClick={() => actionRef.current?.reload()}
-                  >
-                    刷新
-                  </Button>,
-                ]}
+                toolBarRender={() => []}
               />
             )}
           </Card>

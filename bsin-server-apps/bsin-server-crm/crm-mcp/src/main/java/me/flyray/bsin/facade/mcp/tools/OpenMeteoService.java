@@ -15,7 +15,7 @@
  *
  * @author brianxiadong
  */
-package me.flyray.bsin.facade.mcp;
+package me.flyray.bsin.facade.mcp.tools;
 
 import java.util.List;
 import java.time.LocalDate;

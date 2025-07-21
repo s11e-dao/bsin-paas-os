@@ -157,4 +157,9 @@ public class Merchant implements Serializable {
      */
     private String gradeNo;
 
+    /**
+     * 地推人（代理商编号）
+     */
+    private String sysAgentNo;
+
 }
