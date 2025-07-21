@@ -48,11 +48,26 @@ const routes = [
         path: '/wallet/account-list',
         component: '@/pages/Wallet/AccountList/index',
       },
+      // 充值记录
+      {
+        path: '/wallet/recharge-record',
+        component: '@/pages/Wallet/RechargeRecord/index',
+      },
+      // 提现审核
+      {
+        path: '/wallet/withdraw-record',
+        component: '@/pages/Wallet/WithdrawRecord/index',
+      },  
       // 账户流水
       {
         path: '/wallet/account-journal',
         component: '@/pages/Wallet/AccountJournal/index',
       },
+      // 提现设置
+      {
+        path: '/wallet/withdraw-setting',
+        component: '@/pages/Wallet/WithdrawSetting/index',
+      },  
       // ****************************收银************************
       {
         path: '/cashier',
