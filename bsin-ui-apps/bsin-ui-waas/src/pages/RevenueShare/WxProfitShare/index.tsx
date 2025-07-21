@@ -292,7 +292,7 @@ const WxProfitShare: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Tabs defaultActiveKey="apps" type="card">
+      <Tabs defaultActiveKey="apps" >
         <TabPane tab="平台应用" key="apps">
           <ProTable
             headerTitle="平台应用列表"

@@ -46,7 +46,7 @@ export default () => {
   const userInfo = getLocalStorageInfo('userInfo');
   const [formRef] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'config' | 'list'>('config');
+  const [activeTab, setActiveTab] = useState<'config' | 'list'>('list');
 
   // 让利配置相关状态
   const [profitSharingViewModal, setProfitSharingViewModal] = useState(false);
