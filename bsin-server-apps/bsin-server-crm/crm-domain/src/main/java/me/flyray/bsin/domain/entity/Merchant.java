@@ -34,6 +34,11 @@ public class Merchant implements Serializable {
     private String tenantId;
 
     /**
+     * 商户所属应用ID
+     */
+    private String bizRoleAppId;
+
+    /**
      * 企业名称
      */
     private String merchantName;

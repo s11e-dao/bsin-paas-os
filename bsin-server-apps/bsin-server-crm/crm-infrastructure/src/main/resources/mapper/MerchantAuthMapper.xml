@@ -7,6 +7,7 @@
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.MerchantAuth">
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="bizRoleAppId" column="biz_role_app_id" jdbcType="VARCHAR"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>
             <result property="merchantName" column="merchant_name" jdbcType="VARCHAR"/>
@@ -40,7 +41,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        serial_no,tenant_id,username,
+        serial_no,tenant_id,biz_role_app_id,username,
         password,merchant_name,base_info_auth_status,
         legal_person_name,legal_person_cred_type,legal_person_id_card_national,
         legal_person_id_card_copy,legal_person_cred_no,legal_person_phone,
