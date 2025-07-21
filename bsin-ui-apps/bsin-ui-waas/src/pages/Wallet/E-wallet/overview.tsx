@@ -6,10 +6,7 @@ import TableTitle from '../../../components/TableTitle';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import columnsData, { columnsDataType } from './data';
 
-import {
-  getAccountJournalPageList,
-  getCategoryAccounts
-} from './service';
+import { eWalletService } from './service';
 
 interface OverviewProps {
   setCurrentContent: (content: string) => void;
@@ -27,7 +24,7 @@ export default ({ setCurrentContent }: OverviewProps) => {
   // 查询商户账户余额
   useEffect(() => {
 
-    getCategoryAccounts({}).then((res) => {
+    eWalletService.getCategoryAccounts({}).then((res) => {
       console.log(res?.data)
       setBalanceAccount(res?.data?.balance)
       setAccumulatedIncomeAccount(res?.data?.accumulatedIncome)
@@ -139,7 +136,7 @@ export default ({ setCurrentContent }: OverviewProps) => {
               // 请求获取的数据
               request={async (params) => {
                 // console.log(params);
-                let res = await getAccountJournalPageList({
+                let res = await eWalletService.getAccountJournalPageList({
                   ...params,
                   orderType: orderType,
                 });
@@ -174,7 +171,7 @@ export default ({ setCurrentContent }: OverviewProps) => {
               // 请求获取的数据
               request={async (params) => {
                 // console.log(params);
-                let res = await getAccountJournalPageList({
+                let res = await eWalletService.getAccountJournalPageList({
                   ...params,
                   orderType: orderType,
                 });
