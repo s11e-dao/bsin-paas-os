@@ -1,6 +1,7 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import me.flyray.bsin.domain.entity.Member;
 import me.flyray.bsin.domain.entity.Merchant;
 import me.flyray.bsin.domain.request.MerchantDTO;
 
@@ -15,11 +16,13 @@ public interface MerchantPayEntryService {
     /**
      * 商户支付进件
      */
+    public Map<String, Object> apply(Map<String, Object> requestMap);
 
 
     /**
      * 商户支付进件状态查询
      */
+    public MerchantDTO getDetail(Map<String, Object> requestMap);
 
 
     /**

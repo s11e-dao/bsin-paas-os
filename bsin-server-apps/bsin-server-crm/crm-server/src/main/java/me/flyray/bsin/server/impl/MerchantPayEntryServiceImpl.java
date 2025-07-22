@@ -28,6 +28,20 @@ public class MerchantPayEntryServiceImpl implements MerchantPayEntryService {
     @Autowired
     private MerchantPayEntryMapper merchantPayEntryMapper;
 
+    @ApiDoc(desc = "apply")
+    @ShenyuDubboClient("/apply")
+    @Override
+    public Map<String, Object> apply(Map<String, Object> requestMap) {
+        return null;
+    }
+
+    @ApiDoc(desc = "getDetail")
+    @ShenyuDubboClient("/getDetail")
+    @Override
+    public MerchantDTO getDetail(Map<String, Object> requestMap) {
+        return null;
+    }
+
     @ApiDoc(desc = "getPageList")
     @ShenyuDubboClient("/getPageList")
     @Override
