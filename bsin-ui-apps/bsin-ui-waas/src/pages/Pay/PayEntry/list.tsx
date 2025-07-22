@@ -90,7 +90,7 @@ export default ({ addCurrentRecord }: MerchantAuditListProps) => {
             icon={<EyeOutlined />}
             onClick={() => addCurrentRecord(record)}
           >
-            支付宝支付进件
+            进见状态查询
           </Button>
         </>
       )}

@@ -13,9 +13,11 @@ import {
   Row,
   Col,
   Alert,
-  Modal
+  Modal,
+  Descriptions
 } from 'antd';
 import {
+  ArrowLeftOutlined,
   InboxOutlined,
   SaveOutlined,
   SendOutlined
@@ -26,7 +28,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 const { Dragger } = Upload;
 
-const MerchantApplicationForm = () => {
+const MerchantApplicationForm = ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord: any, setIsLoadMerchantAuditDetail: (isLoadMerchantAuditDetail: boolean) => void }) => {
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -124,20 +126,20 @@ const MerchantApplicationForm = () => {
     try {
       setLoading(true);
       const values = form.getFieldsValue();
-      
+
       // 检查必需的文件
       const requiredFiles = ['businessLicenseImg', 'legalPersonIdFront', 'legalPersonIdBack', 'bankAccountImg'];
       const missingFiles = requiredFiles.filter(fileType => !fileList[fileType] || fileList[fileType].length === 0);
-      
+
       if (missingFiles.length > 0) {
         message.error('请上传所有必需的证件照片');
         setCurrentStep(4); // 跳转到资质材料步骤
         return;
       }
-      
+
       // 这里调用提交申请的API
       console.log('提交申请:', { ...values, files: fileList });
-      
+
       Modal.success({
         title: '申请提交成功',
         content: '您的商户进件申请已成功提交，我们将在1-3个工作日内完成审核，请关注审核进度。',
@@ -146,7 +148,7 @@ const MerchantApplicationForm = () => {
           window.history.back();
         }
       });
-      
+
     } catch (error) {
       console.error('提交失败:', error);
       message.error('提交失败，请稍后重试');
@@ -160,18 +162,18 @@ const MerchantApplicationForm = () => {
     <Card title="企业基本信息" size="small">
       <Row gutter={24}>
         <Col span={12}>
-          <Form.Item 
-            name="merchantName" 
-            label="商户名称" 
+          <Form.Item
+            name="merchantName"
+            label="商户名称"
             rules={[{ required: true, message: '请输入商户名称' }]}
           >
             <Input placeholder="请输入商户全称" maxLength={50} />
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item 
-            name="businessType" 
-            label="主营业务" 
+          <Form.Item
+            name="businessType"
+            label="主营业务"
             rules={[{ required: true, message: '请选择主营业务' }]}
           >
             <Select placeholder="请选择主营业务类型">
@@ -186,9 +188,9 @@ const MerchantApplicationForm = () => {
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item 
-            name="organizationCode" 
-            label="统一社会信用代码" 
+          <Form.Item
+            name="organizationCode"
+            label="统一社会信用代码"
             rules={[
               { required: true, message: '请输入统一社会信用代码' },
               { pattern: /^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/, message: '请输入正确的统一社会信用代码' }
@@ -198,9 +200,9 @@ const MerchantApplicationForm = () => {
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item 
-            name="businessLicense" 
-            label="营业执照注册号" 
+          <Form.Item
+            name="businessLicense"
+            label="营业执照注册号"
             rules={[{ required: true, message: '请输入营业执照注册号' }]}
           >
             <Input placeholder="请输入营业执照注册号" />
@@ -215,36 +217,36 @@ const MerchantApplicationForm = () => {
     <Card title="经营信息" size="small">
       <Row gutter={24}>
         <Col span={24}>
-          <Form.Item 
-            name="businessScope" 
-            label="经营范围" 
+          <Form.Item
+            name="businessScope"
+            label="经营范围"
             rules={[{ required: true, message: '请输入经营范围' }]}
           >
             <TextArea rows={4} placeholder="请详细描述经营范围" maxLength={200} />
           </Form.Item>
         </Col>
         <Col span={24}>
-          <Form.Item 
-            name="businessDescription" 
-            label="经营描述" 
+          <Form.Item
+            name="businessDescription"
+            label="经营描述"
             rules={[{ required: true, message: '请输入经营描述' }]}
           >
             <TextArea rows={3} placeholder="请简要描述主要经营内容" maxLength={100} />
           </Form.Item>
         </Col>
         <Col span={24}>
-          <Form.Item 
-            name="businessAddress" 
-            label="经营地址" 
+          <Form.Item
+            name="businessAddress"
+            label="经营地址"
             rules={[{ required: true, message: '请输入经营地址' }]}
           >
             <TextArea rows={2} placeholder="请输入详细的经营地址" maxLength={100} />
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item 
-            name="servicePhone" 
-            label="客服电话" 
+          <Form.Item
+            name="servicePhone"
+            label="客服电话"
             rules={[
               { required: true, message: '请输入客服电话' },
               { pattern: /^1[3-9]\d{9}$|^0\d{2,3}-?\d{7,8}$/, message: '请输入正确的电话号码' }
@@ -262,18 +264,18 @@ const MerchantApplicationForm = () => {
     <Card title="法定代表人信息" size="small">
       <Row gutter={24}>
         <Col span={12}>
-          <Form.Item 
-            name="legalPersonName" 
-            label="法人姓名" 
+          <Form.Item
+            name="legalPersonName"
+            label="法人姓名"
             rules={[{ required: true, message: '请输入法人姓名' }]}
           >
             <Input placeholder="请输入法人真实姓名" maxLength={20} />
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item 
-            name="legalPersonIdCard" 
-            label="法人身份证号" 
+          <Form.Item
+            name="legalPersonIdCard"
+            label="法人身份证号"
             rules={[
               { required: true, message: '请输入身份证号' },
               { pattern: /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/, message: '请输入正确的身份证号' }
@@ -283,9 +285,9 @@ const MerchantApplicationForm = () => {
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item 
-            name="legalPersonPhone" 
-            label="法人手机号" 
+          <Form.Item
+            name="legalPersonPhone"
+            label="法人手机号"
             rules={[
               { required: true, message: '请输入手机号' },
               { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' }
@@ -303,9 +305,9 @@ const MerchantApplicationForm = () => {
     <Card title="结算银行账户信息" size="small">
       <Row gutter={24}>
         <Col span={12}>
-          <Form.Item 
-            name="accountType" 
-            label="账户类型" 
+          <Form.Item
+            name="accountType"
+            label="账户类型"
             rules={[{ required: true, message: '请选择账户类型' }]}
           >
             <Radio.Group>
@@ -315,18 +317,18 @@ const MerchantApplicationForm = () => {
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item 
-            name="accountName" 
-            label="开户名称" 
+          <Form.Item
+            name="accountName"
+            label="开户名称"
             rules={[{ required: true, message: '请输入开户名称' }]}
           >
             <Input placeholder="请输入银行开户名称" />
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item 
-            name="accountNumber" 
-            label="银行账号" 
+          <Form.Item
+            name="accountNumber"
+            label="银行账号"
             rules={[
               { required: true, message: '请输入银行账号' },
               { pattern: /^\d{16,25}$/, message: '请输入正确的银行账号' }
@@ -336,18 +338,18 @@ const MerchantApplicationForm = () => {
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item 
-            name="bankName" 
-            label="开户银行" 
+          <Form.Item
+            name="bankName"
+            label="开户银行"
             rules={[{ required: true, message: '请输入开户银行' }]}
           >
             <Input placeholder="请输入开户银行全称" />
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item 
-            name="bankCode" 
-            label="银行联行号" 
+          <Form.Item
+            name="bankCode"
+            label="银行联行号"
             rules={[{ required: true, message: '请输入银行联行号' }]}
           >
             <Input placeholder="请输入12位银行联行号" maxLength={12} />
@@ -360,13 +362,13 @@ const MerchantApplicationForm = () => {
   // 渲染资质材料步骤
   const renderQualificationMaterials = () => (
     <div>
-      <Alert 
-        message="上传提醒" 
-        description="请确保上传的图片清晰可见，文件大小不超过5MB，支持JPG、PNG格式。" 
-        type="info" 
+      <Alert
+        message="上传提醒"
+        description="请确保上传的图片清晰可见，文件大小不超过5MB，支持JPG、PNG格式。"
+        type="info"
         style={{ marginBottom: 24 }}
       />
-      
+
       <Row gutter={24}>
         <Col span={12}>
           <Card title="营业执照 *" size="small" style={{ height: '300px' }}>
@@ -379,7 +381,7 @@ const MerchantApplicationForm = () => {
             </Dragger>
           </Card>
         </Col>
-        
+
         <Col span={12}>
           <Card title="法人身份证正面 *" size="small" style={{ height: '300px' }}>
             <Dragger {...uploadProps('legalPersonIdFront')} style={{ height: '200px' }}>
@@ -391,7 +393,7 @@ const MerchantApplicationForm = () => {
             </Dragger>
           </Card>
         </Col>
-        
+
         <Col span={12} style={{ marginTop: 16 }}>
           <Card title="法人身份证背面 *" size="small" style={{ height: '300px' }}>
             <Dragger {...uploadProps('legalPersonIdBack')} style={{ height: '200px' }}>
@@ -403,7 +405,7 @@ const MerchantApplicationForm = () => {
             </Dragger>
           </Card>
         </Col>
-        
+
         <Col span={12} style={{ marginTop: 16 }}>
           <Card title="银行开户许可证 *" size="small" style={{ height: '300px' }}>
             <Dragger {...uploadProps('bankAccountImg')} style={{ height: '200px' }}>
@@ -415,7 +417,7 @@ const MerchantApplicationForm = () => {
             </Dragger>
           </Card>
         </Col>
-        
+
         <Col span={12} style={{ marginTop: 16 }}>
           <Card title="门店照片(可选)" size="small" style={{ height: '300px' }}>
             <Dragger {...uploadProps('storeImg')} style={{ height: '200px' }}>
@@ -434,15 +436,15 @@ const MerchantApplicationForm = () => {
   // 渲染确认提交步骤
   const renderConfirmSubmit = () => {
     const formData = form.getFieldsValue();
-    
+
     return (
       <div>
-        <Alert 
-          message="请仔细核对以下信息，确认无误后提交申请" 
-          type="warning" 
+        <Alert
+          message="请仔细核对以下信息，确认无误后提交申请"
+          type="warning"
           style={{ marginBottom: 24 }}
         />
-        
+
         <Card title="基本信息" style={{ marginBottom: 16 }}>
           <Row gutter={16}>
             <Col span={12}>商户名称: {formData.merchantName || '-'}</Col>
@@ -451,7 +453,7 @@ const MerchantApplicationForm = () => {
             <Col span={12}>营业执照注册号: {formData.businessLicense || '-'}</Col>
           </Row>
         </Card>
-        
+
         <Card title="经营信息" style={{ marginBottom: 16 }}>
           <Row gutter={16}>
             <Col span={24}>经营范围: {formData.businessScope || '-'}</Col>
@@ -459,7 +461,7 @@ const MerchantApplicationForm = () => {
             <Col span={12}>客服电话: {formData.servicePhone || '-'}</Col>
           </Row>
         </Card>
-        
+
         <Card title="法人信息" style={{ marginBottom: 16 }}>
           <Row gutter={16}>
             <Col span={8}>法人姓名: {formData.legalPersonName || '-'}</Col>
@@ -467,7 +469,7 @@ const MerchantApplicationForm = () => {
             <Col span={8}>手机号: {formData.legalPersonPhone || '-'}</Col>
           </Row>
         </Card>
-        
+
         <Card title="结算信息" style={{ marginBottom: 16 }}>
           <Row gutter={16}>
             <Col span={8}>账户类型: {formData.accountType === 'corporate' ? '对公账户' : '个人账户'}</Col>
@@ -477,7 +479,7 @@ const MerchantApplicationForm = () => {
             <Col span={12}>银行联行号: {formData.bankCode || '-'}</Col>
           </Row>
         </Card>
-        
+
         <Card title="上传材料">
           <Row gutter={16}>
             <Col span={6}>营业执照: {fileList.businessLicenseImg?.length > 0 ? '✅ 已上传' : '❌ 未上传'}</Col>
@@ -504,85 +506,100 @@ const MerchantApplicationForm = () => {
   };
 
   return (
-    <div style={{ padding: '24px', backgroundColor: '#f0f2f5', minHeight: '100vh' }}>
-      {/* 页面标题 */}
-      <Card style={{ marginBottom: 24 }}>
-        <div style={{ textAlign: 'center' }}>
-          <h1 style={{ margin: 0, color: '#1890ff' }}>微信支付商户进件申请</h1>
-          <p style={{ color: '#666', marginTop: 8 }}>请按步骤填写完整的商户资料，我们将在1-3个工作日内完成审核</p>
-        </div>
-      </Card>
+    <>
+      <Card style={{ marginBottom: 16 }}>
+        <Button
+          type="primary"
+          icon={<ArrowLeftOutlined />}
+          onClick={() => setIsLoadMerchantAuditDetail(false)}
+          style={{ float: 'right' }}
+        >
+          返回
+        </Button>
+        <Descriptions title="微信支付商户进件申请"></Descriptions>
 
-      {/* 步骤条 */}
-      <Card style={{ marginBottom: 24 }}>
-        <Steps current={currentStep} size="small">
-          {steps.map((step, index) => (
-            <Step 
-              key={index} 
-              title={step.title} 
-              description={step.description}
-            />
-          ))}
-        </Steps>
-      </Card>
 
-      {/* 表单内容 */}
-      <Form
-        form={form}
-        layout="vertical"
-        initialValues={{
-          accountType: 'corporate'
-        }}
-      >
-        {renderStepContent()}
-      </Form>
+        {/* 页面标题 */}
+        <Card style={{ marginBottom: 24 }}>
+          <div style={{ textAlign: 'center' }}>
+            <h1 style={{ margin: 0, color: '#1890ff' }}>微信支付商户进件申请</h1>
+            <p style={{ color: '#666', marginTop: 8 }}>请按步骤填写完整的商户资料，我们将在1-3个工作日内完成审核</p>
+          </div>
+        </Card>
 
-      {/* 操作按钮 */}
-      <Card style={{ marginTop: 24 }}>
-        <div style={{ textAlign: 'center' }}>
-          <Space size="large">
-            {currentStep > 0 && (
-              <Button onClick={handlePrev}>
-                上一步
-              </Button>
-            )}
-            
-            <Button 
-              icon={<SaveOutlined />} 
-              onClick={handleSaveDraft}
-            >
-              保存草稿
-            </Button>
-            
-            {currentStep < steps.length - 1 ? (
-              <Button type="primary" onClick={handleNext}>
-                下一步
-              </Button>
-            ) : (
-              <Button 
-                type="primary" 
-                icon={<SendOutlined />} 
-                onClick={handleSubmit}
-                loading={loading}
+        {/* 步骤条 */}
+        <Card style={{ marginBottom: 24 }}>
+          <Steps current={currentStep} size="small">
+            {steps.map((step, index) => (
+              <Step
+                key={index}
+                title={step.title}
+                description={step.description}
+              />
+            ))}
+          </Steps>
+        </Card>
+
+        {/* 表单内容 */}
+        <Form
+          form={form}
+          layout="vertical"
+          initialValues={{
+            accountType: 'corporate'
+          }}
+        >
+          {renderStepContent()}
+        </Form>
+
+        {/* 操作按钮 */}
+        <Card style={{ marginTop: 24 }}>
+          <div style={{ textAlign: 'center' }}>
+            <Space size="large">
+              {currentStep > 0 && (
+                <Button onClick={handlePrev}>
+                  上一步
+                </Button>
+              )}
+
+              <Button
+                icon={<SaveOutlined />}
+                onClick={handleSaveDraft}
               >
-                提交申请
+                保存草稿
               </Button>
-            )}
-          </Space>
-        </div>
-      </Card>
 
-      {/* 图片预览模态框 */}
-      <Modal
-        open={previewVisible}
-        title="图片预览"
-        footer={null}
-        onCancel={() => setPreviewVisible(false)}
-      >
-        <img alt="预览" style={{ width: '100%' }} src={previewImage} />
-      </Modal>
-    </div>
+              {currentStep < steps.length - 1 ? (
+                <Button type="primary" onClick={handleNext}>
+                  下一步
+                </Button>
+              ) : (
+                <Button
+                  type="primary"
+                  icon={<SendOutlined />}
+                  onClick={handleSubmit}
+                  loading={loading}
+                >
+                  提交申请
+                </Button>
+              )}
+            </Space>
+          </div>
+        </Card>
+
+        {/* 图片预览模态框 */}
+        <Modal
+          open={previewVisible}
+          title="图片预览"
+          footer={null}
+          onCancel={() => setPreviewVisible(false)}
+        >
+          <img alt="预览" style={{ width: '100%' }} src={previewImage} />
+        </Modal>
+      </Card>
+    </>
   );
 };
 
-export default MerchantApplicationForm;
+export default function MerchantAuditDetail({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord: any, setIsLoadMerchantAuditDetail: (isLoadMerchantAuditDetail: boolean) => void }) {
+  return <MerchantApplicationForm currentRecord={currentRecord} setIsLoadMerchantAuditDetail={setIsLoadMerchantAuditDetail} />;
+}

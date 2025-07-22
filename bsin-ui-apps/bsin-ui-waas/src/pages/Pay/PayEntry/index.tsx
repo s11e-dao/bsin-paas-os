@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import MerchantAuditList from './list';
-import MerchantAuditDetail from './detail';
+import MerchantAuditList from './list'; 
+import MerchantAuditDetail from './detail'; 
 
 interface EnterpriseRecord {
   serialNo: string;
