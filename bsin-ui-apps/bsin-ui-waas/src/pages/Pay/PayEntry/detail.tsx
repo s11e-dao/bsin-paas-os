@@ -1,620 +1,588 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Form,
   Input,
-  message,
   Button,
-  Descriptions,
-  Tag,
   Card,
-  Space,
-  Popconfirm,
   Steps,
-  Result,
-  Tabs,
-  Modal,
-  Select,
   Upload,
+  Select,
+  Radio,
+  message,
+  Space,
+  Row,
+  Col,
+  Alert,
+  Modal
 } from 'antd';
 import {
-  ArrowLeftOutlined,
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  EditOutlined,
-  UploadOutlined,
-  PictureOutlined
+  InboxOutlined,
+  SaveOutlined,
+  SendOutlined
 } from '@ant-design/icons';
-import {
-  getCustomerEnterpriseInfo,
-  auditCustomerEnterprise,
-} from './service';
 
 const { Step } = Steps;
-const { TabPane } = Tabs;
 const { Option } = Select;
+const { TextArea } = Input;
+const { Dragger } = Upload;
 
-interface EnterpriseRecord {
-  serialNo: string;
-  customerNo: string;
-  status: string;
-  authenticationStatus: string;
-  enterpriseName?: string;
-  businessNo?: string;
-  phone?: string;
-  netAddress?: string;
-  enterpriseAddress?: string;
-  legalPersonName?: string;
-  legalPersonCredType?: string;
-  legalPersonCredNo?: string;
-  businessScope?: string;
-  businessLicenceImg?: string;
-  // 审核步骤状态
-  basicInfoStatus?: string; // 基础信息审核状态 0:待审核 1:通过 2:拒绝
-  businessInfoStatus?: string; // 营业信息审核状态
-  legalPersonStatus?: string; // 法人信息审核状态
-  [key: string]: any;
-}
-
-interface MerchantAuditDetailProps {
-  currentRecord: EnterpriseRecord;
-  setIsLoadMerchantAuditDetail: (isLoad: boolean) => void;
-}
-
-export default ({ currentRecord, setIsLoadMerchantAuditDetail }: MerchantAuditDetailProps) => {
-  const [detailRecord, setDetailRecord] = useState<EnterpriseRecord>({} as EnterpriseRecord);
+const MerchantApplicationForm = () => {
+  const [form] = Form.useForm();
+  const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('1');
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [fileList, setFileList] = useState({
+    businessLicenseImg: [],
+    legalPersonIdFront: [],
+    legalPersonIdBack: [],
+    bankAccountImg: [],
+    storeImg: []
+  });
 
-  // 编辑模态框状态
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [editType, setEditType] = useState<'basic' | 'business' | 'legal'>('basic');
-  const [editForm] = Form.useForm();
+  // 步骤配置
+  const steps = [
+    { title: '基本信息', description: '企业基础资料' },
+    { title: '经营信息', description: '经营范围与地址' },
+    { title: '法人信息', description: '法定代表人信息' },
+    { title: '结算信息', description: '银行账户信息' },
+    { title: '资质材料', description: '上传证件照片' },
+    { title: '确认提交', description: '核对信息并提交' }
+  ];
 
-  /**
-   * 组件加载时获取详细信息
-   */
-  useEffect(() => {
-    if (currentRecord?.customerNo) {
-      loadEnterpriseDetail();
-    }
-  }, [currentRecord]);
-
-  /**
-   * 加载企业详情
-   */
-  const loadEnterpriseDetail = async () => {
-    try {
-      setLoading(true);
-      const res = await getCustomerEnterpriseInfo({ customerNo: currentRecord.customerNo });
-
-      if (res.code === 0 && res.data) {
-        // 模拟审核步骤状态，实际应该从后端获取
-        const mockData = {
-          ...res.data,
-          basicInfoStatus: res.data.basicInfoStatus || '0',
-          businessInfoStatus: res.data.businessInfoStatus || '0',
-          legalPersonStatus: res.data.legalPersonStatus || '0',
-        };
-        setDetailRecord(mockData);
-      } else {
-        message.error('获取企业详情失败');
+  // 上传配置
+  const uploadProps = (fileType) => ({
+    name: 'file',
+    multiple: false,
+    fileList: fileList[fileType] || [],
+    beforeUpload: (file) => {
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!isJpgOrPng) {
+        message.error('只能上传 JPG/PNG 格式的图片!');
+        return false;
       }
-    } catch (error) {
-      console.error('获取企业详情失败:', error);
-      message.error('获取详情失败，请稍后重试');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  /**
-   * 处理分步审核操作
-   */
-  const handleStepAudit = async (stepType: 'basic' | 'business' | 'legal', auditFlag: string) => {
-    try {
-      setLoading(true);
-
-      const res = await auditCustomerEnterprise({
-        merchantNo: detailRecord.serialNo,
-        customerNo: detailRecord.customerNo,
-        auditFlag,
-        stepType,
-      });
-
-      if (res.code === 0) {
-        const stepNames = {
-          basic: '基础信息',
-          business: '营业信息',
-          legal: '法人信息'
-        };
-
-        message.success(`${stepNames[stepType]}${auditFlag === '1' ? '审核通过' : '审核拒绝'}成功`);
-
-        // 更新本地状态
-        const statusField = stepType === 'basic' ? 'basicInfoStatus' :
-          stepType === 'business' ? 'businessInfoStatus' : 'legalPersonStatus';
-
-        setDetailRecord(prev => ({
-          ...prev,
-          [statusField]: auditFlag
-        }));
-
-      } else {
-        message.error(`操作失败：${res?.message}`);
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isLt5M) {
+        message.error('图片大小不能超过 5MB!');
+        return false;
       }
-    } catch (error) {
-      console.error('审核操作失败:', error);
-      message.error('操作失败，请稍后重试');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  /**
-   * 打开编辑模态框
-   */
-  const openEditModal = (type: 'basic' | 'business' | 'legal') => {
-    setEditType(type);
-    setEditModalVisible(true);
-
-    // 根据编辑类型填充表单
-    if (type === 'basic') {
-      editForm.setFieldsValue({
-        enterpriseName: detailRecord.enterpriseName,
-        businessNo: detailRecord.businessNo,
-        phone: detailRecord.phone,
-        netAddress: detailRecord.netAddress,
-        enterpriseAddress: detailRecord.enterpriseAddress,
-      });
-    } else if (type === 'business') {
-      editForm.setFieldsValue({
-        businessScope: detailRecord.businessScope,
-        businessLicenceImg: detailRecord.businessLicenceImg,
-      });
-    } else if (type === 'legal') {
-      editForm.setFieldsValue({
-        legalPersonName: detailRecord.legalPersonName,
-        legalPersonCredType: detailRecord.legalPersonCredType,
-        legalPersonCredNo: detailRecord.legalPersonCredNo,
-      });
-    }
-  };
-
-  /**
-   * 保存编辑信息
-   */
-  const saveEditInfo = async () => {
-    try {
-      const values = await editForm.validateFields();
-
-      // 这里应该调用更新商户信息的API
-      // await updateMerchantInfo({ ...values, customerNo: detailRecord.customerNo });
-
-      // 更新本地数据
-      setDetailRecord(prev => ({
+      return false; // 阻止自动上传
+    },
+    onChange: (info) => {
+      let newFileList = [...info.fileList];
+      newFileList = newFileList.slice(-1); // 只保留最新的一个文件
+      setFileList(prev => ({
         ...prev,
-        ...values
+        [fileType]: newFileList
       }));
+    },
+    onPreview: (file) => {
+      setPreviewImage(file.url || file.thumbUrl);
+      setPreviewVisible(true);
+    },
+    onRemove: () => {
+      setFileList(prev => ({
+        ...prev,
+        [fileType]: []
+      }));
+    }
+  });
 
-      message.success('信息更新成功');
-      setEditModalVisible(false);
-      editForm.resetFields();
+  // 下一步
+  const handleNext = async () => {
+    try {
+      await form.validateFields();
+      if (currentStep < steps.length - 1) {
+        setCurrentStep(currentStep + 1);
+      }
     } catch (error) {
-      console.error('保存失败:', error);
+      message.error('请完善当前步骤的必填信息');
     }
   };
 
-  /**
-   * 返回列表
-   */
-  const goBack = () => {
-    setIsLoadMerchantAuditDetail(false);
+  // 上一步
+  const handlePrev = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
   };
 
-  /**
-   * 渲染审核状态标签
-   */
-  const renderAuditStatus = (status: string) => {
-    const statusMap = {
-      '0': { text: '待审核', color: 'default' },
-      '1': { text: '已通过', color: 'success' },
-      '2': { text: '已拒绝', color: 'error' },
-    };
-    const config = statusMap[status as keyof typeof statusMap] || statusMap['0'];
-    return <Tag color={config.color}>{config.text}</Tag>;
+  // 保存草稿
+  const handleSaveDraft = async () => {
+    try {
+      const values = form.getFieldsValue();
+      // 这里调用保存草稿的API
+      console.log('保存草稿:', values);
+      message.success('草稿保存成功');
+    } catch (error) {
+      message.error('保存失败');
+    }
   };
 
-  /**
-   * 渲染步骤状态
-   */
-  const getStepStatus = (stepIndex: number) => {
-    const statusFields = ['basicInfoStatus', 'businessInfoStatus', 'legalPersonStatus'];
-    const status = detailRecord[statusFields[stepIndex]];
-
-    if (status === '1') return 'finish';
-    if (status === '2') return 'error';
-    return 'process';
-  };
-
-  /**
-   * 渲染基础信息审核
-   */
-  const renderBasicInfoAudit = () => (
-    <Card
-      title={
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>基础信息审核 {renderAuditStatus(detailRecord.basicInfoStatus || '0')}</span>
-          <Button
-            type="link"
-            icon={<EditOutlined />}
-            onClick={() => openEditModal('basic')}
-          >
-            编辑信息
-          </Button>
-        </div>
+  // 提交申请
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      const values = form.getFieldsValue();
+      
+      // 检查必需的文件
+      const requiredFiles = ['businessLicenseImg', 'legalPersonIdFront', 'legalPersonIdBack', 'bankAccountImg'];
+      const missingFiles = requiredFiles.filter(fileType => !fileList[fileType] || fileList[fileType].length === 0);
+      
+      if (missingFiles.length > 0) {
+        message.error('请上传所有必需的证件照片');
+        setCurrentStep(4); // 跳转到资质材料步骤
+        return;
       }
-    >
-      <Descriptions bordered column={2} size="middle">
-        <Descriptions.Item label="企业名称" span={2}>
-          {detailRecord?.enterpriseName || '-'}
-        </Descriptions.Item>
-        <Descriptions.Item label="企业工商号" span={1}>
-          {detailRecord?.businessNo || '-'}
-        </Descriptions.Item>
-        <Descriptions.Item label="联系电话" span={1}>
-          {detailRecord?.phone || '-'}
-        </Descriptions.Item>
-        <Descriptions.Item label="公司网址" span={2}>
-          {detailRecord?.netAddress ? (
-            <a href={detailRecord.netAddress} target="_blank" rel="noopener noreferrer">
-              {detailRecord.netAddress}
-            </a>
-          ) : '-'}
-        </Descriptions.Item>
-        <Descriptions.Item label="企业地址" span={2}>
-          {detailRecord?.enterpriseAddress || '-'}
-        </Descriptions.Item>
-      </Descriptions>
+      
+      // 这里调用提交申请的API
+      console.log('提交申请:', { ...values, files: fileList });
+      
+      Modal.success({
+        title: '申请提交成功',
+        content: '您的商户进件申请已成功提交，我们将在1-3个工作日内完成审核，请关注审核进度。',
+        onOk: () => {
+          // 跳转到申请列表或其他页面
+          window.history.back();
+        }
+      });
+      
+    } catch (error) {
+      console.error('提交失败:', error);
+      message.error('提交失败，请稍后重试');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      <div style={{ marginTop: 24, textAlign: 'center' }}>
-        <Space size="large">
-          <Popconfirm
-            title="确认通过基础信息审核？"
-            onConfirm={() => handleStepAudit('basic', '1')}
-            okText="确认通过"
-            cancelText="取消"
+  // 渲染基本信息步骤
+  const renderBasicInfo = () => (
+    <Card title="企业基本信息" size="small">
+      <Row gutter={24}>
+        <Col span={12}>
+          <Form.Item 
+            name="merchantName" 
+            label="商户名称" 
+            rules={[{ required: true, message: '请输入商户名称' }]}
           >
-            <Button type="primary" icon={<CheckCircleOutlined />} loading={loading}>
-              通过审核
-            </Button>
-          </Popconfirm>
-
-          <Popconfirm
-            title="确认拒绝基础信息审核？"
-            onConfirm={() => handleStepAudit('basic', '2')}
-            okText="确认拒绝"
-            cancelText="取消"
+            <Input placeholder="请输入商户全称" maxLength={50} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item 
+            name="businessType" 
+            label="主营业务" 
+            rules={[{ required: true, message: '请选择主营业务' }]}
           >
-            <Button danger icon={<CloseCircleOutlined />} loading={loading}>
-              拒绝审核
-            </Button>
-          </Popconfirm>
-        </Space>
-      </div>
+            <Select placeholder="请选择主营业务类型">
+              <Option value="retail">零售</Option>
+              <Option value="catering">餐饮</Option>
+              <Option value="entertainment">娱乐</Option>
+              <Option value="education">教育培训</Option>
+              <Option value="medical">医疗</Option>
+              <Option value="transport">交通运输</Option>
+              <Option value="other">其他</Option>
+            </Select>
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item 
+            name="organizationCode" 
+            label="统一社会信用代码" 
+            rules={[
+              { required: true, message: '请输入统一社会信用代码' },
+              { pattern: /^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/, message: '请输入正确的统一社会信用代码' }
+            ]}
+          >
+            <Input placeholder="请输入18位统一社会信用代码" maxLength={18} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item 
+            name="businessLicense" 
+            label="营业执照注册号" 
+            rules={[{ required: true, message: '请输入营业执照注册号' }]}
+          >
+            <Input placeholder="请输入营业执照注册号" />
+          </Form.Item>
+        </Col>
+      </Row>
     </Card>
   );
 
-  /**
-   * 渲染营业信息审核
-   */
-  const renderBusinessInfoAudit = () => (
-    <Card
-      title={
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>营业信息审核 {renderAuditStatus(detailRecord.businessInfoStatus || '0')}</span>
-          <Button
-            type="link"
-            icon={<EditOutlined />}
-            onClick={() => openEditModal('business')}
+  // 渲染经营信息步骤
+  const renderBusinessInfo = () => (
+    <Card title="经营信息" size="small">
+      <Row gutter={24}>
+        <Col span={24}>
+          <Form.Item 
+            name="businessScope" 
+            label="经营范围" 
+            rules={[{ required: true, message: '请输入经营范围' }]}
           >
-            编辑信息
-          </Button>
-        </div>
-      }
-    >
-      <Descriptions bordered column={2} size="middle">
-        <Descriptions.Item label="经营范围" span={2}>
-          {detailRecord?.businessScope || '-'}
-        </Descriptions.Item>
-        <Descriptions.Item label="营业执照" span={2}>
-          {detailRecord?.businessLicenceImg ? (
-            <div style={{ textAlign: 'center' }}>
-              <img
-                style={{
-                  maxWidth: '400px',
-                  maxHeight: '300px',
-                  border: '1px solid #d9d9d9',
-                  borderRadius: '6px',
-                  cursor: 'pointer'
-                }}
-                src={detailRecord.businessLicenceImg}
-                alt="营业执照"
-                onClick={() => window.open(detailRecord.businessLicenceImg, '_blank')}
-                onError={(e) => {
-                  e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjE2IiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+5Zu+54mH5Yqg6L295aSx6LSlPC90ZXh0Pjwvc3ZnPg==';
-                }}
-              />
-              <div style={{ marginTop: '8px', color: '#666', fontSize: '12px' }}>
-                点击图片查看大图
-              </div>
-            </div>
-          ) : (
-            <div style={{ textAlign: 'center', color: '#999', padding: '40px' }}>
-              暂无营业执照图片
-            </div>
-          )}
-        </Descriptions.Item>
-      </Descriptions>
-
-      <div style={{ marginTop: 24, textAlign: 'center' }}>
-        <Space size="large">
-          <Popconfirm
-            title="确认通过营业信息审核？"
-            onConfirm={() => handleStepAudit('business', '1')}
-            okText="确认通过"
-            cancelText="取消"
+            <TextArea rows={4} placeholder="请详细描述经营范围" maxLength={200} />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item 
+            name="businessDescription" 
+            label="经营描述" 
+            rules={[{ required: true, message: '请输入经营描述' }]}
           >
-            <Button type="primary" icon={<CheckCircleOutlined />} loading={loading}>
-              通过审核
-            </Button>
-          </Popconfirm>
-
-          <Popconfirm
-            title="确认拒绝营业信息审核？"
-            onConfirm={() => handleStepAudit('business', '2')}
-            okText="确认拒绝"
-            cancelText="取消"
+            <TextArea rows={3} placeholder="请简要描述主要经营内容" maxLength={100} />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item 
+            name="businessAddress" 
+            label="经营地址" 
+            rules={[{ required: true, message: '请输入经营地址' }]}
           >
-            <Button danger icon={<CloseCircleOutlined />} loading={loading}>
-              拒绝审核
-            </Button>
-          </Popconfirm>
-        </Space>
-      </div>
+            <TextArea rows={2} placeholder="请输入详细的经营地址" maxLength={100} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item 
+            name="servicePhone" 
+            label="客服电话" 
+            rules={[
+              { required: true, message: '请输入客服电话' },
+              { pattern: /^1[3-9]\d{9}$|^0\d{2,3}-?\d{7,8}$/, message: '请输入正确的电话号码' }
+            ]}
+          >
+            <Input placeholder="请输入客服电话" />
+          </Form.Item>
+        </Col>
+      </Row>
     </Card>
   );
 
-  /**
-   * 渲染法人信息审核
-   */
-  const renderLegalPersonAudit = () => (
-    <Card
-      title={
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>法人信息审核 {renderAuditStatus(detailRecord.legalPersonStatus || '0')}</span>
-          <Button
-            type="link"
-            icon={<EditOutlined />}
-            onClick={() => openEditModal('legal')}
+  // 渲染法人信息步骤
+  const renderLegalInfo = () => (
+    <Card title="法定代表人信息" size="small">
+      <Row gutter={24}>
+        <Col span={12}>
+          <Form.Item 
+            name="legalPersonName" 
+            label="法人姓名" 
+            rules={[{ required: true, message: '请输入法人姓名' }]}
           >
-            编辑信息
-          </Button>
-        </div>
-      }
-    >
-      <Descriptions bordered column={2} size="middle">
-        <Descriptions.Item label="法人姓名" span={1}>
-          {detailRecord?.legalPersonName || '-'}
-        </Descriptions.Item>
-        <Descriptions.Item label="法人证件类型" span={1}>
-          {detailRecord?.legalPersonCredType === '0' ? '大陆居民身份证' : '军官证'}
-        </Descriptions.Item>
-        <Descriptions.Item label="法人证件号" span={2}>
-          {detailRecord?.legalPersonCredNo || '-'}
-        </Descriptions.Item>
-      </Descriptions>
-
-      <div style={{ marginTop: 24, textAlign: 'center' }}>
-        <Space size="large">
-          <Popconfirm
-            title="确认通过法人信息审核？"
-            onConfirm={() => handleStepAudit('legal', '1')}
-            okText="确认通过"
-            cancelText="取消"
+            <Input placeholder="请输入法人真实姓名" maxLength={20} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item 
+            name="legalPersonIdCard" 
+            label="法人身份证号" 
+            rules={[
+              { required: true, message: '请输入身份证号' },
+              { pattern: /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/, message: '请输入正确的身份证号' }
+            ]}
           >
-            <Button type="primary" icon={<CheckCircleOutlined />} loading={loading}>
-              通过审核
-            </Button>
-          </Popconfirm>
-
-          <Popconfirm
-            title="确认拒绝法人信息审核？"
-            onConfirm={() => handleStepAudit('legal', '2')}
-            okText="确认拒绝"
-            cancelText="取消"
+            <Input placeholder="请输入18位身份证号" maxLength={18} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item 
+            name="legalPersonPhone" 
+            label="法人手机号" 
+            rules={[
+              { required: true, message: '请输入手机号' },
+              { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' }
+            ]}
           >
-            <Button danger icon={<CloseCircleOutlined />} loading={loading}>
-              拒绝审核
-            </Button>
-          </Popconfirm>
-        </Space>
-      </div>
+            <Input placeholder="请输入法人手机号" maxLength={11} />
+          </Form.Item>
+        </Col>
+      </Row>
     </Card>
   );
 
-  /**
-   * 渲染编辑模态框
-   */
-  const renderEditModal = () => {
-    const getModalTitle = () => {
-      const titles = {
-        basic: '编辑基础信息',
-        business: '编辑营业信息',
-        legal: '编辑法人信息'
-      };
-      return titles[editType];
-    };
+  // 渲染结算信息步骤
+  const renderSettlementInfo = () => (
+    <Card title="结算银行账户信息" size="small">
+      <Row gutter={24}>
+        <Col span={12}>
+          <Form.Item 
+            name="accountType" 
+            label="账户类型" 
+            rules={[{ required: true, message: '请选择账户类型' }]}
+          >
+            <Radio.Group>
+              <Radio value="corporate">对公账户</Radio>
+              <Radio value="personal">个人账户</Radio>
+            </Radio.Group>
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item 
+            name="accountName" 
+            label="开户名称" 
+            rules={[{ required: true, message: '请输入开户名称' }]}
+          >
+            <Input placeholder="请输入银行开户名称" />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item 
+            name="accountNumber" 
+            label="银行账号" 
+            rules={[
+              { required: true, message: '请输入银行账号' },
+              { pattern: /^\d{16,25}$/, message: '请输入正确的银行账号' }
+            ]}
+          >
+            <Input placeholder="请输入银行账号" />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item 
+            name="bankName" 
+            label="开户银行" 
+            rules={[{ required: true, message: '请输入开户银行' }]}
+          >
+            <Input placeholder="请输入开户银行全称" />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item 
+            name="bankCode" 
+            label="银行联行号" 
+            rules={[{ required: true, message: '请输入银行联行号' }]}
+          >
+            <Input placeholder="请输入12位银行联行号" maxLength={12} />
+          </Form.Item>
+        </Col>
+      </Row>
+    </Card>
+  );
 
-    const renderFormItems = () => {
-      if (editType === 'basic') {
-        return (
-          <>
-            <Form.Item name="enterpriseName" label="企业名称" rules={[{ required: true }]}>
-              <Input placeholder="请输入企业名称" />
-            </Form.Item>
-            <Form.Item name="businessNo" label="企业工商号" rules={[{ required: true }]}>
-              <Input placeholder="请输入企业工商号" />
-            </Form.Item>
-            <Form.Item name="phone" label="联系电话" rules={[{ required: true }]}>
-              <Input placeholder="请输入联系电话" />
-            </Form.Item>
-            <Form.Item name="netAddress" label="公司网址">
-              <Input placeholder="请输入公司网址" />
-            </Form.Item>
-            <Form.Item name="enterpriseAddress" label="企业地址" rules={[{ required: true }]}>
-              <Input.TextArea rows={3} placeholder="请输入企业地址" />
-            </Form.Item>
-          </>
-        );
-      } else if (editType === 'business') {
-        return (
-          <>
-            <Form.Item name="businessScope" label="经营范围" rules={[{ required: true }]}>
-              <Input.TextArea rows={4} placeholder="请输入经营范围" />
-            </Form.Item>
-            <Form.Item name="businessLicenceImg" label="营业执照">
-              <Input placeholder="请输入营业执照图片URL" />
-            </Form.Item>
-          </>
-        );
-      } else if (editType === 'legal') {
-        return (
-          <>
-            <Form.Item name="legalPersonName" label="法人姓名" rules={[{ required: true }]}>
-              <Input placeholder="请输入法人姓名" />
-            </Form.Item>
-            <Form.Item name="legalPersonCredType" label="法人证件类型" rules={[{ required: true }]}>
-              <Select placeholder="请选择证件类型">
-                <Option value="0">大陆居民身份证</Option>
-                <Option value="1">军官证</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item name="legalPersonCredNo" label="法人证件号" rules={[{ required: true }]}>
-              <Input placeholder="请输入法人证件号" />
-            </Form.Item>
-          </>
-        );
-      }
-    };
+  // 渲染资质材料步骤
+  const renderQualificationMaterials = () => (
+    <div>
+      <Alert 
+        message="上传提醒" 
+        description="请确保上传的图片清晰可见，文件大小不超过5MB，支持JPG、PNG格式。" 
+        type="info" 
+        style={{ marginBottom: 24 }}
+      />
+      
+      <Row gutter={24}>
+        <Col span={12}>
+          <Card title="营业执照 *" size="small" style={{ height: '300px' }}>
+            <Dragger {...uploadProps('businessLicenseImg')} style={{ height: '200px' }}>
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">点击或拖拽上传营业执照</p>
+              <p className="ant-upload-hint">请上传营业执照正本照片</p>
+            </Dragger>
+          </Card>
+        </Col>
+        
+        <Col span={12}>
+          <Card title="法人身份证正面 *" size="small" style={{ height: '300px' }}>
+            <Dragger {...uploadProps('legalPersonIdFront')} style={{ height: '200px' }}>
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">点击或拖拽上传身份证正面</p>
+              <p className="ant-upload-hint">请上传法人身份证正面照片</p>
+            </Dragger>
+          </Card>
+        </Col>
+        
+        <Col span={12} style={{ marginTop: 16 }}>
+          <Card title="法人身份证背面 *" size="small" style={{ height: '300px' }}>
+            <Dragger {...uploadProps('legalPersonIdBack')} style={{ height: '200px' }}>
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">点击或拖拽上传身份证背面</p>
+              <p className="ant-upload-hint">请上传法人身份证背面照片</p>
+            </Dragger>
+          </Card>
+        </Col>
+        
+        <Col span={12} style={{ marginTop: 16 }}>
+          <Card title="银行开户许可证 *" size="small" style={{ height: '300px' }}>
+            <Dragger {...uploadProps('bankAccountImg')} style={{ height: '200px' }}>
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">点击或拖拽上传开户许可证</p>
+              <p className="ant-upload-hint">请上传银行开户许可证照片</p>
+            </Dragger>
+          </Card>
+        </Col>
+        
+        <Col span={12} style={{ marginTop: 16 }}>
+          <Card title="门店照片(可选)" size="small" style={{ height: '300px' }}>
+            <Dragger {...uploadProps('storeImg')} style={{ height: '200px' }}>
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">点击或拖拽上传门店照片</p>
+              <p className="ant-upload-hint">可上传门店外观或内景照片</p>
+            </Dragger>
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
 
+  // 渲染确认提交步骤
+  const renderConfirmSubmit = () => {
+    const formData = form.getFieldsValue();
+    
     return (
-      <Modal
-        title={getModalTitle()}
-        open={editModalVisible}
-        onOk={saveEditInfo}
-        onCancel={() => {
-          setEditModalVisible(false);
-          editForm.resetFields();
-        }}
-        width={600}
-        okText="保存"
-        cancelText="取消"
-      >
-        <Form form={editForm} layout="vertical">
-          {renderFormItems()}
-        </Form>
-      </Modal>
+      <div>
+        <Alert 
+          message="请仔细核对以下信息，确认无误后提交申请" 
+          type="warning" 
+          style={{ marginBottom: 24 }}
+        />
+        
+        <Card title="基本信息" style={{ marginBottom: 16 }}>
+          <Row gutter={16}>
+            <Col span={12}>商户名称: {formData.merchantName || '-'}</Col>
+            <Col span={12}>主营业务: {formData.businessType || '-'}</Col>
+            <Col span={12}>统一社会信用代码: {formData.organizationCode || '-'}</Col>
+            <Col span={12}>营业执照注册号: {formData.businessLicense || '-'}</Col>
+          </Row>
+        </Card>
+        
+        <Card title="经营信息" style={{ marginBottom: 16 }}>
+          <Row gutter={16}>
+            <Col span={24}>经营范围: {formData.businessScope || '-'}</Col>
+            <Col span={24}>经营地址: {formData.businessAddress || '-'}</Col>
+            <Col span={12}>客服电话: {formData.servicePhone || '-'}</Col>
+          </Row>
+        </Card>
+        
+        <Card title="法人信息" style={{ marginBottom: 16 }}>
+          <Row gutter={16}>
+            <Col span={8}>法人姓名: {formData.legalPersonName || '-'}</Col>
+            <Col span={8}>身份证号: {formData.legalPersonIdCard || '-'}</Col>
+            <Col span={8}>手机号: {formData.legalPersonPhone || '-'}</Col>
+          </Row>
+        </Card>
+        
+        <Card title="结算信息" style={{ marginBottom: 16 }}>
+          <Row gutter={16}>
+            <Col span={8}>账户类型: {formData.accountType === 'corporate' ? '对公账户' : '个人账户'}</Col>
+            <Col span={8}>开户名称: {formData.accountName || '-'}</Col>
+            <Col span={8}>银行账号: {formData.accountNumber || '-'}</Col>
+            <Col span={12}>开户银行: {formData.bankName || '-'}</Col>
+            <Col span={12}>银行联行号: {formData.bankCode || '-'}</Col>
+          </Row>
+        </Card>
+        
+        <Card title="上传材料">
+          <Row gutter={16}>
+            <Col span={6}>营业执照: {fileList.businessLicenseImg?.length > 0 ? '✅ 已上传' : '❌ 未上传'}</Col>
+            <Col span={6}>身份证正面: {fileList.legalPersonIdFront?.length > 0 ? '✅ 已上传' : '❌ 未上传'}</Col>
+            <Col span={6}>身份证背面: {fileList.legalPersonIdBack?.length > 0 ? '✅ 已上传' : '❌ 未上传'}</Col>
+            <Col span={6}>开户许可证: {fileList.bankAccountImg?.length > 0 ? '✅ 已上传' : '❌ 未上传'}</Col>
+          </Row>
+        </Card>
+      </div>
     );
   };
 
-  /**
-   * 检查是否全部审核完成
-   */
-  const isAllAuditCompleted = () => {
-    return detailRecord.basicInfoStatus === '1' &&
-      detailRecord.businessInfoStatus === '1' &&
-      detailRecord.legalPersonStatus === '1';
+  // 根据当前步骤渲染内容
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 0: return renderBasicInfo();
+      case 1: return renderBusinessInfo();
+      case 2: return renderLegalInfo();
+      case 3: return renderSettlementInfo();
+      case 4: return renderQualificationMaterials();
+      case 5: return renderConfirmSubmit();
+      default: return null;
+    }
   };
 
   return (
-    <div>
-      {/* 页面头部 */}
-      <Card>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 style={{ margin: 0 }}>商户认证分步审核</h2>
+    <div style={{ padding: '24px', backgroundColor: '#f0f2f5', minHeight: '100vh' }}>
+      {/* 页面标题 */}
+      <Card style={{ marginBottom: 24 }}>
+        <div style={{ textAlign: 'center' }}>
+          <h1 style={{ margin: 0, color: '#1890ff' }}>微信支付商户进件申请</h1>
+          <p style={{ color: '#666', marginTop: 8 }}>请按步骤填写完整的商户资料，我们将在1-3个工作日内完成审核</p>
+        </div>
+      </Card>
 
-          <Space>
-            <Tag color="blue">商户号: {detailRecord?.serialNo}</Tag>
-            <Button
-              icon={<ArrowLeftOutlined />}
-              onClick={goBack}
-              type="primary"
+      {/* 步骤条 */}
+      <Card style={{ marginBottom: 24 }}>
+        <Steps current={currentStep} size="small">
+          {steps.map((step, index) => (
+            <Step 
+              key={index} 
+              title={step.title} 
+              description={step.description}
+            />
+          ))}
+        </Steps>
+      </Card>
+
+      {/* 表单内容 */}
+      <Form
+        form={form}
+        layout="vertical"
+        initialValues={{
+          accountType: 'corporate'
+        }}
+      >
+        {renderStepContent()}
+      </Form>
+
+      {/* 操作按钮 */}
+      <Card style={{ marginTop: 24 }}>
+        <div style={{ textAlign: 'center' }}>
+          <Space size="large">
+            {currentStep > 0 && (
+              <Button onClick={handlePrev}>
+                上一步
+              </Button>
+            )}
+            
+            <Button 
+              icon={<SaveOutlined />} 
+              onClick={handleSaveDraft}
             >
-              返回
+              保存草稿
             </Button>
+            
+            {currentStep < steps.length - 1 ? (
+              <Button type="primary" onClick={handleNext}>
+                下一步
+              </Button>
+            ) : (
+              <Button 
+                type="primary" 
+                icon={<SendOutlined />} 
+                onClick={handleSubmit}
+                loading={loading}
+              >
+                提交申请
+              </Button>
+            )}
           </Space>
         </div>
       </Card>
 
-      {/* 审核步骤概览 */}
-      <Card style={{ marginTop: 16 }}>
-        <Steps size="small">
-          <Step
-            title="基础信息"
-            description="企业基本信息"
-            status={getStepStatus(0)}
-            icon={detailRecord.basicInfoStatus === '1' ? <CheckCircleOutlined /> :
-              detailRecord.basicInfoStatus === '2' ? <CloseCircleOutlined /> : undefined}
-          />
-          <Step
-            title="营业信息"
-            description="营业执照及范围"
-            status={getStepStatus(1)}
-            icon={detailRecord.businessInfoStatus === '1' ? <CheckCircleOutlined /> :
-              detailRecord.businessInfoStatus === '2' ? <CloseCircleOutlined /> : undefined}
-          />
-          <Step
-            title="法人信息"
-            description="法人身份验证"
-            status={getStepStatus(2)}
-            icon={detailRecord.legalPersonStatus === '1' ? <CheckCircleOutlined /> :
-              detailRecord.legalPersonStatus === '2' ? <CloseCircleOutlined /> : undefined}
-          />
-        </Steps>
-      </Card>
-
-      {/* 审核内容 - 使用 Tabs 显示所有步骤 */}
-      {isAllAuditCompleted() ? (
-        <Card style={{ marginTop: 16 }}>
-          <Result
-            status="success"
-            title="商户认证审核已全部完成！"
-            subTitle="该商户的所有认证信息均已通过审核，可以正常使用平台服务。"
-            extra={[
-              <Button type="primary" key="back" onClick={goBack}>
-                返回审核列表
-              </Button>
-            ]}
-          />
-        </Card>
-      ) : (
-        <Card style={{ marginTop: 16 }}>
-          <Tabs activeKey={activeTab} onChange={setActiveTab}>
-            <TabPane tab="基础信息" key="1">
-              {renderBasicInfoAudit()}
-            </TabPane>
-            <TabPane tab="营业信息" key="2">
-              {renderBusinessInfoAudit()}
-            </TabPane>
-            <TabPane tab="法人信息" key="3">
-              {renderLegalPersonAudit()}
-            </TabPane>
-          </Tabs>
-        </Card>
-      )}
-
-      {/* 编辑模态框 */}
-      {renderEditModal()}
+      {/* 图片预览模态框 */}
+      <Modal
+        open={previewVisible}
+        title="图片预览"
+        footer={null}
+        onCancel={() => setPreviewVisible(false)}
+      >
+        <img alt="预览" style={{ width: '100%' }} src={previewImage} />
+      </Modal>
     </div>
   );
 };
+
+export default MerchantApplicationForm;

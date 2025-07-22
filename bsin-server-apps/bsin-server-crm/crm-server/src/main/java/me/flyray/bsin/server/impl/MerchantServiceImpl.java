@@ -537,11 +537,17 @@ public class MerchantServiceImpl implements MerchantService {
     warapper.orderByDesc(Merchant::getCreateTime);
     warapper.eq(Merchant::getTenantId, tenantId);
     warapper.eq(
-        StringUtils.isNotEmpty(merchant.getBusinessType()),
-        Merchant::getBusinessType,
-        merchant.getBusinessType());
+        StringUtils.isNotEmpty(merchant.getBusinessType()),Merchant::getBusinessType, merchant.getBusinessType());
     warapper.eq(
         StringUtils.isNotEmpty(merchant.getStatus()), Merchant::getStatus, merchant.getStatus());
+
+    // 合伙伙伴只能看到自己的商户
+    if(BizRoleType.SYS_AGENT.getCode().equals(LoginInfoContextHelper.getBizRoleType())){
+      merchant.setSysAgentNo(LoginInfoContextHelper.getLoginUser().getBizRoleTypeNo());
+    }
+    warapper.eq(
+            StringUtils.isNotEmpty(merchant.getSysAgentNo()), Merchant::getSysAgentNo, merchant.getSysAgentNo());
+
     warapper.eq(StringUtils.isNotEmpty(merchantNo), Merchant::getSerialNo, merchantNo);
     IPage<Merchant> pageList = merchantMapper.selectPage(page, warapper);
     return pageList;
