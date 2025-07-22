@@ -1,18 +1,30 @@
 import type { ProColumns } from '@ant-design/pro-table';
 
+/**
+ * 交易数据类型
+ */
 export type columnsDataType = {
-  order: number;
-  acName: string;
-  custNo: string;
-  acNo: string;
-  balance: string;
-  custType: string;
-  openAcDate: string;
-  status: string;
-  startTime: string;
-  endTime: string;
+  serialNo: string;
+  txHash: string;
+  from: string;
+  to: string;
+  txAmount: number;
+  transactionType: number;
+  transactionStatus: number;
+  createTime: string;
+  contractAddress: string;
+  contractMethod: string;
+  productId?: string;
+  amount?: number;
+  description?: string;
+  status?: string;
+  transactionTypeRender?: number;
+  userId?: string;
 };
 
+/**
+ * 交易表格列配置
+ */
 const columnsData: ProColumns<columnsDataType>[] = [
   // 配置搜索框
   {
@@ -54,6 +66,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInTable: true,
     fieldProps: {
       maxLength: 20,
+      placeholder: '请输入交易hash',
     },
   },
   {
@@ -62,6 +75,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInTable: true,
     fieldProps: {
       maxLength: 20,
+      placeholder: '请输入接收地址',
     },
   },
 
@@ -73,7 +87,6 @@ const columnsData: ProColumns<columnsDataType>[] = [
     hideInSearch: true,
     copyable: true,
     ellipsis: true,
-    // tooltip: '过长会自动收缩',
     formItemProps: {
       rules: [
         {
@@ -117,23 +130,35 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '交易金额',
-    width: 80,
+    width: 120,
     dataIndex: 'txAmount',
     hideInSearch: true,
+    render: (_, record) => `¥${record.txAmount?.toFixed(2) || '0.00'}`,
   },
   {
     title: '交易类型',
-    width: 80,
+    width: 100,
     dataIndex: 'transactionType',
     hideInSearch: true,
+    valueType: 'select',
+    valueEnum: {
+      1: { text: '支付', status: 'Success' },
+      2: { text: '充值', status: 'Processing' },
+      3: { text: '转账', status: 'Warning' },
+      4: { text: '提现', status: 'Error' },
+      5: { text: '退款', status: 'Default' },
+      6: { text: '结算', status: 'Success' },
+      7: { text: '收入', status: 'Success' },
+      8: { text: '赎回', status: 'Warning' },
+    },
   },
   {
     title: '交易状态',
-    width: 80,
+    width: 100,
     dataIndex: 'transactionStatus',
     hideInSearch: true,
     valueEnum: {
-      0: { text: '成功', status: 'Processing' },
+      0: { text: '成功', status: 'Success' },
       1: { text: '失败', status: 'Error' },
     },
   },
@@ -142,6 +167,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     width: 160,
     dataIndex: 'createTime',
     hideInSearch: true,
+    valueType: 'dateTime',
   },
   {
     title: '合约地址',
@@ -156,6 +182,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     width: 160,
     dataIndex: 'contractMethod',
     hideInSearch: true,
+    ellipsis: true,
   },
   {
     title: '操作',

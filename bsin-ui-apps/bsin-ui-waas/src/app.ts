@@ -6,26 +6,24 @@ import "./public-path";
 
 // src/app.ts
 export const qiankun = {
-    // 应用加载之前
-    async bootstrap(props) {
-      console.log('upms bootstrap', props);
-    },
-    // 应用 render 之前触发
-    async mount(props) {
-      console.log('upms mount', props);
-      props.onGlobalStateChange((state, prev) => {
-        // state: 变更后的状态; prev 变更前的状态
-        console.log(state, prev);
-      });
-      
-    },
-    // 应用卸载之后触发
-    async unmount(props) {
-      console.log('upms unmount', props);
-    },
-  };
+  // 应用加载之前
+  async bootstrap(props: any) {
+    console.log('upms bootstrap', props);
+  },
+  // 应用 render 之前触发
+  async mount(props: any) {
+    console.log('upms mount', props);
+    props.onGlobalStateChange((state: any, prev: any) => {
+      // state: 变更后的状态; prev 变更前的状态
+      console.log(state, prev);
+    });
+  },
+  // 应用卸载之后触发
+  async unmount(props: any) {
+    console.log('upms unmount', props);
+  },
+};
 
-  
 // 错误处理方案： 错误类型
 enum ErrorShowType {
   SILENT = 0,
@@ -34,6 +32,7 @@ enum ErrorShowType {
   NOTIFICATION = 3,
   REDIRECT = 9,
 }
+
 // 与后端约定的响应数据格式
 interface ResponseStructure {
   success: boolean;
@@ -44,8 +43,8 @@ interface ResponseStructure {
 }
 
 // 接口环境地址
-let gatewayUrl = process.env.baseUrl;
-let webScoketUrl = process.env.webScoketUrl;
+const gatewayUrl = process.env.baseUrl;
+const webSocketUrl = process.env.webScoketUrl;
 
 export const request: RequestConfig = {
   // 统一的请求设定
@@ -77,22 +76,28 @@ export const request: RequestConfig = {
               // do nothing
               break;
             case ErrorShowType.WARN_MESSAGE:
-              notification.info(errorMessage);
+              notification.info({
+                message: errorMessage || '提示信息',
+              });
               break;
             case ErrorShowType.ERROR_MESSAGE:
-              notification.error(errorMessage);
+              notification.error({
+                message: errorMessage || '错误信息',
+              });
               break;
             case ErrorShowType.NOTIFICATION:
               notification.open({
-                description: errorMessage,
-                message: errorCode,
+                description: errorMessage || '通知信息',
+                message: errorCode?.toString() || '通知',
               });
               break;
             case ErrorShowType.REDIRECT:
               // TODO: redirect
               break;
             default:
-              notification.error(errorMessage);
+              notification.error({
+                message: errorMessage || '错误信息',
+              });
           }
         }
       } else if (error.response) {
@@ -126,26 +131,30 @@ export const request: RequestConfig = {
         });
       } else if (error.request) {
         // 请求已经成功发起，但没有收到响应
-        // \`error.request\` 在浏览器中是 XMLHttpRequest 的实例，
+        // `error.request` 在浏览器中是 XMLHttpRequest 的实例，
         // 而在node.js中是 http.ClientRequest 的实例
-        notification.error('None response! Please retry.');
+        notification.error({
+          message: '请求失败',
+          description: 'None response! Please retry.',
+        });
       } else {
         // 发送请求时出了点问题
-        notification.error('Request error, please retry.');
+        notification.error({
+          message: '请求错误',
+          description: 'Request error, please retry.',
+        });
       }
     },
-
   },
 
   // 请求拦截器
   requestInterceptors: [
-
-    (config:any) => {
+    (config: any) => {
       // 请求方法统一为 POST
       config.method = 'POST';
       // 获取userInfo和token
-      let userInfo = getLocalStorageInfo('userInfo');
-      let token = getSessionStorageInfo('token')?.token;
+      const userInfo = getLocalStorageInfo('userInfo');
+      const token = getSessionStorageInfo('token')?.token;
 
       // 判断token和用户信息是否存在
       if (
@@ -156,18 +165,17 @@ export const request: RequestConfig = {
         // history.push('/login');
       }
 
-      if (token == undefined) {
-        token = ""
-      }
+      const authToken = token || "";
 
-      // 判断一些
+      // 设置请求头
       const headers = {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        Authorization: token || "",
+        Authorization: authToken,
         version: "1.0.0",
       };
 
+      // 处理分页参数
       let pagination;
       if (config?.bizParams?.pageSize) {
         pagination = {
@@ -177,8 +185,9 @@ export const request: RequestConfig = {
         delete config?.bizParams?.pageSize;
         delete config?.bizParams?.current;
       }
+
       // 组装报文
-      let data = {}
+      let data = {};
       if (config?.version) {
         headers.version = config?.version;
       }
@@ -188,17 +197,16 @@ export const request: RequestConfig = {
           ...config.bizParams,
           pagination,
         };
-      }else{
+      } else {
         data = {
           ...config.bizParams
         };
       }
+
       config.headers = {
         ...headers,
       };
-      // 拦截请求配置，进行个性化处理。
-      console.log("config")
-      console.log(config)
+
       const url = gatewayUrl + config.url;
       return { ...config, data, url };
     }
@@ -206,10 +214,10 @@ export const request: RequestConfig = {
 
   // 响应拦截器
   responseInterceptors: [
-    (response : any) => {
+    (response: any) => {
       // 拦截响应数据，进行个性化处理
       const { data } = response;
-      console.log(response)
+      
       if (data?.code !== 0) {
         let errorMessage = data?.message || '请求失败';
         
@@ -230,10 +238,9 @@ export const request: RequestConfig = {
           _errorHandled: true // 添加标记表示已处理错误
         };
         
-        return response
+        return response;
       }
-      return response
+      return response;
     }
   ]
-
 };

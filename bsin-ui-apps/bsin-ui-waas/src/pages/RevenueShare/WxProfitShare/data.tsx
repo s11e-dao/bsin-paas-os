@@ -12,20 +12,47 @@ import {
   DollarOutlined,
   HistoryOutlined
 } from '@ant-design/icons';
+import type { STATUS_CONFIG } from '@/types/common';
 
-// 平台应用列表列配置
-export const bizRoleAppColumns: ProColumns<any>[] = [
+/**
+ * 平台应用数据类型
+ */
+export interface BizRoleAppType {
+  appName: string;
+  appId: string;
+  appDescription: string;
+  status: string;
+  onConfigClick: (record: BizRoleAppType) => void;
+}
+
+/**
+ * 操作历史数据类型
+ */
+export interface OperationHistoryType {
+  operationType: string;
+  requestParams: string;
+  responseResult: string;
+  operationTime: string;
+  status: string;
+}
+
+/**
+ * 平台应用列表列配置
+ */
+export const bizRoleAppColumns: ProColumns<BizRoleAppType>[] = [
   {
     title: '应用名称',
     dataIndex: 'appName',
     key: 'appName',
     width: 200,
+    ellipsis: true,
   },
   {
     title: '应用ID',
     dataIndex: 'appId',
     key: 'appId',
     width: 150,
+    ellipsis: true,
   },
   {
     title: '应用描述',
@@ -60,7 +87,9 @@ export const bizRoleAppColumns: ProColumns<any>[] = [
   },
 ];
 
-// 微信分账操作配置
+/**
+ * 微信分账操作配置
+ */
 export const wxProfitShareActions = [
   {
     key: 'request',
@@ -101,13 +130,13 @@ export const wxProfitShareActions = [
   {
     key: 'addReceiver',
     label: '添加分账接收方',
-    description: '添加分账接收方信息',
+    description: '添加分账接收方到微信支付',
     icon: <UserAddOutlined />,
   },
   {
     key: 'deleteReceiver',
     label: '删除分账接收方',
-    description: '删除已添加的分账接收方',
+    description: '从微信支付删除分账接收方',
     icon: <UserDeleteOutlined />,
   },
   {
@@ -118,266 +147,261 @@ export const wxProfitShareActions = [
   },
   {
     key: 'downloadBill',
-    label: '下载账单',
+    label: '下载分账账单',
     description: '下载分账账单文件',
     icon: <DownloadOutlined />,
   },
 ];
 
-// 分账请求表单字段
-export const profitShareFormFields = [
-  {
-    name: 'transactionNo',
-    label: '交易单号',
-    type: 'input',
-    required: true,
-    placeholder: '请输入交易单号',
-    rules: [
-      { required: true, message: '请输入交易单号' },
-    ],
-  },
-];
-
-// 分账回退表单字段
-export const returnFormFields = [
-  {
-    name: 'orderId',
-    label: '微信分账单号',
-    type: 'input',
-    required: true,
-    placeholder: '请输入微信分账单号',
-    rules: [
-      { required: true, message: '请输入微信分账单号' },
-    ],
-  },
-  {
-    name: 'outReturnNo',
-    label: '商户回退单号',
-    type: 'input',
-    required: true,
-    placeholder: '请输入商户回退单号',
-    rules: [
-      { required: true, message: '请输入商户回退单号' },
-    ],
-  },
-  {
-    name: 'returnMchid',
-    label: '回退商户号',
-    type: 'input',
-    required: true,
-    placeholder: '请输入回退商户号',
-    rules: [
-      { required: true, message: '请输入回退商户号' },
-    ],
-  },
-  {
-    name: 'amount',
-    label: '回退金额',
-    type: 'number',
-    required: true,
-    placeholder: '请输入回退金额',
-    min: 0.01,
-    precision: 2,
-    rules: [
-      { required: true, message: '请输入回退金额' },
-      { type: 'number', min: 0.01, message: '金额必须大于0' },
-    ],
-  },
-  {
-    name: 'description',
-    label: '回退原因',
-    type: 'textarea',
-    required: true,
-    placeholder: '请输入回退原因',
-    rules: [
-      { required: true, message: '请输入回退原因' },
-    ],
-  },
-];
-
-// 分账回退查询表单字段
-export const returnQueryFormFields = [
-  {
-    name: 'orderId',
-    label: '微信分账单号',
-    type: 'input',
-    required: true,
-    placeholder: '请输入微信分账单号',
-    rules: [
-      { required: true, message: '请输入微信分账单号' },
-    ],
-  },
-  {
-    name: 'outReturnNo',
-    label: '商户回退单号',
-    type: 'input',
-    required: true,
-    placeholder: '请输入商户回退单号',
-    rules: [
-      { required: true, message: '请输入商户回退单号' },
-    ],
-  },
-];
-
-// 解冻剩余资金表单字段
-export const unfreezeFormFields = [
-  {
-    name: 'transactionId',
-    label: '微信支付订单号',
-    type: 'input',
-    required: true,
-    placeholder: '请输入微信支付订单号',
-    rules: [
-      { required: true, message: '请输入微信支付订单号' },
-    ],
-  },
-  {
-    name: 'outOrderNo',
-    label: '商户订单号',
-    type: 'input',
-    required: true,
-    placeholder: '请输入商户订单号',
-    rules: [
-      { required: true, message: '请输入商户订单号' },
-    ],
-  },
-  {
-    name: 'description',
-    label: '解冻原因',
-    type: 'textarea',
-    required: false,
-    placeholder: '请输入解冻原因（可选）',
-  },
-];
-
-// 查询剩余待分金额表单字段
-export const remainingFormFields = [
-  {
-    name: 'transactionId',
-    label: '微信支付订单号',
-    type: 'input',
-    required: true,
-    placeholder: '请输入微信支付订单号',
-    rules: [
-      { required: true, message: '请输入微信支付订单号' },
-    ],
-  },
-];
-
-// 添加分账接收方表单字段
+/**
+ * 接收方表单字段配置
+ */
 export const receiverFormFields = [
   {
     name: 'receiverId',
-    label: '接收方账号',
-    type: 'input',
+    label: '接收方ID',
+    type: 'input' as const,
     required: true,
-    placeholder: '请输入接收方账号',
-    rules: [
-      { required: true, message: '请输入接收方账号' },
-    ],
+    placeholder: '请输入接收方ID',
+    rules: [{ required: true, message: '请输入接收方ID' }],
   },
   {
     name: 'receiverName',
-    label: '接收方姓名',
-    type: 'input',
+    label: '接收方名称',
+    type: 'input' as const,
     required: true,
-    placeholder: '请输入接收方姓名',
-    rules: [
-      { required: true, message: '请输入接收方姓名' },
-    ],
+    placeholder: '请输入接收方名称',
+    rules: [{ required: true, message: '请输入接收方名称' }],
   },
   {
     name: 'receiverType',
     label: '接收方类型',
-    type: 'select',
+    type: 'select' as const,
     required: true,
     options: [
-      { label: '商户号', value: 'MERCHANT_ID' },
-      { label: '个人openid', value: 'PERSONAL_OPENID' },
+      { label: '个人', value: 'PERSONAL' },
+      { label: '企业', value: 'ENTERPRISE' },
     ],
-    rules: [
-      { required: true, message: '请选择接收方类型' },
-    ],
+    rules: [{ required: true, message: '请选择接收方类型' }],
   },
   {
     name: 'relationType',
-    label: '分账关系',
-    type: 'select',
+    label: '关系类型',
+    type: 'select' as const,
     required: true,
     options: [
-      { label: '店主', value: 'STORE_OWNER' },
+      { label: '服务商', value: 'SERVICE_PROVIDER' },
+      { label: '门店', value: 'STORE' },
       { label: '员工', value: 'STAFF' },
+      { label: '店主', value: 'STORE_OWNER' },
       { label: '合作伙伴', value: 'PARTNER' },
+      { label: '总部', value: 'HEADQUARTER' },
       { label: '品牌方', value: 'BRAND' },
       { label: '分销商', value: 'DISTRIBUTOR' },
       { label: '用户', value: 'USER' },
       { label: '供应商', value: 'SUPPLIER' },
       { label: '自定义', value: 'CUSTOM' },
     ],
-    rules: [
-      { required: true, message: '请选择分账关系' },
-    ],
+    rules: [{ required: true, message: '请选择关系类型' }],
   },
   {
     name: 'customRelation',
-    label: '自定义分账关系',
-    type: 'input',
+    label: '自定义关系',
+    type: 'input' as const,
     required: false,
-    placeholder: '当选择自定义分账关系时填写',
-  },
-];
-
-// 删除分账接收方表单字段
-export const deleteReceiverFormFields = [
-  {
-    name: 'receiverId',
-    label: '接收方账号',
-    type: 'input',
-    required: true,
-    placeholder: '请输入要删除的接收方账号',
+    placeholder: '当关系类型为自定义时必填',
     rules: [
-      { required: true, message: '请输入接收方账号' },
+      {
+        validator: (_: any, value: any) => {
+          const relationType = _.field?.relationType;
+          if (relationType === 'CUSTOM' && !value) {
+            return Promise.reject(new Error('自定义关系类型时必填'));
+          }
+          return Promise.resolve();
+        },
+      },
     ],
   },
 ];
 
-// 账单申请表单字段
+/**
+ * 分账请求表单字段配置
+ */
+export const profitShareFormFields = [
+  {
+    name: 'transactionNo',
+    label: '交易编号',
+    type: 'input' as const,
+    required: true,
+    placeholder: '请输入交易编号',
+    rules: [{ required: true, message: '请输入交易编号' }],
+  },
+];
+
+/**
+ * 分账回退表单字段配置
+ */
+export const returnFormFields = [
+  {
+    name: 'orderId',
+    label: '订单号',
+    type: 'input' as const,
+    required: true,
+    placeholder: '请输入订单号',
+    rules: [{ required: true, message: '请输入订单号' }],
+  },
+  {
+    name: 'outReturnNo',
+    label: '回退单号',
+    type: 'input' as const,
+    required: true,
+    placeholder: '请输入回退单号',
+    rules: [{ required: true, message: '请输入回退单号' }],
+  },
+  {
+    name: 'returnMchid',
+    label: '回退商户号',
+    type: 'input' as const,
+    required: true,
+    placeholder: '请输入回退商户号',
+    rules: [{ required: true, message: '请输入回退商户号' }],
+  },
+  {
+    name: 'amount',
+    label: '回退金额',
+    type: 'number' as const,
+    required: true,
+    placeholder: '请输入回退金额',
+    rules: [{ required: true, message: '请输入回退金额' }],
+  },
+  {
+    name: 'description',
+    label: '回退原因',
+    type: 'textarea' as const,
+    required: true,
+    placeholder: '请输入回退原因',
+    rules: [{ required: true, message: '请输入回退原因' }],
+  },
+];
+
+/**
+ * 分账回退查询表单字段配置
+ */
+export const returnQueryFormFields = [
+  {
+    name: 'orderId',
+    label: '订单号',
+    type: 'input' as const,
+    required: true,
+    placeholder: '请输入订单号',
+    rules: [{ required: true, message: '请输入订单号' }],
+  },
+  {
+    name: 'outReturnNo',
+    label: '回退单号',
+    type: 'input' as const,
+    required: true,
+    placeholder: '请输入回退单号',
+    rules: [{ required: true, message: '请输入回退单号' }],
+  },
+];
+
+/**
+ * 解冻资金表单字段配置
+ */
+export const unfreezeFormFields = [
+  {
+    name: 'transactionId',
+    label: '交易ID',
+    type: 'input' as const,
+    required: true,
+    placeholder: '请输入交易ID',
+    rules: [{ required: true, message: '请输入交易ID' }],
+  },
+  {
+    name: 'outOrderNo',
+    label: '商户分账单号',
+    type: 'input' as const,
+    required: true,
+    placeholder: '请输入商户分账单号',
+    rules: [{ required: true, message: '请输入商户分账单号' }],
+  },
+  {
+    name: 'description',
+    label: '解冻原因',
+    type: 'textarea' as const,
+    required: false,
+    placeholder: '请输入解冻原因',
+  },
+];
+
+/**
+ * 查询剩余金额表单字段配置
+ */
+export const remainingFormFields = [
+  {
+    name: 'transactionId',
+    label: '交易ID',
+    type: 'input' as const,
+    required: true,
+    placeholder: '请输入交易ID',
+    rules: [{ required: true, message: '请输入交易ID' }],
+  },
+];
+
+/**
+ * 删除接收方表单字段配置
+ */
+export const deleteReceiverFormFields = [
+  {
+    name: 'receiverId',
+    label: '接收方ID',
+    type: 'input' as const,
+    required: true,
+    placeholder: '请输入接收方ID',
+    rules: [{ required: true, message: '请输入接收方ID' }],
+  },
+];
+
+/**
+ * 账单表单字段配置
+ */
 export const billFormFields = [
   {
     name: 'billDate',
     label: '账单日期',
-    type: 'datePicker',
+    type: 'datePicker' as const,
     required: true,
     placeholder: '请选择账单日期',
-    rules: [
-      { required: true, message: '请选择账单日期' },
-    ],
+    rules: [{ required: true, message: '请选择账单日期' }],
   },
   {
     name: 'tarType',
     label: '压缩类型',
-    type: 'select',
+    type: 'select' as const,
     required: true,
     options: [
       { label: 'GZIP', value: 'GZIP' },
       { label: 'LZMA', value: 'LZMA' },
     ],
-    rules: [
-      { required: true, message: '请选择压缩类型' },
-    ],
+    rules: [{ required: true, message: '请选择压缩类型' }],
   },
 ];
 
-// 状态标签配置
+/**
+ * 状态标签配置
+ */
 export const statusTagConfig = {
   SUCCESS: { color: 'success', text: '成功' },
   FAILED: { color: 'error', text: '失败' },
-  PROCESSING: { color: 'processing', text: '处理中' },
-  PENDING: { color: 'warning', text: '待处理' },
+  PENDING: { color: 'processing', text: '处理中' },
+  UNKNOWN: { color: 'default', text: '未知' },
 };
 
-// 操作历史记录列配置
-export const operationResultColumns: ProColumns<any>[] = [
+/**
+ * 操作历史表格列配置
+ */
+export const operationResultColumns: ProColumns<OperationHistoryType>[] = [
   {
     title: '操作类型',
     dataIndex: 'operationType',
@@ -413,24 +437,20 @@ export const operationResultColumns: ProColumns<any>[] = [
     ),
   },
   {
+    title: '操作时间',
+    dataIndex: 'operationTime',
+    key: 'operationTime',
+    width: 180,
+    valueType: 'dateTime',
+  },
+  {
     title: '状态',
     dataIndex: 'status',
     key: 'status',
     width: 100,
     render: (_, record) => {
-      const config = statusTagConfig[record.status as keyof typeof statusTagConfig];
-      return config ? (
-        <Tag color={config.color}>{config.text}</Tag>
-      ) : (
-        <Tag>{record.status}</Tag>
-      );
+      const config = statusTagConfig[record.status as keyof typeof statusTagConfig] || statusTagConfig.UNKNOWN;
+      return <Tag color={config.color}>{config.text}</Tag>;
     },
-  },
-  {
-    title: '操作时间',
-    dataIndex: 'operationTime',
-    key: 'operationTime',
-    width: 180,
-    render: (_, record) => new Date(record.operationTime).toLocaleString(),
   },
 ];

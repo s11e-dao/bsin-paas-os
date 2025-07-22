@@ -1,5 +1,8 @@
 import type { ProColumns } from '@ant-design/pro-table';
 
+/**
+ * 分账明细数据类型
+ */
 export type RevenueShareDataType = {
   serialNo: string;
   transactionNo: string;
@@ -15,14 +18,18 @@ export type RevenueShareDataType = {
   createTime: string;
 };
 
+/**
+ * 分账明细表格列配置
+ */
 const columnsData: ProColumns<RevenueShareDataType>[] = [
-  // 配置搜索框
+  // 搜索配置
   {
     title: '交易编号',
     dataIndex: 'transactionNo',
     hideInTable: true,
     fieldProps: {
       maxLength: 32,
+      placeholder: '请输入交易编号',
     },
   },
   {
@@ -31,6 +38,7 @@ const columnsData: ProColumns<RevenueShareDataType>[] = [
     hideInTable: true,
     fieldProps: {
       maxLength: 32,
+      placeholder: '请输入租户ID',
     },
   },
   {
@@ -51,74 +59,77 @@ const columnsData: ProColumns<RevenueShareDataType>[] = [
     },
   },
 
-  // table里面的内容
+  // 表格显示列
   {
     title: '分账ID',
     width: 190,
     dataIndex: 'serialNo',
     fixed: 'left',
     hideInSearch: true,
+    ellipsis: true,
   },
   {
     title: '交易编号',
     width: 160,
     dataIndex: 'transactionNo',
     hideInSearch: true,
+    ellipsis: true,
   },
   {
     title: '租户ID',
     width: 160,
     dataIndex: 'tenantId',
     hideInSearch: true,
+    ellipsis: true,
   },
   {
     title: '交易金额',
     width: 120,
     dataIndex: 'amount',
     hideInSearch: true,
-    render: (text) => `¥${text}`,
+    render: (_, record) => `¥${record.amount?.toFixed(2) || '0.00'}`,
   },
   {
     title: '运营平台分账',
     width: 140,
     dataIndex: 'superTenantAmount',
     hideInSearch: true,
-    render: (text) => `¥${text}`,
+    render: (_, record) => `¥${record.superTenantAmount?.toFixed(2) || '0.00'}`,
   },
   {
     title: '租户平台分账',
     width: 140,
     dataIndex: 'tenantAmount',
     hideInSearch: true,
-    render: (text) => `¥${text}`,
+    render: (_, record) => `¥${record.tenantAmount?.toFixed(2) || '0.00'}`,
   },
   {
     title: '合伙人分账',
     width: 120,
     dataIndex: 'sysAgentAmount',
     hideInSearch: true,
-    render: (text) => `¥${text}`,
+    render: (_, record) => `¥${record.sysAgentAmount?.toFixed(2) || '0.00'}`,
   },
   {
     title: '消费者返利',
     width: 120,
     dataIndex: 'customerAmount',
     hideInSearch: true,
-    render: (text) => `¥${text}`,
+    render: (_, record) => `¥${record.customerAmount?.toFixed(2) || '0.00'}`,
   },
   {
     title: '分销者分账',
     width: 120,
     dataIndex: 'distributorAmount',
     hideInSearch: true,
-    render: (text) => `¥${text}`,
+    render: (_, record) => `¥${record.distributorAmount?.toFixed(2) || '0.00'}`,
   },
   {
     title: '数字积分兑换',
     width: 140,
     dataIndex: 'exchangeDigitalPointsAmount',
     hideInSearch: true,
-    render: (text) => `¥${text}`,
+    render: (_, record) => `¥${record.exchangeDigitalPointsAmount?.toFixed(2) || '0.00'}`,
   },
   {
     title: '状态',
@@ -146,6 +157,7 @@ const columnsData: ProColumns<RevenueShareDataType>[] = [
     width: 160,
     dataIndex: 'createTime',
     hideInSearch: true,
+    valueType: 'dateTime',
   },
   {
     title: '操作',
