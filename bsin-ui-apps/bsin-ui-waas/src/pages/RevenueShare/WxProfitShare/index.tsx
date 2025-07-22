@@ -55,6 +55,10 @@ import {
   receiverFormFields,
   profitShareFormFields,
   returnFormFields,
+  returnQueryFormFields,
+  unfreezeFormFields,
+  remainingFormFields,
+  deleteReceiverFormFields,
   billFormFields,
   statusTagConfig,
   operationResultColumns,
@@ -105,43 +109,47 @@ const WxProfitShare: React.FC = () => {
 
     setLoading(true);
     try {
-      const baseParams = {
-        bizRoleAppId: selectedApp.serialNo,
-        payChannelCode: 'wxPay',
-        ...params,
-      };
-
       let response;
       switch (actionKey) {
         case 'request':
-          response = await requestProfitShare(baseParams);
+          response = await requestProfitShare(params);
           break;
         case 'query':
-          response = await queryProfitShareResult(baseParams);
+          response = await queryProfitShareResult(params);
           break;
         case 'return':
-          response = await requestProfitShareReturn(baseParams);
+          response = await requestProfitShareReturn(params);
           break;
         case 'returnQuery':
-          response = await queryProfitShareReturnResult(baseParams);
+          response = await queryProfitShareReturnResult(params);
           break;
         case 'unfreeze':
-          response = await unfreezeRemainingFunds(baseParams);
+          response = await unfreezeRemainingFunds(params);
           break;
         case 'remaining':
-          response = await queryRemainingAmount(baseParams);
+          response = await queryRemainingAmount(params);
           break;
         case 'addReceiver':
-          response = await addProfitShareReceiver(baseParams);
+          response = await addProfitShareReceiver(params);
           break;
         case 'deleteReceiver':
-          response = await deleteProfitShareReceiver(baseParams);
+          response = await deleteProfitShareReceiver(params);
           break;
         case 'applyBill':
-          response = await applyProfitShareBill(baseParams);
+          // 处理日期格式
+          const billParams = {
+            ...params,
+            billDate: params.billDate ? params.billDate.format('YYYY-MM-DD') : params.billDate,
+          };
+          response = await applyProfitShareBill(billParams);
           break;
         case 'downloadBill':
-          response = await downloadProfitShareBill(baseParams);
+          // 处理日期格式
+          const downloadParams = {
+            ...params,
+            billDate: params.billDate ? params.billDate.format('YYYY-MM-DD') : params.billDate,
+          };
+          response = await downloadProfitShareBill(downloadParams);
           break;
         default:
           message.error('未知操作类型');
@@ -151,7 +159,7 @@ const WxProfitShare: React.FC = () => {
       // 记录操作历史
       const historyItem = {
         operationType: actionKey,
-        requestParams: JSON.stringify(baseParams),
+        requestParams: JSON.stringify(params),
         responseResult: JSON.stringify(response),
         status: response.code === 0 ? 'SUCCESS' : 'FAILED',
         operationTime: new Date().toISOString(),
@@ -160,6 +168,20 @@ const WxProfitShare: React.FC = () => {
 
       if (response.code === 0) {
         message.success('操作成功');
+        // 如果是查询操作，显示结果详情
+        if (['query', 'returnQuery', 'remaining'].includes(actionKey) && response.data) {
+          Modal.info({
+            title: '查询结果',
+            width: 600,
+            content: (
+              <div>
+                <pre style={{ maxHeight: 400, overflow: 'auto' }}>
+                  {JSON.stringify(response.data, null, 2)}
+                </pre>
+              </div>
+            ),
+          });
+        }
       } else {
         message.error(response.message || '操作失败');
       }
@@ -181,23 +203,41 @@ const WxProfitShare: React.FC = () => {
       case 'request':
         formFields = profitShareFormFields;
         break;
+      case 'query':
+        formFields = profitShareFormFields; // 查询也使用交易单号
+        break;
       case 'return':
         formFields = returnFormFields;
+        break;
+      case 'returnQuery':
+        formFields = returnQueryFormFields;
+        break;
+      case 'unfreeze':
+        formFields = unfreezeFormFields;
+        break;
+      case 'remaining':
+        formFields = remainingFormFields;
         break;
       case 'addReceiver':
         formFields = receiverFormFields;
         break;
+      case 'deleteReceiver':
+        formFields = deleteReceiverFormFields;
+        break;
       case 'applyBill':
+        formFields = billFormFields;
+        break;
+      case 'downloadBill':
         formFields = billFormFields;
         break;
       default:
         formFields = [
           {
-            name: 'transactionId',
-            label: '微信订单号',
+            name: 'transactionNo',
+            label: '交易单号',
             type: 'input',
             required: true,
-            placeholder: '请输入微信支付订单号',
+            placeholder: '请输入交易单号',
           },
         ];
     }
@@ -301,7 +341,15 @@ const WxProfitShare: React.FC = () => {
             search={{
               labelWidth: 120,
             }}
-            toolBarRender={() => []}
+            toolBarRender={() => [
+              <Button
+                key="refresh"
+                icon={<ReloadOutlined />}
+                onClick={() => actionRef.current?.reload()}
+              >
+                刷新
+              </Button>,
+            ]}
             request={async (params) => {
               const response = await getBizRoleAppList({
                 ...params,
