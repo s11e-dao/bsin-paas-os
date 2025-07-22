@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.MerchantPayEntryMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.MerchantPayEntry">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="merchantNo" column="merchant_no" jdbcType="VARCHAR"/>
+            <result property="storeNo" column="store_no" jdbcType="VARCHAR"/>
+            <result property="isvId" column="isv_id" jdbcType="VARCHAR"/>
+            <result property="channel" column="channel" jdbcType="VARCHAR"/>
+            <result property="requestJson" column="request_json" jdbcType="VARCHAR"/>
+            <result property="applymentId" column="applyment_id" jdbcType="VARCHAR"/>
+            <result property="businessCode" column="business_code" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="subMchid" column="sub_mchid" jdbcType="VARCHAR"/>
+            <result property="signUrl" column="sign_url" jdbcType="VARCHAR"/>
+            <result property="responseJson" column="response_json" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,tenant_id,merchant_no,
+        store_no,isv_id,channel,
+        request_json,applyment_id,business_code,
+        status,sub_mchid,sign_url,
+        response_json,del_flag,create_by,
+        create_time,update_by,update_time
+    </sql>
+
+    <select id="selectPageList" resultType="me.flyray.bsin.domain.request.MerchantDTO">
+        select *
+        from crm_merchant m left join crm_merchant_pay_entry mp on m.serial_no = mp.merchant_no
+        where m.tenant_id = #{tenantId}
+    </select>
+
+</mapper>

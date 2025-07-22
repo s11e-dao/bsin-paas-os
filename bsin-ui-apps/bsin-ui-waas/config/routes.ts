@@ -178,7 +178,7 @@ const routes = [
         path: '/pay',
         redirect: '/pay/pay-channel-interface',
       },
-      // 支付接口
+      // 支付通道
       {
         path: '/pay/pay-channel-interface',
         component: '@/pages/Pay/PayChannelInterface/index',
@@ -187,6 +187,11 @@ const routes = [
       {
         path: '/pay/pay-way',
         component: '@/pages/Pay/PayWay/index',
+      },
+      // 支付进件
+      {
+        path: '/pay/pay-entry',
+        component: '@/pages/Pay/PayEntry/index',
       },
       // ***********************分账***********************
       {

@@ -20,4 +20,6 @@ public class MerchantDTO extends Merchant {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public String  endTime;
 
+
+
 }
