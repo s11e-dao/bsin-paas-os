@@ -1,0 +1,67 @@
+[
+    {
+        "name": "mchId",
+        "desc": "微信支付商户号",
+        "type": "text",
+        "verify": "required"
+    },
+    {
+        "name": "appId",
+        "desc": "应用App ID",
+        "type": "text",
+        "verify": "required"
+    },
+    {
+        "name": "appSecret",
+        "desc": "应用AppSecret",
+        "type": "text",
+        "verify": "required",
+        "star": "1"
+    },
+    {
+        "name": "oauth2Url",
+        "desc": "oauth2地址（置空将使用官方）",
+        "type": "text"
+    },
+    {
+        "name": "key",
+        "desc": "API密钥",
+        "type": "textarea",
+        "verify": "required",
+        "star": "1"
+    },
+    {
+        "name": "apiVersion",
+        "desc": "微信支付API版本",
+        "type": "radio",
+        "values": "V2,V3",
+        "titles": "V2,V3",
+        "verify": "required"
+    },
+    {
+        "name": "apiV3Key",
+        "desc": "API V3秘钥（V3接口必填）",
+        "type": "textarea",
+        "verify": "",
+        "star": "1"
+    },
+    {
+        "name": "serialNo",
+        "desc": "序列号（V3接口必填）",
+        "type": "textarea",
+        "verify": "",
+        "star": "1"
+    },
+    {
+        "name": "cert",
+        "desc": "API证书(.p12格式)",
+        "type": "file",
+        "verify": ""
+    },
+    {
+        "name": "apiClientKey",
+        "desc": "私钥文件(.pem格式)",
+        "type": "file",
+        "verify": ""
+    }
+]

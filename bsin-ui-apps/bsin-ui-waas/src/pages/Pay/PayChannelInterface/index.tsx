@@ -34,7 +34,30 @@ import {
 import { getPayWayList } from '../PayWay/service';
 import { getSessionStorageInfo } from '../../../utils/localStorageInfo';
 
+// 导入参数配置JSON文件
+import isvAliPayParams from './pay_nterface_params/isv_interface_params_jeepay_aliPay.json';
+import isvWxPayParams from './pay_nterface_params/isv_interface_params_jeepay_wxPay.json';
+import normalAliPayParams from './pay_nterface_params/normal_merchant_interface_params_jeepay_aliPay.json';
+import normalWxPayParams from './pay_nterface_params/normal_merchant_interface_params_jeepay_wxPay.json';
+import specialAliPayParams from './pay_nterface_params/special_merchant_interface_params_jeepay_aliPay.json';
+import specialWxPayParams from './pay_nterface_params/special_merchant_interface_params_jeepay_wxPay.json';
+
 const { Meta } = Card;
+
+// 参数配置映射
+const PARAMS_CONFIG_MAP = {
+    wxPay: {
+        normal: normalWxPayParams,
+        isv: isvWxPayParams,
+        special: specialWxPayParams,
+    },
+    aliPay: {
+        normal: normalAliPayParams,
+        isv: isvAliPayParams,
+        special: specialAliPayParams,
+    },
+    // 其他支付通道可以继续添加
+};
 
 const PayChannelInterface: React.FC = () => {
     const { TextArea } = Input;
@@ -69,10 +92,43 @@ const PayChannelInterface: React.FC = () => {
 
     // 商户模式状态
     const [isNormalMerchantMode, setIsNormalMerchantMode] = useState<boolean>(true);
-    const [isIsvSubMerchantMode, setisIsvSubMerchantMode] = useState<boolean>(false);
+    const [isIsvSubMerchantMode, setIsIsvSubMerchantMode] = useState<boolean>(false);
 
     // 获取表单
     const [formRef] = Form.useForm();
+
+    /**
+     * 根据通道代码和商户模式获取参数配置
+     */
+    const getParamsConfig = (channelCode: string, merchantMode: string) => {
+        const config = PARAMS_CONFIG_MAP[channelCode as keyof typeof PARAMS_CONFIG_MAP];
+        if (!config) return '';
+        
+        const paramsConfig = config[merchantMode as keyof typeof config];
+        return paramsConfig ? JSON.stringify(paramsConfig, null, 2) : '';
+    };
+
+    /**
+     * 填充商户接口定义描述
+     */
+    const fillMerchantParams = () => {
+        const channelCode = formRef.getFieldValue('payChannelCode');
+        if (!channelCode) return;
+
+        // 填充普通商户模式参数
+        if (isNormalMerchantMode) {
+            const normalParams = getParamsConfig(channelCode, 'normal');
+            formRef.setFieldValue('normalMerchantParams', normalParams);
+        }
+
+        // 填充服务商子商户模式参数
+        if (isIsvSubMerchantMode) {
+            const isvParams = getParamsConfig(channelCode, 'isv');
+            const specialParams = getParamsConfig(channelCode, 'special');
+            formRef.setFieldValue('isvParams', isvParams);
+            formRef.setFieldValue('specialMerchantParams', specialParams);
+        }
+    };
 
     // 图片上传配置
     const uploadProps: UploadProps = {
@@ -187,9 +243,20 @@ const PayChannelInterface: React.FC = () => {
         setIconUrl('');
         setSelectedPayWays([]);
         setIsNormalMerchantMode(true);
-        setisIsvSubMerchantMode(false);
+        setIsIsvSubMerchantMode(false);
         formRef.resetFields();
+        // 设置新增时的默认值
+        formRef.setFieldsValue({
+            isNormalMerchantMode: true,
+            isIsvSubMerchantMode: false,
+            status: 1,
+        });
         setIsModalVisible(true);
+        
+        // 延迟填充默认参数配置
+        setTimeout(() => {
+            fillMerchantParams();
+        }, 200);
     };
 
     /**
@@ -204,13 +271,43 @@ const PayChannelInterface: React.FC = () => {
         const selectedWays = record.wayCode ? record.wayCode.split(',') : [];
         setSelectedPayWays(selectedWays);
         // 设置商户模式状态
-        setIsNormalMerchantMode(record.isNormalMerchanMode || false);
-        setisIsvSubMerchantMode(record.isIsvSubMerchantMode || false);
+        const isNormalMode = record.isNormalMerchantMode || false;
+        const isIsvMode = record.isIsvSubMerchantMode || false;
+        setIsNormalMerchantMode(isNormalMode);
+        setIsIsvSubMerchantMode(isIsvMode);
+        
+        // 设置表单值
         formRef.setFieldsValue({
             ...record,
             wayCode: selectedWays,
+            isNormalMerchantMode: isNormalMode,
+            isIsvSubMerchantMode: isIsvMode,
         });
         setIsModalVisible(true);
+        
+        // 延迟填充参数配置（如果编辑时没有参数配置，则填充默认值）
+        setTimeout(() => {
+            const channelCode = record.payChannelCode;
+            if (channelCode) {
+                // 如果普通商户模式支持但没有参数配置，则填充默认值
+                if (isNormalMode && !record.normalMerchantParams) {
+                    const normalParams = getParamsConfig(channelCode, 'normal');
+                    formRef.setFieldValue('normalMerchantParams', normalParams);
+                }
+                
+                // 如果服务商子商户模式支持但没有参数配置，则填充默认值
+                if (isIsvMode) {
+                    if (!record.isvParams) {
+                        const isvParams = getParamsConfig(channelCode, 'isv');
+                        formRef.setFieldValue('isvParams', isvParams);
+                    }
+                    if (!record.specialMerchantParams) {
+                        const specialParams = getParamsConfig(channelCode, 'special');
+                        formRef.setFieldValue('specialMerchantParams', specialParams);
+                    }
+                }
+            }
+        }, 200);
     };
 
     /**
@@ -274,6 +371,16 @@ const PayChannelInterface: React.FC = () => {
     };
 
     /**
+     * 通道代码变更
+     */
+    const handleChannelCodeChange = (value: string) => {
+        // 延迟填充参数，确保状态已更新
+        setTimeout(() => {
+            fillMerchantParams();
+        }, 100);
+    };
+
+    /**
      * 普通商户模式变更
      */
     const handleNormalMerchantModeChange = (value: boolean) => {
@@ -281,6 +388,11 @@ const PayChannelInterface: React.FC = () => {
         if (!value) {
             // 如果不支持普通商户模式，清空相关参数
             formRef.setFieldValue('normalMerchantParams', '');
+        } else {
+            // 如果支持普通商户模式，填充参数
+            setTimeout(() => {
+                fillMerchantParams();
+            }, 100);
         }
     };
 
@@ -291,7 +403,13 @@ const PayChannelInterface: React.FC = () => {
         setIsIsvSubMerchantMode(value);
         if (!value) {
             // 如果不支持服务商子商户模式，清空相关参数
-            formRef.setFieldValue('serviceSubMerchantParams', '');
+            formRef.setFieldValue('isvParams', '');
+            formRef.setFieldValue('specialMerchantParams', '');
+        } else {
+            // 如果支持服务商子商户模式，填充参数
+            setTimeout(() => {
+                fillMerchantParams();
+            }, 100);
         }
     };
 
@@ -336,6 +454,17 @@ const PayChannelInterface: React.FC = () => {
         setIsNormalMerchantMode(true);
         setIsIsvSubMerchantMode(false);
         formRef.resetFields();
+        // 重置为新增时的默认值
+        formRef.setFieldsValue({
+            isNormalMerchantMode: true,
+            isIsvSubMerchantMode: false,
+            status: 1,
+        });
+        
+        // 清空参数配置
+        formRef.setFieldValue('normalMerchantParams', '');
+        formRef.setFieldValue('isvParams', '');
+        formRef.setFieldValue('specialMerchantParams', '');
     };
 
     return (
@@ -526,6 +655,7 @@ const PayChannelInterface: React.FC = () => {
                         <Select
                             placeholder="请选择通道代码"
                             disabled={isEdit}
+                            onChange={handleChannelCodeChange}
                         >
                             <Option value="wxPay">微信支付</Option>
                             <Option value="aliPay">支付宝支付</Option>
@@ -575,11 +705,13 @@ const PayChannelInterface: React.FC = () => {
                             <Col span={12}>
                                 <Form.Item
                                     label="普通商户模式"
-                                    name="isNormalMerchanMode"
-                                    initialValue={true}
+                                    name="isNormalMerchantMode"
                                     tooltip="是否支持普通商户模式"
                                 >
-                                    <Select onChange={handleNormalMerchantModeChange}>
+                                    <Select 
+                                        onChange={handleNormalMerchantModeChange}
+                                        value={isNormalMerchantMode}
+                                    >
                                         <Option value={true}>支持</Option>
                                         <Option value={false}>不支持</Option>
                                     </Select>
@@ -589,10 +721,12 @@ const PayChannelInterface: React.FC = () => {
                                 <Form.Item
                                     label="服务商子商户模式"
                                     name="isIsvSubMerchantMode"
-                                    initialValue={false}
                                     tooltip="是否支持服务商子商户模式"
                                 >
-                                    <Select onChange={handleServiceSubMerchantModeChange}>
+                                    <Select 
+                                        onChange={handleServiceSubMerchantModeChange}
+                                        value={isIsvSubMerchantMode}
+                                    >
                                         <Option value={true}>支持</Option>
                                         <Option value={false}>不支持</Option>
                                     </Select>
@@ -700,10 +834,9 @@ const PayChannelInterface: React.FC = () => {
                                 name="normalMerchantParams"
                                 labelCol={{ span: 24 }}
                                 wrapperCol={{ span: 24 }}
-                                initialValue={'[{"name":"sandbox","desc":"环境配置","type":"radio","verify":"","values":"2,1,0","titles":"本地环境,沙箱环境,生产环境","verify":"required"},{"name":"appId","desc":"应用App ID","type":"text","verify":"required"},{"name":"privateKey", "desc":"应用私钥", "type": "textarea","verify":"required","star":"1"},{"name":"alipayPublicKey", "desc":"支付宝公钥(不使用证书时必填)", "type": "textarea","star":"1"},{"name":"signType","desc":"接口签名方式(推荐使用RSA2)","type":"radio","verify":"","values":"RSA,RSA2","titles":"RSA,RSA2","verify":"required"},{"name":"useCert","desc":"公钥证书","type":"radio","verify":"","values":"1,0","titles":"使用证书（请使用RSA2私钥）,不使用证书"},{"name":"appPublicCert","desc":"应用公钥证书（.crt格式）","type":"file","verify":""},{"name":"alipayPublicCert","desc":"支付宝公钥证书（.crt格式）","type":"file","verify":""},{"name":"alipayRootCert","desc":"支付宝根证书（.crt格式）","type":"file","verify":""}]'}
                             >
                                 <TextArea
-                                    rows={3}
+                                    rows={10}
                                     placeholder="请输入普通商户模式的参数配置（JSON格式）"
                                 />
                             </Form.Item>
@@ -712,13 +845,12 @@ const PayChannelInterface: React.FC = () => {
                         {isIsvSubMerchantMode && (
                             <Form.Item
                                 label="服务商接口配置定义描述"
-                                name="serviceSubMerchantParams"
+                                name="isvParams"
                                 labelCol={{ span: 24 }}
                                 wrapperCol={{ span: 24 }}
-                                initialValue={'[{"name":"sandbox","desc":"环境配置","type":"radio","verify":"","values":"1,0","titles":"沙箱环境,生产环境","verify":"required"},{"name":"appId","desc":"应用App ID","type":"text","verify":"required"},{"name":"privateKey", "desc":"应用私钥", "type": "textarea","verify":"required","star":"1"},{"name":"alipayPublicKey", "desc":"支付宝公钥(不使用证书时必填)", "type": "textarea","star":"1"},{"name":"signType","desc":"接口签名方式(推荐使用RSA2)","type":"radio","verify":"","values":"RSA,RSA2","titles":"RSA,RSA2","verify":"required"},{"name":"useCert","desc":"公钥证书","type":"radio","verify":"","values":"1,0","titles":"使用证书（请使用RSA2私钥）,不使用证书"},{"name":"appPublicCert","desc":"应用公钥证书（.crt格式）","type":"file","verify":""},{"name":"alipayPublicCert","desc":"支付宝公钥证书（.crt格式）","type":"file","verify":""},{"name":"alipayRootCert","desc":"支付宝根证书（.crt格式）","type":"file","verify":""}]'}
                             >
                                 <TextArea
-                                    rows={3}
+                                    rows={10}
                                     placeholder="请输入服务商接口配置定义描述（JSON格式）"
                                 />
                             </Form.Item>
@@ -728,10 +860,9 @@ const PayChannelInterface: React.FC = () => {
                             name="specialMerchantParams"
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
-                            initialValue={'[{"name":"smid","desc":"二级商户smid","type":"text","verify":""}]'}
                         >
                             <TextArea
-                                rows={3}
+                                rows={10}
                                 placeholder="请输入特约商户接口配置定义描述（JSON格式）"
                             />
                         </Form.Item>)}
@@ -827,7 +958,7 @@ const PayChannelInterface: React.FC = () => {
                         {viewRecord.tenantId || '-'}
                     </Descriptions.Item>
                     <Descriptions.Item label="普通商户模式" span={1}>
-                        {viewRecord.isNormalMerchanMode ? '支持' : '不支持'}
+                        {viewRecord.isNormalMerchantMode ? '支持' : '不支持'}
                     </Descriptions.Item>
                     <Descriptions.Item label="服务商子商户模式" span={1}>
                         {viewRecord.isIsvSubMerchantMode ? '支持' : '不支持'}

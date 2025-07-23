@@ -1,0 +1,141 @@
+[
+    {
+        "desc": "是否启用普通商户模式",
+        "name": "isNormalMerchantMode",
+        "type": "radio",
+        "titles": "启用,停用",
+        "values": "1,0",
+        "verify": "required"
+    },
+    {
+        "desc": "是否启用服务商子商户模式",
+        "name": "isIsvSubMerchantMode",
+        "type": "radio",
+        "titles": "启用,停用",
+        "values": "1,0",
+        "verify": "required"
+    },
+    {
+        "desc": "品牌积分商户号",
+        "name": "mchId",
+        "type": "text",
+        "verify": "required",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "品牌积分应用ID",
+        "name": "appId",
+        "type": "text",
+        "verify": "required",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "品牌积分应用密钥",
+        "name": "appSecret",
+        "type": "text",
+        "verify": "required",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "品牌积分API密钥",
+        "name": "apiKey",
+        "type": "textarea",
+        "verify": "required",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "品牌积分网关地址",
+        "name": "gateway",
+        "type": "text",
+        "verify": "required",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "回调通知地址",
+        "name": "notifyUrl",
+        "type": "text",
+        "verify": "required",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "品牌积分版本",
+        "name": "version",
+        "type": "radio",
+        "titles": "V1,V2",
+        "values": "V1,V2",
+        "verify": "required",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "加密方式",
+        "name": "signType",
+        "type": "radio",
+        "titles": "MD5,SHA256",
+        "values": "MD5,SHA256",
+        "verify": "required",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "服务商商户号",
+        "name": "serviceMchId",
+        "type": "text",
+        "verify": "required",
+        "group": "isvParams"
+    },
+    {
+        "desc": "子商户号",
+        "name": "subMchId",
+        "type": "text",
+        "verify": "required",
+        "group": "isvParams"
+    },
+    {
+        "desc": "服务商应用ID",
+        "name": "serviceAppId",
+        "type": "text",
+        "verify": "required",
+        "group": "isvParams"
+    },
+    {
+        "desc": "服务商API密钥",
+        "name": "serviceApiKey",
+        "type": "textarea",
+        "verify": "required",
+        "group": "isvParams"
+    },
+    {
+        "desc": "子商户回调地址",
+        "name": "subNotifyUrl",
+        "type": "text",
+        "verify": "required",
+        "group": "isvParams"
+    },
+    {
+        "desc": "特约商户号",
+        "name": "specialMchId",
+        "type": "text",
+        "verify": "required",
+        "group": "specialMerchantParams"
+    },
+    {
+        "desc": "特约商户应用ID",
+        "name": "specialAppId",
+        "type": "text",
+        "verify": "required",
+        "group": "specialMerchantParams"
+    },
+    {
+        "desc": "特约商户API密钥",
+        "name": "specialApiKey",
+        "type": "textarea",
+        "verify": "required",
+        "group": "specialMerchantParams"
+    },
+    {
+        "desc": "特约商户回调地址",
+        "name": "specialNotifyUrl",
+        "type": "text",
+        "verify": "required",
+        "group": "specialMerchantParams"
+    }
+] 

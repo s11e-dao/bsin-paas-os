@@ -314,8 +314,8 @@ const WxProfitShare: React.FC = () => {
               <Descriptions.Item label="通道代码">{channelConfig.payChannelCode}</Descriptions.Item>
               <Descriptions.Item label="费率">{channelConfig.feeRatio}%</Descriptions.Item>
               <Descriptions.Item label="普通商户模式">
-                <Tag color={channelConfig.isNormalMerchanMode ? 'success' : 'default'}>
-                  {channelConfig.isNormalMerchanMode ? '支持' : '不支持'}
+                <Tag color={channelConfig.isNormalMerchantMode ? 'success' : 'default'}>
+                  {channelConfig.isNormalMerchantMode ? '支持' : '不支持'}
                 </Tag>
               </Descriptions.Item>
               <Descriptions.Item label="服务商子商户模式">

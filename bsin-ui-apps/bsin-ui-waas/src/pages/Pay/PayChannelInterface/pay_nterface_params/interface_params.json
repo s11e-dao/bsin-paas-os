@@ -1,0 +1,177 @@
+[
+    {
+        "desc": "是否启用普通商户模式",
+        "name": "isNormalMerchantMode",
+        "type": "radio",
+        "titles": "启用,停用",
+        "values": "1,0",
+        "verify": "required"
+    },
+    {
+        "desc": "是否启用服务商子商户模式",
+        "name": "isIsvSubMerchantMode",
+        "type": "radio",
+        "titles": "启用,停用",
+        "values": "1,0",
+        "verify": "required"
+    },
+    {
+        "desc": "微信支付商户号",
+        "name": "mchId",
+        "type": "text",
+        "verify": "required",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "应用App ID",
+        "name": "appId",
+        "type": "text",
+        "verify": "required",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "应用AppSecret",
+        "name": "appSecret",
+        "star": "1",
+        "type": "text",
+        "verify": "required",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "oauth2地址（置空将使用官方）",
+        "name": "oauth2Url",
+        "type": "text",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "微信支付API版本",
+        "name": "apiVersion",
+        "type": "radio",
+        "titles": "V2,V3",
+        "values": "V2,V3",
+        "verify": "required",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "APIv2密钥",
+        "name": "key",
+        "star": "1",
+        "type": "textarea",
+        "verify": "required",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "APIv3密钥（V3接口必填）",
+        "name": "apiV3Key",
+        "star": "1",
+        "type": "textarea",
+        "verify": "",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "序列号（V3接口必填）",
+        "name": "serialNo",
+        "star": "1",
+        "type": "textarea",
+        "verify": "",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "API证书(apiclient_cert.p12)",
+        "name": "cert",
+        "type": "file",
+        "verify": "",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "证书文件(apiclient_cert.pem) ",
+        "name": "apiClientCert",
+        "type": "file",
+        "verify": "",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "私钥文件(apiclient_key.pem)",
+        "name": "apiClientKey",
+        "type": "file",
+        "verify": "",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "回调通知地址",
+        "name": "notifyUrl",
+        "type": "text",
+        "verify": "required",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "密钥路径",
+        "name": "keyPath",
+        "type": "text",
+        "verify": "",
+        "group": "normalMerchantParams"
+    },
+    {
+        "desc": "服务商商户号",
+        "name": "serviceMchId",
+        "type": "text",
+        "verify": "required",
+        "group": "isvParams"
+    },
+    {
+        "desc": "子商户号",
+        "name": "subMchId",
+        "type": "text",
+        "verify": "required",
+        "group": "isvParams"
+    },
+    {
+        "desc": "服务商App ID",
+        "name": "serviceAppId",
+        "type": "text",
+        "verify": "required",
+        "group": "isvParams"
+    },
+    {
+        "desc": "服务商API密钥",
+        "name": "serviceKey",
+        "type": "textarea",
+        "verify": "required",
+        "group": "isvParams"
+    },
+    {
+        "desc": "子商户回调地址",
+        "name": "subNotifyUrl",
+        "type": "text",
+        "verify": "required",
+        "group": "isvParams"
+    },
+    {
+        "desc": "特约商户号",
+        "name": "specialMchId",
+        "type": "text",
+        "verify": "required",
+        "group": "specialMerchantParams"
+    },
+    {
+        "desc": "特约商户App ID",
+        "name": "specialAppId",
+        "type": "text",
+        "verify": "required",
+        "group": "specialMerchantParams"
+    },
+    {
+        "desc": "特约商户密钥",
+        "name": "specialKey",
+        "type": "textarea",
+        "verify": "required",
+        "group": "specialMerchantParams"
+    },
+    {
+        "desc": "特约商户回调地址",
+        "name": "specialNotifyUrl",
+        "type": "text",
+        "verify": "required",
+        "group": "specialMerchantParams"
+    }
+]

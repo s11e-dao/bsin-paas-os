@@ -7,7 +7,7 @@ export type columnsDataType = {
   wayCode: string;
   icon: string;
   status: number;
-  isNormalMerchanMode: boolean;
+  isNormalMerchantMode: boolean;
   isIsvSubMerchantMode: boolean;
   normalMerchantParams: string;
   specialMerchantParams: string;

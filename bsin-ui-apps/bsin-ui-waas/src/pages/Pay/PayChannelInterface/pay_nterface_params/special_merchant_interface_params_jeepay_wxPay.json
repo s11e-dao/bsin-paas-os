@@ -1,0 +1,14 @@
+[
+    {
+        "name": "subMchId",
+        "desc": "子商户ID",
+        "type": "text",
+        "verify": "required"
+    },
+    {
+        "name": "subMchAppId",
+        "desc": "子账户appID(线上支付必填)",
+        "type": "text",
+        "verify": ""
+    }
+]

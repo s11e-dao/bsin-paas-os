@@ -1,0 +1,32 @@
+{
+    "isNormalMerchantMode": "1",
+    "isIsvSubMerchantMode": "0",
+    "normalMerchantParams": {
+        "mchId": "1671285118",
+        "appId": "wx029e37aae5feec1b",
+        "appSecret": "5a6b75a5f2a3be85b77dc4cbd5bbae96",
+        "oauth2Url": "",
+        "apiVersion": "V2",
+        "key": "Ysq20240228markxiong19850503sq08",
+        "apiV3Key": "",
+        "serialNo": "",
+        "cert": "",
+        "apiClientCert": "",
+        "apiClientKey": "",
+        "notifyUrl": "https://gateway.17gaokao.com.cn/callback/payCallback/wxpay/1671285118",
+        "keyPath": ""
+    },
+    "isvParams": {
+        "serviceMchId": "",
+        "subMchId": "",
+        "serviceAppId": "",
+        "serviceKey": "",
+        "subNotifyUrl": ""
+    },
+    "specialMerchantParams": {
+        "specialMchId": "",
+        "specialAppId": "",
+        "specialKey": "",
+        "specialNotifyUrl": ""
+    }
+}
