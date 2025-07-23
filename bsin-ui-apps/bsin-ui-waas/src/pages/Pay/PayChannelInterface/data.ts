@@ -4,15 +4,14 @@ export type columnsDataType = {
   payChannelCode: string;
   payChannelName: string;
   configPageType: number;
-  params: string;
   wayCode: string;
   icon: string;
   status: number;
   isNormalMerchanMode: boolean;
-  isServiceSubMerchantMode: boolean;
+  isIsvSubMerchantMode: boolean;
   normalMerchantParams: string;
   specialMerchantParams: string;
-  serviceSubMerchantParams: string;
+  isvParams: string;
   remark: string;
   createTime: string;
   updateTime: string;
@@ -80,12 +79,28 @@ const columnsData: ProColumns<columnsDataType>[] = [
     tooltip: '支付参数配置页面的渲染方式',
   },
   {
-    title: '支付参数',
+    title: '普通商户接口定义描述',
     width: 200,
-    dataIndex: 'params',
+    dataIndex: 'normalMerchantParams',
     hideInSearch: true,
     ellipsis: true,
-    tooltip: '支付通道的参数配置定义，JSON格式',
+    tooltip: '普通商户接口定义描述',
+  },
+  {
+    title: '服务商定义描述',
+    width: 200,
+    dataIndex: 'isvParams',
+    hideInSearch: true,
+    ellipsis: true,
+    tooltip: '服务商接口定义描述',
+  },
+  {
+    title: '特约商户接口定义描述',
+    width: 200,
+    dataIndex: 'specialMerchantParams',
+    hideInSearch: true,
+    ellipsis: true,
+    tooltip: '特约商户接口定义描述',
   },
   {
     title: '支付方式',

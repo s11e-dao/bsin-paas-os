@@ -85,7 +85,7 @@ payChannelCode:"brandsPoint"
         "remark": null,
         "updateTime": "2025-07-20 20:51:53.051",
         "bizRoleAppId": "123",
-        "params": "{\"isNormalMerchanMode\":\"1\",\"isServiceSubMerchantMode\":\"1\",\"normalMerchantParams\":{\"mchId\":\"萨达\",\"appId\":\"发大水发\",\"appSecret\":\"防守打法\",\"oauth2Url\":\"防守打法\",\"apiVersion\":\"V2\",\"key\":\"分身\",\"apiV3Key\":\" 发顺丰\",\"notifyUrl\":\"DSADA \",\"keyPath\":\"DSAD \"},\"serviceSubMerchantParams\":{\"serviceMchId\":\"发多少\",\"subMchId\":\"分身\",\"serviceAppId\":\"的发撒\",\"serviceKey\":\"防守打法\",\"subNotifyUrl\":\"防守打法\"}}",
+        "params": "{\"isNormalMerchanMode\":\"1\",\"isIsvSubMerchantMode\":\"1\",\"normalMerchantParams\":{\"mchId\":\"萨达\",\"appId\":\"发大水发\",\"appSecret\":\"防守打法\",\"oauth2Url\":\"防守打法\",\"apiVersion\":\"V2\",\"key\":\"分身\",\"apiV3Key\":\" 发顺丰\",\"notifyUrl\":\"DSADA \",\"keyPath\":\"DSAD \"},\"serviceSubMerchantParams\":{\"serviceMchId\":\"发多少\",\"subMchId\":\"分身\",\"serviceAppId\":\"的发撒\",\"serviceKey\":\"防守打法\",\"subNotifyUrl\":\"防守打法\"}}",
         "serialNo": "1946800877729878016",
         "createBy": null,
         "normalMerchantParams": "{\"mchId\":\"发多少\",\"appId\":\"供电公司\",\"appSecret\":\"鬼地方个\",\"oauth2Url\":\"鬼地方个\",\"apiVersion\":\"V3\",\"key\":\"给对方\",\"apiV3Key\":\"给对方\",\"notifyUrl\":\"给对方\",\"keyPath\":\"官ga\"}",
@@ -94,7 +94,7 @@ payChannelCode:"brandsPoint"
         "updateBy": null,
         "tenantId": "6345824413764157440",
         "feeRatio": 0.000000,
-        "isServiceSubMerchantMode": true,
+        "isIsvSubMerchantMode": true,
         "status": "0"
     },
     "message": "操作成功",

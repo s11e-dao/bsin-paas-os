@@ -319,8 +319,8 @@ const WxProfitShare: React.FC = () => {
                 </Tag>
               </Descriptions.Item>
               <Descriptions.Item label="服务商子商户模式">
-                <Tag color={channelConfig.isServiceSubMerchantMode ? 'success' : 'default'}>
-                  {channelConfig.isServiceSubMerchantMode ? '支持' : '不支持'}
+                <Tag color={channelConfig.isIsvSubMerchantMode ? 'success' : 'default'}>
+                  {channelConfig.isIsvSubMerchantMode ? '支持' : '不支持'}
                 </Tag>
               </Descriptions.Item>
             </Descriptions>
