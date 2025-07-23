@@ -3,8 +3,8 @@ let appAgentPath = process.env.contextPath_appAgent;
 
 // 列表数据请求
 export const getCopilotList = (params) => {
-  return request(appAgentPath + '/copilot/getList', {
-    serviceName: 'CopilotService',
+  return request(appAgentPath + '/aiAgent/getList', {
+    serviceName: 'AgentService',
     methodName: 'getList',
     version: '1.0',
     bizParams: {
@@ -15,8 +15,8 @@ export const getCopilotList = (params) => {
 
 // 列表数据请求
 export const getCopilotPageList = (params) => {
-  return request(appAgentPath + '/copilot/getPageList', {
-    serviceName: 'CopilotService',
+  return request(appAgentPath + '/aiAgent/getPageList', {
+    serviceName: 'AgentService',
     methodName: 'getPageList',
     version: '1.0',
     bizParams: {
@@ -27,8 +27,8 @@ export const getCopilotPageList = (params) => {
 
 // 删除操作
 export const delCopilot = (params) => {
-  return request(appAgentPath + '/copilot/delete', {
-    serviceName: 'CopilotService',
+  return request(appAgentPath + '/aiAgent/delete', {
+    serviceName: 'AgentService',
     methodName: 'delete',
     version: '1.0',
     bizParams: {
@@ -39,8 +39,8 @@ export const delCopilot = (params) => {
 
 //添加操作
 export const addCopilot = (params) => {
-  return request(appAgentPath + '/copilot/add', {
-    serviceName: 'CopilotService',
+  return request(appAgentPath + '/aiAgent/add', {
+    serviceName: 'AgentService',
     methodName: 'add',
     version: '1.0',
     bizParams: {
@@ -51,8 +51,8 @@ export const addCopilot = (params) => {
 
 //详情
 export const getCopilotDetail = (params) => {
-  return request(appAgentPath + '/copilot/getDetail', {
-    serviceName: 'CopilotService',
+  return request(appAgentPath + '/aiAgent/getDetail', {
+    serviceName: 'AgentService',
     methodName: 'getDetail',
     version: '1.0',
     bizParams: {
@@ -63,8 +63,8 @@ export const getCopilotDetail = (params) => {
 
 //编辑操作
 export const editCopilot = (params) => {
-  return request(appAgentPath + '/copilot/edit', {
-    serviceName: 'CopilotService',
+  return request(appAgentPath + '/aiAgent/edit', {
+    serviceName: 'AgentService',
     methodName: 'edit',
     version: '1.0',
     bizParams: {
@@ -75,8 +75,8 @@ export const editCopilot = (params) => {
 
 //设置为默认copilot
 export const setDefaultCopilot = (params) => {
-  return request(appAgentPath + '/copilot/setDefaultCopilot', {
-    serviceName: 'CopilotService',
+  return request(appAgentPath + '/aiAgent/setDefaultCopilot', {
+    serviceName: 'AgentService',
     methodName: 'setDefaultCopilot',
     version: '1.0',
     bizParams: {
@@ -87,9 +87,9 @@ export const setDefaultCopilot = (params) => {
 
 //获取默认copilot
 export const getAppAgent = (params) => {
-  return request(appAgentPath + '/copilot/getAppAgent', {
-    serviceName: 'CopilotService',
-    methodName: 'getAppAgent',
+  return request(appAgentPath + '/aiAgent/getSysAppAgent', {
+    serviceName: 'AgentService',
+    methodName: 'getSysAppAgent',
     version: '1.0',
     bizParams: {
       ...params,
@@ -100,8 +100,8 @@ export const getAppAgent = (params) => {
 
 //和copilot对话
 export const chatWithCopilot = (params) => {
-  return request(appAgentPath + '/copilot/chat', {
-    serviceName: 'CopilotService',
+  return request(appAgentPath + '/aiAgent/chat', {
+    serviceName: 'AgentService',
     methodName: 'chat',
     version: '1.0',
     bizParams: {
@@ -121,11 +121,12 @@ export const generateImage = (params) => {
     },
   })
 }
+
 // 列表数据请求
 export const getChatHistoryList = (params) => {
-  return request(appAgentPath + '/chat/getChatHistoryList', {
-    serviceName: 'ChatService',
-    methodName: 'getChatHistoryList',
+  return request(appAgentPath + '/conversationMessage/getList', {
+    serviceName: 'AgentChatService',
+    methodName: 'getList',
     version: '1.0',
     bizParams: {
       ...params,
