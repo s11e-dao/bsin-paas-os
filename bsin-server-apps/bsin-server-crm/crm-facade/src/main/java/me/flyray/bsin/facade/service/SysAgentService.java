@@ -18,7 +18,7 @@ public interface SysAgentService {
     public Map<String, Object> login(Map<String, Object> requestMap);
 
     /**
-     * 开通合伙人
+     * C端开通合伙人
      */
     public SysAgent openSysAgent(Map<String, Object> requestMap);
 

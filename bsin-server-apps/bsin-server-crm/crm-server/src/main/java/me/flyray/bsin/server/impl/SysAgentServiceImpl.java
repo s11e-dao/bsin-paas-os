@@ -134,8 +134,8 @@ public class SysAgentServiceImpl implements SysAgentService {
   }
 
   /**
-   * 开通合伙人
-   * 开通个人合伙人
+   * 开通合伙人： 开卡或申请成为会员之后才能成为合伙人角色
+   * 开通个人合伙人： 推广员（推广商家）和分销员（分销商品）的区别
    * */
   @ApiDoc(desc = "openSysAgent")
   @ShenyuDubboClient("/openSysAgent")
@@ -152,22 +152,8 @@ public class SysAgentServiceImpl implements SysAgentService {
 
     String customerNo = loginUser.getCustomerNo();
 
-    String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    // 根据会员模型查询客户是否是会员，会员模型决定商户号是多少或是店铺号是多少
-    if (!ObjectUtils.isEmpty(merchantNo)) {
-      String storeNo = MapUtils.getString(requestMap, "storeNo");
-      // 根据商户号查询会员配置信息表的会员模型
-      LambdaQueryWrapper<MerchantConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
-      memberConfigWrapper.eq(MerchantConfig::getMerchantNo, merchantNo);
-      memberConfigWrapper.eq(MerchantConfig::getTenantId, loginUser.getTenantId());
-      memberConfigWrapper.last("limit 1");
-      MerchantConfig memberConfig = merchantConfigMapper.selectOne(memberConfigWrapper);
-      if (TenantMemberModel.UNDER_TENANT.getCode().equals(memberConfig.getMemberModel())) {
-        merchantNo = LoginInfoContextHelper.getTenantMerchantNo();
-      }
-    }else {
-      merchantNo = LoginInfoContextHelper.getTenantMerchantNo();
-    }
+    // 判断用户是否成为了平台会员，平台直属商户，会员都属于品牌商户和门店，平台会员挂给直属商户
+    String merchantNo = LoginInfoContextHelper.getTenantMerchantNo();
 
     if (merchantNo == null) {
       throw new BusinessException(MERCHANT_NO_IS_NULL);

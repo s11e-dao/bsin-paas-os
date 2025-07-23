@@ -66,6 +66,9 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
     @ShenyuDubboClient("/add")
     @Override
     public DisTeamRelation add(Map<String, Object> requestMap) {
+
+        // TODO 根据分销模型确定团队关系
+
         // 生成crm_sys_agent 数据后调用,requestMap ->{"sysAgentNo": 成为分销后的serial_no, "tenantId":租户ID}
         DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
         String customerNo = MapUtils.getString(requestMap, "customerNo");

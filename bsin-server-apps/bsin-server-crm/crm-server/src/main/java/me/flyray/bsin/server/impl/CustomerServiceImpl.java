@@ -111,9 +111,6 @@ public class CustomerServiceImpl implements CustomerService {
   public Map<String, Object> login(Map<String, Object> requestMap) {
     CustomerBase customerBaseReq = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
     CustomerBase customerInfo = customerBiz.login(customerBaseReq);
-    // 非平台直属商户会员模型登录需要  merchantNo 字段
-    String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    String tenantId = MapUtils.getString(requestMap, "tenantId");
     LoginUser loginUser = new LoginUser();
     loginUser.setTenantId(customerInfo.getTenantId());
     loginUser.setUsername(customerInfo.getUsername());
@@ -122,12 +119,7 @@ public class CustomerServiceImpl implements CustomerService {
     loginUser.setCredential(customerInfo.getCredential());
     loginUser.setBizRoleType(BizRoleType.CUSTOMER.getCode());
     loginUser.setBizRoleTypeNo(customerInfo.getCustomerNo());
-    // 根据商户号查询会员配置信息表的会员模型
-    LambdaQueryWrapper<MerchantConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
-    memberConfigWrapper.eq(MerchantConfig::getTenantId, tenantId);
-    memberConfigWrapper.last("limit 1");
-    MerchantConfig merchantConfig = merchantConfigMapper.selectOne(memberConfigWrapper);
-    loginUser.setMemberModel(merchantConfig.getMemberModel());
+
     // 查询租户的默认直属商户号
     Merchant merchant =
         merchantMapper.selectOne(
@@ -135,9 +127,6 @@ public class CustomerServiceImpl implements CustomerService {
                 .eq(Merchant::getTenantId, customerInfo.getTenantId())
                 .eq(Merchant::getType, CustomerType.UNDER_TENANT_MEMBER.getCode()));
     loginUser.setTenantMerchantNo(merchant.getSerialNo());
-    if (TenantMemberModel.UNDER_MERCHANT.getCode().equals(merchantConfig.getMemberModel()) || TenantMemberModel.UNDER_STORE.getCode().equals(merchantConfig.getMemberModel())) {
-      loginUser.setMerchantNo(merchantNo);
-    }
 
     // 查询会员信息
     Member member =
@@ -187,7 +176,7 @@ public class CustomerServiceImpl implements CustomerService {
       }
     }
     String customerNo = loginOrinUser.getCustomerNo();
-    // 非平台直属商户会员模型登录需要  merchantNo 字段
+    // 商户单独一个应用登录需要 merchantNo 字段
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
 
     String phone = null;

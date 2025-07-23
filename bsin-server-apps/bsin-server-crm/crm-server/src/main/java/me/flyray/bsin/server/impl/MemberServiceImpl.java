@@ -59,8 +59,7 @@ public class MemberServiceImpl implements MemberService {
     private MerchantConfigMapper merchantConfigMapper;
 
     /**
-     * 开通会员，创建会员购买订单后调用
-     *
+     * 开通会员，创建会员购买订单后调用，也可以直接调用（付费和非付费）
      * @param requestMap 包含会员信息的请求映射
      * @return 会员对象
      * @throws BusinessException 如果客户编号为空或客户信息不存在，则抛出业务异常
