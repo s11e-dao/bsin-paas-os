@@ -66,6 +66,7 @@ public class MerchantServiceImpl implements MerchantService {
   @Autowired private CustomerIdentityMapper customerIdentityMapper;
   @Autowired public MerchantSubscribeJournalMapper merchantSubscribeJournalMapper;
   @Autowired private MemberMapper memberMapper;
+  @Autowired private SysAgentMapper sysAgentMapper;
   @DubboReference(version = "${dubbo.provider.version}")
   private UserService userService;
   @Autowired
@@ -82,6 +83,7 @@ public class MerchantServiceImpl implements MerchantService {
   @Transactional
   public void register(Map<String, Object> requestMap) {
     Merchant merchant = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
+    // sys_agent对应的编码 是哪个地推邀请
     String mpVerifyCode = MapUtils.getString(requestMap, "verifyCode");
     String username = MapUtils.getString(requestMap, "username");
 
@@ -118,9 +120,20 @@ public class MerchantServiceImpl implements MerchantService {
       merchant.setAuthenticationStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
       merchant.setStatus(MerchantStatus.TOBE_CERTIFIED.getCode());
     }
+
+    // 判断邀请码是否有效
+    if (StringUtils.isNotEmpty(mpVerifyCode)){
+      SysAgent sysAgent = sysAgentMapper.selectById(mpVerifyCode);
+      if(sysAgent != null){
+        merchant.setSysAgentNo(mpVerifyCode);
+      }
+    }
+
     if (merchantMapper.insert(merchant) == 0) {
       throw new BusinessException(ResponseCode.DATA_BASE_UPDATE_FAILED);
     }
+
+
 
   }
 
