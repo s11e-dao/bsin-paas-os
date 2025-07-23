@@ -29,6 +29,11 @@ public class MerchantAuth implements Serializable {
     private String tenantId;
 
     /**
+     * 商户号
+     */
+    private String merchantNo;
+
+    /**
      * 应用ID: 商户认证信息对应的业务应用ID
      */
     private String bizRoleAppId;

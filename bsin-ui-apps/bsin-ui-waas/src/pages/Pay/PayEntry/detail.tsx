@@ -28,7 +28,13 @@ const { Option } = Select;
 const { TextArea } = Input;
 const { Dragger } = Upload;
 
-const MerchantApplicationForm = ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord: any, setIsLoadMerchantAuditDetail: (isLoadMerchantAuditDetail: boolean) => void }) => {
+import {
+  getMerchantAuthDetail,
+  payEntryApply,
+} from './service';
+
+export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord: any, setIsLoadMerchantAuditDetail: (isLoadMerchantAuditDetail: boolean) => void }) => {
+
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -36,7 +42,7 @@ const MerchantApplicationForm = ({ currentRecord, setIsLoadMerchantAuditDetail }
   const [previewImage, setPreviewImage] = useState('');
   const [fileList, setFileList] = useState({
     businessLicenseImg: [],
-    legalPersonIdFront: [],
+    legalPersonIdFront: [], 
     legalPersonIdBack: [],
     bankAccountImg: [],
     storeImg: []
@@ -598,8 +604,5 @@ const MerchantApplicationForm = ({ currentRecord, setIsLoadMerchantAuditDetail }
       </Card>
     </>
   );
-};
 
-export default function MerchantAuditDetail({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord: any, setIsLoadMerchantAuditDetail: (isLoadMerchantAuditDetail: boolean) => void }) {
-  return <MerchantApplicationForm currentRecord={currentRecord} setIsLoadMerchantAuditDetail={setIsLoadMerchantAuditDetail} />;
 }

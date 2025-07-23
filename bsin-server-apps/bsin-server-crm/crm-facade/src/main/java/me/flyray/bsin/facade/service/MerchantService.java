@@ -32,17 +32,6 @@ public interface MerchantService {
     public Map<String, Object> login(Map<String, Object> requestMap);
 
     /**
-     * 商户资料进件认证
-     */
-    public void authentication(Map<String, Object> requestMap);
-
-    /**
-     * 审核
-     * 审核通过可以访问具体功能
-     */
-    public void audit(Map<String, Object> requestMap) throws Exception;
-
-    /**
      * 商户订阅功能
      */
     public void subscribeFunction(Map<String, Object> requestMap);

@@ -63,9 +63,6 @@ public class StoreServiceImpl implements StoreService {
     }
     store.setSerialNo(BsinSnowflake.getId());
     storeMapper.insert(store);
-    // TODO 调用upms开通店铺账号
-    // userService.addMerchantOrStoreUser(sysUserDTO);
-
     return store;
   }
 

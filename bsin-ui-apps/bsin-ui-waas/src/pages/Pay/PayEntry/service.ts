@@ -36,3 +36,27 @@ export const auditCustomerEnterprise = (params) => {
     },
   });
 };
+
+// 查询商户进件资料
+export const getMerchantAuthDetail = (params) => {
+  return request(crmPath + '/merchantAuth/getDetail', {
+    serviceName: 'MerchantAuthService',
+    methodName: 'getDetail',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
+// 商户进件申请
+export const payEntryApply = (params) => {
+  return request(crmPath + '/merchantPayEntry/apply', {
+    serviceName: 'MerchantPayEntryService',
+    methodName: 'apply',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
