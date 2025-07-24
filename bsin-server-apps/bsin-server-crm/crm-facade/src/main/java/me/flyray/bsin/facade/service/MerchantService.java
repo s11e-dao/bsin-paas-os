@@ -24,7 +24,7 @@ public interface MerchantService {
      *      3）、创建钱包账户
      *  ）
      */
-    public void register(Map<String, Object> requestMap);
+    public Merchant register(Map<String, Object> requestMap);
 
     /**
      * 商户登录

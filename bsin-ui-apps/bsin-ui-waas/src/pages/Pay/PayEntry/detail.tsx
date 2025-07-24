@@ -64,10 +64,10 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
 
   // 获取商户认证详情数据
   const fetchMerchantAuthDetail = async (params:any) => {
-    if (!params?.serialNo) return;
+    if (!params?.merchantNo) return;
     try {
       setIsLoadingData(true);
-      const response = await getMerchantAuthDetail({ merchantNo: params.serialNo });
+      const response = await getMerchantAuthDetail({ merchantNo: params.merchantNo });
       console.log('response',response);
       if (response?.code === 0 && response?.data) {
         const data = response.data;
@@ -151,10 +151,10 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
   // 组件加载时获取数据
   useEffect(() => {
     console.log('currentRecord',currentRecord);
-    if (currentRecord?.serialNo) {
+    if (currentRecord?.merchantNo) {
       fetchMerchantAuthDetail(currentRecord);
     }
-  }, [currentRecord?.serialNo]);
+  }, [currentRecord?.merchantNo]);
 
   // 上传配置
   const uploadProps = (fileType: any) => ({
@@ -241,21 +241,68 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
         return;
       }
 
-      // 这里调用提交申请的API
-      console.log('提交申请:', { ...values, files: fileList });
-
-      Modal.success({
-        title: '申请提交成功',
-        content: '您的商户进件申请已成功提交，我们将在1-3个工作日内完成审核，请关注审核进度。',
-        onOk: () => {
-          // 跳转到申请列表或其他页面
-          window.history.back();
+      // 构建提交数据
+      const submitData = {
+        merchantNo: currentRecord?.merchantNo,
+        // 基础信息
+        baseInfo: {
+          merchantName: values.merchantName,
+          businessType: values.businessType,
+          organizationCode: values.organizationCode,
+          businessLicense: values.businessLicense,
+        },
+        // 经营信息
+        businessInfo: {
+          businessScope: values.businessScope,
+          businessDescription: values.businessDescription,
+          businessAddress: values.businessAddress,
+          servicePhone: values.servicePhone,
+        },
+        // 法人信息
+        legalInfo: {
+          legalPersonName: values.legalPersonName,
+          legalPersonIdCard: values.legalPersonIdCard,
+          legalPersonPhone: values.legalPersonPhone,
+        },
+        // 结算信息
+        settlementInfo: {
+          accountType: values.accountType,
+          accountName: values.accountName,
+          accountNumber: values.accountNumber,
+          bankName: values.bankName,
+          bankCode: values.bankCode,
+        },
+        // 文件信息
+        files: {
+          businessLicenseImg: fileList.businessLicenseImg?.[0]?.url || fileList.businessLicenseImg?.[0]?.response?.url,
+          legalPersonIdFront: fileList.legalPersonIdFront?.[0]?.url || fileList.legalPersonIdFront?.[0]?.response?.url,
+          legalPersonIdBack: fileList.legalPersonIdBack?.[0]?.url || fileList.legalPersonIdBack?.[0]?.response?.url,
+          bankAccountImg: fileList.bankAccountImg?.[0]?.url || fileList.bankAccountImg?.[0]?.response?.url,
+          storeImg: fileList.storeImg?.[0]?.url || fileList.storeImg?.[0]?.response?.url,
         }
-      });
+      };
 
-    } catch (error) {
+      console.log('提交申请数据:', submitData);
+
+      // 调用提交申请的API
+      const response = await payEntryApply(submitData);
+      
+      if (response?.code === 0) {
+        Modal.success({
+          title: '申请提交成功',
+          content: '您的商户进件申请已成功提交，我们将在1-3个工作日内完成审核，请关注审核进度。',
+          onOk: () => {
+            // 跳转到申请列表或其他页面
+            window.history.back();
+          }
+        });
+      } else {
+        message.error(response?.message || '提交失败，请稍后重试');
+      }
+
+    } catch (error: any) {
       console.error('提交失败:', error);
-      message.error('提交失败，请稍后重试');
+      message.error(error?.message || '提交失败，请稍后重试');
     } finally {
       setLoading(false);
     }
@@ -676,7 +723,7 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
           <Button
             onClick={() => fetchMerchantAuthDetail(currentRecord)}
             loading={isLoadingData}
-            disabled={!currentRecord?.serialNo}
+            disabled={!currentRecord?.merchantNo}
           >
             刷新数据
           </Button>
@@ -689,7 +736,7 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
           </Button>
         </Space>
         <Descriptions title="微信支付商户进件申请">
-          <Descriptions.Item label="商户编号">{currentRecord?.serialNo || '-'}</Descriptions.Item>
+          <Descriptions.Item label="商户编号">{currentRecord?.merchantNo || '-'}</Descriptions.Item>
           <Descriptions.Item label="整体审核状态">
             {authStatus.overall === '1' ? '已通过' : 
              authStatus.overall === '2' ? '审核中' : 

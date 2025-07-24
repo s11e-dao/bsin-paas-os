@@ -16,6 +16,7 @@ import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MerchantAuthService;
+import me.flyray.bsin.facade.service.MerchantService;
 import me.flyray.bsin.facade.service.StoreService;
 import me.flyray.bsin.facade.service.UserService;
 import me.flyray.bsin.infrastructure.mapper.MerchantAuthMapper;
@@ -60,6 +61,8 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
     private MerchantBiz merchantBiz;
     @DubboReference(version = "${dubbo.provider.version}")
     private StoreService storeService;
+    @Autowired
+    private MerchantService merchantService;
 
     /**
      * 商户认证进件：基础信息、营业执照信息、法人信息分步进件
@@ -70,12 +73,46 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
     @Override
     @Transactional
     public void authentication(Map<String, Object> requestMap) {
-        String merchantNo = LoginInfoContextHelper.getMerchantNo();
-
         String tenantId =  MapUtils.getString(requestMap, "tenantId");
-        if (StringUtils.isEmpty(tenantId)){
-            tenantId = LoginInfoContextHelper.getTenantId();
+        String merchantNo =  MapUtils.getString(requestMap, "merchantNo");
+        // 1是注册之后正常认证进件 2是注册同时进件
+        String authType =  MapUtils.getString(requestMap, "authType");
+        Merchant merchant;
+        // 处理不同的认证类型
+        if ("2".equals(authType)) {
+            // 2则注册商户信息
+            log.info("检测到注册同时进件模式，开始调用商户注册方法");
+            try {
+                // 调用商户注册方法
+                 requestMap.put("registerMethod", "operatorRegister");
+                 merchant = merchantService.register(requestMap);
+                log.info("商户注册成功，继续处理认证信息");
+                
+                // 注册成功后，从请求参数中获取商户号（注册方法会设置到requestMap中）
+                String registeredMerchantNo = MapUtils.getString(requestMap, "merchantNo");
+                if (StringUtils.isNotBlank(registeredMerchantNo)) {
+                    merchantNo = registeredMerchantNo;
+                    log.info("从注册结果中获取到商户号：{}", merchantNo);
+                }
+            } catch (Exception e) {
+                log.error("商户注册失败：{}", e.getMessage(), e);
+                throw new BusinessException("MERCHANT_REGISTER_ERROR", "商户注册失败：" + e.getMessage());
+            }
+        } else {
+            // 1则查询商户信息
+            log.info("检测到注册之后正常认证进件模式，查询现有商户信息");
+            if (StringUtils.isBlank(merchantNo)) {
+                throw new BusinessException("MERCHANT_NO_EMPTY", "商户号不能为空");
+            }
+            
+            // 验证商户是否存在
+            merchant = merchantMapper.selectById(merchantNo);
         }
+
+        if (merchant == null) {
+            throw new BusinessException("MERCHANT_NOT_EXISTS", "商户不存在，请先注册");
+        }
+
         // 获取或创建认证信息
         MerchantAuth merchantAuth = merchantAuthMapper.selectById(merchantNo);
         if (merchantAuth == null) {
@@ -153,6 +190,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
         // 保存数据
         if (merchantAuth.getCreateTime() == null) {
             merchantAuth.setCreateTime(new Date());
+            merchantAuth.setMerchantNo(merchant.getSerialNo());
             merchantAuthMapper.insert(merchantAuth);
         } else {
             merchantAuthMapper.updateById(merchantAuth);

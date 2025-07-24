@@ -1,0 +1,97 @@
+### 商户认证测试
+
+### 1. 注册同时进件模式（authType=2）
+POST http://localhost:8080/merchantAuth/authentication
+Content-Type: application/json
+
+{
+  "authType": "2",
+  "tenantId": "TENANT_001",
+  "username": "testmerchant",
+  "password": "123456",
+  "merchantName": "测试商户有限公司",
+  "verifyCode": "VERIFY_001",
+  "registerMethod": "operatorRegister",
+  "baseInfo": {
+    "merchantName": "测试商户有限公司",
+    "logoUrl": "https://example.com/logo.png",
+    "contactPhone": "400-123-4567",
+    "website": "https://example.com",
+    "merchantAddress": "北京市朝阳区xxx街道xxx号",
+    "description": "测试商户描述",
+    "category": "RETAIL",
+    "merchantType": "ENTERPRISE"
+  },
+  "legalEntityInfo": {
+    "legalPersonName": "张三",
+    "legalPersonCredType": "ID_CARD",
+    "legalPersonCredNo": "110101199001011234"
+  },
+  "businessInfo": {
+    "businessLicenceImg": "https://example.com/license.jpg",
+    "businessNo": "91110000123456789X",
+    "businessScope": "互联网信息服务",
+    "businessType": "TECHNOLOGY"
+  },
+  "settlementInfo": {
+    "accountName": "测试商户有限公司",
+    "accountNumber": "6222021234567890123",
+    "bankName": "工商银行",
+    "bankBranch": "北京分行"
+  }
+}
+
+### 2. 注册之后正常认证进件模式（authType=1）
+POST http://localhost:8080/merchantAuth/authentication
+Content-Type: application/json
+
+{
+  "authType": "1",
+  "tenantId": "TENANT_001",
+  "baseInfo": {
+    "merchantName": "已注册商户有限公司",
+    "logoUrl": "https://example.com/logo.png",
+    "contactPhone": "400-123-4567",
+    "website": "https://example.com",
+    "merchantAddress": "北京市朝阳区xxx街道xxx号",
+    "description": "已注册商户描述",
+    "category": "RETAIL",
+    "merchantType": "ENTERPRISE"
+  },
+  "legalEntityInfo": {
+    "legalPersonName": "李四",
+    "legalPersonCredType": "ID_CARD",
+    "legalPersonCredNo": "110101199001011235"
+  },
+  "businessInfo": {
+    "businessLicenceImg": "https://example.com/license.jpg",
+    "businessNo": "91110000123456789Y",
+    "businessScope": "互联网信息服务",
+    "businessType": "TECHNOLOGY"
+  }
+}
+
+### 3. 错误测试 - 缺少authType
+POST http://localhost:8080/merchantAuth/authentication
+Content-Type: application/json
+
+{
+  "tenantId": "TENANT_001",
+  "baseInfo": {
+    "merchantName": "测试商户",
+    "contactPhone": "400-123-4567"
+  }
+}
+
+### 4. 错误测试 - authType=1但商户不存在
+POST http://localhost:8080/merchantAuth/authentication
+Content-Type: application/json
+
+{
+  "authType": "1",
+  "tenantId": "TENANT_001",
+  "baseInfo": {
+    "merchantName": "不存在的商户",
+    "contactPhone": "400-123-4567"
+  }
+} 
