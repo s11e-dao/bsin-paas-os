@@ -74,7 +74,7 @@ export default ({ addCurrentRecord }: MerchantAuditListProps) => {
   const actionRender: any = (text: any, record: EnterpriseRecord, index: number) => (
     <Space key={record.serialNo}>
       {/* 只有待审核状态才显示审核按钮 */}
-      {record.authenticationStatus === '1' && (
+      {record.status === '0' && (
         <>
           <Button
             type="link"

@@ -1,0 +1,233 @@
+### 微信支付进件申请测试
+
+### 1. 微信支付进件申请（正常）
+POST http://localhost:8080/merchantPayEntry/apply
+Content-Type: application/json
+
+{
+  "payChannel": "wxPay",
+  "businessCode": "BUSINESS_20241201_001",
+  "merchantInfo": {
+    "merchantName": "测试商户有限公司",
+    "merchantShortName": "测试商户",
+    "servicePhone": "400-123-4567"
+  },
+  "contactInfo": {
+    "name": "张三",
+    "mobile": "13800138000",
+    "email": "zhangsan@example.com"
+  },
+  "subjectInfo": {
+    "subjectType": "SUBJECT_TYPE_ENTERPRISE",
+    "businessLicenseInfo": {
+      "licenseNumber": "91110000123456789X",
+      "merchantName": "测试商户有限公司",
+      "legalPerson": "张三",
+      "licenseAddress": "北京市朝阳区xxx街道xxx号",
+      "licenseValidDate": "2025-12-31",
+      "businessScope": "互联网信息服务",
+      "licenseType": "LICENSE_TYPE_NORMAL"
+    },
+    "identityInfo": {
+      "idDocType": "IDENTIFICATION_TYPE_IDCARD",
+      "idCardInfo": {
+        "idCardName": "张三",
+        "idCardNumber": "110101199001011234",
+        "idCardValidDate": "2030-12-31"
+      }
+    }
+  },
+  "businessInfo": {
+    "merchantShortName": "测试商户",
+    "servicePhone": "400-123-4567"
+  },
+  "settlementInfo": {
+    "settlementId": "SETTLEMENT_001"
+  },
+  "bankAccountInfo": {
+    "bankAccountType": "BANK_ACCOUNT_TYPE_CORPORATE",
+    "accountName": "测试商户有限公司",
+    "accountBank": "工商银行",
+    "bankAddressCode": "110000",
+    "bankBranchId": "102100000000",
+    "accountNumber": "6222021234567890123"
+  }
+}
+
+### 2. 支付宝进件申请（正常）
+POST http://localhost:8080/merchantPayEntry/apply
+Content-Type: application/json
+
+{
+  "payChannel": "aliPay",
+  "businessCode": "BUSINESS_20241201_002",
+  "merchantInfo": {
+    "merchantName": "测试商户有限公司",
+    "merchantShortName": "测试商户",
+    "servicePhone": "400-123-4567"
+  },
+  "contactInfo": {
+    "name": "李四",
+    "mobile": "13900139000",
+    "email": "lisi@example.com"
+  },
+  "subjectInfo": {
+    "subjectType": "SUBJECT_TYPE_ENTERPRISE",
+    "businessLicenseInfo": {
+      "licenseNumber": "91110000123456789X",
+      "merchantName": "测试商户有限公司",
+      "legalPerson": "李四",
+      "licenseAddress": "上海市浦东新区xxx街道xxx号",
+      "licenseValidDate": "2025-12-31",
+      "businessScope": "互联网信息服务",
+      "licenseType": "LICENSE_TYPE_NORMAL"
+    },
+    "identityInfo": {
+      "idDocType": "IDENTIFICATION_TYPE_IDCARD",
+      "idCardInfo": {
+        "idCardName": "李四",
+        "idCardNumber": "310101199001011234",
+        "idCardValidDate": "2030-12-31"
+      }
+    }
+  },
+  "businessInfo": {
+    "merchantShortName": "测试商户",
+    "servicePhone": "400-123-4567"
+  },
+  "settlementInfo": {
+    "settlementId": "SETTLEMENT_002"
+  },
+  "bankAccountInfo": {
+    "bankAccountType": "BANK_ACCOUNT_TYPE_CORPORATE",
+    "accountName": "测试商户有限公司",
+    "accountBank": "建设银行",
+    "bankAddressCode": "310000",
+    "bankBranchId": "105100000000",
+    "accountNumber": "6227001234567890123"
+  }
+}
+
+### 3. 错误测试 - 缺少支付渠道
+POST http://localhost:8080/merchantPayEntry/apply
+Content-Type: application/json
+
+{
+  "businessCode": "BUSINESS_20241201_003",
+  "merchantInfo": {
+    "merchantName": "测试商户有限公司"
+  },
+  "contactInfo": {
+    "name": "王五",
+    "mobile": "13700137000"
+  }
+}
+
+### 4. 错误测试 - 缺少商户信息
+POST http://localhost:8080/merchantPayEntry/apply
+Content-Type: application/json
+
+{
+  "payChannel": "wxPay",
+  "businessCode": "BUSINESS_20241201_004",
+  "contactInfo": {
+    "name": "王五",
+    "mobile": "13700137000"
+  }
+}
+
+### 5. 错误测试 - 缺少联系人信息
+POST http://localhost:8080/merchantPayEntry/apply
+Content-Type: application/json
+
+{
+  "payChannel": "wxPay",
+  "businessCode": "BUSINESS_20241201_005",
+  "merchantInfo": {
+    "merchantName": "测试商户有限公司"
+  }
+}
+
+### 6. 进件列表查询
+POST http://localhost:8080/merchantPayEntry/getPageList
+Content-Type: application/json
+
+{
+  "pagination": {
+    "pageNum": 1,
+    "pageSize": 10
+  }
+}
+
+### 7. 进件列表查询（自定义分页）
+POST http://localhost:8080/merchantPayEntry/getPageList
+Content-Type: application/json
+
+{
+  "pagination": {
+    "pageNum": 2,
+    "pageSize": 5
+  }
+}
+
+### 8. 进件列表查询（无分页参数）
+POST http://localhost:8080/merchantPayEntry/getPageList
+Content-Type: application/json
+
+{}
+
+### 9. 进件状态查询（WaaS模块）- 微信支付
+POST http://localhost:8080/payMerchantEntry/queryStatus
+Content-Type: application/json
+
+{
+  "payChannel": "wxPay",
+  "applymentId": "1234567890123456789"
+}
+
+### 10. 进件状态查询（WaaS模块）- 支付宝
+POST http://localhost:8080/payMerchantEntry/queryStatus
+Content-Type: application/json
+
+{
+  "payChannel": "aliPay",
+  "applymentId": "ALI_1701234567890"
+}
+
+### 11. 进件状态查询（WaaS模块）- 错误测试
+POST http://localhost:8080/payMerchantEntry/queryStatus
+Content-Type: application/json
+
+{
+  "payChannel": "wxPay"
+}
+
+### 12. 进件状态查询（WaaS模块）- 错误测试2
+POST http://localhost:8080/payMerchantEntry/queryStatus
+Content-Type: application/json
+
+{
+  "applymentId": "1234567890123456789"
+}
+
+### 13. 进件状态查询（CRM模块）- 正常查询
+POST http://localhost:8080/merchantPayEntry/getApplyStatus
+Content-Type: application/json
+
+{
+  "serialNo": "1234567890123456789"
+}
+
+### 14. 进件状态查询（CRM模块）- 错误测试（缺少序列号）
+POST http://localhost:8080/merchantPayEntry/getApplyStatus
+Content-Type: application/json
+
+{}
+
+### 15. 进件状态查询（CRM模块）- 错误测试（序列号不存在）
+POST http://localhost:8080/merchantPayEntry/getApplyStatus
+Content-Type: application/json
+
+{
+  "serialNo": "NOT_EXIST_SERIAL_NO"
+} 

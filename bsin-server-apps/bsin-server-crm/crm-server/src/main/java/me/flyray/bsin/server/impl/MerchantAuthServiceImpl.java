@@ -253,14 +253,74 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
     @ApiDoc(desc = "getDetail")
     @ShenyuDubboClient("/getDetail")
     @Override
-    public MerchantAuth getDetail(Map<String, Object> requestMap) throws Exception {
+    public Map<String, Object> getDetail(Map<String, Object> requestMap) throws Exception {
         String merchantNo = MapUtils.getString(requestMap, "merchantNo");
         String tenantId = LoginInfoContextHelper.getTenantId();
         LambdaQueryWrapper<MerchantAuth> warapper = new LambdaQueryWrapper<>();
         warapper.eq(MerchantAuth::getTenantId, tenantId);
         warapper.eq(MerchantAuth::getMerchantNo, merchantNo);
         MerchantAuth merchantAuth = merchantAuthMapper.selectOne(warapper);
-        return merchantAuth;
+
+        Map<String, Object> result = new HashMap<>();
+        
+        if (merchantAuth != null) {
+            // 构建基础信息
+            Map<String, Object> baseInfo = new HashMap<>();
+            baseInfo.put("merchantName", merchantAuth.getMerchantName());
+            baseInfo.put("logoUrl", merchantAuth.getLogoUrl());
+            baseInfo.put("contactPhone", merchantAuth.getContactPhone());
+            baseInfo.put("website", merchantAuth.getWebsite());
+            baseInfo.put("merchantAddress", merchantAuth.getMerchantAddress());
+            baseInfo.put("description", merchantAuth.getDescription());
+            baseInfo.put("category", merchantAuth.getCategory());
+            baseInfo.put("merchantType", merchantAuth.getMerchantType());
+            baseInfo.put("authStatus", merchantAuth.getBaseInfoAuthStatus());
+            
+            // 构建法人信息
+            Map<String, Object> legalInfo = new HashMap<>();
+            legalInfo.put("legalPersonName", merchantAuth.getLegalPersonName());
+            legalInfo.put("legalPersonCredType", merchantAuth.getLegalPersonCredType());
+            legalInfo.put("legalPersonCredNo", merchantAuth.getLegalPersonCredNo());
+            legalInfo.put("authStatus", merchantAuth.getLegalPersonInfoAuthStatus());
+            
+            // 构建营业信息
+            Map<String, Object> businessInfo = new HashMap<>();
+            businessInfo.put("businessLicenceImg", merchantAuth.getBusinessLicenceImg());
+            businessInfo.put("businessNo", merchantAuth.getBusinessNo());
+            businessInfo.put("businessScope", merchantAuth.getBusinessScope());
+            businessInfo.put("businessType", merchantAuth.getBusinessType());
+            businessInfo.put("authStatus", merchantAuth.getBusinessInfoAuthStatus());
+            
+            result.put("baseInfo", baseInfo);
+            result.put("legalInfo", legalInfo);
+            result.put("businessInfo", businessInfo);
+            
+            // 构建结算信息
+            Map<String, Object> settlementInfo = new HashMap<>();
+            // 查询商户的结算账户信息
+            LambdaQueryWrapper<SettlementAccount> settlementWrapper = new LambdaQueryWrapper<>();
+            settlementWrapper.eq(SettlementAccount::getTenantId, tenantId);
+            settlementWrapper.eq(SettlementAccount::getBizRoleTypeNo, merchantNo);
+            settlementWrapper.eq(SettlementAccount::getBizRoleType, "2"); // 商户类型
+            SettlementAccount settlementAccount = settlementAccountMapper.selectOne(settlementWrapper);
+            
+            if (settlementAccount != null) {
+                settlementInfo.put("accountName", settlementAccount.getAccountName());
+                settlementInfo.put("accountNum", settlementAccount.getAccountNum());
+                settlementInfo.put("bankName", settlementAccount.getBankName());
+                settlementInfo.put("bankBranch", settlementAccount.getBankBranch());
+                settlementInfo.put("accountType", settlementAccount.getAccountType());
+                settlementInfo.put("swiftCode", settlementAccount.getSwiftCode());
+                settlementInfo.put("category", settlementAccount.getCategory());
+                settlementInfo.put("defaultFlag", settlementAccount.getDefaultFlag());
+            }
+            
+            result.put("settlementInfo", settlementInfo);
+            result.put("overallAuthStatus", merchantAuth.getAuthStatus());
+            result.put("overallStatus", merchantAuth.getStatus());
+        }
+        
+        return result;
     }
 
 }

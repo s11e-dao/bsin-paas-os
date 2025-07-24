@@ -16,6 +16,11 @@ public interface MerchantPayEntryMapper extends BaseMapper<MerchantPayEntry> {
 
     IPage<MerchantDTO> selectPageList(@Param("page") IPage<?> page, @Param("tenantId") String tenantId);
 
+    /**
+     * 根据序列号查询进件记录
+     */
+    MerchantPayEntry selectBySerialNo(@Param("serialNo") String serialNo);
+
 }
 
 

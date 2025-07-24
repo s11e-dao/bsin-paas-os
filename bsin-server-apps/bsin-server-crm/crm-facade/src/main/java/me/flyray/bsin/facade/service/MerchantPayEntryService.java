@@ -20,6 +20,11 @@ public interface MerchantPayEntryService {
 
 
     /**
+     * 查询商户支付进件状态
+     */
+    public Map<String, Object> getApplyStatus(Map<String, Object> requestMap);
+
+    /**
      * 商户支付进件状态查询
      */
     public MerchantDTO getDetail(Map<String, Object> requestMap);

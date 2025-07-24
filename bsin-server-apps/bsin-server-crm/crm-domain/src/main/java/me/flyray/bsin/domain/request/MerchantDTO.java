@@ -3,10 +3,11 @@ package me.flyray.bsin.domain.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import me.flyray.bsin.domain.entity.Merchant;
+import me.flyray.bsin.domain.entity.MerchantAuth;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
-public class MerchantDTO extends Merchant {
+public class MerchantDTO extends MerchantAuth {
 
     public Integer current;
 

@@ -20,6 +20,6 @@ public interface MerchantAuthService {
     /**
      * 查询商户进件的资料信息
      */
-    public MerchantAuth getDetail(Map<String, Object> requestMap) throws Exception;
+    public Map<String, Object> getDetail(Map<String, Object> requestMap) throws Exception;
 
 }

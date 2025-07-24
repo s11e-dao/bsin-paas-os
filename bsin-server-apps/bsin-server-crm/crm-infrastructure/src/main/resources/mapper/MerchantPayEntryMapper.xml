@@ -36,8 +36,16 @@
 
     <select id="selectPageList" resultType="me.flyray.bsin.domain.request.MerchantDTO">
         select *
-        from crm_merchant m left join crm_merchant_pay_entry mp on m.serial_no = mp.merchant_no
-        where m.tenant_id = #{tenantId}
+        from crm_merchant_auth ma left join crm_merchant_pay_entry mp on ma.merchant_no = mp.merchant_no
+        where ma.tenant_id = #{tenantId}
+    </select>
+
+    <select id="selectBySerialNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from crm_merchant_pay_entry
+        where serial_no = #{serialNo}
+        and del_flag = 0
     </select>
 
 </mapper>

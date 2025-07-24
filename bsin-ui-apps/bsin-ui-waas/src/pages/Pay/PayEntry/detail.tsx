@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Form,
   Input,
@@ -35,18 +35,22 @@ import {
 
 export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord: any, setIsLoadMerchantAuditDetail: (isLoadMerchantAuditDetail: boolean) => void }) => {
 
+  console.log('currentRecord',currentRecord);
+
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
-  const [fileList, setFileList] = useState({
+  const [fileList, setFileList] = useState<any>({
     businessLicenseImg: [],
     legalPersonIdFront: [], 
     legalPersonIdBack: [],
     bankAccountImg: [],
     storeImg: []
   });
+  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [authStatus, setAuthStatus] = useState<any>({});
 
   // 步骤配置
   const steps = [
@@ -58,12 +62,106 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
     { title: '确认提交', description: '核对信息并提交' }
   ];
 
+  // 获取商户认证详情数据
+  const fetchMerchantAuthDetail = async (params:any) => {
+    if (!params?.serialNo) return;
+    try {
+      setIsLoadingData(true);
+      const response = await getMerchantAuthDetail({ merchantNo: params.serialNo });
+      console.log('response',response);
+      if (response?.code === 0 && response?.data) {
+        const data = response.data;
+        
+        // 回显表单数据
+        form.setFieldsValue({
+          // 基本信息 (baseInfo)
+          merchantName: data.baseInfo?.merchantName,
+          businessType: data.businessInfo?.businessType,
+          organizationCode: data.businessInfo?.businessNo,
+          businessLicense: data.businessInfo?.businessNo,
+          
+          // 经营信息 (businessInfo)
+          businessScope: data.businessInfo?.businessScope,
+          businessDescription: data.baseInfo?.description,
+          businessAddress: data.baseInfo?.merchantAddress,
+          servicePhone: data.baseInfo?.contactPhone,
+          
+          // 法人信息 (legalInfo)
+          legalPersonName: data.legalInfo?.legalPersonName,
+          legalPersonIdCard: data.legalInfo?.legalPersonCredNo,
+          legalPersonPhone: data.baseInfo?.contactPhone,
+          
+          // 结算信息 (settlementInfo)
+          accountType: data.settlementInfo?.accountType || 'corporate',
+          accountName: data.settlementInfo?.accountName,
+          accountNumber: data.settlementInfo?.accountNum,
+          bankName: data.settlementInfo?.bankName,
+          bankCode: data.settlementInfo?.swiftCode,
+        });
+
+        // 保存审核状态
+        setAuthStatus({
+          baseInfo: data.baseInfo?.authStatus,
+          legalInfo: data.legalInfo?.authStatus,
+          businessInfo: data.businessInfo?.authStatus,
+          overall: data.overallAuthStatus,
+          status: data.overallStatus
+        });
+
+        // 打印调试信息
+        console.log('商户认证详情数据:', data);
+        console.log('基础信息:', data.baseInfo);
+        console.log('法人信息:', data.legalInfo);
+        console.log('营业信息:', data.businessInfo);
+        console.log('结算信息:', data.settlementInfo);
+        console.log('整体审核状态:', data.overallAuthStatus);
+        console.log('整体状态:', data.overallStatus);
+
+        // 回显文件列表
+        if (data.businessInfo?.businessLicenceImg) {
+          setFileList((prev: any) => ({
+            ...prev,
+            businessLicenseImg: [{
+              uid: '-1',
+              name: '营业执照.jpg',
+              status: 'done',
+              url: data.businessInfo.businessLicenceImg,
+              thumbUrl: data.businessInfo.businessLicenceImg
+            }]
+          }));
+        }
+        
+        // 注意：接口中没有单独的身份证正反面和开户许可证图片字段
+        // 这里可以根据实际业务需求调整，或者从其他字段获取
+        // 暂时保留原有的逻辑，但设置为空
+        
+        // 如果有其他图片字段，可以在这里添加
+        // 例如：data.baseInfo?.logoUrl 等
+
+        message.success('数据加载成功');
+      }
+    } catch (error: any) {
+      console.error('获取商户认证详情失败:', error);
+      message.error('获取数据失败，请稍后重试');
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
+
+  // 组件加载时获取数据
+  useEffect(() => {
+    console.log('currentRecord',currentRecord);
+    if (currentRecord?.serialNo) {
+      fetchMerchantAuthDetail(currentRecord);
+    }
+  }, [currentRecord?.serialNo]);
+
   // 上传配置
-  const uploadProps = (fileType) => ({
+  const uploadProps = (fileType: any) => ({
     name: 'file',
     multiple: false,
     fileList: fileList[fileType] || [],
-    beforeUpload: (file) => {
+    beforeUpload: (file: any) => {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
       if (!isJpgOrPng) {
         message.error('只能上传 JPG/PNG 格式的图片!');
@@ -76,20 +174,20 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
       }
       return false; // 阻止自动上传
     },
-    onChange: (info) => {
+    onChange: (info: any) => {
       let newFileList = [...info.fileList];
       newFileList = newFileList.slice(-1); // 只保留最新的一个文件
-      setFileList(prev => ({
+      setFileList((prev: any) => ({
         ...prev,
         [fileType]: newFileList
       }));
     },
-    onPreview: (file) => {
+    onPreview: (file: any) => {
       setPreviewImage(file.url || file.thumbUrl);
       setPreviewVisible(true);
     },
     onRemove: () => {
-      setFileList(prev => ({
+      setFileList((prev: any) => ({
         ...prev,
         [fileType]: []
       }));
@@ -135,7 +233,7 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
 
       // 检查必需的文件
       const requiredFiles = ['businessLicenseImg', 'legalPersonIdFront', 'legalPersonIdBack', 'bankAccountImg'];
-      const missingFiles = requiredFiles.filter(fileType => !fileList[fileType] || fileList[fileType].length === 0);
+      const missingFiles = requiredFiles.filter((fileType: any) => !fileList[fileType] || fileList[fileType].length === 0);
 
       if (missingFiles.length > 0) {
         message.error('请上传所有必需的证件照片');
@@ -165,7 +263,27 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
 
   // 渲染基本信息步骤
   const renderBasicInfo = () => (
-    <Card title="企业基本信息" size="small">
+    <Card 
+      title={
+        <span>
+          企业基本信息
+          {authStatus.baseInfo && (
+            <span style={{ 
+              marginLeft: 8, 
+              fontSize: '12px',
+              color: authStatus.baseInfo === '1' ? '#52c41a' : 
+                     authStatus.baseInfo === '2' ? '#1890ff' : 
+                     authStatus.baseInfo === '3' ? '#ff4d4f' : '#999'
+            }}>
+              ({authStatus.baseInfo === '1' ? '已通过' : 
+                authStatus.baseInfo === '2' ? '审核中' : 
+                authStatus.baseInfo === '3' ? '已拒绝' : '未审核'})
+            </span>
+          )}
+        </span>
+      } 
+      size="small"
+    >
       <Row gutter={24}>
         <Col span={12}>
           <Form.Item
@@ -220,7 +338,27 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
 
   // 渲染经营信息步骤
   const renderBusinessInfo = () => (
-    <Card title="经营信息" size="small">
+    <Card 
+      title={
+        <span>
+          经营信息
+          {authStatus.businessInfo && (
+            <span style={{ 
+              marginLeft: 8, 
+              fontSize: '12px',
+              color: authStatus.businessInfo === '1' ? '#52c41a' : 
+                     authStatus.businessInfo === '2' ? '#1890ff' : 
+                     authStatus.businessInfo === '3' ? '#ff4d4f' : '#999'
+            }}>
+              ({authStatus.businessInfo === '1' ? '已通过' : 
+                authStatus.businessInfo === '2' ? '审核中' : 
+                authStatus.businessInfo === '3' ? '已拒绝' : '未审核'})
+            </span>
+          )}
+        </span>
+      } 
+      size="small"
+    >
       <Row gutter={24}>
         <Col span={24}>
           <Form.Item
@@ -267,7 +405,27 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
 
   // 渲染法人信息步骤
   const renderLegalInfo = () => (
-    <Card title="法定代表人信息" size="small">
+    <Card 
+      title={
+        <span>
+          法定代表人信息
+          {authStatus.legalInfo && (
+            <span style={{ 
+              marginLeft: 8, 
+              fontSize: '12px',
+              color: authStatus.legalInfo === '1' ? '#52c41a' : 
+                     authStatus.legalInfo === '2' ? '#1890ff' : 
+                     authStatus.legalInfo === '3' ? '#ff4d4f' : '#999'
+            }}>
+              ({authStatus.legalInfo === '1' ? '已通过' : 
+                authStatus.legalInfo === '2' ? '审核中' : 
+                authStatus.legalInfo === '3' ? '已拒绝' : '未审核'})
+            </span>
+          )}
+        </span>
+      } 
+      size="small"
+    >
       <Row gutter={24}>
         <Col span={12}>
           <Form.Item
@@ -514,22 +672,43 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
   return (
     <>
       <Card style={{ marginBottom: 16 }}>
-        <Button
-          type="primary"
-          icon={<ArrowLeftOutlined />}
-          onClick={() => setIsLoadMerchantAuditDetail(false)}
-          style={{ float: 'right' }}
-        >
-          返回
-        </Button>
-        <Descriptions title="微信支付商户进件申请"></Descriptions>
+        <Space style={{ float: 'right' }}>
+          <Button
+            onClick={() => fetchMerchantAuthDetail(currentRecord)}
+            loading={isLoadingData}
+            disabled={!currentRecord?.serialNo}
+          >
+            刷新数据
+          </Button>
+          <Button
+            type="primary"
+            icon={<ArrowLeftOutlined />}
+            onClick={() => setIsLoadMerchantAuditDetail(false)}
+          >
+            返回
+          </Button>
+        </Space>
+        <Descriptions title="微信支付商户进件申请">
+          <Descriptions.Item label="商户编号">{currentRecord?.serialNo || '-'}</Descriptions.Item>
+          <Descriptions.Item label="整体审核状态">
+            {authStatus.overall === '1' ? '已通过' : 
+             authStatus.overall === '2' ? '审核中' : 
+             authStatus.overall === '3' ? '已拒绝' : '未审核'}
+          </Descriptions.Item>
+          <Descriptions.Item label="整体状态">
+            {authStatus.status === '0' ? '正常' : 
+             authStatus.status === '1' ? '禁用' : '未知'}
+          </Descriptions.Item>
+        </Descriptions>
 
 
         {/* 页面标题 */}
         <Card style={{ marginBottom: 24 }}>
           <div style={{ textAlign: 'center' }}>
             <h1 style={{ margin: 0, color: '#1890ff' }}>微信支付商户进件申请</h1>
-            <p style={{ color: '#666', marginTop: 8 }}>请按步骤填写完整的商户资料，我们将在1-3个工作日内完成审核</p>
+            <p style={{ color: '#666', marginTop: 8 }}>
+              {isLoadingData ? '正在加载数据...' : '请按步骤填写完整的商户资料，我们将在1-3个工作日内完成审核'}
+            </p>
           </div>
         </Card>
 
@@ -553,6 +732,7 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
           initialValues={{
             accountType: 'corporate'
           }}
+          disabled={isLoadingData}
         >
           {renderStepContent()}
         </Form>
@@ -562,7 +742,7 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
           <div style={{ textAlign: 'center' }}>
             <Space size="large">
               {currentStep > 0 && (
-                <Button onClick={handlePrev}>
+                <Button onClick={handlePrev} disabled={isLoadingData}>
                   上一步
                 </Button>
               )}
@@ -570,12 +750,13 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
               <Button
                 icon={<SaveOutlined />}
                 onClick={handleSaveDraft}
+                disabled={isLoadingData}
               >
                 保存草稿
               </Button>
 
               {currentStep < steps.length - 1 ? (
-                <Button type="primary" onClick={handleNext}>
+                <Button type="primary" onClick={handleNext} disabled={isLoadingData}>
                   下一步
                 </Button>
               ) : (
@@ -584,6 +765,7 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
                   icon={<SendOutlined />}
                   onClick={handleSubmit}
                   loading={loading}
+                  disabled={isLoadingData}
                 >
                   提交申请
                 </Button>
