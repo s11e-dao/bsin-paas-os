@@ -23,6 +23,7 @@ import me.flyray.bsin.infrastructure.mapper.MerchantAuthMapper;
 import me.flyray.bsin.infrastructure.mapper.MerchantMapper;
 import me.flyray.bsin.infrastructure.mapper.SettlementAccountMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.biz.MerchantBiz;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
@@ -78,7 +79,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
         // 1是注册之后正常认证进件 2是注册同时进件
         String authType =  MapUtils.getString(requestMap, "authType");
         Merchant merchant;
-        // 处理不同的认证类型
+        // 处理不同的认证类型 1 注册之后的认证 2 注册认证一起
         if ("2".equals(authType)) {
             // 2则注册商户信息
             log.info("检测到注册同时进件模式，开始调用商户注册方法");
@@ -177,7 +178,11 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
             SettlementAccount settlementAccount = BsinServiceContext.getReqBodyDto(SettlementAccount.class, (Map<String, Object>) settlementInfo);
             merchantAuth.setBusinessInfoAuthStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
             hasUpdate = true;
-            // TODO 保存到结算表里面
+            settlementAccount.setTenantId(tenantId);
+            settlementAccount.setBizRoleType(BizRoleType.MERCHANT.getCode());
+            settlementAccount.setBizRoleTypeNo(merchantNo);
+            settlementAccount.setDefaultFlag("1");
+            settlementAccount.setCategory("1");
             settlementAccountMapper.insert(settlementAccount);
         }
 
@@ -207,10 +212,13 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
     @Transactional
     public void audit(Map<String, Object> requestMap) throws Exception {
         String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+        String settlementAccountNo = MapUtils.getString(requestMap, "settlementAccountNo");
         String auditFlag = MapUtils.getString(requestMap, "auditFlag");
         String auditType = MapUtils.getString(requestMap, "auditType");
 
-        MerchantAuth merchantAuth = merchantAuthMapper.selectById(merchantNo);
+        LambdaQueryWrapper<MerchantAuth> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(MerchantAuth::getMerchantNo, merchantNo);
+        MerchantAuth merchantAuth = merchantAuthMapper.selectOne(wrapper);
         if (merchantAuth == null) {
             throw new BusinessException(ResponseCode.MERCHANT_NOT_EXISTS);
         }
@@ -230,6 +238,13 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
                 break;
             case "businessInfo":
                 merchantAuth.setBusinessInfoAuthStatus(isApproved ? AuthenticationStatus.CERTIFIED.getCode() : AuthenticationStatus.CERTIFIED_FAILURE.getCode());
+                break;
+            case "settlementInfo":
+                merchantAuth.setBusinessInfoAuthStatus(isApproved ? AuthenticationStatus.CERTIFIED.getCode() : AuthenticationStatus.CERTIFIED_FAILURE.getCode());
+                // 这里需要更新一下结算表状态
+                SettlementAccount settlementAccount = settlementAccountMapper.selectById(settlementAccountNo);
+                settlementAccount.setStatus(isApproved ? AuthenticationStatus.CERTIFIED.getCode() : AuthenticationStatus.CERTIFIED_FAILURE.getCode());
+                settlementAccountMapper.updateById(settlementAccount);
                 break;
         }
 
@@ -251,14 +266,6 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
         // 所有项通过时开通功能
         if (allApproved) {
             try {
-                // 创建用户
-                requestMap.put("tenantId", merchantAuth.getTenantId());
-                requestMap.put("username", merchantAuth.getUsername());
-                requestMap.put("merchantName", merchantAuth.getMerchantName());
-                SysUserDTO sysUserDTO = new SysUserDTO();
-                BeanUtil.copyProperties(requestMap, sysUserDTO);
-                userService.addMerchantOrStoreUser(sysUserDTO);
-
                 // Web3商户创建钱包
                 if ("2".equals(String.valueOf(merchantAuth.getCategory()))) {
                     Map<String, Object> walletParams = new HashMap<>();
@@ -339,10 +346,13 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
             LambdaQueryWrapper<SettlementAccount> settlementWrapper = new LambdaQueryWrapper<>();
             settlementWrapper.eq(SettlementAccount::getTenantId, tenantId);
             settlementWrapper.eq(SettlementAccount::getBizRoleTypeNo, merchantNo);
-            settlementWrapper.eq(SettlementAccount::getBizRoleType, "2"); // 商户类型
+            settlementWrapper.eq(SettlementAccount::getBizRoleType, BizRoleType.MERCHANT.getCode()); // 商户类型
+            settlementWrapper.eq(SettlementAccount::getCategory, "1"); //支付结算账号
+            settlementWrapper.eq(SettlementAccount::getDefaultFlag, "1");
             SettlementAccount settlementAccount = settlementAccountMapper.selectOne(settlementWrapper);
             
             if (settlementAccount != null) {
+                settlementInfo.put("serialNo", settlementAccount.getSerialNo());
                 settlementInfo.put("accountName", settlementAccount.getAccountName());
                 settlementInfo.put("accountNum", settlementAccount.getAccountNum());
                 settlementInfo.put("bankName", settlementAccount.getBankName());

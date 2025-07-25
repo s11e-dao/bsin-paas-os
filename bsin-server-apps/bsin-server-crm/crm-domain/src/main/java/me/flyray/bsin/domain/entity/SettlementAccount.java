@@ -72,4 +72,9 @@ public class SettlementAccount extends BaseEntity implements Serializable {
      */
     private String defaultFlag;
 
+    /**
+     * 1 待审核 2 审核通过
+     */
+    private String status;
+
 }

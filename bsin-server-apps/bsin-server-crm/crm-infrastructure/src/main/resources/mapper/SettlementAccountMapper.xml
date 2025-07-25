@@ -23,6 +23,7 @@
             <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
             <result property="category" column="category" jdbcType="VARCHAR"/>
             <result property="defaultFlag" column="default_flag" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -31,7 +32,7 @@
         account_type,bank_name,bank_branch,
         swift_code,remark,create_by,
         create_time,update_by,update_time,
-        del_flag,category,default_flag
+        del_flag,category,default_flag,status
     </sql>
 
 </mapper>

@@ -52,6 +52,7 @@ public class MerchantBiz {
         SysUserDTO sysUserDTO = new SysUserDTO();
         BeanUtil.copyProperties(requestMap, sysUserDTO);
         sysUserDTO.setBizRoleType(BizRoleType.MERCHANT.getCode());
+        sysUserDTO.setBizRoleTypeNo(merchant.getSerialNo());
         userService.addMerchantOrStoreUser(sysUserDTO);
 
         // 客户号不为空，则表示是会员申请成为商户(团长)，需要插入客户身份表
