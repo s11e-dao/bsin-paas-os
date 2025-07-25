@@ -225,6 +225,25 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
     }
   };
 
+  // 上传材料
+  const handleUploadMaterial = async () => {
+    try {
+      // 检查必需的文件
+      const requiredFiles = ['businessLicenseImg', 'legalPersonIdFront', 'legalPersonIdBack'];
+      const missingFiles = requiredFiles.filter((fileType: any) => !fileList[fileType] || fileList[fileType].length === 0);
+
+      if (missingFiles.length > 0) {
+        message.error('请上传所有必需的证件照片');
+        return;
+      }
+
+      message.success('材料上传成功');
+    } catch (error: any) {
+      console.error('上传失败:', error);
+      message.error('上传失败，请稍后重试');
+    }
+  };
+
   // 提交申请
   const handleSubmit = async () => {
     try {
@@ -232,7 +251,7 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
       const values = form.getFieldsValue();
 
       // 检查必需的文件
-      const requiredFiles = ['businessLicenseImg', 'legalPersonIdFront', 'legalPersonIdBack', 'bankAccountImg'];
+      const requiredFiles = ['businessLicenseImg', 'legalPersonIdFront', 'legalPersonIdBack'];
       const missingFiles = requiredFiles.filter((fileType: any) => !fileList[fileType] || fileList[fileType].length === 0);
 
       if (missingFiles.length > 0) {
@@ -277,7 +296,6 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
           businessLicenseImg: fileList.businessLicenseImg?.[0]?.url || fileList.businessLicenseImg?.[0]?.response?.url,
           legalPersonIdFront: fileList.legalPersonIdFront?.[0]?.url || fileList.legalPersonIdFront?.[0]?.response?.url,
           legalPersonIdBack: fileList.legalPersonIdBack?.[0]?.url || fileList.legalPersonIdBack?.[0]?.response?.url,
-          bankAccountImg: fileList.bankAccountImg?.[0]?.url || fileList.bankAccountImg?.[0]?.response?.url,
           storeImg: fileList.storeImg?.[0]?.url || fileList.storeImg?.[0]?.response?.url,
         }
       };
@@ -582,8 +600,8 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
 
       <Row gutter={24}>
         <Col span={12}>
-          <Card title="营业执照 *" size="small" style={{ height: '300px' }}>
-            <Dragger {...uploadProps('businessLicenseImg')} style={{ height: '200px' }}>
+          <Card title="营业执照 *" size="small" style={{ height: '260px' }}>
+            <Dragger {...uploadProps('businessLicenseImg')} style={{ height: '160px' }}>
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
               </p>
@@ -594,8 +612,20 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
         </Col>
 
         <Col span={12}>
-          <Card title="法人身份证正面 *" size="small" style={{ height: '300px' }}>
-            <Dragger {...uploadProps('legalPersonIdFront')} style={{ height: '200px' }}>
+          <Card title="门店照片(可选)" size="small" style={{ height: '260px' }}>
+            <Dragger {...uploadProps('storeImg')} style={{ height: '160px' }}>
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">点击或拖拽上传门店照片</p>
+              <p className="ant-upload-hint">可上传门店外观或内景照片</p>
+            </Dragger>
+          </Card>
+        </Col>
+
+        <Col span={12} style={{ marginTop: 16 }}>
+          <Card title="法人身份证正面 *" size="small" style={{ height: '260px' }}>
+            <Dragger {...uploadProps('legalPersonIdFront')} style={{ height: '160px' }}>
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
               </p>
@@ -606,8 +636,8 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
         </Col>
 
         <Col span={12} style={{ marginTop: 16 }}>
-          <Card title="法人身份证背面 *" size="small" style={{ height: '300px' }}>
-            <Dragger {...uploadProps('legalPersonIdBack')} style={{ height: '200px' }}>
+          <Card title="法人身份证背面 *" size="small" style={{ height: '260px' }}>
+            <Dragger {...uploadProps('legalPersonIdBack')} style={{ height: '160px' }}>
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
               </p>
@@ -616,31 +646,11 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
             </Dragger>
           </Card>
         </Col>
-
-        <Col span={12} style={{ marginTop: 16 }}>
-          <Card title="银行开户许可证 *" size="small" style={{ height: '300px' }}>
-            <Dragger {...uploadProps('bankAccountImg')} style={{ height: '200px' }}>
-              <p className="ant-upload-drag-icon">
-                <InboxOutlined />
-              </p>
-              <p className="ant-upload-text">点击或拖拽上传开户许可证</p>
-              <p className="ant-upload-hint">请上传银行开户许可证照片</p>
-            </Dragger>
-          </Card>
-        </Col>
-
-        <Col span={12} style={{ marginTop: 16 }}>
-          <Card title="门店照片(可选)" size="small" style={{ height: '300px' }}>
-            <Dragger {...uploadProps('storeImg')} style={{ height: '200px' }}>
-              <p className="ant-upload-drag-icon">
-                <InboxOutlined />
-              </p>
-              <p className="ant-upload-text">点击或拖拽上传门店照片</p>
-              <p className="ant-upload-hint">可上传门店外观或内景照片</p>
-            </Dragger>
-          </Card>
-        </Col>
+        
       </Row>
+      <div style={{ textAlign: 'center', marginTop: 16 }}>
+        <Button type="primary" onClick={handleUploadMaterial}>上传材料</Button>
+      </div>
     </div>
   );
 
@@ -696,7 +706,7 @@ export default ({ currentRecord, setIsLoadMerchantAuditDetail }: { currentRecord
             <Col span={6}>营业执照: {fileList.businessLicenseImg?.length > 0 ? '✅ 已上传' : '❌ 未上传'}</Col>
             <Col span={6}>身份证正面: {fileList.legalPersonIdFront?.length > 0 ? '✅ 已上传' : '❌ 未上传'}</Col>
             <Col span={6}>身份证背面: {fileList.legalPersonIdBack?.length > 0 ? '✅ 已上传' : '❌ 未上传'}</Col>
-            <Col span={6}>开户许可证: {fileList.bankAccountImg?.length > 0 ? '✅ 已上传' : '❌ 未上传'}</Col>
+            <Col span={6}>门店照片: {fileList.storeImg?.length > 0 ? '✅ 已上传' : '❌ 未上传'}</Col>
           </Row>
         </Card>
       </div>
