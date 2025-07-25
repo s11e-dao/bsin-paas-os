@@ -319,14 +319,14 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
             baseInfo.put("description", merchantAuth.getDescription());
             baseInfo.put("category", merchantAuth.getCategory());
             baseInfo.put("merchantType", merchantAuth.getMerchantType());
-            baseInfo.put("authStatus", merchantAuth.getBaseInfoAuthStatus());
+            baseInfo.put("baseInfoAuthStatus", merchantAuth.getBaseInfoAuthStatus());
             
             // 构建法人信息
             Map<String, Object> legalInfo = new HashMap<>();
             legalInfo.put("legalPersonName", merchantAuth.getLegalPersonName());
             legalInfo.put("legalPersonCredType", merchantAuth.getLegalPersonCredType());
             legalInfo.put("legalPersonCredNo", merchantAuth.getLegalPersonCredNo());
-            legalInfo.put("authStatus", merchantAuth.getLegalPersonInfoAuthStatus());
+            legalInfo.put("legalPersonInfoAuthStatus", merchantAuth.getLegalPersonInfoAuthStatus());
             
             // 构建营业信息
             Map<String, Object> businessInfo = new HashMap<>();
@@ -334,7 +334,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
             businessInfo.put("businessNo", merchantAuth.getBusinessNo());
             businessInfo.put("businessScope", merchantAuth.getBusinessScope());
             businessInfo.put("businessType", merchantAuth.getBusinessType());
-            businessInfo.put("authStatus", merchantAuth.getBusinessInfoAuthStatus());
+            businessInfo.put("businessInfoAuthStatus", merchantAuth.getBusinessInfoAuthStatus());
             
             result.put("baseInfo", baseInfo);
             result.put("legalInfo", legalInfo);
@@ -352,7 +352,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
             SettlementAccount settlementAccount = settlementAccountMapper.selectOne(settlementWrapper);
             
             if (settlementAccount != null) {
-                settlementInfo.put("serialNo", settlementAccount.getSerialNo());
+                settlementInfo.put("settlementAccountNo", settlementAccount.getSerialNo());
                 settlementInfo.put("accountName", settlementAccount.getAccountName());
                 settlementInfo.put("accountNum", settlementAccount.getAccountNum());
                 settlementInfo.put("bankName", settlementAccount.getBankName());
@@ -361,6 +361,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
                 settlementInfo.put("swiftCode", settlementAccount.getSwiftCode());
                 settlementInfo.put("category", settlementAccount.getCategory());
                 settlementInfo.put("defaultFlag", settlementAccount.getDefaultFlag());
+                settlementInfo.put("settlementAuthStatus", settlementAccount.getStatus());
             }
             
             result.put("settlementInfo", settlementInfo);

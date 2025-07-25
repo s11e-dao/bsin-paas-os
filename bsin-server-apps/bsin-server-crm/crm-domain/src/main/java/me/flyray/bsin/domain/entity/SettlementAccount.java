@@ -1,5 +1,6 @@
 package me.flyray.bsin.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -71,6 +72,15 @@ public class SettlementAccount extends BaseEntity implements Serializable {
      * 是否是默认结算账户
      */
     private String defaultFlag;
+
+    /**
+     * 删除标识
+     */
+    @TableLogic(
+            value = "0",
+            delval = "1"
+    )
+    private String delFlag;
 
     /**
      * 1 待审核 2 审核通过
