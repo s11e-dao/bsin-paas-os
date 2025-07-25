@@ -1,4 +1,4 @@
-package me.flyray.bsin.payment.entity;
+package me.flyray.bsin.payment.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,11 +17,6 @@ public class UnifiedOrderReq extends AbstractMchAppReq {
   /** 商户订单号 */
   @NotBlank(message = "商户订单号不能为空")
   private String merchantOrderNo;
-
-  /** 支付通道 如： aliPay wxPay等 */
-  @NotBlank(message = "支付通道不能为空")
-  private String channelCode;
-
 
   /** 支付方式 如： wxpay_jsapi,alipay_wap等 */
   @NotBlank(message = "支付方式不能为空")
@@ -85,7 +80,7 @@ public class UnifiedOrderReq extends AbstractMchAppReq {
 
   /** 收款配置类型 1-服务商 2-商户 3-店铺 */
   @NotNull(message = "收款配置类型不可为空")
-  private String infoType;
+  private Integer infoType;
 
   /** 商户、店铺、应用id */
   @NotNull(message = "收款对象ID不可为空")

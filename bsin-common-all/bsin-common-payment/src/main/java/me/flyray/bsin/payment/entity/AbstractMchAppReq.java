@@ -15,13 +15,22 @@ public class AbstractMchAppReq extends AbstractReq {
   private String tenantId;
 
   /** 商户号 */
-  private String merchantId;
+  private String merchantNo;
+  
+  /**
+   * 应用ID
+   */
+  private String bizRoleAppId;
 
   /** 商户名称 */
   private String merchantName;
 
-  /** 商户类型 */
-  private String merchantType;
+  /**
+   * 商户支付模式类型
+   *
+   * @see me.flyray.bsin.payment.enums.PayMerchantModeEnum
+   */
+  private String merchantMode;
 
   /** 店铺ID */
   private String storeId;
