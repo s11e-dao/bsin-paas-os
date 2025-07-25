@@ -1,19 +1,18 @@
-package me.flyray.bsin.payment;
+package me.flyray.bsin.payment.config;
 
 import lombok.Data;
 import me.flyray.bsin.thirdauth.wx.utils.WxRedisConfig;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
 /**
- * wechat pay properties
- *
- * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ * @author leonard
+ * @description
+ * @createDate 2025/07/2025/7/25 /21/14
  */
 @Data
-@ConfigurationProperties(prefix = "wx.pay")
-@PropertySource(value="classpath:application.properties", encoding="UTF-8")
-public class WxPayProperties {
+@Component
+public class PayServerConfig {
+
   /** 是否使用redis存储access token */
   private boolean useRedis;
 
@@ -38,5 +37,5 @@ public class WxPayProperties {
   /** apiclient_cert.p12文件的绝对路径，或者如果放在项目中，请以classpath:开头指定 */
   private String keyPath;
 
-
+  private String notifyUrl;
 }

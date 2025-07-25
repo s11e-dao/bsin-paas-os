@@ -484,6 +484,17 @@ public class BsinRedisProvider {
     }
 
     /**
+     * 增加原子值
+     *
+     * @param key Redis键
+     * @return 当前值
+     */
+    public static long addAtomicValue(String key, long value) {
+        RAtomicLong atomic = CLIENT.getAtomicLong(key);
+        return atomic.addAndGet(value);
+    }
+
+    /**
      * 递减原子值
      *
      * @param key Redis键
