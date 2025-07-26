@@ -72,3 +72,7 @@ Gets the value currently published at an IPNS name.
 
 ## 上传文件大小限制修改：
 * 在BsinGatewayApplication类中配置
+
+## 参考文档
+
+https://x-file-storage.xuyanwu.cn/#/

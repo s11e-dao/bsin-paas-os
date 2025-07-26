@@ -2,12 +2,12 @@ package me.flyray.bsin.payment.utils;
 
 import cn.hutool.core.io.FileUtil;
 import me.flyray.bsin.exception.BusinessException;
+import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.InputStream;
 
 /*
  * 支付平台 获取系统文件工具类
@@ -52,16 +52,29 @@ public class ChannelCertResourceUtil {
      **/
     private synchronized File downloadFile(String dbCertFilePath, File certFile) {
         File file = FileUtil.file(certFile.getAbsolutePath());
-        // 使用Consumer方式处理下载的输入流
-        fileStorageService.download(dbCertFilePath).inputStream(inputStream -> {
-            try {
-                FileUtil.writeFromStream(inputStream, file);
-            } catch (Exception e) {
-                throw new BusinessException("999", "支付证书下载失败：" + e.getMessage());
-            }
-        });
         
-        return file;
+        try {
+            // 获取文件信息
+            FileInfo fileInfo = fileStorageService.getFileInfoByUrl(dbCertFilePath);
+            if (fileInfo == null) {
+                throw new BusinessException("999", "无法获取证书文件信息");
+            }
+            
+            // 下载为字节数组并写入文件
+            byte[] fileBytes = fileStorageService.download(fileInfo).bytes();
+            if (fileBytes == null || fileBytes.length == 0) {
+                throw new BusinessException("999", "证书文件下载失败，文件内容为空");
+            }
+            
+            // 写入文件
+            FileUtil.writeBytes(fileBytes, file);
+            
+            return file;
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BusinessException("999", "支付证书下载失败：" + e.getMessage());
+        }
     }
 
 }
