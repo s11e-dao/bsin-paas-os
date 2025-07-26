@@ -17,8 +17,7 @@
     <description>bsin-paas平台：原子服务开发脚手架-业务接口模块</description>
     <properties>
         <java.version>17</java.version>
-        <weixin-java-pay.version>4.7.0</weixin-java-pay.version>
-        <alipay-sdk-java.version>4.40.333.ALL</alipay-sdk-java.version>
+
     </properties>
     <dependencies>
 
@@ -49,12 +48,14 @@
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>33.3.1-jre</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
@@ -65,46 +66,18 @@
             <artifactId>spring-boot</artifactId>
             <version>${spring-boot.version}</version>
         </dependency>
-        <dependency>
-            <groupId>me.flyray.bsin</groupId>
-            <artifactId>bsin-common-utils</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.alipay.sdk</groupId>
-            <artifactId>alipay-sdk-java</artifactId>
-            <version>4.39.104.ALL</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-client</artifactId>
-            <version>3.0.1</version>
-            <scope>compile</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
             <version>3.20.1</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>me.flyray.bsin</groupId>
-            <artifactId>bsin-common-utils</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-core</artifactId>
-            <version>3.5.9</version>
-            <scope>compile</scope>
-        </dependency>
+
         <dependency>
             <groupId>me.flyray.bsin</groupId>
             <artifactId>bsin-common-redis</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
 

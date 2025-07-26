@@ -1,6 +1,5 @@
 package me.flyray.bsin.payment.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
