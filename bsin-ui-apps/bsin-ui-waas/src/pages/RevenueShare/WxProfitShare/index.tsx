@@ -81,7 +81,7 @@ const WxProfitShare: React.FC = () => {
     try {
       const response = await getBizRoleAppPayChannelConfig({
         bizRoleAppId: app.serialNo,
-        payChannelCode: 'wxPay',
+        payChannelCode: 'wxpay',
       });
       if (response.code === 0 && response.data) {
         setChannelConfig(response.data);

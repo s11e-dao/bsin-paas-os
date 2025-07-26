@@ -18,7 +18,7 @@ public class UnifiedOrderReq extends AbstractMchAppReq {
   @NotBlank(message = "商户订单号不能为空")
   private String merchantOrderNo;
 
-  /** 支付通道 如： aliPay wxPay等 */
+  /** 支付通道 如： alipay wxPay等 */
   @NotBlank(message = "支付通道不能为空")
   private String channelCode;
 

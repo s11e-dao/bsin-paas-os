@@ -10,18 +10,18 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 public enum PayChannelInterfaceEnum {
 
   /** 微信支付 */
-  WXPAY("wxPay", "微信支付"),
-  WXPAY_V2("wxPay2", "微信支付V2"),
-  WXPAY_V3("wxPay3", "微信支付V3"),
+  WXPAY("wxpay", "微信支付"),
+  WXPAY_V2("wxpay2", "微信支付V2"),
+  WXPAY_V3("wxpay3", "微信支付V3"),
 
   /** 支付宝支付 */
-  ALIPAY("aliPay", "支付宝支付"),
+  ALIPAY("alipay", "支付宝支付"),
 
   /** 品牌积分支付 */
-  BRAND_POINT("brandsPoint", "品牌积分支付"),
+  BRAND_POINT("brandspointpay", "品牌积分支付"),
 
   /** 火钻支付 */
-  FIRE_DIAMOND("fireDiamond", "火钻支付");
+  FIRE_DIAMOND("firediamond", "火钻支付");
 
   private String code;
 

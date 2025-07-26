@@ -6,10 +6,10 @@
 
 ## 支持的支付通道
 
-- **微信支付 (wxPay)**
-- **支付宝支付 (aliPay)**
-- **品牌积分支付 (brandsPoint)**
-- **火钻支付 (fireDiamond)**
+- **微信支付 (wxpay)**
+- **支付宝支付 (alipay)**
+- **品牌积分支付 (brandspointpay)**
+- **火钻支付 (firediamondpay)**
 
 ## 商户模式
 
@@ -101,12 +101,12 @@
 
 ```javascript
 const PARAMS_CONFIG_MAP = {
-    wxPay: {
+    wxpay: {
         normal: normalWxPayParams,
         isv: isvWxPayParams,
         special: specialWxPayParams,
     },
-    aliPay: {
+    alipay: {
         normal: normalAliPayParams,
         isv: isvAliPayParams,
         special: specialAliPayParams,

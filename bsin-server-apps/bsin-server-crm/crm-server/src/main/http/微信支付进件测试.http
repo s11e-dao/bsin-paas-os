@@ -5,7 +5,7 @@ POST http://localhost:8080/merchantPayEntry/apply
 Content-Type: application/json
 
 {
-  "payChannel": "wxPay",
+  "payChannel": "wxpay",
   "businessCode": "BUSINESS_20241201_001",
   "merchantInfo": {
     "merchantName": "测试商户有限公司",
@@ -59,7 +59,7 @@ POST http://localhost:8080/merchantPayEntry/apply
 Content-Type: application/json
 
 {
-  "payChannel": "aliPay",
+  "payChannel": "alipay",
   "businessCode": "BUSINESS_20241201_002",
   "merchantInfo": {
     "merchantName": "测试商户有限公司",
@@ -128,7 +128,7 @@ POST http://localhost:8080/merchantPayEntry/apply
 Content-Type: application/json
 
 {
-  "payChannel": "wxPay",
+  "payChannel": "wxpay",
   "businessCode": "BUSINESS_20241201_004",
   "contactInfo": {
     "name": "王五",
@@ -141,7 +141,7 @@ POST http://localhost:8080/merchantPayEntry/apply
 Content-Type: application/json
 
 {
-  "payChannel": "wxPay",
+  "payChannel": "wxpay",
   "businessCode": "BUSINESS_20241201_005",
   "merchantInfo": {
     "merchantName": "测试商户有限公司"
@@ -181,7 +181,7 @@ POST http://localhost:8080/payMerchantEntry/queryStatus
 Content-Type: application/json
 
 {
-  "payChannel": "wxPay",
+  "payChannel": "wxpay",
   "applymentId": "1234567890123456789"
 }
 
@@ -190,7 +190,7 @@ POST http://localhost:8080/payMerchantEntry/queryStatus
 Content-Type: application/json
 
 {
-  "payChannel": "aliPay",
+  "payChannel": "alipay",
   "applymentId": "ALI_1701234567890"
 }
 
@@ -199,7 +199,7 @@ POST http://localhost:8080/payMerchantEntry/queryStatus
 Content-Type: application/json
 
 {
-  "payChannel": "wxPay"
+  "payChannel": "wxpay"
 }
 
 ### 12. 进件状态查询（WaaS模块）- 错误测试2

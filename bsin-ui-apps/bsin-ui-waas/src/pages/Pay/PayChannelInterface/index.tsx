@@ -46,12 +46,12 @@ const { Meta } = Card;
 
 // 参数配置映射
 const PARAMS_CONFIG_MAP = {
-    wxPay: {
+    wxpay: {
         normal: normalWxPayParams,
         isv: isvWxPayParams,
         special: specialWxPayParams,
     },
-    aliPay: {
+    alipay: {
         normal: normalAliPayParams,
         isv: isvAliPayParams,
         special: specialAliPayParams,
@@ -605,10 +605,10 @@ const PayChannelInterface: React.FC = () => {
                                                         description={
                                                             <div>
                                                                 <div>
-                                                                    {item.payChannelCode === 'wxPay' ? '微信支付' :
-                                                                        item.payChannelCode === 'aliPay' ? '支付宝支付' :
-                                                                            item.payChannelCode === 'brandsPoint' ? '品牌积分支付' :
-                                                                                item.payChannelCode === 'fireDiamond' ? '火钻支付' :
+                                                                    {item.payChannelCode === 'wxpay' ? '微信支付' :
+                                                                        item.payChannelCode === 'alipay' ? '支付宝支付' :
+                                                                            item.payChannelCode === 'brandspointpay' ? '品牌积分支付' :
+                                                                                item.payChannelCode === 'firediamondpay' ? '火钻支付' :
                                                                                     item.payChannelCode}
                                                                 </div>
                                                                 <div style={{ fontSize: 12, color: '#999', marginTop: 4 }}>
@@ -657,10 +657,10 @@ const PayChannelInterface: React.FC = () => {
                             disabled={isEdit}
                             onChange={handleChannelCodeChange}
                         >
-                            <Option value="wxPay">微信支付</Option>
-                            <Option value="aliPay">支付宝支付</Option>
-                            <Option value="brandsPoint">品牌积分支付</Option>
-                            <Option value="fireDiamond">火钻支付</Option>
+                            <Option value="wxpay">微信支付</Option>
+                            <Option value="alipay">支付宝支付</Option>
+                            <Option value="brandsoointpay">品牌积分支付</Option>
+                            <Option value="firediamondpay">火钻支付</Option>
                         </Select>
                     </Form.Item>
                     <Form.Item
@@ -905,8 +905,8 @@ const PayChannelInterface: React.FC = () => {
             >
                 <Descriptions bordered column={2} size="small">
                     <Descriptions.Item label="支付通道代码" span={1}>
-                        {viewRecord.payChannelCode === 'wxPay' ? '微信支付' :
-                            viewRecord.payChannelCode === 'aliPay' ? '支付宝支付' :
+                        {viewRecord.payChannelCode === 'wxpay' ? '微信支付' :
+                            viewRecord.payChannelCode === 'alipay' ? '支付宝支付' :
                                 viewRecord.payChannelCode === 'brandsPoint' ? '品牌积分支付' :
                                     viewRecord.payChannelCode === 'fireDiamond' ? '火钻支付' :
                                         viewRecord.payChannelCode}

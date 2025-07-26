@@ -44,7 +44,7 @@ public class MerchantPayEntry implements Serializable {
     private String isvId;
 
     /**
-     * 支付渠道 wxPay: 微信 aliPay:支付宝
+     * 支付渠道 wxpay: 微信 alipay:支付宝
      */
     private String channel;
 
