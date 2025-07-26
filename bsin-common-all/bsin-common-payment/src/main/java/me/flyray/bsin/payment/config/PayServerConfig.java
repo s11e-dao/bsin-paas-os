@@ -38,4 +38,5 @@ public class PayServerConfig {
   private String keyPath;
 
   private String notifyUrl;
+
 }

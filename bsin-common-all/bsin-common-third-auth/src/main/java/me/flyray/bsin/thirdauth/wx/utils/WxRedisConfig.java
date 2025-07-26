@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class WxRedisConfig {
+
   /** redis服务器 主机地址 */
   private String host;
 
@@ -20,4 +21,5 @@ public class WxRedisConfig {
 
   /** redis 服务连接超时时间 */
   private Integer timeout;
+
 }
