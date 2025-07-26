@@ -34,6 +34,10 @@ http://operation.flyray.me/
 
 https://www.bilibili.com/video/BV1VM4y1a7PF/?vd_source=360ae092de70c0b6c577d1d26f3565fe
 
+> 项目文档
+
+https://zread.ai/s11e-dao/bsin-paas-os
+
 ## 平台定位
 提供daPaaS层的一站式企业级技术解决方案，帮助企业快速实现数字商业创新，完成数字化转型。
 
