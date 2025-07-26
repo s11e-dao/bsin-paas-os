@@ -1,0 +1,1 @@
+package me.flyray.bsin.payment.channel.alipay;
