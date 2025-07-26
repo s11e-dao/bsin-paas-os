@@ -4,9 +4,6 @@ import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.oss.OssUtil;
-import org.dromara.x.file.storage.core.FileInfo;
-import org.dromara.x.file.storage.core.FileStorageService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -19,9 +16,6 @@ import java.io.InputStream;
 @Slf4j
 @Component
 public class ChannelCertResourceUtil {
-
-    @Autowired
-    private FileStorageService fileStorageService;
 
     public String getCertFilePath(String certFilePath) {
         return getCertFile(certFilePath).getAbsolutePath();
