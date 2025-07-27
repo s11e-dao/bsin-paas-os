@@ -630,19 +630,38 @@ const PayChannelInterface: React.FC = () => {
 
             {/* 新增/编辑模态框 */}
             <Modal
-                title={modalTitle}
+                title={
+                    <div style={{ 
+                        fontSize: '20px',
+                        fontWeight: '600',
+                        color: '#262626',
+                        borderBottom: '2px solid #f0f0f0',
+                        paddingBottom: '16px'
+                    }}>
+                        {modalTitle}
+                    </div>
+                }
                 open={isModalVisible}
                 onOk={handleSave}
                 onCancel={handleCancel}
                 confirmLoading={loading}
                 width={1000}
                 destroyOnClose
+                style={{ top: 20 }}
+                bodyStyle={{ 
+                    maxHeight: '70vh',
+                    overflow: 'auto',
+                    padding: '24px'
+                }}
             >
                 <Form
                     form={formRef}
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 16 }}
-                    layout="horizontal"
+                    labelCol={{ span: 24 }}
+                    wrapperCol={{ span: 24 }}
+                    layout="vertical"
+                    style={{ 
+                        padding: '0'
+                    }}
                 >
                     <Form.Item
                         label="通道代码"
@@ -687,63 +706,62 @@ const PayChannelInterface: React.FC = () => {
                     </Form.Item>
                     {/* 商户模式配置 */}
                     <div style={{
-                        border: '1px solid #d9d9d9',
-                        borderRadius: '6px',
-                        padding: '16px',
-                        marginBottom: '16px',
+                        border: '1px solid #f0f0f0',
+                        borderRadius: '8px',
+                        padding: '20px',
+                        marginBottom: '20px',
                         backgroundColor: '#fafafa'
                     }}>
                         <div style={{
-                            fontSize: '14px',
-                            fontWeight: 'bold',
-                            marginBottom: '12px',
-                            color: '#1890ff'
+                            fontSize: '15px',
+                            fontWeight: '500',
+                            marginBottom: '16px',
+                            color: '#262626'
                         }}>
                             商户模式配置
                         </div>
-                        <Row gutter={16}>
-                            <Col span={12}>
-                                <Form.Item
-                                    label="普通商户模式"
-                                    name="isNormalMerchantMode"
-                                    tooltip="是否支持普通商户模式"
-                                >
-                                    <Select 
-                                        onChange={handleNormalMerchantModeChange}
-                                        value={isNormalMerchantMode}
-                                    >
-                                        <Option value={true}>支持</Option>
-                                        <Option value={false}>不支持</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                    label="服务商子商户模式"
-                                    name="isIsvSubMerchantMode"
-                                    tooltip="是否支持服务商子商户模式"
-                                >
-                                    <Select 
-                                        onChange={handleServiceSubMerchantModeChange}
-                                        value={isIsvSubMerchantMode}
-                                    >
-                                        <Option value={true}>支持</Option>
-                                        <Option value={false}>不支持</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
+                        <Form.Item
+                            label="普通商户模式"
+                            name="isNormalMerchantMode"
+                            tooltip="是否支持普通商户模式"
+                        >
+                            <Select 
+                                onChange={handleNormalMerchantModeChange}
+                                value={isNormalMerchantMode}
+                            >
+                                <Option value={true}>支持</Option>
+                                <Option value={false}>不支持</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            label="服务商子商户模式"
+                            name="isIsvSubMerchantMode"
+                            tooltip="是否支持服务商子商户模式"
+                        >
+                            <Select 
+                                onChange={handleServiceSubMerchantModeChange}
+                                value={isIsvSubMerchantMode}
+                            >
+                                <Option value={true}>支持</Option>
+                                <Option value={false}>不支持</Option>
+                            </Select>
+                        </Form.Item>
                     </div>
 
                     <Form.Item
                         label="支持的支付方式"
                         name="wayCode"
-                        labelCol={{ span: 24 }}
-                        wrapperCol={{ span: 24 }}
                         rules={[{ required: true, message: '请选择支付方式!' }]}
                         tooltip="支持的支付方式列表"
                     >
-                        <div style={{ maxHeight: 300, overflow: 'auto', border: '1px solid #d9d9d9', borderRadius: '6px', padding: '12px' }}>
+                        <div style={{ 
+                            maxHeight: 300, 
+                            overflow: 'auto', 
+                            border: '1px solid #f0f0f0', 
+                            borderRadius: '6px', 
+                            padding: '16px',
+                            backgroundColor: '#fafafa'
+                        }}>
                             <Checkbox.Group
                                 value={selectedPayWays}
                                 onChange={handlePayWayChange}
@@ -766,14 +784,31 @@ const PayChannelInterface: React.FC = () => {
                         name="icon"
                         tooltip="页面展示的通道图标"
                     >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                        <div style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: 16,
+                            padding: '16px',
+                            border: '1px dashed #d9d9d9',
+                            borderRadius: '6px',
+                            backgroundColor: '#fafafa'
+                        }}>
                             <Upload {...uploadProps} listType="picture-card" showUploadList={false}>
                                 {iconUrl ? (
-                                    <div style={{ position: 'relative' }}>
+                                                                    <div style={{ 
+                                    position: 'relative',
+                                    borderRadius: '6px',
+                                    overflow: 'hidden'
+                                }}>
                                         <img
                                             src={iconUrl}
                                             alt="图标"
-                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                            style={{ 
+                                                width: '100%', 
+                                                height: '100%', 
+                                                objectFit: 'cover',
+                                                borderRadius: '6px'
+                                            }}
                                         />
                                         <div style={{
                                             position: 'absolute',
@@ -786,45 +821,64 @@ const PayChannelInterface: React.FC = () => {
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             opacity: 0,
-                                            transition: 'opacity 0.3s'
+                                            transition: 'opacity 0.3s',
+                                            borderRadius: '6px'
                                         }} className="upload-hover">
                                             <UploadOutlined style={{ color: 'white', fontSize: 20 }} />
                                         </div>
                                     </div>
                                 ) : (
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                                    <div style={{ 
+                                        display: 'flex', 
+                                        flexDirection: 'column', 
+                                        alignItems: 'center', 
+                                        justifyContent: 'center', 
+                                        height: '100%',
+                                        padding: '16px'
+                                    }}>
                                         <UploadOutlined style={{ fontSize: 24, color: '#999' }} />
-                                        <div style={{ marginTop: 8, fontSize: 12, color: '#999' }}>上传图标</div>
+                                        <div style={{ 
+                                            marginTop: 8, 
+                                            fontSize: 12, 
+                                            color: '#666'
+                                        }}>
+                                            上传图标
+                                        </div>
                                     </div>
                                 )}
                             </Upload>
                             {iconUrl && (
                                 <Button
-                                    type="link"
+                                    type="primary"
                                     danger
+                                    size="small"
                                     onClick={() => {
                                         setIconUrl('');
                                         formRef.setFieldValue('icon', '');
                                     }}
+                                    style={{
+                                        borderRadius: '4px',
+                                        height: '28px'
+                                    }}
                                 >
-                                    删除
+                                    删除图标
                                 </Button>
                             )}
                         </div>
                     </Form.Item>
                     {/* 商户接口定义描述 */}
                     <div style={{
-                        border: '1px solid #d9d9d9',
-                        borderRadius: '6px',
-                        padding: '16px',
-                        marginBottom: '16px',
+                        border: '1px solid #f0f0f0',
+                        borderRadius: '8px',
+                        padding: '20px',
+                        marginBottom: '20px',
                         backgroundColor: '#fafafa'
                     }}>
                         <div style={{
-                            fontSize: '14px',
-                            fontWeight: 'bold',
-                            marginBottom: '12px',
-                            color: '#1890ff'
+                            fontSize: '15px',
+                            fontWeight: '500',
+                            marginBottom: '16px',
+                            color: '#262626'
                         }}>
                             商户接口定义描述
                         </div>
@@ -832,12 +886,18 @@ const PayChannelInterface: React.FC = () => {
                             <Form.Item
                                 label="普通商户接口配置定义描述"
                                 name="normalMerchantParams"
-                                labelCol={{ span: 24 }}
-                                wrapperCol={{ span: 24 }}
                             >
                                 <TextArea
                                     rows={10}
                                     placeholder="请输入普通商户模式的参数配置（JSON格式）"
+                                    style={{
+                                        borderRadius: '4px',
+                                        border: '1px solid #f0f0f0',
+                                        background: '#fafafa',
+                                        fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
+                                        fontSize: '13px',
+                                        lineHeight: '1.5'
+                                    }}
                                 />
                             </Form.Item>
                         )}
@@ -846,24 +906,36 @@ const PayChannelInterface: React.FC = () => {
                             <Form.Item
                                 label="服务商接口配置定义描述"
                                 name="isvParams"
-                                labelCol={{ span: 24 }}
-                                wrapperCol={{ span: 24 }}
                             >
                                 <TextArea
                                     rows={10}
                                     placeholder="请输入服务商接口配置定义描述（JSON格式）"
+                                    style={{
+                                        borderRadius: '4px',
+                                        border: '1px solid #f0f0f0',
+                                        background: '#fafafa',
+                                        fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
+                                        fontSize: '13px',
+                                        lineHeight: '1.5'
+                                    }}
                                 />
                             </Form.Item>
                         )}
                         {isIsvSubMerchantMode && (<Form.Item
                             label="特约商户接口配置定义描述"
                             name="specialMerchantParams"
-                            labelCol={{ span: 24 }}
-                            wrapperCol={{ span: 24 }}
                         >
                             <TextArea
                                 rows={10}
                                 placeholder="请输入特约商户接口配置定义描述（JSON格式）"
+                                style={{
+                                    borderRadius: '4px',
+                                    border: '1px solid #f0f0f0',
+                                    background: '#fafafa',
+                                    fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
+                                    fontSize: '13px',
+                                    lineHeight: '1.5'
+                                }}
                             />
                         </Form.Item>)}
                     </div>
@@ -886,6 +958,13 @@ const PayChannelInterface: React.FC = () => {
                         <TextArea
                             rows={3}
                             placeholder="请输入备注信息"
+                            style={{
+                                borderRadius: '4px',
+                                border: '1px solid #f0f0f0',
+                                background: '#fafafa',
+                                fontSize: '14px',
+                                lineHeight: '1.6'
+                            }}
                         />
                     </Form.Item>
                 </Form>
