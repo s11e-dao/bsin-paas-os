@@ -73,7 +73,7 @@
 请求参数：
 {
 bizRoleAppId: "123"
-payChannelCode:"brandsPoint"
+payChannel:"brandsPoint"
 }
 接口返回支付通道参数示例如下：
 {
@@ -90,7 +90,7 @@ payChannelCode:"brandsPoint"
         "createBy": null,
         "normalMerchantParams": "{\"mchId\":\"发多少\",\"appId\":\"供电公司\",\"appSecret\":\"鬼地方个\",\"oauth2Url\":\"鬼地方个\",\"apiVersion\":\"V3\",\"key\":\"给对方\",\"apiV3Key\":\"给对方\",\"notifyUrl\":\"给对方\",\"keyPath\":\"官ga\"}",
         "createTime": "2025-07-20 13:14:33.876",
-        "payChannelCode": "wxpay",
+        "payChannel": "wxpay",
         "updateBy": null,
         "tenantId": "6345824413764157440",
         "feeRatio": 0.000000,

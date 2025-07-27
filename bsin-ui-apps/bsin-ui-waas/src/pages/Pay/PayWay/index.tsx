@@ -280,7 +280,7 @@ const PayWay: React.FC = () => {
                 disabled={isEdit}
                 onChange={(value) => {
                   // 当选择支付方式类型时，自动设置对应的编码
-                  formRef.setFieldsValue({ payWayCode: value });
+                  formRef.setFieldsValue({ payWay: value });
                 }}
               >
                 <Option value="WX_H5">微信H5</Option>
@@ -314,7 +314,7 @@ const PayWay: React.FC = () => {
 
             <Form.Item
               label="支付方式编码"
-              name="payWayCode"
+              name="payWay"
               rules={[
                 { required: true, message: '请输入支付方式编码!' },
                 { max: 50, message: '支付方式编码不能超过50个字符!' },
@@ -375,7 +375,7 @@ const PayWay: React.FC = () => {
                           viewRecord.payWayType}
             </Descriptions.Item>
             <Descriptions.Item label="支付方式编码" span={1}>
-              {viewRecord.payWayCode}
+              {viewRecord.payWay}
             </Descriptions.Item>
           <Descriptions.Item label="租户ID" span={1}>
             {viewRecord.tenantId}

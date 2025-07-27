@@ -72,7 +72,7 @@ public class PayOrderVO implements Serializable {
     /**
      * 支付方式代码
      */
-    private String wayCode;
+    private String payWay;
 
     /**
      * 支付金额,单位元

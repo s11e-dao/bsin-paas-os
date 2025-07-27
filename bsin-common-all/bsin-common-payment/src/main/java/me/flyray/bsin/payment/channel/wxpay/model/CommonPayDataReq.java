@@ -1,4 +1,4 @@
-package me.flyray.bsin.payment.channel.wxpay.requst;
+package me.flyray.bsin.payment.channel.wxpay.model;
 
 import lombok.Data;
 

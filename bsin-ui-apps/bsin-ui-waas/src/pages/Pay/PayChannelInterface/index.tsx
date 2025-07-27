@@ -88,7 +88,6 @@ const PayChannelInterface: React.FC = () => {
 
     // 支付方式数据
     const [payWayList, setPayWayList] = useState<any[]>([]);
-    const [selectedPayWays, setSelectedPayWays] = useState<string[]>([]);
 
     // 商户模式状态
     const [isNormalMerchantMode, setIsNormalMerchantMode] = useState<boolean>(true);
@@ -100,8 +99,8 @@ const PayChannelInterface: React.FC = () => {
     /**
      * 根据通道代码和商户模式获取参数配置
      */
-    const getParamsConfig = (channelCode: string, merchantMode: string) => {
-        const config = PARAMS_CONFIG_MAP[channelCode as keyof typeof PARAMS_CONFIG_MAP];
+    const getParamsConfig = (payChannel: string, merchantMode: string) => {
+        const config = PARAMS_CONFIG_MAP[payChannel as keyof typeof PARAMS_CONFIG_MAP];
         if (!config) return '';
         
         const paramsConfig = config[merchantMode as keyof typeof config];
@@ -112,19 +111,19 @@ const PayChannelInterface: React.FC = () => {
      * 填充商户接口定义描述
      */
     const fillMerchantParams = () => {
-        const channelCode = formRef.getFieldValue('payChannelCode');
-        if (!channelCode) return;
+        const payChannel = formRef.getFieldValue('payChannel');
+        if (!payChannel) return;
 
         // 填充普通商户模式参数
         if (isNormalMerchantMode) {
-            const normalParams = getParamsConfig(channelCode, 'normal');
+            const normalParams = getParamsConfig(payChannel, 'normal');
             formRef.setFieldValue('normalMerchantParams', normalParams);
         }
 
         // 填充服务商子商户模式参数
         if (isIsvSubMerchantMode) {
-            const isvParams = getParamsConfig(channelCode, 'isv');
-            const specialParams = getParamsConfig(channelCode, 'special');
+            const isvParams = getParamsConfig(payChannel, 'isv');
+            const specialParams = getParamsConfig(payChannel, 'special');
             formRef.setFieldValue('isvParams', isvParams);
             formRef.setFieldValue('specialMerchantParams', specialParams);
         }
@@ -241,7 +240,6 @@ const PayChannelInterface: React.FC = () => {
         setIsEdit(false);
         setCurrentRecord({} as columnsDataType);
         setIconUrl('');
-        setSelectedPayWays([]);
         setIsNormalMerchantMode(true);
         setIsIsvSubMerchantMode(false);
         formRef.resetFields();
@@ -268,8 +266,7 @@ const PayChannelInterface: React.FC = () => {
         setCurrentRecord(record);
         setIconUrl(record.icon || '');
         // 解析已选择的支付方式
-        const selectedWays = record.wayCode ? record.wayCode.split(',') : [];
-        setSelectedPayWays(selectedWays);
+        const selectedWays = record.payWay ? record.payWay.split(',') : [];
         // 设置商户模式状态
         const isNormalMode = record.isNormalMerchantMode || false;
         const isIsvMode = record.isIsvSubMerchantMode || false;
@@ -279,7 +276,7 @@ const PayChannelInterface: React.FC = () => {
         // 设置表单值
         formRef.setFieldsValue({
             ...record,
-            wayCode: selectedWays,
+            payWay: selectedWays,
             isNormalMerchantMode: isNormalMode,
             isIsvSubMerchantMode: isIsvMode,
         });
@@ -287,22 +284,22 @@ const PayChannelInterface: React.FC = () => {
         
         // 延迟填充参数配置（如果编辑时没有参数配置，则填充默认值）
         setTimeout(() => {
-            const channelCode = record.payChannelCode;
-            if (channelCode) {
+            const payChannel = record.payChannel;
+            if (payChannel) {
                 // 如果普通商户模式支持但没有参数配置，则填充默认值
                 if (isNormalMode && !record.normalMerchantParams) {
-                    const normalParams = getParamsConfig(channelCode, 'normal');
+                    const normalParams = getParamsConfig(payChannel, 'normal');
                     formRef.setFieldValue('normalMerchantParams', normalParams);
                 }
                 
                 // 如果服务商子商户模式支持但没有参数配置，则填充默认值
                 if (isIsvMode) {
                     if (!record.isvParams) {
-                        const isvParams = getParamsConfig(channelCode, 'isv');
+                        const isvParams = getParamsConfig(payChannel, 'isv');
                         formRef.setFieldValue('isvParams', isvParams);
                     }
                     if (!record.specialMerchantParams) {
-                        const specialParams = getParamsConfig(channelCode, 'special');
+                        const specialParams = getParamsConfig(payChannel, 'special');
                         formRef.setFieldValue('specialMerchantParams', specialParams);
                     }
                 }
@@ -315,7 +312,7 @@ const PayChannelInterface: React.FC = () => {
      */
     const handleView = async (record: columnsDataType) => {
         try {
-            const res = await getPayInterfaceDetail({ payChannelCode: record.payChannelCode });
+            const res = await getPayInterfaceDetail({ payChannel: record.payChannel });
             if (res?.data) {
                 setViewRecord(res.data);
                 setIsViewModalVisible(true);
@@ -330,7 +327,7 @@ const PayChannelInterface: React.FC = () => {
      */
     const handleDelete = async (record: columnsDataType) => {
         try {
-            const res = await deletePayInterface({ payChannelCode: record.payChannelCode });
+            const res = await deletePayInterface({ payChannel: record.payChannel });
             if (res.code === 0 || res.code === '000000') {
                 message.success('删除成功');
                 fetchCardData(); // 重新获取数据
@@ -348,7 +345,7 @@ const PayChannelInterface: React.FC = () => {
     const handleStatusChange = async (record: columnsDataType, checked: boolean) => {
         try {
             const res = await editPayInterface({
-                payChannelCode: record.payChannelCode,
+                payChannel: record.payChannel,
                 status: checked ? 1 : 0,
             });
             if (res.code === 0 || res.code === '000000') {
@@ -360,14 +357,6 @@ const PayChannelInterface: React.FC = () => {
         } catch (error) {
             message.error('操作失败');
         }
-    };
-
-    /**
-     * 支付方式选择变更
-     */
-    const handlePayWayChange = (checkedValues: string[]) => {
-        setSelectedPayWays(checkedValues);
-        formRef.setFieldValue('wayCode', checkedValues);
     };
 
     /**
@@ -425,10 +414,10 @@ const PayChannelInterface: React.FC = () => {
             const requestData = {
                 ...values,
                 icon: iconUrl, // 使用上传的图标URL
-                wayCode: selectedPayWays.join(','), // 使用选中的支付方式
+                payWay: Array.isArray(values.payWay) ? values.payWay.join(',') : values.payWay, // 使用表单中的支付方式
             };
             const res = isEdit
-                ? await editPayInterface({ ...requestData, payChannelCode: currentRecord.payChannelCode })
+                ? await editPayInterface({ ...requestData, payChannel: currentRecord.payChannel })
                 : await addPayInterface(requestData);
             if (res.code === 0 || res.code === '000000') {
                 message.success(isEdit ? '更新成功' : '添加成功');
@@ -450,7 +439,6 @@ const PayChannelInterface: React.FC = () => {
     const handleCancel = () => {
         setIsModalVisible(false);
         setIconUrl('');
-        setSelectedPayWays([]);
         setIsNormalMerchantMode(true);
         setIsIsvSubMerchantMode(false);
         formRef.resetFields();
@@ -507,7 +495,7 @@ const PayChannelInterface: React.FC = () => {
                         >
                             <List
                                 loading={loadingData}
-                                rowKey="payChannelCode"
+                                rowKey="payChannel"
                                 grid={{
                                     gutter: 16,
                                     xs: 1,
@@ -519,9 +507,9 @@ const PayChannelInterface: React.FC = () => {
                                 }}
                                 dataSource={type.copilotList}
                                 renderItem={(item: columnsDataType) => {
-                                    if (item && item.payChannelCode) {
+                                    if (item && item.payChannel) {
                                         return (
-                                            <List.Item key={item.payChannelCode}>
+                                            <List.Item key={item.payChannel}>
                                                 <Card
                                                     style={{ width: 300 }}
                                                     cover={
@@ -605,11 +593,11 @@ const PayChannelInterface: React.FC = () => {
                                                         description={
                                                             <div>
                                                                 <div>
-                                                                    {item.payChannelCode === 'wxpay' ? '微信支付' :
-                                                                        item.payChannelCode === 'alipay' ? '支付宝支付' :
-                                                                            item.payChannelCode === 'brandspointpay' ? '品牌积分支付' :
-                                                                                item.payChannelCode === 'firediamondpay' ? '火钻支付' :
-                                                                                    item.payChannelCode}
+                                                                    {item.payChannel === 'wxpay' ? '微信支付' :
+                                                                        item.payChannel === 'alipay' ? '支付宝支付' :
+                                                                            item.payChannel === 'brandspointpay' ? '品牌积分支付' :
+                                                                                item.payChannel === 'firediamondpay' ? '火钻支付' :
+                                                                                    item.payChannel}
                                                                 </div>
                                                                 <div style={{ fontSize: 12, color: '#999', marginTop: 4 }}>
                                                                     {item.status === 1 ? '已启用' : '已停用'}
@@ -665,7 +653,7 @@ const PayChannelInterface: React.FC = () => {
                 >
                     <Form.Item
                         label="通道代码"
-                        name="payChannelCode"
+                        name="payChannel"
                         rules={[
                             { required: true, message: '请选择通道代码!' },
                         ]}
@@ -750,34 +738,32 @@ const PayChannelInterface: React.FC = () => {
 
                     <Form.Item
                         label="支持的支付方式"
-                        name="wayCode"
+                        name="payWay"
                         rules={[{ required: true, message: '请选择支付方式!' }]}
                         tooltip="支持的支付方式列表"
                     >
-                        <div style={{ 
-                            maxHeight: 300, 
-                            overflow: 'auto', 
-                            border: '1px solid #f0f0f0', 
-                            borderRadius: '6px', 
-                            padding: '16px',
-                            backgroundColor: '#fafafa'
-                        }}>
-                            <Checkbox.Group
-                                value={selectedPayWays}
-                                onChange={handlePayWayChange}
-                                style={{ width: '100%' }}
-                            >
+                        <Checkbox.Group
+                            style={{ width: '100%' }}
+                        >
+                            <div style={{ 
+                                maxHeight: 300, 
+                                overflow: 'auto', 
+                                border: '1px solid #f0f0f0', 
+                                borderRadius: '6px', 
+                                padding: '16px',
+                                backgroundColor: '#fafafa'
+                            }}>
                                 <Row gutter={[16, 8]}>
                                     {payWayList.map((payWay) => (
-                                        <Col span={8} key={payWay.payWayCode}>
-                                            <Checkbox value={payWay.payWayCode}>
+                                        <Col span={8} key={payWay.payWay}>
+                                            <Checkbox value={payWay.payWay}>
                                                 {payWay.payWayName}
                                             </Checkbox>
                                         </Col>
                                     ))}
                                 </Row>
-                            </Checkbox.Group>
-                        </div>
+                            </div>
+                        </Checkbox.Group>
                     </Form.Item>
                     <Form.Item
                         label="图标"
@@ -984,11 +970,11 @@ const PayChannelInterface: React.FC = () => {
             >
                 <Descriptions bordered column={2} size="small">
                     <Descriptions.Item label="支付通道代码" span={1}>
-                        {viewRecord.payChannelCode === 'wxpay' ? '微信支付' :
-                            viewRecord.payChannelCode === 'alipay' ? '支付宝支付' :
-                                viewRecord.payChannelCode === 'brandsPoint' ? '品牌积分支付' :
-                                    viewRecord.payChannelCode === 'fireDiamond' ? '火钻支付' :
-                                        viewRecord.payChannelCode}
+                        {viewRecord.payChannel === 'wxpay' ? '微信支付' :
+                            viewRecord.payChannel === 'alipay' ? '支付宝支付' :
+                                viewRecord.payChannel === 'brandsPoint' ? '品牌积分支付' :
+                                    viewRecord.payChannel === 'fireDiamond' ? '火钻支付' :
+                                        viewRecord.payChannel}
                     </Descriptions.Item>
                     <Descriptions.Item label="支付通道名称" span={1}>
                         {viewRecord.payChannelName}
@@ -1001,10 +987,10 @@ const PayChannelInterface: React.FC = () => {
                     </Descriptions.Item>
                     <Descriptions.Item label="支持的支付方式" span={2}>
                         <div style={{ maxHeight: 150, overflow: 'auto' }}>
-                            {viewRecord.wayCode ? (
+                            {viewRecord.payWay ? (
                                 <Row gutter={[16, 8]}>
-                                    {viewRecord.wayCode.split(',').map((wayCode, index) => {
-                                        const payWay = payWayList.find(pw => pw.payWayCode === wayCode);
+                                    {viewRecord.payWay.split(',').map((payWay, index) => {
+                                        const payWayObj = payWayList.find(pw => pw.payWay === payWay);
                                         return (
                                             <Col span={8} key={index}>
                                                 <div style={{
@@ -1013,7 +999,7 @@ const PayChannelInterface: React.FC = () => {
                                                     borderRadius: '4px',
                                                     fontSize: '12px'
                                                 }}>
-                                                    {payWay ? payWay.payWayName : wayCode}
+                                                    {payWayObj ? payWayObj.payWayName : payWay}
                                                 </div>
                                             </Col>
                                         );

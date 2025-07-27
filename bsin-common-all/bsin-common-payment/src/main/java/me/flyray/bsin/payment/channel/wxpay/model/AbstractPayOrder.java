@@ -39,13 +39,13 @@ public class AbstractPayOrder implements Serializable {
   private String merchantOrderNo;
 
   /** 支付接口代码 */
-  private String ifCode;
+  private String payChannel;
 
   /** 支付方式代码 */
-  private String wayCode;
+  private String payWay;
 
   /** 支付金额,单位元 */
-  private BigDecimal amount;
+  private BigDecimal payAmount;
 
   /** 商户手续费费率快照 */
   private BigDecimal mchFeeRate;

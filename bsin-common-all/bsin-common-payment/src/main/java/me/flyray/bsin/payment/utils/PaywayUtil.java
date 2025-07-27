@@ -12,12 +12,12 @@ public class PaywayUtil {
   private static final String PAYWAY_PACKAGE_NAME = "payway";
 
   /** 获取真实的支付方式Service */
-  public static IPaymentService getRealPaywayService(Object obj, String wayCode) {
+  public static IPaymentService getRealPaywayService(Object obj, String payWay) {
 
     try {
 
       // 下划线转换驼峰 & 首字母大写
-      String clsName = StrUtil.upperFirst(StrUtil.toCamelCase(wayCode.toLowerCase()));
+      String clsName = StrUtil.upperFirst(StrUtil.toCamelCase(payWay.toLowerCase()));
       return (IPaymentService)
           SpringUtils.getBean(
               Class.forName(
@@ -33,12 +33,12 @@ public class PaywayUtil {
   }
 
   /** 获取微信V3真实的支付方式Service */
-  public static IPaymentService getRealPaywayV3Service(Object obj, String wayCode) {
+  public static IPaymentService getRealPaywayV3Service(Object obj, String payWay) {
     //    getBean
     try {
 
       // 下划线转换驼峰 & 首字母大写
-      String clsName = StrUtil.upperFirst(StrUtil.toCamelCase(wayCode.toLowerCase()));
+      String clsName = StrUtil.upperFirst(StrUtil.toCamelCase(payWay.toLowerCase()));
       return (IPaymentService)
           SpringUtils.getBean(
               Class.forName(

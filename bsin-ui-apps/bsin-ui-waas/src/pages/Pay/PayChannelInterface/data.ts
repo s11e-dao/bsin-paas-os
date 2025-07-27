@@ -1,10 +1,10 @@
 import type { ProColumns } from '@ant-design/pro-table';
 
 export type columnsDataType = {
-  payChannelCode: string;
+  payChannel: string;
   payChannelName: string;
   configPageType: number;
-  wayCode: string;
+  payWay: string;
   icon: string;
   status: number;
   isNormalMerchantMode: boolean;
@@ -22,7 +22,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   // 搜索字段
   {
     title: '通道代码',
-    dataIndex: 'payChannelCode',
+    dataIndex: 'payChannel',
     hideInTable: true,
     fieldProps: {
       maxLength: 32,
@@ -54,7 +54,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '通道代码',
     width: 120,
-    dataIndex: 'payChannelCode',
+    dataIndex: 'payChannel',
     fixed: 'left',
     hideInSearch: true,
     tooltip: '支付通道的唯一标识代码',
@@ -105,7 +105,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '支付方式',
     width: 200,
-    dataIndex: 'wayCode',
+    dataIndex: 'payWay',
     hideInSearch: true,
     ellipsis: true,
     tooltip: '支持的支付方式列表，如：["wxpay_jsapi", "wxpay_bar"]',

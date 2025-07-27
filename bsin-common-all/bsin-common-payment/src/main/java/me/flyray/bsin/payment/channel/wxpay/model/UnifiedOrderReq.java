@@ -20,12 +20,12 @@ public class UnifiedOrderReq extends AbstractMchAppReq {
 
   /** 支付通道 如： alipay wxPay等 */
   @NotBlank(message = "支付通道不能为空")
-  private String channelCode;
+  private String payChannel;
 
 
   /** 支付方式 如： wxpay_jsapi,alipay_wap等 */
   @NotBlank(message = "支付方式不能为空")
-  private String wayCode;
+  private String payWay;
 
   /** 支付金额， 单位：元 */
   @NotNull(message = "支付金额不能为空")

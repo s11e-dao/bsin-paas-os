@@ -81,7 +81,7 @@ const WxProfitShare: React.FC = () => {
     try {
       const response = await getBizRoleAppPayChannelConfig({
         bizRoleAppId: app.serialNo,
-        payChannelCode: 'wxpay',
+        payChannel: 'wxpay',
       });
       if (response.code === 0 && response.data) {
         setChannelConfig(response.data);
@@ -311,7 +311,7 @@ const WxProfitShare: React.FC = () => {
           <>
             <Divider />
             <Descriptions title="支付通道配置" column={2}>
-              <Descriptions.Item label="通道代码">{channelConfig.payChannelCode}</Descriptions.Item>
+              <Descriptions.Item label="通道代码">{channelConfig.payChannel}</Descriptions.Item>
               <Descriptions.Item label="费率">{channelConfig.feeRatio}%</Descriptions.Item>
               <Descriptions.Item label="普通商户模式">
                 <Tag color={channelConfig.isNormalMerchantMode ? 'success' : 'default'}>

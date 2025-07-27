@@ -2,7 +2,7 @@ import type { ProColumns } from '@ant-design/pro-table';
 
 export type columnsDataType = {
   serialNo: string;
-  payWayCode: string;
+  payWay: string;
   payWayType: string;
   payWayName: string;
   tenantId: string;
@@ -32,7 +32,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '支付方式编码',
-    dataIndex: 'payWayCode',
+    dataIndex: 'payWay',
     hideInTable: true,
     fieldProps: {
       maxLength: 32,
@@ -96,7 +96,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   {
     title: '支付方式编码',
     width: 160,
-    dataIndex: 'payWayCode',
+    dataIndex: 'payWay',
     hideInSearch: true,
     ellipsis: true,
   },

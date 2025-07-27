@@ -90,7 +90,7 @@ return request(waasPath + '/servicePath', {
 - **服务名**: `PayChannelConfigService`
 - **方法名**: `getBizRoleAppPayChannelConfig`
 - **路径**: `/payChannelConfig/getBizRoleAppPayChannelConfig`
-- **参数**: `{ bizRoleAppId, payChannelCode }`
+- **参数**: `{ bizRoleAppId, payChannel }`
 - **功能**: 获取指定应用的支付通道配置
 
 ### 2. 微信分账API接口

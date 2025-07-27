@@ -18,7 +18,7 @@ export async function getBizRoleAppList(params: any) {
 // 获取平台应用支付通道配置
 export async function getBizRoleAppPayChannelConfig(params: {
   bizRoleAppId: string;
-  payChannelCode: string;
+  payChannel: string;
 }) {
   return request(waasPath + '/payChannelConfig/getBizRoleAppPayChannelConfig', {
     serviceName: 'PayChannelConfigService',

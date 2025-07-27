@@ -18,7 +18,7 @@ public class PayChannelRes implements Serializable {
 
     private String payChannelName;
 
-    private String payWayCode;
+    private String payWay;
 
     private String payWayName;
 }
