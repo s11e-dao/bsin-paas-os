@@ -1,6 +1,6 @@
 package me.flyray.bsin.facade.mcp.config;
 
-import me.flyray.bsin.facade.mcp.tools.OpenMeteoService;
+import me.flyray.bsin.facade.mcp.tools.CrmMcpToolService;
 import org.springframework.ai.support.ToolCallbacks;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbackProvider;
@@ -13,9 +13,9 @@ public class AiMcpToolsConfig {
 
     @Bean
     ToolCallbackProvider tools(
-            @Qualifier("openMeteoService") OpenMeteoService openMeteoService
+            @Qualifier("crmMcpToolService") CrmMcpToolService crmMcpToolService
     ) {
-        ToolCallback[] toolCallbacks = ToolCallbacks.from(openMeteoService) ;
+        ToolCallback[] toolCallbacks = ToolCallbacks.from(crmMcpToolService) ;
         return ToolCallbackProvider.from(toolCallbacks);
     }
 
