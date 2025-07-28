@@ -34,4 +34,10 @@ public class AbstractMchAppReq extends AbstractReq {
 
   /** 店铺ID */
   private String storeNo;
+
+  /**
+   * 支付渠道编号
+   */
+  private String channelCode;
+
 }
