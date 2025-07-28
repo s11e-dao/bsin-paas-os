@@ -64,8 +64,6 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
   const [isEditFormModal, setIsEditFormModal] = useState(false)
   // 查看模态框
   const [isViewFormModal, setIsViewFormModal] = useState(false)
-  // 删除模态框
-  const [isDeleteFormModal, setIsDeleteFormModal] = useState(false)
   // 复制模态框
   const [isCopyFormModal, setIsCopyFormModal] = useState(false)
   const [customerPromptTemplateList, setCustomerPromptTemplateList] = useState<any[]>(
@@ -79,14 +77,12 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
   const [promptTemplateNo, setPromptTemplateNo] = useState('')
 
   const [currentRecord, setCurrentRecord] = useState<any>({})
+  const [currentTabKey, setCurrentTabKey] = useState<string>('1')
 
   // 获取新增表单信息
   const addFormRef: any = React.createRef()
   // 获取编辑表单信息
   const [editFormRef] = Form.useForm()
-
-  // 获取刪除表单信息
-  const [delFormRef] = Form.useForm()
 
   // 获取编辑表单信息
   const [viewFormRef] = Form.useForm()
@@ -95,11 +91,13 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
 
   // 处理标签页切换
   const handleTabChange = (activeKey: string) => {
+    setCurrentTabKey(activeKey)
     setLoading(true)
     // 查询协议
     let params = {
       current: '1',
       pageSize: '99',
+      platformFlag: activeKey === '1' ? false : true, // 根据标签页传递platformFlag参数
     }
     getPromptTemplatePageList(params).then((res) => {
       let customerPromptTemplateListTmp: any[] = []
@@ -111,7 +109,7 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
         res?.data.map((promptTemplate) => {
           if (promptTemplate.type == '0') {
             customerPromptTemplateListTmp.push(promptTemplate)
-          } else if (promptTemplate.type == '1') {
+          } else if (promptTemplate.type == '1' || promptTemplate.type == '2' || promptTemplate.type == '3') {
             sysPromptTemplateListTmp.push(promptTemplate)
           }
         })
@@ -154,6 +152,16 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
           name: '平台提示词模版',
           promptTemplateList: [],
         },
+        {
+          id: 3,
+          name: 'C端应用提示词模版',
+          promptTemplateList: [],
+        },
+        {
+          id: 4,
+          name: 'B端应用提示词模版',
+          promptTemplateList: [],
+        },
       ]
       setPromptTemplateTypeList(promptTemplateTypeList)
       setLoading(false)
@@ -165,6 +173,7 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
     let params = {
       current: '1',
       pageSize: '99',
+      platformFlag: false, // 默认查询我的提示词模版
     }
     getPromptTemplatePageList(params).then((res) => {
       let customerPromptTemplateListTmp: any[] = []
@@ -176,7 +185,7 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
         res?.data.map((promptTemplate) => {
           if (promptTemplate.type == '0') {
             customerPromptTemplateListTmp.push(promptTemplate)
-          } else if (promptTemplate.type == '1') {
+          } else if (promptTemplate.type == '1' || promptTemplate.type == '2' || promptTemplate.type == '3') {
             sysPromptTemplateListTmp.push(promptTemplate)
           }
         })
@@ -198,7 +207,7 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
           id: 2,
           name: '平台提示词模版',
           promptTemplateList: sysPromptTemplateListTmp,
-        },
+        }
       ]
       setPromptTemplateTypeList(promptTemplateTypeList)
       setLoading(false)
@@ -231,12 +240,18 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
       .validateFields()
       .then(async () => {
         var response = addFormRef.current?.getFieldsValue()
+        // 确保type值正确
+        if (currentTabKey === '1') {
+          response.type = '0' // 我的提示词模版固定为0
+        }
         let res = await addPromptTemplate({ ...response })
         if (res.code == '000000') {
           message.success('新增成功')
           // 重置表单
           addFormRef.current.resetFields()
           setIsAddFormModal(false)
+          // 用于刷新列表
+          setPromptTemplateNo(res.data?.serialNo)
         } else {
           message.error(res.message)
         }
@@ -277,41 +292,27 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
       })
       .catch(() => {})
   }
-  // 点击删除
-  const toDelete = (record: any) => {
+
+
+  // 直接删除函数
+  const handleDelete = async (record: any) => {
     if (record.editable == false) {
       message.warning('该配置不支持删除！！')
       return
     }
-    setIsDeleteFormModal(true)
-    setPromptTemplateNo(record.serialNo)
-    // 数据回显
-    delFormRef.setFieldsValue(record)
+    let res = await delPromptTemplate(record)
+    if (res.code == '000000') {
+      message.success('删除成功')
+      // 用于刷新
+      setPromptTemplateNo(record.serialNo)
+    } else {
+      message.error(res.message)
+    }
   }
 
-  // 点击删除
-  const confirmDel = async () => {
-    delFormRef
-      .validateFields()
-      .then(async () => {
-        var response = delFormRef.getFieldsValue()
-        if (response.editable == false) {
-          message.warning('该配置不支持删除！！')
-          return
-        }
-        let res = await delPromptTemplate(response)
-        if ((res.data = '000000')) {
-          message.success('删除成功')
-          // 重置表单
-          delFormRef.resetFields()
-          setIsDeleteFormModal(false)
-          // 用于刷新
-          setPromptTemplateNo('')
-        } else {
-          message.error(res.message)
-        }
-      })
-      .catch(() => {})
+  // 取消删除
+  const cancelDelete = () => {
+    message.info('已取消删除')
   }
 
   /**
@@ -421,10 +422,15 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
           name="type"
           rules={[{ required: true, message: '请选择类型!' }]}
         >
-          <Select value="0" disabled>
-            <Option value="0">个人模版</Option>
-            <Option value="1">系统模版</Option>
-          </Select>
+          {currentTabKey === '1' ? (
+            <Input value="客户自定义" disabled />
+          ) : (
+            <Select placeholder="请选择提示词模版类型">
+              <Option value="1">系统提示词</Option>
+              <Option value="2">C端app应用提示词</Option>
+              <Option value="3">B端app应用提示词</Option>
+            </Select>
+          )}
         </Form.Item>
         <Form.Item
           label="系统角色"
@@ -480,6 +486,21 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
         type="primary"
         onClick={() => {
           console.log('')
+          // 根据当前标签页设置默认类型
+          const defaultType = currentTabKey === '1' ? '0' : '1'
+          // 重置表单并设置默认值
+          addFormRef.current?.resetFields()
+          addFormRef.current?.setFieldsValue({ 
+            type: defaultType,
+            status: '1',
+            accessAuthority: '1',
+            maxResults: 3,
+            minScore: 0.7,
+            quoteLimit: 1000,
+            dimension: '512',
+            segmentSizeInTokens: 100,
+            overlapSizeInTokens: 0,
+          })
           setIsAddFormModal(true)
         }}
         className={styles.btn}
@@ -537,13 +558,18 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
                               }}
                             />,
 
-                            <DeleteOutlined
-                              key="delete"
-                              title="删除"
-                              onClick={() => {
-                                toDelete(item)
-                              }}
-                            />,
+                            <Popconfirm
+                              title="是否删除此条数据?"
+                              onConfirm={() => handleDelete(item)}
+                              onCancel={cancelDelete}
+                              okText="是"
+                              cancelText="否"
+                            >
+                              <DeleteOutlined
+                                key="delete"
+                                title="删除"
+                              />
+                            </Popconfirm>,
                           ]}
                         >
                           <Meta
@@ -583,7 +609,7 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
           labelCol={{ span: 7 }}
           wrapperCol={{ span: 20 }}
           initialValues={{
-            type: '3',
+            type: '0',
             status: '1',
             accessAuthority: '1',
             maxResults: 3,
@@ -654,24 +680,6 @@ export default ({ addCurrentRecord, addPromptTemplateList }) => {
         </Form>
       </Modal>
 
-      {/* 删除模板模态框 */}
-      <Modal
-        title="删除模板"
-        open={isDeleteFormModal}
-        onOk={confirmDel}
-        onCancel={() => setIsDeleteFormModal(false)}
-        centered
-      >
-        <Form
-          name="basic"
-          form={delFormRef}
-          labelCol={{ span: 7 }}
-          wrapperCol={{ span: 14 }}
-          initialValues={{}}
-        >
-          {formItemComponent}
-        </Form>
-      </Modal>
     </Card>
   )
 }

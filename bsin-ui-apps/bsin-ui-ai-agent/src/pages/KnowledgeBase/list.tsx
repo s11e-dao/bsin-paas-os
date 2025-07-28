@@ -72,8 +72,6 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
   const [isAddFormModal, setIsAddFormModal] = useState(false)
   // 编辑模态框
   const [isEditFormModal, setIsEditFormModal] = useState(false)
-  // 删除模态框
-  const [isDeleteFormModal, setIsDeleteFormModal] = useState(false)
   // 复制模态框
   const [isCopyFormModal, setIsCopyFormModal] = useState(false)
   // 存储编辑的ID
@@ -84,8 +82,6 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
   const [editFormRef] = Form.useForm()
   // 获取复制表单信息
   const [copyFormRef] = Form.useForm()
-  // 获取复制表单信息
-  const [delFormRef] = Form.useForm()
 
   const [knowledgeBaseList, setKnowledgeBaseList] = useState([])
 
@@ -172,50 +168,27 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
   }
 
   // 点击删除
-  const toDelete = (record) => {
-    if (record.editable == false) {
-      message.warning('该配置不支持删除！！')
-      return
-    }
-    setIsDeleteFormModal(true)
-    // 存储id
-    setKnowledgeBaseNo(record.serialNo)
-    // 数据回显
-    delFormRef.setFieldsValue(record)
-  }
 
-  // 确认删除
-  const confirmDel = async () => {
-    delFormRef
-      .validateFields()
-      .then(async () => {
-        var response = delFormRef.getFieldsValue()
-        // response.serialNo = knowledgeBaseNo
-        if (response.editable == false) {
-          message.warning('该配置不支持删除！！')
-          return
-        }
-        if (coverImage != null) {
-          response.coverImage = coverImage
-        }
-        console.log(response)
-        let res = await delKnowledgeBase(response)
-        if ((res.data = '000000')) {
-          // 重置表单
-          delFormRef.resetFields()
-          // 用于刷新
-          setKnowledgeBaseNo('')
-          setIsDeleteFormModal(false)
-        } else {
-          message.error(res.message)
-        }
-      })
-      .catch(() => { })
-  }
 
   // 取消删除
   const cancelDel = () => {
     message.warning('取消删除')
+  }
+
+  // 直接删除函数
+  const handleDelete = async (record: any) => {
+    if (record.editable == false) {
+      message.warning('该配置不支持删除！！')
+      return
+    }
+    let res = await delKnowledgeBase(record)
+    if (res.code == '000000') {
+      message.success('删除成功')
+      // 用于刷新
+      setKnowledgeBaseNo(record.serialNo)
+    } else {
+      message.error(res.message)
+    }
   }
 
   /**
@@ -434,13 +407,18 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
                         }}
                       />,
 
-                      <DeleteOutlined
-                        key="delete"
-                        title="删除"
-                        onClick={() => {
-                          toDelete(item)
-                        }}
-                      />,
+                      <Popconfirm
+                        title="是否删除此条数据?"
+                        onConfirm={() => handleDelete(item)}
+                        onCancel={cancelDel}
+                        okText="是"
+                        cancelText="否"
+                      >
+                        <DeleteOutlined
+                          key="delete"
+                          title="删除"
+                        />
+                      </Popconfirm>,
                     ]}
                   >
                     <Meta
@@ -553,24 +531,7 @@ export default ({ addCurrentRecord, addKnowledgeBaseList, addChatUIProps }) => {
           {formItemComponent}
         </Form>
       </Modal>
-      {/* 删除 */}
-      <Modal
-        title="删除知识库"
-        open={isDeleteFormModal}
-        onOk={confirmDel}
-        onCancel={() => setIsDeleteFormModal(false)}
-        centered
-      >
-        <Form
-          name="basic"
-          form={delFormRef}
-          labelCol={{ span: 7 }}
-          wrapperCol={{ span: 14 }}
-          initialValues={{}}
-        >
-          {formItemComponent}
-        </Form>
-      </Modal>
+
       {/* 查看模态框 */}
       <Modal
         title="复制知识库"

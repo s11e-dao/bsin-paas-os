@@ -104,6 +104,7 @@ export default ({
                 setIsLoadPromptTemplateDetail(false)
               }}
               className={styles.btn}
+              type='primary'
             >
               返回
             </Button>
