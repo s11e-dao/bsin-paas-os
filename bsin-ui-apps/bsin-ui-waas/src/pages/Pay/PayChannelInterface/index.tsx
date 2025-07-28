@@ -362,7 +362,7 @@ const PayChannelInterface: React.FC = () => {
     /**
      * 通道代码变更
      */
-    const handleChannelCodeChange = (value: string) => {
+    const handlePayChannelChange = (value: string) => {
         // 延迟填充参数，确保状态已更新
         setTimeout(() => {
             fillMerchantParams();
@@ -662,7 +662,7 @@ const PayChannelInterface: React.FC = () => {
                         <Select
                             placeholder="请选择通道代码"
                             disabled={isEdit}
-                            onChange={handleChannelCodeChange}
+                            onChange={handlePayChannelChange}
                         >
                             <Option value="wxpay">微信支付</Option>
                             <Option value="alipay">支付宝支付</Option>

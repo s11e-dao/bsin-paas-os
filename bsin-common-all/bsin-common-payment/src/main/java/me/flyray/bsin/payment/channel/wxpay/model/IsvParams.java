@@ -6,21 +6,47 @@ import com.alibaba.fastjson.JSONObject;
 /** 抽象类 isv参数定义 */
 public abstract class IsvParams {
 
+
   public static IsvParams factory(String ifCode, String paramsStr) {
 
     try {
+      // 首字母大写，倒数第三个字母大写
+      String className = capitalizeFirstAndThirdFromEnd(ifCode) + "IsvParams";
+      
       return (IsvParams)
           JSONObject.parseObject(
               paramsStr,
               Class.forName(
                   IsvParams.class.getPackage().getName()
                       + "."
-                      + StrUtil.upperFirst(ifCode)
-                      + "IsvParams"));
+                      + className));
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
     }
     return null;
+  }
+
+  /**
+   * 首字母大写，倒数第三个字母大写
+   * 例如：wxpay -> WxPay, alipay -> AliPay,  brandspointpay -> BrandspointPay
+   */
+  private static String capitalizeFirstAndThirdFromEnd(String str) {
+    if (str == null || str.length() < 3) {
+      return StrUtil.upperFirst(str);
+    }
+    
+    // 首字母大写
+    String result = StrUtil.upperFirst(str);
+    
+    // 倒数第三个字母大写
+    int thirdFromEndIndex = result.length() - 3;
+    if (thirdFromEndIndex >= 0) {
+      char[] chars = result.toCharArray();
+      chars[thirdFromEndIndex] = Character.toUpperCase(chars[thirdFromEndIndex]);
+      result = new String(chars);
+    }
+    
+    return result;
   }
 
   /** 敏感数据脱敏 */

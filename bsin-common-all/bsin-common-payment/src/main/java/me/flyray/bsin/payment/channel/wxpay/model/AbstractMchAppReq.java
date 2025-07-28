@@ -38,6 +38,6 @@ public class AbstractMchAppReq extends AbstractReq {
   /**
    * 支付渠道编号
    */
-  private String channelCode;
+  private String payChannel;
 
 }

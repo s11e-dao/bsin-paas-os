@@ -15,7 +15,7 @@ import org.hibernate.validator.constraints.Range;
 public class UnifiedOrderReq extends AbstractMchAppReq {
 
   /** 商户订单号 */
-  @NotBlank(message = "商户订单号不能为空")
+//  @NotBlank(message = "商户订单号不能为空")
   private String merchantOrderNo;
 
   /** 支付通道 如： alipay wxPay等 */
@@ -23,27 +23,27 @@ public class UnifiedOrderReq extends AbstractMchAppReq {
   private String payChannel;
 
 
-  /** 支付方式 如： wxpay_jsapi,alipay_wap等 */
+  /** 支付方式 如： WX_JSAPI,alipay_wap等 */
   @NotBlank(message = "支付方式不能为空")
   private String payWay;
 
   /** 支付金额， 单位：元 */
   @NotNull(message = "支付金额不能为空")
-  private BigDecimal amount;
+  private BigDecimal payAmount;
 
   /** 货币代码 */
-  @NotBlank(message = "货币代码不能为空")
+//  @NotBlank(message = "货币代码不能为空")
   private String currency;
 
   /** 客户端IP地址 */
   private String clientIp;
 
   /** 商品标题 */
-  @NotBlank(message = "商品标题不能为空")
+//  @NotBlank(message = "商品标题不能为空")
   private String subject;
 
   /** 商品描述信息 */
-  @NotBlank(message = "商品描述信息不能为空")
+//  @NotBlank(message = "商品描述信息不能为空")
   private String body;
 
   /** 异步通知地址 */
@@ -71,7 +71,7 @@ public class UnifiedOrderReq extends AbstractMchAppReq {
   private String extParam;
 
   /** 分账模式： 0-该笔订单不允许分账, 1-支付成功按配置自动完成分账, 2-商户手动分账(解冻商户金额) */
-  @Range(min = 0, max = 2, message = "分账模式设置值有误")
+//  @Range(min = 0, max = 2, message = "分账模式设置值有误")
   private Integer divisionMode;
 
   /** 标志是否为 subMchAppId的对应 openId， 0-否， 1-是， 默认否 */
@@ -84,11 +84,11 @@ public class UnifiedOrderReq extends AbstractMchAppReq {
   private String isvId;
 
   /** 收款配置类型：1-服务商 2-商户 3-店铺 */
-  @NotNull(message = "收款配置类型不可为空")
+//  @NotNull(message = "收款配置类型不可为空")
   private String targetConfigType;
 
   /** 收款对象ID：商户ID、店铺ID或应用ID */
-  @NotNull(message = "收款对象ID不可为空")
+//  @NotNull(message = "收款对象ID不可为空")
   private String targetId;
 
 }
