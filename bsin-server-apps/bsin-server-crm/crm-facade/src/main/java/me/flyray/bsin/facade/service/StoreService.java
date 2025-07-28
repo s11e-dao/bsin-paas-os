@@ -20,6 +20,11 @@ public interface StoreService {
     public Store openStore(Map<String, Object> requestMap);
 
     /**
+     * 门店登录
+     */
+    public Map<String, Object> login(Map<String, Object> requestMap);
+
+    /**
      * 删除店铺
      */
     public void delete(Map<String, Object> requestMap);

@@ -65,6 +65,16 @@ public class Store implements Serializable {
     private String logo;
 
     /**
+     * 联系手机号
+     */
+    private String contactPhone;
+
+    /**
+     * 联系人电话
+     */
+    private String contactName;
+
+    /**
      * 所属商户编号
      */
     private String merchantNo;
@@ -111,7 +121,5 @@ public class Store implements Serializable {
     private Integer delFlag;
 
     private Date createTime;
-
-
 
 }

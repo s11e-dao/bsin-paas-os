@@ -57,7 +57,6 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Value("${bsin.security.authentication-secretKey}")
     private String authSecretKey;
-
     @Value("${bsin.security.authentication-expiration}")
     private int authExpiration;
 
