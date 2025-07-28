@@ -86,6 +86,7 @@ public class StoreServiceImpl implements StoreService {
 
   @Override
   public Map<String, Object> login(Map<String, Object> requestMap) {
+    String tenantId = MapUtils.getString(requestMap, "tenantId");
     String username = MapUtils.getString(requestMap, "username");
     String password = MapUtils.getString(requestMap, "password");
     // 查询商户信息
@@ -108,6 +109,7 @@ public class StoreServiceImpl implements StoreService {
     Map res = new HashMap<>();
     // userService
     SysUser sysUserReq = new SysUser();
+    sysUserReq.setTenantId(tenantId);
     BeanUtil.copyProperties(requestMap, sysUserReq);
 
     try {
