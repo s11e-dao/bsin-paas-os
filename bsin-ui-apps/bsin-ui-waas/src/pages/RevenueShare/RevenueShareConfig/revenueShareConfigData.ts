@@ -9,7 +9,7 @@ export type ProfitSharingConfigDataType = {
   sysAgentRate: number;
   customerRate: number;
   distributorRate: number;
-  exchangeDigitalPointsRate: number;
+  lockCustomerMerchantRate: number;
   createTime: string;
   updateTime: string;
 };
@@ -81,11 +81,11 @@ export const configItemsData: ConfigItemData[] = [
     description: '分销者获得的分佣比例'
   },
   {
-    name: 'exchangeDigitalPointsRate',
-    label: '数字积分兑换比例',
+    name: 'lockCustomerMerchantRate',
+    label: '锁客户商户分佣比例',
     iconName: 'DollarOutlined',
     color: '#13c2c2',
-    description: '佣金兑换数字积分的比例'
+    description: '锁客户商户获得的分佣比例'
   }
 ];
 

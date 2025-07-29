@@ -15,6 +15,7 @@ import java.util.Date;
 @Data
 @TableName(value ="crm_sys_agent_model")
 public class SysAgentModel implements Serializable {
+    
     /**
      * 租户CODE
      */
