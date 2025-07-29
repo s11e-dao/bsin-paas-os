@@ -7,18 +7,14 @@
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.SysAgentModel">
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="model" column="model" jdbcType="VARCHAR"/>
-            <result property="provincialAgent" column="provincial_agent" jdbcType="INTEGER"/>
             <result property="provincialAgentRate" column="provincial_agent_rate" jdbcType="INTEGER"/>
-            <result property="cityAgent" column="city_agent" jdbcType="INTEGER"/>
             <result property="cityAgentRate" column="city_agent_rate" jdbcType="INTEGER"/>
-            <result property="countyAgent" column="county_agent" jdbcType="INTEGER"/>
             <result property="countyAgentRate" column="county_agent_rate" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        tenant_id,model,provincial_agent,
-        provincial_agent_rate,city_agent,city_agent_rate,
-        county_agent,county_agent_rate
+        tenant_id,model,provincial_agent_rate,
+        city_agent_rate,county_agent_rate
     </sql>
 
 </mapper>

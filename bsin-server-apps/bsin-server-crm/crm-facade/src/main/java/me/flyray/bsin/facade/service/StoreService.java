@@ -38,8 +38,8 @@ public interface StoreService {
      * 设置为总店
      */
     public Store setMainStore(Map<String, Object> requestMap);
-    public List<Store> getListByIds(Map<String, Object> requestMap);
 
+    public List<Store> getListByIds(Map<String, Object> requestMap);
 
     /**
      * 分页查询店铺
