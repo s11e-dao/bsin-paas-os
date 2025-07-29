@@ -503,8 +503,8 @@ export default () => {
           <Descriptions.Item label="分销者分佣比例">
             {viewRecord?.distributorRate}%
           </Descriptions.Item>
-          <Descriptions.Item label="数字积分兑换比例">
-            {viewRecord?.exchangeDigitalPointsRate}%
+          <Descriptions.Item label="锁客户商户比例">
+            {viewRecord?.lockCustomerMerchantRate}%
           </Descriptions.Item>
           <Descriptions.Item label="创建时间" span={2}>
             {viewRecord?.createTime}
