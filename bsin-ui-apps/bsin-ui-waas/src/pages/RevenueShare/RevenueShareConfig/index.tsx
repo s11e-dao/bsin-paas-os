@@ -147,12 +147,12 @@ export default () => {
                     <Text strong>{formData.customerRate || 0}%</Text>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Text><GiftOutlined style={{ color: '#eb2f96', marginRight: 8 }} />分销者：</Text>
+                    <Text><GiftOutlined style={{ color: '#eb2f96', marginRight: 8 }} />推广者：</Text>
                     <Text strong>{formData.distributorRate || 0}%</Text>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Text><DollarOutlined style={{ color: '#13c2c2', marginRight: 8 }} />数字积分：</Text>
-                    <Text strong>{formData.exchangeDigitalPointsRate || 0}%</Text>
+                    <Text><DollarOutlined style={{ color: '#13c2c2', marginRight: 8 }} />锁客户商户：</Text>
+                    <Text strong>{formData.lockCustomerMerchantRate || 0}%</Text>
                   </div>
                   <Divider style={{ margin: '8px 0' }} />
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -500,7 +500,7 @@ export default () => {
           <Descriptions.Item label="消费者返利比例">
             {viewRecord?.customerRate}%
           </Descriptions.Item>
-          <Descriptions.Item label="分销者分佣比例">
+          <Descriptions.Item label="推广者分佣比例">
             {viewRecord?.distributorRate}%
           </Descriptions.Item>
           <Descriptions.Item label="锁客户商户比例">
