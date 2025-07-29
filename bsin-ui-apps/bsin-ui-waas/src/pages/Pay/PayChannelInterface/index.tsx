@@ -497,13 +497,13 @@ const PayChannelInterface: React.FC = () => {
                                 loading={loadingData}
                                 rowKey="payChannel"
                                 grid={{
-                                    gutter: 16,
+                                    gutter: 24,
                                     xs: 1,
-                                    sm: 2,
+                                    sm: 1,
                                     md: 2,
-                                    lg: 3,
-                                    xl: 4,
-                                    xxl: 5,
+                                    lg: 2,
+                                    xl: 3,
+                                    xxl: 4,
                                 }}
                                 dataSource={type.copilotList}
                                 renderItem={(item: columnsDataType) => {
@@ -511,7 +511,11 @@ const PayChannelInterface: React.FC = () => {
                                         return (
                                             <List.Item key={item.payChannel}>
                                                 <Card
-                                                    style={{ width: 300 }}
+                                                    style={{ 
+                                                        width: '100%',
+                                                        minWidth: '280px',
+                                                        maxWidth: '350px'
+                                                    }}
                                                     cover={
                                                         <div style={{
                                                             width: '100%',

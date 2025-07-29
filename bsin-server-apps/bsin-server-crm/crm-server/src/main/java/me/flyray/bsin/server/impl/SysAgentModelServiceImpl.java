@@ -116,8 +116,10 @@ public class SysAgentModelServiceImpl implements SysAgentModelService {
     @ShenyuDubboClient("/getDetail")
     @Override
     public SysAgentModel getDetail(Map<String, Object> requestMap) {
-        String serialNo = MapUtils.getString(requestMap, "serialNo");
-        SysAgentModel sysAgentModel = sysAgentModelMapper.selectById(serialNo);
+        String tenantId = LoginInfoContextHelper.getTenantId();
+        LambdaQueryWrapper<SysAgentModel> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysAgentModel::getTenantId, tenantId);
+        SysAgentModel sysAgentModel = sysAgentModelMapper.selectOne(wrapper);
         if (sysAgentModel == null) {
             throw new BusinessException("SYS_AGENT_MODEL_NOT_EXISTS", "合伙人模型不存在");
         }

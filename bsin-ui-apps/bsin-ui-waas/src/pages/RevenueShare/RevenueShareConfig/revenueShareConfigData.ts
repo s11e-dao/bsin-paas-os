@@ -75,7 +75,7 @@ export const configItemsData: ConfigItemData[] = [
   },
   {
     name: 'distributorRate',
-    label: '分销者分佣比例',
+    label: '推广者分佣比例',
     iconName: 'GiftOutlined',
     color: '#eb2f96',
     description: '分销者获得的分佣比例'
@@ -118,7 +118,7 @@ export const createProfitSharingConfigColumnsData = (): Omit<ProColumns<ProfitSh
   },
   {
     title: '租户ID',
-    width: 160,
+    width: 170,
     dataIndex: 'tenantId',
     hideInSearch: true,
   },
@@ -147,7 +147,7 @@ export const createProfitSharingConfigColumnsData = (): Omit<ProColumns<ProfitSh
     hideInSearch: true,
   },
   {
-    title: '分销者分佣比例',
+    title: '推广者分佣比例',
     width: 160,
     dataIndex: 'distributorRate',
     hideInSearch: true,

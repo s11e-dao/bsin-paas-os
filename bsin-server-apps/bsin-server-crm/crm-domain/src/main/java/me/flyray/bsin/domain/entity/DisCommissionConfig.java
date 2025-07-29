@@ -54,6 +54,11 @@ public class DisCommissionConfig implements Serializable {
     private BigDecimal distributorRate;
 
     /**
+     * 锁客商户分润
+     */
+    private BigDecimal lockCustomerMerchantRate;
+
+    /**
      * 佣金兑换数字积分比例
      */
     private BigDecimal exchangeDigitalPointsRate;
