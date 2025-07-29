@@ -1,0 +1,47 @@
+# 支付模块配置
+bsin:
+  payment:
+    # 证书文件配置
+    cert:
+      # 临时文件目录
+      temp-dir: /tmp/bsin/cert
+      # 证书文件缓存过期时间（小时）
+      cache-expire-hours: 24
+      # 是否启用证书文件处理
+      enabled: true
+      # 证书文件大小限制（字节）
+      max-file-size: 1048576  # 1MB
+      # 允许的证书文件类型
+      allowed-types:
+        - .p12
+        - .pem
+        - .crt
+        - .key
+        - .cer
+        - .pfx
+      # Redis缓存配置
+      redis:
+        # 缓存前缀
+        prefix: bsin:payment:cert:
+        # 缓存过期时间（秒）
+        expire-seconds: 86400  # 24小时
+    # 微信支付配置
+    wxpay:
+      # 是否启用证书文件处理
+      cert-enabled: true
+      # 证书文件处理模式：base64, file, auto
+      cert-mode: auto
+    # 支付宝配置
+    alipay:
+      # 是否启用证书文件处理
+      cert-enabled: true
+      # 证书文件处理模式：base64, file, auto
+      cert-mode: auto
+    # 定时任务配置
+    scheduler:
+      # 是否启用定时任务
+      enabled: true
+      # 证书文件清理任务cron表达式
+      cleanup-cron: "0 0 2 * * ?"  # 每天凌晨2点
+      # 小时级清理任务cron表达式
+      hourly-cleanup-cron: "0 0 * * * ?"  # 每小时

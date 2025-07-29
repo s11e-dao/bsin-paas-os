@@ -2,11 +2,13 @@ package me.flyray.bsin.payment.channel.wxpay.model;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 
 /*
  * 抽象类 普通商户参数定义
  *
  */
+@Slf4j
 public abstract class NormalMchParams {
 
   public static NormalMchParams factory(String ifCode, String paramsStr) {
@@ -15,15 +17,28 @@ public abstract class NormalMchParams {
       // 首字母大写，倒数第三个字母大写
       String className = capitalizeFirstAndThirdFromEnd(ifCode) + "NormalMchParams";
       
-      return (NormalMchParams)
-          JSONObject.parseObject(
-              paramsStr,
-              Class.forName(
-                  NormalMchParams.class.getPackage().getName()
-                      + "."
-                      + className));
+      Class<?> clazz = Class.forName(
+          NormalMchParams.class.getPackage().getName()
+              + "."
+              + className);
+      
+      // 创建实例
+      NormalMchParams instance = (NormalMchParams) JSONObject.parseObject(paramsStr, clazz);
+      
+      // 如果是微信支付参数，自动处理证书文件
+      if (instance instanceof WxPayNormalMchParams) {
+        WxPayNormalMchParams wxPayParams = (WxPayNormalMchParams) instance;
+        // 自动处理Base64证书文件
+        wxPayParams.processBase64CertFiles();
+        log.info("微信支付参数证书文件处理完成");
+      }
+      
+      return instance;
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      String className = capitalizeFirstAndThirdFromEnd(ifCode) + "NormalMchParams";
+      log.error("未找到对应的参数类: {}", className, e);
+    } catch (Exception e) {
+      log.error("创建支付参数实例时发生错误: ifCode={}, paramsStr={}", ifCode, paramsStr, e);
     }
     return null;
   }
