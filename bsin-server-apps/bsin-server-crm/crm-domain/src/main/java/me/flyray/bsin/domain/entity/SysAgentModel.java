@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 合伙伙伴模型表
@@ -38,6 +39,8 @@ public class SysAgentModel implements Serializable {
      * 县级合伙人分润比例
      */
     private Integer countyAgentRate;
+
+    private Date createTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

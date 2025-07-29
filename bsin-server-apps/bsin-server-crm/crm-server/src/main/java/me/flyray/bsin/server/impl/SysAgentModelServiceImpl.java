@@ -57,15 +57,11 @@ public class SysAgentModelServiceImpl implements SysAgentModelService {
         
         if (existingModel != null) {
             // 存在则更新
-            sysAgentModel.setSerialNo(existingModel.getSerialNo());
-            sysAgentModel.setUpdateTime(new Date());
             sysAgentModelMapper.updateById(sysAgentModel);
             log.info("更新租户{}的合伙人模型", loginUser.getTenantId());
         } else {
             // 不存在则新增
-            sysAgentModel.setSerialNo(BsinSnowflake.getId());
             sysAgentModel.setCreateTime(new Date());
-            sysAgentModel.setUpdateTime(new Date());
             sysAgentModelMapper.insert(sysAgentModel);
             log.info("新增租户{}的合伙人模型", loginUser.getTenantId());
         }
