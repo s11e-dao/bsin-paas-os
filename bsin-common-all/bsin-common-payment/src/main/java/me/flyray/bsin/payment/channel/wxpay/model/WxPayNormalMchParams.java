@@ -3,9 +3,9 @@
  * @Date: 2025-07-26 11:09:03
  * @LastEditTime: 2025-07-29 17:26:02
  * @FilePath: /bsin-paas-3.0/bsin-paas-os-3.0/bsin-common-all/bsin-common-payment/src/main/java/me/flyray/bsin/payment/channel/wxpay/model/WxPayNormalMchParams.java
- * @Description: 
- * 
- * Copyright (c) 2025 by CBD Technology CO., Ltd, All Rights Reserved. 
+ * @Description:
+ *
+ * Copyright (c) 2025 by CBD Technology CO., Ltd, All Rights Reserved.
  */
 package me.flyray.bsin.payment.channel.wxpay.model;
 
@@ -60,25 +60,25 @@ public class WxPayNormalMchParams extends NormalMchParams {
   /** 序列号 */
   private String serialNo;
 
-  /** 
+  /**
    * API证书(.p12格式)
-   * 
-   * 存储在本地文件系统中的路径，例如：/data/cert/apiclient_cert.p12
-   *  */
+   *
+   * <p>存储在本地文件系统中的路径，例如：/data/cert/apiclient_cert.p12
+   */
   private String cert;
 
   /**
    * 证书文件(.pem格式)
-   * 
-   * 存储在本地文件系统中的路径，例如：/data/cert/apiclient_cert.pem
-   *  */
+   *
+   * <p>存储在本地文件系统中的路径，例如：/data/cert/apiclient_cert.pem
+   */
   private String apiClientCert;
 
-  /** 
+  /**
    * 私钥文件(.pem格式)
-   * 
-   * 存储在本地文件系统中的路径，例如：/data/cert/apiclient_key.pem
-   *  */
+   *
+   * <p>存储在本地文件系统中的路径，例如：/data/cert/apiclient_key.pem
+   */
   private String apiClientKey;
 
   /** 临时文件目录 */
@@ -91,15 +91,14 @@ public class WxPayNormalMchParams extends NormalMchParams {
   /** 证书文件缓存过期时间（小时） */
   private static final int CERT_CACHE_EXPIRE_HOURS = 24;
 
-  /**
-   * 构造函数 - 自动处理证书文件
-   */
+  /** 构造函数 - 自动处理证书文件 */
   public WxPayNormalMchParams() {
     // 默认构造函数
   }
 
   /**
    * 带参数的构造函数 - 自动处理证书文件
+   *
    * @param paramsStr JSON参数字符串
    */
   public WxPayNormalMchParams(String paramsStr) {
@@ -117,9 +116,7 @@ public class WxPayNormalMchParams extends NormalMchParams {
     }
   }
 
-  /**
-   * 复制属性
-   */
+  /** 复制属性 */
   private void copyProperties(WxPayNormalMchParams source, WxPayNormalMchParams target) {
     target.setAppId(source.getAppId());
     target.setAppSecret(source.getAppSecret());
@@ -134,15 +131,12 @@ public class WxPayNormalMchParams extends NormalMchParams {
     target.setApiClientKey(source.getApiClientKey());
   }
 
-  /**
-   * 处理Base64编码的证书文件
-   * 将Base64内容转换为文件并保存到临时目录，路径存储在Redis中
-   */
+  /** 处理Base64编码的证书文件 将Base64内容转换为文件并保存到临时目录，路径存储在Redis中 */
   public void processBase64CertFiles() {
     try {
       // 确保临时目录存在
       createTempDirectoryIfNotExists();
-      
+
       // 处理API证书文件
       if (StrUtil.isNotBlank(cert) && isBase64Content(cert)) {
         String certPath = saveBase64ToFile(cert, "apiclient_cert.p12", "cert");
@@ -150,7 +144,7 @@ public class WxPayNormalMchParams extends NormalMchParams {
           this.cert = certPath;
         }
       }
-      
+
       // 处理证书文件
       if (StrUtil.isNotBlank(apiClientCert) && isBase64Content(apiClientCert)) {
         String certPath = saveBase64ToFile(apiClientCert, "apiclient_cert.pem", "apiClientCert");
@@ -158,7 +152,7 @@ public class WxPayNormalMchParams extends NormalMchParams {
           this.apiClientCert = certPath;
         }
       }
-      
+
       // 处理私钥文件
       if (StrUtil.isNotBlank(apiClientKey) && isBase64Content(apiClientKey)) {
         String keyPath = saveBase64ToFile(apiClientKey, "apiclient_key.pem", "apiClientKey");
@@ -166,26 +160,23 @@ public class WxPayNormalMchParams extends NormalMchParams {
           this.apiClientKey = keyPath;
         }
       }
-      
       log.info("Base64证书文件处理完成");
     } catch (Exception e) {
       log.error("处理Base64证书文件时发生错误", e);
     }
   }
 
-  /**
-   * 检查内容是否为Base64编码
-   */
+  /** 检查内容是否为Base64编码 */
   private boolean isBase64Content(String content) {
     if (StrUtil.isBlank(content)) {
       return false;
     }
-    
+
     // 检查是否为文件路径（包含路径分隔符）
     if (content.contains("/") || content.contains("\\")) {
       return false;
     }
-    
+
     try {
       // 尝试Base64解码
       Base64.getDecoder().decode(content);
@@ -195,19 +186,25 @@ public class WxPayNormalMchParams extends NormalMchParams {
     }
   }
 
-  /**
-   * 将Base64内容保存为文件
-   */
+  /** 将Base64内容保存为文件 */
   private String saveBase64ToFile(String base64Content, String fileName, String fieldName) {
     try {
       // 生成唯一的文件名
-      String uniqueFileName = generateUniqueFileName(fileName);
+      //      String uniqueFileName = generateUniqueFileName(fileName);
+      String uniqueFileName = mchId + "_" + appId + "_" + fileName;
+      String extension = "";
+      if (fileName.contains(".")) {
+        extension = fileName.substring(fileName.lastIndexOf("."));
+      }
+      uniqueFileName = uniqueFileName + extension;
       String filePath = tempCertDir + File.separator + uniqueFileName;
-      
+      log.info("保存文件: {}", filePath);
+
       // 检查Redis缓存
-      String redisKey = REDIS_CERT_PREFIX + fieldName + ":" + generateContentHash(base64Content);
+//      String redisKey = REDIS_CERT_PREFIX + fieldName + ":" + generateContentHash(base64Content);
+      String redisKey = REDIS_CERT_PREFIX + fieldName;
       String cachedPath = BsinRedisProvider.getCacheObject(redisKey);
-      
+
       if (StrUtil.isNotBlank(cachedPath)) {
         // 检查缓存的文件是否存在
         if (Files.exists(Paths.get(cachedPath))) {
@@ -215,63 +212,62 @@ public class WxPayNormalMchParams extends NormalMchParams {
           return cachedPath;
         } else {
           // 缓存的文件不存在，删除缓存
+          log.warn("缓存的证书文件不存在，删除缓存: {}", cachedPath);
           BsinRedisProvider.deleteObject(redisKey);
         }
       }
-      
+
       // 解码Base64内容
       byte[] fileContent = Base64.getDecoder().decode(base64Content);
-      
+
       // 保存文件
       try (FileOutputStream fos = new FileOutputStream(filePath)) {
         fos.write(fileContent);
         fos.flush();
       }
-      
+
       // 设置文件权限（仅所有者可读写）
       File file = new File(filePath);
       file.setReadable(true, true);
       file.setWritable(true, true);
       file.setExecutable(false);
-      
+
       // 将文件路径存储到Redis（修复方法调用）
       BsinRedisProvider.setCacheObject(redisKey, filePath);
-      
+
       log.info("证书文件已保存: {}", filePath);
       return filePath;
-      
+
     } catch (Exception e) {
       log.error("保存Base64文件失败: {}", fileName, e);
       return null;
     }
   }
 
-  /**
-   * 生成唯一的文件名
-   */
+  /** 生成唯一的文件名 */
   private String generateUniqueFileName(String originalFileName) {
     String uuid = UUID.randomUUID().toString().replace("-", "");
     String extension = "";
-    
+
     if (originalFileName.contains(".")) {
       extension = originalFileName.substring(originalFileName.lastIndexOf("."));
     }
-    
+
     return uuid + extension;
   }
 
-  /**
-   * 生成内容哈希值
-   */
+  /** 生成内容哈希值 */
   private String generateContentHash(String content) {
     return String.valueOf(content.hashCode());
   }
 
-  /**
-   * 创建临时目录（如果不存在）
-   */
+  /** 创建临时目录（如果不存在） */
   private void createTempDirectoryIfNotExists() {
     try {
+      if (tempCertDir == null || tempCertDir.isEmpty()) {
+        tempCertDir = System.getProperty("java.io.tmpdir") + File.separator + "bsin/cert";
+        log.info("临时证书目录: {}", tempCertDir);
+      }
       Path tempPath = Paths.get(tempCertDir);
       if (!Files.exists(tempPath)) {
         Files.createDirectories(tempPath);
@@ -282,24 +278,22 @@ public class WxPayNormalMchParams extends NormalMchParams {
     }
   }
 
-  /**
-   * 清理过期的临时文件
-   */
+  /** 清理过期的临时文件 */
   public void cleanupExpiredFiles() {
     try {
       File tempDir = new File(tempCertDir);
       if (!tempDir.exists()) {
         return;
       }
-      
+
       File[] files = tempDir.listFiles();
       if (files == null) {
         return;
       }
-      
+
       long currentTime = System.currentTimeMillis();
       long expireTime = CERT_CACHE_EXPIRE_HOURS * 3600 * 1000L; // 转换为毫秒
-      
+
       for (File file : files) {
         if (file.isFile()) {
           long lastModified = file.lastModified();
@@ -315,9 +309,7 @@ public class WxPayNormalMchParams extends NormalMchParams {
     }
   }
 
-  /**
-   * 获取证书文件路径（如果为Base64则先转换）
-   */
+  /** 获取证书文件路径（如果为Base64则先转换） */
   public String getCertPath() {
     if (StrUtil.isNotBlank(cert) && isBase64Content(cert)) {
       processBase64CertFiles();
@@ -325,9 +317,7 @@ public class WxPayNormalMchParams extends NormalMchParams {
     return cert;
   }
 
-  /**
-   * 获取证书文件路径（如果为Base64则先转换）
-   */
+  /** 获取证书文件路径（如果为Base64则先转换） */
   public String getApiClientCertPath() {
     if (StrUtil.isNotBlank(apiClientCert) && isBase64Content(apiClientCert)) {
       processBase64CertFiles();
@@ -335,9 +325,7 @@ public class WxPayNormalMchParams extends NormalMchParams {
     return apiClientCert;
   }
 
-  /**
-   * 获取私钥文件路径（如果为Base64则先转换）
-   */
+  /** 获取私钥文件路径（如果为Base64则先转换） */
   public String getApiClientKeyPath() {
     if (StrUtil.isNotBlank(apiClientKey) && isBase64Content(apiClientKey)) {
       processBase64CertFiles();
