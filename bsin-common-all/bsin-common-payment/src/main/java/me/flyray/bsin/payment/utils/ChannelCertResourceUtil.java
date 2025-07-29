@@ -23,6 +23,14 @@ public class ChannelCertResourceUtil {
 
     public File getCertFile(String certFilePath) {
         log.info("获取证书文件，路径：{}", certFilePath);
+
+
+        File bsinCertFile = new File(certFilePath);
+        // 本地存在直接返回
+        if (bsinCertFile.exists()) {
+            log.info("证书文件已存在本地，直接返回：{}", bsinCertFile.getAbsolutePath());
+      return bsinCertFile;
+        }
         
         // 提取文件名
         int lastIndex = certFilePath.lastIndexOf('/');
