@@ -367,7 +367,6 @@ public class CustomerServiceImpl implements CustomerService {
                 .eq(Merchant::getTenantId, customerBaseRegister.getTenantId())
                 .eq(Merchant::getType, CustomerType.UNDER_TENANT_MEMBER.getCode()));
     loginUser.setTenantMerchantNo(merchant.getSerialNo());
-    loginUser.setTenantMerchantNo(merchant.getSerialNo());
     if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {
       // 获取手机号
       if (ObjectUtil.isEmpty(customerBaseRegister.getPhone())) {
@@ -380,7 +379,7 @@ public class CustomerServiceImpl implements CustomerService {
             wxPortalController.bindingUserInfo(tenantId, openId, appId, encryptedData, iv);
       }
     }
-    // 查询会员信息
+    // TODO 查询会员信息
     Member member =
         memberMapper.selectOne(
             new LambdaUpdateWrapper<Member>()

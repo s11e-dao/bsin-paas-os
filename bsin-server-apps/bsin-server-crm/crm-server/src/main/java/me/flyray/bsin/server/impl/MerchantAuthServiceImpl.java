@@ -277,6 +277,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
                 // 创建总店
                 Map<String, Object> storeParams = new HashMap<>();
                 storeParams.put("merchantNo", merchantNo);
+                storeParams.put("type", "1");
                 storeParams.put("businessModel", BusinessModel.FRANCHISE.getCode());
                 storeParams.put("type", StoreType.MAIN_STORE.getCode());
                 storeParams.put("description", merchantAuth.getDescription());

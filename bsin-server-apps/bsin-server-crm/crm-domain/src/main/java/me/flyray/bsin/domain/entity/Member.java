@@ -58,6 +58,11 @@ public class Member implements Serializable {
     private String avatar;
 
     /**
+     * 1 普通会员 2 锁客会员
+     */
+    private String type;
+
+    /**
      *  店铺id
      */
     private String storeNo;

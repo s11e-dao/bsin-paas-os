@@ -61,6 +61,7 @@ public class MerchantServiceImpl implements MerchantService {
     private int authExpiration;
 
     @Autowired public MerchantMapper merchantMapper;
+    @Autowired public StoreMapper storeMapper;
     @Autowired public MerchantAuthMapper merchantAuthMapper;
     @Autowired private CustomerIdentityMapper customerIdentityMapper;
     @Autowired public MerchantSubscribeJournalMapper merchantSubscribeJournalMapper;
@@ -190,6 +191,10 @@ public class MerchantServiceImpl implements MerchantService {
         loginUser.setUsername(merchant.getUsername());
         loginUser.setPhone(merchant.getPhone());
         loginUser.setMerchantNo(merchant.getSerialNo());
+        Store store = storeMapper.selectOne(new LambdaQueryWrapper<Store>().eq(Store::getTenantId, tenantId)
+                .eq(Store::getMerchantNo, merchant.getSerialNo())
+                .eq(Store::getType, "1"));
+        loginUser.setMerchantStoreNo(store.getSerialNo());
         loginUser.setBizRoleType(BizRoleType.MERCHANT.getCode());
         loginUser.setBizRoleTypeNo(merchant.getSerialNo());
         String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);

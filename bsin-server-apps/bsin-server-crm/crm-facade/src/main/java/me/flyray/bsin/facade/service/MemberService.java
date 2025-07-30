@@ -54,5 +54,9 @@ public interface MemberService {
 
     public List<String> getCustomerNoByGradeNos(Map<String, Object> requestMap);
 
+    /**
+     * 支付即锁客户
+     */
+    public void lockCustomer(Map<String, Object> requestMap);
 
 }

@@ -156,6 +156,7 @@ public class MemberServiceImpl implements MemberService {
     @ShenyuDubboClient("/getPageList")
     @Override
     public IPage<?> getPageList(Map<String, Object> requestMap) {
+        String type = MapUtils.getString(requestMap, "type");
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
         Object paginationObj = requestMap.get("pagination");
@@ -165,10 +166,13 @@ public class MemberServiceImpl implements MemberService {
         LambdaQueryWrapper<Member> warapper = new LambdaQueryWrapper<>();
         warapper.orderByDesc(Member::getCreateTime);
         warapper.eq(Member::getTenantId, loginUser.getTenantId());
+        warapper.eq(Member::getMerchantNo,loginUser.getMerchantNo());
         warapper.eq(
-                ObjectUtils.isNotEmpty(loginUser.getMerchantNo()),
-                Member::getMerchantNo,
-                loginUser.getMerchantNo());
+                ObjectUtils.isNotEmpty(loginUser.getStoreNo()),
+                Member::getMerchantNo,loginUser.getStoreNo());
+        warapper.eq(
+                ObjectUtils.isNotEmpty(type),
+                Member::getType, type);
         IPage<Member> pageList = memberMapper.selectPage(page, warapper);
         return pageList;
     }
@@ -242,4 +246,32 @@ public class MemberServiceImpl implements MemberService {
         List<String> gradeNos = (List<String>) requestMap.get("gradeNos");
         return memberMapper.getCustomerNoByGradeNos(gradeNos);
     }
+
+    /**
+     * 商户门店支付即锁客处理
+     * @param requestMap
+     */
+    @Override
+    public void lockCustomer(Map<String, Object> requestMap) {
+        String tenantId = MapUtils.getString(requestMap, "tenantId");
+        String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+        String storeNo = MapUtils.getString(requestMap, "storeNo");
+        String customerNo = MapUtils.getString(requestMap, "customerNo");
+        LambdaQueryWrapper<Member> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Member::getTenantId, tenantId);
+        wrapper.eq(Member::getMerchantNo, merchantNo);
+        wrapper.eq(Member::getStoreNo, storeNo);
+        wrapper.eq(Member::getCustomerNo, customerNo);
+        Member member = memberMapper.selectOne(wrapper);
+        if(member == null){
+            member = new Member();
+            member.setTenantId(tenantId);
+            member.setMerchantNo(merchantNo);
+            member.setCustomerNo(customerNo);
+            member.setStoreNo(storeNo);
+            member.setType("2");
+            memberMapper.insert(member);
+        }
+    }
+
 }

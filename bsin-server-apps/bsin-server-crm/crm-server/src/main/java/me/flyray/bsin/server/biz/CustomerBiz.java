@@ -80,15 +80,18 @@ public class CustomerBiz {
   }
 
   /**
+   *
    * @param customerBase
    * @return
    */
-  public CustomerBase register(CustomerBase customerBase, SysAgent sysAgent) throws UnsupportedEncodingException {
+  public CustomerBase register(CustomerBase customerBase, SysAgent sysAgent) {
     String inviteCode = customerBase.getInviteCode();
     // 客户用户名在商户下唯一，查询客户信息
     LambdaQueryWrapper<CustomerBase> warapper = new LambdaQueryWrapper<>();
     warapper.eq(CustomerBase::getTenantId, customerBase.getTenantId());
+
     if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {
+      // 微信授权登录
       warapper.eq(CustomerBase::getCredential, customerBase.getCredential());
       if (customerBase.getUsername() == null) {
         customerBase.setUsername(customerBase.getCredential());
@@ -100,6 +103,7 @@ public class CustomerBiz {
       }
 
     } else if (AuthMethod.PHONE.getType().equals(customerBase.getAuthMethod())) {
+      // 手机号
       warapper.eq(CustomerBase::getPhone, customerBase.getPhone());
       if (customerBase.getUsername() == null) {
         customerBase.setUsername(customerBase.getPhone());
@@ -129,6 +133,7 @@ public class CustomerBiz {
           throw new BusinessException(ResponseCode.PASSWORD_ERROR);
         }
       }
+
       return customerInfo;
     }
 
