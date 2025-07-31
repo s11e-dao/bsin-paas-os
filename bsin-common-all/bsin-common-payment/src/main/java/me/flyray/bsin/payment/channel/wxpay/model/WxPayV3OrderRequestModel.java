@@ -3,6 +3,7 @@ package me.flyray.bsin.payment.channel.wxpay.model;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 
 /** 微信V3支付请求参数类 */
 @Data
@@ -133,8 +134,30 @@ public class WxPayV3OrderRequestModel {
     /** 总金额 */
     private Integer total;
 
-    /** 货币类似 */
+    /** 货币类型 */
     private String currency;
   }
 
+  /**
+   * 清理空对象，避免发送无效参数
+   */
+  public void cleanEmptyObjects() {
+    // 如果 sceneInfo 为空或所有字段都为空，则设置为 null
+    if (sceneInfo != null) {
+      boolean hasValidData = StringUtils.isNotBlank(sceneInfo.getPayerClientIp()) 
+          || StringUtils.isNotBlank(sceneInfo.getDeviceId()) 
+          || sceneInfo.getH5Info() != null;
+      if (!hasValidData) {
+        sceneInfo = null;
+      }
+    }
+    
+    // 如果 settleInfo 为空或所有字段都为空，则设置为 null
+    if (settleInfo != null) {
+      boolean hasValidData = settleInfo.getProfitSharing() != null;
+      if (!hasValidData) {
+        settleInfo = null;
+      }
+    }
+  }
 }

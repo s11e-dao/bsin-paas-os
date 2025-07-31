@@ -91,6 +91,9 @@ public class WxPayNormalMchParams extends NormalMchParams {
   /** 证书文件缓存过期时间（小时） */
   private static final int CERT_CACHE_EXPIRE_HOURS = 24;
 
+  /** notifyUrl */
+  private String notifyUrl;
+
   /** 构造函数 - 自动处理证书文件 */
   public WxPayNormalMchParams() {
     // 默认构造函数
@@ -105,20 +108,39 @@ public class WxPayNormalMchParams extends NormalMchParams {
     if (StrUtil.isNotBlank(paramsStr)) {
       try {
         log.info("开始解析微信支付参数，参数长度: {}", paramsStr.length());
-        log.debug("参数内容前200字符: {}", paramsStr.length() > 200 ? paramsStr.substring(0, 200) + "..." : paramsStr);
-        
+        log.debug(
+            "参数内容前200字符: {}",
+            paramsStr.length() > 200 ? paramsStr.substring(0, 200) + "..." : paramsStr);
+
         // 解析JSON参数
         WxPayNormalMchParams params = JSON.parseObject(paramsStr, WxPayNormalMchParams.class);
-        
+
         // 记录解析后的字段信息
         log.info("解析后的字段信息:");
-        log.info("  cert: {}", params.getCert() != null ? "有值，长度: " + params.getCert().length() : "无值");
-        log.info("  apiClientCert: {}", params.getApiClientCert() != null ? "有值，长度: " + params.getApiClientCert().length() : "无值");
-        log.info("  apiClientKey: {}", params.getApiClientKey() != null ? "有值，长度: " + params.getApiClientKey().length() : "无值");
-        
+        log.info(
+            "  cert: {}",
+            params.getCert() != null
+                ? "有值:" + params.getCert() + "，长度: " + params.getCert().length()
+                : "无值");
+        log.info(
+            "  apiClientCert: {}",
+            params.getApiClientCert() != null
+                ? "有值:" + params.getApiClientCert() + "，长度: " + params.getApiClientCert().length()
+                : "无值");
+        log.info(
+            "  apiClientKey: {}",
+            params.getApiClientKey() != null
+                ? "有值:" + params.getApiClientKey() + "，长度: " + params.getApiClientKey().length()
+                : "无值");
+        log.info(
+            "  apiV3Key: {}",
+            params.getApiV3Key() != null
+                ? "有值:" + params.getApiV3Key() + "，长度: " + params.getApiV3Key().length()
+                : "无值");
+
         // 复制属性
         copyProperties(params, this);
-        
+
         // 自动处理证书文件
         this.processBase64CertFiles();
       } catch (Exception e) {
@@ -210,19 +232,20 @@ public class WxPayNormalMchParams extends NormalMchParams {
     }
 
     log.debug("检查内容是否为Base64，原始内容长度: {}", content.length());
-    log.debug("内容前100个字符: {}", content.length() > 100 ? content.substring(0, 100) + "..." : content);
+    log.debug(
+        "内容前100个字符: {}", content.length() > 100 ? content.substring(0, 100) + "..." : content);
 
     try {
       // 清理内容，移除可能的换行符、空格等
       String cleanedContent = content.replaceAll("[\\r\\n\\s]", "");
       log.debug("清理后内容长度: {}", cleanedContent.length());
-      
+
       // 检查长度是否为4的倍数（Base64编码的要求）
       if (cleanedContent.length() % 4 != 0) {
         log.debug("清理后内容长度不是4的倍数: {}", cleanedContent.length());
         return false;
       }
-      
+
       // 检查是否为文件路径（更严格的检查）
       // 只有当内容看起来像文件路径时才排除
       if (isFilePath(cleanedContent)) {
@@ -247,13 +270,13 @@ public class WxPayNormalMchParams extends NormalMchParams {
         }
         return false;
       }
-      
+
       // 检查是否只包含Base64字符
       if (!cleanedContent.matches("^[A-Za-z0-9+/]*={0,2}$")) {
         log.debug("内容包含非Base64字符");
         return false;
       }
-      
+
       // 尝试Base64解码
       Base64.getDecoder().decode(cleanedContent);
       log.debug("Base64解码成功，确认为Base64内容");
@@ -269,34 +292,47 @@ public class WxPayNormalMchParams extends NormalMchParams {
     if (StrUtil.isBlank(content)) {
       return false;
     }
-    
+
     log.debug("检查是否为文件路径，内容: {}", content);
-    
+
     // 检查是否以常见的文件路径开头
-    if (content.startsWith("/") || content.startsWith("\\") || 
-        content.startsWith("C:") || content.startsWith("D:") || 
-        content.startsWith("E:") || content.startsWith("F:") ||
-        content.startsWith("G:") || content.startsWith("H:") ||
-        content.startsWith("I:") || content.startsWith("J:") ||
-        content.startsWith("K:") || content.startsWith("L:") ||
-        content.startsWith("M:") || content.startsWith("N:") ||
-        content.startsWith("O:") || content.startsWith("P:") ||
-        content.startsWith("Q:") || content.startsWith("R:") ||
-        content.startsWith("S:") || content.startsWith("T:") ||
-        content.startsWith("U:") || content.startsWith("V:") ||
-        content.startsWith("W:") || content.startsWith("X:") ||
-        content.startsWith("Y:") || content.startsWith("Z:")) {
+    if (content.startsWith("/")
+        || content.startsWith("\\")
+        || content.startsWith("C:")
+        || content.startsWith("D:")
+        || content.startsWith("E:")
+        || content.startsWith("F:")
+        || content.startsWith("G:")
+        || content.startsWith("H:")
+        || content.startsWith("I:")
+        || content.startsWith("J:")
+        || content.startsWith("K:")
+        || content.startsWith("L:")
+        || content.startsWith("M:")
+        || content.startsWith("N:")
+        || content.startsWith("O:")
+        || content.startsWith("P:")
+        || content.startsWith("Q:")
+        || content.startsWith("R:")
+        || content.startsWith("S:")
+        || content.startsWith("T:")
+        || content.startsWith("U:")
+        || content.startsWith("V:")
+        || content.startsWith("W:")
+        || content.startsWith("X:")
+        || content.startsWith("Y:")
+        || content.startsWith("Z:")) {
       log.debug("内容以常见路径开头，识别为文件路径");
       return true;
     }
-    
+
     // 检查是否包含典型的文件路径模式
     // 例如：包含多个连续的路径分隔符，或者包含文件扩展名
     if (content.contains("\\") && content.contains(".")) {
       log.debug("内容包含反斜杠和点，识别为文件路径");
       return true;
     }
-    
+
     // 检查是否包含典型的文件扩展名（在路径中）
     String[] commonExtensions = {".pem", ".p12", ".crt", ".key", ".cer", ".pfx", ".txt", ".log"};
     for (String ext : commonExtensions) {
@@ -305,7 +341,7 @@ public class WxPayNormalMchParams extends NormalMchParams {
         return true;
       }
     }
-    
+
     log.debug("内容不是文件路径");
     return false;
   }
@@ -318,27 +354,26 @@ public class WxPayNormalMchParams extends NormalMchParams {
       String filePath = tempCertDir + File.separator + uniqueFileName;
       log.info("保存文件: {}", filePath);
 
-      //      // 检查Redis缓存
-      //      //      String redisKey = REDIS_CERT_PREFIX + fieldName + ":" +
-      //      // generateContentHash(base64Content);
-      //      String redisKey = REDIS_CERT_PREFIX + fieldName;
-      //      String cachedPath = BsinRedisProvider.getCacheObject(redisKey);
-      //
-      //      if (StrUtil.isNotBlank(cachedPath)) {
-      //        // 检查缓存的文件是否存在
-      //        if (Files.exists(Paths.get(cachedPath))) {
-      //          log.info("使用缓存的证书文件: {}", cachedPath);
-      //          return cachedPath;
-      //        } else {
-      //          // 缓存的文件不存在，删除缓存
-      //          log.warn("缓存的证书文件不存在，删除缓存: {}", cachedPath);
-      //          BsinRedisProvider.deleteObject(redisKey);
-      //        }
-      //      }
+      // 检查Redis缓存
+      String redisKey = REDIS_CERT_PREFIX + fieldName + ":" + generateContentHash(base64Content);
+      //        String redisKey = REDIS_CERT_PREFIX + fieldName;
+      String cachedPath = BsinRedisProvider.getCacheObject(redisKey);
+
+      if (StrUtil.isNotBlank(cachedPath)) {
+        // 检查缓存的文件是否存在
+        if (Files.exists(Paths.get(cachedPath))) {
+          log.info("使用缓存的证书文件: {}", cachedPath);
+          return cachedPath;
+        } else {
+          // 缓存的文件不存在，删除缓存
+          log.warn("缓存的证书文件不存在，删除缓存: {}", cachedPath);
+          BsinRedisProvider.deleteObject(redisKey);
+        }
+      }
 
       // 清理Base64内容，移除可能的换行符、空格等
       String cleanedBase64Content = base64Content.replaceAll("[\\r\\n\\s]", "");
-      
+
       // 解码Base64内容
       byte[] fileContent = Base64.getDecoder().decode(cleanedBase64Content);
 
@@ -354,8 +389,8 @@ public class WxPayNormalMchParams extends NormalMchParams {
       file.setWritable(true, true);
       file.setExecutable(false);
 
-      //      // 将文件路径存储到Redis（修复方法调用）
-      //      BsinRedisProvider.setCacheObject(redisKey, filePath);
+      // 将文件路径存储到Redis（修复方法调用）
+      BsinRedisProvider.setCacheObject(redisKey, filePath);
       log.info("证书文件已保存: {}", filePath);
       return filePath;
 
@@ -463,7 +498,7 @@ public class WxPayNormalMchParams extends NormalMchParams {
         log.error("文件不存在: {}", filePath);
         return null;
       }
-      
+
       byte[] fileBytes = Files.readAllBytes(path);
       String base64Content = Base64.getEncoder().encodeToString(fileBytes);
       log.info("成功从文件读取Base64内容，长度: {}", base64Content.length());
@@ -479,15 +514,16 @@ public class WxPayNormalMchParams extends NormalMchParams {
     log.info("测试{}字段的Base64检测", fieldName);
     log.info("内容长度: {}", content != null ? content.length() : 0);
     log.info("是否为空: {}", StrUtil.isBlank(content));
-    
+
     if (content != null) {
-      log.info("内容前200个字符: {}", content.length() > 200 ? content.substring(0, 200) + "..." : content);
+      log.info(
+          "内容前200个字符: {}", content.length() > 200 ? content.substring(0, 200) + "..." : content);
       String cleanedContent = content.replaceAll("[\\r\\n\\s]", "");
       log.info("清理后长度: {}", cleanedContent.length());
       log.info("长度是否为4的倍数: {}", cleanedContent.length() % 4 == 0);
       log.info("是否为文件路径: {}", isFilePath(cleanedContent));
       log.info("是否只包含Base64字符: {}", cleanedContent.matches("^[A-Za-z0-9+/]*={0,2}$"));
-      
+
       try {
         Base64.getDecoder().decode(cleanedContent);
         log.info("Base64解码成功");
@@ -495,7 +531,7 @@ public class WxPayNormalMchParams extends NormalMchParams {
         log.error("Base64解码失败: {}", e.getMessage());
       }
     }
-    
+
     boolean isBase64 = isBase64Content(content);
     log.info("最终检测结果: {}", isBase64);
   }

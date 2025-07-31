@@ -19,7 +19,7 @@ public abstract class IsvSubMchParams {
                   IsvSubMchParams.class.getPackage().getName()
                       + "."
                       + StrUtil.upperFirst(ifCode)
-                      + "IsvsubMchParams"));
+                      + "IsvSubMchParams"));
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
     }

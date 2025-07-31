@@ -93,7 +93,9 @@ public class WxPayV3Util {
     }
 
     // 调起http请求
-    String response = wxPayService.postV3(reqUrl, JSON.toJSONString(model));
+    String requestJson = JSON.toJSONString(model);
+    log.info("微信支付V3请求数据: {}", requestJson);
+    String response = wxPayService.postV3(reqUrl, requestJson);
 
     JSONObject wxRes = JSON.parseObject(response);
 
