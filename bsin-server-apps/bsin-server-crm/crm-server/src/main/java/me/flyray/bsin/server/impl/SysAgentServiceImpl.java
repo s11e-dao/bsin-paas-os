@@ -10,6 +10,7 @@ import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.CustomerType;
 import me.flyray.bsin.domain.enums.SysAgentCategory;
+import me.flyray.bsin.domain.enums.SysAgentLevel;
 import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.exception.BusinessException;
@@ -244,9 +245,15 @@ public class SysAgentServiceImpl implements SysAgentService {
     Pagination pagination = new Pagination();
     BeanUtil.copyProperties(paginationObj, pagination);
     Page<SysAgent> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+    String agentLevel = sysAgent.getAgentLevel();
     LambdaQueryWrapper<SysAgent> warapper = new LambdaQueryWrapper<>();
     warapper.orderByDesc(SysAgent::getCreateTime);
     warapper.eq(StringUtils.isNotEmpty(tenantId), SysAgent::getTenantId, tenantId);
+    if (SysAgentLevel.GROUND_PROMOTION.getCode().equals(agentLevel)){
+      warapper.eq(SysAgent::getAgentLevel, agentLevel);
+    }else {
+      warapper.ne(SysAgent::getAgentLevel, agentLevel);
+    }
     warapper.eq(
         StringUtils.isNotEmpty(sysAgent.getBusinessType()), SysAgent::getBusinessType,
         sysAgent.getBusinessType());

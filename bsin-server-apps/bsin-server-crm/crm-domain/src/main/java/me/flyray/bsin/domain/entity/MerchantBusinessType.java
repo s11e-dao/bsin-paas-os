@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.util.Date;
 import lombok.Data;
 
 /**
@@ -44,6 +45,12 @@ public class MerchantBusinessType implements Serializable {
      * 状态：1启用，0禁用
      */
     private String status;
+
+    /**
+     * 租户ID
+     */
+    private String tenantId;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
