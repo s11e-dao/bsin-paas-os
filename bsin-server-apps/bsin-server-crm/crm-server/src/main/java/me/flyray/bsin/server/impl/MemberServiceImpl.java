@@ -159,6 +159,13 @@ public class MemberServiceImpl implements MemberService {
         String type = MapUtils.getString(requestMap, "type");
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
+        String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+        if (merchantNo == null) {
+            merchantNo = loginUser.getMerchantNo();
+            if (merchantNo == null) {
+                merchantNo = loginUser.getTenantMerchantNo();
+            }
+        }
         Object paginationObj = requestMap.get("pagination");
         Pagination pagination = new Pagination();
         BeanUtil.copyProperties(paginationObj, pagination);
@@ -167,6 +174,9 @@ public class MemberServiceImpl implements MemberService {
         warapper.orderByDesc(Member::getCreateTime);
         warapper.eq(Member::getTenantId, loginUser.getTenantId());
         warapper.eq(Member::getMerchantNo,loginUser.getMerchantNo());
+        warapper.eq(
+                ObjectUtils.isNotEmpty(merchantNo),
+                Member::getMerchantNo, merchantNo);
         warapper.eq(
                 ObjectUtils.isNotEmpty(loginUser.getStoreNo()),
                 Member::getMerchantNo,loginUser.getStoreNo());

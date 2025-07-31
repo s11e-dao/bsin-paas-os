@@ -206,6 +206,13 @@ public class StoreServiceImpl implements StoreService {
   public IPage<?> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     Store store = BsinServiceContext.getReqBodyDto(Store.class, requestMap);
+    String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+    if (merchantNo == null) {
+      merchantNo = loginUser.getMerchantNo();
+      if (merchantNo == null) {
+        merchantNo = loginUser.getTenantMerchantNo();
+      }
+    }
     Object paginationObj = requestMap.get("pagination");
     Pagination pagination = new Pagination();
     BeanUtil.copyProperties(paginationObj, pagination);
@@ -213,7 +220,7 @@ public class StoreServiceImpl implements StoreService {
     LambdaQueryWrapper<Store> warapper = new LambdaQueryWrapper<>();
     warapper.orderByDesc(Store::getCreateTime);
     warapper.eq(Store::getTenantId, loginUser.getTenantId());
-    warapper.eq(Store::getMerchantNo, loginUser.getMerchantNo());
+    warapper.eq(StringUtils.isNotEmpty(merchantNo), Store::getMerchantNo, merchantNo);
     IPage<Store> pageList = storeMapper.selectPage(page, warapper);
     return pageList;
   }
