@@ -79,14 +79,20 @@ public class WxServiceUtil {
     if (StringUtils.isNotBlank(serialNo)) {
       wxPayConfig.setCertSerialNo(serialNo);
     }
-    if (StringUtils.isNotBlank(cert)) {
-      wxPayConfig.setKeyPath(channelCertConfigKitBean.getCertFilePath(cert));
-    }
+    // 优先使用 pem 格式的证书文件（推荐方式）
     if (StringUtils.isNotBlank(apiClientCert)) {
       wxPayConfig.setPrivateCertPath(channelCertConfigKitBean.getCertFilePath(apiClientCert));
+      log.info("设置证书文件路径: {}", channelCertConfigKitBean.getCertFilePath(apiClientCert));
     }
     if (StringUtils.isNotBlank(apiClientKey)) {
       wxPayConfig.setPrivateKeyPath(channelCertConfigKitBean.getCertFilePath(apiClientKey));
+      log.info("设置私钥文件路径: {}", channelCertConfigKitBean.getCertFilePath(apiClientKey));
+    }
+    // 如果只有 p12 格式证书，则使用 p12 格式（需要密码）
+    if (StringUtils.isNotBlank(cert) && StringUtils.isBlank(apiClientCert)) {
+      wxPayConfig.setKeyPath(channelCertConfigKitBean.getCertFilePath(cert));
+      log.info("设置p12证书路径: {}", channelCertConfigKitBean.getCertFilePath(cert));
+      log.warn("使用p12格式证书，请确保证书密码正确（默认为商户号）");
     }
     wxPayConfig.setNotifyUrl(notifyUrl);
 
