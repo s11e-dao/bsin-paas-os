@@ -53,6 +53,10 @@ public class BsinServiceInvoke {
             reference.setInterface("me.flyray.bsin.facade.service." + serviceName); // 服务接口名
             reference.setVersion(version);
             reference.setGeneric(true); // 开启泛化调用
+            // 设置超时时间（毫秒）
+            reference.setTimeout(30000);
+            // 设置重试次数
+            // reference.setRetries(2);
 
             // 引用服务
             genericService = reference.get();
