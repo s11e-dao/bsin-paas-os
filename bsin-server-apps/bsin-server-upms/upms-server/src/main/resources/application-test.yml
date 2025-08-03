@@ -54,9 +54,32 @@ dromara:
     aliyun-oss:
       - platform: aliyun-oss-1 # 存储平台标识
         enable-storage: true  # 启用存储
-        access-key: ??
-        secret-key: ??
-        end-point: ??
-        bucket-name: ??
-        domain: ?? # 访问域名，注意“/”结尾，例如：https://abc.oss-cn-shanghai.aliyuncs.com/
-        base-path: test/ # 基础路径
+        access-key: ${ALIYUN_ACCESS_KEY:your_access_key}
+        secret-key: ${ALIYUN_SECRET_KEY:your_secret_key}
+        end-point: ${ALIYUN_OSS_ENDPOINT:oss-cn-hangzhou.aliyuncs.com}
+        bucket-name: ${ALIYUN_BUCKET_NAME:your_bucket_name}
+        domain: ${ALIYUN_OSS_DOMAIN:https://your_bucket_name.oss-cn-hangzhou.aliyuncs.com/} # 访问域名，注意"/"结尾
+        base-path: upload/ # 基础路径
+        # STS配置（可选）
+        sts:
+          enabled: false  # 是否启用STS，默认false
+          arn: ${ALIYUN_ROLE_ARN:acs:ram::your_account_id:role/your_role_name}  # 角色ARN
+          role-session-name: bsin-oss-session  # 角色会话名称
+          policy: |  # 策略文档（可选）
+            {
+              "Version": "1",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "oss:PutObject",
+                    "oss:GetObject",
+                    "oss:DeleteObject"
+                  ],
+                  "Resource": [
+                    "acs:oss:*:*:your_bucket_name/*"
+                  ]
+                }
+              ]
+            }
+          duration-seconds: 3600  # 临时凭证有效期（秒）

@@ -42,7 +42,7 @@ public interface MerchantBusinessTypeService {
      * @param requestMap
      * @return
      */
-    List<Tree<String>> getList(Map<String, Object> requestMap);
+    List<Tree<String>> getTree(Map<String, Object> requestMap);
 
 
     /**

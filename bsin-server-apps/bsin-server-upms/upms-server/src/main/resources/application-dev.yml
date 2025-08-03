@@ -78,3 +78,5 @@ dromara:
         bucket-name: ${ALIYUN_OSS_BUCKET_NAME}
         domain: ${ALIYUN_OSS_DOMAIN} # 访问域名，注意“/”结尾，例如：https://abc.oss-cn-shanghai.aliyuncs.com/
         base-path: ${ALIYUN_OSS_BASE_PATH} # 基础路径
+        sts:
+          arn: ${ALIYUN_OSS_STS_ARM}

@@ -9,7 +9,7 @@ public interface MerchantAuthService {
     /**
      * 商户资料进件认证
      */
-    public void authentication(Map<String, Object> requestMap);
+    public void apply(Map<String, Object> requestMap);
 
     /**
      * 审核

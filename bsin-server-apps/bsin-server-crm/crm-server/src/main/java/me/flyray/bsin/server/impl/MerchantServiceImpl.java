@@ -152,6 +152,7 @@ public class MerchantServiceImpl implements MerchantService {
         String password = MapUtils.getString(requestMap, "password");
         // 查询商户信息
         LambdaQueryWrapper<Merchant> warapper = new LambdaQueryWrapper<>();
+        warapper.eq(Merchant::getTenantId, tenantId);
         warapper.eq(Merchant::getUsername, username);
         Merchant merchant = merchantMapper.selectOne(warapper);
 
@@ -194,7 +195,10 @@ public class MerchantServiceImpl implements MerchantService {
         Store store = storeMapper.selectOne(new LambdaQueryWrapper<Store>().eq(Store::getTenantId, tenantId)
                 .eq(Store::getMerchantNo, merchant.getSerialNo())
                 .eq(Store::getType, "1"));
-        loginUser.setMerchantStoreNo(store.getSerialNo());
+        if(store != null){
+            loginUser.setMerchantStoreNo(store.getSerialNo());
+            res.put("merchantStoreNo", store.getSerialNo());
+        }
         loginUser.setBizRoleType(BizRoleType.MERCHANT.getCode());
         loginUser.setBizRoleTypeNo(merchant.getSerialNo());
         String token = AuthenticationProvider.createToken(loginUser, authSecretKey, authExpiration);

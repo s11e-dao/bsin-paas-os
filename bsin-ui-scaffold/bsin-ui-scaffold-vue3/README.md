@@ -47,8 +47,8 @@ bsin-ui-scaffold-vue3/
 
 1. **安装依赖**
    ```bash
-   npm install
-   ```
+npm install
+```
 
 2. **启动开发服务器**
    ```bash

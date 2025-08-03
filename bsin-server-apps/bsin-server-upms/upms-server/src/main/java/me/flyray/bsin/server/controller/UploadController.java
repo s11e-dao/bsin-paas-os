@@ -1,12 +1,30 @@
 package me.flyray.bsin.server.controller;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.crypto.Mode;
 import cn.hutool.crypto.Padding;
 import cn.hutool.crypto.symmetric.AES;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.common.utils.BinaryUtil;
+import com.aliyun.oss.model.PolicyConditions;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.auth.sts.AssumeRoleRequest;
+import com.aliyuncs.auth.sts.AssumeRoleResponse;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.http.MethodType;
+import com.aliyuncs.profile.DefaultProfile;
+import com.aliyuncs.profile.IClientProfile;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.oss.AliOssStsConfig;
+import me.flyray.bsin.oss.FileStorageProperties;
+import me.flyray.bsin.oss.StsResponse;
+import me.flyray.bsin.oss.TokenResponse;
 import me.flyray.bsin.utils.BsinResultEntity;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
 import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.apache.shenyu.client.springmvc.annotation.ShenyuSpringMvcClient;
@@ -31,6 +49,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +65,66 @@ public class UploadController {
 
     @Autowired
     private FileStorageService fileStorageService;
+
+    @Autowired
+    private FileStorageProperties fileStorageProperties;
+
+    @Autowired
+    private AliOssStsConfig stsConfig;
+
+    @PostMapping("/getOssToken")
+    @ShenyuSpringMvcClient("/getOssToken")
+    public Map getOssToken(){
+        try {
+
+            FileStorageProperties.AliOssConfig aliOssConfig = fileStorageProperties.getAliyunOss().get(0);
+            StsResponse response = this.getStsToken();
+            // 从配置中获取OSS域名
+            String ossDomain = stsConfig.getOssDomain();
+            if (StringUtils.isBlank(ossDomain)) {
+                throw new BusinessException("OSS_CONFIG_ERROR", "OSS配置错误：缺少域名配置");
+            }
+            
+            // 构建OSS客户端
+            OSS client = new OSSClientBuilder().build(ossDomain, aliOssConfig.getAccessKey(), aliOssConfig.getSecretKey());
+            
+            // 设置30分钟的过期时间
+            long expireEndTime = System.currentTimeMillis() + 30 * 60 * 1000;
+            Date expiration = new Date(expireEndTime);
+            
+            // 设置上传策略
+            PolicyConditions policyConditions = new PolicyConditions();
+            policyConditions.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 0, 1024 * 1024 * 1024); // 1GB限制
+            
+            // 生成上传策略
+            String postPolicy = client.generatePostPolicy(expiration, policyConditions);
+            byte[] binaryData = postPolicy.getBytes(StandardCharsets.UTF_8);
+            String encodedPolicy = BinaryUtil.toBase64String(binaryData);
+            
+            // 生成签名
+            String postSignature = client.calculatePostSignature(postPolicy);
+
+            TokenResponse responseObj = TokenResponse.builder()
+                    .encodedPolicy(encodedPolicy)
+                    .aliyunAccessKeyId(aliOssConfig.getAccessKey())
+                    .signature(postSignature)
+                    .bucketName(aliOssConfig.getBucketName())
+                    .securityToken(response.getSecurityToken())
+                    .domain(aliOssConfig.getDomain())
+                    .endpoint(aliOssConfig.getEndPoint())
+                    .build();
+            Map resultMap = new HashMap<>();
+            resultMap.put("code", 0);
+            resultMap.put("message", "操作成功");
+            resultMap.put("data", responseObj);
+            return resultMap;
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("获取OSS token失败：{}", e.getMessage(), e);
+            throw new BusinessException("OSS_TOKEN_ERROR", "获取OSS token失败：" + e.getMessage());
+        }
+    }
 
     /**
      * webFlux uploadFile.
@@ -116,6 +195,30 @@ public class UploadController {
         resultMap.put("message", "操作成功");
         resultMap.put("data", fileInfo);
         return resultMap;
+    }
+
+    public StsResponse getStsToken() throws ClientException {
+        DefaultProfile.addEndpoint(stsConfig.getRegionId(), "Sts", stsConfig.getEndpoint());
+        // 构造default profile。
+        IClientProfile profile = DefaultProfile.getProfile(stsConfig.getRegionId(), stsConfig.getAccessKey(), stsConfig.getAccessKeySecret());
+        // 构造client。
+        DefaultAcsClient client = new DefaultAcsClient(profile);
+        final AssumeRoleRequest request = new AssumeRoleRequest();
+        request.setSysMethod(MethodType.POST);
+        request.setRoleArn(stsConfig.getArn());
+        request.setRoleSessionName(stsConfig.getRoleSessionName());
+        // 如果policy为空，则用户将获得该角色下所有权限。
+        request.setPolicy(stsConfig.getPolicy());
+        // 设置临时访问凭证的有效时间
+        request.setDurationSeconds(stsConfig.getDurationSeconds());
+        final AssumeRoleResponse response = client.getAcsResponse(request);
+        StsResponse result = BeanUtil.copyProperties(response.getCredentials(), StsResponse.class);
+        if (StringUtils.isNotBlank(result.getExpiration())) {
+            Date expiration = DateUtil.parse(result.getExpiration());
+            result.setExpiration(DateUtil.formatDateTime(expiration));
+        }
+        BeanUtil.copyProperties(response.getCredentials(), result,"expiration");
+        return result;
     }
 
 }

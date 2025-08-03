@@ -102,8 +102,8 @@ public class MerchantBusinessTypeServiceImpl implements MerchantBusinessTypeServ
     }
 
     @Override
-    @ShenyuDubboClient("/getList")
-    public List<Tree<String>> getList(Map<String, Object> requestMap) {
+    @ShenyuDubboClient("/getTree")
+    public List<Tree<String>> getTree(Map<String, Object> requestMap) {
         String tenantId = LoginInfoContextHelper.getTenantId();
         
         LambdaQueryWrapper<MerchantBusinessType> wrapper = new LambdaQueryWrapper<>();
@@ -139,7 +139,7 @@ public class MerchantBusinessTypeServiceImpl implements MerchantBusinessTypeServ
     @Override
     @ShenyuDubboClient("/admin/getList")
     public List<Tree<String>> getAdminList(Map<String, Object> requestMap) {
-        return getList(requestMap);
+        return getTree(requestMap);
     }
 
     /**

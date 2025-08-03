@@ -69,11 +69,11 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
      * 商户认证进件：基础信息、营业执照信息、法人信息分步进件
      * @param requestMap
      */
-    @ApiDoc(desc = "authentication")
-    @ShenyuDubboClient("/authentication")
+    @ApiDoc(desc = "apply")
+    @ShenyuDubboClient("/apply")
     @Override
     @Transactional
-    public void authentication(Map<String, Object> requestMap) {
+    public void apply(Map<String, Object> requestMap) {
         String tenantId =  MapUtils.getString(requestMap, "tenantId");
         String merchantNo =  MapUtils.getString(requestMap, "merchantNo");
         // 1是注册之后正常认证进件 2是注册同时进件

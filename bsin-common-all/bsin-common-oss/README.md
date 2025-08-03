@@ -76,3 +76,220 @@ Gets the value currently published at an IPNS name.
 ## 参考文档
 
 https://x-file-storage.xuyanwu.cn/#/
+
+# 阿里云OSS STS配置使用指南
+
+## 概述
+
+本模块提供了阿里云OSS STS（Security Token Service）的配置和使用功能，支持临时访问凭证的获取和管理。
+
+## 功能特性
+
+- 基于 `FileStorageProperties` 的统一配置管理
+- 支持STS临时访问凭证获取
+- 自动从OSS endpoint解析区域信息
+- 完整的异常处理和日志记录
+- 支持自定义策略文档
+
+## 配置说明
+
+### 1. 基础配置
+
+在 `application.yml` 中添加以下配置：
+
+```yaml
+dromara:
+  x-file-storage:
+    default-platform: aliyun-oss-1
+    aliyun-oss:
+      - platform: aliyun-oss-1
+        enable-storage: true
+        access-key: ${ALIYUN_ACCESS_KEY}
+        secret-key: ${ALIYUN_SECRET_KEY}
+        end-point: oss-cn-hangzhou.aliyuncs.com
+        bucket-name: ${ALIYUN_BUCKET_NAME}
+        domain: https://${ALIYUN_BUCKET_NAME}.oss-cn-hangzhou.aliyuncs.com/
+        base-path: upload/
+        # STS配置
+        sts:
+          enabled: true  # 启用STS
+          arn: acs:ram::${ALIYUN_ACCOUNT_ID}:role/${ALIYUN_ROLE_NAME}  # 角色ARN
+          role-session-name: bsin-oss-session  # 角色会话名称
+          policy: |  # 策略文档（可选）
+            {
+              "Version": "1",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "oss:PutObject",
+                    "oss:GetObject",
+                    "oss:DeleteObject"
+                  ],
+                  "Resource": [
+                    "acs:oss:*:*:${ALIYUN_BUCKET_NAME}/*"
+                  ]
+                }
+              ]
+            }
+          duration-seconds: 3600  # 临时凭证有效期（秒）
+```
+
+### 2. 环境变量配置
+
+```bash
+# 阿里云访问密钥
+export ALIYUN_ACCESS_KEY=your_access_key_id
+export ALIYUN_SECRET_KEY=your_access_key_secret
+
+# 阿里云账户信息
+export ALIYUN_ACCOUNT_ID=your_account_id
+export ALIYUN_ROLE_NAME=your_role_name
+
+# OSS存储桶
+export ALIYUN_BUCKET_NAME=your_bucket_name
+```
+
+## 使用示例
+
+### 1. 获取STS Token
+
+```java
+@Autowired
+private AliOssStsConfig stsConfig;
+
+public StsResponse getStsToken() {
+    // 检查STS是否启用
+    if (!stsConfig.isStsEnabled()) {
+        throw new BusinessException("STS_NOT_ENABLED", "STS功能未启用");
+    }
+    
+    // 获取STS配置参数
+    String regionId = stsConfig.getRegionId();
+    String accessKey = stsConfig.getAccessKey();
+    String accessKeySecret = stsConfig.getAccessKeySecret();
+    String arn = stsConfig.getArn();
+    
+    // 构建STS客户端并获取临时凭证
+    // ... 具体实现见 UploadController.getStsToken()
+}
+```
+
+### 2. 获取OSS上传Token
+
+```java
+public TokenResponse getOssToken() {
+    // 获取STS临时凭证
+    StsResponse stsResponse = getStsToken();
+    
+    // 构建OSS客户端
+    String ossDomain = stsConfig.getOssDomain();
+    OSS client = new OSSClientBuilder().build(
+        ossDomain, 
+        stsResponse.getAccessKeyId(), 
+        stsResponse.getAccessKeySecret()
+    );
+    
+    // 生成上传策略和签名
+    // ... 具体实现见 UploadController.getOssToken()
+}
+```
+
+## API接口
+
+### 1. 获取STS Token
+
+**接口地址：** `POST /upload/getStsToken`
+
+**响应示例：**
+```json
+{
+  "code": 0,
+  "message": "success",
+  "data": {
+    "accessKeyId": "STS.xxx",
+    "accessKeySecret": "xxx",
+    "securityToken": "xxx",
+    "expiration": "2024-01-01 12:00:00"
+  }
+}
+```
+
+### 2. 获取OSS上传Token
+
+**接口地址：** `POST /upload/getOssToken`
+
+**响应示例：**
+```json
+{
+  "code": 0,
+  "message": "success",
+  "data": {
+    "encodedPolicy": "xxx",
+    "aliyunAccessKeyId": "STS.xxx",
+    "signature": "xxx",
+    "bucketPath": "https://bucket.oss-cn-hangzhou.aliyuncs.com/",
+    "securityToken": "xxx"
+  }
+}
+```
+
+## 错误处理
+
+### 常见错误码
+
+| 错误码 | 说明 | 解决方案 |
+|--------|------|----------|
+| STS_NOT_ENABLED | STS功能未启用 | 检查配置中的 `sts.enabled` 是否为 `true` |
+| STS_CONFIG_ERROR | STS配置错误 | 检查访问密钥、角色ARN等配置是否正确 |
+| STS_TOKEN_ERROR | 获取STS token失败 | 检查网络连接和阿里云服务状态 |
+| OSS_CONFIG_ERROR | OSS配置错误 | 检查域名、存储桶等配置是否正确 |
+
+### 异常处理示例
+
+```java
+try {
+    StsResponse response = getStsToken();
+    // 处理成功响应
+} catch (BusinessException e) {
+    if ("STS_NOT_ENABLED".equals(e.getCode())) {
+        // 处理STS未启用错误
+        log.warn("STS功能未启用，请检查配置");
+    } else if ("STS_CONFIG_ERROR".equals(e.getCode())) {
+        // 处理配置错误
+        log.error("STS配置错误：{}", e.getMessage());
+    } else {
+        // 处理其他错误
+        log.error("获取STS token失败：{}", e.getMessage());
+    }
+}
+```
+
+## 最佳实践
+
+### 1. 安全性建议
+
+- 使用环境变量存储敏感信息（访问密钥、角色ARN等）
+- 定期轮换访问密钥
+- 为不同环境使用不同的角色和策略
+- 设置最小权限原则的策略文档
+
+### 2. 性能优化
+
+- 缓存STS token，避免频繁请求
+- 设置合理的token过期时间
+- 监控STS服务调用频率和错误率
+
+### 3. 监控和日志
+
+- 记录STS token获取的日志
+- 监控token过期时间
+- 设置告警机制
+
+## 相关文件
+
+- `AliOssStsConfig.java` - STS配置类
+- `FileStorageProperties.java` - 文件存储配置类
+- `UploadController.java` - 上传控制器
+- `StsResponse.java` - STS响应实体
+- `TokenResponse.java` - OSS Token响应实体
