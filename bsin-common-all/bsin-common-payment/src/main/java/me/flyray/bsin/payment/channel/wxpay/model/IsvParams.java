@@ -8,32 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class IsvParams {
 
-
   public static IsvParams factory(String ifCode, String paramsStr) {
-
-//    try {
-//      // 首字母大写，倒数第三个字母大写
-//      String className = capitalizeFirstAndThirdFromEnd(ifCode) + "IsvParams";
-//
-//      return (IsvParams)
-//          JSONObject.parseObject(
-//              paramsStr,
-//              Class.forName(
-//                  IsvParams.class.getPackage().getName()
-//                      + "."
-//                      + className));
-//    } catch (ClassNotFoundException e) {
-//      e.printStackTrace();
-//    }
 
     try {
       // 首字母大写，倒数第三个字母大写
       String className = capitalizeFirstAndThirdFromEnd(ifCode) + "IsvParams";
 
-      Class<?> clazz = Class.forName(
-              NormalMchParams.class.getPackage().getName()
-                      + "."
-                      + className);
+      Class<?> clazz =
+          Class.forName(NormalMchParams.class.getPackage().getName() + "." + className);
 
       // 创建实例
       IsvParams instance = (IsvParams) JSONObject.parseObject(paramsStr, clazz);
@@ -56,18 +38,15 @@ public abstract class IsvParams {
     return null;
   }
 
-  /**
-   * 首字母大写，倒数第三个字母大写
-   * 例如：wxpay -> WxPay, alipay -> AliPay,  brandspointpay -> BrandspointPay
-   */
+  /** 首字母大写，倒数第三个字母大写 例如：wxpay -> WxPay, alipay -> AliPay, brandspointpay -> BrandspointPay */
   private static String capitalizeFirstAndThirdFromEnd(String str) {
     if (str == null || str.length() < 3) {
       return StrUtil.upperFirst(str);
     }
-    
+
     // 首字母大写
     String result = StrUtil.upperFirst(str);
-    
+
     // 倒数第三个字母大写
     int thirdFromEndIndex = result.length() - 3;
     if (thirdFromEndIndex >= 0) {
@@ -75,7 +54,7 @@ public abstract class IsvParams {
       chars[thirdFromEndIndex] = Character.toUpperCase(chars[thirdFromEndIndex]);
       result = new String(chars);
     }
-    
+
     return result;
   }
 

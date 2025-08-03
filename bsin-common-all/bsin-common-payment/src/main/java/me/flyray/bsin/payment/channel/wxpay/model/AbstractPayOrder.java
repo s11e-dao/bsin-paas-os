@@ -131,4 +131,6 @@ public class AbstractPayOrder implements Serializable {
   /** 渠道商户信息（json） */
   private String channelMchParams;
 
+  /** 支付通道配置编号 */
+  private String payChannelConfigNo;
 }
