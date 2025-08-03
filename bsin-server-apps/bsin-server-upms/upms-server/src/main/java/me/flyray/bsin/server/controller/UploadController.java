@@ -85,8 +85,8 @@ public class UploadController {
                 throw new BusinessException("OSS_CONFIG_ERROR", "OSS配置错误：缺少域名配置");
             }
             
-            // 构建OSS客户端
-            OSS client = new OSSClientBuilder().build(ossDomain, aliOssConfig.getAccessKey(), aliOssConfig.getSecretKey());
+            // 构建OSS客户端 神坑，这个地方的 getAccessKey 是临时的
+            OSS client = new OSSClientBuilder().build(ossDomain, response.getAccessKeyId(), response.getAccessKeySecret());
             
             // 设置30分钟的过期时间
             long expireEndTime = System.currentTimeMillis() + 30 * 60 * 1000;
@@ -106,7 +106,7 @@ public class UploadController {
 
             TokenResponse responseObj = TokenResponse.builder()
                     .encodedPolicy(encodedPolicy)
-                    .aliyunAccessKeyId(aliOssConfig.getAccessKey())
+                    .aliyunAccessKeyId(response.getAccessKeyId())
                     .signature(postSignature)
                     .bucketName(aliOssConfig.getBucketName())
                     .securityToken(response.getSecurityToken())
@@ -199,7 +199,7 @@ public class UploadController {
 
     public StsResponse getStsToken() throws ClientException {
         DefaultProfile.addEndpoint(stsConfig.getRegionId(), "Sts", stsConfig.getEndpoint());
-        // 构造default profile。
+        // 构造default profile: 神坑，这个地方的 getAccessKey 是临时的
         IClientProfile profile = DefaultProfile.getProfile(stsConfig.getRegionId(), stsConfig.getAccessKey(), stsConfig.getAccessKeySecret());
         // 构造client。
         DefaultAcsClient client = new DefaultAcsClient(profile);
