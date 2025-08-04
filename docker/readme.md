@@ -2,46 +2,80 @@
 
 ## 一、准备环境
 
-### 1. 安装命令行工具
+### 1. 安装命令行工具(optional)
 ```bash
 # 推荐使用 zsh + Oh My Zsh
 sudo apt-get install -y zsh git curl
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-```
+# 启用zsh
+chsh -s /bin/zsh
+# or 启用zsh
+chsh -s $(which zsh)
 
+# 安装oh my zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# 配置oh my zsh
+## 主题 Powerlevel10k
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+## or 国内仓库
+git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+
+# 配置zsh 主题
+vim ~/.zshrc
+# 替换 ZSH_THEME="robbyrussell" 为 ZSH_THEME="powerlevel10k/powerlevel10k"
+# 保存并退出 :wq
+source ~/.zshrc
+# 如果你正确安装了 Powerlevel10k，终端会自动启动配置向导
+
+# 安装zsh-autosuggestions插件
+git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+# or 国内仓库
+git clone https://gitee.com/hailin_cool/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+# 添加插件
+vim ~/.zshrc
+plugins(git zsh-autosuggestions)
+source ~/.zshrc
+
+
+# 安装zsh-syntax-highlighting插件
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+# or 国内仓库
+git clone https://gitee.com/mirror-luyi/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+# 添加插件
+vim ~/.zshrc
+plugins(git zsh-autosuggestions zsh-syntax-highlighting)
+source ~/.zshrc
+
+# 卸载 Oh My Zsh
+uninstall_oh_my_zsh
+Are you sure you want to remove Oh My Zsh? [y/N]  Y
+
+```
 ### 2. 安装 Docker
 
 #### Ubuntu
 ```bash
 # 先移除旧版（若有）
-sudo apt-get remove -y docker docker-engine docker.io containerd runc
+sudo apt-get autoremove -y docker docker-engine docker.io containerd runc
 
-# 更新 APT 源为阿里云镜像（可选）
-sudo sed -i 's|http://.*.ubuntu.com|https://mirrors.aliyun.com|g' /etc/apt/sources.list
+# 添加 Docker 的官方 GPG 密钥
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+# 重新添加 Docker 仓库
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# 更新包列表
 sudo apt-get update
 
-# 安装依赖并添加 Docker 官方／阿里云 GPG Key
-sudo apt-get install -y ca-certificates curl gnupg lsb-release
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg \
-  | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-# （可选）官方源：
-# curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
-#   | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-
-# 添加镜像源
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-   https://mirrors.aliyun.com/docker-ce/linux/ubuntu \
-   $(lsb_release -cs) stable" \
-  | sudo tee /etc/apt/sources.list.d/docker.list
-
-# 安装 Docker Engine
-sudo apt-get update
+# 安装 Docker Engine、Docker Compose 插件
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # 验证
 docker -v     # Docker version XX.X.X
+Docker version 28.3.3, build 980b856
+
+docker compose version                                                                             ─╯
+Docker Compose version v2.39.1
+
 ```
 
 #### CentOS / Alibaba Cloud Linux
@@ -50,11 +84,13 @@ docker -v     # Docker version XX.X.X
 ### 3、安装 Docker Compose
 ```bash
 # 下载 v2.25.0
-sudo curl -L "https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-$(uname -s)-$(uname -m)" \
-  -o /usr/local/bin/docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+# or 国内镜像 v2.4.1
+sudo curl -L "https://mirror.ghproxy.com/https://github.com/docker/compose/releases/download/v2.4.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
 sudo chmod +x /usr/local/bin/docker-compose
-docker-compose --version   # Docker Compose version v2.25.0
+docker compose version                                                                             ─╯
+Docker Compose version v2.4.1 
 
 # 如需卸载
 sudo rm /usr/local/bin/docker-compose
