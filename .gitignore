@@ -123,7 +123,7 @@ docker/app-service/ui-apps/bigan/dist/
 
 docker/middleware/emqx/log/
 
-docker/app-service/server-apps/iot/jar/iot-server-2.0.0-SNAPSHOT.jar
+docker/app-service/server-apps/iot/jar/iot-server-3.0.0-SNAPSHOT.jar
 
 bsin-ui-apps/bsin-ui-sea-condition
 

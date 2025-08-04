@@ -147,7 +147,7 @@ public class SnailJobSpringbootApplication {
     <parent>
         <groupId>me.flyray.bsin</groupId>
         <artifactId>bsin-common-all</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>bsin-common-job</artifactId>
