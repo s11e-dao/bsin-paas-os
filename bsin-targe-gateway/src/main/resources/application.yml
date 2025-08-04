@@ -300,7 +300,7 @@ shenyu:
     type: fixed
     threads: 16
   upstreamCheck:
-    enabled: true  # 启用健康检查
+    enabled: false  # 启用健康检查
     poolSize: 10
     timeout: 10000
     healthyThreshold: 1

@@ -32,10 +32,11 @@ public class WebsocketLoginInfoInterceptor extends ServerEndpointConfig.Configur
             String SECRET_KEY = SpringUtil.getProperty("bsin.security.authentication-secretKey");
             // 1. 从请求头或查询参数中获取token
             String token = extractTokenInfo(request);
-
+            log.info("websocket-登录的的token :{}", token);
             if (token != null && AuthenticationProvider.validateToken(token, SECRET_KEY)) {
                 // 2. 解析token，获取用户信息
                 Claims claims = AuthenticationProvider.parseToken(token, SECRET_KEY);
+                log.info("websocket-获取当前登录信息claims :{}", claims);
                 String tenantId = String.valueOf(claims.get("tenantId"));
                 String bizRoleType = String.valueOf(claims.get("bizRoleType"));
                 String bizRoleTypeNo = String.valueOf(claims.get("bizRoleTypeNo"));
