@@ -62,7 +62,7 @@ public class WxPortalController {
 
   @Autowired private CustomerBiz customerBiz;
 
-  @Autowired private BizRoleAppMapper bzRoleAppMapper;
+  @Autowired private BizRoleAppMapper bizRoleAppMapper;
 
   @Value("${bsin.crm.aesKey}")
   private String aesKey;
@@ -102,7 +102,7 @@ public class WxPortalController {
     if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
       throw new IllegalArgumentException("请求参数非法，请核实!");
     }
-    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(tenantId, appid);
+    BizRoleApp merchantWxApp = bizRoleAppMapper.selectByAppId(tenantId, appid);
     if (merchantWxApp == null) {
       return "未找到微信平台配置信息";
     }
@@ -146,7 +146,7 @@ public class WxPortalController {
    */
   public CustomerBase authorizedLogin(String tenantId, String appid, String code)
       throws UnsupportedEncodingException {
-    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(tenantId, appid);
+    BizRoleApp merchantWxApp = bizRoleAppMapper.selectByAppId(tenantId, appid);
     if (merchantWxApp == null) {
       throw new BusinessException("100000", "未找到对应appid");
     }
@@ -205,7 +205,7 @@ public class WxPortalController {
   public CustomerBase bindingPhoneNumber(
       String tenantId, String openId, String appId, String encryptedData, String iv) {
     CustomerBase customerBase = customerBiz.getCustomerByOpenId(openId);
-    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(tenantId, appId);
+    BizRoleApp merchantWxApp = bizRoleAppMapper.selectByAppId(tenantId, appId);
     if (merchantWxApp == null) {
       throw new BusinessException(APP_ID_NOT_EXISTS);
     }
@@ -240,7 +240,7 @@ public class WxPortalController {
       String tenantId, String openId, String appId, String encryptedData, String iv) {
     WxMaUserInfo wxMaUserInfo = null;
     CustomerBase customerBase = customerBiz.getCustomerByOpenId(openId);
-    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(tenantId, appId);
+    BizRoleApp merchantWxApp = bizRoleAppMapper.selectByAppId(tenantId, appId);
     if (merchantWxApp == null) {
       throw new BusinessException(APP_ID_NOT_EXISTS);
     }
@@ -311,7 +311,7 @@ public class WxPortalController {
 
     String out = null;
 
-    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(tenantId, appid);
+    BizRoleApp merchantWxApp = bizRoleAppMapper.selectByAppId(tenantId, appid);
     if (merchantWxApp == null) {
       throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
     }
@@ -545,7 +545,7 @@ public class WxPortalController {
     if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
       throw new IllegalArgumentException("请求参数非法，请核实!");
     }
-    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByCorpAgentId(corpId, agentId.toString());
+    BizRoleApp merchantWxApp = bizRoleAppMapper.selectByCorpAgentId(corpId, agentId.toString());
     if (StringUtils.equals(merchantWxApp.getAppChannel(), AppChannel.WX_CP.getType())) {
       log.debug("微信企业号|企业微信请求验证");
       WxCpProperties.CpConfig config = new WxCpProperties.CpConfig();
@@ -592,7 +592,7 @@ public class WxPortalController {
         timestamp,
         nonce,
         requestBody);
-    BizRoleApp merchantWxApp = bzRoleAppMapper.selectByAppId(tenantId, corpId + agentId.toString());
+    BizRoleApp merchantWxApp = bizRoleAppMapper.selectByAppId(tenantId, corpId + agentId.toString());
     WxCpProperties.CpConfig config = new WxCpProperties.CpConfig();
     config.setAesKey(merchantWxApp.getAesKey());
     config.setCorpId(corpId);
