@@ -230,7 +230,37 @@ public class StoreServiceImpl implements StoreService {
   @Override
   public Store getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
+    if(StringUtils.isEmpty(serialNo)){
+      serialNo = MapUtils.getString(requestMap, "storeNo");
+    }
     Store store = storeMapper.selectById(serialNo);
     return store;
   }
+
+  /**
+   * @param requestMap
+   * @return
+   */
+  @ShenyuDubboClient("/getPageListByBizTypeCityCode")
+  @ApiDoc(desc = "getPageListByBizTypeCityCode")
+  @Override
+  public IPage<?> getPageListByBizTypeCityCode(Map<String, Object> requestMap) {
+    // 获取分页参数
+    Object paginationObj = requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj, pagination);
+    Page<Store> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+    String businessTypeNo = MapUtils.getString(requestMap, "parentNo");
+    if(StringUtils.isEmpty(businessTypeNo)){
+      // 获取查询参数
+      businessTypeNo = MapUtils.getString(requestMap, "businessTypeNo");
+    }
+    String cityCode = MapUtils.getString(requestMap, "cityCode");
+    
+    // 调用Mapper查询
+    IPage<Store> result = storeMapper.getPageListByBizTypeCityCode(page, businessTypeNo, cityCode);
+    
+    return result;
+  }
+
 }

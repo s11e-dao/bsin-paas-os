@@ -25,10 +25,49 @@
     </resultMap>
 
     <sql id="Base_Column_List">
+
         serial_no,store_name,password,address,
         longitude,latitude,business_hours,region_code,
         description,logo,merchant_no,business_model,type,
         tenant_id,del_flag,grade_no, sys_agent_no
     </sql>
+
+    <select id="getPageListByBizTypeCityCode" resultMap="BaseResultMap">
+        SELECT 
+            s.serial_no,
+            s.tenant_id,
+            s.merchant_no,
+            s.store_name,
+            s.password,
+            s.address,
+            s.longitude,
+            s.type,
+            s.latitude,
+            s.business_hours,
+            s.description,
+            s.logo,
+            s.del_flag,
+            s.create_time,
+            s.update_time,
+            s.business_model,
+            s.sys_agent_no,
+            s.region_code,
+            s.grade_no,
+            s.contact_phone,
+            s.contact_name,
+            m.merchant_name,
+            m.business_type,
+            m.business_scope
+        FROM crm_store s
+        LEFT JOIN crm_merchant m ON s.merchant_no = m.serial_no
+        WHERE s.del_flag = 0
+        <if test="businessTypeNo != null and businessTypeNo != ''">
+            AND m.business_type = #{businessTypeNo}
+        </if>
+        <if test="cityCode != null and cityCode != ''">
+            AND s.region_code LIKE CONCAT(#{cityCode}, '%')
+        </if>
+        ORDER BY s.create_time DESC
+    </select>
 
 </mapper>

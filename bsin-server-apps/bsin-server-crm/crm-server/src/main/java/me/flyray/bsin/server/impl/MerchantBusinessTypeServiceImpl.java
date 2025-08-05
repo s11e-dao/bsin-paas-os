@@ -136,6 +136,37 @@ public class MerchantBusinessTypeServiceImpl implements MerchantBusinessTypeServ
         return Optional.ofNullable(list).orElseGet(Collections::emptyList);
     }
 
+    /**
+     * 根据类型查询一级业态还是子集业态集合
+     * @param requestMap
+     * @return
+     */
+    @Override
+    @ShenyuDubboClient("/getList")
+    public List<MerchantBusinessType> getList(Map<String, Object> requestMap) {
+        String tenantId = LoginInfoContextHelper.getTenantId();
+        String parentNo = MapUtils.getString(requestMap, "parentNo"); // 父级ID
+        String status = MapUtils.getString(requestMap, "status"); // 状态过滤
+        
+        LambdaQueryWrapper<MerchantBusinessType> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(MerchantBusinessType::getTenantId, tenantId)
+               .eq(StringUtils.isNotEmpty(status), MerchantBusinessType::getStatus, status)
+               .orderByAsc(MerchantBusinessType::getSort);
+        
+        // 查询parentNo为-1或是具体某一个数据的子集
+        if (StringUtils.isNotEmpty(parentNo)) {
+            // 如果传了parentNo，查询指定父级下的子业态
+            wrapper.eq(MerchantBusinessType::getParentNo, parentNo);
+        } else {
+            // 如果没传parentNo，查询parentNo为-1的一级业态
+            wrapper.eq(MerchantBusinessType::getParentNo, "-1");
+        }
+        
+        List<MerchantBusinessType> businessTypeList = merchantBusinessTypeMapper.selectList(wrapper);
+        return businessTypeList;
+    }
+
+
     @Override
     @ShenyuDubboClient("/admin/getList")
     public List<Tree<String>> getAdminList(Map<String, Object> requestMap) {

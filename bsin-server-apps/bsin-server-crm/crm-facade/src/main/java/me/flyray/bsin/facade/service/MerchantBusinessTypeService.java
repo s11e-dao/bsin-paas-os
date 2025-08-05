@@ -2,6 +2,7 @@ package me.flyray.bsin.facade.service;
 
 import cn.hutool.core.lang.tree.Tree;
 import jakarta.validation.constraints.NotBlank;
+import me.flyray.bsin.domain.entity.MerchantBusinessType;
 import me.flyray.bsin.validate.AddGroup;
 import me.flyray.bsin.validate.EditGroup;
 import org.springframework.validation.annotation.Validated;
@@ -44,6 +45,13 @@ public interface MerchantBusinessTypeService {
      */
     List<Tree<String>> getTree(Map<String, Object> requestMap);
 
+
+    /**
+     * 获取分类列表
+     * @param requestMap
+     * @return
+     */
+    List<MerchantBusinessType> getList(Map<String, Object> requestMap);
 
     /**
      *  获取分类列表 -管理端

@@ -51,4 +51,9 @@ public interface StoreService {
      */
     public Store getDetail(Map<String, Object> requestMap);
 
+    /**
+     * 根据业态查询该业态下的门店数据
+     */
+    public IPage<?> getPageListByBizTypeCityCode(Map<String, Object> requestMap);
+
 }
