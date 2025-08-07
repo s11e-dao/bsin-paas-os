@@ -144,7 +144,9 @@ public class MerchantBusinessTypeServiceImpl implements MerchantBusinessTypeServ
     @Override
     @ShenyuDubboClient("/getList")
     public List<MerchantBusinessType> getList(Map<String, Object> requestMap) {
-        String tenantId = LoginInfoContextHelper.getTenantId();
+
+        String tenantId = StringUtils.defaultIfBlank(MapUtils.getString(requestMap, "tenantId"), LoginInfoContextHelper.getTenantId());
+
         String parentNo = MapUtils.getString(requestMap, "parentNo"); // 父级ID
         String status = MapUtils.getString(requestMap, "status"); // 状态过滤
         

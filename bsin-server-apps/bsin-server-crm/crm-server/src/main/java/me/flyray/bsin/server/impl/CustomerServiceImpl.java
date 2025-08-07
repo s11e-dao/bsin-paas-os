@@ -336,13 +336,15 @@ public class CustomerServiceImpl implements CustomerService {
       throws UnsupportedEncodingException {
     CustomerBase customerBase =
         BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap, AddGroup.class);
-    String tenantId = MapUtils.getString(requestMap, "tenantId");
+    String tenantId = customerBase.getTenantId();
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+    // 判断是否需要授权手机号和昵称
+    Boolean wechatAuthAll = MapUtils.getBoolean(requestMap, "wechatAuthAll");
     String openId = MapUtils.getString(requestMap, "openId");
     String appId = MapUtils.getString(requestMap, "appId");
     String encryptedData = MapUtils.getString(requestMap, "encryptedData");
     String iv = MapUtils.getString(requestMap, "iv");
-    if (ObjectUtil.isEmpty(customerBase.getTenantId())) {
+    if (ObjectUtil.isEmpty(tenantId)) {
       throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
     }
     if (ObjectUtil.isEmpty(customerBase.getAuthMethod())) {
@@ -367,7 +369,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .eq(Merchant::getTenantId, customerBaseRegister.getTenantId())
                 .eq(Merchant::getType, CustomerType.UNDER_TENANT_MEMBER.getCode()));
     loginUser.setTenantMerchantNo(merchant.getSerialNo());
-    if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())) {
+    if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())  && wechatAuthAll) {
       // 获取手机号
       if (ObjectUtil.isEmpty(customerBaseRegister.getPhone())) {
         customerBaseRegister =
