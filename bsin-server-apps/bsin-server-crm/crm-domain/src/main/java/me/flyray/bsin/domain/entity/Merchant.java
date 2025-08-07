@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import me.flyray.bsin.payment.enums.PayMerchantModeEnum;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -166,5 +167,12 @@ public class Merchant implements Serializable {
      * 地推人（代理商编号）
      */
     private String sysAgentNo;
+
+
+    /**
+     * 支付商户类型模式：1-普通商户, 2-特约商户 3-服务商子商户模式
+     * @see PayMerchantModeEnum
+     */
+    private String merchantMode;
 
 }

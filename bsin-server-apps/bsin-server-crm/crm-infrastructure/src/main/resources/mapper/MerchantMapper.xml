@@ -31,6 +31,7 @@
             <result property="description" column="description" jdbcType="VARCHAR"/>
             <result property="gradeNo" column="grade_no" jdbcType="VARCHAR"/>
             <result property="sysAgentNo" column="sys_agent_no" jdbcType="VARCHAR"/>
+            <result property="merchantMode" column="merchant_mode" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -40,7 +41,7 @@
         phone,net_address,merchant_address,
         status,type,create_time,
         update_time,authentication_status,business_type,
-        business_scope,del_flag,description,grade_no, sys_agent_no
+        business_scope,del_flag,description,grade_no, sys_agent_no,merchant_mode
     </sql>
 
 </mapper>
