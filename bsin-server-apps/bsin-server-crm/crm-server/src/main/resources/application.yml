@@ -175,3 +175,27 @@ bsin:
       privateKey: 11
     chainEnv: 11
     contractAddress: 22
+  oss:
+    upload:
+      uploadPath: G:\/upload\/
+    message:
+      upPath: /home/leonard/ipfsfile/
+      preImgUrl: http://file.s11edao.com
+    ipfs:
+      gateway: http://ipfs.s11edao.com/ipfs/
+      api: http://ipfsadmin.s11edao.com/api/v0
+
+dromara:
+  x-file-storage: #文件存储配置
+    default-platform: ${DROMARA_X_FILE_STORAGE_DEFAULT_PLATFORM} #默认使用的存储平台
+    aliyun-oss:
+      - platform: ${ALIYUN_OSS_PLATFORM} # 存储平台标识
+        enable-storage: true  # 启用存储
+        access-key: ${ALIYUN_OSS_ACCESS_KEY}
+        secret-key: ${ALIYUN_OSS_SECRET_KEY}
+        end-point: ${ALIYUN_OSS_ENDPOINT}
+        bucket-name: ${ALIYUN_OSS_BUCKET_NAME}
+        domain: ${ALIYUN_OSS_DOMAIN} # 访问域名，注意“/”结尾，例如：https://abc.oss-cn-shanghai.aliyuncs.com/
+        base-path: ${ALIYUN_OSS_BASE_PATH} # 基础路径
+        sts:
+          arn: ${ALIYUN_OSS_STS_ARM}
