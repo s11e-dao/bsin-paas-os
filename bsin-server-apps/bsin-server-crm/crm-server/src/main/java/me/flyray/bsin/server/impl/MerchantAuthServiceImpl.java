@@ -187,7 +187,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
         // 有更新就设置为待审核
         if (hasUpdate) {
             merchantAuth.setAuthStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
-            merchantAuth.setStatus(BizRoleStatus.TOBE_CERTIFIED.getCode());
+            merchantAuth.setStatus(BizRoleStatus.PENDING.getCode());
         }
 
         // 保存数据
@@ -256,7 +256,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
             merchantAuth.setStatus(BizRoleStatus.NORMAL.getCode());
         } else if (!isApproved) {
             merchantAuth.setAuthStatus(AuthenticationStatus.CERTIFIED_FAILURE.getCode());
-            merchantAuth.setStatus(BizRoleStatus.REBUT.getCode());
+            merchantAuth.setStatus(BizRoleStatus.REJECTED.getCode());
         }
 
         merchantAuthMapper.updateById(merchantAuth);

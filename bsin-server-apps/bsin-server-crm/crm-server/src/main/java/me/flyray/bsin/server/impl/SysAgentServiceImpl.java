@@ -194,7 +194,7 @@ public class SysAgentServiceImpl implements SysAgentService {
       throw new BusinessException(PASSWORD_EXISTS);
     }
     sysAgent.setTenantId(loginUser.getTenantId());
-    sysAgent.setStatus(BizRoleStatus.TOBE_CERTIFIED.getCode());
+    sysAgent.setStatus(BizRoleStatus.PENDING.getCode());
     sysAgent.setSerialNo(BsinSnowflake.getId());
 
     if (sysAgentMapper.insert(sysAgent) == 0) {
@@ -241,7 +241,7 @@ public class SysAgentServiceImpl implements SysAgentService {
       }
     }else {
       // 更新状态和备注
-      sysAgent.setStatus(BizRoleStatus.REJECT.getCode());
+      sysAgent.setStatus(BizRoleStatus.REJECTED.getCode());
       sysAgent.setRemark(remark);
       sysAgentMapper.updateById(sysAgent);
     }

@@ -18,27 +18,27 @@ public enum BizRoleStatus {
     /**
      * 冻结
      */
-    FREEZED("1", "冻结"),
+    FROZEN("1", "冻结"),
 
     /**
      * 待审核
      */
-    TOBE_CERTIFIED("2", "待审核"),
+    PENDING("2", "待审核"),
 
     /**
-     * rebut 驳回
+     * 审核中
      */
-    REBUT("3", "驳回"),
+    REVIEWING("3", "审核中"),
 
     /**
-     * reject 拒绝
+     * 驳回
      */
-    REJECT("4", "拒绝"),
+    REJECTED("4", "驳回"),
 
     /**
      * 禁用
      */
-    FORBIDDEN("5", "禁用"),
+    DISABLED("6", "禁用"),
 
     ;
 

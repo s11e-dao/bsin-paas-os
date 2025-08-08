@@ -115,7 +115,7 @@ public class MerchantServiceImpl implements MerchantService {
         } else {
           // 普通注册逻辑
           merchant.setAuthenticationStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
-          merchant.setStatus(BizRoleStatus.TOBE_CERTIFIED.getCode());
+          merchant.setStatus(BizRoleStatus.PENDING.getCode());
         }
 
         // 判断邀请码是否有效
@@ -316,6 +316,25 @@ public class MerchantServiceImpl implements MerchantService {
             throw new BusinessException(MERCHANT_NOT_EXISTS);
           }
         }
+        merchantMapper.updateById(merchant);
+        return merchant;
+    }
+
+    @ApiDoc(desc = "updateMerchantPayMode")
+    @ShenyuDubboClient("/updateMerchantPayMode")
+    @Override
+    public Merchant updateMerchantPayMode(Map<String, Object> requestMap) {
+        String merchantMode = MapUtils.getString(requestMap, "merchantMode");
+        String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+
+        if (merchantMode == null || merchantNo == null) {
+            throw new BusinessException(PARAM_ERROR);
+        }
+        Merchant merchant = merchantMapper.selectOne(new LambdaQueryWrapper<Merchant>().eq(Merchant::getSerialNo, merchantNo));
+        if (merchant == null) {
+            throw new BusinessException(ResponseCode.MERCHANT_NOT_EXISTS);
+        }
+        merchant.setMerchantMode(merchantMode);
         merchantMapper.updateById(merchant);
         return merchant;
     }
