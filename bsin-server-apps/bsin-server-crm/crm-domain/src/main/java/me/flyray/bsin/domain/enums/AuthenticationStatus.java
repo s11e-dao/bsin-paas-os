@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * @author bolei
  * @date 2023/8/22
  *
- * @desc 商户认证状态   1: 待认证  2：认证成功  3：认证失败
+ * @desc 商户认证状态   1: 待认证  2：认证成功 3：驳回  4：认证失败
  */
 public enum AuthenticationStatus {
 
@@ -21,9 +21,14 @@ public enum AuthenticationStatus {
     CERTIFIED("2", "认证成功"),
 
     /**
+     * rebut 驳回
+     */
+    REBUT("3", "驳回"),
+
+    /**
      * 认证失败
      */
-    CERTIFIED_FAILURE("3", "认证失败");
+    CERTIFIED_FAILURE("4", "认证失败");
 
 
     private String code;

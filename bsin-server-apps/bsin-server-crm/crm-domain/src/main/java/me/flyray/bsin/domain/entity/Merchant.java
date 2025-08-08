@@ -12,7 +12,7 @@ import java.util.Date;
 import lombok.Data;
 import me.flyray.bsin.domain.enums.AuthenticationStatus;
 import me.flyray.bsin.domain.enums.CustomerType;
-import me.flyray.bsin.domain.enums.MerchantStatus;
+import me.flyray.bsin.domain.enums.BizRoleStatus;
 
 /**
  * 
@@ -96,7 +96,7 @@ public class Merchant implements Serializable {
 
     /**
      * 状态：0 正常 1 冻结 2 待审核 3、驳回 4、拒绝
-     * @see MerchantStatus
+     * @see BizRoleStatus
      */
     private String status;
 

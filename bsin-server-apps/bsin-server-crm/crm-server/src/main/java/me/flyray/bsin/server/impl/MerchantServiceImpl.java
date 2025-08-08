@@ -10,9 +10,7 @@ import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.enums.*;
-import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.domain.response.UserResp;
-import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.*;
 import me.flyray.bsin.infrastructure.mapper.*;
@@ -36,7 +34,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,11 +111,11 @@ public class MerchantServiceImpl implements MerchantService {
 
         if (registerNotNeedAudit) {
           merchant.setAuthenticationStatus(AuthenticationStatus.CERTIFIED.getCode());
-          merchant.setStatus(MerchantStatus.NORMAL.getCode());
+          merchant.setStatus(BizRoleStatus.NORMAL.getCode());
         } else {
           // 普通注册逻辑
           merchant.setAuthenticationStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
-          merchant.setStatus(MerchantStatus.TOBE_CERTIFIED.getCode());
+          merchant.setStatus(BizRoleStatus.TOBE_CERTIFIED.getCode());
         }
 
         // 判断邀请码是否有效
@@ -266,7 +263,7 @@ public class MerchantServiceImpl implements MerchantService {
           if (member == null) {
             throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);
           }
-          if (!member.getStatus().equals(MemberStatus.NORMAL.getCode())) {
+          if (!member.getStatus().equals(BizRoleStatus.NORMAL.getCode())) {
             throw new BusinessException(ResponseCode.MEMBER_STATUS_EXCEPTION);
           }
         }

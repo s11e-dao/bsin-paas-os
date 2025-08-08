@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import me.flyray.bsin.domain.enums.CustomerType;
-import me.flyray.bsin.domain.enums.MerchantStatus;
+import me.flyray.bsin.domain.enums.BizRoleStatus;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -90,7 +90,7 @@ public class SysAgent implements Serializable {
 
     /**
      * 状态：0 正常 1 冻结 2 待审核
-     * @see MerchantStatus
+     * @see BizRoleStatus
      */
     private String status;
 

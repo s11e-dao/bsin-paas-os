@@ -1,11 +1,8 @@
 package me.flyray.bsin.server.biz;
 
 import cn.hutool.core.bean.BeanUtil;
-import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.domain.entity.CustomerIdentity;
 import me.flyray.bsin.domain.entity.Merchant;
-import me.flyray.bsin.domain.enums.AuthenticationStatus;
-import me.flyray.bsin.domain.enums.MerchantStatus;
 import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.UserService;

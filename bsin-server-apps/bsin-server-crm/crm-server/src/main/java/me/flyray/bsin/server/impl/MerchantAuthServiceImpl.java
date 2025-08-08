@@ -1,6 +1,5 @@
 package me.flyray.bsin.server.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
@@ -10,9 +9,8 @@ import me.flyray.bsin.domain.entity.MerchantAuth;
 import me.flyray.bsin.domain.entity.SettlementAccount;
 import me.flyray.bsin.domain.enums.AuthenticationStatus;
 import me.flyray.bsin.domain.enums.BusinessModel;
-import me.flyray.bsin.domain.enums.MerchantStatus;
+import me.flyray.bsin.domain.enums.BizRoleStatus;
 import me.flyray.bsin.domain.enums.StoreType;
-import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MerchantAuthService;
@@ -189,7 +187,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
         // 有更新就设置为待审核
         if (hasUpdate) {
             merchantAuth.setAuthStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
-            merchantAuth.setStatus(MerchantStatus.TOBE_CERTIFIED.getCode());
+            merchantAuth.setStatus(BizRoleStatus.TOBE_CERTIFIED.getCode());
         }
 
         // 保存数据
@@ -255,10 +253,10 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
 
         if (allApproved) {
             merchantAuth.setAuthStatus(AuthenticationStatus.CERTIFIED.getCode());
-            merchantAuth.setStatus(MerchantStatus.NORMAL.getCode());
+            merchantAuth.setStatus(BizRoleStatus.NORMAL.getCode());
         } else if (!isApproved) {
             merchantAuth.setAuthStatus(AuthenticationStatus.CERTIFIED_FAILURE.getCode());
-            merchantAuth.setStatus(MerchantStatus.REBUT.getCode());
+            merchantAuth.setStatus(BizRoleStatus.REBUT.getCode());
         }
 
         merchantAuthMapper.updateById(merchantAuth);
