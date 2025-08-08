@@ -164,6 +164,8 @@ public class SysAgent implements Serializable {
      */
     private String agentLevel;
 
+    private String remark;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
+import me.flyray.bsin.domain.enums.BizRoleStatus;
 import me.flyray.bsin.domain.enums.CustomerType;
 import me.flyray.bsin.domain.enums.SysAgentCategory;
 import me.flyray.bsin.domain.enums.SysAgentLevel;
@@ -183,6 +184,78 @@ public class SysAgentServiceImpl implements SysAgentService {
   }
 
   /**
+   * 添加一条待审核记录
+   * @param requestMap
+   * @return
+   */
+  @ApiDoc(desc = "apply")
+  @ShenyuDubboClient("/apply")
+  @Override
+  public SysAgent apply(Map<String, Object> requestMap) {
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+    SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
+    sysAgent.setSerialNo(BsinSnowflake.getId());
+    if (sysAgent.getUsername() == null) {
+      throw new BusinessException(USER_NAME_ISNULL);
+    }
+    if (sysAgent.getPassword() == null) {
+      throw new BusinessException(PASSWORD_EXISTS);
+    }
+    sysAgent.setTenantId(loginUser.getTenantId());
+    sysAgent.setStatus(BizRoleStatus.TOBE_CERTIFIED.getCode());
+    sysAgent.setSerialNo(BsinSnowflake.getId());
+
+    if (sysAgentMapper.insert(sysAgent) == 0) {
+      throw new BusinessException(ResponseCode.DATA_BASE_UPDATE_FAILED);
+    }
+    return sysAgent;
+  }
+
+  /**
+   * 更新状态
+   * 添加一个合伙人身份信息
+   * @param requestMap
+   * @return
+   */
+  @ApiDoc(desc = "audit")
+  @ShenyuDubboClient("/audit")
+  @Override
+  public void audit(Map<String, Object> requestMap) {
+    // 根据审核状态判断
+    String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
+    String auditFlag = MapUtils.getString(requestMap, "auditFlag");
+    String remark = MapUtils.getString(requestMap, "remark");
+    boolean isApproved = "1".equals(auditFlag);
+    // 客户号不为空，则表示是会员申请成为合伙人，需要插入客户身份表
+    SysAgent sysAgent = sysAgentMapper.selectById(sysAgentNo);
+    if(isApproved){
+      sysAgent.setStatus(BizRoleStatus.NORMAL.getCode());
+      sysAgentMapper.updateById(sysAgent);
+      if (StringUtils.isNotEmpty(sysAgentNo)) {
+        // 身份表: crm_customer_identity插入数据
+        CustomerIdentity customerIdentity = new CustomerIdentity();
+        customerIdentity.setTenantId(sysAgent.getTenantId());
+        customerIdentity.setName(BizRoleType.SYS_AGENT.getDesc());
+        customerIdentity.setUsername(sysAgent.getUsername());
+        customerIdentity.setBizRoleType(BizRoleType.SYS_AGENT.getCode());
+        customerIdentity.setBizRoleTypeNo(sysAgent.getSerialNo());
+        customerIdentityMapper.insert(customerIdentity);
+      }
+      // 如果是平台代理，不需要加入分销团队
+      if(SysAgentCategory.DIS_AGENT.getCode().equals(sysAgent.getCategory())){
+        requestMap.put("sysAgentNo", sysAgent.getSerialNo());
+        requestMap.put("tenantId", sysAgent.getTenantId());
+        disTeamRelationService.add(requestMap);
+      }
+    }else {
+      // 更新状态和备注
+      sysAgent.setStatus(BizRoleStatus.REJECT.getCode());
+      sysAgent.setRemark(remark);
+      sysAgentMapper.updateById(sysAgent);
+    }
+  }
+
+  /**
    *
    * @param requestMap
    * @return
@@ -268,6 +341,9 @@ public class SysAgentServiceImpl implements SysAgentService {
   @Override
   public SysAgent getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
+    if(StringUtils.isEmpty(serialNo)){
+      serialNo = MapUtils.getString(requestMap, "sysAgentNo");
+    }
     SysAgent sysAgent = sysAgentMapper.selectById(serialNo);
     if (sysAgent == null) {
       throw new BusinessException(SYS_AGENT_NOT_EXISTS);

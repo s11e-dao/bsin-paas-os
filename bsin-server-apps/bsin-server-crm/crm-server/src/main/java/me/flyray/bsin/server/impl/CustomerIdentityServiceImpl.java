@@ -87,11 +87,15 @@ public class CustomerIdentityServiceImpl implements CustomerIdentityService {
   @Override
   public List<CustomerIdentity> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+    String bizRoleType = MapUtils.getString(requestMap, "bizRoleType");
     LambdaQueryWrapper<CustomerIdentity> warapper = new LambdaQueryWrapper<>();
     String customerNo = loginUser.getCustomerNo();
     warapper.orderByDesc(CustomerIdentity::getCreateTime);
     warapper.eq(CustomerIdentity::getTenantId, loginUser.getTenantId());
     warapper.eq(CustomerIdentity::getCustomerNo, customerNo);
+    warapper.eq(
+            StringUtils.isNotEmpty(bizRoleType),
+            CustomerIdentity::getBizRoleType,bizRoleType);
     List<CustomerIdentity> gradeList = customerIdentityMapper.selectList(warapper);
     return gradeList;
   }
@@ -113,12 +117,7 @@ public class CustomerIdentityServiceImpl implements CustomerIdentityService {
     LambdaQueryWrapper<CustomerIdentity> warapper = new LambdaQueryWrapper<>();
     warapper.orderByDesc(CustomerIdentity::getCreateTime);
     warapper.eq(CustomerIdentity::getTenantId, loginUser.getTenantId());
-    warapper.eq(
-        StringUtils.isNotEmpty(loginUser.getMerchantNo()),
-        CustomerIdentity::getMerchantNo,
-        loginUser.getMerchantNo());
     warapper.eq(CustomerIdentity::getCustomerNo, customerIdentity.getCustomerNo());
-
     IPage<CustomerIdentity> pageList = customerIdentityMapper.selectPage(page, warapper);
     return pageList;
   }
@@ -140,4 +139,5 @@ public class CustomerIdentityServiceImpl implements CustomerIdentityService {
     }
     return customerIdentity;
   }
+
 }

@@ -23,6 +23,16 @@ public interface SysAgentService {
     public SysAgent openSysAgent(Map<String, Object> requestMap);
 
     /**
+     * C端开通合伙人申请： 地推人员
+     */
+    public SysAgent apply(Map<String, Object> requestMap);
+
+    /**
+     * 合伙人审核
+     */
+    public void audit(Map<String, Object> requestMap);
+
+    /**
      * 添加
      */
     public SysAgent add(Map<String, Object> requestMap);
