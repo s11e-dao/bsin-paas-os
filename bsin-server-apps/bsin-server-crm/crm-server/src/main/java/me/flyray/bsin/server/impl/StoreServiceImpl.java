@@ -1,6 +1,9 @@
 package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.extra.qrcode.QrCodeUtil;
+import cn.hutool.extra.qrcode.QrConfig;
+import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -50,6 +53,8 @@ import java.util.Map;
 @Service
 public class StoreServiceImpl implements StoreService {
 
+  @Value("${bsin.mp.qrcode.base-url:https://mp.weixin.qq.com}")
+  private String mpQrCodeBaseUrl;
   @Value("${bsin.security.authentication-secretKey}")
   private String authSecretKey;
   @Value("${bsin.security.authentication-expiration}")
@@ -261,6 +266,61 @@ public class StoreServiceImpl implements StoreService {
     IPage<Store> result = storeMapper.getPageListByBizTypeCityCode(page, businessTypeNo, cityCode);
     
     return result;
+  }
+
+  @ShenyuDubboClient("/getMpQrCode")
+  @ApiDoc(desc = "getMpQrCode")
+  @Override
+  public Map<String, Object> getMpQrCode(Map<String, Object> requestMap) {
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+    Store store = storeMapper.selectById(loginUser.getMerchantStoreNo());
+    if (store == null) {
+      throw new BusinessException("STORE_NOT_EXISTS", "店铺不存在");
+    }
+
+    Map<String, Object> params = new HashMap<>();
+    params.put("storeNo", store.getSerialNo());
+    params.put("tenantId", store.getTenantId());
+    params.put("merchantNo", store.getMerchantNo());
+    params.put("pagePath", "pages-my/payment/index");
+    String content = buildUrlWithParams(mpQrCodeBaseUrl, params);
+    try {
+      QrConfig config = new QrConfig();
+      config.setRatio(3);
+      config.setWidth(300);
+      config.setHeight(300);
+      config.setMargin(2);
+
+      // 生成二维码Base64字符串
+      String qrCodeBase64 = QrCodeUtil.generateAsBase64(content, config, "PNG");
+      
+      // 构建返回结果
+      Map<String, Object> result = new HashMap<>();
+      result.put("qrCodeBase64", qrCodeBase64);
+      result.put("qrCodeUrl", content);
+      result.put("storeInfo", store);
+      
+      return result;
+    } catch (Exception e) {
+      log.error("生成店铺二维码失败: {}", e.getMessage(), e);
+      throw new BusinessException("QR_CODE_GENERATE_FAILED", "生成二维码失败");
+    }
+  }
+
+  private static String buildUrlWithParams(String baseUrl, Map<String, Object> params) {
+    StringBuilder urlBuilder = new StringBuilder(baseUrl);
+    if (params != null && !params.isEmpty()) {
+      urlBuilder.append("?");
+      boolean first = true;
+      for (Map.Entry<String, Object> entry : params.entrySet()) {
+        if (!first) {
+          urlBuilder.append("&");
+        }
+        urlBuilder.append(entry.getKey()).append("=").append(entry.getValue());
+        first = false;
+      }
+    }
+    return urlBuilder.toString();
   }
 
 }

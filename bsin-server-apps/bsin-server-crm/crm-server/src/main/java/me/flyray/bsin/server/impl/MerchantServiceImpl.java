@@ -194,7 +194,7 @@ public class MerchantServiceImpl implements MerchantService {
         loginUser.setMerchantNo(merchant.getSerialNo());
         Store store = storeMapper.selectOne(new LambdaQueryWrapper<Store>().eq(Store::getTenantId, tenantId)
                 .eq(Store::getMerchantNo, merchant.getSerialNo())
-                .eq(Store::getType, "1"));
+                .eq(Store::getType, StoreType.MAIN_STORE.getCode()));
         if(store != null){
             loginUser.setMerchantStoreNo(store.getSerialNo());
             res.put("merchantStoreNo", store.getSerialNo());

@@ -274,7 +274,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
                     bsinServiceInvoke.genericInvoke("WalletService", "createWallet", "dev", walletParams);
                 }
 
-                // 创建总店
+                // 创建总店: 需要补充门店信息
                 Map<String, Object> storeParams = new HashMap<>();
                 storeParams.put("merchantNo", merchantNo);
                 storeParams.put("type", "1");
@@ -282,6 +282,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
                 storeParams.put("type", StoreType.MAIN_STORE.getCode());
                 storeParams.put("description", merchantAuth.getDescription());
                 storeParams.put("tenantId", merchantAuth.getTenantId());
+                storeParams.put("storeName", merchantAuth.getMerchantName());
                 storeService.openStore(storeParams);
                 Merchant merchant = merchantMapper.selectById(merchantAuth.getMerchantNo());
                 // 审核通过之后像upms添加商户组织架构

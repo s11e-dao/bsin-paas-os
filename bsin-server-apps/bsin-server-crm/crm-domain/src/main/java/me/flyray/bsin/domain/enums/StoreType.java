@@ -11,15 +11,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 public enum StoreType {
 
     /**
-     * 总店
-     */
-    MAIN_STORE("0", "总店"),
-
-    /**
      * 非总店
      */
-    OTHER("1", "非总店");
+    OTHER("0", "非总店"),
 
+    /**
+     * 总店
+     */
+    MAIN_STORE("1", "总店");
 
     private String code;
 

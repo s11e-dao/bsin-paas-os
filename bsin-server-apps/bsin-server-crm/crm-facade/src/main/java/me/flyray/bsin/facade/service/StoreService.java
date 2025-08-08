@@ -56,4 +56,9 @@ public interface StoreService {
      */
     public IPage<?> getPageListByBizTypeCityCode(Map<String, Object> requestMap);
 
+    /**
+     * 生成门店小程序收款吗
+     */
+    public Map<String, Object> getMpQrCode(Map<String, Object> requestMap);
+
 }
