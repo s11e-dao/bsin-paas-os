@@ -320,6 +320,25 @@ public class MerchantServiceImpl implements MerchantService {
         return merchant;
     }
 
+    @ApiDoc(desc = "updateMerchantPayMode")
+    @ShenyuDubboClient("/updateMerchantPayMode")
+    @Override
+    public Merchant updateMerchantPayMode(Map<String, Object> requestMap) {
+        String merchantMode = MapUtils.getString(requestMap, "merchantMode");
+        String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+
+        if (merchantMode == null || merchantNo == null) {
+            throw new BusinessException(PARAM_ERROR);
+        }
+        Merchant merchant = merchantMapper.selectOne(new LambdaQueryWrapper<Merchant>().eq(Merchant::getSerialNo, merchantNo));
+        if (merchant == null) {
+            throw new BusinessException(ResponseCode.MERCHANT_NOT_EXISTS);
+        }
+        merchant.setMerchantMode(merchantMode);
+        merchantMapper.updateById(merchant);
+        return merchant;
+    }
+
     /**
      * b端查询登录平台的商户 有token校验
      *
