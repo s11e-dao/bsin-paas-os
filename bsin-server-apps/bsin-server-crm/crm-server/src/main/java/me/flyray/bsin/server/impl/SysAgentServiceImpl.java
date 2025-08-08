@@ -136,6 +136,7 @@ public class SysAgentServiceImpl implements SysAgentService {
   }
 
   /**
+   * 后台添加 C端
    * 开通合伙人： 开卡或申请成为会员之后才能成为合伙人角色
    * 开通个人合伙人： 推广员（推广商家）和分销员（分销商品）的区别
    * */
@@ -143,17 +144,8 @@ public class SysAgentServiceImpl implements SysAgentService {
   @ShenyuDubboClient("/openSysAgent")
   @Override
   public SysAgent openSysAgent(Map<String, Object> requestMap) {
-    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
-    if (sysAgent.getTenantId() == null) {
-      sysAgent.setTenantId(loginUser.getTenantId());
-      if (sysAgent.getTenantId() == null) {
-        throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
-      }
-    }
-
-    String customerNo = loginUser.getCustomerNo();
-
+    String customerNo = MapUtils.getString(requestMap, "customerNo");
     // 判断用户是否成为了平台会员，平台直属商户，会员都属于品牌商户和门店，平台会员挂给直属商户
     String merchantNo = LoginInfoContextHelper.getTenantMerchantNo();
 
@@ -164,7 +156,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     // 会员所属商户包含在 loginUser.getMerchantNo
     if (!memberMapper.exists(
             new LambdaQueryWrapper<Member>()
-                    .eq(Member::getTenantId, loginUser.getTenantId())
+                    .eq(Member::getTenantId, sysAgent.getTenantId())
                     .eq(Member::getMerchantNo, merchantNo)
                     .eq(Member::getCustomerNo, customerNo))) {
       throw new BusinessException(ResponseCode.MEMBER_NOT_EXISTS);
