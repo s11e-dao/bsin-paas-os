@@ -302,7 +302,6 @@ public class SysAgentServiceImpl implements SysAgentService {
   public IPage<?> getPageList(Map<String, Object> requestMap) {
     SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
     String tenantId = sysAgent.getTenantId();
-    String merchantNo = LoginInfoContextHelper.getMerchantNo();
     if (tenantId == null) {
       tenantId = LoginInfoContextHelper.getTenantId();
     }
