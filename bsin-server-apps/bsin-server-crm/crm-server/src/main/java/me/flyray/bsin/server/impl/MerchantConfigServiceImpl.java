@@ -65,9 +65,10 @@ public class MerchantConfigServiceImpl implements MerchantConfigService {
     @Override
     @ShenyuDubboClient("/config")
     public MerchantConfig config(MerchantConfig merchantConfigRequest) {
+        String merchantNo = StringUtils.defaultIfBlank(merchantConfigRequest.getMerchantNo(), LoginInfoContextHelper.getMerchantNo());
         merchantConfigRequest.setCreateTime(new Date());
         merchantConfigRequest.setTenantId(LoginInfoContextHelper.getTenantId());
-        merchantConfigRequest.setMerchantNo(LoginInfoContextHelper.getMerchantNo());
+        merchantConfigRequest.setMerchantNo(merchantNo);
         // 先查询更新
         LambdaQueryWrapper<MerchantConfig> warapper = new LambdaQueryWrapper<>();
         MerchantConfig merchantConfig = merchantConfigMapper.selectOne(warapper);
