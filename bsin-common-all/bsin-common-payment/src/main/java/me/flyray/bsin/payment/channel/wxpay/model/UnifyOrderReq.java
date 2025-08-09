@@ -27,6 +27,15 @@ public class UnifyOrderReq {
     /** 应用ID */
     private String bizRoleAppId;
 
+
+    /**
+     * 业务角色类型编号
+     *
+     *
+     * */
+    @NotBlank(message = "业务角色类型编号不能为空")
+    private String bizRoleTypeNo;
+
     /** 商户名称 */
     private String merchantName;
 
@@ -39,14 +48,17 @@ public class UnifyOrderReq {
 
     // ============ 订单信息 ============
     /** 支付订单号 */
-    private String payOrderId;
+    private String outOrderNo;
 
-    /** 商户订单号 */
-    @NotBlank(message = "商户订单号不能为空")
-    private String merchantOrderNo;
+//    /** 支付订单号 */
+//    private String payOrderId;
 
-    /** 外部订单号（业务方订单号） */
-    private String outSerialNo;
+//    /** 商户订单号 */
+//    @NotBlank(message = "商户订单号不能为空")
+//    private String merchantOrderNo;
+
+//    /** 外部订单号（业务方订单号） */
+//    private String outSerialNo;
 
     // ============ 支付信息 ============
     /** 支付通道 如： alipay wxPay等 */
