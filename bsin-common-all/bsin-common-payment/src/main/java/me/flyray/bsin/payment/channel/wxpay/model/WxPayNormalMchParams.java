@@ -1,7 +1,7 @@
 /*
  * @Author: leonard
  * @Date: 2025-07-26 11:09:03
- * @LastEditTime: 2025-07-29 17:26:02
+ * @LastEditTime: 2025-08-09 15:10:18
  * @FilePath: /bsin-paas-3.0/bsin-paas-os-3.0/bsin-common-all/bsin-common-payment/src/main/java/me/flyray/bsin/payment/channel/wxpay/model/WxPayNormalMchParams.java
  * @Description:
  *
@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.UUID;
 
 /*
@@ -367,7 +368,14 @@ public class WxPayNormalMchParams extends NormalMchParams {
         } else {
           // 缓存的文件不存在，删除缓存
           log.warn("缓存的证书文件不存在，删除缓存: {}", cachedPath);
-          BsinRedisProvider.deleteObject(redisKey);
+          // 直接调用单个key的删除方法避免重载歧义
+          if (redisKey != null && !redisKey.isEmpty()) {
+            try {
+              BsinRedisProvider.deleteObject(redisKey);
+            } catch (Exception e) {
+              log.warn("删除Redis缓存失败: {}, error: {}", redisKey, e.getMessage());
+            }
+          }
         }
       }
 
