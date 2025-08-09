@@ -11,6 +11,13 @@ import lombok.Data;
 @Data
 public abstract class AbstractRes implements Serializable {
 
+  /**
+   * 是否成功 - 默认为true，子类可以重写此方法
+   */
+  public boolean isSuccess() {
+    return true;
+  }
+
   public String toJSONString() {
     return JSON.toJSONString(this);
   }
