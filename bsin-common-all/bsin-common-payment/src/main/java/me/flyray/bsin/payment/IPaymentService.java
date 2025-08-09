@@ -1,8 +1,7 @@
 package me.flyray.bsin.payment;
 
 import me.flyray.bsin.payment.common.AbstractRes;
-import me.flyray.bsin.payment.channel.wxpay.model.AbstractPayOrder;
-import me.flyray.bsin.payment.channel.wxpay.model.UnifiedOrderReq;
+import me.flyray.bsin.payment.channel.wxpay.model.UnifyOrderReq;
 
 /*
  * 调起上游渠道侧支付接口
@@ -14,6 +13,6 @@ public interface IPaymentService {
   String getPayChannelCode();
 
   /** 调起支付接口，并响应数据； 内部处理普通商户和服务商模式 */
-  AbstractRes pay(UnifiedOrderReq bizRQ, AbstractPayOrder abstractPayOrder) throws Exception;
+  AbstractRes pay(UnifyOrderReq request) throws Exception;
 
 }
