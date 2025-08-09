@@ -301,30 +301,29 @@ public class SysAgentServiceImpl implements SysAgentService {
   @Override
   public IPage<?> getPageList(Map<String, Object> requestMap) {
     SysAgent sysAgent = BsinServiceContext.getReqBodyDto(SysAgent.class, requestMap);
-    String tenantId = sysAgent.getTenantId();
-    if (tenantId == null) {
-      tenantId = LoginInfoContextHelper.getTenantId();
-    }
+    String tenantId = StringUtils.defaultIfBlank(sysAgent.getTenantId(), LoginInfoContextHelper.getTenantId());
+    
     Object paginationObj = requestMap.get("pagination");
     Pagination pagination = new Pagination();
     BeanUtil.copyProperties(paginationObj, pagination);
     Page<SysAgent> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+    
+    LambdaQueryWrapper<SysAgent> wrapper = new LambdaQueryWrapper<>();
+    wrapper.orderByDesc(SysAgent::getCreateTime)
+           .eq(SysAgent::getTenantId, tenantId)
+           .eq(StringUtils.isNotEmpty(sysAgent.getBusinessType()), SysAgent::getBusinessType, sysAgent.getBusinessType())
+           .eq(StringUtils.isNotEmpty(sysAgent.getStatus()), SysAgent::getStatus, sysAgent.getStatus());
+    
     String agentLevel = sysAgent.getAgentLevel();
-    LambdaQueryWrapper<SysAgent> warapper = new LambdaQueryWrapper<>();
-    warapper.orderByDesc(SysAgent::getCreateTime);
-    warapper.eq(StringUtils.isNotEmpty(tenantId), SysAgent::getTenantId, tenantId);
-    if (SysAgentLevel.GROUND_PROMOTION.getCode().equals(agentLevel)){
-      warapper.eq(SysAgent::getAgentLevel, agentLevel);
-    }else {
-      warapper.ne(SysAgent::getAgentLevel, agentLevel);
+    if (StringUtils.isNotEmpty(agentLevel)) {
+      if (SysAgentLevel.GROUND_PROMOTION.getCode().equals(agentLevel)) {
+        wrapper.eq(SysAgent::getAgentLevel, agentLevel);
+      } else {
+        wrapper.ne(SysAgent::getAgentLevel, agentLevel);
+      }
     }
-    warapper.eq(
-        StringUtils.isNotEmpty(sysAgent.getBusinessType()), SysAgent::getBusinessType,
-        sysAgent.getBusinessType());
-    warapper.eq(
-        StringUtils.isNotEmpty(sysAgent.getStatus()), SysAgent::getStatus, sysAgent.getStatus());
-    IPage<SysAgent> pageList = sysAgentMapper.selectPage(page, warapper);
-    return pageList;
+    
+    return sysAgentMapper.selectPage(page, wrapper);
   }
 
   @ApiDoc(desc = "getDetail")
