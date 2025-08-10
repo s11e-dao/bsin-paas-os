@@ -528,7 +528,7 @@ export default () => {
           </Form.Item>
           <Form.Item
             label="商户业务单号"
-            name="OutOrderNo"
+            name="outOrderNo"
           >
             <Input placeholder="请输入商户业务单号" />
           </Form.Item>
@@ -588,7 +588,7 @@ export default () => {
             {(isViewRecord as columnsDataType)?.contractMethod || '-'}
           </Descriptions.Item>
           <Descriptions.Item label="商户业务单号">
-            {(isViewRecord as columnsDataType)?.OutOrderNo || '-'}
+            {(isViewRecord as columnsDataType)?.outOrderNo || '-'}
           </Descriptions.Item>
           <Descriptions.Item label="租户ID">
             {(isViewRecord as columnsDataType)?.tenantId || '-'}
