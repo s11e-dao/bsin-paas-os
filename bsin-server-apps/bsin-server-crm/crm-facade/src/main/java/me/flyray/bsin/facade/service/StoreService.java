@@ -54,7 +54,7 @@ public interface StoreService {
     /**
      * 根据业态查询该业态下的门店数据
      */
-    public IPage<?> getPageListByBizTypeCityCode(Map<String, Object> requestMap);
+    public IPage<?> getPageListByBizTypeRegionCode(Map<String, Object> requestMap);
 
     /**
      * 生成门店小程序收款吗

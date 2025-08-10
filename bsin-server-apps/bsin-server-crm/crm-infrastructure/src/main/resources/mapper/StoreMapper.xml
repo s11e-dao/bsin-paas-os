@@ -64,8 +64,8 @@
         <if test="businessTypeNo != null and businessTypeNo != ''">
             AND m.business_type = #{businessTypeNo}
         </if>
-        <if test="cityCode != null and cityCode != ''">
-            AND s.region_code LIKE CONCAT(#{cityCode}, '%')
+        <if test="regionCode != null and regionCode != ''">
+            AND s.region_code LIKE CONCAT(#{regionCode}, '%')
         </if>
         ORDER BY s.create_time DESC
     </select>

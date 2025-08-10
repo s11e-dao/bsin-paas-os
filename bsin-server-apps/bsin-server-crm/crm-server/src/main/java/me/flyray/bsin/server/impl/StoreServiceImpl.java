@@ -246,10 +246,10 @@ public class StoreServiceImpl implements StoreService {
    * @param requestMap
    * @return
    */
-  @ShenyuDubboClient("/getPageListByBizTypeCityCode")
-  @ApiDoc(desc = "getPageListByBizTypeCityCode")
+  @ShenyuDubboClient("/getPageListByBizTypeRegionCode")
+  @ApiDoc(desc = "getPageListByBizTypeRegionCode")
   @Override
-  public IPage<?> getPageListByBizTypeCityCode(Map<String, Object> requestMap) {
+  public IPage<?> getPageListByBizTypeRegionCode(Map<String, Object> requestMap) {
     // 获取分页参数
     Object paginationObj = requestMap.get("pagination");
     Pagination pagination = new Pagination();
@@ -260,10 +260,10 @@ public class StoreServiceImpl implements StoreService {
       // 获取查询参数
       businessTypeNo = MapUtils.getString(requestMap, "businessTypeNo");
     }
-    String cityCode = MapUtils.getString(requestMap, "cityCode");
+    String regionCode = MapUtils.getString(requestMap, "regionCode");
     
     // 调用Mapper查询
-    IPage<Store> result = storeMapper.getPageListByBizTypeCityCode(page, businessTypeNo, cityCode);
+    IPage<Store> result = storeMapper.getPageListByBizTypeCityCode(page, businessTypeNo, regionCode);
     
     return result;
   }
