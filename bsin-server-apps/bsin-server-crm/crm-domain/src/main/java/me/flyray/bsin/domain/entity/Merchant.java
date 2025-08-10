@@ -173,6 +173,6 @@ public class Merchant implements Serializable {
      * 支付商户类型模式：1-普通商户, 2-特约商户 3-服务商子商户模式
      * @see PayMerchantModeEnum
      */
-    private String merchantMode;
+    private String merchantPayMode;
 
 }

@@ -41,7 +41,7 @@ public class UnifyOrderReq {
 
     /** 商户支付模式类型 */
     @NotBlank(message = "商户支付模式类型不能为空")
-    private String merchantMode;
+    private String merchantPayMode;
 
     /** 店铺ID */
     private String storeNo;
