@@ -340,6 +340,9 @@ public class CustomerServiceImpl implements CustomerService {
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     // 判断是否需要授权手机号和昵称
     Boolean wechatAuthAll = MapUtils.getBoolean(requestMap, "wechatAuthAll");
+    if (wechatAuthAll == null) {
+      wechatAuthAll = false;
+    }
     String openId = MapUtils.getString(requestMap, "openId");
     String appId = MapUtils.getString(requestMap, "appId");
     String encryptedData = MapUtils.getString(requestMap, "encryptedData");

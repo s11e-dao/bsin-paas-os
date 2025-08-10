@@ -19,7 +19,7 @@ export type columnsDataType = {
   comment?: string;                    // 备注
   auditStatus?: string;                // 审核状态
   completedTime?: string;              // 交易完成时间
-  outSerialNo?: string;                // 商户业务唯一标识
+  OutOrderNo?: string;                // 商户业务唯一标识
   bizRoleType?: string;                // 用户角色类型
   bizRoleTypeNo?: string;              // 业务角色类型编号
   payChannelConfigNo?: string;         // 支付渠道配置编号
@@ -97,7 +97,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '商户业务单号',
-    dataIndex: 'outSerialNo',
+    dataIndex: 'OutOrderNo',
     hideInTable: true,
     fieldProps: {
       placeholder: '请输入商户业务单号',
