@@ -324,17 +324,17 @@ public class MerchantServiceImpl implements MerchantService {
     @ShenyuDubboClient("/updateMerchantPayMode")
     @Override
     public Merchant updateMerchantPayMode(Map<String, Object> requestMap) {
-        String merchantMode = MapUtils.getString(requestMap, "merchantMode");
+        String merchantPayMode = MapUtils.getString(requestMap, "merchantPayMode");
         String merchantNo = MapUtils.getString(requestMap, "merchantNo");
 
-        if (merchantMode == null || merchantNo == null) {
+        if (merchantPayMode == null || merchantNo == null) {
             throw new BusinessException(PARAM_ERROR);
         }
         Merchant merchant = merchantMapper.selectOne(new LambdaQueryWrapper<Merchant>().eq(Merchant::getSerialNo, merchantNo));
         if (merchant == null) {
             throw new BusinessException(ResponseCode.MERCHANT_NOT_EXISTS);
         }
-        merchant.setMerchantMode(merchantMode);
+        merchant.setMerchantPayMode(merchantPayMode);
         merchantMapper.updateById(merchant);
         return merchant;
     }

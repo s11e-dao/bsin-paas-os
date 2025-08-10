@@ -30,7 +30,7 @@ public class AbstractMchAppReq extends AbstractReq {
    *
    * @see me.flyray.bsin.payment.enums.PayMerchantModeEnum
    */
-  private String merchantMode;
+  private String merchantPayMode;
 
   /** 店铺ID */
   private String storeNo;

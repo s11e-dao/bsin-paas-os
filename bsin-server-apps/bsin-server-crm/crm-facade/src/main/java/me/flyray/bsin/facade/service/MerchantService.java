@@ -59,7 +59,7 @@ public interface MerchantService {
 
     /**
      * 修改商户支付商户模式
-     * 支付商户类型模式 merchantMode：1-普通商户, 2-特约商户 3-服务商子商户模式
+     * 支付商户类型模式 merchantPayMode：1-普通商户, 2-特约商户 3-服务商子商户模式
      */
     public Merchant updateMerchantPayMode(Map<String, Object> requestMap);
 

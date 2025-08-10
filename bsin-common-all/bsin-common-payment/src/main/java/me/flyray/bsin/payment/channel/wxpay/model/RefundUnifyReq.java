@@ -74,7 +74,7 @@ public class RefundUnifyReq extends AbstractMchAppReq {
     /**
      * 商户模式：1-普通商户 2-特约商户
      */
-    private String merchantMode;
+    private String merchantPayMode;
 
     /**
      * 支付渠道配置编号
