@@ -270,7 +270,6 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
 
         merchantAuthMapper.updateById(merchantAuth);
 
-
         // 所有项通过时开通功能
         if (allApproved) {
             try {
@@ -285,7 +284,6 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
                 // 创建总店: 需要补充门店信息
                 Map<String, Object> storeParams = new HashMap<>();
                 storeParams.put("merchantNo", merchantNo);
-                storeParams.put("type", "1");
                 storeParams.put("businessModel", BusinessModel.FRANCHISE.getCode());
                 storeParams.put("type", StoreType.MAIN_STORE.getCode());
                 storeParams.put("description", merchantAuth.getDescription());
@@ -309,8 +307,9 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
     @ShenyuDubboClient("/getDetail")
     @Override
     public Map<String, Object> getDetail(Map<String, Object> requestMap) throws Exception {
-        String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-        String tenantId = LoginInfoContextHelper.getTenantId();
+
+        String tenantId = StringUtils.defaultIfBlank(MapUtils.getString(requestMap, "tenantId"), LoginInfoContextHelper.getTenantId());
+        String merchantNo = StringUtils.defaultIfBlank(MapUtils.getString(requestMap, "merchantNo"), LoginInfoContextHelper.getMerchantNo());
         LambdaQueryWrapper<MerchantAuth> warapper = new LambdaQueryWrapper<>();
         warapper.eq(MerchantAuth::getTenantId, tenantId);
         warapper.eq(MerchantAuth::getMerchantNo, merchantNo);
