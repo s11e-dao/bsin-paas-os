@@ -57,8 +57,6 @@ public class UnifyOrderReq {
 //    @NotBlank(message = "商户订单号不能为空")
 //    private String merchantOrderNo;
 
-//    /** 外部订单号（业务方订单号） */
-//    private String outSerialNo;
 
     // ============ 支付信息 ============
     /** 支付通道 如： alipay wxPay等 */
