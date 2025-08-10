@@ -1,6 +1,9 @@
 package me.flyray.bsin.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
@@ -11,6 +14,7 @@ import me.flyray.bsin.domain.enums.AuthenticationStatus;
 import me.flyray.bsin.domain.enums.BusinessModel;
 import me.flyray.bsin.domain.enums.BizRoleStatus;
 import me.flyray.bsin.domain.enums.StoreType;
+import me.flyray.bsin.domain.request.MerchantDTO;
 import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.MerchantAuthService;
@@ -23,6 +27,7 @@ import me.flyray.bsin.infrastructure.mapper.SettlementAccountMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.biz.MerchantBiz;
+import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -187,7 +192,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
         // 有更新就设置为待审核
         if (hasUpdate) {
             merchantAuth.setAuthStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
-            merchantAuth.setStatus(BizRoleStatus.PENDING.getCode());
+            merchantAuth.setStatus(BizRoleStatus.NORMAL.getCode());
         }
 
         // 保存数据
@@ -254,12 +259,17 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
         if (allApproved) {
             merchantAuth.setAuthStatus(AuthenticationStatus.CERTIFIED.getCode());
             merchantAuth.setStatus(BizRoleStatus.NORMAL.getCode());
+            LambdaQueryWrapper<Merchant> merchantWrapper = new LambdaQueryWrapper<>();
+            merchantWrapper.eq(Merchant::getSerialNo, merchantNo);
+            Merchant merchant = merchantMapper.selectOne(merchantWrapper);
+            merchant.setAuthenticationStatus(AuthenticationStatus.CERTIFIED.getCode());
+            merchantMapper.updateById(merchant);
         } else if (!isApproved) {
             merchantAuth.setAuthStatus(AuthenticationStatus.CERTIFIED_FAILURE.getCode());
-            merchantAuth.setStatus(BizRoleStatus.REJECTED.getCode());
         }
 
         merchantAuthMapper.updateById(merchantAuth);
+
 
         // 所有项通过时开通功能
         if (allApproved) {
@@ -370,6 +380,30 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
         }
         
         return result;
+    }
+
+    @ApiDoc(desc = "getPageList")
+    @ShenyuDubboClient("/getPageList")
+    @Override
+    public IPage<MerchantAuth> getPageList(Map<String, Object> requestMap) {
+        MerchantAuth merchantAuth = BsinServiceContext.getReqBodyDto(MerchantAuth.class, requestMap);
+        String tenantId = merchantAuth.getTenantId();
+        String merchantNo = LoginInfoContextHelper.getMerchantNo();
+        if (tenantId == null) {
+            tenantId = LoginInfoContextHelper.getTenantId();
+        }
+        Object paginationObj = requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj, pagination);
+        Page<MerchantAuth> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+        LambdaQueryWrapper<MerchantAuth> warapper = new LambdaQueryWrapper<>();
+        warapper.orderByDesc(MerchantAuth::getCreateTime);
+        warapper.eq(MerchantAuth::getTenantId, tenantId);
+        warapper.eq(
+                StringUtils.isNotEmpty(merchantAuth.getAuthStatus()), MerchantAuth::getAuthStatus, merchantAuth.getAuthStatus());
+        warapper.eq(StringUtils.isNotEmpty(merchantNo), MerchantAuth::getSerialNo, merchantNo);
+        IPage<MerchantAuth> pageList = merchantAuthMapper.selectPage(page, warapper);
+        return pageList;
     }
 
 }

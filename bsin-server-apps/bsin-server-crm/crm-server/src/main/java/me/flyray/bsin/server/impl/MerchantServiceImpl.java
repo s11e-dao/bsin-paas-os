@@ -115,7 +115,7 @@ public class MerchantServiceImpl implements MerchantService {
         } else {
           // 普通注册逻辑
           merchant.setAuthenticationStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
-          merchant.setStatus(BizRoleStatus.PENDING.getCode());
+          merchant.setStatus(BizRoleStatus.NORMAL.getCode());
         }
 
         // 判断邀请码是否有效

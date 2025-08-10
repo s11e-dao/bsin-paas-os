@@ -166,7 +166,7 @@ public class MerchantAuth implements Serializable {
     /**
      * 认证状态:1=待认证, 2=待完善 ,3=成功 4 =失败
      */
-    private Object authStatus;
+    private String authStatus;
 
     /**
      * 商户描述

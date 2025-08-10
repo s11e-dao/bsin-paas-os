@@ -8,10 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.*;
-import me.flyray.bsin.domain.enums.BizRoleStatus;
-import me.flyray.bsin.domain.enums.CustomerType;
-import me.flyray.bsin.domain.enums.SysAgentCategory;
-import me.flyray.bsin.domain.enums.SysAgentLevel;
+import me.flyray.bsin.domain.enums.*;
 import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.exception.BusinessException;
@@ -194,7 +191,7 @@ public class SysAgentServiceImpl implements SysAgentService {
       throw new BusinessException(PASSWORD_EXISTS);
     }
     sysAgent.setTenantId(loginUser.getTenantId());
-    sysAgent.setStatus(BizRoleStatus.PENDING.getCode());
+    sysAgent.setStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
     sysAgent.setSerialNo(BsinSnowflake.getId());
 
     if (sysAgentMapper.insert(sysAgent) == 0) {
@@ -241,7 +238,7 @@ public class SysAgentServiceImpl implements SysAgentService {
       }
     }else {
       // 更新状态和备注
-      sysAgent.setStatus(BizRoleStatus.REJECTED.getCode());
+      sysAgent.setStatus(AuthenticationStatus.REBUT.getCode());
       sysAgent.setRemark(remark);
       sysAgentMapper.updateById(sysAgent);
     }

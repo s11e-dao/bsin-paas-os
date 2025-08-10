@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * @author bolei
  * @date 2023/8/22
  *
- * @desc 商户|平台|合伙人|门店|会员状态：0 正常 1 冻结 2 待审核
+ * @desc 商户|平台|合伙人|门店|会员状态：0 正常 1 冻结
  */
 public enum BizRoleStatus {
 
@@ -21,24 +21,9 @@ public enum BizRoleStatus {
     FROZEN("1", "冻结"),
 
     /**
-     * 待审核
-     */
-    PENDING("2", "待审核"),
-
-    /**
-     * 审核中
-     */
-    REVIEWING("3", "审核中"),
-
-    /**
-     * 驳回
-     */
-    REJECTED("4", "驳回"),
-
-    /**
      * 禁用
      */
-    DISABLED("6", "禁用"),
+    DISABLED("3", "禁用"),
 
     ;
 

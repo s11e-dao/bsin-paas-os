@@ -21,14 +21,19 @@ public enum AuthenticationStatus {
     CERTIFIED("2", "认证成功"),
 
     /**
+     * 认证成功
+     */
+    REVIEWING("3", "认证中"),
+
+    /**
      * rebut 驳回
      */
-    REBUT("3", "驳回"),
+    REBUT("4", "驳回"),
 
     /**
      * 认证失败
      */
-    CERTIFIED_FAILURE("4", "认证失败");
+    CERTIFIED_FAILURE("5", "认证失败");
 
 
     private String code;

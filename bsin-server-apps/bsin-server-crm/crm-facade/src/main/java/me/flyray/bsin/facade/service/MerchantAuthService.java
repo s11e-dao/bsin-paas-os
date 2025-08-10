@@ -1,6 +1,8 @@
 package me.flyray.bsin.facade.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.MerchantAuth;
+import me.flyray.bsin.domain.request.MerchantDTO;
 
 import java.util.Map;
 
@@ -21,5 +23,8 @@ public interface MerchantAuthService {
      * 查询商户进件的资料信息
      */
     public Map<String, Object> getDetail(Map<String, Object> requestMap) throws Exception;
+
+
+    public IPage<MerchantAuth> getPageList(Map<String, Object> requestMap);
 
 }
