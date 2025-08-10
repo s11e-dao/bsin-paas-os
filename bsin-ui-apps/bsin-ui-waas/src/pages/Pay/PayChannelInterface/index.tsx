@@ -99,11 +99,11 @@ const PayChannelInterface: React.FC = () => {
     /**
      * 根据通道代码和商户模式获取参数配置
      */
-    const getParamsConfig = (payChannel: string, merchantMode: string) => {
+    const getParamsConfig = (payChannel: string, merchantPayMode: string) => {
         const config = PARAMS_CONFIG_MAP[payChannel as keyof typeof PARAMS_CONFIG_MAP];
         if (!config) return '';
         
-        const paramsConfig = config[merchantMode as keyof typeof config];
+        const paramsConfig = config[merchantPayMode as keyof typeof config];
         return paramsConfig ? JSON.stringify(paramsConfig, null, 2) : '';
     };
 
