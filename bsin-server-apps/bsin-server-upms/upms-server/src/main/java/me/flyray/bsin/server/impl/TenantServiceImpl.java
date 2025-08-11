@@ -264,6 +264,7 @@ public class TenantServiceImpl implements TenantService {
      * 3、解除租户给机构岗位分配的”授权应用“的角色
      * 4、给租户添加授权应用关系
      * 5、添加授权应用的默认角色
+     * 6、给租户用户对应的默认岗位授权默认角色
      */
     @ApiDoc(desc = "authorizeApps")
     @ShenyuDubboClient("/authorizeApps")
@@ -328,6 +329,7 @@ public class TenantServiceImpl implements TenantService {
             List<String> menusIds = sysMenus.stream().map(SysMenu::getMenuId).collect(Collectors.toList());
             roleMenuMapper.authorizeMenus(appId, roleId, menusIds);
         }
+        // TODO 缺少6操作
     }
 
     /**
