@@ -10,6 +10,7 @@ import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.Merchant;
 import me.flyray.bsin.domain.entity.MerchantAuth;
 import me.flyray.bsin.domain.entity.SettlementAccount;
+import me.flyray.bsin.domain.entity.Store;
 import me.flyray.bsin.domain.enums.AuthenticationStatus;
 import me.flyray.bsin.domain.enums.BusinessModel;
 import me.flyray.bsin.domain.enums.BizRoleStatus;
@@ -24,6 +25,7 @@ import me.flyray.bsin.facade.service.UserService;
 import me.flyray.bsin.infrastructure.mapper.MerchantAuthMapper;
 import me.flyray.bsin.infrastructure.mapper.MerchantMapper;
 import me.flyray.bsin.infrastructure.mapper.SettlementAccountMapper;
+import me.flyray.bsin.infrastructure.mapper.StoreMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.biz.MerchantBiz;
@@ -57,6 +59,8 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
     private BsinServiceInvoke bsinServiceInvoke;
     @Autowired
     public MerchantMapper merchantMapper;
+    @Autowired
+    public StoreMapper storeMapper;
     @Autowired public MerchantAuthMapper merchantAuthMapper;
     @Autowired private SettlementAccountMapper settlementAccountMapper;
     @DubboReference(version = "${dubbo.provider.version}")
@@ -231,6 +235,15 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
 
         boolean isApproved = "1".equals(auditFlag);
 
+        // 结算账户号一定不能为空，先查询结算账户信息
+        if (settlementAccountNo == null) {
+            throw new BusinessException("SETTLEMENT_ACCOUNT_NO_EMPTY", "结算账户号不能为空");
+        }
+        SettlementAccount settlementAccount = settlementAccountMapper.selectById(settlementAccountNo);
+        if (settlementAccount == null) {
+            throw new BusinessException("SETTLEMENT_ACCOUNT_NOT_EXISTS", "结算账户不存在");
+        }
+        
         // 更新对应的审核状态
         switch (auditType) {
             case "baseInfo":
@@ -244,18 +257,17 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
                 break;
             case "settlementInfo":
                 merchantAuth.setBusinessInfoAuthStatus(isApproved ? AuthenticationStatus.CERTIFIED.getCode() : AuthenticationStatus.CERTIFIED_FAILURE.getCode());
-                // 这里需要更新一下结算表状态
-                SettlementAccount settlementAccount = settlementAccountMapper.selectById(settlementAccountNo);
+                // 更新结算账户状态
                 settlementAccount.setStatus(isApproved ? AuthenticationStatus.CERTIFIED.getCode() : AuthenticationStatus.CERTIFIED_FAILURE.getCode());
                 settlementAccountMapper.updateById(settlementAccount);
                 break;
         }
 
-        // 检查整体状态
+        // 检查整体状态 - 必须三个状态都通过
         boolean allApproved = AuthenticationStatus.CERTIFIED.getCode().equals(merchantAuth.getBaseInfoAuthStatus())
                 && AuthenticationStatus.CERTIFIED.getCode().equals(merchantAuth.getLegalPersonInfoAuthStatus())
                 && AuthenticationStatus.CERTIFIED.getCode().equals(merchantAuth.getBusinessInfoAuthStatus());
-
+        
         if (allApproved) {
             merchantAuth.setAuthStatus(AuthenticationStatus.CERTIFIED.getCode());
             merchantAuth.setStatus(BizRoleStatus.NORMAL.getCode());
@@ -267,11 +279,10 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
         } else if (!isApproved) {
             merchantAuth.setAuthStatus(AuthenticationStatus.CERTIFIED_FAILURE.getCode());
         }
-
         merchantAuthMapper.updateById(merchantAuth);
 
-        // 所有项通过时开通功能
-        if (allApproved) {
+        // 所有项通过时开通功能，审核结算信息就不做处理，可能不开通支付的场景
+        if (allApproved && !"settlementInfo".equals(auditType)) {
             try {
                 // Web3商户创建钱包
                 if ("2".equals(String.valueOf(merchantAuth.getCategory()))) {
@@ -289,7 +300,20 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
                 storeParams.put("description", merchantAuth.getDescription());
                 storeParams.put("tenantId", merchantAuth.getTenantId());
                 storeParams.put("storeName", merchantAuth.getMerchantName());
-                storeService.openStore(storeParams);
+                
+                // 在创建store之前，先检查是否已存在
+                LambdaQueryWrapper<Store> storeWrapper = new LambdaQueryWrapper<>();
+                storeWrapper.eq(Store::getMerchantNo, merchantNo);
+                storeWrapper.eq(Store::getType, StoreType.MAIN_STORE.getCode());
+                Store existingStore = storeMapper.selectOne(storeWrapper);
+                if (existingStore == null) {
+                    // 只有在不存在时才创建
+                    log.info("商户 {} 的总店不存在，开始创建", merchantNo);
+                    storeService.openStore(storeParams);
+                } else {
+                    log.info("商户 {} 的总店已存在，跳过创建", merchantNo);
+                }
+                
                 Merchant merchant = merchantMapper.selectById(merchantAuth.getMerchantNo());
                 // 审核通过之后像upms添加商户组织架构
                 merchantBiz.addMerchant(merchant, null);

@@ -459,7 +459,7 @@ public class MerchantServiceImpl implements MerchantService {
         if(merchantNo == null){
           merchantNo = MapUtils.getString(requestMap, "merchantNo");
         }
-        Merchant merchant = merchantMapper.selectById(merchantNo);
+        Merchant merchant = merchantMapper.selectDetailById(merchantNo);
         return merchant;
     }
 

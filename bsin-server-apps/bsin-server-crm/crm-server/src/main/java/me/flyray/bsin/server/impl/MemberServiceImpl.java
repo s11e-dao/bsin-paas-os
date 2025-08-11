@@ -251,6 +251,8 @@ public class MemberServiceImpl implements MemberService {
         return memberGrade;
     }
 
+    @ApiDoc(desc = "getCustomerNoByGradeNos")
+    @ShenyuDubboClient("/getCustomerNoByGradeNos")
     @Override
     public List<String> getCustomerNoByGradeNos(Map<String, Object> requestMap) {
         List<String> gradeNos = (List<String>) requestMap.get("gradeNos");
@@ -261,6 +263,8 @@ public class MemberServiceImpl implements MemberService {
      * 商户门店支付即锁客处理
      * @param requestMap
      */
+    @ApiDoc(desc = "lockCustomer")
+    @ShenyuDubboClient("/lockCustomer")
     @Override
     public void lockCustomer(Map<String, Object> requestMap) {
         String tenantId = MapUtils.getString(requestMap, "tenantId");

@@ -44,4 +44,12 @@
         business_scope,del_flag,description,grade_no, sys_agent_no,merchant_pay_mode
     </sql>
 
+    <select id="selectDetailById" resultMap="BaseResultMap">
+        SELECT
+        *
+        FROM crm_merchant m
+        LEFT JOIN crm_merchant_auth ma ON  m.serial_no = ma.merchant_no
+        WHERE m.del_flag = 0 AND m.serial_no = #{merchantNo}
+    </select>
+
 </mapper>
