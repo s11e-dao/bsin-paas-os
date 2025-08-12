@@ -1,0 +1,595 @@
+user root;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+	worker_connections 768;
+	# multi_accept on;
+}
+
+http {
+
+	##
+	# Basic Settings
+	##
+
+	sendfile on;
+	tcp_nopush on;
+	types_hash_max_size 2048;
+	# server_tokens off;
+
+	# server_names_hash_bucket_size 64;
+	# server_name_in_redirect off;
+
+	include /etc/nginx/mime.types;
+	default_type application/octet-stream;
+
+	##
+	# SSL Settings
+	##
+
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
+	ssl_prefer_server_ciphers on;
+
+	##
+	# Logging Settings
+	##
+
+	access_log /var/log/nginx/access.log;
+	error_log /var/log/nginx/error.log;
+
+	##
+	# Gzip Settings
+	##
+
+	gzip on;
+
+	# gzip_vary on;
+	# gzip_proxied any;
+	# gzip_comp_level 6;
+	# gzip_buffers 16 8k;
+	# gzip_http_version 1.1;
+	# gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+	##
+	# Virtual Host Configs
+	##
+
+    # Add connection_upgrade mapping here
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        '' close;
+    }
+
+	include /etc/nginx/conf.d/*.conf;
+	include /etc/nginx/sites-enabled/*;
+
+    ######################################################### s11e-dao.com ######################################################################
+	server {
+            listen       80;
+            server_name  www.s11e-dao.com;
+            rewrite ^(.*)$ https://${server_name}$1 permanent;
+    }
+
+    server {
+        listen 443 ssl;
+        server_name www.s11e-dao.com;
+        ssl_certificate /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.pem;
+        ssl_certificate_key /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.key;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+        ssl_prefer_server_ciphers on;
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+
+        gzip on;
+        gzip_buffers 32 4K;
+        gzip_comp_level 6;
+        gzip_min_length 100;
+        gzip_types application/javascript text/css text/xml;
+        gzip_disable "MSIE [1-6]\.";
+        location / {
+            #root   /root/bsin-paas-os/bsin-paas-os/apps-container/dist;
+            #index  index.html index.htm;
+            proxy_pass http://xxx.xxx.xxx.xxx:8000;
+        }
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        # 修改 Connection 头的设置，使用动态变量
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+        proxy_cache off;
+    }
+
+
+
+    server {
+        listen       80;
+        server_name  portainer.s11e-dao.com;
+        rewrite ^(.*)$ https://${server_name}$1 permanent;
+    }
+
+    server {
+        listen 443 ssl;
+        server_name portainer.s11e-dao.com;
+        ssl_certificate /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.pem;
+        ssl_certificate_key /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.key;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+        ssl_prefer_server_ciphers on;
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+
+        gzip on;
+        gzip_buffers 32 4K;
+        gzip_comp_level 6;
+        gzip_min_length 100;
+        gzip_types application/javascript text/css text/xml;
+        gzip_disable "MSIE [1-6]\.";
+        location / {
+            proxy_pass http://xxx.xxx.xxx.xxx:9000;
+        }
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        # 修改 Connection 头的设置，使用动态变量
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+        proxy_cache off;
+    }
+
+    server {
+        listen       80;
+        server_name  shenyu.s11e-dao.com;
+        rewrite ^(.*)$ https://${server_name}$1 permanent;
+    }
+
+    server {
+        listen 443 ssl;
+        server_name shenyu.s11e-dao.com;
+        ssl_certificate /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.pem;
+        ssl_certificate_key /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.key;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+        ssl_prefer_server_ciphers on;
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+
+        gzip on;
+        gzip_buffers 32 4K;
+        gzip_comp_level 6;
+        gzip_min_length 100;
+        gzip_types application/javascript text/css text/xml;
+        gzip_disable "MSIE [1-6]\.";
+        location / {
+            proxy_pass http://xxx.xxx.xxx.xxx:9095;
+        }
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        # 修改 Connection 头的设置，使用动态变量
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+        proxy_cache off;
+    }
+
+    server {
+        listen       80;
+        server_name  nacos.s11e-dao.com;
+        rewrite ^(.*)$ https://${server_name}$1 permanent;
+    }
+
+    server {
+        listen 443 ssl;
+        server_name nacos.s11e-dao.com;
+        ssl_certificate /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.pem;
+        ssl_certificate_key /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.key;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+        ssl_prefer_server_ciphers on;
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+
+        gzip on;
+        gzip_buffers 32 4K;
+        gzip_comp_level 6;
+        gzip_min_length 100;
+        gzip_types application/javascript text/css text/xml;
+        gzip_disable "MSIE [1-6]\.";
+        location /** {
+            proxy_pass http://xxx.xxx.xxx.xxx:8080;
+        }
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        # 修改 Connection 头的设置，使用动态变量
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+        proxy_cache off;
+    }
+    
+    
+    server {
+        listen       80;
+        server_name  gateway.s11e-dao.com;
+
+        location / {
+            # 设置允许跨域的域，* 表示允许任何域，也可以设置特定的域
+            add_header 'Access-Control-Allow-Origin' '*';
+            # 允许的方法
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            # 允许的头信息字段
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization, X-Requested-With';
+            add_header 'Access-Control-Allow-Credentials' 'true';
+            # 缓存时间
+            add_header 'Access-Control-Max-Age' 1728000;
+
+            # 对于OPTIONS预检请求，直接返回204
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'User-Agent,Keep-Alive,Content-Type';
+                add_header 'Access-Control-Max-Age' 1728000;
+                add_header 'Content-Type' 'text/plain charset=UTF-8';
+                add_header 'Content-Length' 0;
+                return 204;
+            }
+            rewrite ^(.*)$ https://${server_name}$1 permanent;
+        }
+
+    }
+
+    server {
+        listen 443 ssl;
+        server_name gateway.s11e-dao.com;
+        ssl_certificate /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.pem;
+        ssl_certificate_key /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.key;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+        ssl_prefer_server_ciphers on;
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+
+        gzip on;
+        gzip_buffers 32 4K;
+        gzip_comp_level 6;
+        gzip_min_length 100;
+        gzip_types application/javascript text/css text/xml;
+        gzip_disable "MSIE [1-6]\.";
+        location / {
+            # 设置允许跨域的域，* 表示允许任何域，也可以设置特定的域
+            add_header 'Access-Control-Allow-Origin' '*';
+            # 允许的方法
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            # 允许的头信息字段
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization, X-Requested-With';
+            add_header 'Access-Control-Allow-Credentials' 'true';
+            # 缓存时间
+            add_header 'Access-Control-Max-Age' 1728000;
+
+            # 对于OPTIONS预检请求，直接返回204
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'User-Agent,Keep-Alive,Content-Type';
+                add_header 'Access-Control-Max-Age' 1728000;
+                add_header 'Content-Type' 'text/plain charset=UTF-8';
+                add_header 'Content-Length' 0;
+                return 204;
+            }
+            # rewrite ^(.*)$ https://${server_name}$1 permanent;
+            # 代理到后端服务器，启用WebSocket支持
+            proxy_pass http://xxx.xxx.xxx.xxx:9195;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            # 修改 Connection 头的设置，使用动态变量
+            proxy_set_header Connection $connection_upgrade;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_buffering off;
+            proxy_cache off;
+        }
+
+    }
+
+
+
+    server {
+        listen       80;
+        server_name  admin.s11e-dao.com;
+
+        location / {
+            # 设置允许跨域的域，* 表示允许任何域，也可以设置特定的域
+            add_header 'Access-Control-Allow-Origin' '*';
+            # 允许的方法
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            # 允许的头信息字段
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization, X-Requested-With';
+            add_header 'Access-Control-Allow-Credentials' 'true';
+            # 缓存时间
+            add_header 'Access-Control-Max-Age' 1728000;
+
+            # 对于OPTIONS预检请求，直接返回204
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'User-Agent,Keep-Alive,Content-Type';
+                add_header 'Access-Control-Max-Age' 1728000;
+                add_header 'Content-Type' 'text/plain charset=UTF-8';
+                add_header 'Content-Length' 0;
+                return 204;
+            }
+            rewrite ^(.*)$ https://${server_name}$1 permanent;
+            # proxy_pass http://xxx.xxx.xxx.xxx:8000;
+        }
+    }
+
+    server {
+        listen 443 ssl;
+        server_name admin.s11e-dao.com;
+        ssl_certificate /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.pem;
+        ssl_certificate_key /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.key;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+        ssl_prefer_server_ciphers on;
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+
+        gzip on;
+        gzip_buffers 32 4K;
+        gzip_comp_level 6;
+        gzip_min_length 100;
+        gzip_types application/javascript text/css text/xml;
+        gzip_disable "MSIE [1-6]\.";
+        location / {
+            # 设置允许跨域的域，* 表示允许任何域，也可以设置特定的域
+            add_header 'Access-Control-Allow-Origin' '*';
+            # 允许的方法
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            # 允许的头信息字段
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization, X-Requested-With';
+            add_header 'Access-Control-Allow-Credentials' 'true';
+            # 缓存时间
+            add_header 'Access-Control-Max-Age' 1728000;
+
+            # 对于OPTIONS预检请求，直接返回204
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'User-Agent,Keep-Alive,Content-Type';
+                add_header 'Access-Control-Max-Age' 1728000;
+                add_header 'Content-Type' 'text/plain charset=UTF-8';
+                add_header 'Content-Length' 0;
+                return 204;
+            }
+            # rewrite ^(.*)$ https://${server_name}$1 permanent;
+#             proxy_pass http://xxx.xxx.xxx.xxx:8000;
+            proxy_pass http://xxx.xxx.xxx.xxx:8000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            # 修改 Connection 头的设置，使用动态变量
+            proxy_set_header Connection $connection_upgrade;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_buffering off;
+            proxy_cache off;
+        }
+
+        # 添加API代理，将所有业务接口路径的请求代理到gateway服务
+        # 包括 /upms/, /crm/, /oms/ 等所有业务模块
+        location ~ ^/(upms|crm|oms|auth|system|workflow|report|dashboard|api|oms|waas|app-agent|workflow|workflow-admin|iot)/ {
+            # 设置允许跨域的域，* 表示允许任何域，也可以设置特定的域
+            add_header 'Access-Control-Allow-Origin' '*';
+            # 允许的方法
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            # 允许的头信息字段
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization, X-Requested-With';
+            add_header 'Access-Control-Allow-Credentials' 'true';
+            # 缓存时间
+            add_header 'Access-Control-Max-Age' 1728000;
+
+            # 对于OPTIONS预检请求，直接返回204
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'User-Agent,Keep-Alive,Content-Type';
+                add_header 'Access-Control-Max-Age' 1728000;
+                add_header 'Content-Type' 'text/plain charset=UTF-8';
+                add_header 'Content-Length' 0;
+                return 204;
+            }
+            
+            # 代理到gateway服务
+            proxy_pass http://xxx.xxx.xxx.xxx:9195;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $connection_upgrade;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_buffering off;
+            proxy_cache off;
+        }
+    }
+
+    server {
+        listen       80;
+        server_name  sop.s11e-dao.com;
+
+        location / {
+            # 设置允许跨域的域，* 表示允许任何域，也可以设置特定的域
+            add_header 'Access-Control-Allow-Origin' '*';
+            # 允许的方法
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            # 允许的头信息字段
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization, X-Requested-With';
+            add_header 'Access-Control-Allow-Credentials' 'true';
+            # 缓存时间
+            add_header 'Access-Control-Max-Age' 1728000;
+
+            # 对于OPTIONS预检请求，直接返回204
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'User-Agent,Keep-Alive,Content-Type';
+                add_header 'Access-Control-Max-Age' 1728000;
+                add_header 'Content-Type' 'text/plain charset=UTF-8';
+                add_header 'Content-Length' 0;
+                return 204;
+            }
+            rewrite ^(.*)$ https://${server_name}$1 permanent;
+            # proxy_pass http://xxx.xxx.xxx.xxx:8000;
+        }
+    }
+
+    server {
+        listen 443 ssl;
+        server_name sop.s11e-dao.com;
+        ssl_certificate /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.pem;
+        ssl_certificate_key /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.key;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+        ssl_prefer_server_ciphers on;
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+
+        gzip on;
+        gzip_buffers 32 4K;
+        gzip_comp_level 6;
+        gzip_min_length 100;
+        gzip_types application/javascript text/css text/xml;
+        gzip_disable "MSIE [1-6]\.";
+        location / {
+            # 设置允许跨域的域，* 表示允许任何域，也可以设置特定的域
+            add_header 'Access-Control-Allow-Origin' '*';
+            # 允许的方法
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            # 允许的头信息字段
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization, X-Requested-With';
+            add_header 'Access-Control-Allow-Credentials' 'true';
+            # 缓存时间
+            add_header 'Access-Control-Max-Age' 1728000;
+
+            # 对于OPTIONS预检请求，直接返回204
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'User-Agent,Keep-Alive,Content-Type';
+                add_header 'Access-Control-Max-Age' 1728000;
+                add_header 'Content-Type' 'text/plain charset=UTF-8';
+                add_header 'Content-Length' 0;
+                return 204;
+            }
+            # rewrite ^(.*)$ https://${server_name}$1 permanent;
+#             proxy_pass http://xxx.xxx.xxx.xxx:8000;
+            proxy_pass http://xxx.xxx.xxx.xxx:8000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            # 修改 Connection 头的设置，使用动态变量
+            proxy_set_header Connection $connection_upgrade;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_buffering off;
+            proxy_cache off;
+        }
+    }
+
+    # HLS流媒体服务器配置
+    server {
+        listen       80;
+        server_name  hls.s11e-dao.com;
+
+        # HLS文件的MIME类型
+        types {
+            application/vnd.apple.mpegurl m3u8;
+            video/mp2t ts;
+        }
+
+        # HLS目录
+        location /hls/ {
+            # HLS内容的根目录
+            # alias /home/bsin-paas/bsin-paas-os/hls/;
+            alias /home/bsin-paas-os/middleware/nginx/hls/;
+            
+            # 添加跨域支持
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Origin, X-Requested-With, Content-Type, Accept';
+            
+            # 设置缓存控制
+            add_header Cache-Control no-cache;
+            
+            # 处理OPTIONS请求
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'Origin, X-Requested-With, Content-Type, Accept';
+                add_header 'Content-Type' 'text/plain charset=UTF-8';
+                add_header 'Content-Length' 0;
+                return 204;
+            }
+        }
+    }
+
+    # 如果需要启用HTTPS访问HLS，可以取消注释以下配置
+    server {
+        listen 443 ssl;
+        server_name  hls.s11e-dao.com;
+    
+        ssl_certificate /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.pem;
+        ssl_certificate_key /home/bsin-paas-os/middleware/nginx/cert/s11e-dao.com/s11e-dao.com.key;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+        ssl_prefer_server_ciphers on;
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+    
+        # HLS文件的MIME类型
+        types {
+            application/vnd.apple.mpegurl m3u8;
+            video/mp2t ts;
+        }
+    
+        # HLS目录
+        location /hls/ {
+    #        alias /home/bsin-paas/bsin-paas-os/hls/;
+            alias /home/leonard/ssd12/bsin-paas/bsin-paas-os/hls/;
+    
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Origin, X-Requested-With, Content-Type, Accept';
+    
+            add_header Cache-Control no-cache;
+    
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'Origin, X-Requested-With, Content-Type, Accept';
+                add_header 'Content-Type' 'text/plain charset=UTF-8';
+                add_header 'Content-Length' 0;
+                return 204;
+            }
+        }
+    }
+}
