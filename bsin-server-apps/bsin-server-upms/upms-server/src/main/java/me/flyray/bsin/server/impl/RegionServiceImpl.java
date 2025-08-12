@@ -84,7 +84,15 @@ public class RegionServiceImpl implements RegionService {
         //等级行政区域
         List<SysRegion> regionList = regionMapper.selectAllList();
         return regionBiz.buildRegionTree(regionList);
+    }
 
+    @ApiDoc(desc = "getAllList")
+    @ShenyuDubboClient("/getAllList")
+    @Override
+    public List<SysRegion> getAllList() {
+        //等级行政区域
+        List<SysRegion> regionList = regionMapper.selectAllList();
+        return regionList;
     }
 
     @ApiDoc(desc = "getRegionById")

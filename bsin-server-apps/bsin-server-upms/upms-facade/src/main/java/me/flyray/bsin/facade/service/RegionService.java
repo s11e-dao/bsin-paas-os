@@ -42,6 +42,8 @@ public interface RegionService {
      */
     List<RegionTree> getSubNodeTree();
 
+    public List<SysRegion> getAllList();
+
     /**
      * 查询顶级行政机构
      */
