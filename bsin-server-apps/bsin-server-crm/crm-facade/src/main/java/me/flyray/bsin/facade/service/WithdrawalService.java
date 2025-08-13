@@ -5,7 +5,7 @@ import me.flyray.bsin.domain.entity.WithdrawalRecord;
 
 import java.util.Map;
 
-public interface WithdrawalRecordService {
+public interface WithdrawalService {
 
     /**
      * 提现申请

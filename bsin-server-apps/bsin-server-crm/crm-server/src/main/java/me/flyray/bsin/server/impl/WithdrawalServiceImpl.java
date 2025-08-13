@@ -11,7 +11,7 @@ import me.flyray.bsin.domain.entity.WithdrawalRecord;
 import me.flyray.bsin.domain.enums.WithdrawalAuditStatus;
 import me.flyray.bsin.domain.enums.WithdrawalStatus;
 import me.flyray.bsin.exception.BusinessException;
-import me.flyray.bsin.facade.service.WithdrawalRecordService;
+import me.flyray.bsin.facade.service.WithdrawalService;
 import me.flyray.bsin.infrastructure.mapper.WithdrawalRecordMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
@@ -35,7 +35,7 @@ import static me.flyray.bsin.constants.ResponseCode.SYS_AGENT_NOT_EXISTS;
 @ShenyuDubboService(path = "/withdrawal", timeout = 15000)
 @ApiModule(value = "withdrawal")
 @Service
-public class WithdrawalRecordServiceImpl implements WithdrawalRecordService {
+public class WithdrawalServiceImpl implements WithdrawalService {
 
     @Autowired
     private WithdrawalRecordMapper withdrawalRecordMapper;
