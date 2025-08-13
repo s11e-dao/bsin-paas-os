@@ -88,7 +88,8 @@ public class StoreServiceImpl implements StoreService {
     return store;
   }
 
-
+  @ShenyuDubboClient("/login")
+  @ApiDoc(desc = "login")
   @Override
   public Map<String, Object> login(Map<String, Object> requestMap) {
     String tenantId = MapUtils.getString(requestMap, "tenantId");
@@ -194,6 +195,8 @@ public class StoreServiceImpl implements StoreService {
     return store;
   }
 
+  @ApiDoc(desc = "getListByIds")
+  @ShenyuDubboClient("/getListByIds")
   @Override
   public List<Store> getListByIds(Map<String, Object> requestMap) {
     List<String> storeIds = (List<String>) requestMap.get("storeIds");
@@ -250,6 +253,7 @@ public class StoreServiceImpl implements StoreService {
   @ApiDoc(desc = "getPageListByBizTypeRegionCode")
   @Override
   public IPage<?> getPageListByBizTypeRegionCode(Map<String, Object> requestMap) {
+    String tenantId = MapUtils.getString(requestMap, "tenantId");
     // 获取分页参数
     Object paginationObj = requestMap.get("pagination");
     Pagination pagination = new Pagination();
@@ -263,7 +267,7 @@ public class StoreServiceImpl implements StoreService {
     String regionCode = MapUtils.getString(requestMap, "regionCode");
     
     // 调用Mapper查询
-    IPage<Store> result = storeMapper.getPageListByBizTypeCityCode(page, businessTypeNo, regionCode);
+    IPage<Store> result = storeMapper.getPageListByBizTypeCityCode(page, tenantId, businessTypeNo, regionCode);
     
     return result;
   }

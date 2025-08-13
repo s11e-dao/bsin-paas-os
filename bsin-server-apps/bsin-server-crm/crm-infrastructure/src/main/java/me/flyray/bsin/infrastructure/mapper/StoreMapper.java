@@ -19,7 +19,9 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface StoreMapper extends BaseMapper<Store> {
 
-    IPage<Store> getPageListByBizTypeCityCode(@Param("page") IPage<?> page, @Param("businessTypeNo") String businessTypeNo,
+    IPage<Store> getPageListByBizTypeCityCode(@Param("page") IPage<?> page,
+                                              @Param("tenantId") String tenantId,
+                                              @Param("businessTypeNo") String businessTypeNo,
                                               @Param("regionCode") String regionCode);
 
 

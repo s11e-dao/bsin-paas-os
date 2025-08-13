@@ -60,7 +60,7 @@
             m.business_scope
         FROM crm_store s
         LEFT JOIN crm_merchant m ON s.merchant_no = m.serial_no
-        WHERE s.del_flag = 0
+        WHERE s.del_flag = 0 and s.tenant_id = #{tenantId}
         <if test="businessTypeNo != null and businessTypeNo != ''">
             AND m.business_type = #{businessTypeNo}
         </if>

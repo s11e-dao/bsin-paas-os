@@ -246,14 +246,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
 
         boolean isApproved = "1".equals(auditFlag);
 
-        // 结算账户号一定不能为空，先查询结算账户信息
-        if (settlementAccountNo == null) {
-            throw new BusinessException("SETTLEMENT_ACCOUNT_NO_EMPTY", "结算账户号不能为空");
-        }
-        SettlementAccount settlementAccount = settlementAccountMapper.selectById(settlementAccountNo);
-        if (settlementAccount == null) {
-            throw new BusinessException("SETTLEMENT_ACCOUNT_NOT_EXISTS", "结算账户不存在");
-        }
+
         
         // 更新对应的审核状态
         switch (auditType) {
@@ -267,6 +260,14 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
                 merchantAuth.setBusinessInfoAuthStatus(isApproved ? AuthenticationStatus.CERTIFIED.getCode() : AuthenticationStatus.CERTIFIED_FAILURE.getCode());
                 break;
             case "settlementInfo":
+                // 结算账户号一定不能为空，先查询结算账户信息
+                if (settlementAccountNo == null) {
+                    throw new BusinessException("SETTLEMENT_ACCOUNT_NO_EMPTY", "结算账户号不能为空");
+                }
+                SettlementAccount settlementAccount = settlementAccountMapper.selectById(settlementAccountNo);
+                if (settlementAccount == null) {
+                    throw new BusinessException("SETTLEMENT_ACCOUNT_NOT_EXISTS", "结算账户不存在");
+                }
                 merchantAuth.setBusinessInfoAuthStatus(isApproved ? AuthenticationStatus.CERTIFIED.getCode() : AuthenticationStatus.CERTIFIED_FAILURE.getCode());
                 // 更新结算账户状态
                 settlementAccount.setStatus(isApproved ? AuthenticationStatus.CERTIFIED.getCode() : AuthenticationStatus.CERTIFIED_FAILURE.getCode());
