@@ -1,5 +1,7 @@
 package me.flyray.bsin.domain.entity;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
@@ -186,6 +188,8 @@ public class MerchantAuth implements Serializable {
             delval = "1"
     )
     private String delFlag;
+
+    private String storeInfo;
 
     /**
      * 备注信息

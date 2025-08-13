@@ -1,2 +1,3 @@
 com.google.gson
 org.springframework.http
+com.alibaba.fastjson2

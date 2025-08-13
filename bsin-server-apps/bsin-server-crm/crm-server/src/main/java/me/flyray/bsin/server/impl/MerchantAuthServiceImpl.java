@@ -1,6 +1,8 @@
 package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -193,6 +195,15 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
             settlementAccountMapper.insert(settlementAccount);
         }
 
+        // 商户总店信息
+        Object storeInfoObj = MapUtils.getObject(requestMap, "storeInfo");
+        if (storeInfoObj != null) {
+            try {
+                merchantAuth.setStoreInfo(JSON.toJSONString(storeInfoObj));
+            } catch (Exception e) {
+                log.warn("转换storeInfo失败，跳过存储: {}", e.getMessage());
+            }
+        }
         // 有更新就设置为待审核
         if (hasUpdate) {
             merchantAuth.setAuthStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
@@ -299,20 +310,22 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
                 storeParams.put("type", StoreType.MAIN_STORE.getCode());
                 storeParams.put("description", merchantAuth.getDescription());
                 storeParams.put("tenantId", merchantAuth.getTenantId());
-                storeParams.put("storeName", merchantAuth.getMerchantName());
                 
-                // 在创建store之前，先检查是否已存在
-                LambdaQueryWrapper<Store> storeWrapper = new LambdaQueryWrapper<>();
-                storeWrapper.eq(Store::getMerchantNo, merchantNo);
-                storeWrapper.eq(Store::getType, StoreType.MAIN_STORE.getCode());
-                Store existingStore = storeMapper.selectOne(storeWrapper);
-                if (existingStore == null) {
-                    // 只有在不存在时才创建
-                    log.info("商户 {} 的总店不存在，开始创建", merchantNo);
-                    storeService.openStore(storeParams);
+                // 从storeInfo中获取店铺信息
+                String storeInfoStr = merchantAuth.getStoreInfo();
+                if (StringUtils.isNotEmpty(storeInfoStr)) {
+                    JSONObject storeInfo = JSON.parseObject(storeInfoStr);
+                    storeParams.put("storeName", storeInfo.getString("storeName"));
+                    storeParams.put("regionCode", storeInfo.getString("regionCode"));
+                    storeParams.put("address", storeInfo.getString("regionName") + storeInfo.getString("storeAddress"));
+                    storeParams.put("contactPhone", storeInfo.getString("storePhone"));
+                    storeParams.put("contactName", storeInfo.getString("storeOwer"));
+                    storeParams.put("logo", storeInfo.getString("storeImg"));
+                    storeParams.put("description", storeInfo.getString("storeAlias"));
                 } else {
-                    log.info("商户 {} 的总店已存在，跳过创建", merchantNo);
+                    storeParams.put("storeName", merchantAuth.getMerchantName());
                 }
+                storeService.openStore(storeParams);
                 
                 Merchant merchant = merchantMapper.selectById(merchantAuth.getMerchantNo());
                 // 审核通过之后像upms添加商户组织架构
