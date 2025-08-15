@@ -11,12 +11,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AiMcpToolsConfig {
 
-    @Bean
-    ToolCallbackProvider tools(
-            @Qualifier("crmMcpToolService") CrmMcpToolService crmMcpToolService
-    ) {
-        ToolCallback[] toolCallbacks = ToolCallbacks.from(crmMcpToolService) ;
-        return ToolCallbackProvider.from(toolCallbacks);
-    }
-
+  @Bean
+  ToolCallbackProvider tools(@Qualifier("crmMcpToolService") CrmMcpToolService crmMcpToolService) {
+    ToolCallback[] toolCallbacks = ToolCallbacks.from(crmMcpToolService);
+    return ToolCallbackProvider.from(toolCallbacks);
+  }
 }

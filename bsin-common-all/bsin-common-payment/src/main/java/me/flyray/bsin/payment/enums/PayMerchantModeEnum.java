@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 /**
  * @author leonard
  * @date 2025/07/23 0:02
- * @desc 支付商户模式
+ * @desc 支付商户模式: 1-普通商户模式 2-特约商户模式 3-服务商子商户模式
  */
 public enum PayMerchantModeEnum {
   NORMAL_MERCHANT_MODE("1", "普通商户模式"),
