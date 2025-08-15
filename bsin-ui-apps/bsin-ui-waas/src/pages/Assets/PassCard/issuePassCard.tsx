@@ -15,7 +15,7 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './data';
-import { collectPassCard } from './service';
+import { issuePassCard } from './service';
 import { getContractProtocolList } from './../ContractProtocol/service';
 import { getMetadataTemplatePageList } from './../MetadataTemplate/service';
 import { getMetadataFileList } from './../MetadataList/service';
@@ -57,6 +57,8 @@ export default ({ setCurrentContent }) => {
   const { Option } = Select;
   // 获取表单
   const [FormRef] = Form.useForm();
+  // 监听 onChainFlag 字段
+  const onChainFlag = Form.useWatch('onChainFlag', FormRef);
 
   /**
    * 确认添加模板
@@ -69,8 +71,9 @@ export default ({ setCurrentContent }) => {
         let requestParam = FormRef.getFieldsValue();
 
         if (issueMethod == '1') {
+          requestParam.assetsType = "5";
           console.log(requestParam);
-          collectPassCard(requestParam).then((res) => {
+          issuePassCard(requestParam).then((res) => {
             console.log('issue', res);
             if (res?.code == 0) {
               // 返回列表
@@ -80,7 +83,7 @@ export default ({ setCurrentContent }) => {
             }
           });
         } else {
-          requestParam.assetsCollectionType = contractProtocolChoosed.type;
+          requestParam.assetsType = "5";
           console.log(requestParam);
           issueDigitalAssetsCollection(requestParam).then((res) => {
             console.log('issue', res);
@@ -152,7 +155,8 @@ export default ({ setCurrentContent }) => {
               protocolCode: '1',
               metadataTemplateNo: '1',
               metadataFilePathNo: '1',
-              collectionType: '',
+              assetsType: '',
+              onChainFlag: 'false',
             }}
           >
             <Form.Item
@@ -167,8 +171,8 @@ export default ({ setCurrentContent }) => {
                 }}
               >
                 <Option value="0">请选择发行方式</Option>
-                <Option value="1"> 通过profile发行</Option>
-                <Option value="2"> 通过数字资产发行</Option>
+                <Option value="1"> 通过profile协议发行</Option>
+                <Option value="2"> 通过数字资产协议发行</Option>
               </Select>
             </Form.Item>
 
@@ -350,29 +354,47 @@ export default ({ setCurrentContent }) => {
             </Form.Item>
 
             <Form.Item
-              label="发行环境"
-              name="chainEnv"
-              rules={[{ required: true, message: '请选择发行环境!' }]}
+              label="是否基于链上铸造"
+              name="onChainFlag"
+              rules={[
+                { required: true, message: '请选择是否基于链上铸造!' },
+              ]}
             >
-              <Radio.Group value="test">
-                <Radio value="test">测试网</Radio>
-                <Radio value="main">正式网</Radio>
+              <Radio.Group value="false">
+                <Radio value="false">否</Radio>
+                <Radio value="true">是</Radio>
               </Radio.Group>
             </Form.Item>
 
-            <Form.Item
-              label="发行区块链"
-              name="chainType"
-              rules={[{ required: true, message: '请选择发行区块链!' }]}
-            >
-              <Select style={{ width: '100%' }}>
-                <Option value="conflux">树图</Option>
-                <Option value="polygon">polygon</Option>
-                <Option value="bsc">币安</Option>
-                <Option value="tron">波场</Option>
-                <Option value="wenchang">文昌链</Option>
-              </Select>
-            </Form.Item>
+            {/* 只有 onChainFlag 为 'true' 时才显示下面两个表单项 */}
+            {onChainFlag === 'true' && (
+              <>
+                <Form.Item
+                  label="发行环境"
+                  name="chainEnv"
+                  rules={[{ required: true, message: '请选择发行环境!' }]}
+                >
+                  <Radio.Group value="test">
+                    <Radio value="test">测试网</Radio>
+                    <Radio value="main">正式网</Radio>
+                  </Radio.Group>
+                </Form.Item>
+
+                <Form.Item
+                  label="发行区块链"
+                  name="chainType"
+                  rules={[{ required: true, message: '请选择发行区块链!' }]}
+                >
+                  <Select style={{ width: '100%' }}>
+                    <Option value="conflux">树图</Option>
+                    <Option value="polygon">polygon</Option>
+                    <Option value="bsc">币安</Option>
+                    <Option value="tron">波场</Option>
+                    <Option value="wenchang">文昌链</Option>
+                  </Select>
+                </Form.Item>
+              </>
+            )}
 
             <Form.Item wrapperCol={{ offset: 5, span: 12 }}>
               <Button

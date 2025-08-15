@@ -2,11 +2,11 @@ import { request } from '@umijs/max'
 let waasPath = process.env.contextPath_waas;
 
 // 发行会员卡
-export const collectPassCard = (params) => {
+export const issuePassCard = (params) => {
   console.log('params', params);
-  return request(waasPath + '/customerProfile/collect', {
+  return request(waasPath + '/passCard/issue', {
     serviceName: 'CustomerProfileService',
-    methodName: 'collect',
+    methodName: 'issue',
     version: '1.0',
     bizParams: {
       ...params,
@@ -17,7 +17,7 @@ export const collectPassCard = (params) => {
 // 开卡
 export const openPassCard = (params) => {
   console.log('params', params);
-  return request(waasPath + '/customerProfile/claim', {
+  return request(waasPath + '/passCard/claim', {
     serviceName: 'CustomerPassCardService',
     methodName: 'claim',
     version: '1.0',
@@ -30,7 +30,7 @@ export const openPassCard = (params) => {
 // 添加follow 记录
 export const openPassCardByProfileFollow = (params) => {
   console.log('params', params);
-  return request(waasPath + '/customerProfile/follow', {
+  return request(waasPath + '/passCard/follow', {
     serviceName: 'CustomerProfileService',
     methodName: 'follow',
     version: '1.0',
