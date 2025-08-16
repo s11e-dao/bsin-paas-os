@@ -106,7 +106,7 @@ spring:
           server-addr: ${BSIN_NACOS_SERVER_ADDR}
           username: ${BSIN_NACOS_USERNAME}
           password: ${BSIN_NACOS_PASSWORD}
-          registry:
+          register:
             enabled: true
             service-group: mcp-server
             service-name: crm-mcp-server
