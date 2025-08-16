@@ -27,7 +27,7 @@
         <!-- MCP Nacos 注册支持 -->
         <dependency>
             <groupId>com.alibaba.cloud.ai</groupId>
-            <artifactId>spring-ai-alibaba-starter-nacos-mcp-server</artifactId>
+            <artifactId>spring-ai-alibaba-starter-mcp-registry</artifactId>
             <version>${spring-ai-alibaba.version}</version>
         </dependency>
 
