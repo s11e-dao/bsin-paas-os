@@ -16,4 +16,5 @@ public class AiMcpToolsConfig {
     ToolCallback[] toolCallbacks = ToolCallbacks.from(crmMcpToolService);
     return ToolCallbackProvider.from(toolCallbacks);
   }
+
 }
