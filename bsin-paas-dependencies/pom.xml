@@ -39,7 +39,7 @@
         <hutool.version>5.8.30</hutool.version>
         <zookeeper.version>3.9.2</zookeeper.version>
         <junit-jupiter.version>5.7.2</junit-jupiter.version>
-        <nacos-client.version>3.0.1</nacos-client.version>
+        <nacos-client.version>3.0.2</nacos-client.version>
         <nacos-config.version>0.3.0-RC</nacos-config.version>
         <shiro.version>1.8.0</shiro.version>
         <jwt.version>3.12.0</jwt.version>
@@ -58,7 +58,7 @@
         <tomcat.version>10.1.25</tomcat.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <commons-lang3.version>3.13.0</commons-lang3.version>
-        <elasticsearch-java.version>8.15.5</elasticsearch-java.version>
+        <elasticsearch-java.version>8.18.1</elasticsearch-java.version>
         <weixin-java-pay.version>4.7.0</weixin-java-pay.version>
         <alipay-sdk-java.version>4.39.104.ALL</alipay-sdk-java.version>
     </properties>
