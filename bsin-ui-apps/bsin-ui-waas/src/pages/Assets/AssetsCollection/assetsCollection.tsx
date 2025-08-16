@@ -284,9 +284,9 @@ export default ({ setCurrentContent, putOnShelves }: Props) => {
   };
 
   // 初始化数据
-  // React.useEffect(() => {
-  //   fetchData({ current: 1, pageSize: 10 });
-  // }, []);
+  React.useEffect(() => {
+    fetchData({ current: 1, pageSize: 10 });
+  }, []);
 
   return (
     <div>
