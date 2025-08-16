@@ -377,28 +377,28 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
   /**
    * 详情，模板类型对应
    */
-  const handleViewRecordOfCollectionType = () => {
-    let { collectionType } = isViewCollectionRecord;
-    if (collectionType == `1`) {
+  const handleViewRecordOfassetsType = () => {
+    let { assetsType } = isViewCollectionRecord;
+    if (assetsType == `1`) {
       return '数字资产';
-    } else if (collectionType == `2`) {
+    } else if (assetsType == `2`) {
       return 'PFP';
-    } else if (collectionType == `3`) {
+    } else if (assetsType == `3`) {
       return '账户-DP';
-    } else if (collectionType == `4`) {
+    } else if (assetsType == `4`) {
       return '数字门票';
-    } else if (collectionType == `5`) {
+    } else if (assetsType == `5`) {
       return 'Pass卡';
-    } else if (collectionType == `6`) {
+    } else if (assetsType == `6`) {
       return '账户-BC';
-    } else if (collectionType == `7`) {
+    } else if (assetsType == `7`) {
       return '满减';
-    } else if (collectionType == `8`) {
+    } else if (assetsType == `8`) {
       return '权限';
-    } else if (collectionType == `9`) {
+    } else if (assetsType == `9`) {
       return '会员等级';
     } else {
-      return collectionType;
+      return assetsType;
     }
   };
 
@@ -713,7 +713,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
                 request={async (params) => {
                   // console.log(params);
                   // 品牌商户发行资产类型 1、数字徽章 2、PFP 3、数字积分 4、数字门票 5、pass卡 6、徽章/门票
-                  params.collectionType = '3';
+                  params.assetsType = '3';
                   let res = await getDigitalAssetsCollectionPageList({
                     ...params,
                     pageNum: params.current,
@@ -987,7 +987,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
             {isViewCollectionRecord?.serialNo}
           </Descriptions.Item>
           <Descriptions.Item label="数字资产类型">
-            {handleViewRecordOfCollectionType()}
+            {handleViewRecordOfassetsType()}
           </Descriptions.Item>
           <Descriptions.Item label="资产名称">
             {isViewCollectionRecord?.name}

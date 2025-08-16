@@ -52,7 +52,7 @@ export default ({ setCurrentContent }) => {
       .then(async () => {
         // 获取表单结果
         let response = FormRef.getFieldsValue();
-        response.assetsCollectionType = contractProtocolChoosed.type;
+        response.assetsType = contractProtocolChoosed.type;
         console.log(response);
         issueDigitalPoints(response).then((res) => {
           console.log('issue', res);
@@ -162,7 +162,7 @@ export default ({ setCurrentContent }) => {
             {protocolChange ? (
               <Form.Item
                 label="集合资产类型"
-                name="assetsCollectionType"
+                name="assetsType"
                 rules={[{ required: false, message: '请输入集合资产类型!' }]}
               >
                 <Input defaultValue={contractProtocolChoosed?.type} disabled />
