@@ -17,6 +17,9 @@ import {
   Row,
   Statistic,
   Table,
+  Space,
+  Tooltip,
+  Divider,
 } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -59,6 +62,7 @@ import TableTitle from '../../../components/TableTitle';
 import sloganLogo from '../../../assets/s11e-slogan.png';
 
 import styles from './index.css';
+import { EyeOutlined, EditOutlined, QrcodeOutlined, KeyOutlined, UploadOutlined } from '@ant-design/icons';
 
 export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
   let biganH5 = process.env.biganH5Url;
@@ -159,106 +163,69 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
 
   // 会员卡发行操作行数据 自定义操作行
   const actionRender: any = (text: any, record: any, index: number) => (
-    <ul className="ant-list-item-action" style={{ margin: 0 }}>
-      <li>
-        <a
-          onClick={() => {
-            toViewAssetsCollection(record);
-          }}
-        >
-          查看
+    <Space>
+      <Tooltip title="查看">
+        <a onClick={() => toViewAssetsCollection(record)}>
+          <EyeOutlined /> 查看
         </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-
-      <li>
-        <a
-          onClick={() => {
-            putOnShelves(record);
-          }}
-        >
-          上架
+      </Tooltip>
+      <Divider type="vertical" />
+      <Tooltip title="上架">
+        <a onClick={() => putOnShelves(record)}>
+          <UploadOutlined /> 上架
         </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-    </ul>
+      </Tooltip>
+    </Space>
   );
 
   const actionItemRender: any = (text: any, record: any, index: number) => (
-    <ul className="ant-list-item-action" style={{ margin: 0 }}>
-      <li>
-        <a
-          onClick={() => {
-            toViewAssetsItem(record);
-          }}
-        >
-          查看
+    <Space>
+      <Tooltip title="查看">
+        <a onClick={() => toViewAssetsItem(record)}>
+          <EyeOutlined />
         </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-      <li>
-        <a
-          onClick={() => {
-            toConfigActivityEquity(record);
-          }}
-        >
-          权益配置
+      </Tooltip>
+      <Divider type="vertical" />
+      <Tooltip title="权益配置">
+        <a onClick={() => toConfigActivityEquity(record)}>
+          <EditOutlined /> 权益配置
         </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-      <li>
-        <a
-          onClick={() => {
-            toViewAssetsItemClaimQRCode(record);
-          }}
-        >
-          领取二维码
+      </Tooltip>
+      <Divider type="vertical" />
+      <Tooltip title="领取二维码">
+        <a onClick={() => toViewAssetsItemClaimQRCode(record)}>
+          <QrcodeOutlined /> 领取二维码
         </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-      <li>
-        <a
-          onClick={() => {
-            toViewAssetsItemClaimCode(record);
-          }}
-        >
-          领取口令
+      </Tooltip>
+      <Divider type="vertical" />
+      <Tooltip title="领取口令">
+        <a onClick={() => toViewAssetsItemClaimCode(record)}>
+          <KeyOutlined /> 领取口令
         </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-    </ul>
+      </Tooltip>
+    </Space>
   );
 
   // 开卡记录
   const actionOpenCardRender: any = (text: any, record: any, index: number) => (
-    <ul className="ant-list-item-action" style={{ margin: 0 }}>
-      <li>
-        <a
-          onClick={() => {
-            toViewPassCardOpenDetail(record);
-          }}
-        >
-          查看
+    <Space>
+      <Tooltip title="查看">
+        <a onClick={() => toViewPassCardOpenDetail(record)}>
+          <EyeOutlined /> 查看
         </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-    </ul>
+      </Tooltip>
+    </Space>
   );
 
   // 流转记录
   const actionTransferRender: any = (text: any, record: any, index: number) => (
-    <ul className="ant-list-item-action" style={{ margin: 0 }}>
-      <li>
-        <a
-          onClick={() => {
-            toViewPassCardTransferDetail(record);
-          }}
-        >
-          查看
+    <Space>
+      <Tooltip title="查看">
+        <a onClick={() => toViewPassCardTransferDetail(record)}>
+          <EyeOutlined /> 查看
         </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-    </ul>
+      </Tooltip>
+    </Space>
   );
 
   // 自定义数据的表格头部数据
