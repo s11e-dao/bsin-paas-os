@@ -27,6 +27,11 @@ const routes = [
         path: '/ai-llm',
         component: '@/pages/LLM/index',
       },
+      // AI需求任务
+      {
+        path: '/ai-task',
+        component: '@/pages/Task/index',
+      },
       // 索引模型
       {
         path: '/ai-embedding-model',
