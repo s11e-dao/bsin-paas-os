@@ -172,17 +172,30 @@ public class UnifyOrderReq {
     /** 退款总金额,单位元 */
     private BigDecimal refundAmount;
 
-    /** 订单分账模式：0-该笔订单不允许分账, 1-支付成功按配置自动完成分账, 2-商户手动分账(解冻商户金额) */
+    /** 订单分账模式：
+     * 0-该笔订单不允许分账,
+     * 1-支付成功按配置自动完成分账,
+     * 2-商户手动分账(解冻商户金额)
+     * */
     private String profitSharingMode;
 
-    /** 分账类型： 0-商户分账, 1-商户分账(解冻商户金额) */
+    /** 分账类型：
+     * 0-商户分账,
+     * 1-商户分账(解冻商户金额)
+     * */
     private String profitSharingType;
 
 
     /** 分账金额,单位分 */
     private BigDecimal profitSharingAmount;
 
-    /** 0-未发生分账, 1-等待分账任务处理, 2-分账处理中, 3-分账任务已结束(不体现状态) */
+    /**
+     * 0-未发生分账,
+     * 1-等待分账任务处理,
+     * 2-分账处理中,
+     * 3-分账任务已结束(不体现状态)
+     *
+     * */
     private Integer divisionState;
 
     /** 最新分账时间 */

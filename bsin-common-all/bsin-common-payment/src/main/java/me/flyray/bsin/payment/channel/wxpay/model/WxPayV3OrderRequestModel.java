@@ -103,7 +103,9 @@ public class WxPayV3OrderRequestModel {
   @Accessors(chain = true)
   public static class SettleInfo {
 
-    /** 用户服务标识 */
+    /**
+     * 用户分账服务标识
+     * */
     @JSONField(name = "profit_sharing")
     private Boolean profitSharing;
   }
