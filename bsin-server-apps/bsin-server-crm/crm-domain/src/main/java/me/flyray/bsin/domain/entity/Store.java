@@ -1,12 +1,10 @@
 package me.flyray.bsin.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import me.flyray.bsin.domain.enums.BusinessModel;
 import me.flyray.bsin.domain.enums.StoreType;
+import me.flyray.bsin.payment.enums.PayMerchantModeEnum;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -78,6 +76,13 @@ public class Store implements Serializable {
      * 所属商户编号
      */
     private String merchantNo;
+
+    /**
+     * 所属商户的支付商户支付模式
+     * @see PayMerchantModeEnum
+     */
+    @TableField(exist = false)
+    private String merchantPayMode;
 
     /**
      * 租户id

@@ -24,6 +24,7 @@ public interface StoreMapper extends BaseMapper<Store> {
                                               @Param("businessTypeNo") String businessTypeNo,
                                               @Param("regionCode") String regionCode);
 
+    Store getDetail(@Param("serialNo") String serialNo);
 
 }
 

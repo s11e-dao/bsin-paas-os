@@ -22,6 +22,7 @@
             <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
             <result property="gradeNo" column="grade_no" jdbcType="VARCHAR"/>
             <result property="sysAgentNo" column="sys_agent_no" jdbcType="VARCHAR"/>
+            <result property="merchantPayMode" column="merchant_pay_mode" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -68,6 +69,34 @@
             AND s.region_code LIKE CONCAT(#{regionCode}, '%')
         </if>
         ORDER BY s.create_time DESC
+    </select>
+
+
+    <!-- 联表查询商户信息表：crm_merchant 中的：merchantPayMode -->
+    <select id="getDetail" resultMap="BaseResultMap">
+        SELECT 
+            s.serial_no,
+            s.store_name,
+            s.password,
+            s.address,
+            s.longitude,
+            s.latitude,
+            s.business_hours,
+            s.region_code,
+            s.description,
+            s.logo,
+            s.merchant_no,
+            s.business_model,
+            s.type,
+            s.tenant_id,
+            s.del_flag,
+            s.grade_no,
+            s.sys_agent_no,
+            m.merchant_pay_mode
+        FROM crm_store s
+        LEFT JOIN crm_merchant m ON s.merchant_no = m.serial_no
+        WHERE s.serial_no = #{serialNo}
+        AND s.del_flag = 0
     </select>
 
 </mapper>

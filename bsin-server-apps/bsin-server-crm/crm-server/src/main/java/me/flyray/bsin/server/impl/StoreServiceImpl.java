@@ -241,7 +241,7 @@ public class StoreServiceImpl implements StoreService {
     if(StringUtils.isEmpty(serialNo)){
       serialNo = MapUtils.getString(requestMap, "storeNo");
     }
-    Store store = storeMapper.selectById(serialNo);
+    Store store = storeMapper.getDetail(serialNo);
     return store;
   }
 
