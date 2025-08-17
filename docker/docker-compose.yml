@@ -128,21 +128,73 @@ services:
   #  networks:
   #    compose-network: #指定network
   #      ipv4_address: 172.28.0.15
-  #
-  #    bsin-elasticsearch-3.0:
-  #      container_name: bsin-elasticsearch-3.0
-  #      image: bsin-elasticsearch:3.0.0
-  #      build:
-  #        context: middleware/elasticsearch
-  #        dockerfile: dockerfile
-  #      ports:
-  #        - "6379:6379"
-  #      restart: always
-  #      volumes:
-  #        - ./middleware/elasticsearch/conf:/home/bsin-paas-os/middleware/elasticsearch/conf
-  #  networks:
-  #    compose-network: #指定network
-  #      ipv4_address: 172.28.0.16
+
+  bsin-elasticsearch-3.0:
+    container_name: bsin-elasticsearch-3.0
+    image: elasticsearch:8.15.0
+    restart: unless-stopped
+    environment:
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+      - "TZ=Asia/Shanghai"
+      - "discovery.type=single-node"
+      - "xpack.security.enabled=false"
+      - "http.cors.enabled=true"
+      - "http.cors.allow-origin='*'"
+      - "http.cors.allow-credentials=false"
+      - "http.cors.allow-methods=OPTIONS,HEAD,GET,POST,PUT,DELETE"
+      - "http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
+      - "action.auto_create_index=true"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - ./middleware/elasticsearch/config:/usr/share/elasticsearch/config
+      - ./middleware/elasticsearch/data:/usr/share/elasticsearch/data
+      - ./middleware/elasticsearch/plugins:/usr/share/elasticsearch/plugins
+      - ./middleware/elasticsearch/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.14
+
+  bsin-elasticsearch-3.0-kibana:
+    container_name: bsin-elasticsearch-3.0-kibana
+    image: kibana:8.15.0
+    restart: unless-stopped
+    environment:
+      - "TZ=Asia/Shanghai"
+      - "I18N_LOCALE=zh-CN"
+#      - "ELASTICSEARCH_HOSTS=http://bsin-elasticsearch-3.0:9200"
+    ports:
+      - "5601:5601"
+    depends_on:
+      - bsin-elasticsearch-3.0
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5601" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.15
+
+  bsin-elasticsearch-3.0-head:
+    container_name: bsin-elasticsearch-3.0-head
+    image: mobz/elasticsearch-head:5
+    restart: unless-stopped
+    environment:
+      - "TZ=Asia/Shanghai"
+    ports:
+      - "9100:9100"
+    depends_on:
+      - bsin-elasticsearch-3.0
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.16
 
   # bsin-emqx默认初始账号和密码
   # username：admin
