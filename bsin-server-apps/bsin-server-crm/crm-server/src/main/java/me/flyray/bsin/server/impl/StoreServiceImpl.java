@@ -20,6 +20,7 @@ import me.flyray.bsin.domain.response.UserResp;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.StoreService;
 import me.flyray.bsin.facade.service.UserService;
+import me.flyray.bsin.infrastructure.mapper.MerchantMapper;
 import me.flyray.bsin.infrastructure.mapper.StoreMapper;
 import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
@@ -60,6 +61,7 @@ public class StoreServiceImpl implements StoreService {
   @Value("${bsin.security.authentication-expiration}")
   private int authExpiration;
 
+  @Autowired private MerchantMapper merchantMapper;
   @Autowired private StoreMapper storeMapper;
 
   @DubboReference(version = "${dubbo.provider.version}")
@@ -242,6 +244,9 @@ public class StoreServiceImpl implements StoreService {
       serialNo = MapUtils.getString(requestMap, "storeNo");
     }
     Store store = storeMapper.getDetail(serialNo);
+    Merchant merchant = merchantMapper.selectById(store.getMerchantNo());
+    // TODO 后续优化，门店也支持配置支付方式
+    store.setMerchantPayMode(merchant.getMerchantPayMode());
     return store;
   }
 
