@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  namesrv:
+    image: apache/rocketmq:4.9.6                # 使用的 RocketMQ 镜像及版本
+    container_name: rmqnamesrv                  # 容器名称
+    ports:
+      - 9876:9876                               # 映射 namesrv 端口，外部可通过 9876 访问
+    networks:
+      - rocketmq                                # 加入自定义网络，便于服务间通信
+    command: sh mqnamesrv                       # 启动 namesrv 服务
+
+  broker:
+    image: apache/rocketmq:4.9.6                # 使用的 RocketMQ 镜像及版本
+    container_name: rmqbroker                   # 容器名称
+    ports:
+      - 10909:10909                             # Broker 高速通信端口
+      - 10911:10911                             # Broker 主端口，客户端/其他 broker 访问
+      - 10912:10912                             # Broker HA 同步端口
+    environment:
+      - NAMESRV_ADDR=rmqnamesrv:9876            # 指定 namesrv 地址，使用服务名通信
+    volumes:
+      - ./broker.conf:/home/rocketmq/rocketmq-4.9.6/conf/broker.conf   # 挂载 broker 配置文件
+    depends_on:
+      - namesrv                                 # 依赖 namesrv 服务，确保先启动
+    networks:
+      - rocketmq                                # 加入自定义网络
+    command: sh mqbroker -c /home/rocketmq/rocketmq-4.9.6/conf/broker.conf   # 启动 broker 并指定配置文件
+
+networks:
+  rocketmq:
+    driver: bridge                              # 使用 bridge 网络驱动，适合单机/开发环境
