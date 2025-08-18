@@ -1,18 +1,5 @@
 import type { ProColumns } from '@ant-design/pro-table';
 
-export type columnsDataType = {
-  order: number;
-  acName: string;
-  custNo: string;
-  acNo: string;
-  balance: string;
-  custType: string;
-  openAcDate: string;
-  status: string;
-  startTime: string;
-  endTime: string;
-};
-
 export default [
   // 搜索表单
   {
@@ -27,18 +14,28 @@ export default [
     fieldProps: { maxLength: 128 },
   },
   {
+    title: '链名',
+    dataIndex: 'chainName',
+    hideInTable: true,
+  },
+  {
+    title: '币种',
+    dataIndex: 'coin',
+    hideInTable: true,
+  },
+  {
     title: '类型',
-    dataIndex: 'type',
+    dataIndex: 'walletType',
     valueType: 'select',
     hideInTable: true,
     valueEnum: {
-      1: { text: '默认钱包' },
-      2: { text: '自定义钱包' },
+      1: { text: '普通钱包' },
+      2: { text: '多签钱包' },
     },
   },
   {
     title: '状态',
-    dataIndex: 'status',
+    dataIndex: 'walletStatus',
     valueType: 'select',
     hideInTable: true,
     valueEnum: {
@@ -72,19 +69,49 @@ export default [
     hideInSearch: true,
   },
   {
+    title: '链名',
+    dataIndex: 'chainName',
+    width: 120,
+    hideInSearch: true,
+  },
+  {
+    title: '币种',
+    dataIndex: 'coin',
+    width: 100,
+    hideInSearch: true,
+  },
+  {
+    title: '币种名称',
+    dataIndex: 'chainCoinName',
+    width: 140,
+    hideInSearch: true,
+  },
+  {
+    title: '链上币Key',
+    dataIndex: 'chainCoinKey',
+    width: 180,
+    hideInSearch: true,
+  },
+  {
+    title: '地址',
+    dataIndex: 'address',
+    width: 260,
+    hideInSearch: true,
+  },
+  {
     title: '类型',
-    dataIndex: 'type',
+    dataIndex: 'walletType',
     width: 100,
     valueType: 'select',
     hideInSearch: true,
     valueEnum: {
-      1: { text: '默认钱包' },
-      2: { text: '自定义钱包' },
+      1: { text: '普通钱包' },
+      2: { text: '多签钱包' },
     },
   },
   {
     title: '状态',
-    dataIndex: 'status',
+    dataIndex: 'walletStatus',
     width: 100,
     valueType: 'select',
     hideInSearch: true,
@@ -104,18 +131,6 @@ export default [
       NONE: { text: '无' },
       DEPOSIT: { text: '寄存' },
     },
-  },
-  {
-    title: '业务角色类型',
-    dataIndex: 'bizRoleType',
-    width: 130,
-    hideInSearch: true,
-  },
-  {
-    title: '业务角色编号',
-    dataIndex: 'bizRoleTypeNo',
-    width: 130,
-    hideInSearch: true,
   },
   {
     title: '余额',

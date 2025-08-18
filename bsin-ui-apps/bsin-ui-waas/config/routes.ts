@@ -43,6 +43,11 @@ const routes = [
         path: '/wallet/chain-wallet',
         component: '@/pages/Wallet/ChainWallet/index',
       },
+      // 链账户
+      {
+        path: '/wallet/chain-account',
+        component: '@/pages/Wallet/ChainAccount/index',
+      },
       // 电子账户
       {
         path: '/wallet/account-list',
