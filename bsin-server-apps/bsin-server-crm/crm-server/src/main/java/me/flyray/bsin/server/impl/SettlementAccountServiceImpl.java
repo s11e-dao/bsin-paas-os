@@ -5,16 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.domain.entity.Merchant;
-import me.flyray.bsin.domain.entity.Platform;
-import me.flyray.bsin.domain.entity.SettlementAccount;
-import me.flyray.bsin.domain.entity.Store;
+import me.flyray.bsin.domain.entity.*;
 import me.flyray.bsin.domain.request.SettlementAccountDTO;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.SettlementAccountService;
+import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
+import me.flyray.bsin.infrastructure.mapper.MerchantMapper;
 import me.flyray.bsin.infrastructure.mapper.SettlementAccountMapper;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
+import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 @DubboService
@@ -37,6 +38,10 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
 
     @Autowired
     private SettlementAccountMapper settlementAccountMapper;
+    @Autowired
+    private MerchantMapper merchantMapper;
+    @Autowired
+    private CustomerBaseMapper customerBaseMapper;
 
     @Override
     @ShenyuDubboClient("/setUp")
@@ -60,6 +65,49 @@ public class SettlementAccountServiceImpl implements SettlementAccountService {
             e.printStackTrace();
             log.debug("save settlement account error: ", e.getMessage());
             throw new BusinessException("SYSTEM_ERROR");
+        }
+    }
+
+    /**
+     * 根据不同业务角色设置不同业务角色的交易密码
+     * @param requestMap
+     */
+    @ShenyuDubboClient("/setTxPassword")
+    @ApiDoc(desc = "setTxPassword")
+    @Override
+    public void setTxPassword(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();  // 用户信息
+        String bizRoleType = loginUser.getBizRoleType();
+
+        // 两次输入密码校验
+        String txPassword = MapUtils.getString(requestMap, "txPassword");
+        String txPasswordConfirm = MapUtils.getString(requestMap, "txPasswordConfirm");
+        if (StringUtils.isBlank(txPassword) || StringUtils.isBlank(txPasswordConfirm)) {
+            throw new BusinessException("交易密码不能为空");
+        }
+        if (!txPassword.equals(txPasswordConfirm)) {
+            throw new IllegalArgumentException("两次输入的交易密码不一致");
+        }
+
+        // 密码加密（如有加密需求，可在此加密）
+        // String encryptedPassword = passwordEncoder.encode(txPassword);
+
+        if (BizRoleType.MERCHANT.getCode().equals(bizRoleType)) {
+            Merchant merchant = merchantMapper.selectById(loginUser.getBizRoleTypeNo());
+            if (merchant == null) {
+                throw new BusinessException("商户不存在");
+            }
+            merchant.setTxPassword(txPassword);
+            merchantMapper.updateById(merchant);
+        } else if (BizRoleType.CUSTOMER.getCode().equals(bizRoleType)) {
+            CustomerBase customer = customerBaseMapper.selectById(loginUser.getBizRoleTypeNo());
+            if (customer == null) {
+                throw new BusinessException("用户不存在");
+            }
+            customer.setTxPassword(txPassword);
+            customerBaseMapper.updateById(customer);
+        } else {
+            throw new BusinessException("不支持的业务角色类型");
         }
     }
 

@@ -57,9 +57,9 @@ import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
 public class PlatformServiceImpl implements PlatformService {
 
     // 常量定义
-    private static final int PLATFORM_STATUS_NORMAL = 1;
+    private static final String PLATFORM_STATUS_NORMAL = "1";
     private static final int DEFAULT_PLATFORM_TYPE = 1;
-    private static final int TX_PASSWORD_NOT_SET = 0;
+    private static final String TX_PASSWORD_NOT_SET = "0";
     private static final String PLATFORM_NAME_ALREADY_EXIST = "PLATFORM_NAME_ALREADY_EXIST";
 
     // 配置属性

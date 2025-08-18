@@ -17,6 +17,8 @@ public interface SettlementAccountService {
 
     public void setUp(SettlementAccountDTO settlementAccountDTO);
 
+    public void setTxPassword(Map<String, Object> requestMap);
+
     public void edit(SettlementAccountDTO settlementAccountDTO);
 
     public void delete(SettlementAccountDTO settlementAccountDTO);

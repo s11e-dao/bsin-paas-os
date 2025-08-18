@@ -85,7 +85,7 @@ public class Platform implements Serializable {
     /**
      * 状态：0 正常 1 冻结 2 待审核
      */
-    private Integer status;
+    private String status;
 
     /**
      * 平台类型：1 个人 2 企业
@@ -138,14 +138,14 @@ public class Platform implements Serializable {
     private String description;
 
     /**
-     * 
+     * 支付密码
      */
     private String txPassword;
 
     /**
-     * 
+     * 支付密码状态 0、正常 1、未设置 2、锁定
      */
-    private Integer txPasswordStatus;
+    private String txPasswordStatus;
 
     /**
      * 

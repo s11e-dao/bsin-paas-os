@@ -50,6 +50,16 @@ public class Merchant implements Serializable {
     private String password;
 
     /**
+     * 支付密码
+     */
+    private String txPassword;
+
+    /**
+     * 支付密码状态 0、正常 1、未设置 2、锁定
+     */
+    private String txPasswordStatus;
+
+    /**
      * 企业logo
      */
     private String logoUrl;
