@@ -20,7 +20,7 @@ services:
     environment:
       - NAMESRV_ADDR=rmqnamesrv:9876            # 指定 namesrv 地址，使用服务名通信
     volumes:
-      - ./broker.conf:/home/rocketmq/rocketmq-4.9.6/conf/broker.conf   # 挂载 broker 配置文件
+      - ./conf/broker.conf:/home/rocketmq/rocketmq-4.9.6/conf/broker.conf   # 挂载 broker 配置文件
     depends_on:
       - namesrv                                 # 依赖 namesrv 服务，确保先启动
     networks:

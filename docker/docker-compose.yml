@@ -42,7 +42,7 @@ services:
 #        condition: service_healthy
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.11
+        ipv4_address: 172.28.0.2
 
   bsin-mysql-3.0:
     container_name: bsin-mysql-3.0
@@ -79,7 +79,7 @@ services:
       MYSQL_ROOT_HOST: '%'
     networks:
      compose-network: #指定network
-       ipv4_address: 172.28.0.12
+       ipv4_address: 172.28.0.3
 
   bsin-redis-3.0:
     container_name: bsin-redis-3.0
@@ -97,7 +97,7 @@ services:
     command: [ "redis-server","/etc/redis/redis.conf" ]           # 指定配置文件启动redis-server进程
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.13
+        ipv4_address: 172.28.0.4
 
   #  bsin-rabbitmq-3.0:
   #    container_name: bsin-rabbitmq-3.0
@@ -129,6 +129,37 @@ services:
   #    compose-network: #指定network
   #      ipv4_address: 172.28.0.15
 
+
+
+  bsin-rockermq-3.0:
+    image: apache/rocketmq:4.9.6
+    container_name: bsin-rockermq-3.0
+    ports:
+      - 9876:9876   # 映射 namesrv 端口，外部可通过 9876 访问 
+    command: sh mqnamesrv
+    networks:
+      compose-network:
+        ipv4_address: 172.28.0.5
+
+  bsin-rockermq-broker-3.0:
+    image: apache/rocketmq:4.9.6
+    container_name: bsin-rockermq-broker-3.0
+    ports:
+      - 10909:10909   # Broker 高速通信端口
+      - 10911:10911   # Broker 主端口，客户端/其他 broker 访问
+      - 10912:10912   # Broker HA 同步端口
+    environment:
+      - NAMESRV_ADDR=bsin-rockermq-3.0:9876
+    volumes:
+      - ./middleware/rockermq/conf/broker.conf:/home/rocketmq/rocketmq-4.9.6/conf/broker.conf
+    depends_on:
+      - bsin-rockermq-3.0
+    command: sh mqbroker -c /home/rocketmq/rocketmq-4.9.6/conf/broker.conf
+    networks:
+      compose-network:
+        ipv4_address: 172.28.0.6
+
+
   bsin-elasticsearch-3.0:
     container_name: bsin-elasticsearch-3.0
     image: elasticsearch:8.15.0
@@ -148,10 +179,10 @@ services:
       - "9200:9200"
       - "9300:9300"
     volumes:
-      - ./middleware/elasticsearch/config:/usr/share/elasticsearch/config
+      - ./middleware/elasticsearch/conf:/usr/share/elasticsearch/config
       - ./middleware/elasticsearch/data:/usr/share/elasticsearch/data
       - ./middleware/elasticsearch/plugins:/usr/share/elasticsearch/plugins
-      - ./middleware/elasticsearch/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - ./middleware/elasticsearch/conf/kibana.yml:/usr/share/kibana/config/kibana.yml
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
       interval: 30s
@@ -159,7 +190,7 @@ services:
       retries: 3
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.14
+        ipv4_address: 172.28.0.7
 
   bsin-elasticsearch-3.0-kibana:
     container_name: bsin-elasticsearch-3.0-kibana
@@ -180,7 +211,7 @@ services:
       retries: 3
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.15
+        ipv4_address: 172.28.0.8
 
   bsin-elasticsearch-3.0-head:
     container_name: bsin-elasticsearch-3.0-head
@@ -194,7 +225,7 @@ services:
       - bsin-elasticsearch-3.0
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.16
+        ipv4_address: 172.28.0.9
 
   # bsin-emqx默认初始账号和密码
   # username：admin
@@ -228,7 +259,7 @@ services:
       retries: 5
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.17
+        ipv4_address: 172.28.0.10
 
   bsin-nginx-3.0:
     container_name: bsin-nginx-3.0
@@ -246,10 +277,10 @@ services:
       - ./middleware/nginx/logs:/var/log/nginx
       - ./middleware/nginx/cert:/home/bsin-paas-os/middleware/nginx/cert
       # 添加HLS目录挂载
-      - /home/leonard/ssd12/bsin-paas/bsin-paas-os/hls:/home/bsin-paas-os/middleware/nginx/hls
+      # - /home/leonard/ssd12/bsin-paas/bsin-paas-os/hls:/home/bsin-paas-os/middleware/nginx/hls
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.18
+        ipv4_address: 172.28.0.11
 
 #  bsin-srs-3.0:
 #    container_name: bsin-srs-3.0
@@ -576,7 +607,6 @@ services:
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.33
-
 
   # apps-container
   bsin-apps-container-3.0:

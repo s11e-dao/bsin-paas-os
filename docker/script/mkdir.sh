@@ -13,6 +13,12 @@ mkdir -p ./middleware/milvus/logs
 mkdir -p ./middleware/nacos/logs
 mkdir -p ./middleware/rabbitmq/logs
 mkdir -p ./middleware/redis/logs
+mkdir -p ./middleware/rockermq/logs
+mkdir -p ./middleware/elasticsearch/data
+mkdir -p ./middleware/elasticsearch/logs
+mkdir -p ./middleware/elasticsearch/plugins
+mkdir -p ./middleware/elasticsearch/conf
+mkdir -p ./middleware/rockermq/data
 
 
 mkdir -p ./app-service/server-apps/app-agent/jar
