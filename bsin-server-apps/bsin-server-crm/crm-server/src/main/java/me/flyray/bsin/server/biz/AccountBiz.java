@@ -135,80 +135,84 @@ public class AccountBiz {
     warapper.eq(Account::getBizRoleTypeNo, bizRoleTypeNo);
     warapper.eq(Account::getCcy, ccy);
     warapper.eq(ObjectUtil.isNotNull(category), Account::getCategory, category);
-    Account customerAccount = accountMapper.selectOne(warapper);
+    Account account = accountMapper.selectOne(warapper);
     DecimalFormat decimalFormat = new DecimalFormat("#.00");
     MD5 md5 = null;
     AccountJournal accountJournal = new AccountJournal();
     if (amount.compareTo(BigDecimal.ZERO) < 1) {
       throw new BusinessException(ResponseCode.AMOUNT_MUST_GREATER_THAN_ZERO);
     }
-    if (customerAccount == null) {
-      customerAccount = new Account();
-      customerAccount.setBizRoleType(bizRoleType);
-      customerAccount.setBizRoleTypeNo(bizRoleTypeNo);
-      customerAccount.setTenantId(tenantId);
-      customerAccount.setCcy(ccy);
-      customerAccount.setType(CustomerType.PERSONAL.getCode());
-      customerAccount.setName(accountName);
-      customerAccount.setCategory(category);
-      customerAccount.setDecimals(decimals);
+    if (account == null) {
+      account = new Account();
+      account.setBizRoleType(bizRoleType);
+      account.setBizRoleTypeNo(bizRoleTypeNo);
+      account.setTenantId(tenantId);
+      account.setCcy(ccy);
+      account.setType(CustomerType.PERSONAL.getCode());
+      account.setName(accountName);
+      account.setCategory(category);
+      account.setDecimals(decimals);
       String amountStr = decimalFormat.format(amount);
       if (InOutAccountFlag.INT_ACCOUNT.getCode().equals(journalDirection)) {
-        customerAccount.setBalance(amount);
+        account.setBalance(amount);
         accountJournal.setInOutFlag(1);
       } else {
-        throw new BusinessException(ResponseCode.AMOUNT_MUST_GREATER_THAN_ZERO);
+        // 如果是出账，则账户不存在
+        throw new BusinessException(ResponseCode.ACCOUNT_NOT_EXISTS);
       }
-      customerAccount.setBalance(amount);
-      md5 = new MD5(customerAccount.getBizRoleTypeNo().getBytes());
+      account.setBalance(amount);
+      md5 = new MD5(account.getBizRoleTypeNo().getBytes());
       String checkCode = HexUtil.encodeHexStr(md5.digest(amountStr));
       System.out.println("1.Check Code: \n\n\n\n" + checkCode);
-      customerAccount.setCheckCode(checkCode);
-      customerAccount.setStatus(AccountEnum.NORMAL.getCode());
-      accountMapper.insert(customerAccount);
+      account.setCheckCode(checkCode);
+      account.setStatus(AccountEnum.NORMAL.getCode());
+      accountMapper.insert(account);
     } else {
-      md5 = new MD5(customerAccount.getBizRoleTypeNo().getBytes());
+      md5 = new MD5(account.getBizRoleTypeNo().getBytes());
       // 余额校验
-      String checkCode = HexUtil.encodeHexStr(md5.digest(customerAccount.getBalance().toString()));
+      System.out.println("账户余额: \n\n\n\n" + account.getBalance().toString());
+      String checkCode = HexUtil.encodeHexStr(md5.digest(account.getBalance().toString()));
       System.out.println("2.Check Code: \n\n\n\n" + checkCode);
-      System.out.println("3.getCheckCode: \n\n\n\n" + customerAccount.getCheckCode());
-      if (!checkCode.equals(customerAccount.getCheckCode())) {
+      System.out.println("3.getCheckCode: \n\n\n\n" + account.getCheckCode());
+      if (!checkCode.equals(account.getCheckCode())) {
         throw new BusinessException(ResponseCode.ACCOUNT_BALANCE_ANNORMAL);
       }
-      if (customerAccount.getStatus().equals(AccountEnum.FREEZE.getCode())) {
+      if (account.getStatus().equals(AccountEnum.FREEZE.getCode())) {
         throw new BusinessException(ResponseCode.ACCOUNT_NOT_EXISTS);
       }
       if (InOutAccountFlag.INT_ACCOUNT.getCode().equals(journalDirection)) {
-        customerAccount.setBalance(customerAccount.getBalance().add(amount));
+        account.setBalance(account.getBalance().add(amount));
         accountJournal.setInOutFlag(1);
       } else {
         // 出账的时候账户余额判断
-        if (customerAccount.getBalance().compareTo(amount) < 0) {
+        if (account.getBalance().compareTo(amount) < 0) {
           throw new BusinessException(ResponseCode.ACCOUNT_BALANCE_INSUFFICIENT);
         }
-        customerAccount.setBalance(customerAccount.getBalance().subtract(amount));
+        account.setBalance(account.getBalance().subtract(amount));
         accountJournal.setInOutFlag(0);
       }
-      String newBalance = decimalFormat.format(customerAccount.getBalance());
+      String newBalance = account.getBalance().toString();
+      System.out.println("新的账户余额: \n\n\n\n" + newBalance);
       String newCheckCode = HexUtil.encodeHexStr(md5.digest(newBalance));
-      customerAccount.setCheckCode(newCheckCode);
+      System.out.println("4.newBalance getCheckCode: \n\n\n\n" + newCheckCode);
+      account.setCheckCode(newCheckCode);
     }
     accountJournal.setRemark(remark);
     accountJournal.setOrderType(transactionType);
     accountJournal.setOrderNo(orderNo);
     accountJournal.setSerialNo(BsinSnowflake.getId());
-    accountJournal.setAccountNo(customerAccount.getSerialNo());
-    accountJournal.setAccountType(customerAccount.getType());
-    accountJournal.setBizRoleTypeNo(customerAccount.getBizRoleTypeNo());
+    accountJournal.setAccountNo(account.getSerialNo());
+    accountJournal.setAccountType(account.getType());
+    accountJournal.setBizRoleTypeNo(account.getBizRoleTypeNo());
     accountJournal.setAmount(amount);
     //        accountJournal.setOrderNo(orderNo);
     accountJournal.setInOutFlag(journalDirection);
-    accountJournal.setCcy(customerAccount.getCcy());
-    accountJournal.setTenantId(customerAccount.getTenantId());
+    accountJournal.setCcy(account.getCcy());
+    accountJournal.setTenantId(account.getTenantId());
     customerAccountJournalMapper.insert(accountJournal);
-    accountMapper.updateById(customerAccount);
+    accountMapper.updateById(account);
 
-    return customerAccount;
+    return account;
   }
 
   public Account getAccountDetail(

@@ -44,7 +44,7 @@ public enum AccountCategory {
     /**
      * 待分佣账户 pendingBrokerage
      */
-    PENDING_BROKERAGE("pendingBrokerage", "待分佣账户"),
+    PENDING_BROKERAGE("pendingCommission", "待分佣账户"),
 
     /**
      * communityAccumulatedIncome 社区总收入账户

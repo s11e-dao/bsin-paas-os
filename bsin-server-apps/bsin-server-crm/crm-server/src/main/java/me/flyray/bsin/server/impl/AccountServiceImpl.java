@@ -55,7 +55,7 @@ import static me.flyray.bsin.constants.ResponseCode.TASK_NON_CLAIM_CONDITION;
  */
 
 @Slf4j
-@ShenyuDubboService(path = "/account", timeout = 6000)
+@ShenyuDubboService(path = "/account", timeout = 30000)
 @ApiModule(value = "account")
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -477,7 +477,6 @@ public class AccountServiceImpl implements AccountService {
    * 1、总积分
    * 2、已分配积分
    * 3、待分配积分
-   * 4、领卡数据： 发行卡数量、领卡数量
    * @param requestMap
    * @return
    */
@@ -569,7 +568,7 @@ public class AccountServiceImpl implements AccountService {
       warapper.eq(Account::getCategory, category.getCode());
       warapper.eq(Account::getCcy, ccy);
       Account account = accountMapper.selectOne(warapper);
-      accountList.put(category.getCode(), account);
+      accountList.put(category.getCode(), account == null || account.getBalance() == null ? BigDecimal.ZERO : account.getBalance());
     }
     return accountList;
   }
