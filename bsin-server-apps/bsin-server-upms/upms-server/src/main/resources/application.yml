@@ -95,5 +95,26 @@ redisson:
     # 发布和订阅连接池大小
     subscriptionConnectionPoolSize: 50
 
-
+seata:
+  #是否启用分布式事务
+  enabled: true
+  #应用编号，用于标识应用身份
+  application-id: ${spring.application.name}
+  tx-service-group: default_tx_group
+  service:
+    vgroup-mapping:
+      default_tx_group: default
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: ${BSIN_NACOS_SERVER_ADDR}
+      group : "SEATA_GROUP"
+      namespace: ${BSIN_NACOS_NAMESPACE} # Nacos 命名空间
+      username: ${BSIN_NACOS_USERNAME}
+      password: ${BSIN_NACOS_PASSWORD}
+      context-path: ""
+      ##if use MSE Nacos with auth, mutex with username/password attribute
+      #access-key: ""
+      #secret-key: ""
 

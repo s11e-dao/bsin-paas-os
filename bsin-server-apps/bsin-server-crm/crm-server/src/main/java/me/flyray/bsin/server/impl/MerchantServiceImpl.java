@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
@@ -19,6 +20,7 @@ import me.flyray.bsin.security.authentication.AuthenticationProvider;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.security.enums.BizRoleType;
+import me.flyray.bsin.security.enums.BizRoleTypeNoUtil;
 import me.flyray.bsin.server.biz.MerchantBiz;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
@@ -237,14 +239,16 @@ public class MerchantServiceImpl implements MerchantService {
     @ApiDoc(desc = "openMerchant")
     @ShenyuDubboClient("/openMerchant")
     @Override
+    @GlobalTransactional
     public Merchant openMerchant(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Merchant merchant = BsinServiceContext.getReqBodyDto(Merchant.class, requestMap);
+        merchant.setSerialNo(BizRoleTypeNoUtil.getBizRoleTypeNo(BizRoleType.MERCHANT));
         merchant.setTenantId(loginUser.getTenantId());
         if (merchant.getTenantId() == null) {
           throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
         }
-        String customerNo = loginUser.getCustomerNo();
+        String customerNo = MapUtils.getString(requestMap, "customerNo");//loginUser.getCustomerNo();
         if (customerNo == null) {
           throw new BusinessException(CUSTOMER_NO_IS_NULL);
         }
@@ -276,6 +280,7 @@ public class MerchantServiceImpl implements MerchantService {
           merchant.setUsername("admin");
         }
         merchant.setType(CustomerType.PERSONAL.getCode());
+        merchantMapper.insert(merchant);
         merchant = merchantBiz.addMerchant(merchant, customerNo);
         return merchant;
     }

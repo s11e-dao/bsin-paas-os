@@ -516,8 +516,6 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
           request.totalSupply * Math.pow(10, request.decimals);
         request.reservedAmount =
           request.reservedAmount * Math.pow(10, request.decimals);
-        request.unitReleaseAmout =
-          request.unitReleaseAmout * Math.pow(10, request.decimals);
         console.log(request);
         editTokenParam(request).then((res) => {
           console.log('config', res);
@@ -555,9 +553,9 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
 
   return (
     <div>
-      <Row gutter={16}>
+      <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={6}>
-          <Card bordered={false}>
+          <Card bordered={false} style={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Statistic
               title="实际收入"
               value={11.28}
@@ -567,10 +565,9 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
               suffix="%"
             />
             <Button
-              style={{ marginTop: 16 }}
+              style={{ marginTop: 16, height: 40 }}
               type="primary"
               onClick={async () => {
-                console.log('res');
                 setCurrentContent('issueDigitalPoints');
               }}
             >
@@ -579,7 +576,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
           </Card>
         </Col>
         <Col span={6}>
-          <Card bordered={false}>
+          <Card bordered={false} style={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Statistic
               title="收入金额"
               value={9.3}
@@ -588,16 +585,13 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
               prefix={<ArrowDownOutlined />}
               suffix="%"
             />
-            <Button
-              style={{ marginTop: 16 }}
-              type="dashed"
-            >
+            <Button style={{ marginTop: 16, height: 40 }} type="dashed">
               国库资金
             </Button>
           </Card>
         </Col>
         <Col span={6}>
-          <Card bordered={false}>
+          <Card bordered={false} style={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Statistic
               title="社区收入"
               value={9.3}
@@ -606,13 +600,13 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
               prefix={<ArrowDownOutlined />}
               suffix="%"
             />
-            <Button style={{ marginTop: 16 }} type="dashed">
+            <Button style={{ marginTop: 16, height: 40 }} type="dashed">
               社区收入
             </Button>
           </Card>
         </Col>
         <Col span={6}>
-          <Card bordered={false}>
+          <Card bordered={false} style={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Statistic
               title="社区支出"
               value={11.28}
@@ -621,167 +615,168 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
               prefix={<ArrowUpOutlined />}
               suffix="%"
             />
-            <Button style={{ marginTop: 16 }} type="dashed">
+            <Button style={{ marginTop: 16, height: 40 }} type="dashed">
               社区支出
             </Button>
           </Card>
         </Col>
-        <Card bordered={false} style={{ width: '100%' }}>
-          <Tabs defaultActiveKey="1">
-            <Tabs.TabPane tab="交易流水" key="1">
-              {/* 交易记录表格 */}
-              <ProTable<columnsTradingDataType>
-                headerTitle={<TableTitle title="数字积分交易记录" />}
-                scroll={{ x: 900 }}
-                bordered
-                // 表头
-                columns={columnsTrading}
-                actionRef={tradingActionRef}
-                // 请求获取的数据
-                request={async (params) => {
-                  let res = await getDigitalPointsTradingPageList({
-                    ...params,
-                    pageNum: params.current,
-                  });
-                  console.log('😒', res);
-                  const result = {
-                    data: res.data,
-                    total: res.pagination.totalSize,
-                  };
-                  return result;
-                }}
-                rowKey="serialNo"
-                // 搜索框配置
-                search={{
-                  labelWidth: 'auto',
-                }}
-                // 搜索表单的配置
-                form={{
-                  ignoreRules: false,
-                }}
-                pagination={{
-                  pageSize: 10,
-                }}
-              />
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="释放记录" key="2">
-              {/* 释放记录表格 */}
-              <ProTable<columnsReleaseDataType>
-                headerTitle={<TableTitle title="数字积分释放记录" />}
-                scroll={{ x: 900 }}
-                bordered
-                // 表头
-                columns={columnsRelease}
-                actionRef={releaseActionRef}
-                // 请求获取的数据
-                request={async (params) => {
-                  let res = await getDigitalPointsReleasePageList({
-                    ...params,
-                    pageNum: params.current,
-                  });
-                  console.log('😒', res);
-                  const result = {
-                    data: res.data,
-                    total: res.pagination.totalSize,
-                  };
-                  return result;
-                }}
-                rowKey="serialNo"
-                // 搜索框配置
-                search={{
-                  labelWidth: 'auto',
-                }}
-                // 搜索表单的配置
-                form={{
-                  ignoreRules: false,
-                }}
-                pagination={{
-                  pageSize: 10,
-                }}
-              />
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="数字积分集合列表" key="3">
-              {/* Pro表格 */}
-              <ProTable<columnsDataType>
-                headerTitle={<TableTitle title="数字积分发行记录" />}
-                scroll={{ x: 900 }}
-                bordered
-                // 表头
-                columns={columns}
-                actionRef={actionRef}
-                // 请求获取的数据
-                request={async (params) => {
-                  // console.log(params);
-                  // 品牌商户发行资产类型 1、数字徽章 2、PFP 3、数字积分 4、数字门票 5、pass卡 6、徽章/门票
-                  params.assetsType = '3';
-                  let res = await getDigitalAssetsCollectionPageList({
-                    ...params,
-                    pageNum: params.current,
-                  });
-                  console.log('😒', res);
-                  const result = {
-                    data: res.data,
-                    total: res.pagination.totalSize,
-                  };
-                  return result;
-                }}
-                rowKey="serialNo"
-                // 搜索框配置
-                search={{
-                  labelWidth: 'auto',
-                }}
-                // 搜索表单的配置
-                form={{
-                  ignoreRules: false,
-                }}
-                pagination={{
-                  pageSize: 10,
-                }}
-              />{' '}
-            </Tabs.TabPane>
-
-            <Tabs.TabPane tab="数字积分item列表" key="4">
-              {/* Pro表格 */}
-              <ProTable<columnsItemDataType>
-                headerTitle={<TableTitle title="数字积分上架记录" />}
-                scroll={{ x: 900 }}
-                bordered
-                // 表头
-                columns={columnsItemData}
-                actionRef={itemActionRef}
-                // 请求获取的数据
-                request={async (params) => {
-                  // console.log(params);
-                  // 品牌商户发行资产类型 1、数字徽章 2、PFP 3、数字积分 4、数字门票 5、pass卡 6、徽章/门票
-                  params.assetsTypes = ['3'];
-                  let res = await getDigitalAssetsItemPageList({
-                    ...params,
-                    pageNum: params.current,
-                  });
-                  console.log('😒', res);
-                  const result = {
-                    data: res.data,
-                    total: res.pagination.totalSize,
-                  };
-                  return result;
-                }}
-                rowKey="serialNo"
-                // 搜索框配置
-                search={{
-                  labelWidth: 'auto',
-                }}
-                // 搜索表单的配置
-                form={{
-                  ignoreRules: false,
-                }}
-                pagination={{
-                  pageSize: 10,
-                }}
-              />{' '}
-            </Tabs.TabPane>
-          </Tabs>
-        </Card>
       </Row>
+
+      <Card bordered={false} style={{ width: '100%' }}>
+        <Tabs defaultActiveKey="1">
+          <Tabs.TabPane tab="交易流水" key="1">
+            {/* 交易记录表格 */}
+            <ProTable<columnsTradingDataType>
+              headerTitle={<TableTitle title="数字积分交易记录" />}
+              scroll={{ x: 900 }}
+              bordered
+              // 表头
+              columns={columnsTrading}
+              actionRef={tradingActionRef}
+              // 请求获取的数据
+              request={async (params) => {
+                let res = await getDigitalPointsTradingPageList({
+                  ...params,
+                  pageNum: params.current,
+                });
+                console.log('😒', res);
+                const result = {
+                  data: res.data,
+                  total: res.pagination.totalSize,
+                };
+                return result;
+              }}
+              rowKey="serialNo"
+              // 搜索框配置
+              search={{
+                labelWidth: 'auto',
+              }}
+              // 搜索表单的配置
+              form={{
+                ignoreRules: false,
+              }}
+              pagination={{
+                pageSize: 10,
+              }}
+            />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="释放记录" key="2">
+            {/* 释放记录表格 */}
+            <ProTable<columnsReleaseDataType>
+              headerTitle={<TableTitle title="数字积分释放记录" />}
+              scroll={{ x: 900 }}
+              bordered
+              // 表头
+              columns={columnsRelease}
+              actionRef={releaseActionRef}
+              // 请求获取的数据
+              request={async (params) => {
+                let res = await getDigitalPointsReleasePageList({
+                  ...params,
+                  pageNum: params.current,
+                });
+                console.log('😒', res);
+                const result = {
+                  data: res.data,
+                  total: res.pagination.totalSize,
+                };
+                return result;
+              }}
+              rowKey="serialNo"
+              // 搜索框配置
+              search={{
+                labelWidth: 'auto',
+              }}
+              // 搜索表单的配置
+              form={{
+                ignoreRules: false,
+              }}
+              pagination={{
+                pageSize: 10,
+              }}
+            />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="数字积分集合列表" key="3">
+            {/* Pro表格 */}
+            <ProTable<columnsDataType>
+              headerTitle={<TableTitle title="数字积分发行记录" />}
+              scroll={{ x: 900 }}
+              bordered
+              // 表头
+              columns={columns}
+              actionRef={actionRef}
+              // 请求获取的数据
+              request={async (params) => {
+                // console.log(params);
+                // 品牌商户发行资产类型 1、数字徽章 2、PFP 3、数字积分 4、数字门票 5、pass卡 6、徽章/门票
+                params.assetsType = '3';
+                let res = await getDigitalAssetsCollectionPageList({
+                  ...params,
+                  pageNum: params.current,
+                });
+                console.log('😒', res);
+                const result = {
+                  data: res.data,
+                  total: res.pagination.totalSize,
+                };
+                return result;
+              }}
+              rowKey="serialNo"
+              // 搜索框配置
+              search={{
+                labelWidth: 'auto',
+              }}
+              // 搜索表单的配置
+              form={{
+                ignoreRules: false,
+              }}
+              pagination={{
+                pageSize: 10,
+              }}
+            />{' '}
+          </Tabs.TabPane>
+
+          <Tabs.TabPane tab="数字积分item列表" key="4">
+            {/* Pro表格 */}
+            <ProTable<columnsItemDataType>
+              headerTitle={<TableTitle title="数字积分上架记录" />}
+              scroll={{ x: 900 }}
+              bordered
+              // 表头
+              columns={columnsItemData}
+              actionRef={itemActionRef}
+              // 请求获取的数据
+              request={async (params) => {
+                // console.log(params);
+                // 品牌商户发行资产类型 1、数字徽章 2、PFP 3、数字积分 4、数字门票 5、pass卡 6、徽章/门票
+                params.assetsTypes = ['3'];
+                let res = await getDigitalAssetsItemPageList({
+                  ...params,
+                  pageNum: params.current,
+                });
+                console.log('😒', res);
+                const result = {
+                  data: res.data,
+                  total: res.pagination.totalSize,
+                };
+                return result;
+              }}
+              rowKey="serialNo"
+              // 搜索框配置
+              search={{
+                labelWidth: 'auto',
+              }}
+              // 搜索表单的配置
+              form={{
+                ignoreRules: false,
+              }}
+              pagination={{
+                pageSize: 10,
+              }}
+            />{' '}
+          </Tabs.TabPane>
+        </Tabs>
+      </Card>
 
       {/* 配置数字积分参数模态框 */}
       <Modal

@@ -82,6 +82,12 @@
 
         <dependency>
             <groupId>me.flyray.bsin</groupId>
+            <artifactId>bsin-common-seata</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>me.flyray.bsin</groupId>
             <artifactId>upms-facade</artifactId>
             <version>${project.version}</version>
             <exclusions>

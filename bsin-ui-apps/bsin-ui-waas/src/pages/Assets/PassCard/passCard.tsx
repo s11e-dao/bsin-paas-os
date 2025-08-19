@@ -586,9 +586,9 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
 
   return (
     <div>
-      <Row gutter={16}>
+      <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={6}>
-          <Card bordered={false}>
+          <Card bordered={false} style={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Statistic
               title="会员卡发行量"
               value={11.28}
@@ -598,10 +598,9 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
               suffix="%"
             />
             <Button
-              style={{ marginTop: 16 }}
+              style={{ marginTop: 16, height: 40 }}
               type="primary"
               onClick={async () => {
-                console.log('res');
                 setCurrentContent('issuePassCard');
               }}
             >
@@ -610,7 +609,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
           </Card>
         </Col>
         <Col span={6}>
-          <Card bordered={false}>
+          <Card bordered={false} style={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Statistic
               title="开卡数量"
               value={9.3}
@@ -620,7 +619,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
               suffix="%"
             />
             <Button
-              style={{ marginTop: 16 }}
+              style={{ marginTop: 16, height: 40 }}
               type="primary"
               onClick={async () => {
                 toOpenPassCard();
@@ -631,7 +630,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
           </Card>
         </Col>
         <Col span={6}>
-          <Card bordered={false}>
+          <Card bordered={false} style={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Statistic
               title="会员收入"
               value={9.3}
@@ -640,13 +639,13 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
               prefix={<ArrowDownOutlined />}
               suffix="%"
             />
-            <Button style={{ marginTop: 16 }} type="dashed">
+            <Button style={{ marginTop: 16, height: 40 }} type="dashed">
               社区收入
             </Button>
           </Card>
         </Col>
         <Col span={6}>
-          <Card bordered={false}>
+          <Card bordered={false} style={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Statistic
               title="会员支出"
               value={11.28}
@@ -655,7 +654,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
               prefix={<ArrowUpOutlined />}
               suffix="%"
             />
-            <Button style={{ marginTop: 16 }} type="dashed">
+            <Button style={{ marginTop: 16, height: 40 }} type="dashed">
               社区支出
             </Button>
           </Card>

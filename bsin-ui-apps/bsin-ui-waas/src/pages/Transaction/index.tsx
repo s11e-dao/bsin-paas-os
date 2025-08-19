@@ -32,6 +32,7 @@ import {
 import TableTitle from '../../components/TableTitle';
 import { hex_md5 } from '../../utils/md5';
 import type { Dayjs } from 'dayjs';
+import { PropertySafetyOutlined, CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined, DollarCircleOutlined } from '@ant-design/icons';
 
 export default () => {
 
@@ -271,6 +272,54 @@ export default () => {
 
   return (
     <div>
+      {/* 统计信息卡片 */}
+      <Row gutter={16} style={{ marginBottom: 16 }}>
+        <Col xs={24} sm={12} md={6}>
+          <Card bordered={false}>
+            <Statistic
+              title="总交易数"
+              value={statistics.total}
+              valueStyle={{ color: '#1890ff' }}
+              prefix={<PropertySafetyOutlined />}
+            />
+            <p style={{ marginTop: 16, color: '#888' }}>平台累计交易笔数</p>
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card bordered={false}>
+            <Statistic
+              title="总交易金额"
+              value={statistics.success}
+              valueStyle={{ color: '#52c41a' }}
+              prefix={<CheckCircleOutlined />}
+            />
+            <p style={{ marginTop: 16, color: '#888' }}>平台累计交易金额</p>
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card bordered={false}>
+            <Statistic
+              title="等待交易"
+              value={statistics.waiting}
+              valueStyle={{ color: '#faad14' }}
+              prefix={<ClockCircleOutlined />}
+            />
+            <p style={{ marginTop: 16, color: '#888' }}>待处理的交易笔数</p>
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card bordered={false}>
+            <Statistic
+              title="失败交易"
+              value={statistics.failed}
+              valueStyle={{ color: '#f5222d' }}
+              prefix={<CloseCircleOutlined />}
+            />
+            <p style={{ marginTop: 16, color: '#888' }}>失败的交易笔数</p>
+          </Card>
+        </Col>
+      </Row>
+            
       {/* Pro表格 */}
       <ProTable<columnsDataType>
         scroll={{ x: 900 }}
@@ -336,78 +385,12 @@ export default () => {
         headerTitle={
           <div>
             <TableTitle title="交易列表" />
-            
-            {/* 统计信息卡片 */}
-            <Card size="small" style={{ marginTop: 16, marginBottom: 8 }}>
-              <Row gutter={16}>
-                <Col span={4}>
-                  <Statistic 
-                    title="总交易数" 
-                    value={statistics.total} 
-                    valueStyle={{ color: '#1890ff' }}
-                  />
-                </Col>
-                <Col span={4}>
-                  <Statistic 
-                    title="成功交易" 
-                    value={statistics.success} 
-                    valueStyle={{ color: '#52c41a' }}
-                  />
-                </Col>
-                <Col span={4}>
-                  <Statistic 
-                    title="等待交易" 
-                    value={statistics.waiting} 
-                    valueStyle={{ color: '#faad14' }}
-                  />
-                </Col>
-                <Col span={4}>
-                  <Statistic 
-                    title="失败交易" 
-                    value={statistics.failed} 
-                    valueStyle={{ color: '#f5222d' }}
-                  />
-                </Col>
-                <Col span={8}>
-                  <Statistic 
-                    title="总交易金额" 
-                    value={statistics.totalAmount} 
-                    precision={2}
-                    prefix="¥"
-                    valueStyle={{ color: '#722ed1' }}
-                  />
-                </Col>
-              </Row>
-            </Card>
-
             {/* 筛选条件卡片 */}
             <Card 
               size="small" 
               style={{ marginBottom: 16 }}
-              title={
-                <Space>
-                  <span>筛选条件</span>
-                  <Button size="small" onClick={resetFilters}>
-                    重置筛选
-                  </Button>
-                </Space>
-              }
             >
               <Space wrap>
-                <div>
-                  <span style={{ marginRight: 8 }}>交易状态：</span>
-                  <Radio.Group 
-                    value={filterStatus} 
-                    onChange={(e) => handleStatusFilter(e.target.value)}
-                    size="small"
-                  >
-                    <Radio.Button value="">全部</Radio.Button>
-                    <Radio.Button value="1">等待</Radio.Button>
-                    <Radio.Button value="2">成功</Radio.Button>
-                    <Radio.Button value="3">失败</Radio.Button>
-                  </Radio.Group>
-                </div>
-                
                 <div>
                   <span style={{ marginRight: 8 }}>交易类型：</span>
                   <Radio.Group 

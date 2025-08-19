@@ -57,9 +57,9 @@ export default ({ setCurrentContent }: OverviewProps) => {
 
   return (
     <>
-      <Row gutter={16}>
+      <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={6}>
-          <Card bordered={false}>
+          <Card bordered={false} style={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Statistic
               title="账户余额"
               value={balanceAccount?.balance}
@@ -68,17 +68,11 @@ export default ({ setCurrentContent }: OverviewProps) => {
               prefix={<PropertySafetyOutlined />}
               suffix=""
             />
-            <Button 
-              style={{ marginTop: 16 }} 
-              type="primary"
-              onClick={() => setCurrentContent('recharge')}
-            >
-              充值
-            </Button>
+            <Button style={{ marginTop: 16 }} type="primary" onClick={() => setCurrentContent('recharge')}>充值</Button>
           </Card>
         </Col>
         <Col span={6}>
-          <Card bordered={false}>
+          <Card bordered={false} style={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Statistic
               title="已提现金额"
               value={accumulatedWithdrawAccount?.balance}
@@ -87,17 +81,11 @@ export default ({ setCurrentContent }: OverviewProps) => {
               prefix={<PropertySafetyOutlined />}
               suffix=""
             />
-            <Button 
-              style={{ marginTop: 16 }} 
-              type="primary"
-              onClick={() => setCurrentContent('withdraw')}
-            >
-              提现
-            </Button>
+            <Button style={{ marginTop: 16 }} type="primary" onClick={() => setCurrentContent('withdraw')}>提现</Button>
           </Card>
         </Col>
         <Col span={6}>
-          <Card bordered={false}>
+          <Card bordered={false} style={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Statistic
               title="累计收入"
               value={accumulatedIncomeAccount?.balance}
@@ -106,11 +94,11 @@ export default ({ setCurrentContent }: OverviewProps) => {
               prefix={<PropertySafetyOutlined />}
               suffix=""
             />
-            <p style={{ marginTop: 16 }} type="dashed">累计收入</p>
+            <div style={{ height: 40, marginTop: 16 }}></div>
           </Card>
         </Col>
         <Col span={6}>
-          <Card bordered={false}>
+          <Card bordered={false} style={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Statistic
               title="累计支出"
               value={accumulatedExpenditureAccount?.balance}
@@ -119,10 +107,11 @@ export default ({ setCurrentContent }: OverviewProps) => {
               prefix={<PropertySafetyOutlined />}
               suffix=""
             />
-            <p style={{ marginTop: 16 }} type="dashed">累计支出</p>
+            <div style={{ height: 40, marginTop: 16 }}></div>
           </Card>
         </Col>
       </Row>
+
       <Card bordered={false} >
         <Tabs defaultActiveKey="1" onChange={onChange}>
           <Tabs.TabPane tab="账户记录" key="">

@@ -40,13 +40,12 @@
 
     <properties>
         <java.version>17</java.version>
-        <redisson.version>3.20.1</redisson.version>
         <lombok.version>1.18.26</lombok.version>
         <mybatis-plus.version>3.5.9</mybatis-plus.version>
         <maven-compiler-plugin.verison>3.11.0</maven-compiler-plugin.verison>
         <redisson.version>3.20.1</redisson.version>
         <lock4j.version>2.2.5</lock4j.version>
-        <seata.version>1.7.0</seata.version>
+        <seata.version>2.0.0</seata.version>
     </properties>
 
     <dependencies>
