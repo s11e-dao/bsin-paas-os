@@ -140,7 +140,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '操作',
-    width: 280,
+    width: 380,
     hideInSearch: true,
     dataIndex: 'action',
     fixed: 'right',

@@ -39,6 +39,7 @@ interface EnterpriseRecord {
   legalPersonCredNo?: string;
   businessScope?: string;
   businessLicenceImg?: string;
+  merchantNo?: string; // 新增商户号字段
   [key: string]: any;
 }
 
@@ -56,6 +57,12 @@ export default ({ addCurrentRecord }: MerchantAuditListProps) => {
   const [currentRecord, setCurrentRecord] = React.useState<EnterpriseRecord | null>(null);
   const [statusData, setStatusData] = React.useState<any>(null);
   const [statusLoading, setStatusLoading] = React.useState(false);
+
+  // 商户号配置相关状态
+  const [merchantConfigModalVisible, setMerchantConfigModalVisible] = React.useState(false);
+  const [merchantConfigRecord, setMerchantConfigRecord] = React.useState<EnterpriseRecord | null>(null);
+  const [merchantNo, setMerchantNo] = React.useState('');
+  const [merchantConfigLoading, setMerchantConfigLoading] = React.useState(false);
 
   /**
    * 处理审核操作
@@ -130,6 +137,60 @@ export default ({ addCurrentRecord }: MerchantAuditListProps) => {
     setStatusData(null);
   };
 
+  /**
+   * 打开商户号配置弹框
+   */
+  const handleMerchantConfig = (record: EnterpriseRecord) => {
+    setMerchantConfigRecord(record);
+    setMerchantConfigModalVisible(true);
+    // 如果有已配置的商户号，可以在这里预填充
+    setMerchantNo(record.merchantNo || '');
+  };
+
+  /**
+   * 保存商户号配置
+   */
+  const handleSaveMerchantNo = async () => {
+    if (!merchantNo.trim()) {
+      message.warning('请输入支付商户号');
+      return;
+    }
+
+    setMerchantConfigLoading(true);
+    try {
+      // 这里调用保存商户号的API
+      // const response = await saveMerchantNo({
+      //   serialNo: merchantConfigRecord?.serialNo,
+      //   merchantNo: merchantNo.trim()
+      // });
+      
+      // 模拟API调用成功
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      message.success('商户号配置成功');
+      setMerchantConfigModalVisible(false);
+      setMerchantConfigRecord(null);
+      setMerchantNo('');
+      
+      // 刷新表格数据
+      actionRef.current?.reload();
+    } catch (error) {
+      console.error('保存商户号失败:', error);
+      message.error('保存失败，请稍后重试');
+    } finally {
+      setMerchantConfigLoading(false);
+    }
+  };
+
+  /**
+   * 关闭商户号配置弹框
+   */
+  const handleCloseMerchantConfigModal = () => {
+    setMerchantConfigModalVisible(false);
+    setMerchantConfigRecord(null);
+    setMerchantNo('');
+  };
+
   // 表头数据
   const columns: ProColumns<columnsDataType>[] = columnsData;
 
@@ -146,6 +207,14 @@ export default ({ addCurrentRecord }: MerchantAuditListProps) => {
             onClick={() => addCurrentRecord(record)}
           >
             微信支付进件
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            icon={<EyeOutlined />}
+            onClick={() => handleMerchantConfig(record)}
+          >
+            商户号配置
           </Button>
           <Button
             type="link"
@@ -379,6 +448,117 @@ export default ({ addCurrentRecord }: MerchantAuditListProps) => {
             </div>
           )}
         </Spin>
+      </Modal>
+
+      {/* 商户号配置弹框 */}
+      <Modal
+        title={
+          <span style={{ 
+            fontSize: '18px', 
+            fontWeight: '600',
+            color: '#1f1f1f'
+          }}>
+            商户号配置
+          </span>
+        }
+        open={merchantConfigModalVisible}
+        onCancel={handleCloseMerchantConfigModal}
+        footer={null}
+        width={500}
+        destroyOnClose
+        styles={{
+          header: {
+            borderBottom: '1px solid #f0f0f0',
+            padding: '16px 24px'
+          },
+          body: {
+            padding: '24px'
+          }
+        }}
+      >
+        <div>
+          <div style={{ marginBottom: '24px' }}>
+            <p style={{ 
+              fontSize: '14px', 
+              color: '#595959', 
+              marginBottom: '16px',
+              lineHeight: '1.5'
+            }}>
+              请为商户 <strong style={{ color: '#1890ff' }}>{merchantConfigRecord?.enterpriseName || merchantConfigRecord?.serialNo}</strong> 配置支付商户号
+            </p>
+          </div>
+          
+          <div style={{ marginBottom: '24px' }}>
+            <label style={{ 
+              display: 'block', 
+              fontSize: '14px', 
+              fontWeight: '500',
+              color: '#262626',
+              marginBottom: '8px'
+            }}>
+              支付商户号 <span style={{ color: '#ff4d4f' }}>*</span>
+            </label>
+            <input
+              type="text"
+              value={merchantNo}
+              onChange={(e) => setMerchantNo(e.target.value)}
+              placeholder="请输入支付商户号"
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                fontSize: '14px',
+                border: '1px solid #d9d9d9',
+                borderRadius: '6px',
+                outline: 'none',
+                transition: 'all 0.3s ease',
+                ':focus': {
+                  borderColor: '#1890ff',
+                  boxShadow: '0 0 0 2px rgba(24, 144, 255, 0.2)'
+                }
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#1890ff';
+                e.target.style.boxShadow = '0 0 0 2px rgba(24, 144, 255, 0.2)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#d9d9d9';
+                e.target.style.boxShadow = 'none';
+              }}
+            />
+          </div>
+
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'flex-end', 
+            gap: '12px',
+            borderTop: '1px solid #f0f0f0',
+            paddingTop: '20px'
+          }}>
+            <Button 
+              onClick={handleCloseMerchantConfigModal}
+              style={{
+                padding: '8px 16px',
+                height: '36px',
+                borderRadius: '6px'
+              }}
+            >
+              取消
+            </Button>
+            <Button 
+              type="primary"
+              onClick={handleSaveMerchantNo}
+              loading={merchantConfigLoading}
+              style={{
+                padding: '8px 16px',
+                height: '36px',
+                borderRadius: '6px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }}
+            >
+              保存配置
+            </Button>
+          </div>
+        </div>
       </Modal>
     </div>
   );
