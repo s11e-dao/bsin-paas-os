@@ -5,6 +5,7 @@ import me.flyray.bsin.domain.entity.CustomerIdentity;
 import me.flyray.bsin.domain.entity.Merchant;
 import me.flyray.bsin.domain.request.SysUserDTO;
 import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.enums.OrgType;
 import me.flyray.bsin.facade.service.UserService;
 import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
 import me.flyray.bsin.infrastructure.mapper.MerchantMapper;
@@ -48,6 +49,7 @@ public class MerchantBiz {
         requestMap.put("password", merchant.getPassword());
         SysUserDTO sysUserDTO = new SysUserDTO();
         BeanUtil.copyProperties(requestMap, sysUserDTO);
+        sysUserDTO.setType(OrgType.MERCHANT.getCode());
         sysUserDTO.setBizRoleType(BizRoleType.MERCHANT.getCode());
         sysUserDTO.setBizRoleTypeNo(merchant.getSerialNo());
         userService.addMerchantOrStoreUser(sysUserDTO);
