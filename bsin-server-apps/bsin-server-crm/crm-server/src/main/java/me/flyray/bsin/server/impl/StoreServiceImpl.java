@@ -244,9 +244,10 @@ public class StoreServiceImpl implements StoreService {
       serialNo = MapUtils.getString(requestMap, "storeNo");
     }
     Store store = storeMapper.getDetail(serialNo);
-//    Merchant merchant = merchantMapper.selectById(store.getMerchantNo());
-//    // TODO 后续优化，门店也支持配置支付方式
-//    store.setMerchantPayMode(merchant.getMerchantPayMode());
+    Merchant merchant = merchantMapper.selectById(store.getMerchantNo());
+    // TODO 后续优化，门店也支持配置支付方式
+    // store.setMerchantPayMode(merchant.getMerchantPayMode());
+    store.setMerchant(merchant);
     return store;
   }
 

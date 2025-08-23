@@ -127,4 +127,7 @@ public class Store implements Serializable {
 
     private Date createTime;
 
+    @TableField(exist = false)
+    private Merchant merchant;
+
 }
