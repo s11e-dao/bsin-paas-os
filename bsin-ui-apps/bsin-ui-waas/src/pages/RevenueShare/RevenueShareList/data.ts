@@ -114,13 +114,6 @@ const columnsData: ProColumns<RevenueShareDataType>[] = [
     render: (text) => `¥${text}`,
   },
   {
-    title: '数字积分兑换',
-    width: 140,
-    dataIndex: 'exchangeDigitalPointsAmount',
-    hideInSearch: true,
-    render: (text) => `¥${text}`,
-  },
-  {
     title: '状态',
     width: 100,
     hideInSearch: true,
