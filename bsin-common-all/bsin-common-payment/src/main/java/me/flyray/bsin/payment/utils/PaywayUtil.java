@@ -12,7 +12,7 @@ public class PaywayUtil {
   private static final String PAYWAY_PACKAGE_NAME = "payway";
 
   /** 获取真实的支付方式Service */
-  public static IPaymentService getRealPaywayService(Object obj, String payWay) {
+  public static IPaymentService getRealPayWayService(Object obj, String payWay) {
 
     try {
 

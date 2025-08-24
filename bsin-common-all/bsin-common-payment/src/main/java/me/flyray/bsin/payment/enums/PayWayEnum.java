@@ -35,7 +35,8 @@ public enum PayWayEnum {
   QR_CASHIER("QR_CASHIER", "聚合"),
   QQ_PAY("QQ_PAY", "钱包"),
   PP_PC("PP_PC", "PayPal支付"),
-  ICBC_APP("ICBC_APP", "工行APP支付");
+  ICBC_APP("ICBC_APP", "工行APP支付"),
+  ;
 
   private String code;
 

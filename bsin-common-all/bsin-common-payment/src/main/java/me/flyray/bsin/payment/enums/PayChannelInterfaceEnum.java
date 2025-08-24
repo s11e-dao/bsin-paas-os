@@ -21,7 +21,11 @@ public enum PayChannelInterfaceEnum {
   BRAND_POINT("brandspointpay", "品牌积分支付"),
 
   /** 火钻支付 */
-  FIRE_DIAMOND("firediamond", "火钻支付");
+  FIRE_DIAMOND("firediamond", "火钻支付"),
+
+  /** 汇聚支付 */
+  JOIN_PAY("joinpay", "汇聚支付"),
+  ;
 
   private String code;
 

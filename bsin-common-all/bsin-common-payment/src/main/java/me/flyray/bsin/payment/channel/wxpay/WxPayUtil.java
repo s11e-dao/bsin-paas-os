@@ -29,8 +29,8 @@ public class WxPayUtil {
 //            configContextQueryService.queryIsvsubMchParams(
 //                infoType, infoId, CS.IF_CODE.WXPAY, merchantType);
 //
-//    req.setSubMchId(isvsubMchParams.getSubMchId());
-//    req.setSubAppId(isvsubMchParams.getSubMchAppId());
+//    request.setSubMchId(isvsubMchParams.getSubMchId());
+//    request.setSubAppId(isvsubMchParams.getSubMchAppId());
   }
 
   /** 构造服务商 + 商户配置 wxPayConfig */
