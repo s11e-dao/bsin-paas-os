@@ -101,9 +101,6 @@ seata:
   #应用编号，用于标识应用身份
   application-id: ${spring.application.name}
   tx-service-group: default_tx_group
-  service:
-    vgroup-mapping:
-      default_tx_group: default
   registry:
     type: nacos
     nacos:
@@ -117,4 +114,12 @@ seata:
       ##if use MSE Nacos with auth, mutex with username/password attribute
       #access-key: ""
       #secret-key: ""
-
+  config:
+    type: nacos
+    nacos:
+      server-addr: ${BSIN_NACOS_SERVER_ADDR}
+      group: "SEATA_GROUP"
+      namespace: ${BSIN_NACOS_NAMESPACE}
+      username: ${BSIN_NACOS_USERNAME}
+      password: ${BSIN_NACOS_PASSWORD}
+      data-id: seataServer.properties
