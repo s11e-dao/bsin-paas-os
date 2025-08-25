@@ -34,7 +34,7 @@ dubbo:
   application:
     name: ${spring.application.name}
     # 注册行为：应用级别  可选值 interface、instance、all
-    register-mode: instance
+    register-mode: interface
     qos-enable: false
   registry:
     address: ${BSIN_DOUBBO_REGISTRY_ADDRESS}

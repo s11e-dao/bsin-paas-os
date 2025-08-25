@@ -35,6 +35,8 @@ shenyu:
 #          port: 9108
 
 spring:
+  application:
+    name: bsin-file-server
   servlet:
     multipart:
       max-file-size: 100MB
