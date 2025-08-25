@@ -7,7 +7,7 @@ import me.flyray.bsin.utils.SpringUtils;
 /*
  * 支付方式动态调用Utils
  */
-public class PaywayUtil {
+public class PayWayUtil {
 
   private static final String PAYWAY_PACKAGE_NAME = "payway";
 
