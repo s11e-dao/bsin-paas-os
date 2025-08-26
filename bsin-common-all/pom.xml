@@ -45,7 +45,7 @@
         <maven-compiler-plugin.verison>3.11.0</maven-compiler-plugin.verison>
         <redisson.version>3.20.1</redisson.version>
         <lock4j.version>2.2.5</lock4j.version>
-        <seata.version>2.0.0</seata.version>
+        <seata.version>2.5.0</seata.version>
     </properties>
 
     <dependencies>
