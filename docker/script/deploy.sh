@@ -29,7 +29,7 @@ copy(){
 }
 # 启动基础环境（必须）
 middleware(){
-	docker-compose up -d bsin-mysql-3.0 bsin-redis-3.0 bsin-nacos-standalone-3.0 bsin-emqx-3.0 bsin-elasticsearch-3.0 bsin-elasticsearch-3.0-kibana bsin-elasticsearch-3.0-head bsin-rockermq-3.0 bsin-rockermq-broker-3.0 #bsin-nginx-3.0 #bsin-rabbitmq-3.0 bsin-milvus-3.0
+	docker-compose up -d bsin-mysql-3.0 bsin-redis-3.0 bsin-nacos-standalone-3.0 bsin-emqx-3.0 bsin-elasticsearch-3.0 bsin-elasticsearch-3.0-kibana bsin-elasticsearch-3.0-head bsin-rockermq-3.0 bsin-rockermq-broker-3.0 bsin-seata-3.0 #bsin-nginx-3.0 #bsin-rabbitmq-3.0 bsin-milvus-3.0
 }
 
 # 启动网关模块（必须）

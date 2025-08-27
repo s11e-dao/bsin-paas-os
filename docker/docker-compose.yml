@@ -74,7 +74,7 @@ services:
       start_period: 60s
     environment:
       MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_MULTIPLE_DATABASES: bsin-nacos-config,bsin-shenyu-gateway,bsin-upms,bsin-crm,bsin-ai,bsin-waas,bsin-oms,bsin-community,bsin-brms,bsin-iot,bsin-damp,bsin-flowable,bsin-workflow,bsin-workflow-admin,bsin-orchestration,bsin-gateway,bsin-intelligent-decision
+      MYSQL_MULTIPLE_DATABASES: bsin-nacos-config,bsin-shenyu-gateway,bsin-upms,bsin-crm,bsin-ai,bsin-waas,bsin-oms,bsin-community,bsin-brms,bsin-iot,bsin-damp,bsin-flowable,bsin-workflow,bsin-workflow-admin,bsin-orchestration,bsin-gateway,bsin-intelligent-decision,bsin-seata
       MYSQL_INITDB_SKIP_TZINFO: 1
       MYSQL_ROOT_HOST: '%'
     networks:
@@ -131,6 +131,48 @@ services:
 
 
 
+  bsin-seata-3.0:
+    container_name: bsin-seata-3.0
+    image: bsin-seata:3.0.0
+    build:
+      context: middleware/seata
+      dockerfile: dockerfile
+    ports:
+      - "8091:8091"
+    environment:
+      - SEATA_PORT=8091
+      - STORE_MODE=db
+      - STORE_DB_DATASOURCE=druid
+      - STORE_DB_DB_TYPE=mysql
+      - STORE_DB_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+      - STORE_DB_URL=jdbc:mysql://bsin-mysql-3.0:3306/bsin-seata?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+      - STORE_DB_USER=root
+      - STORE_DB_PASSWORD=123456
+      - SEATA_CONFIG_NAME=file.conf
+      - SEATA_REGISTRY_TYPE=nacos
+      - SEATA_REGISTRY_NACOS_APPLICATION=seata-server
+      - SEATA_REGISTRY_NACOS_SERVER_ADDR=bsin-nacos-standalone-3.0:8848
+      - SEATA_REGISTRY_NACOS_GROUP=SEATA_GROUP
+      - SEATA_REGISTRY_NACOS_NAMESPACE=
+      - SEATA_REGISTRY_NACOS_USERNAME=nacos
+      - SEATA_REGISTRY_NACOS_PASSWORD=nacos
+    volumes:
+      - ./middleware/seata/logs:/seata-server/logs
+      - ./middleware/seata/conf:/seata-server/resources
+    depends_on:
+      - bsin-mysql-3.0
+        # condition: service_healthy
+      - bsin-nacos-standalone-3.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8091/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      compose-network:
+        ipv4_address: 172.28.0.5
+
   bsin-rockermq-3.0:
     image: apache/rocketmq:4.9.6
     container_name: bsin-rockermq-3.0
@@ -139,7 +181,7 @@ services:
     command: sh mqnamesrv
     networks:
       compose-network:
-        ipv4_address: 172.28.0.5
+        ipv4_address: 172.28.0.6
 
   bsin-rockermq-broker-3.0:
     image: apache/rocketmq:4.9.6
@@ -157,7 +199,7 @@ services:
     command: sh mqbroker -c /home/rocketmq/rocketmq-4.9.6/conf/broker.conf
     networks:
       compose-network:
-        ipv4_address: 172.28.0.6
+        ipv4_address: 172.28.0.7
 
 
   bsin-elasticsearch-3.0:
@@ -190,7 +232,7 @@ services:
       retries: 3
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.7
+        ipv4_address: 172.28.0.8
 
   bsin-elasticsearch-3.0-kibana:
     container_name: bsin-elasticsearch-3.0-kibana
@@ -211,7 +253,7 @@ services:
       retries: 3
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.8
+        ipv4_address: 172.28.0.9
 
   bsin-elasticsearch-3.0-head:
     container_name: bsin-elasticsearch-3.0-head
@@ -225,7 +267,7 @@ services:
       - bsin-elasticsearch-3.0
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.9
+        ipv4_address: 172.28.0.10
 
   # bsin-emqx默认初始账号和密码
   # username：admin
@@ -259,7 +301,7 @@ services:
       retries: 5
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.10
+        ipv4_address: 172.28.0.11
 
   bsin-nginx-3.0:
     container_name: bsin-nginx-3.0
@@ -280,7 +322,7 @@ services:
       # - /home/leonard/ssd12/bsin-paas/bsin-paas-os/hls:/home/bsin-paas-os/middleware/nginx/hls
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.11
+        ipv4_address: 172.28.0.12
 
 #  bsin-srs-3.0:
 #    container_name: bsin-srs-3.0
@@ -399,10 +441,12 @@ services:
       - bsin-redis-3.0
       - bsin-mysql-3.0
       - bsin-targe-gateway-3.0
+      - bsin-seata-3.0
     links:
       - bsin-redis-3.0
       - bsin-mysql-3.0
       - bsin-targe-gateway-3.0
+      - bsin-seata-3.0
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.22
@@ -424,10 +468,12 @@ services:
       - bsin-redis-3.0
       - bsin-mysql-3.0
       - bsin-targe-gateway-3.0
+      - bsin-seata-3.0
     links:
       - bsin-redis-3.0
       - bsin-mysql-3.0
       - bsin-targe-gateway-3.0
+      - bsin-seata-3.0
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.23
@@ -575,10 +621,12 @@ services:
       - bsin-redis-3.0
       - bsin-mysql-3.0
       - bsin-targe-gateway-3.0
+      - bsin-seata-3.0
     links:
       - bsin-redis-3.0
       - bsin-mysql-3.0
       - bsin-targe-gateway-3.0
+      - bsin-seata-3.0
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.32
