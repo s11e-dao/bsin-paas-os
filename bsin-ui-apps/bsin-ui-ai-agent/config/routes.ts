@@ -68,6 +68,11 @@ const routes = [
         path: '/ai-agent',
         component: '@/pages/Agent',
       },
+      // Conversation
+      {
+        path: '/ai-conversation',
+        component: '@/pages/Conversation',
+      },
       // 知识库
       {
         path: '/ai-knowledge-base',
