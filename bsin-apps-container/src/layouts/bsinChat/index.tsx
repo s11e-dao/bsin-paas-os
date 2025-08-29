@@ -1,3 +1,9 @@
+/**
+ * bsin智能聊天组件
+ * 基于Ant Design X构建的AI聊天界面
+ * 支持WebSocket实时通信、多种智能体选择、文件上传等功能
+ */
+
 import {
   AppstoreAddOutlined,
   CloudUploadOutlined,
@@ -35,6 +41,7 @@ import {
   useXAgent,
   useXChat,
 } from '@ant-design/x';
+import { GPTVis } from '@antv/gpt-vis';
 import { Avatar, Button, Flex, Space, Spin, message, theme, Divider, Switch, Dropdown, FloatButton, Modal } from 'antd';
 import { createStyles } from 'antd-style';
 import dayjs from 'dayjs';
@@ -47,6 +54,7 @@ import {
   getChatHistoryList,
 } from '../service'
 
+// MCP工具配置 - 可选择的工具列表
 const items = [
   {
       label: (
@@ -190,57 +198,41 @@ const DEFAULT_CONVERSATIONS_ITEMS = [
 
 const HOT_TOPICS = {
   key: '1',
-  label: 'Hot Topics',
+  label: '热门话题',
   children: [
       {
           key: '1-1',
-          description: 'What has bsin app agent upgraded?',
+          description: 'bsin-paas的应用场景',
           icon: <span style={{ color: '#f93a4a', fontWeight: 700 }}>1</span>,
       },
       {
           key: '1-2',
-          description: 'New AGI Hybrid Interface',
+          description: '火源社区是做什么的',
           icon: <span style={{ color: '#ff6565', fontWeight: 700 }}>2</span>,
       },
       {
           key: '1-3',
-          description: 'What components are in bsin app agent?',
+          description: 'AI时代如何学习?',
           icon: <span style={{ color: '#ff8f1f', fontWeight: 700 }}>3</span>,
-      },
-      {
-          key: '1-4',
-          description: 'Come and discover the new design paradigm of the AI era.',
-          icon: <span style={{ color: '#00000040', fontWeight: 700 }}>4</span>,
-      },
-      {
-          key: '1-5',
-          description: 'How to quickly install and import components?',
-          icon: <span style={{ color: '#00000040', fontWeight: 700 }}>5</span>,
       },
   ],
 };
 
 const DESIGN_GUIDE = {
   key: '2',
-  label: 'Design Guide',
+  label: '设计文档',
   children: [
       {
           key: '2-1',
           icon: <HeartOutlined />,
-          label: 'Intention',
-          description: 'AI understands user needs and provides solutions.',
+          label: 'bsin-paas-os',
+          description: 'AI智能理解用户需求并提供解决方案',
       },
       {
           key: '2-3',
           icon: <CommentOutlined />,
-          label: 'Chat',
-          description: 'How AI Can Express Itself in a Way Users Understand',
-      },
-      {
-          key: '2-4',
-          icon: <PaperClipOutlined />,
-          label: 'Interface',
-          description: 'AI balances "chat" & "do" behaviors.',
+          label: 'bsin-paas-os-ui',
+          description: 'AI如何以用户易懂的方式表达自己',
       },
   ],
 };
@@ -405,7 +397,7 @@ var __awaiter =
       });
   };
 
-const Independent = ({ customerInfo }) => {
+const BsinChatModal = ({ customerInfo }) => {
 
   const { styles } = useStyle();
   const abortController = useRef(null);
@@ -491,7 +483,7 @@ const Independent = ({ customerInfo }) => {
   const [connected, setConnected] = useState(false);
   const [chatStatus, setChatStatus] = useState(false);
 
-  const connectionKey = "bolei" + "/1"; // 定义统一的连接key
+  const connectionKey = "bolei" + "/0"; // 定义统一的连接key
 
   useEffect(() => {
     console.log('chatStatus', chatStatus)
@@ -522,7 +514,7 @@ const Independent = ({ customerInfo }) => {
   // ==================== Event ====================
   // 发送消息
   const onSubmit = (nextContent) => {
-      wsManager.sendMessage(connectionKey, { content: message });
+      wsManager.sendMessage(connectionKey, { type: 'ai_chat', content: nextContent });
       onRequest(nextContent);
       setContent('');
   };
@@ -552,12 +544,17 @@ const Independent = ({ customerInfo }) => {
               <Bubble.List
                   roles={roles}
                   style={{ maxHeight: 660 }}
-                  items={messages.map(({ id, message, status }) => ({
-                      key: id,
-                      loading: status === 'loading',
-                      role: status === 'local' ? 'local' : 'ai',
-                      content: message,
-                  }))}
+                  items={messages.map(({ id, message, status, content }) => ({
+                    key: id,
+                    loading: status === 'loading',
+                    role: status === 'local' ? 'local' : 'ai',
+                    content: content || message,
+                    messageRender: (content) => (
+                        <div style={{ whiteSpace: 'pre-wrap' }}>
+                            <GPTVis>{content}</GPTVis>
+                        </div>
+                    )
+                }))}
               />
           ) : (
               <Space direction="vertical" size={16} style={{ paddingInline: "calc(calc(100% - 700px) /2)" }} className={styles.placeholder}>
@@ -995,4 +992,4 @@ const Independent = ({ customerInfo }) => {
   );
 };
 
-export default Independent;
+export default BsinChatModal;

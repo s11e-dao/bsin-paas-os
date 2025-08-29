@@ -37,6 +37,13 @@
             <version>${spring.version}</version>
         </dependency>
 
+        <!--  业务依赖   -->
+        <dependency>
+            <groupId>me.flyray.bsin</groupId>
+            <artifactId>crm-infrastructure</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
