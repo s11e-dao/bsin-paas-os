@@ -135,8 +135,8 @@ services:
     container_name: bsin-seata-3.0
     image: bsin-seata:3.0.0
     build:
-      context: middleware/seata
-      dockerfile: dockerfile
+      context: middleware/seata-2.5/seata-server
+      dockerfile: Dockerfile
     ports:
       - "8091:8091"
     environment:
@@ -145,7 +145,7 @@ services:
       - STORE_DB_DATASOURCE=druid
       - STORE_DB_DB_TYPE=mysql
       - STORE_DB_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
-      - STORE_DB_URL=jdbc:mysql://bsin-mysql-3.0:3306/bsin-seata?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+      - STORE_DB_URL=jdbc:mysql://bsin-mysql-3.0:3306/bsin-seata?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
       - STORE_DB_USER=root
       - STORE_DB_PASSWORD=123456
       - SEATA_CONFIG_NAME=file.conf
@@ -156,19 +156,19 @@ services:
       - SEATA_REGISTRY_NACOS_NAMESPACE=
       - SEATA_REGISTRY_NACOS_USERNAME=nacos
       - SEATA_REGISTRY_NACOS_PASSWORD=nacos
-    volumes:
-      - ./middleware/seata/logs:/seata-server/logs
-      - ./middleware/seata/conf:/seata-server/resources
+    # volumes:
+    #   - ./middleware/seata/logs:/seata-server/logs
+    #   - ./middleware/seata/conf:/seata-server/resources
     depends_on:
       - bsin-mysql-3.0
         # condition: service_healthy
       - bsin-nacos-standalone-3.0
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8091/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8091/health"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 60s
     networks:
       compose-network:
         ipv4_address: 172.28.0.5

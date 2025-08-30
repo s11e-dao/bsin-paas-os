@@ -23,11 +23,15 @@ RUN apt-get update && \
 # 复制配置文件到官方镜像的配置目录
 COPY conf/ /seata-server/resources/
 
-# 设置权限
-RUN chown -R seata:seata /seata-server/resources/
+# 检查并设置权限 - 使用更安全的方式
+RUN if id "seata" >/dev/null 2>&1; then \
+        chown -R seata:seata /seata-server/resources/; \
+    else \
+        chown -R root:root /seata-server/resources/; \
+    fi
 
-# 切换回 seata 用户
-USER seata
+# 不切换用户，保持 root 用户运行
+# USER seata
 WORKDIR /seata-server
 
 # 暴露端口

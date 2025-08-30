@@ -41,6 +41,7 @@ echo "2. create dir finished!!!"
 echo "3. begin copy sql "
 #cp ../sql/test.sql ../middleware/mysql/db
 cp ./middleware/nacos/mysql/bsin-nacos-config.sql ./middleware/mysql/db/sqls/
+cp ./middleware/seata/db/bsin-seata.sql ./middleware/mysql/db/sqls/
 echo "4. end copy sql "
 
 # 复制jar文件
@@ -92,8 +93,8 @@ cp ../bsin-server-apps/bsin-server-file/script/bsin-file.sql ./middleware/mysql/
 cp ../bsin-server-apps/bsin-server-iot/script/bsin-iot.sql ./middleware/mysql/db/sqls/ -rvf
 cp ../bsin-server-apps/bsin-server-upms/script/bsin-upms.sql ./middleware/mysql/db/sqls/ -rvf
 cp ../bsin-server-apps/bsin-server-waas/script/bsin-waas.sql ./middleware/mysql/db/sqls/ -rvf
-cp ../../jiujiu-paas-3.0/jiujiu-paas-server/bsin-server-oms/script/bsin-oms.sql ./middleware/mysql/db/sqls/ -rvf
-cp ../../jiujiu-paas-3.0/jiujiu-paas-server/bsin-server-community/script/bsin-community.sql ./middleware/mysql/db/sqls/ -rvf
+cp ../../jiujiu-paas/jiujiu-paas-server/bsin-server-oms/script/bsin-oms.sql ./middleware/mysql/db/sqls/ -rvf
+cp ../../jiujiu-paas/jiujiu-paas-server/bsin-server-community/script/bsin-community.sql ./middleware/mysql/db/sqls/ -rvf
 cp ../bsin-server-apps/bsin-server-workflow/script/bsin-workflow.sql ./middleware/mysql/db/sqls/ -rvf
 cp ../bsin-server-apps/bsin-server-workflow-admin/script/bsin-workflow-admin.sql ./middleware/mysql/db/sqls/ -rvf
 
@@ -101,11 +102,11 @@ cp ../bsin-server-apps/bsin-server-workflow-admin/script/bsin-workflow-admin.sql
 cp -rvf /home/leonard/ssd12/bsin-paas/prj/sea/bsin-ui-sea-condition/dist/* ./app-service/ui-apps/sea-condition/dist/
 
 ## jiujiu-paas，业务闭源
-cp -rvf ../../jiujiu-paas-3.0/jiujiu-paas-server/bsin-server-oms/oms-server/target/oms-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/oms/jar/oms-server-3.0.0-SNAPSHOT.jar
-cp -rvf ../../jiujiu-paas-3.0/jiujiu-paas-server/bsin-server-community/community-server/target/community-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/community/jar/community-server-3.0.0-SNAPSHOT.jar
+cp -rvf ../../jiujiu-paas/jiujiu-paas-server/bsin-server-oms/oms-server/target/oms-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/oms/jar/oms-server-3.0.0-SNAPSHOT.jar
+cp -rvf ../../jiujiu-paas/jiujiu-paas-server/bsin-server-community/community-server/target/community-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/community/jar/community-server-3.0.0-SNAPSHOT.jar
 
-cp ../../.env ./app-service/server-apps/community -rvf
-cp ../../.env ./app-service/server-apps/oms -rvf
+cp ../.env ./app-service/server-apps/community -rvf
+cp ../.env ./app-service/server-apps/oms -rvf
 
 echo "6. end copy jar "
 
@@ -119,7 +120,7 @@ cp -rvf  ../bsin-ui-apps/bsin-ui-data-warehouse/dist/* ./app-service/ui-apps/dat
 cp -rvf  ../bsin-paas-doc/dist/* ./app-service/ui-apps/doc/dist/
 
 ## jiujiu-paas，业务闭源
- cp -rvf  ../../jiujiu-paas-3.0/jiujiu-paas-ui/bsin-ui-bigan/dist/* ./app-service/ui-apps/bigan/dist/
+ cp -rvf  ../../jiujiu-paas/jiujiu-paas-ui/bsin-ui-bigan/dist/* ./app-service/ui-apps/bigan/dist/
 
 ## 拷贝自定义项目脚本
 ## cp -r /home/leonard/ssd12/bsin-paas/prj/sea/bsin-ui-sea-condition/dist/* ./app-service/ui-apps/sea-condition/dist/

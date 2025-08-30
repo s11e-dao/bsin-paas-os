@@ -1,0 +1,260 @@
+███████╗███████╗ █████╗ ████████╗ █████╗
+██╔════╝██╔════╝██╔══██╗╚══██╔══╝██╔══██╗
+███████╗█████╗  ███████║   ██║   ███████║
+╚════██║██╔══╝  ██╔══██║   ██║   ██╔══██║
+███████║███████╗██║  ██║   ██║   ██║  ██║
+╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+
+
+11:01:52.013  INFO --- [                     main] [der$InnerEnhancedServiceLoader] [lExtensionDefinition]  [] : Ignore load compatible class io.seata.config.ExtConfigurationProvider, because is not assignable from origin type org.apache.seata.config.ExtConfigurationProvider
+11:01:52.065  INFO --- [                     main] [ta.config.ConfigurationFactory] [                load]  [] : load Configuration from :FileConfiguration$$EnhancerByCGLIB$$6e15d955
+11:01:52.091  INFO --- [                     main] [seata.server.ServerApplication] [         logStarting]  [] : Starting ServerApplication v2.5.0 using Java 17.0.15 on rednet-B365-M-AORUS-ELITE with PID 151496 (/home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/target/seata-server.jar started by rednet in /home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/bin)
+11:01:52.092  INFO --- [                     main] [seata.server.ServerApplication] [ogStartupProfileInfo]  [] : No active profile set, falling back to 1 default profile: "default"
+11:01:52.731  INFO --- [                     main] [rver.lock.LockerManagerFactory] [                init]  [] : use lock store mode: file
+11:01:52.908  INFO --- [                     main] [seata.server.ServerApplication] [          logStarted]  [] : Started ServerApplication in 1.477 seconds (JVM running for 1.916)
+11:01:53.021  INFO --- [                     main] [a.server.session.SessionHolder] [                init]  [] : use session store mode: file
+11:01:53.082  INFO --- [                     main] [rpc.netty.NettyServerBootstrap] [               start]  [] : Server started, service listen port: 8091
+11:01:53.091  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+11:01:53.129  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+11:01:53.301  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : 
+ you can visit seata console UI on namingserver. 
+ log path: /home/rednet/logs/seata.
+11:01:53.302  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : seata server started in 392 millSeconds
+███████╗███████╗ █████╗ ████████╗ █████╗
+██╔════╝██╔════╝██╔══██╗╚══██╔══╝██╔══██╗
+███████╗█████╗  ███████║   ██║   ███████║
+╚════██║██╔══╝  ██╔══██║   ██║   ██╔══██║
+███████║███████╗██║  ██║   ██║   ██║  ██║
+╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+
+
+13:41:10.865  INFO --- [                     main] [der$InnerEnhancedServiceLoader] [lExtensionDefinition]  [] : Ignore load compatible class io.seata.config.ExtConfigurationProvider, because is not assignable from origin type org.apache.seata.config.ExtConfigurationProvider
+13:41:10.922  INFO --- [                     main] [ta.config.ConfigurationFactory] [                load]  [] : load Configuration from :FileConfiguration$$EnhancerByCGLIB$$6e15d955
+13:41:10.953  INFO --- [                     main] [seata.server.ServerApplication] [         logStarting]  [] : Starting ServerApplication v2.5.0 using Java 17.0.15 on rednet-B365-M-AORUS-ELITE with PID 111653 (/home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/target/seata-server.jar started by rednet in /home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/bin)
+13:41:10.953  INFO --- [                     main] [seata.server.ServerApplication] [ogStartupProfileInfo]  [] : No active profile set, falling back to 1 default profile: "default"
+13:41:11.621  INFO --- [                     main] [rver.lock.LockerManagerFactory] [                init]  [] : use lock store mode: file
+13:41:11.807  INFO --- [                     main] [seata.server.ServerApplication] [          logStarted]  [] : Started ServerApplication in 1.616 seconds (JVM running for 2.884)
+13:41:11.963  INFO --- [                     main] [a.server.session.SessionHolder] [                init]  [] : use session store mode: file
+13:41:12.041  INFO --- [                     main] [rpc.netty.NettyServerBootstrap] [               start]  [] : Server started, service listen port: 8091
+13:41:12.049  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+13:41:12.087  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+13:41:12.406  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : 
+ you can visit seata console UI on namingserver. 
+ log path: /home/rednet/logs/seata.
+13:41:12.406  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : seata server started in 598 millSeconds
+███████╗███████╗ █████╗ ████████╗ █████╗
+██╔════╝██╔════╝██╔══██╗╚══██╔══╝██╔══██╗
+███████╗█████╗  ███████║   ██║   ███████║
+╚════██║██╔══╝  ██╔══██║   ██║   ██╔══██║
+███████║███████╗██║  ██║   ██║   ██║  ██║
+╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+
+
+15:10:31.742  INFO --- [                     main] [der$InnerEnhancedServiceLoader] [lExtensionDefinition]  [] : Ignore load compatible class io.seata.config.ExtConfigurationProvider, because is not assignable from origin type org.apache.seata.config.ExtConfigurationProvider
+15:10:31.798  INFO --- [                     main] [ta.config.ConfigurationFactory] [                load]  [] : load Configuration from :FileConfiguration$$EnhancerByCGLIB$$6e15d955
+15:10:31.830  INFO --- [                     main] [seata.server.ServerApplication] [         logStarting]  [] : Starting ServerApplication v2.5.0 using Java 17.0.15 on rednet-B365-M-AORUS-ELITE with PID 112844 (/home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/target/seata-server.jar started by rednet in /home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/bin)
+15:10:31.831  INFO --- [                     main] [seata.server.ServerApplication] [ogStartupProfileInfo]  [] : No active profile set, falling back to 1 default profile: "default"
+15:10:32.489  INFO --- [                     main] [rver.lock.LockerManagerFactory] [                init]  [] : use lock store mode: file
+15:10:32.668  INFO --- [                     main] [seata.server.ServerApplication] [          logStarted]  [] : Started ServerApplication in 1.626 seconds (JVM running for 2.378)
+15:10:32.804  INFO --- [                     main] [a.server.session.SessionHolder] [                init]  [] : use session store mode: file
+15:10:32.877  INFO --- [                     main] [rpc.netty.NettyServerBootstrap] [               start]  [] : Server started, service listen port: 8091
+15:10:32.885  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+15:10:32.926  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+15:10:33.108  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : 
+ you can visit seata console UI on namingserver. 
+ log path: /home/rednet/logs/seata.
+15:10:33.109  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : seata server started in 438 millSeconds
+███████╗███████╗ █████╗ ████████╗ █████╗
+██╔════╝██╔════╝██╔══██╗╚══██╔══╝██╔══██╗
+███████╗█████╗  ███████║   ██║   ███████║
+╚════██║██╔══╝  ██╔══██║   ██║   ██╔══██║
+███████║███████╗██║  ██║   ██║   ██║  ██║
+╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+
+
+15:16:08.598  INFO --- [                     main] [der$InnerEnhancedServiceLoader] [lExtensionDefinition]  [] : Ignore load compatible class io.seata.config.ExtConfigurationProvider, because is not assignable from origin type org.apache.seata.config.ExtConfigurationProvider
+15:16:08.655  INFO --- [                     main] [ta.config.ConfigurationFactory] [                load]  [] : load Configuration from :FileConfiguration$$EnhancerByCGLIB$$6e15d955
+15:16:08.687  INFO --- [                     main] [seata.server.ServerApplication] [         logStarting]  [] : Starting ServerApplication v2.5.0 using Java 17.0.15 on rednet-B365-M-AORUS-ELITE with PID 17162 (/home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/target/seata-server.jar started by rednet in /home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/bin)
+15:16:08.688  INFO --- [                     main] [seata.server.ServerApplication] [ogStartupProfileInfo]  [] : No active profile set, falling back to 1 default profile: "default"
+15:16:09.373  INFO --- [                     main] [rver.lock.LockerManagerFactory] [                init]  [] : use lock store mode: file
+15:16:09.569  INFO --- [                     main] [seata.server.ServerApplication] [          logStarted]  [] : Started ServerApplication in 1.614 seconds (JVM running for 2.243)
+15:16:09.729  INFO --- [                     main] [a.server.session.SessionHolder] [                init]  [] : use session store mode: file
+15:16:09.830  INFO --- [                     main] [rpc.netty.NettyServerBootstrap] [               start]  [] : Server started, service listen port: 8091
+15:16:09.840  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+15:16:09.896  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+15:16:10.215  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : 
+ you can visit seata console UI on namingserver. 
+ log path: /home/rednet/logs/seata.
+15:16:10.216  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : seata server started in 645 millSeconds
+███████╗███████╗ █████╗ ████████╗ █████╗
+██╔════╝██╔════╝██╔══██╗╚══██╔══╝██╔══██╗
+███████╗█████╗  ███████║   ██║   ███████║
+╚════██║██╔══╝  ██╔══██║   ██║   ██╔══██║
+███████║███████╗██║  ██║   ██║   ██║  ██║
+╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+
+
+09:24:41.833  INFO --- [                     main] [der$InnerEnhancedServiceLoader] [lExtensionDefinition]  [] : Ignore load compatible class io.seata.config.ExtConfigurationProvider, because is not assignable from origin type org.apache.seata.config.ExtConfigurationProvider
+09:24:41.885  INFO --- [                     main] [ta.config.ConfigurationFactory] [                load]  [] : load Configuration from :FileConfiguration$$EnhancerByCGLIB$$6e15d955
+09:24:41.915  INFO --- [                     main] [seata.server.ServerApplication] [         logStarting]  [] : Starting ServerApplication v2.5.0 using Java 17.0.15 on rednet-B365-M-AORUS-ELITE with PID 70679 (/home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/target/seata-server.jar started by rednet in /home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/bin)
+09:24:41.915  INFO --- [                     main] [seata.server.ServerApplication] [ogStartupProfileInfo]  [] : No active profile set, falling back to 1 default profile: "default"
+09:24:42.559  INFO --- [                     main] [rver.lock.LockerManagerFactory] [                init]  [] : use lock store mode: file
+09:24:42.730  INFO --- [                     main] [seata.server.ServerApplication] [          logStarted]  [] : Started ServerApplication in 1.603 seconds (JVM running for 2.335)
+09:24:42.855  INFO --- [                     main] [a.server.session.SessionHolder] [                init]  [] : use session store mode: file
+09:24:42.929  INFO --- [                     main] [rpc.netty.NettyServerBootstrap] [               start]  [] : Server started, service listen port: 8091
+09:24:42.937  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+09:24:42.976  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+09:24:43.288  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : 
+ you can visit seata console UI on namingserver. 
+ log path: /home/rednet/logs/seata.
+09:24:43.288  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : seata server started in 557 millSeconds
+███████╗███████╗ █████╗ ████████╗ █████╗
+██╔════╝██╔════╝██╔══██╗╚══██╔══╝██╔══██╗
+███████╗█████╗  ███████║   ██║   ███████║
+╚════██║██╔══╝  ██╔══██║   ██║   ██╔══██║
+███████║███████╗██║  ██║   ██║   ██║  ██║
+╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+
+
+09:10:50.192  INFO --- [                     main] [der$InnerEnhancedServiceLoader] [lExtensionDefinition]  [] : Ignore load compatible class io.seata.config.ExtConfigurationProvider, because is not assignable from origin type org.apache.seata.config.ExtConfigurationProvider
+09:10:50.252  INFO --- [                     main] [ta.config.ConfigurationFactory] [                load]  [] : load Configuration from :FileConfiguration$$EnhancerByCGLIB$$6e15d955
+09:10:50.285  INFO --- [                     main] [seata.server.ServerApplication] [         logStarting]  [] : Starting ServerApplication v2.5.0 using Java 17.0.15 on rednet-B365-M-AORUS-ELITE with PID 96952 (/home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/target/seata-server.jar started by rednet in /home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/bin)
+09:10:50.286  INFO --- [                     main] [seata.server.ServerApplication] [ogStartupProfileInfo]  [] : No active profile set, falling back to 1 default profile: "default"
+09:10:50.983  INFO --- [                     main] [rver.lock.LockerManagerFactory] [                init]  [] : use lock store mode: file
+09:10:51.212  INFO --- [                     main] [seata.server.ServerApplication] [          logStarted]  [] : Started ServerApplication in 1.683 seconds (JVM running for 3.023)
+09:10:51.432  INFO --- [                     main] [a.server.session.SessionHolder] [                init]  [] : use session store mode: file
+09:10:51.629  INFO --- [                     main] [rpc.netty.NettyServerBootstrap] [               start]  [] : Server started, service listen port: 8091
+09:10:51.644  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+09:10:51.687  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+09:10:52.033  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : 
+ you can visit seata console UI on namingserver. 
+ log path: /home/rednet/logs/seata.
+09:10:52.033  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : seata server started in 820 millSeconds
+███████╗███████╗ █████╗ ████████╗ █████╗
+██╔════╝██╔════╝██╔══██╗╚══██╔══╝██╔══██╗
+███████╗█████╗  ███████║   ██║   ███████║
+╚════██║██╔══╝  ██╔══██║   ██║   ██╔══██║
+███████║███████╗██║  ██║   ██║   ██║  ██║
+╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+
+
+15:12:11.755  INFO --- [                     main] [der$InnerEnhancedServiceLoader] [lExtensionDefinition]  [] : Ignore load compatible class io.seata.config.ExtConfigurationProvider, because is not assignable from origin type org.apache.seata.config.ExtConfigurationProvider
+15:12:11.810  INFO --- [                     main] [ta.config.ConfigurationFactory] [                load]  [] : load Configuration from :FileConfiguration$$EnhancerByCGLIB$$6e15d955
+15:12:11.842  INFO --- [                     main] [seata.server.ServerApplication] [         logStarting]  [] : Starting ServerApplication v2.5.0 using Java 17.0.15 on rednet-B365-M-AORUS-ELITE with PID 30063 (/home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/target/seata-server.jar started by rednet in /home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/bin)
+15:12:11.843  INFO --- [                     main] [seata.server.ServerApplication] [ogStartupProfileInfo]  [] : No active profile set, falling back to 1 default profile: "default"
+15:12:12.533  INFO --- [                     main] [rver.lock.LockerManagerFactory] [                init]  [] : use lock store mode: file
+15:12:12.741  INFO --- [                     main] [seata.server.ServerApplication] [          logStarted]  [] : Started ServerApplication in 1.662 seconds (JVM running for 2.403)
+15:12:12.916  INFO --- [                     main] [a.server.session.SessionHolder] [                init]  [] : use session store mode: file
+15:12:12.997  INFO --- [                     main] [rpc.netty.NettyServerBootstrap] [               start]  [] : Server started, service listen port: 8091
+15:12:13.006  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+15:12:13.045  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+15:12:13.362  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : 
+ you can visit seata console UI on namingserver. 
+ log path: /home/rednet/logs/seata.
+15:12:13.363  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : seata server started in 619 millSeconds
+███████╗███████╗ █████╗ ████████╗ █████╗
+██╔════╝██╔════╝██╔══██╗╚══██╔══╝██╔══██╗
+███████╗█████╗  ███████║   ██║   ███████║
+╚════██║██╔══╝  ██╔══██║   ██║   ██╔══██║
+███████║███████╗██║  ██║   ██║   ██║  ██║
+╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+
+
+09:08:43.657  INFO --- [                     main] [der$InnerEnhancedServiceLoader] [lExtensionDefinition]  [] : Ignore load compatible class io.seata.config.ExtConfigurationProvider, because is not assignable from origin type org.apache.seata.config.ExtConfigurationProvider
+09:08:43.886  INFO --- [                     main] [ta.config.ConfigurationFactory] [                load]  [] : load Configuration from :FileConfiguration$$EnhancerByCGLIB$$6e15d955
+09:08:44.040  INFO --- [                     main] [seata.server.ServerApplication] [         logStarting]  [] : Starting ServerApplication v2.5.0 using Java 17.0.15 on rednet-B365-M-AORUS-ELITE with PID 21950 (/home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/target/seata-server.jar started by rednet in /home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/bin)
+09:08:44.041  INFO --- [                     main] [seata.server.ServerApplication] [ogStartupProfileInfo]  [] : No active profile set, falling back to 1 default profile: "default"
+09:08:46.606  INFO --- [                     main] [rver.lock.LockerManagerFactory] [                init]  [] : use lock store mode: file
+09:08:47.101  INFO --- [                     main] [seata.server.ServerApplication] [          logStarted]  [] : Started ServerApplication in 6.511 seconds (JVM running for 8.424)
+09:08:47.555  INFO --- [                     main] [a.server.session.SessionHolder] [                init]  [] : use session store mode: file
+09:08:47.791  INFO --- [                     main] [rpc.netty.NettyServerBootstrap] [               start]  [] : Server started, service listen port: 8091
+09:08:47.809  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+09:08:47.850  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+09:08:48.562  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : 
+ you can visit seata console UI on namingserver. 
+ log path: /home/rednet/logs/seata.
+09:08:48.562  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : seata server started in 1453 millSeconds
+███████╗███████╗ █████╗ ████████╗ █████╗
+██╔════╝██╔════╝██╔══██╗╚══██╔══╝██╔══██╗
+███████╗█████╗  ███████║   ██║   ███████║
+╚════██║██╔══╝  ██╔══██║   ██║   ██╔══██║
+███████║███████╗██║  ██║   ██║   ██║  ██║
+╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+
+
+17:29:39.754  INFO --- [                     main] [der$InnerEnhancedServiceLoader] [lExtensionDefinition]  [] : Ignore load compatible class io.seata.config.ExtConfigurationProvider, because is not assignable from origin type org.apache.seata.config.ExtConfigurationProvider
+17:29:39.806  INFO --- [                     main] [ta.config.ConfigurationFactory] [                load]  [] : load Configuration from :FileConfiguration$$EnhancerByCGLIB$$6e15d955
+17:29:39.839  INFO --- [                     main] [seata.server.ServerApplication] [         logStarting]  [] : Starting ServerApplication v2.5.0 using Java 17.0.15 on rednet-B365-M-AORUS-ELITE with PID 20546 (/home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/target/seata-server.jar started by rednet in /home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/bin)
+17:29:39.839  INFO --- [                     main] [seata.server.ServerApplication] [ogStartupProfileInfo]  [] : No active profile set, falling back to 1 default profile: "default"
+17:29:40.575  INFO --- [                     main] [rver.lock.LockerManagerFactory] [                init]  [] : use lock store mode: file
+17:29:40.763  INFO --- [                     main] [seata.server.ServerApplication] [          logStarted]  [] : Started ServerApplication in 1.669 seconds (JVM running for 2.317)
+17:29:40.894  INFO --- [                     main] [a.server.session.SessionHolder] [                init]  [] : use session store mode: file
+17:29:40.973  INFO --- [                     main] [rpc.netty.NettyServerBootstrap] [               start]  [] : Server started, service listen port: 8091
+17:29:40.982  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+17:29:41.025  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+17:29:41.331  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : 
+ you can visit seata console UI on namingserver. 
+ log path: /home/rednet/logs/seata.
+17:29:41.331  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : seata server started in 567 millSeconds
+███████╗███████╗ █████╗ ████████╗ █████╗
+██╔════╝██╔════╝██╔══██╗╚══██╔══╝██╔══██╗
+███████╗█████╗  ███████║   ██║   ███████║
+╚════██║██╔══╝  ██╔══██║   ██║   ██╔══██║
+███████║███████╗██║  ██║   ██║   ██║  ██║
+╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+
+
+17:56:17.462  INFO --- [                     main] [der$InnerEnhancedServiceLoader] [lExtensionDefinition]  [] : Ignore load compatible class io.seata.config.ExtConfigurationProvider, because is not assignable from origin type org.apache.seata.config.ExtConfigurationProvider
+17:56:17.516  INFO --- [                     main] [ta.config.ConfigurationFactory] [                load]  [] : load Configuration from :FileConfiguration$$EnhancerByCGLIB$$6e15d955
+17:56:17.548  INFO --- [                     main] [seata.server.ServerApplication] [         logStarting]  [] : Starting ServerApplication v2.5.0 using Java 17.0.15 on rednet-B365-M-AORUS-ELITE with PID 20806 (/home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/target/seata-server.jar started by rednet in /home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/bin)
+17:56:17.548  INFO --- [                     main] [seata.server.ServerApplication] [ogStartupProfileInfo]  [] : No active profile set, falling back to 1 default profile: "default"
+17:56:18.242  INFO --- [                     main] [rver.lock.LockerManagerFactory] [                init]  [] : use lock store mode: file
+17:56:18.429  INFO --- [                     main] [seata.server.ServerApplication] [          logStarted]  [] : Started ServerApplication in 1.62 seconds (JVM running for 2.319)
+17:56:18.557  INFO --- [                     main] [a.server.session.SessionHolder] [                init]  [] : use session store mode: file
+17:56:18.629  INFO --- [                     main] [rpc.netty.NettyServerBootstrap] [               start]  [] : Server started, service listen port: 8091
+17:56:18.637  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+17:56:18.678  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+17:56:19.010  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : 
+ you can visit seata console UI on namingserver. 
+ log path: /home/rednet/logs/seata.
+17:56:19.010  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : seata server started in 579 millSeconds
+███████╗███████╗ █████╗ ████████╗ █████╗
+██╔════╝██╔════╝██╔══██╗╚══██╔══╝██╔══██╗
+███████╗█████╗  ███████║   ██║   ███████║
+╚════██║██╔══╝  ██╔══██║   ██║   ██╔══██║
+███████║███████╗██║  ██║   ██║   ██║  ██║
+╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+
+
+18:08:21.936  INFO --- [                     main] [der$InnerEnhancedServiceLoader] [lExtensionDefinition]  [] : Ignore load compatible class io.seata.config.ExtConfigurationProvider, because is not assignable from origin type org.apache.seata.config.ExtConfigurationProvider
+18:08:21.993  INFO --- [                     main] [ta.config.ConfigurationFactory] [                load]  [] : load Configuration from :FileConfiguration$$EnhancerByCGLIB$$6e15d955
+18:08:22.026  INFO --- [                     main] [seata.server.ServerApplication] [         logStarting]  [] : Starting ServerApplication v2.5.0 using Java 17.0.15 on rednet-B365-M-AORUS-ELITE with PID 17212 (/home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/target/seata-server.jar started by rednet in /home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/bin)
+18:08:22.026  INFO --- [                     main] [seata.server.ServerApplication] [ogStartupProfileInfo]  [] : No active profile set, falling back to 1 default profile: "default"
+18:08:22.731  INFO --- [                     main] [rver.lock.LockerManagerFactory] [                init]  [] : use lock store mode: file
+18:08:22.920  INFO --- [                     main] [seata.server.ServerApplication] [          logStarted]  [] : Started ServerApplication in 1.632 seconds (JVM running for 2.337)
+18:08:23.060  INFO --- [                     main] [a.server.session.SessionHolder] [                init]  [] : use session store mode: file
+18:08:23.134  INFO --- [                     main] [rpc.netty.NettyServerBootstrap] [               start]  [] : Server started, service listen port: 8091
+18:08:23.143  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+18:08:23.184  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+███████╗███████╗ █████╗ ████████╗ █████╗
+██╔════╝██╔════╝██╔══██╗╚══██╔══╝██╔══██╗
+███████╗█████╗  ███████║   ██║   ███████║
+╚════██║██╔══╝  ██╔══██║   ██║   ██╔══██║
+███████║███████╗██║  ██║   ██║   ██║  ██║
+╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+
+
+14:55:19.355  INFO --- [                     main] [der$InnerEnhancedServiceLoader] [lExtensionDefinition]  [] : Ignore load compatible class io.seata.config.ExtConfigurationProvider, because is not assignable from origin type org.apache.seata.config.ExtConfigurationProvider
+14:55:19.409  INFO --- [                     main] [ta.config.ConfigurationFactory] [                load]  [] : load Configuration from :FileConfiguration$$EnhancerByCGLIB$$6e15d955
+14:55:19.439  INFO --- [                     main] [seata.server.ServerApplication] [         logStarting]  [] : Starting ServerApplication v2.5.0 using Java 17.0.15 on rednet-B365-M-AORUS-ELITE with PID 1338891 (/home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/target/seata-server.jar started by rednet in /home/rednet/soft/apache-seata-2.5.0-incubating-bin/seata-server/bin)
+14:55:19.439  INFO --- [                     main] [seata.server.ServerApplication] [ogStartupProfileInfo]  [] : No active profile set, falling back to 1 default profile: "default"
+14:55:20.076  INFO --- [                     main] [rver.lock.LockerManagerFactory] [                init]  [] : use lock store mode: file
+14:55:20.243  INFO --- [                     main] [seata.server.ServerApplication] [          logStarted]  [] : Started ServerApplication in 1.521 seconds (JVM running for 2.233)
+14:55:20.363  INFO --- [                     main] [a.server.session.SessionHolder] [                init]  [] : use session store mode: file
+14:55:20.431  INFO --- [                     main] [rpc.netty.NettyServerBootstrap] [               start]  [] : Server started, service listen port: 8091
+14:55:20.440  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+14:55:20.472  INFO --- [                     main] [nacos.NacosRegistryServiceImpl] [tNacosAuthProperties]  [] : Nacos check auth with userName/password.
+14:55:20.774  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : 
+ you can visit seata console UI on namingserver. 
+ log path: /home/rednet/logs/seata.
+14:55:20.774  INFO --- [                     main] [ache.seata.server.ServerRunner] [                 run]  [] : seata server started in 529 millSeconds
