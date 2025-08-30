@@ -120,9 +120,6 @@ public class SysAgentModelServiceImpl implements SysAgentModelService {
         LambdaQueryWrapper<SysAgentModel> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysAgentModel::getTenantId, tenantId);
         SysAgentModel sysAgentModel = sysAgentModelMapper.selectOne(wrapper);
-        if (sysAgentModel == null) {
-            throw new BusinessException("SYS_AGENT_MODEL_NOT_EXISTS", "合伙人模型不存在");
-        }
         return sysAgentModel;
     }
 
