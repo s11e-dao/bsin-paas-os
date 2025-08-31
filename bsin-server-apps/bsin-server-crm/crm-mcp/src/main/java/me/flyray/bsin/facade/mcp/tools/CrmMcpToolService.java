@@ -18,7 +18,7 @@ public class CrmMcpToolService {
     @Autowired
     private CustomerBaseMapper customerBaseMapper;
 
-    @Tool(description = "新增客户到CRM系统: 必填字段：tenantId（租户号）、username（客户名称）、phone（手机号）、realName（真实姓名）、type（客户类型，默认为个人客户）等")
+    @Tool(description = "CRM系统新增客户: 必填字段：tenantId（租户号）、username（客户名称）、phone（手机号）、realName（真实姓名）、type（客户类型，默认为个人客户）等")
     public String add(@ToolParam(description = "客户基础信息对象，必须包含tenantId（租户号）、username（客户名称）、phone（手机号）、realName（真实姓名）、type（客户类型，默认为个人客户）等") CustomerBase customerBase) {
         System.out.println("开始新增客户：" + customerBase.getUsername());
 
