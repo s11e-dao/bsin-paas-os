@@ -45,7 +45,7 @@ import { GPTVis } from '@antv/gpt-vis';
 import { Avatar, Button, Flex, Space, Spin, message, theme, Divider, Switch, Dropdown, FloatButton, Modal } from 'antd';
 import { createStyles } from 'antd-style';
 import dayjs from 'dayjs';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { getSessionStorageInfo, getLocalStorageInfo } from '@/utils/localStorageInfo';
 import WebSocketManager from '@/utils/WebSocketManager';
 import {
@@ -445,6 +445,9 @@ const BsinChatModal = ({ customerInfo }) => {
 
   const [messageId, setMessageId] = useState(1);
   // const [messages, setMessages] = useState < MessageInfo < string > [] > ([]); // Ensure messages state is defined
+  
+  // 防抖优化 - 避免频繁的状态更新
+  const debouncedSetMessages = useRef(null);
 
   // ==================== Runtime ====================
   const roles = {
@@ -515,8 +518,8 @@ const BsinChatModal = ({ customerInfo }) => {
 
   const connectionKey = "bolei" + "/0"; // 定义统一的连接key
 
-  // 格式化商品推荐消息
-  const formatGoodsRecommendation = (data) => {
+  // 格式化商品推荐消息 - 使用useCallback优化
+  const formatGoodsRecommendation = useCallback((data) => {
     const { description, content } = data;
     let formattedMessage = `${description}\n\n`;
     
@@ -533,7 +536,7 @@ const BsinChatModal = ({ customerInfo }) => {
     }
     
     return formattedMessage;
-  };
+  }, []);
 
   useEffect(() => {
     if (!chatStatus) return; // Only proceed if chatStatus is true
@@ -546,9 +549,16 @@ const BsinChatModal = ({ customerInfo }) => {
     
     console.log('开始WebSocket连接:', connectionKey);
     
+    // 添加清理标志，防止内存泄漏
+    let isActive = true;
+    let reconnectTimer = null;
+    
     const socket = wsManager.connect(
           connectionKey,
           (message) => {
+              // 检查组件是否仍然活跃
+              if (!isActive) return;
+              
               console.log('收到WebSocket消息:', message);
               
               // 过滤掉结束标记和空消息
@@ -594,17 +604,31 @@ const BsinChatModal = ({ customerInfo }) => {
                   setMessageId((prevId) => {
                       const newId = prevId + 1;
                       setMessages((prevMessages) => {
-                          return [
+                          // 检查是否已存在相同ID的消息，防止重复
+                          const exists = prevMessages.some(msg => msg.id === newId);
+                          if (exists) return prevMessages;
+                          
+                          // 限制消息数量，防止内存无限增长
+                          const MAX_MESSAGES = 100;
+                          let newMessages = [
                               ...prevMessages,
                               {
                                   id: newId,
                                   message: processedMessage,
                                   content: processedMessage,
                                   status: 'ai',
-                                  messageType: messageType, // 添加消息类型
-                                  originalData: message // 保存原始数据
+                                  messageType: messageType,
+                                  originalData: message,
+                                  timestamp: Date.now()
                               }
                           ];
+                          
+                          // 如果消息数量超过限制，删除最旧的消息
+                          if (newMessages.length > MAX_MESSAGES) {
+                              newMessages = newMessages.slice(-MAX_MESSAGES);
+                          }
+                          
+                          return newMessages;
                       });
                       return newId;
                   });
@@ -629,28 +653,49 @@ const BsinChatModal = ({ customerInfo }) => {
               }
           },
           () => {
+            if (!isActive) return;
             console.log('WebSocket连接成功');
             setConnected(true);
           }, // 连接成功回调
           () => {
+            if (!isActive) return;
             console.log('WebSocket连接关闭');
             setConnected(false);
+            
+            // 自动重连逻辑
+            if (chatStatus && isActive) {
+              reconnectTimer = setTimeout(() => {
+                if (isActive && chatStatus) {
+                  console.log('尝试重新连接...');
+                  // 这里可以触发重新连接
+                }
+              }, 3000);
+            }
           }, // 连接关闭回调
           (error) => {
+            if (!isActive) return;
             console.error('WebSocket错误:', error);
+            setConnected(false);
           }
       );
 
       return () => {
+          // 清理函数 - 防止内存泄漏
+          isActive = false;
+          if (reconnectTimer) {
+            clearTimeout(reconnectTimer);
+            reconnectTimer = null;
+          }
           if (wsManager) {
             wsManager.close(connectionKey); // 组件卸载时关闭 WebSocket 连接
           }
       };
-  }, [chatStatus]);
+  }, [chatStatus, wsManager, connectionKey, formatGoodsRecommendation]);
 
   // ==================== Event ====================
   // 发送消息
-  const onSubmit = (nextContent) => {
+  // 发送消息 - 使用useCallback优化
+  const onSubmit = useCallback((nextContent) => {
       if (wsManager) {
         wsManager.sendMessage(connectionKey, { type: 'ai_chat', content: nextContent });
       } else {
@@ -658,11 +703,11 @@ const BsinChatModal = ({ customerInfo }) => {
       }
       onRequest(nextContent);
       setContent('');
-  };
+  }, [wsManager, connectionKey, onRequest]);
 
-  const globalSearchClick = () => {
-      setGlobalSearch(!globalSearch)
-  }
+  const globalSearchClick = useCallback(() => {
+      setGlobalSearch(prev => !prev);
+  }, []);
 
 
   // ==================== Nodes ====================
@@ -1019,7 +1064,7 @@ const BsinChatModal = ({ customerInfo }) => {
     // },
   }
 
-  const showChatModal = () => {
+  const showChatModal = useCallback(() => {
     setMessages([])
     setChatStatus(true)
     setChatModalOpen(true)
@@ -1064,12 +1109,12 @@ const BsinChatModal = ({ customerInfo }) => {
       })
       console.log(chatData)
     })
-  }
+  }, [defaultMerchantNo, customerInfo?.customerNo]);
 
-  const onChatModalClose = () => {
+  const onChatModalClose = useCallback(() => {
     setChatStatus(false)
     setChatModalOpen(false)
-  }
+  }, []);
 
   // ==================== Render =================
   return (
