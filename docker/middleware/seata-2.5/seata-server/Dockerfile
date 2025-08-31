@@ -41,6 +41,14 @@ ADD target /seata-server/target
 ADD LICENSE /LICENSE
 ADD NOTICE /NOTICE
 
+# 下载 MySQL JDBC 驱动
+RUN apt-get update && \
+    apt-get install -y wget && \
+    wget -O /seata-server/lib/mysql-connector-java-8.0.28.jar \
+    https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.28/mysql-connector-java-8.0.28.jar && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # set extra environment
 ENV LOADER_PATH="/seata-server/lib"
 ENV TZ="Asia/Shanghai"
