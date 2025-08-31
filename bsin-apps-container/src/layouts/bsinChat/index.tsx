@@ -54,6 +54,24 @@ import {
   getChatHistoryList,
 } from '../service'
 
+const markdownContent = `
+## GPT-VIS
+Components for GPTs, generative AI, and LLM projects. Not only UI Components.
+
+ \`\`\`vis-chart
+  {
+    "type": "pie",
+    "data": [
+      { "category": "分类一", "value": 27 },
+      { "category": "分类二", "value": 25 },
+      { "category": "分类三", "value": 18 },
+      { "category": "分类四", "value": 15 },
+      { "category": "分类五", "value": 10 },
+      { "category": "其他", "value": 5 }
+    ]
+  }
+\`\`\``;
+
 // MCP工具配置 - 可选择的工具列表
 const items = [
   {
@@ -492,14 +510,52 @@ const BsinChatModal = ({ customerInfo }) => {
       const socket = wsManager.connect(
           connectionKey,
           (message) => {
-              console.log('message', message);
-              setMessageId((prevId) => prevId + 1);
-              setMessages((prevMessages) => {
-                  return [
-                      ...prevMessages,
-                      { id: messageId, message: message, status: 'ai' }, // 使用 trim() 去除末尾多余的换行符
-                  ];
-              });
+              console.log('原始消息:', message);
+              let processedMessage = message;
+
+              try {
+                  // 如果收到的消息是字符串形式的 JSON，先解析它
+                  if (typeof message === 'string' && message.startsWith('{')) {
+                      const parsed = JSON.parse(message);
+                      processedMessage = parsed.content || parsed.message || message;
+                  }
+
+                  // 处理转义字符
+                  processedMessage = processedMessage
+                      .replace(/\\n/g, '\n')
+                      .replace(/\\"/g, '"')
+                      .replace(/\\`/g, '`')
+                      .replace(/\\\\/g, '\\');
+
+                  console.log('处理后的消息:', processedMessage);
+
+                  setMessageId((prevId) => {
+                      const newId = prevId + 1;
+                      setMessages((prevMessages) => {
+                          return [
+                              ...prevMessages,
+                              {
+                                  id: newId,
+                                  message: processedMessage,
+                                  content: processedMessage,
+                                  status: 'ai'
+                              }
+                          ];
+                      });
+                      return newId;
+                  });
+              } catch (error) {
+                  console.error('消息处理错误:', error);
+                  // 如果处理失败，使用原始消息
+                  setMessageId((prevId) => {
+                      const newId = prevId + 1;
+                      setMessages((prevMessages) => [
+                          ...prevMessages,
+                          { id: newId, message, content: message, status: 'ai' }
+                      ]);
+                      return newId;
+                  });
+              }
           },
           () => setConnected(true), // 连接成功回调
           () => setConnected(false), // 连接关闭回调

@@ -19,7 +19,7 @@ export default {
     'process.env.bsinFileUploadUrl': process.env.BSIN_FILE_UPLOAF_URL || 'http://127.0.0.1:9195/http/upload/aliOssUpload', // IPFS存储且OSS备份
     'process.env.storeMethod': '3', //  1.IPFS存储：需要同时指定 backup 存储平台  2.aliOSS存储：  4.服务器本地存储：  3.both IPFS and aliOSS:  5.both IPFS and 服务器本地存储
     'process.env.biganH5Url': 'http://localhost:8080/', // biganH5 url local test
-    'process.env.webScoketUrl': process.env.BSIN_WEBSOCKET_BASE_URL || 'ws://localhost:9195/ws-oms/myWs',
+    'process.env.webScoketUrl': process.env.BSIN_WEBSOCKET_BASE_URL || 'ws://127.0.0.1:9195/agent-gateway/',
     'process.env.registerNotNeedAudit': true,  // 针对copilot微信分身产品，用户注册无需审核，可直接使用基础产品
     'process.env.defaultTenantNo': '6345824413764157440',  // 默认租户号
     'process.env.defaultMerchantNo': '1737853502828482561',  // 默认商户号
