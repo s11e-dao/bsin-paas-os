@@ -1,0 +1,42 @@
+# 使用官方 Seata Server 镜像
+FROM seataio/seata-server:1.6.1
+
+# 维护者信息
+LABEL maintainer="bsin-paas-os"
+LABEL description="Seata 分布式事务管理服务 - 基于官方镜像"
+
+# 设置环境变量
+ENV SEATA_CONFIG_NAME=file.conf
+ENV SEATA_REGISTRY_TYPE=nacos
+ENV TZ=Asia/Shanghai
+
+# 切换到 root 用户进行配置
+USER root
+
+# 安装必要的工具并设置时区
+RUN apt-get update && \
+    apt-get install -y curl && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone && \
+    rm -rf /var/lib/apt/lists/*
+
+# 复制配置文件到官方镜像的配置目录
+COPY conf/ /seata-server/resources/
+
+# 检查并设置权限 - 使用更安全的方式
+RUN if id "seata" >/dev/null 2>&1; then \
+        chown -R seata:seata /seata-server/resources/; \
+    else \
+        chown -R root:root /seata-server/resources/; \
+    fi
+
+# 不切换用户，保持 root 用户运行
+# USER seata
+WORKDIR /seata-server
+
+# 暴露端口
+EXPOSE 8091
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8091/health || exit 1

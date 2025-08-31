@@ -20,7 +20,7 @@ shenyu:
 
 spring:
   datasource:
-    url: ${TARGE_GATEWAY_ADMIN_MYSQL_DB_URL}?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+    url: ${TARGE_GATEWAY_ADMIN_MYSQL_DB_URL}?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true
     username: ${TARGE_GATEWAY_ADMIN_MYSQL_DB_USERNAME}
     password: ${TARGE_GATEWAY_ADMIN_MYSQL_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver

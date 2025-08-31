@@ -19,6 +19,9 @@ mkdir -p ./middleware/elasticsearch/logs
 mkdir -p ./middleware/elasticsearch/plugins
 mkdir -p ./middleware/elasticsearch/conf
 mkdir -p ./middleware/rockermq/data
+mkdir -p ./middleware/seata/conf
+mkdir -p ./middleware/seata/db
+mkdir -p ./middleware/seata/data
 
 
 mkdir -p ./app-service/server-apps/app-agent/jar
