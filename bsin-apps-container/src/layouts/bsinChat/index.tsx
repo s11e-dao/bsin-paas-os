@@ -378,9 +378,7 @@ const useStyle = createStyles(({ token, css }) => {
 });
 
 
-let token = getSessionStorageInfo('token')?.token;
 let webScoketUrl = process.env.webScoketUrl;
-const wsManager = new WebSocketManager(webScoketUrl, token);
 let mockSuccess = false;
 
 var __awaiter =
@@ -501,23 +499,86 @@ const BsinChatModal = ({ customerInfo }) => {
   const [connected, setConnected] = useState(false);
   const [chatStatus, setChatStatus] = useState(false);
 
+  // 动态获取token并创建WebSocketManager
+  const [wsManager, setWsManager] = useState(null);
+  
+  useEffect(() => {
+    const currentToken = getSessionStorageInfo('token')?.token;
+    console.log('WebSocket初始化 - token:', currentToken ? '存在' : '不存在');
+    
+    if (currentToken && webScoketUrl) {
+      const manager = new WebSocketManager(webScoketUrl, currentToken);
+      setWsManager(manager);
+      console.log('WebSocketManager已创建');
+    }
+  }, []); // 只在组件挂载时执行一次
+
   const connectionKey = "bolei" + "/0"; // 定义统一的连接key
 
+  // 格式化商品推荐消息
+  const formatGoodsRecommendation = (data) => {
+    const { description, content } = data;
+    let formattedMessage = `${description}\n\n`;
+    
+    if (content.recommendedGoods && content.recommendedGoods.length > 0) {
+      content.recommendedGoods.forEach((goods, index) => {
+        formattedMessage += `**${index + 1}. ${goods.goodsName}**\n`;
+        formattedMessage += `💰 价格: ${goods.price}\n`;
+        formattedMessage += `📱 品牌: ${goods.brand}\n`;
+        formattedMessage += `🏷️ 分类: ${goods.category}\n`;
+        formattedMessage += `📦 库存: ${goods.stock}件\n`;
+        formattedMessage += `✨ 特色: ${goods.features.join(', ')}\n`;
+        formattedMessage += `📝 描述: ${goods.description}\n\n`;
+      });
+    }
+    
+    return formattedMessage;
+  };
+
   useEffect(() => {
-    console.log('chatStatus', chatStatus)
     if (!chatStatus) return; // Only proceed if chatStatus is true
-      // 连接 WebSocket
-      const socket = wsManager.connect(
+    
+    // 连接 WebSocket
+    if (!wsManager) {
+      console.error('WebSocketManager未初始化');
+      return;
+    }
+    
+    console.log('开始WebSocket连接:', connectionKey);
+    
+    const socket = wsManager.connect(
           connectionKey,
           (message) => {
-              console.log('原始消息:', message);
+              console.log('收到WebSocket消息:', message);
+              
+              // 过滤掉结束标记和空消息
+              if (message === '[DONE]' || message.trim() === '[DONE]' || !message || message.trim() === '') {
+                  console.log('收到结束标记或空消息，跳过处理:', message);
+                  return;
+              }
+              
               let processedMessage = message;
+              let messageType = 'text'; // 默认消息类型
 
               try {
                   // 如果收到的消息是字符串形式的 JSON，先解析它
                   if (typeof message === 'string' && message.startsWith('{')) {
                       const parsed = JSON.parse(message);
-                      processedMessage = parsed.content || parsed.message || message;
+                      console.log('解析后的消息结构:', parsed);
+                      
+                      // 根据消息类型处理
+                      if (parsed.type === '3' && parsed.bizType === '1') {
+                          // 商品推荐消息
+                          messageType = 'goods_recommendation';
+                          processedMessage = formatGoodsRecommendation(parsed);
+                      } else if (parsed.content) {
+                          // 普通文本消息
+                          processedMessage = parsed.content;
+                      } else if (parsed.message) {
+                          processedMessage = parsed.message;
+                      } else {
+                          processedMessage = JSON.stringify(parsed, null, 2);
+                      }
                   }
 
                   // 处理转义字符
@@ -528,6 +589,7 @@ const BsinChatModal = ({ customerInfo }) => {
                       .replace(/\\\\/g, '\\');
 
                   console.log('处理后的消息:', processedMessage);
+                  console.log('消息类型:', messageType);
 
                   setMessageId((prevId) => {
                       const newId = prevId + 1;
@@ -538,7 +600,9 @@ const BsinChatModal = ({ customerInfo }) => {
                                   id: newId,
                                   message: processedMessage,
                                   content: processedMessage,
-                                  status: 'ai'
+                                  status: 'ai',
+                                  messageType: messageType, // 添加消息类型
+                                  originalData: message // 保存原始数据
                               }
                           ];
                       });
@@ -551,26 +615,47 @@ const BsinChatModal = ({ customerInfo }) => {
                       const newId = prevId + 1;
                       setMessages((prevMessages) => [
                           ...prevMessages,
-                          { id: newId, message, content: message, status: 'ai' }
+                          { 
+                              id: newId, 
+                              message, 
+                              content: message, 
+                              status: 'ai',
+                              messageType: 'text',
+                              originalData: message
+                          }
                       ]);
                       return newId;
                   });
               }
           },
-          () => setConnected(true), // 连接成功回调
-          () => setConnected(false), // 连接关闭回调
-          (error) => console.error('WebSocket 错误:', error)
+          () => {
+            console.log('WebSocket连接成功');
+            setConnected(true);
+          }, // 连接成功回调
+          () => {
+            console.log('WebSocket连接关闭');
+            setConnected(false);
+          }, // 连接关闭回调
+          (error) => {
+            console.error('WebSocket错误:', error);
+          }
       );
 
       return () => {
-          wsManager.close(connectionKey); // 组件卸载时关闭 WebSocket 连接
+          if (wsManager) {
+            wsManager.close(connectionKey); // 组件卸载时关闭 WebSocket 连接
+          }
       };
   }, [chatStatus]);
 
   // ==================== Event ====================
   // 发送消息
   const onSubmit = (nextContent) => {
-      wsManager.sendMessage(connectionKey, { type: 'ai_chat', content: nextContent });
+      if (wsManager) {
+        wsManager.sendMessage(connectionKey, { type: 'ai_chat', content: nextContent });
+      } else {
+        console.error('WebSocketManager未初始化');
+      }
       onRequest(nextContent);
       setContent('');
   };
@@ -600,14 +685,31 @@ const BsinChatModal = ({ customerInfo }) => {
               <Bubble.List
                   roles={roles}
                   style={{ maxHeight: 660 }}
-                  items={messages.map(({ id, message, status, content }) => ({
+                  items={messages.map(({ id, message, status, content, messageType, originalData }) => ({
                     key: id,
                     loading: status === 'loading',
                     role: status === 'local' ? 'local' : 'ai',
                     content: content || message,
                     messageRender: (content) => (
                         <div style={{ whiteSpace: 'pre-wrap' }}>
-                            <GPTVis>{content}</GPTVis>
+                            {messageType === 'goods_recommendation' ? (
+                                <div>
+                                    <div style={{ 
+                                        background: '#f8f9fa', 
+                                        padding: '12px', 
+                                        borderRadius: '8px', 
+                                        marginBottom: '8px',
+                                        border: '1px solid #e9ecef'
+                                    }}>
+                                        <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>
+                                            🛍️ 商品推荐
+                                        </div>
+                                        <GPTVis>{content}</GPTVis>
+                                    </div>
+                                </div>
+                            ) : (
+                                <GPTVis>{content}</GPTVis>
+                            )}
                         </div>
                     )
                 }))}
@@ -918,7 +1020,6 @@ const BsinChatModal = ({ customerInfo }) => {
   }
 
   const showChatModal = () => {
-
     setMessages([])
     setChatStatus(true)
     setChatModalOpen(true)
