@@ -518,21 +518,42 @@ const BsinChatModal = ({ customerInfo }) => {
 
   const connectionKey = "bolei" + "/0"; // 定义统一的连接key
 
-  // 格式化商品推荐消息 - 使用useCallback优化
-  const formatGoodsRecommendation = useCallback((data) => {
-    const { description, content } = data;
+  // 格式化业务消息 - 使用useCallback优化
+  const formatBusinessMessage = useCallback((data) => {
+    const { description, content, bizType } = data;
     let formattedMessage = `${description}\n\n`;
     
-    if (content.recommendedGoods && content.recommendedGoods.length > 0) {
-      content.recommendedGoods.forEach((goods, index) => {
-        formattedMessage += `**${index + 1}. ${goods.goodsName}**\n`;
-        formattedMessage += `💰 价格: ${goods.price}\n`;
-        formattedMessage += `📱 品牌: ${goods.brand}\n`;
-        formattedMessage += `🏷️ 分类: ${goods.category}\n`;
-        formattedMessage += `📦 库存: ${goods.stock}件\n`;
-        formattedMessage += `✨ 特色: ${goods.features.join(', ')}\n`;
-        formattedMessage += `📝 描述: ${goods.description}\n\n`;
-      });
+    switch (bizType) {
+      case '1': // 商品推荐
+        if (content.recommendedInfo && content.recommendedInfo.length > 0) {
+          content.recommendedInfo.forEach((goods, index) => {
+            formattedMessage += `**${index + 1}. ${goods.goodsName}**\n`;
+            formattedMessage += `💰 价格: ${goods.price}\n`;
+            formattedMessage += `📱 品牌: ${goods.brand}\n`;
+            formattedMessage += `🏷️ 分类: ${goods.category}\n`;
+            formattedMessage += `📦 库存: ${goods.stock}件\n`;
+            formattedMessage += `✨ 特色: ${goods.features.join(', ')}\n`;
+            formattedMessage += `📝 描述: ${goods.description}\n\n`;
+          });
+        }
+        break;
+        
+      case '4': // 客户管理
+        if (content.customers && content.customers.length > 0) {
+          content.customers.forEach((customer, index) => {
+            formattedMessage += `**${index + 1}. ${customer.customerName}**\n`;
+            formattedMessage += `🆔 客户编号: ${customer.customerNo}\n`;
+            formattedMessage += `📞 电话: ${customer.phone || '待补充'}\n`;
+            formattedMessage += `📧 邮箱: ${customer.email || '待补充'}\n\n`;
+          });
+        }
+        break;
+        
+      default:
+        // 其他业务类型，使用通用格式
+        if (content) {
+          formattedMessage += JSON.stringify(content, null, 2);
+        }
     }
     
     return formattedMessage;
@@ -577,10 +598,10 @@ const BsinChatModal = ({ customerInfo }) => {
                       console.log('解析后的消息结构:', parsed);
                       
                       // 根据消息类型处理
-                      if (parsed.type === '3' && parsed.bizType === '1') {
-                          // 商品推荐消息
-                          messageType = 'goods_recommendation';
-                          processedMessage = formatGoodsRecommendation(parsed);
+                      if (parsed.type === '3' && ['1', '2', '3', '4', '5'].includes(parsed.bizType)) {
+                          // 业务消息
+                          messageType = 'business_message';
+                          processedMessage = formatBusinessMessage(parsed);
                       } else if (parsed.content) {
                           // 普通文本消息
                           processedMessage = parsed.content;
@@ -690,7 +711,7 @@ const BsinChatModal = ({ customerInfo }) => {
             wsManager.close(connectionKey); // 组件卸载时关闭 WebSocket 连接
           }
       };
-  }, [chatStatus, wsManager, connectionKey, formatGoodsRecommendation]);
+  }, [chatStatus, wsManager, connectionKey, formatBusinessMessage]);
 
   // ==================== Event ====================
   // 发送消息
@@ -737,7 +758,7 @@ const BsinChatModal = ({ customerInfo }) => {
                     content: content || message,
                     messageRender: (content) => (
                         <div style={{ whiteSpace: 'pre-wrap' }}>
-                            {messageType === 'goods_recommendation' ? (
+                            {messageType === 'business_message' ? (
                                 <div>
                                     <div style={{ 
                                         background: '#f8f9fa', 
@@ -746,9 +767,6 @@ const BsinChatModal = ({ customerInfo }) => {
                                         marginBottom: '8px',
                                         border: '1px solid #e9ecef'
                                     }}>
-                                        <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>
-                                            🛍️ 商品推荐
-                                        </div>
                                         <GPTVis>{content}</GPTVis>
                                     </div>
                                 </div>
