@@ -525,15 +525,17 @@ const BsinChatModal = ({ customerInfo }) => {
     
     switch (bizType) {
       case '1': // 商品推荐
-        if (content.recommendedInfo && content.recommendedInfo.length > 0) {
-          content.recommendedInfo.forEach((goods, index) => {
+        // 处理新的数据结构：content直接是商品数组
+        if (Array.isArray(content) && content.length > 0) {
+          content.forEach((goods, index) => {
             formattedMessage += `**${index + 1}. ${goods.goodsName}**\n`;
-            formattedMessage += `💰 价格: ${goods.price}\n`;
-            formattedMessage += `📱 品牌: ${goods.brand}\n`;
-            formattedMessage += `🏷️ 分类: ${goods.category}\n`;
-            formattedMessage += `📦 库存: ${goods.stock}件\n`;
-            formattedMessage += `✨ 特色: ${goods.features.join(', ')}\n`;
-            formattedMessage += `📝 描述: ${goods.description}\n\n`;
+            formattedMessage += `🆔 商品编号: ${goods.goodsNo}\n`;
+            formattedMessage += `💰 价格: ${goods.price || '待定'}\n`;
+            formattedMessage += `📱 品牌: ${goods.brand || '未知'}\n`;
+            formattedMessage += `🏷️ 分类: ${goods.category || '未分类'}\n`;
+            formattedMessage += `📦 库存: ${goods.stock || '未知'}\n`;
+            formattedMessage += `✨ 特色: ${goods.features && goods.features.length > 0 ? goods.features.join(', ') : '暂无'}\n`;
+            formattedMessage += `📝 描述: ${goods.description || '暂无描述'}\n\n`;
           });
         }
         break;
