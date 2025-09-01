@@ -523,6 +523,15 @@ const BsinChatModal = ({ customerInfo }) => {
     const { description, content, bizType } = data;
     let formattedMessage = `${description}\n\n`;
     
+    // 检查是否为错误响应
+    if (content && typeof content === 'object' && content.success === false) {
+      formattedMessage += `❌ **操作失败**\n`;
+      if (content.error) {
+        formattedMessage += `⚠️ 错误信息: ${content.error}\n`;
+      }
+      return formattedMessage;
+    }
+    
     switch (bizType) {
       case '1': // 商品推荐
         // 处理新的数据结构：content直接是商品数组
