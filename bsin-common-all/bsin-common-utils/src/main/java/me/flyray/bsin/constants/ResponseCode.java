@@ -365,6 +365,12 @@ public enum ResponseCode implements ReturnCode {
 
   ARTICLE_CATEGORY_NOT_EXIST("140001", "文章分类不存在"),
 
+
+
+  /*********************************** ai-agent 150000*****************************************/
+
+  SYS_AI_AGENT_NOT_EXIST("150001", "系統智能体不存在"),
+
   ;
 
   private String code;
