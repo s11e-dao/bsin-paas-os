@@ -1,10 +1,7 @@
 package me.flyray.bsin.blockchain.tds;
 
-import foundation.identity.did.DIDDocument;
-import foundation.identity.did.Service;
-import foundation.identity.did.VerificationMethod;
-import foundation.identity.jsonld.JsonLDDereferencer;
-import me.flyray.bsin.blockchain.utils.DIDGeneratorUtil;
+import me.flyray.bsin.blockchain.did.SimpleDIDDocument;
+import me.flyray.bsin.blockchain.utils.SimpleDIDGeneratorUtil;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -51,7 +48,7 @@ public class DIDTest {
         System.out.println("=== 基本DID生成示例 ===");
 
         // 生成随机DID文档
-        DIDGeneratorUtil.DIDDocumentResult result = DIDGeneratorUtil.generateDIDDocument();
+        SimpleDIDGeneratorUtil.SimpleDIDDocumentResult result = SimpleDIDGeneratorUtil.generateDIDDocument();
 
         // 打印详细信息
         result.printDetails();
@@ -65,7 +62,7 @@ public class DIDTest {
 
         // 生成带服务端点的DID
         String serviceEndpoint = "https://example.com/didcomm";
-        DIDGeneratorUtil.DIDDocumentResult result = DIDGeneratorUtil.generateDIDDocument(
+        SimpleDIDGeneratorUtil.SimpleDIDDocumentResult result = SimpleDIDGeneratorUtil.generateDIDDocument(
                 null, // 自动生成DID
                 null, // 无控制器
                 serviceEndpoint
@@ -81,7 +78,7 @@ public class DIDTest {
         System.out.println("=== 数据签名和验证示例 ===");
 
         // 生成DID和密钥对
-        DIDGeneratorUtil.DIDDocumentResult result = DIDGeneratorUtil.generateDIDDocument();
+        SimpleDIDGeneratorUtil.SimpleDIDDocumentResult result = SimpleDIDGeneratorUtil.generateDIDDocument();
         KeyPair keyPair = result.getKeyPair();
 
         // 要签名的数据
@@ -92,17 +89,17 @@ public class DIDTest {
         System.out.println("DID: " + result.getDID());
 
         // 签名
-        byte[] signature = DIDGeneratorUtil.signData(data, keyPair.getPrivate());
+        byte[] signature = SimpleDIDGeneratorUtil.signData(data, keyPair.getPrivate());
         System.out.println("签名长度: " + signature.length + " bytes");
 
         // 验证签名
-        boolean isValid = DIDGeneratorUtil.verifySignature(data, signature, keyPair.getPublic());
+        boolean isValid = SimpleDIDGeneratorUtil.verifySignature(data, signature, keyPair.getPublic());
         System.out.println("签名验证结果: " + (isValid ? "✓ 有效" : "✗ 无效"));
 
         // 测试错误数据的验证
         String wrongMessage = "Wrong message";
         byte[] wrongData = wrongMessage.getBytes(StandardCharsets.UTF_8);
-        boolean isInvalid = DIDGeneratorUtil.verifySignature(wrongData, signature, keyPair.getPublic());
+        boolean isInvalid = SimpleDIDGeneratorUtil.verifySignature(wrongData, signature, keyPair.getPublic());
         System.out.println("错误数据验证结果: " + (isInvalid ? "✓ 有效" : "✗ 无效（预期）"));
     }
 
@@ -116,7 +113,7 @@ public class DIDTest {
         String[] methods = {"key", "web", "btcr", "ethr"};
 
         for (String method : methods) {
-            DIDGeneratorUtil.DIDDocumentResult result = DIDGeneratorUtil.generateCustomDID(
+            SimpleDIDGeneratorUtil.SimpleDIDDocumentResult result = SimpleDIDGeneratorUtil.generateCustomDID(
                     method,
                     "https://" + method + ".example.com/endpoint"
             );
@@ -135,7 +132,7 @@ public class DIDTest {
         System.out.println("=== 密钥恢复和使用示例 ===");
 
         // 生成DID
-        DIDGeneratorUtil.DIDDocumentResult result = DIDGeneratorUtil.generateDIDDocument();
+        SimpleDIDGeneratorUtil.SimpleDIDDocumentResult result = SimpleDIDGeneratorUtil.generateDIDDocument();
 
         // 获取Base58编码的密钥
         String publicKeyBase58 = result.getPublicKeyBase58();
@@ -144,15 +141,15 @@ public class DIDTest {
         System.out.println("原始公钥 Base58: " + publicKeyBase58);
 
         // 从Base58恢复密钥
-        var recoveredPublicKey = DIDGeneratorUtil.decodePublicKeyFromBase58(publicKeyBase58);
-        var recoveredPrivateKey = DIDGeneratorUtil.decodePrivateKeyFromBase58(privateKeyBase58);
+        var recoveredPublicKey = SimpleDIDGeneratorUtil.decodePublicKeyFromBase58(publicKeyBase58);
+        var recoveredPrivateKey = SimpleDIDGeneratorUtil.decodePrivateKeyFromBase58(privateKeyBase58);
 
         // 使用恢复的密钥进行签名验证
         String testData = "Test data for key recovery";
         byte[] data = testData.getBytes(StandardCharsets.UTF_8);
 
-        byte[] signature = DIDGeneratorUtil.signData(data, recoveredPrivateKey);
-        boolean verified = DIDGeneratorUtil.verifySignature(data, signature, recoveredPublicKey);
+        byte[] signature = SimpleDIDGeneratorUtil.signData(data, recoveredPrivateKey);
+        boolean verified = SimpleDIDGeneratorUtil.verifySignature(data, signature, recoveredPublicKey);
 
         System.out.println("密钥恢复后签名验证: " + (verified ? "✓ 成功" : "✗ 失败"));
     }

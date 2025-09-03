@@ -1,25 +1,20 @@
 package me.flyray.bsin.blockchain.utils;
 
-import foundation.identity.did.DIDDocument;
-import foundation.identity.did.Service;
-import foundation.identity.did.VerificationMethod;
+import me.flyray.bsin.blockchain.did.SimpleDIDDocument;
 import org.bitcoinj.core.Base58;
 
-import java.net.URI;
 import java.security.*;
-import java.util.*;
-
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.*;
 
 /**
- * DID随机生成和签名工具类 (Java 17版本)
- * 提供DID文档生成、密钥对生成、签名验证等功能
- * 使用Java 17原生Ed25519支持
+ * 简化的 DID 生成器工具类
+ * 替代有问题的 DIDGeneratorUtil
  */
-public class DIDGeneratorUtil {
+public class SimpleDIDGeneratorUtil {
 
-    private static final String DID_METHOD = "s11e"; // 可以替换为其他方法如 "key", "web" 等
+    private static final String DID_METHOD = "s11e";
     private static final String KEY_TYPE = "Ed25519VerificationKey2018";
     private static final String SIGNATURE_ALGORITHM = "Ed25519";
     private static final String KEY_ALGORITHM = "Ed25519";
@@ -71,14 +66,14 @@ public class DIDGeneratorUtil {
     /**
      * 生成完整的DID文档对象
      */
-    public static DIDDocumentResult generateDIDDocument() throws NoSuchAlgorithmException {
+    public static SimpleDIDDocumentResult generateDIDDocument() throws NoSuchAlgorithmException {
         return generateDIDDocument(null, null, null);
     }
 
     /**
      * 生成指定参数的DID文档
      */
-    public static DIDDocumentResult generateDIDDocument(String didId, String controllerId, String serviceEndpoint)
+    public static SimpleDIDDocumentResult generateDIDDocument(String didId, String controllerId, String serviceEndpoint)
             throws NoSuchAlgorithmException {
 
         // 生成DID标识符
@@ -93,47 +88,38 @@ public class DIDGeneratorUtil {
 
         // 创建验证方法
         String keyId = didId + "#key-1";
-        VerificationMethod verificationMethod = VerificationMethod.builder()
-                .id(URI.create(keyId))
-                .types(List.of(KEY_TYPE))
-                .publicKeyBase58(publicKeyBase58)
-                .build();
+        SimpleDIDDocument.SimpleVerificationMethod verificationMethod = 
+            new SimpleDIDDocument.SimpleVerificationMethod(keyId, KEY_TYPE, didId, publicKeyBase58);
 
-        List<VerificationMethod> verificationMethods = new ArrayList<>();
-        verificationMethods.add(verificationMethod);
+        List<SimpleDIDDocument.SimpleVerificationMethod> verificationMethods = 
+            Arrays.asList(verificationMethod);
 
         // 创建服务端点
-        List<Service> services = new ArrayList<>();
+        List<SimpleDIDDocument.SimpleService> services = new ArrayList<>();
         if (serviceEndpoint != null) {
-            Service service = Service.builder()
-                    .type("DIDCommService")
-                    .serviceEndpoint(serviceEndpoint)
-                    .build();
+            SimpleDIDDocument.SimpleService service = 
+                new SimpleDIDDocument.SimpleService(didId + "#service-1", "DIDCommService", serviceEndpoint);
             services.add(service);
         }
 
         // 构建DID文档
-        DIDDocument.Builder builder = DIDDocument.builder()
-                .id(URI.create(didId))
-                .verificationMethods(verificationMethods)
-                .authenticationVerificationMethods(Collections.singletonList(
-                        VerificationMethod.builder().id(verificationMethod.getId()).build()))
-                .assertionMethodVerificationMethods(Collections.singletonList(
-                        VerificationMethod.builder().id(verificationMethod.getId()).build()));
-
+        SimpleDIDDocument didDocument = new SimpleDIDDocument();
+        didDocument.setId(didId);
+        didDocument.setVerificationMethod(verificationMethods);
+        didDocument.setAuthentication(Arrays.asList(keyId));
+        didDocument.setAssertionMethod(Arrays.asList(keyId));
+        
         // 添加控制器（如果指定）
         if (controllerId != null) {
-            builder.controller(URI.create(controllerId));
+            didDocument.setController(controllerId);
         }
 
         // 添加服务
         if (!services.isEmpty()) {
-            builder.services(services);
+            didDocument.setService(services);
         }
 
-        DIDDocument didDocument = builder.build();
-
-        return new DIDDocumentResult(didDocument, keyPair, publicKeyBase58, privateKeyBase58);
+        return new SimpleDIDDocumentResult(didDocument, keyPair, publicKeyBase58, privateKeyBase58);
     }
 
     /**
@@ -179,13 +165,13 @@ public class DIDGeneratorUtil {
     /**
      * DID文档生成结果包装类
      */
-    public static class DIDDocumentResult {
-        private final DIDDocument didDocument;
+    public static class SimpleDIDDocumentResult {
+        private final SimpleDIDDocument didDocument;
         private final KeyPair keyPair;
         private final String publicKeyBase58;
         private final String privateKeyBase58;
 
-        public DIDDocumentResult(DIDDocument didDocument, KeyPair keyPair,
+        public SimpleDIDDocumentResult(SimpleDIDDocument didDocument, KeyPair keyPair,
                                  String publicKeyBase58, String privateKeyBase58) {
             this.didDocument = didDocument;
             this.keyPair = keyPair;
@@ -193,17 +179,24 @@ public class DIDGeneratorUtil {
             this.privateKeyBase58 = privateKeyBase58;
         }
 
-        public DIDDocument getDIDDocument() { return didDocument; }
+        public SimpleDIDDocument getDIDDocument() { return didDocument; }
         public KeyPair getKeyPair() { return keyPair; }
         public String getPublicKeyBase58() { return publicKeyBase58; }
         public String getPrivateKeyBase58() { return privateKeyBase58; }
-        public String getDID() { return didDocument.getId().toString(); }
+        public String getDID() { return didDocument.getId(); }
 
         /**
          * 获取JSON格式的DID文档
          */
         public String toJson() {
             return didDocument.toJson();
+        }
+
+        /**
+         * 获取格式化的JSON格式的DID文档
+         */
+        public String toJson(boolean prettyPrint) {
+            return didDocument.toJson(prettyPrint);
         }
 
         /**
@@ -215,18 +208,17 @@ public class DIDGeneratorUtil {
             System.out.println("Public Key (Base58): " + publicKeyBase58);
             System.out.println("Private Key (Base58): " + privateKeyBase58);
             System.out.println("DID Document JSON:");
-            System.out.println(toJson());
+            System.out.println(toJson(true));
         }
     }
 
     /**
      * 示例：创建带有自定义参数的DID
      */
-    public static DIDDocumentResult generateCustomDID(String method, String serviceEndpoint)
+    public static SimpleDIDDocumentResult generateCustomDID(String method, String serviceEndpoint)
             throws NoSuchAlgorithmException {
         String didId = generateRandomDID(method);
         String controllerId = generateRandomDID(method); // 生成控制器DID
         return generateDIDDocument(didId, controllerId, serviceEndpoint);
     }
-
 }

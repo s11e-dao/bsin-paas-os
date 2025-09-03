@@ -1,7 +1,7 @@
 package me.flyray.bsin.blockchain.tds;
 
-import foundation.identity.did.DIDDocument;
-import me.flyray.bsin.blockchain.utils.DIDGeneratorUtil;
+import me.flyray.bsin.blockchain.did.SimpleDIDDocument;
+import me.flyray.bsin.blockchain.utils.SimpleDIDGeneratorUtil;
 import me.flyray.bsin.blockchain.utils.KeyEncryptionUtil;
 import org.apache.commons.collections4.MapUtils;
 
@@ -104,14 +104,14 @@ public class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnect
             String serviceEndpoint = "https://s11e.network/endpoint/" + didIdentifier;
 
             // 使用工具类生成完整的DID文档
-            DIDGeneratorUtil.DIDDocumentResult didResult = DIDGeneratorUtil.generateDIDDocument(
+            SimpleDIDGeneratorUtil.SimpleDIDDocumentResult didResult = SimpleDIDGeneratorUtil.generateDIDDocument(
                     customDid,  // 使用我们生成的DID标识符
                     null,         // 无控制器
                     serviceEndpoint // 服务端点
             );
 
             // 获取生成的DID文档
-            DIDDocument didDocument = didResult.getDIDDocument();
+            SimpleDIDDocument didDocument = didResult.getDIDDocument();
             
             // 处理密钥信息为加密JSON字符串格式
             String didKeyData = createKeyDataJson(customDid, salt, didResult);
@@ -124,8 +124,8 @@ public class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnect
 
             // 返回包含完整 DID 信息的 Map
             Map<String, String> result = new HashMap<>();
-            result.put("did", customDid);
-            result.put("didDocument", didDocument.toJson());
+            result.put("did", didResult.getDID());
+            result.put("didDocument", didResult.toJson());
             result.put("serviceEndpoint", serviceEndpoint);
             result.put("status", "success");
             result.put("name", name);
@@ -167,7 +167,7 @@ public class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnect
             KeyPair keyPair = rebuildKeyPairFromJson(encryptedDidKeyData, did, salt);
 
             // 使用工具类进行签名
-            byte[] signature = DIDGeneratorUtil.signData(data.getBytes("UTF-8"), keyPair.getPrivate());
+            byte[] signature = SimpleDIDGeneratorUtil.signData(data.getBytes("UTF-8"), keyPair.getPrivate());
             
             // 将签名转换为Base64编码
             return java.util.Base64.getEncoder().encodeToString(signature);
@@ -201,7 +201,7 @@ public class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnect
             byte[] signatureBytes = java.util.Base64.getDecoder().decode(signature);
             
             // 使用工具类进行验证
-            return DIDGeneratorUtil.verifySignature(
+            return SimpleDIDGeneratorUtil.verifySignature(
                     data.getBytes("UTF-8"), 
                     signatureBytes, 
                     keyPair.getPublic()
@@ -218,7 +218,7 @@ public class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnect
     /**
      * 创建加密的密钥数据JSON字符串
      */
-    private String createKeyDataJson(String did, String salt, DIDGeneratorUtil.DIDDocumentResult didResult) {
+    private String createKeyDataJson(String did, String salt, SimpleDIDGeneratorUtil.SimpleDIDDocumentResult didResult) {
         try {
             // 加密私钥
             String encryptedPrivateKey = KeyEncryptionUtil.encryptPrivateKey(
@@ -280,8 +280,8 @@ public class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnect
             );
             
             // 从Base58重建密钥对
-            PrivateKey privateKey = DIDGeneratorUtil.decodePrivateKeyFromBase58(privateKeyBase58);
-            PublicKey publicKey = DIDGeneratorUtil.decodePublicKeyFromBase58(keyData.getPublicKeyBase58());
+            PrivateKey privateKey = SimpleDIDGeneratorUtil.decodePrivateKeyFromBase58(privateKeyBase58);
+            PublicKey publicKey = SimpleDIDGeneratorUtil.decodePublicKeyFromBase58(keyData.getPublicKeyBase58());
             
             return new KeyPair(publicKey, privateKey);
             
