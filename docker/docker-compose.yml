@@ -383,10 +383,12 @@ services:
       - bsin-nacos-standalone-3.0
       - bsin-redis-3.0
       - bsin-mysql-3.0
+      - bsin-seata-3.0
     links:
       - bsin-nacos-standalone-3.0
       - bsin-redis-3.0
       - bsin-mysql-3.0
+      - bsin-seata-3.0
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.20
@@ -411,12 +413,14 @@ services:
       - bsin-nacos-standalone-3.0
       - bsin-redis-3.0
       - bsin-mysql-3.0
+      - bsin-seata-3.0
 #      - bsin-nginx
       - bsin-targe-gateway-admin-3.0
     links:
       - bsin-nacos-standalone-3.0
       - bsin-redis-3.0
       - bsin-mysql-3.0
+      - bsin-seata-3.0
 #      - bsin-nginx
       - bsin-targe-gateway-admin-3.0
     networks:
@@ -520,10 +524,16 @@ services:
       - bsin-redis-3.0
       - bsin-mysql-3.0
       - bsin-targe-gateway-3.0
+      - bsin-server-waas-3.0
+      - bsin-server-oms-3.0
+      - bsin-server-crm-3.0
     links:
       - bsin-redis-3.0
       - bsin-mysql-3.0
       - bsin-targe-gateway-3.0
+      - bsin-server-waas-3.0
+      - bsin-server-oms-3.0
+      - bsin-server-crm-3.0
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.25
