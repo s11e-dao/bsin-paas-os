@@ -49,7 +49,6 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { getSessionStorageInfo, getLocalStorageInfo } from '@/utils/localStorageInfo';
 import WebSocketManager from '@/utils/WebSocketManager';
 import {
-  chatWithCopilot,
   getAppAgent,
   getChatHistoryList,
 } from '../service'
@@ -1117,30 +1116,82 @@ const BsinChatModal = ({ customerInfo }) => {
         chatType: 'chat',
       }
       getChatHistoryList(params).then((res) => {
-        console.log(res?.data)
-        if (res?.code == 0) {
-          let i = 0
-          res?.data.map((historyChat) => {
-            let historyChatTmp = {
-              content: historyChat.message,
-              createAt: historyChat.timestamp,
-              // id: historyChat.sender + customerInfo.customerNo,
-              id: 'ZGxiX2p4',
-              role:
-                historyChat.sender == customerInfo.customerNo
-                  ? 'user'
-                  : 'assistant',
-              updateAt: 1697862243540,
+        console.log('对话历史数据:', res?.data)
+        if (res?.code == 0 && res?.data && res.data.length > 0) {
+          // 按时间排序，确保对话顺序正确
+          const sortedHistory = res.data.sort((a, b) => 
+            new Date(a.createTime).getTime() - new Date(b.createTime).getTime()
+          );
+          
+          // 将历史消息转换为聊天消息格式
+          const historyMessages = sortedHistory.map((historyChat, index) => {
+            let processedContent = historyChat.content;
+            let messageType = 'text';
+            
+            // 如果收到的消息是字符串形式的 JSON，先解析它
+            if (typeof historyChat.content === 'string' && historyChat.content.startsWith('{')) {
+              try {
+                const parsed = JSON.parse(historyChat.content);
+                console.log('历史消息解析后的结构:', parsed);
+                
+                // 检查是否为商品推荐消息（历史消息格式）
+                if (parsed.recommendedInfo && parsed.recommendedInfo.length > 0) {
+                    // 这是商品推荐消息，转换为标准格式
+                    messageType = 'business_message';
+                    processedContent = formatBusinessMessage({
+                        type: '3',
+                        bizType: '1',
+                        description: parsed.description || parsed.topRecommendation,
+                        content: parsed.recommendedInfo
+                    });
+                }
+                // 根据消息类型处理（实时消息格式）
+                else if (parsed.type === '3' && ['1', '2', '3', '4', '5'].includes(parsed.bizType)) {
+                    // 业务消息
+                    messageType = 'business_message';
+                    processedContent = formatBusinessMessage(parsed);
+                } else if (parsed.content) {
+                    // 普通文本消息
+                    processedContent = parsed.content;
+                } else if (parsed.message) {
+                    processedContent = parsed.message;
+                } else {
+                    processedContent = JSON.stringify(parsed, null, 2);
+                }
+              } catch (e) {
+                // 如果不是JSON格式，保持原内容
+                console.log('历史消息：JSON解析失败，保持原样');
+              }
             }
-            let id = historyChat.sender + customerInfo.customerNo + i
-            i++
-            chatData.chats.ZGxiX2p4 = historyChatTmp
-          })
+
+            // 处理转义字符
+            processedContent = processedContent
+                .replace(/\\n/g, '\n')
+                .replace(/\\"/g, '"')
+                .replace(/\\`/g, '`')
+                .replace(/\\\\/g, '\\');
+            
+            return {
+              id: `history_${index}_${historyChat.serialNo}`,
+              message: processedContent,
+              content: processedContent,
+              status: historyChat.roleType === '1' ? 'local' : 'ai',
+              messageType: messageType,
+              originalData: historyChat.content,
+              timestamp: new Date(historyChat.createTime).getTime(),
+              createAt: new Date(historyChat.createTime).getTime(),
+              updateAt: new Date(historyChat.createTime).getTime()
+            };
+          });
+          
+          // 将历史消息添加到当前消息列表
+          setMessages(prevMessages => [...historyMessages, ...prevMessages]);
+          console.log('已加载历史消息:', historyMessages.length, '条');
         }
       })
       console.log(chatData)
     })
-  }, [defaultMerchantNo, customerInfo?.customerNo]);
+  }, [defaultMerchantNo, customerInfo?.customerNo, formatBusinessMessage]);
 
   const onChatModalClose = useCallback(() => {
     setChatStatus(false)
