@@ -501,6 +501,7 @@ const BsinChatModal = ({ customerInfo }) => {
 
   const [connected, setConnected] = useState(false);
   const [chatStatus, setChatStatus] = useState(false);
+  const [defaultCopilot, setDefaultCopilot] = useState({});
 
   // 动态获取token并创建WebSocketManager
   const [wsManager, setWsManager] = useState(null);
@@ -515,8 +516,6 @@ const BsinChatModal = ({ customerInfo }) => {
       console.log('WebSocketManager已创建');
     }
   }, []); // 只在组件挂载时执行一次
-
-  const connectionKey = "bolei" + "/0"; // 定义统一的连接key
 
   // 格式化业务消息 - 使用useCallback优化
   const formatBusinessMessage = useCallback((data) => {
@@ -579,6 +578,7 @@ const BsinChatModal = ({ customerInfo }) => {
       return;
     }
     
+    const connectionKey = (defaultCopilot as any)?.serialNo + "/0"; // 定义统一的连接key
     console.log('开始WebSocket连接:', connectionKey);
     
     // 添加清理标志，防止内存泄漏
@@ -718,24 +718,26 @@ const BsinChatModal = ({ customerInfo }) => {
             clearTimeout(reconnectTimer);
             reconnectTimer = null;
           }
-          if (wsManager) {
+          if (wsManager && (defaultCopilot as any)?.serialNo) {
+            const connectionKey = (defaultCopilot as any).serialNo + "/0";
             wsManager.close(connectionKey); // 组件卸载时关闭 WebSocket 连接
           }
       };
-  }, [chatStatus, wsManager, connectionKey, formatBusinessMessage]);
+  }, [chatStatus, wsManager, (defaultCopilot as any)?.serialNo, formatBusinessMessage]);
 
   // ==================== Event ====================
   // 发送消息
   // 发送消息 - 使用useCallback优化
   const onSubmit = useCallback((nextContent) => {
-      if (wsManager) {
+      if (wsManager && (defaultCopilot as any)?.serialNo) {
+        const connectionKey = (defaultCopilot as any).serialNo + "/0";
         wsManager.sendMessage(connectionKey, { type: 'ai_chat', content: nextContent });
       } else {
-        console.error('WebSocketManager未初始化');
+        console.error('WebSocketManager未初始化或defaultCopilot未设置');
       }
       onRequest(nextContent);
       setContent('');
-  }, [wsManager, connectionKey, onRequest]);
+  }, [wsManager, (defaultCopilot as any)?.serialNo, onRequest]);
 
   const globalSearchClick = useCallback(() => {
       setGlobalSearch(prev => !prev);
@@ -1069,7 +1071,7 @@ const BsinChatModal = ({ customerInfo }) => {
 
 
   const [chatModalOpen, setChatModalOpen] = useState(false)
-  const [defaultCopilot, setDefaultCopilot] = useState({})
+  
 
   let chatData = {
     chats: {},
@@ -1100,7 +1102,7 @@ const BsinChatModal = ({ customerInfo }) => {
 
     let params = {
       merchantNo: defaultMerchantNo,
-      type: '1',
+      agentType: '1',
     }
     //TODO: 获取租户对应的appAgent
     getAppAgent(params).then((res) => {
