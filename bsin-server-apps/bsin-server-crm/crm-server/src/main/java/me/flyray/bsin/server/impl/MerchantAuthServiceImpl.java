@@ -246,8 +246,6 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
 
         boolean isApproved = "1".equals(auditFlag);
 
-
-        
         // 更新对应的审核状态
         switch (auditType) {
             case "baseInfo":
@@ -335,6 +333,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
                 log.error("商户功能开通失败: {}", e.getMessage());
             }
         }
+
     }
 
     /**
