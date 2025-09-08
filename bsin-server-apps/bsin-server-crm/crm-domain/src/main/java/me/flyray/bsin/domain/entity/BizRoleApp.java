@@ -52,6 +52,7 @@ public class BizRoleApp implements Serializable {
     /**
      * 应用ID：自动生成
      * 微信公众号的appID：公众号通过此ID检索公众号参数 设置企业微信的corpId：企业微信通过此ID检索公众号参数
+     * 个人微信号
      */
     private String appId;
 
@@ -65,8 +66,11 @@ public class BizRoleApp implements Serializable {
     /** 企业号ID，数据库统一字段为appId，此字段废弃 */
     private String corpId;
 
-    /** 设置企业微信应用的AgentId */
-    private Integer agentId;
+    /** 设置企业微信应用的AgentId
+     *
+     * 渠道应用绑定的智能体ID
+     * */
+    private String agentId;
 
     /**
      * 接入应用的渠道
@@ -89,6 +93,7 @@ public class BizRoleApp implements Serializable {
     /**
      * 通知地址：
      * 微信支付成功回调地址
+     * 个人微信登录QR url
      */
     private String notifyUrl;
 
@@ -96,6 +101,11 @@ public class BizRoleApp implements Serializable {
      * 应用状态: 0 待审核 1 审核通过
      */
     private String status;
+
+    /**
+     * 应用状态: 1-online 0-offline
+     */
+    private String appStatus;
 
     /**
      * 应用描述

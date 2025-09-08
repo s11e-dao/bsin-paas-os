@@ -19,12 +19,13 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="del_flag" jdbcType="INTEGER" property="delFlag"/>
         <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="app_status" jdbcType="VARCHAR" property="appStatus"/>
         <result column="notify_url" jdbcType="VARCHAR" property="notifyUrl"/>
     </resultMap>
 
     <sql id="baseColumnList">
         serial_no,tenant_id,biz_role_type_no,app_name,app_id,corp_id,app_secret,aes_key
-        ,app_channel,token,app_description,status
+        ,app_channel,token,app_description,status,app_status
         ,create_time,update_time
     </sql>
 
@@ -75,7 +76,8 @@
                create_time,
                update_time,
                del_flag,
-               status
+               status,
+               app_status
         from crm_biz_role_app
         where del_flag = 0
         <if test="tenantId != null and tenantId != ''">
@@ -101,7 +103,8 @@
                create_time,
                update_time,
                del_flag,
-               status
+               status,
+               app_status
         from crm_biz_role_app
         where del_flag = 0 and app_id = #{appId}
     </select>

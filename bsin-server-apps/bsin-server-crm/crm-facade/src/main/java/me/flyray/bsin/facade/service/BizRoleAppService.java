@@ -1,8 +1,10 @@
 package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import me.flyray.bsin.domain.entity.BizRoleApp;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,4 +36,19 @@ public interface BizRoleAppService {
      */
     public IPage<?> getPageList(Map<String, Object> requestMap);
 
+
+    /**
+     * 个人微信agent登录
+     */
+    public BizRoleApp wechatAgentLogin(Map<String, Object> requestMap) throws JsonProcessingException;
+
+    /**
+     * 更新微信登录状态
+     */
+    public BizRoleApp updateWechatLoginStatus(Map<String, Object> requestMap) throws JsonProcessingException;
+
+    /**
+     * 获取微信登录列表
+     */
+    public List<?> getWechatLoginList(Map<String, Object> requestMap);
 }
