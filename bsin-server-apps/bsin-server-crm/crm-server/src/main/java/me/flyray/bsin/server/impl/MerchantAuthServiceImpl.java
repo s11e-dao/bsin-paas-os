@@ -82,7 +82,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
     @ShenyuDubboClient("/apply")
     @Override
     @Transactional
-    public void apply(Map<String, Object> requestMap) {
+    public MerchantAuth apply(Map<String, Object> requestMap) {
         String tenantId =  MapUtils.getString(requestMap, "tenantId");
         String merchantNo =  MapUtils.getString(requestMap, "merchantNo");
         // 1是注册之后正常认证进件 2是注册同时进件
@@ -218,6 +218,7 @@ public class MerchantAuthServiceImpl implements MerchantAuthService {
         } else {
             merchantAuthMapper.updateById(merchantAuth);
         }
+        return merchantAuth;
     }
 
     /**
