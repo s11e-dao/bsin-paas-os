@@ -666,6 +666,31 @@ services:
       compose-network: #指定network
         ipv4_address: 172.28.0.33
 
+  # server-apps-golang
+  bsin-server-golang-3.0:
+    container_name: bsin-server-golang-3.0
+    image: bsin-server-golang:3.0.0
+    build:
+      context: ./app-service/server-apps/golang
+      dockerfile: dockerfile
+    # env_file:
+    #   - ./app-service/server-apps/golang/.env
+    ports:
+      - "8125:8125"
+    volumes:
+      - ./app-service/server-apps/golang/runtime:/opt/app/bsin-server-golang/runtime
+    depends_on:
+      - bsin-redis-3.0
+      # - bsin-mysql-3.0
+      # - bsin-targe-gateway-3.0
+    links:
+      - bsin-redis-3.0
+      # - bsin-mysql-3.0
+      # - bsin-targe-gateway-3.0
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.34
+
   # apps-container
   bsin-apps-container-3.0:
     container_name: bsin-apps-container-3.0

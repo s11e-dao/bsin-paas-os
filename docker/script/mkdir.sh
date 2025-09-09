@@ -37,6 +37,7 @@ mkdir -p ./app-service/server-apps/workflow-admin/jar
 mkdir -p ./app-service/server-apps/oms/jar
 mkdir -p ./app-service/server-apps/community/jar
 mkdir -p ./app-service/server-apps/iot/jar
+mkdir -p ./app-service/server-apps/golang/conf
 
 
 mkdir -p ./app-service/targe-gateway/jar

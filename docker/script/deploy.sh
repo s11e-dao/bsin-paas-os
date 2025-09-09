@@ -38,7 +38,7 @@ gateway(){
 }
 # 启动server-apps模块
 server_apps(){
-	docker-compose up -d bsin-server-upms-3.0 bsin-server-waas-3.0 bsin-server-crm-3.0 bsin-server-app-agent-3.0 bsin-server-oms-3.0 bsin-server-community-3.0 bsin-server-brms-3.0 #bsin-server-iot-3.0 bsin-server-workflow-3.0 bsin-server-workflow-admin-3.0
+	docker-compose up -d bsin-server-upms-3.0 bsin-server-waas-3.0 bsin-server-crm-3.0 bsin-server-app-agent-3.0 bsin-server-oms-3.0 bsin-server-community-3.0 bsin-server-brms-3.0 bsin-server-golang-3.0 #bsin-server-iot-3.0 bsin-server-workflow-3.0 bsin-server-workflow-admin-3.0
 }
 
 # 启动upms模块
@@ -81,6 +81,10 @@ workflow_admin(){
 # 启动iot模块
 iot(){
 	docker-compose up -d bsin-server-iot-3.0
+}
+# 启动golang模块
+golang(){
+	docker-compose up -d bsin-server-golang-3.0
 }
 # 启动ui-apps模块
 ui_apps(){
@@ -139,6 +143,9 @@ case "$1" in
 ;;
 "iot")
 	iot
+;;
+"golang")
+	golang
 ;;
 "ui_apps")
 	ui_apps

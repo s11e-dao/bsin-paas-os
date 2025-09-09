@@ -1,0 +1,35 @@
+# 使用Ubuntu基础镜像以支持glibc
+FROM ubuntu:20.04
+
+# 设置非交互模式
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 安装必要的运行时依赖
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    tzdata \
+    && rm -rf /var/lib/apt/lists/*
+
+# 设置时区
+ENV TZ=Asia/Shanghai
+
+# 创建应用目录
+RUN mkdir -p /opt/app/bsin-server-golang
+RUN mkdir -p /opt/app/bsin-server-golang/conf
+RUN mkdir -p /opt/app/bsin-server-golang/runtime
+
+# 设置工作目录
+WORKDIR /opt/app/bsin-server-golang
+
+# 复制deploy目录下的二进制文件和配置文件
+COPY ./bsin-server-golang ./bsin-server-golang
+COPY ./conf/ ./conf/
+
+# 给二进制文件添加执行权限
+RUN chmod +x bsin-server-golang
+
+# 暴露端口（根据配置文件中的端口）
+EXPOSE 8125
+
+# 启动应用
+ENTRYPOINT ["./bsin-server-golang"]

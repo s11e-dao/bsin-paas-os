@@ -7,33 +7,33 @@ bash ./script/mkdir.sh
 
 
 
-mkdir -p ./app-service/server-apps/app-agent/jar
-mkdir -p ./app-service/server-apps/brms/jar
-mkdir -p ./app-service/server-apps/crm/jar
-mkdir -p ./app-service/server-apps/http/jar
-mkdir -p ./app-service/server-apps/file/jar
-mkdir -p ./app-service/server-apps/search/jar
-mkdir -p ./app-service/server-apps/upms/jar
-mkdir -p ./app-service/server-apps/waas/jar
-mkdir -p ./app-service/server-apps/workflow/jar
-mkdir -p ./app-service/server-apps/workflow-admin/jar
-mkdir -p ./app-service/server-apps/oms/jar
-mkdir -p ./app-service/server-apps/community/jar
-mkdir -p ./app-service/server-apps/iot/jar
+# mkdir -p ./app-service/server-apps/app-agent/jar
+# mkdir -p ./app-service/server-apps/brms/jar
+# mkdir -p ./app-service/server-apps/crm/jar
+# mkdir -p ./app-service/server-apps/http/jar
+# mkdir -p ./app-service/server-apps/file/jar
+# mkdir -p ./app-service/server-apps/search/jar
+# mkdir -p ./app-service/server-apps/upms/jar
+# mkdir -p ./app-service/server-apps/waas/jar
+# mkdir -p ./app-service/server-apps/workflow/jar
+# mkdir -p ./app-service/server-apps/workflow-admin/jar
+# mkdir -p ./app-service/server-apps/oms/jar
+# mkdir -p ./app-service/server-apps/community/jar
+# mkdir -p ./app-service/server-apps/iot/jar
 
 
-mkdir -p ./app-service/targe-gateway/jar
-mkdir -p ./app-service/targe-gateway-admin/jar
+# mkdir -p ./app-service/targe-gateway/jar
+# mkdir -p ./app-service/targe-gateway-admin/jar
 
-mkdir -p ./app-service/apps-container/dist/
-mkdir -p ./app-service/ui-apps/ai-agent/dist/
-mkdir -p ./app-service/ui-apps/decision-admin/dist/
-mkdir -p ./app-service/ui-apps/upms/dist/
-mkdir -p ./app-service/ui-apps/waas/dist/
-mkdir -p ./app-service/ui-apps/bigan/dist/
-mkdir -p ./app-service/ui-apps/doc/dist/
-mkdir -p ./app-service/ui-apps/sea-condition/dist/
-mkdir -p ./app-service/ui-apps/data-warehouse/dist/
+# mkdir -p ./app-service/apps-container/dist/
+# mkdir -p ./app-service/ui-apps/ai-agent/dist/
+# mkdir -p ./app-service/ui-apps/decision-admin/dist/
+# mkdir -p ./app-service/ui-apps/upms/dist/
+# mkdir -p ./app-service/ui-apps/waas/dist/
+# mkdir -p ./app-service/ui-apps/bigan/dist/
+# mkdir -p ./app-service/ui-apps/doc/dist/
+# mkdir -p ./app-service/ui-apps/sea-condition/dist/
+# mkdir -p ./app-service/ui-apps/data-warehouse/dist/
 
 echo "2. create dir finished!!!"
 
@@ -63,6 +63,8 @@ cp -rvf ../bsin-server-apps/bsin-server-waas/waas-server/target/waas-server-3.0.
 cp -rvf ../bsin-server-apps/bsin-server-workflow/workflow-server/target/workflow-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/workflow/jar/workflow-server-3.0.0-SNAPSHOT.jar
 cp -rvf ../bsin-server-apps/bsin-server-workflow-admin/workflow-admin-server/target/workflow-admin-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/workflow-admin/jar/workflow-admin-server-3.0.0-SNAPSHOT.jar
 cp -rvf ../bsin-server-apps/bsin-server-iot/iot-server/target/iot-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/iot/jar/iot-server-3.0.0-SNAPSHOT.jar
+cp -rvf ../bsin-server-apps/bsin-server-golang/deploy/conf/* ./app-service/server-apps/golang/conf/
+cp -rvf ../bsin-server-apps/bsin-server-golang/deploy/bsin-server-golang ./app-service/server-apps/golang/bsin-server-golang
 
 
 echo "5.3 begin copy .env files"
