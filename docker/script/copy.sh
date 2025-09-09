@@ -83,6 +83,7 @@ cp ../.env ./app-service/server-apps/iot -rvf
 cp ../.env ./app-service/targe-gateway-admin -rvf
 cp ../.env ./app-service/targe-gateway -rvf
 cp ../.env ./middleware/nacos -rvf
+cp ../.env ./app-service/server-apps/golang -rvf
 
 
 echo "5.3 begin copy .sql files"

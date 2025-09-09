@@ -172,3 +172,5 @@ docker/middleware/mysql/db/sqls/
 docker/middleware/nacos/logs/
 
 docker/middleware/elasticsearch/data/
+
+docker/app-service/server-apps/golang/bsin-server-golang
