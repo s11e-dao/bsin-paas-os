@@ -10,7 +10,7 @@
 [submodule "bsin-server-apps/bsin-server-iot"]
 	path = bsin-server-apps/bsin-server-iot
 	url = https://gitee.com/s11e-DAO/bsin-server-iot.git
-[submodule "bsin-server-go-any"]
+[submodule "bsin-server-apps/bsin-server-go-any"]
 	path = bsin-server-apps/bsin-server-go-any
 	url = https://gitee.com/s11e-DAO/bsin-server-go-any.git
 [submodule "bsin-app-scaffold"]
