@@ -189,6 +189,89 @@ bsin:
       gateway: http://ipfs.s11edao.com/ipfs/
       api: http://ipfsadmin.s11edao.com/api/v0
 
+  # 区块链相关
+  blockchain:
+    # 是否启用区块链监听服务（默认：false - 不开启）
+    enabled: false  # 需要显式设置为 true 才会启用
+    # 是否在启动失败时继续运行应用（默认：true - 继续运行）
+    continue-on-failure: true
+    # 支持的链列表（默认：空列表 - 不开启任何链）
+    supported-chains:
+      - conflux
+      - bsc
+      - polygon
+
+    # 各链的 RPC 端点配置
+    chains:
+      conflux:
+        rpc-url: "https://test.confluxrpc.com"
+        enabled: true  # 需要显式设置为 true（默认：false）
+        # 监听配置 - 每条链独立配置（默认：全部禁用）
+        block-listening-enabled: true  # 需要显式设置为 true
+        transaction-listening-enabled: true  # 需要显式设置为 true
+        contract-event-listening-enabled: true  # 需要显式设置为 true
+        # 链基本信息
+        name: "Conflux Testnet"
+        symbol: "CFX"
+        mainnet: false
+        confirmations: 12
+        connection-pool-size: 10
+        # 连接配置
+        connection-timeout-ms: 10000
+        read-timeout-ms: 30000
+        retry-count: 3
+        retry-interval-ms: 5000
+
+      bsc:
+        rpc-url: "https://bsc-testnet.public.blastapi.io"
+        enabled: true
+        # 监听配置 - 只启用区块监听
+        block-listening-enabled: true
+        transaction-listening-enabled: false
+        contract-event-listening-enabled: false
+        # 链基本信息
+        name: "BSC Testnet"
+        symbol: "BNB"
+        mainnet: false
+        confirmations: 3
+        connection-pool-size: 15
+
+      polygon:
+        rpc-url: "https://polygon-mumbai.public.blastapi.io"
+        enabled: false  # 完全禁用该链
+        # 监听配置 - 即使配置了监听，由于 enabled: false，也不会启动监听
+        block-listening-enabled: true
+        transaction-listening-enabled: true
+        contract-event-listening-enabled: true
+        # 链基本信息
+        name: "Polygon Mumbai"
+        symbol: "MATIC"
+        mainnet: false
+        confirmations: 5
+        connection-pool-size: 12
+
+        # 示例：只启用合约事件监听的链
+        # ethereum:
+        #   rpc-url: "https://eth-goerli.public.blastapi.io"
+        #   enabled: true
+        #   block-listening-enabled: false
+        #   transaction-listening-enabled: false
+        #   contract-event-listening-enabled: true  # 只监听合约事件
+        #   name: "Ethereum Goerli"
+        #   symbol: "ETH"
+        #   mainnet: false
+
+      # 如果需要使用 Ankr 等服务，可以配置 API 密钥
+      # bsc-ankr:
+      #   rpc-url: "https://rpc.ankr.com/bsc_testnet_chapel"
+      #   enabled: false  # 暂时禁用，避免 API 密钥问题
+      #   api-key: "your-ankr-api-key"
+      #   name: "BSC Testnet (Ankr)"
+      #   symbol: "BNB"
+      #   mainnet: false
+      #   confirmations: 3
+      #   connection-pool-size: 10
+
 dromara:
   x-file-storage: #文件存储配置
     default-platform: ${DROMARA_X_FILE_STORAGE_DEFAULT_PLATFORM} #默认使用的存储平台
@@ -231,3 +314,5 @@ seata:
 #      username: ${BSIN_NACOS_USERNAME}
 #      password: ${BSIN_NACOS_PASSWORD}
 #      data-id: seataServer.properties
+
+

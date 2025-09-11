@@ -84,13 +84,7 @@ public enum ContractProtocolStandards {
         return desc;
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
+    // 移除 setter 方法，保持枚举的不可变性
 
 
     /**

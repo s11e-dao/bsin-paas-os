@@ -32,6 +32,8 @@ import java.util.List;
 import conflux.web3j.Web3;
 import io.reactivex.disposables.Disposable;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import java.util.function.Consumer;
 
 /**
  * @author bolei
@@ -40,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 
 @Slf4j
+@Service
 public class BsinBlockChainEventListonService {
 
     /**
@@ -64,6 +67,67 @@ public class BsinBlockChainEventListonService {
 //        // 打印生成的以太坊地址
 //        System.out.println("Eth Address: " + address);
 //    }
+
+    /**
+     * 监听合约事件
+     * @param chainEnv 链环境
+     * @param contractAddress 合约地址
+     * @param eventName 事件名称
+     * @param eventHandler 事件处理器
+     * @return 订阅对象，用于取消订阅
+     */
+    public Disposable listenContractEvent(String chainEnv, String contractAddress, String eventName, Consumer<Log> eventHandler) {
+        try {
+            // 根据链环境获取Web3j实例
+            Web3j web3j = getWeb3jInstance(chainEnv);
+            
+            // 设置过滤条件
+            BigInteger blockNumber = web3j.ethBlockNumber().send().getBlockNumber().subtract(new BigInteger("1000"));
+            EthFilter ethFilter = new EthFilter(DefaultBlockParameter.valueOf(blockNumber),
+                    DefaultBlockParameterName.LATEST, contractAddress);
+            
+            // 监听指定的事件
+            Event event = new Event(eventName, Arrays.<TypeReference<?>>asList(
+                    new TypeReference<Address>(true) {},
+                    new TypeReference<Address>(true) {},
+                    new TypeReference<Uint256>(true) {}
+            ));
+            ethFilter.addSingleTopic(EventEncoder.encode(event));
+            
+            return web3j.ethLogFlowable(ethFilter).subscribe(eventHandler::accept);
+            
+        } catch (Exception e) {
+            log.error("监听合约事件失败: chain={}, contract={}, event={}", chainEnv, contractAddress, eventName, e);
+            throw new RuntimeException("监听合约事件失败", e);
+        }
+    }
+    
+    /**
+     * 监听区块事件
+     * @param chainEnv 链环境
+     * @param blockHandler 区块处理器
+     * @return 订阅对象，用于取消订阅
+     */
+    public Disposable listenBlockEvent(String chainEnv, Consumer<BigInteger> blockHandler) {
+        try {
+            Web3j web3j = getWeb3jInstance(chainEnv);
+            return web3j.blockFlowable(false).subscribe(block -> {
+                blockHandler.accept(block.getBlock().getNumber());
+            });
+        } catch (Exception e) {
+            log.error("监听区块事件失败: chain={}", chainEnv, e);
+            throw new RuntimeException("监听区块事件失败", e);
+        }
+    }
+    
+    /**
+     * 根据链环境获取Web3j实例
+     */
+    private Web3j getWeb3jInstance(String chainEnv) {
+        // 这里应该根据链环境返回对应的Web3j实例
+        // 暂时返回一个默认实例，实际实现需要根据配置获取
+        return Web3j.build(new HttpService("https://rpc.ankr.com/bsc_testnet_chapel"));
+    }
 
     /**
      * 解析log返回的data

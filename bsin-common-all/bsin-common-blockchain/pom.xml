@@ -83,7 +83,12 @@
             <version>${project.version}</version>
         </dependency>
         
-
+        <!-- Micrometer 监控指标 -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+            <version>1.10.5</version>
+        </dependency>
         
         <dependency>
             <groupId>junit</groupId>

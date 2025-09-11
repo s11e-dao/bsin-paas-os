@@ -1,0 +1,282 @@
+# 区块链模块配置示例
+
+# ===========================================
+# 默认配置（所有功能都禁用）
+# ===========================================
+# 如果不配置任何区块链相关配置，默认行为：
+# - bsin.blockchain.enabled = false（不启用区块链服务）
+# - bsin.blockchain.supported-chains = []（不开启任何链）
+# - 每个链的 block-listening-enabled = false（不监听区块）
+# - 每个链的 transaction-listening-enabled = false（不监听交易）
+# - 每个链的 contract-event-listening-enabled = false（不监听合约事件）
+# - 每个链的 enabled = false（每条链都禁用）
+#
+# 这意味着默认情况下：
+# ✅ 不会启动任何区块链监听服务
+# ✅ 不会尝试连接任何区块链网络
+# ✅ 不会监听区块、交易或合约事件
+# ✅ 不会产生 ethereum/tron 等未实现链的错误
+# ✅ 不会消耗不必要的系统资源
+
+# ===========================================
+# 默认禁用配置示例（推荐）
+# ===========================================
+# 如果不需要区块链功能，可以不配置任何区块链相关配置
+# 或者显式禁用：
+# bsin:
+#   blockchain:
+#     enabled: false  # 明确禁用区块链服务
+
+# ===========================================
+# 启用区块链服务的配置示例（需要显式配置）
+# ===========================================
+bsin:
+  blockchain:
+    # 是否启用区块链监听服务（默认：false - 不开启）
+    enabled: true  # 需要显式设置为 true 才会启用
+    # 是否在启动失败时继续运行应用（默认：true - 继续运行）
+    continue-on-failure: true
+    
+    # MPC 网关配置
+    gateway-url: http://127.0.0.1:8125
+    
+    # Gas 费用配置
+    gas-fee:
+      address: '0x5d90A41098954fd90eb70805b3E9442AF9E91625'  # 资金归结gas fee账号
+      amount: 1000
+    # 支持的链列表（默认：空列表 - 不开启任何链）
+    supported-chains:
+      - conflux
+      - bsc
+      - polygon
+    
+    # 各链的 RPC 端点配置
+    chains:
+       conflux:
+         rpc-url: "https://test.confluxrpc.com"
+         enabled: true  # 需要显式设置为 true（默认：false）
+         # 监听配置 - 每条链独立配置（默认：全部禁用）
+         block-listening-enabled: true  # 需要显式设置为 true
+         transaction-listening-enabled: true  # 需要显式设置为 true
+         contract-event-listening-enabled: true  # 需要显式设置为 true
+         # 链基本信息
+         name: "Conflux Testnet"
+         symbol: "CFX"
+         mainnet: false
+         confirmations: 12
+         connection-pool-size: 10
+         # 连接配置
+         connection-timeout-ms: 10000
+         read-timeout-ms: 30000
+         retry-count: 3
+         retry-interval-ms: 5000
+         # 交易监听配置
+         web-socket-url: "wss://test.confluxrpc.com/ws"  # WebSocket 连接 URL
+         transaction-listen-history-blocks: 100  # 监听历史区块数
+         enable-transaction-cache: true  # 启用交易缓存防重复
+         transaction-cache-expire-seconds: 300  # 交易缓存过期时间（秒）
+       bsc:
+        rpc-url: "https://bsc-testnet.public.blastapi.io"
+        enabled: true
+        # 监听配置 - 只启用区块监听
+        block-listening-enabled: true
+        transaction-listening-enabled: false
+        contract-event-listening-enabled: false
+        # 链基本信息
+        name: "BSC Testnet"
+        symbol: "BNB"
+        mainnet: false
+        confirmations: 3
+        connection-pool-size: 15
+        # 交易监听配置
+        web-socket-url: "wss://bsc-testnet.public.blastapi.io/ws"
+        transaction-listen-history-blocks: 50
+        enable-transaction-cache: true
+        transaction-cache-expire-seconds: 180
+        
+       polygon:
+        rpc-url: "https://polygon-mumbai.public.blastapi.io"
+        enabled: false  # 完全禁用该链
+        # 监听配置 - 即使配置了监听，由于 enabled: false，也不会启动监听
+        block-listening-enabled: true
+        transaction-listening-enabled: true
+        contract-event-listening-enabled: true
+        # 链基本信息
+        name: "Polygon Mumbai"
+        symbol: "MATIC"
+        mainnet: false
+        confirmations: 5
+        connection-pool-size: 12
+        # 交易监听配置
+        web-socket-url: "wss://polygon-mumbai.public.blastapi.io/ws"
+        transaction-listen-history-blocks: 50
+        enable-transaction-cache: true
+        transaction-cache-expire-seconds: 180
+        
+      # 示例：只启用合约事件监听的链
+      # ethereum:
+      #   rpc-url: "https://eth-goerli.public.blastapi.io"
+      #   enabled: true
+      #   block-listening-enabled: false
+      #   transaction-listening-enabled: false
+      #   contract-event-listening-enabled: true  # 只监听合约事件
+      #   name: "Ethereum Goerli"
+      #   symbol: "ETH"
+      #   mainnet: false
+        
+      # 如果需要使用 Ankr 等服务，可以配置 API 密钥
+      # bsc-ankr:
+      #   rpc-url: "https://rpc.ankr.com/bsc_testnet_chapel"
+      #   enabled: false  # 暂时禁用，避免 API 密钥问题
+      #   api-key: "your-ankr-api-key"
+      #   name: "BSC Testnet (Ankr)"
+      #   symbol: "BNB"
+      #   mainnet: false
+      #   confirmations: 3
+      #   connection-pool-size: 10
+
+# 开发环境配置示例
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+bsin:
+  blockchain:
+    enabled: true
+    continue-on-failure: true
+    chains:
+      # 开发环境只启用测试链
+      conflux:
+        enabled: true
+        rpc-url: "https://test.confluxrpc.com"
+      bsc:
+        enabled: true
+        rpc-url: "https://bsc-testnet.public.blastapi.io"
+      polygon:
+        enabled: false  # 开发环境禁用 Polygon
+
+# 生产环境配置示例
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+bsin:
+  blockchain:
+    enabled: true
+    continue-on-failure: false  # 生产环境严格模式
+    chains:
+      # 生产环境配置
+      conflux:
+        enabled: true
+        rpc-url: "https://main.confluxrpc.com"
+        mainnet: true
+        confirmations: 12
+      bsc:
+        enabled: true
+        rpc-url: "https://bsc-dataseed.binance.org"
+        mainnet: true
+        confirmations: 3
+      polygon:
+        enabled: true
+        rpc-url: "https://polygon-rpc.com"
+        mainnet: true
+        confirmations: 5
+
+# 禁用区块链服务配置示例
+---
+spring:
+  config:
+    activate:
+      on-profile: blockchain-disabled
+
+bsin:
+  blockchain:
+    enabled: false  # 完全禁用区块链服务
+
+# 解决 ethereum/tron 未实现错误的配置示例
+---
+spring:
+  config:
+    activate:
+      on-profile: safe-mode
+
+bsin:
+  blockchain:
+    enabled: true
+    continue-on-failure: true
+    # 只配置支持的链，避免 ethereum/tron 报错
+    supported-chains:
+      - conflux
+      - bsc
+      - polygon
+    chains:
+      # 只配置已实现的链，避免 ethereum/tron 报错
+      conflux:
+        enabled: true
+        rpc-url: "https://test.confluxrpc.com"
+        block-listening-enabled: true
+        transaction-listening-enabled: false
+        contract-event-listening-enabled: false
+        
+      bsc:
+        enabled: true
+        rpc-url: "https://bsc-testnet.public.blastapi.io"
+        block-listening-enabled: true
+        transaction-listening-enabled: false
+        contract-event-listening-enabled: false
+        
+      polygon:
+        enabled: false  # 如果连接有问题，可以禁用
+        
+      # 不配置 ethereum 和 tron，避免"暂未开放的链"错误
+      # ethereum:
+      #   enabled: false
+      # tron:
+      #   enabled: false
+
+# 避免 ethereum/tron 错误的完整配置示例
+---
+spring:
+  config:
+    activate:
+      on-profile: avoid-unimplemented-chains
+
+bsin:
+  blockchain:
+    enabled: true
+    continue-on-failure: true
+    # 关键：只列出已实现的链，不要包含 ethereum、tron 等未实现的链
+    supported-chains:
+      - conflux
+      - bsc
+      - polygon
+    chains:
+      conflux:
+        enabled: true
+        rpc-url: "https://test.confluxrpc.com"
+      bsc:
+        enabled: true
+        rpc-url: "https://bsc-testnet.public.blastapi.io"
+      polygon:
+        enabled: false  # 如果连接有问题可以禁用
+
+# ===========================================
+# 默认禁用配置（推荐用于大多数场景）
+# ===========================================
+---
+spring:
+  config:
+    activate:
+      on-profile: default
+
+# 默认情况下，不配置任何区块链相关配置
+# 区块链服务将完全禁用，不会启动任何监听服务
+
+# 如果需要显式禁用，可以添加：
+# bsin:
+#   blockchain:
+#     enabled: false  # 明确禁用区块链服务

@@ -53,7 +53,7 @@ public enum ChainType {
      * Json 枚举序列化
      */
     @JsonCreator
-    public static ChainType getInstanceById(Integer id) {
+    public static ChainType getInstanceById(String id) {
         if (id == null) {
             return null;
         }
@@ -63,6 +63,35 @@ public enum ChainType {
             }
         }
         return null;
+    }
+    
+    /**
+     * 根据链名称获取链类型
+     */
+    public static ChainType fromChainName(String chainName) {
+        if (chainName == null) {
+            return null;
+        }
+        for (ChainType chainType : values()) {
+            if (chainType.getCode().equalsIgnoreCase(chainName)) {
+                return chainType;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * 检查是否为 EVM 兼容链
+     */
+    public boolean isEVMCompatible() {
+        return this == ETHEREUM || this == BSC || this == POLYGON || this == EVM;
+    }
+    
+    /**
+     * 检查是否为测试网络
+     */
+    public boolean isTestnet() {
+        return this.getCode().toLowerCase().contains("test");
     }
 
 }
