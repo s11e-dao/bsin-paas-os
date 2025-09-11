@@ -671,33 +671,92 @@ services:
     container_name: bsin-server-golang-3.0
     image: bsin-server-golang:3.0.0
     build:
-      context: ./app-service/server-apps/golang
+      context: ./app-service/server-apps/go-any/server-golang
       dockerfile: dockerfile
     env_file:
-      - ./app-service/server-apps/golang/.env
-#    environment:
-#      # 微信相关配置
-#      - BSIN_BASE_URL=http://bsin-targe-gateway-admin-3.0:9095
-#      - BSIN_CUSTOMER_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MDM0MjkyNDMsInRlbmFudElkIjoiMTczNzg0MTI3NDI3MjIyMzIzMiIsImV4cCI6MTcwMzUxNTY0MywiaWF0IjoxNzAzNDI5MjQzLCJ1c2VybmFtZSI6IjE2Njc1NTg4MzgxIn0.50Ka741JX3tdV3BqgaFck5Eyn2v7khDUbl1PJQMXUuc
-#      - WECHAT_VERSION=1.0
-#      # Redis配置
-#      - REDIS_ADDR=bsin-redis-3.0:6379
-#      - REDIS_PASSWORD=123456
-#      # 服务配置
-#      - RUN_MODE=release
+      - ./app-service/server-apps/go-any/server-golang/.env
     ports:
       - "8125:8125"
     volumes:
-      - ./app-service/server-apps/golang/runtime:/opt/app/bsin-server-golang/runtime
+      - ./app-service/server-apps/go-any/server-golang/runtime:/opt/app/bsin-server-golang/runtime
     depends_on:
       - bsin-redis-3.0
-      - bsin-targe-gateway-admin-3.0
     links:
       - bsin-redis-3.0
-      - bsin-targe-gateway-admin-3.0
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.34
+
+  bsin-server-mpc-client1-3.0:
+    container_name: bsin-server-mpc-client1-3.0
+    image: bsin-server-mpc-client1:3.0.0
+    build:
+      context: ./app-service/server-apps/go-any/mpc-client/client1
+      dockerfile: dockerfile
+    ports:
+      - "8225:8225"
+    volumes:
+      - ./app-service/server-apps/go-any/mpc-client/client1/runtime:/opt/app/bsin-server-mpc-client1/runtime
+    depends_on:
+      - bsin-server-golang-3.0
+    links:
+      - bsin-server-golang-3.0
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.35
+  
+  bsin-server-mpc-client2-3.0:
+    container_name: bsin-server-mpc-client2-3.0
+    image: bsin-server-mpc-client2:3.0.0
+    build:
+      context: ./app-service/server-apps/go-any/mpc-client/client2
+      dockerfile: dockerfile
+    ports:
+      - "8226:8226"
+    volumes:
+      - ./app-service/server-apps/go-any/mpc-client/client2/runtime:/opt/app/bsin-server-mpc-client2/runtime
+    depends_on:
+      - bsin-server-golang-3.0
+    links:
+      - bsin-server-golang-3.0
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.36
+
+  bsin-server-mpc-client3-3.0:
+    container_name: bsin-server-mpc-client3-3.0
+    image: bsin-server-mpc-client3:3.0.0
+    build:
+      context: ./app-service/server-apps/go-any/mpc-client/client3
+      dockerfile: dockerfile
+    ports:
+      - "8227:8227"
+    volumes:
+      - ./app-service/server-apps/go-any/mpc-client/client3/runtime:/opt/app/bsin-server-mpc-client3/runtime
+    depends_on:
+      - bsin-server-golang-3.0
+    links:
+      - bsin-server-golang-3.0
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.37
+  bsin-server-mpc-client4-3.0:
+    container_name: bsin-server-mpc-client4-3.0
+    image: bsin-server-mpc-client4:3.0.0
+    build:
+      context: ./app-service/server-apps/go-any/mpc-client/client4
+      dockerfile: dockerfile
+    ports:
+      - "8228:8228"
+    volumes:
+      - ./app-service/server-apps/go-any/mpc-client/client4/runtime:/opt/app/bsin-server-mpc-client4/runtime
+    depends_on:
+      - bsin-server-golang-3.0
+    links:
+      - bsin-server-golang-3.0
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.38
 
   # apps-container
   bsin-apps-container-3.0:

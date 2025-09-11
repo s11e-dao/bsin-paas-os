@@ -1,0 +1,22 @@
+# # 使用 latest 镜像运行程序
+FROM golang:latest
+# RUN apk --no-cache add ca-certificates
+ 
+RUN mkdir -p /opt/app/conf
+RUN mkdir -p /opt/app/bsin-server-mpc-client1/runtime
+# 设置工作目录
+WORKDIR /opt/app/bsin-server-mpc-client1
+
+# 从构建阶段复制二进制文件
+COPY ./bsin-server-mpc-client1 ./bsin-server-mpc-client1
+# 拷贝配置文件
+COPY ./conf/* /opt/app/conf/
+
+# 给二进制文件添加执行权限
+RUN chmod +x bsin-server-mpc-client1
+
+# 暴露端口并运行程序
+EXPOSE 8225
+# 设置工作目录
+WORKDIR /opt/app/bsin-server-mpc-client1
+CMD ["./bsin-server-mpc-client1"]
