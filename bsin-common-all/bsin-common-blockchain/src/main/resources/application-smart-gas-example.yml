@@ -1,0 +1,188 @@
+# 智能Gas费管理和连接池管理配置示例
+# 这个文件展示了如何配置智能Gas费管理和Web3j连接池
+
+bsin:
+  blockchain:
+    enabled: true
+    continue-on-failure: true
+    
+    # MPC 网关配置
+    gateway-url: http://127.0.0.1:8125
+    
+    # Gas 费用配置
+    gas-fee:
+      address: '0x5d90A41098954fd90eb70805b3E9442AF9E91625'
+      amount: 1000
+    
+    # 支持的链列表
+    supported-chains:
+      - conflux
+      - bsc
+      - polygon
+      - ethereum
+    
+    # 各链配置
+    chains:
+      # Conflux 配置
+      conflux:
+        rpc-url: "https://test.confluxrpc.com"
+        websocket-url: "wss://test.confluxrpc.com/ws"
+        enabled: true
+        block-listening-enabled: true
+        transaction-listening-enabled: true
+        contract-event-listening-enabled: true
+        
+        # 链特定参数
+        chain-id: "1"
+        symbol: "CFX"
+        decimals: 18
+        explorer-url: "https://testnet.confluxscan.io"
+        support-eip1559: false  # Conflux 暂不支持 EIP-1559
+        
+        # Gas 配置
+        gas-price: "1000000000"  # 1 Gwei
+        gas-limit: "21000"
+        native-gas-limit: "21000"
+        confirmation-blocks: 12
+        
+        # 自定义参数
+        custom-params:
+          network: "testnet"
+          timeout: "30000"
+      
+      # BSC 配置
+      bsc:
+        rpc-url: "https://bsc-dataseed.bnbchain.org"
+        websocket-url: "wss://bsc-ws-node.nariox.org:443/ws"
+        enabled: true
+        block-listening-enabled: true
+        transaction-listening-enabled: true
+        contract-event-listening-enabled: true
+        
+        # 链特定参数
+        chain-id: "56"
+        symbol: "BNB"
+        decimals: 18
+        explorer-url: "https://bscscan.com"
+        support-eip1559: false  # BSC 暂不支持 EIP-1559
+        
+        # Gas 配置
+        gas-price: "5000000000"  # 5 Gwei
+        gas-limit: "21000"
+        native-gas-limit: "21000"
+        confirmation-blocks: 15
+        
+        # 自定义参数
+        custom-params:
+          network: "mainnet"
+          timeout: "30000"
+      
+      # Polygon 配置
+      polygon:
+        rpc-url: "https://polygon-rpc.com"
+        websocket-url: "wss://polygon-ws-node.nariox.org:443/ws"
+        enabled: true
+        block-listening-enabled: true
+        transaction-listening-enabled: true
+        contract-event-listening-enabled: true
+        
+        # 链特定参数
+        chain-id: "137"
+        symbol: "MATIC"
+        decimals: 18
+        explorer-url: "https://polygonscan.com"
+        support-eip1559: true  # Polygon 支持 EIP-1559
+        
+        # Gas 配置
+        gas-price: "30000000000"  # 30 Gwei
+        gas-limit: "21000"
+        native-gas-limit: "21000"
+        confirmation-blocks: 12
+        max-fee-per-gas: "40000000000"  # 40 Gwei
+        max-priority-fee-per-gas: "3000000000"  # 3 Gwei
+        
+        # 自定义参数
+        custom-params:
+          network: "mainnet"
+          timeout: "30000"
+      
+      # Ethereum 配置
+      ethereum:
+        rpc-url: "https://mainnet.infura.io/v3/YOUR_PROJECT_ID"
+        websocket-url: "wss://mainnet.infura.io/ws/v3/YOUR_PROJECT_ID"
+        enabled: true
+        block-listening-enabled: true
+        transaction-listening-enabled: true
+        contract-event-listening-enabled: true
+        
+        # 链特定参数
+        chain-id: "1"
+        symbol: "ETH"
+        decimals: 18
+        explorer-url: "https://etherscan.io"
+        support-eip1559: true  # Ethereum 支持 EIP-1559
+        
+        # Gas 配置
+        gas-price: "20000000000"  # 20 Gwei
+        gas-limit: "21000"
+        native-gas-limit: "21000"
+        confirmation-blocks: 12
+        max-fee-per-gas: "30000000000"  # 30 Gwei
+        max-priority-fee-per-gas: "2000000000"  # 2 Gwei
+        
+        # 自定义参数
+        custom-params:
+          network: "mainnet"
+          timeout: "30000"
+
+# 日志配置
+logging:
+  level:
+    me.flyray.bsin.blockchain.service.SmartGasFeeService: DEBUG
+    me.flyray.bsin.blockchain.service.Web3jConnectionPoolService: DEBUG
+    me.flyray.bsin.blockchain.service.BlockchainTransactionService: INFO
+
+---
+# 开发环境配置
+spring:
+  profiles: dev
+
+bsin:
+  blockchain:
+    chains:
+      conflux:
+        rpc-url: "https://test.confluxrpc.com"
+        support-eip1559: false
+      bsc:
+        rpc-url: "https://data-seed-prebsc-1-s2.bnbchain.org:8545"
+        support-eip1559: false
+      polygon:
+        rpc-url: "https://rpc-mumbai.maticvigil.com"
+        websocket-url: "wss://rpc-mumbai.maticvigil.com/ws"
+        support-eip1559: true
+      ethereum:
+        rpc-url: "https://goerli.infura.io/v3/YOUR_PROJECT_ID"
+        websocket-url: "wss://goerli.infura.io/ws/v3/YOUR_PROJECT_ID"
+        support-eip1559: true
+
+---
+# 生产环境配置
+spring:
+  profiles: prod
+
+bsin:
+  blockchain:
+    chains:
+      # 生产环境使用更保守的配置
+      conflux:
+        rpc-url: "https://confluxrpc.com"
+        confirmation-blocks: 20
+      bsc:
+        rpc-url: "https://bsc-dataseed.bnbchain.org"
+        confirmation-blocks: 20
+      polygon:
+        rpc-url: "https://polygon-rpc.com"
+        confirmation-blocks: 20
+      ethereum:
+        rpc-url: "https://mainnet.infura.io/v3/YOUR_PROJECT_ID"
+        confirmation-blocks: 20

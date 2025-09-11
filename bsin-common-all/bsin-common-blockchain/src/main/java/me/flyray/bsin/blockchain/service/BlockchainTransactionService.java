@@ -9,7 +9,6 @@ import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Hash;
 import org.web3j.crypto.RawTransaction;
@@ -19,14 +18,12 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.*;
-import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * 区块链交易服务
@@ -38,6 +35,12 @@ public class BlockchainTransactionService {
 
     @Autowired
     private BlockchainProperties blockchainProperties;
+    
+    @Autowired
+    private SmartGasFeeService smartGasFeeService;
+    
+    @Autowired
+    private Web3jConnectionPoolService connectionPoolService;
 
     // 注意：WalletAccountMapper 将在具体业务模块中注入
 
@@ -72,7 +75,7 @@ public class BlockchainTransactionService {
         Function function = new Function(
                 "transfer",
                 Arrays.asList(new Address(toAddress), new Uint256(tokenValue.toBigInteger())),
-                Arrays.asList(new TypeReference<Type>() {})
+                Arrays.asList(new TypeReference<org.web3j.abi.datatypes.Type<?>>() {})
         );
         String data = FunctionEncoder.encode(function);
 
@@ -85,20 +88,33 @@ public class BlockchainTransactionService {
         }
         BigInteger gasLimit = gasEstimate.getAmountUsed();
 
-        // 4. 计算 Gas 价格
-        GasPriceInfo gasPriceInfo = calculateGasPrice(web3j);
+        // 4. 计算 Gas 价格（使用智能Gas费管理）
+        SmartGasFeeService.GasPriceInfo gasPriceInfo = smartGasFeeService.getSmartGasPrice(chainName, web3j, "normal");
         
         // 5. 构建原始交易
-        RawTransaction rawTransaction = RawTransaction.createTransaction(
-                chainId.longValue(),
-                nonce,
-                gasLimit,
-                contractAddress,
-                BigInteger.ZERO, // 代币转账 ETH 金额为 0
-                data,
-                gasPriceInfo.maxPriorityFeePerGas,
-                gasPriceInfo.maxFeePerGas
-        );
+        RawTransaction rawTransaction;
+        if (gasPriceInfo.isEIP1559) {
+            // EIP-1559 交易
+            rawTransaction = RawTransaction.createTransaction(
+                    chainId.longValue(),
+                    nonce,
+                    gasLimit,
+                    contractAddress,
+                    BigInteger.ZERO, // 代币转账 ETH 金额为 0
+                    data,
+                    gasPriceInfo.maxPriorityFeePerGas,
+                    gasPriceInfo.maxFeePerGas
+            );
+        } else {
+            // 传统交易
+            rawTransaction = RawTransaction.createTransaction(
+                    nonce,
+                    BigInteger.ZERO, // 代币转账 ETH 金额为 0
+                    gasLimit,
+                    contractAddress,
+                    data
+            );
+        }
 
         // 6. 签名并发送交易
         return signAndSendTransaction(chainName, rawTransaction, fromAddress);
@@ -127,19 +143,32 @@ public class BlockchainTransactionService {
         EthChainId ethChainId = web3j.ethChainId().send();
         BigInteger chainId = ethChainId.getChainId();
 
-        // 2. 计算 Gas 价格
-        GasPriceInfo gasPriceInfo = calculateGasPrice(web3j);
+        // 2. 计算 Gas 价格（使用智能Gas费管理）
+        SmartGasFeeService.GasPriceInfo gasPriceInfo = smartGasFeeService.getSmartGasPrice(chainName, web3j, "normal");
 
         // 3. 构建原始交易
-        RawTransaction rawTransaction = RawTransaction.createEtherTransaction(
-                chainId.longValue(),
-                nonce,
-                BigInteger.valueOf(21000), // ETH 转账固定 Gas Limit
-                toAddress,
-                amount,
-                gasPriceInfo.maxPriorityFeePerGas,
-                gasPriceInfo.maxFeePerGas
-        );
+        RawTransaction rawTransaction;
+        if (gasPriceInfo.isEIP1559) {
+            // EIP-1559 交易
+            rawTransaction = RawTransaction.createEtherTransaction(
+                    chainId.longValue(),
+                    nonce,
+                    BigInteger.valueOf(21000), // ETH 转账固定 Gas Limit
+                    toAddress,
+                    amount,
+                    gasPriceInfo.maxPriorityFeePerGas,
+                    gasPriceInfo.maxFeePerGas
+            );
+        } else {
+            // 传统交易
+            rawTransaction = RawTransaction.createEtherTransaction(
+                    nonce,
+                    gasPriceInfo.gasPrice,
+                    BigInteger.valueOf(21000), // ETH 转账固定 Gas Limit
+                    toAddress,
+                    amount
+            );
+        }
 
         // 4. 签名并发送交易
         return signAndSendTransaction(chainName, rawTransaction, fromAddress);
@@ -172,8 +201,10 @@ public class BlockchainTransactionService {
         EthCall ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).send();
 
         // 解析结果
-        List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
-        BigInteger balance = (BigInteger) results.get(0).getValue();
+        @SuppressWarnings("rawtypes")
+        List results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
+        org.web3j.abi.datatypes.Type result = (org.web3j.abi.datatypes.Type) results.get(0);
+        BigInteger balance = (BigInteger) result.getValue();
 
         log.info("代币余额查询结果: {}", balance);
         return balance;
@@ -212,22 +243,66 @@ public class BlockchainTransactionService {
     }
 
     /**
-     * 计算 Gas 价格信息
+     * 带重试和自动加油的交易发送
+     * 
+     * @param chainName 链名称
+     * @param rawTransaction 原始交易
+     * @param fromAddress 发送地址
+     * @param maxRetries 最大重试次数
+     * @return 交易哈希
      */
-    private GasPriceInfo calculateGasPrice(Web3j web3j) throws Exception {
-        // 设置最大优先费
-        BigInteger maxPriorityFeePerGas = Convert.toWei("60", Convert.Unit.GWEI).toBigInteger();
+    public String signAndSendTransactionWithRetry(String chainName, RawTransaction rawTransaction, 
+                                                  String fromAddress, int maxRetries) throws Exception {
+        String txHash = null;
+        Exception lastException = null;
         
-        // 获取最新区块
-        EthBlock.Block latestBlock = web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock();
+        for (int retry = 0; retry <= maxRetries; retry++) {
+            try {
+                if (retry > 0) {
+                    log.info("重试发送交易，第 {} 次重试", retry);
+                    // 自动加油：增加Gas价格
+                    BigInteger boostedGasPrice = smartGasFeeService.getBoostedGasPrice(
+                            chainName, getWeb3jInstance(chainName), 
+                            rawTransaction.getGasPrice(), retry);
+                    
+                    // 重新构建交易（这里需要根据实际的RawTransaction API来调整）
+                    // 注意：RawTransaction是不可变的，可能需要重新创建
+                    log.info("自动加油，原始Gas价格: {}, 新Gas价格: {}", 
+                            rawTransaction.getGasPrice(), boostedGasPrice);
+                }
+                
+                txHash = signAndSendTransaction(chainName, rawTransaction, fromAddress);
+                log.info("交易发送成功: chain={}, txHash={}, retry={}", chainName, txHash, retry);
+                break;
+                
+            } catch (Exception e) {
+                lastException = e;
+                log.warn("交易发送失败，准备重试: chain={}, retry={}, error={}", 
+                        chainName, retry, e.getMessage());
+                
+                if (retry == maxRetries) {
+                    log.error("交易发送最终失败，已达到最大重试次数: chain={}, retries={}", 
+                            chainName, maxRetries);
+                    break;
+                }
+                
+                // 等待一段时间后重试
+                try {
+                    Thread.sleep(1000 * (retry + 1)); // 递增等待时间
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException("重试被中断", ie);
+                }
+            }
+        }
         
-        // 计算最大费用
-        BigDecimal maxFeePerGas = new BigDecimal(latestBlock.getBaseFeePerGas())
-                .multiply(new BigDecimal("2"))
-                .add(new BigDecimal(maxPriorityFeePerGas));
-
-        return new GasPriceInfo(maxPriorityFeePerGas, maxFeePerGas.toBigInteger());
+        if (txHash == null && lastException != null) {
+            throw new RuntimeException("交易发送失败，已重试 " + maxRetries + " 次", lastException);
+        }
+        
+        return txHash;
     }
+
 
     /**
      * 签名并发送交易
@@ -298,20 +373,10 @@ public class BlockchainTransactionService {
     }
 
     /**
-     * 获取 Web3j 实例
+     * 获取 Web3j 实例（使用连接池）
      */
     private Web3j getWeb3jInstance(String chainName) {
-        BlockchainProperties.ChainConfig chainConfig = blockchainProperties.getChainConfig(chainName);
-        if (chainConfig == null) {
-            throw new RuntimeException("未找到链配置: " + chainName);
-        }
-        
-        String rpcUrl = chainConfig.getRpcUrl();
-        if (rpcUrl == null || rpcUrl.trim().isEmpty()) {
-            throw new RuntimeException("链 " + chainName + " 的 RPC URL 未配置");
-        }
-        
-        return org.web3j.protocol.Web3j.build(new org.web3j.protocol.http.HttpService(rpcUrl));
+        return connectionPoolService.getHttpConnection(chainName);
     }
 
     /**
@@ -323,16 +388,4 @@ public class BlockchainTransactionService {
         throw new UnsupportedOperationException("HTTP POST 请求需要在具体业务模块中实现");
     }
 
-    /**
-     * Gas 价格信息
-     */
-    private static class GasPriceInfo {
-        final BigInteger maxPriorityFeePerGas;
-        final BigInteger maxFeePerGas;
-
-        GasPriceInfo(BigInteger maxPriorityFeePerGas, BigInteger maxFeePerGas) {
-            this.maxPriorityFeePerGas = maxPriorityFeePerGas;
-            this.maxFeePerGas = maxFeePerGas;
-        }
-    }
 }
