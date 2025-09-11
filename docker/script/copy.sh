@@ -79,6 +79,11 @@ cp ../../jiujiu-paas/jiujiu-paas-server/bsin-server-oms/script/bsin-oms.sql ./mi
 cp ../../jiujiu-paas/jiujiu-paas-server/bsin-server-community/script/bsin-community.sql ./middleware/mysql/db/sqls/ -rvf
 cp ../bsin-server-apps/bsin-server-workflow/script/bsin-workflow.sql ./middleware/mysql/db/sqls/ -rvf
 cp ../bsin-server-apps/bsin-server-workflow-admin/script/bsin-workflow-admin.sql ./middleware/mysql/db/sqls/ -rvf
+cp ../bsin-server-apps/bsin-server-go-any/script/bsin-mpc.sql ./middleware/mysql/db/sqls/ -rvf
+cp ../bsin-server-apps/bsin-server-go-any/script/bsin-mpc-client1.sql ./middleware/mysql/db/sqls/ -rvf
+cp ../bsin-server-apps/bsin-server-go-any/script/bsin-mpc-client2.sql ./middleware/mysql/db/sqls/ -rvf
+cp ../bsin-server-apps/bsin-server-go-any/script/bsin-mpc-client3.sql ./middleware/mysql/db/sqls/ -rvf
+cp ../bsin-server-apps/bsin-server-go-any/script/bsin-mpc-client4.sql ./middleware/mysql/db/sqls/ -rvf
 
 ##
 cp -rvf /home/leonard/ssd12/bsin-paas/prj/sea/bsin-ui-sea-condition/dist/* ./app-service/ui-apps/sea-condition/dist/

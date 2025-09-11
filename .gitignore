@@ -174,3 +174,13 @@ docker/middleware/nacos/logs/
 docker/middleware/elasticsearch/data/
 
 docker/app-service/server-apps/golang/bsin-server-golang
+
+docker/app-service/server-apps/go-any/mpc-client/client1/bsin-server-mpc-client1
+
+docker/app-service/server-apps/go-any/mpc-client/client2/bsin-server-mpc-client2
+
+docker/app-service/server-apps/go-any/mpc-client/client3/bsin-server-mpc-client3
+
+docker/app-service/server-apps/go-any/mpc-client/client4/bsin-server-mpc-client4
+
+docker/app-service/server-apps/go-any/server-golang/bsin-server-golang
