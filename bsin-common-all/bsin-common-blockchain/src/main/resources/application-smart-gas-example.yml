@@ -138,9 +138,9 @@ bsin:
 # 日志配置
 logging:
   level:
-    me.flyray.bsin.blockchain.service.SmartGasFeeService: DEBUG
-    me.flyray.bsin.blockchain.service.Web3jConnectionPoolService: DEBUG
-    me.flyray.bsin.blockchain.service.BlockchainTransactionService: INFO
+    me.flyray.bsin.blockchain.transaction.SmartGasFeeService: DEBUG
+    me.flyray.bsin.blockchain.connection.Web3jConnectionPoolService: DEBUG
+    me.flyray.bsin.blockchain.transaction.BlockchainTransactionService: INFO
 
 ---
 # 开发环境配置
