@@ -156,4 +156,12 @@ export default [
     width: 160,
     hideInSearch: true,
   },
+  {
+    title: '操作',
+    width: 100,
+    hideInSearch: true,
+    dataIndex: 'action',
+    fixed: 'right',
+  },
+
 ];

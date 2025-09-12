@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from '@umijs/max';
 import {
   Form,
   Input,
@@ -8,8 +9,11 @@ import {
   Select,
   Popconfirm,
   Descriptions,
+  Divider,
+  QRCode,
 } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import type { FormInstance } from 'antd';
 import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './data';
@@ -19,14 +23,36 @@ import TableTitle from '../../../components/TableTitle';
 export default () => {
   const { TextArea } = Input;
   const { Option } = Select;
+  const location = useLocation();
   // 控制新增模态框
   const [isTemplateModal, setIsTemplateModal] = useState(false);
   // 查看模态框
   const [isViewTemplateModal, setIsViewTemplateModal] = useState(false);
   // 查看
   const [isViewRecord, setIsViewRecord] = useState({});
+  // 充值模态框
+  const [isRechargeModal, setIsRechargeModal] = useState(false);
+  // 充值信息
+  const [rechargeInfo, setRechargeInfo] = useState({
+    address: '',
+    chainName: '',
+    coin: ''
+  });
   // 获取表单
   const [FormRef] = Form.useForm();
+  // 搜索表单
+  const searchFormRef = React.useRef<FormInstance>();
+
+  // 获取URL参数并填充钱包ID
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const walletSerialNo = urlParams.get('walletSerialNo');
+    if (walletSerialNo && searchFormRef.current) {
+      searchFormRef.current.setFieldsValue({
+        serialNo: walletSerialNo
+      });
+    }
+  }, [location.search]);
 
   /**
    * 以下内容为表格相关
@@ -37,31 +63,15 @@ export default () => {
 
   // 操作行数据 自定义操作行
   const actionRender: any = (text: any, record: any, index: number) => (
-    <ul className="ant-list-item-action" style={{ margin: 0 }}>
-      <li>
-        <a
-          onClick={() => {
+    <div key={record.serialNo}>
+      <a onClick={() => {
             toViewContractTemplate(record);
-          }}
-        >
-          查看
-        </a>
-        <em className="ant-list-item-action-split"></em>
-      </li>
-      <li>
-        <Popconfirm
-          title="确定删除此条模板？"
-          okText="是"
-          cancelText="否"
-          onConfirm={() => {
-            toDelContractTemplate(record);
-          }}
-          // onCancel={cancel}
-        >
-          <a>删除</a>
-        </Popconfirm>
-      </li>
-    </ul>
+          }}>查看</a>
+      <Divider type="vertical" />
+      <a onClick={() => {
+            toRecharge(record);
+          }}>充值</a>
+    </div>
   );
 
   // 自定义数据的表格头部数据
@@ -142,6 +152,19 @@ export default () => {
   };
 
   /**
+   * 充值
+   */
+  const toRecharge = (record) => {
+    const { address, chainName, coin } = record;
+    setRechargeInfo({
+      address,
+      chainName,
+      coin
+    });
+    setIsRechargeModal(true);
+  };
+
+  /**
    * 详情，模板类型对应
    */
   const handleViewRecordOfType = () => {
@@ -183,6 +206,8 @@ export default () => {
         form={{
           ignoreRules: false,
         }}
+        // 关联搜索表单
+        formRef={searchFormRef}
         pagination={{
           pageSize: 10,
         }}
@@ -288,6 +313,49 @@ export default () => {
             {isViewRecord?.description}
           </Descriptions.Item>
         </Descriptions>
+      </Modal>
+      {/* 充值二维码模态框 */}
+      <Modal
+        title="充值"
+        centered
+        open={isRechargeModal}
+        onOk={() => setIsRechargeModal(false)}
+        onCancel={() => setIsRechargeModal(false)}
+        footer={[
+          <Button key="ok" type="primary" onClick={() => setIsRechargeModal(false)}>
+            确定
+          </Button>,
+        ]}
+      >
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+          <div style={{ marginBottom: '16px', fontSize: '14px', fontWeight: 'bold' }}>
+            充值地址
+          </div>
+          <div style={{ marginBottom: '20px', wordBreak: 'break-all', fontSize: '14px', color: '#666' }}>
+            {rechargeInfo.address}
+          </div>
+          <QRCode 
+            value={rechargeInfo.address} 
+            size={200}
+            style={{ margin: '0 auto 20px' }}
+          />
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center',
+            gap: '20px',
+            fontSize: '14px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ color: '#666', marginRight: '6px' }}>链名:</span>
+              <span style={{ fontWeight: 'bold', color: '#1890ff' }}>{rechargeInfo.chainName}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ color: '#666', marginRight: '6px' }}>币种:</span>
+              <span style={{ fontWeight: 'bold', color: '#52c41a' }}>{rechargeInfo.coin}</span>
+            </div>
+          </div>
+        </div>
       </Modal>
     </div>
   );

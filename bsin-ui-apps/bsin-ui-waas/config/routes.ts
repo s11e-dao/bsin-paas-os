@@ -81,7 +81,17 @@ const routes = [
       // **************************币种*************************
       {
         path: '/currency-management',
+        redirect: '/currency-management/currency-list',
+      },
+      // 币种列表
+      {
+        path: '/currency-management/currency-list',
         component: '@/pages/Currency/index',
+      },
+      // 商户币种（商户开通的币种）
+      {
+        path: '/currency-management/merchangt-currency',
+        component: '@/pages/Currency/MerchantCurrency/index',
       },
       // **************************数字资产*************************
       {

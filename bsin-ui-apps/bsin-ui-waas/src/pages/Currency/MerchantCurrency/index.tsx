@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { history } from '@umijs/max';
 import {
   Form,
   Input,
@@ -8,17 +7,24 @@ import {
   Button,
   Select,
   Popconfirm,
-  Descriptions,
   Divider,
+  Descriptions,
 } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './data';
-import { getChainWalletPageList, addChainWallet, deleteChainWallet, getChainWalletDetail } from './service';
+import {
+  getChainCoinPageList,
+  addChainCoin,
+  deleteChainCoin,
+  getChainCoinDetail,
+} from './service';
 import TableTitle from '../../../components/TableTitle';
+import { hex_md5 } from '../../../utils/md5';
 
 export default () => {
+
   const { TextArea } = Input;
   const { Option } = Select;
   // 控制新增模态框
@@ -39,29 +45,21 @@ export default () => {
 
   // 操作行数据 自定义操作行
   const actionRender: any = (text: any, record: any, index: number) => (
-    <div key={record.serialNo}>
-      <a onClick={() => {
-            toViewChainWallet(record);
-          }}>查看</a>
-      <Divider type="vertical" />
-      <a onClick={() => {
-            toViewChainWalletAccount(record);
-          }}>钱包账户</a>
-      <Divider type="vertical" />
-      <Popconfirm
-        title="是否删除此条数据？"
-        onConfirm={() => {
-          toDelChainWallet(record);
-        }}
-        onCancel={() => {
-          message.warning(`取消删除！`);
-        }}
-        okText="是"
-        cancelText="否"
-      >
-        <a>删除</a>
-      </Popconfirm>
-    </div>
+    <div key={record.dictType}>
+        <a onClick={() => toViewContractTemplate(record)}>查看</a>
+        <Divider type="vertical" />
+        <Popconfirm
+          title="是否删除此条数据?"
+          onConfirm={() => toDelContractTemplate(record.id)}
+          onCancel={() => {
+            message.warning(`取消删除`);
+          }}
+          okText="是"
+          cancelText="否"
+        >
+          <a>删除</a>
+        </Popconfirm>
+      </div>
   );
 
   // 自定义数据的表格头部数据
@@ -71,10 +69,6 @@ export default () => {
 
   // Table action 的引用，便于自定义触发
   const actionRef = React.useRef<ActionType>();
-
-  /**
-   * 以下内容为操作相关
-   */
 
   // 新增模板
   const increaseTemplate = () => {
@@ -91,14 +85,18 @@ export default () => {
         // 获取表单结果
         let response = FormRef.getFieldsValue();
         console.log(response);
-        addChainWallet(response).then((res) => {
+        let reqParam = {
+          ...response,
+          password: hex_md5(response.password),
+        };
+        addChainCoin(reqParam).then((res) => {
           console.log('add', res);
-          if (res.code === 0 ) {
+          if (res.code === 0) {
+            message.success('添加成功');
             // 重置输入的表单
             FormRef.resetFields();
-            // 刷新proTable
-            actionRef.current?.reload();
             setIsTemplateModal(false);
+            actionRef.current?.reload();
           } else {
             message.error(`失败： ${res?.message}`);
           }
@@ -119,10 +117,10 @@ export default () => {
   /**
    * 删除模板
    */
-  const toDelChainWallet = async (record) => {
+  const toDelContractTemplate = async (record) => {
     console.log('record', record);
-    let { serialNo } = record;
-    let delRes = await deleteChainWallet({ serialNo });
+    let { customerNo } = record;
+    let delRes = await deleteChainCoin({ customerNo });
     console.log('delRes', delRes);
     if (delRes.code === 0) {
       // 删除成功刷新表单
@@ -133,20 +131,13 @@ export default () => {
   /**
    * 查看详情
    */
-  const toViewChainWallet = async (record) => {
+  const toViewContractTemplate = async (record) => {
+    console.log(record);
     let { serialNo } = record;
-    let viewRes = await getChainWalletDetail({ serialNo });
+    let viewRes = await getChainCoinDetail({ serialNo });
     setIsViewTemplateModal(true);
     console.log('viewRes', viewRes);
     setIsViewRecord(viewRes.data);
-  };
-
-  /**
-   * 查看钱包账户
-   */
-  const toViewChainWalletAccount = (record) => {
-    // 使用路由跳转到链账户页面，传递钱包ID作为参数
-    history.push(`/wallet/chain-account?walletSerialNo=${record.serialNo}`);
   };
 
   /**
@@ -154,15 +145,22 @@ export default () => {
    */
   const handleViewRecordOfType = () => {
     let { type } = isViewRecord;
+    // 客户类型 0、个人客户 1、租户商家客户 2、租户(dao)客户 3、顶级平台商家客户
     let typeText = type;
-    return typeText;
+    if (typeText == '4') {
+      return '超级节点';
+    } else if (typeText == '2') {
+      return '普通节点';
+    } else {
+      return typeText;
+    }
   };
 
   return (
     <div>
       {/* Pro表格 */}
       <ProTable<columnsDataType>
-        headerTitle={<TableTitle title="钱包" />}
+        headerTitle={<TableTitle title="币种列表" />}
         scroll={{ x: 900 }}
         bordered
         // 表头
@@ -171,9 +169,10 @@ export default () => {
         // 请求获取的数据
         request={async (params) => {
           // console.log(params);
-          let res = await getChainWalletPageList({
+          let res = await getChainCoinPageList({
             ...params,
-            // pageNum: params.current,
+            // 租户客户类型
+            type: '3',
           });
           console.log('😒', res);
           const result = {
@@ -203,13 +202,13 @@ export default () => {
             icon={<PlusOutlined />}
             type="primary"
           >
-            新增
+            添加
           </Button>,
         ]}
       />
       {/* 新增合约模板模态框 */}
       <Modal
-        title="新增"
+        title="添加币种"
         centered
         open={isTemplateModal}
         onOk={confirmTemplate}
@@ -221,45 +220,40 @@ export default () => {
           labelCol={{ span: 7 }}
           wrapperCol={{ span: 14 }}
           // 表单默认值
-          initialValues={{ type: '1' }}
+          initialValues={{ productCode: '0' }}
         >
           <Form.Item
-            label="类型"
-            name="type"
-            rules={[{ required: true, message: '请选择协议类型!' }]}
-          >
-            <Select style={{ width: '100%' }}>
-              <Option value="1">首页</Option>
-              <Option value="2">数字资产页</Option>
-              <Option value="3">其他</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="名称"
-            name="title"
-            rules={[{ required: true, message: '请输入名称!' }]}
+            label="币种名称"
+            name="chainCoinName"
+            rules={[{ required: true, message: '请输入币种名称!' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="链接"
-            name="linkUrl"
-            rules={[{ required: true, message: '请输入链接!' }]}
+            label="登录名称"
+            name="username"
+            rules={[{ required: true, message: '请输入登录名称!' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="图片"
-            name="imageUrl"
-            rules={[{ required: true, message: '请输入链接!' }]}
+            label="登录密码"
+            name="password"
+            rules={[{ required: true, message: '请输入登录密码!' }]}
           >
-            <Input />
+            <Input.Password placeholder="请输入登录密码" />
+          </Form.Item>
+          <Form.Item
+            label="节点描述"
+            name="description"
+          >
+            <TextArea />
           </Form.Item>
         </Form>
       </Modal>
       {/* 查看详情模态框 */}
       <Modal
-        title="查看"
+        title="详情"
         width={800}
         centered
         open={isViewTemplateModal}
@@ -267,33 +261,24 @@ export default () => {
         onCancel={() => setIsViewTemplateModal(false)}
       >
         {/* 详情信息 */}
-        <Descriptions title="合约协议信息">
-          <Descriptions.Item label="租户ID">
+        <Descriptions title="节点信息">
+          <Descriptions.Item label="节点号">
             {isViewRecord?.tenantId}
           </Descriptions.Item>
-          <Descriptions.Item label="协议编号">
-            {isViewRecord?.serialNo}
+          <Descriptions.Item label="节点名称">
+            {isViewRecord?.PlatformName}
           </Descriptions.Item>
-          <Descriptions.Item label="合约协议类型">
+          <Descriptions.Item label="节点类型">
             {handleViewRecordOfType()}
           </Descriptions.Item>
-          <Descriptions.Item label="协议名称">
-            {isViewRecord?.templateName}
-          </Descriptions.Item>
-          <Descriptions.Item label="合约协议bytecode">
-            {isViewRecord?.templateBytecode}
-          </Descriptions.Item>
-          <Descriptions.Item label="合约协议abi字符">
-            {isViewRecord?.templateAbi}
+          <Descriptions.Item label="节点描述">
+            {isViewRecord?.description}
           </Descriptions.Item>
           <Descriptions.Item label="创建者">
             {isViewRecord?.createBy}
           </Descriptions.Item>
           <Descriptions.Item label="创建时间">
             {isViewRecord?.createTime}
-          </Descriptions.Item>
-          <Descriptions.Item label="协议描述">
-            {isViewRecord?.description}
           </Descriptions.Item>
         </Descriptions>
       </Modal>
