@@ -90,6 +90,8 @@ public class BsinBlockChainTransactionProcessor {
     
     /**
      * 解析交易数据
+     * 根据不同合约地址和交易方法，进行解析
+     * 可以做一个映射表，根据合约地址和交易方法调用不同的方法进行解析
      */
     private ProcessedTransaction parseTransaction(String chainName, Transaction transaction, 
             TransactionReceipt receipt, Log ethLog) {
@@ -109,22 +111,35 @@ public class BsinBlockChainTransactionProcessor {
         processed.setStatus("0x1".equals(receipt.getStatus()) ? "SUCCESS" : "FAIL");
         processed.setGasUsed(receipt.getCumulativeGasUsed());
         
-        // 解析合约方法调用
-        String input = transaction.getInput();
-        if (input != null && !input.equals("0x")) {
-            ContractMethodInfo methodInfo = parseContractMethod(input);
-            processed.setContractMethod(methodInfo.getMethodName());
-            processed.setMethodId(methodInfo.getMethodId());
-            processed.setMethodInvokeWay(methodInfo.getInvokeWay());
-            processed.setTokenAmount(methodInfo.getTokenAmount());
-            
-            // 如果是 ERC-20 转账，更新接收地址
-            if ("0xa9059cbb".equals(methodInfo.getMethodId())) {
-                String receiverAddress = "0x" + Numeric.cleanHexPrefix(input.substring(34, 74));
-                processed.setToAddress(receiverAddress);
-                log.debug("检测到 ERC-20 转账，接收地址: {}", receiverAddress);
+            // TODO 解析合约方法调用
+            String input = transaction.getInput();
+            if (input != null && !input.equals("0x")) {
+                ContractMethodInfo methodInfo = parseContractMethod(input);
+                processed.setContractMethod(methodInfo.getMethodName());
+                processed.setMethodId(methodInfo.getMethodId());
+                processed.setMethodInvokeWay(methodInfo.getInvokeWay());
+                processed.setTokenAmount(methodInfo.getTokenAmount());
+                
+                // 如果是 ERC-20 转账，更新接收地址
+                if ("0xa9059cbb".equals(methodInfo.getMethodId())) {
+                    String receiverAddress = "0x" + Numeric.cleanHexPrefix(input.substring(34, 74));
+                    processed.setToAddress(receiverAddress);
+                    log.debug("检测到 ERC-20 转账，接收地址: {}", receiverAddress);
+                }
             }
-        }
+            
+            // 如果从 input 解析不到金额，尝试从 Log 的 data 字段解析
+            if (processed.getTokenAmount() == null && ethLog.getData() != null) {
+                try {
+                    String dataHex = ethLog.getData().startsWith("0x") ? 
+                        ethLog.getData().substring(2) : ethLog.getData();
+                    BigInteger amount = new BigInteger(dataHex, 16);
+                    processed.setTokenAmount(amount);
+                    log.debug("从 Log data 字段解析金额: data={}, amount={}", ethLog.getData(), amount);
+                } catch (Exception e) {
+                    log.warn("解析 Log data 字段金额失败: data={}", ethLog.getData(), e);
+                }
+            }
         
         return processed;
     }
