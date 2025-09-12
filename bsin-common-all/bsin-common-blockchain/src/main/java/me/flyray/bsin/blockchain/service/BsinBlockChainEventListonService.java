@@ -94,11 +94,25 @@ public class BsinBlockChainEventListonService {
             ));
             ethFilter.addSingleTopic(EventEncoder.encode(event));
             
-            return web3j.ethLogFlowable(ethFilter).subscribe(eventHandler::accept);
+            return web3j.ethLogFlowable(ethFilter).subscribe(
+                eventLog -> {
+                    try {
+                        eventHandler.accept(eventLog);
+                    } catch (Exception e) {
+                        log.error("处理合约事件时发生错误: chain={}, contract={}, event={}, error={}", 
+                                chainEnv, contractAddress, eventName, e.getMessage(), e);
+                    }
+                },
+                error -> {
+                    log.error("监听合约事件发生错误: chain={}, contract={}, event={}, error={}", 
+                            chainEnv, contractAddress, eventName, error.getMessage(), error);
+                }
+            );
             
         } catch (Exception e) {
             log.error("监听合约事件失败: chain={}, contract={}, event={}", chainEnv, contractAddress, eventName, e);
-            throw new RuntimeException("监听合约事件失败", e);
+            // 返回一个空的 Disposable，避免阻塞应用启动
+            return io.reactivex.disposables.Disposables.empty();
         }
     }
     
@@ -111,12 +125,22 @@ public class BsinBlockChainEventListonService {
     public Disposable listenBlockEvent(String chainEnv, Consumer<BigInteger> blockHandler) {
         try {
             Web3j web3j = getWeb3jInstance(chainEnv);
-            return web3j.blockFlowable(false).subscribe(block -> {
-                blockHandler.accept(block.getBlock().getNumber());
-            });
+            return web3j.blockFlowable(false).subscribe(
+                block -> {
+                    try {
+                        blockHandler.accept(block.getBlock().getNumber());
+                    } catch (Exception e) {
+                        log.error("处理区块事件时发生错误: chain={}, error={}", chainEnv, e.getMessage(), e);
+                    }
+                },
+                error -> {
+                    log.error("监听区块事件发生错误: chain={}, error={}", chainEnv, error.getMessage(), error);
+                }
+            );
         } catch (Exception e) {
             log.error("监听区块事件失败: chain={}", chainEnv, e);
-            throw new RuntimeException("监听区块事件失败", e);
+            // 返回一个空的 Disposable，避免阻塞应用启动
+            return io.reactivex.disposables.Disposables.empty();
         }
     }
     

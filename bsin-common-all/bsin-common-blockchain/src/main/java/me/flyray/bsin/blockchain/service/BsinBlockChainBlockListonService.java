@@ -34,9 +34,13 @@ public class BsinBlockChainBlockListonService {
             Web3j web3j = getWeb3jInstance(chainEnv);
             return web3j.blockFlowable(false).subscribe(
                 block -> {
-                    BigInteger blockNumber = block.getBlock().getNumber();
-                    log.info("监听到新区块: chain={}, blockNumber={}", chainEnv, blockNumber);
-                    blockHandler.accept(blockNumber);
+                    try {
+                        BigInteger blockNumber = block.getBlock().getNumber();
+                        log.info("监听到新区块: chain={}, blockNumber={}", chainEnv, blockNumber);
+                        blockHandler.accept(blockNumber);
+                    } catch (Exception e) {
+                        log.error("处理新区块时发生错误: chain={}, error={}", chainEnv, e.getMessage(), e);
+                    }
                 },
                 error -> {
                     log.error("监听新区块发生错误: chain={}, error={}", chainEnv, error.getMessage(), error);
@@ -61,8 +65,12 @@ public class BsinBlockChainBlockListonService {
             Web3j web3j = getWeb3jInstance(chainEnv);
             return web3j.pendingTransactionFlowable().subscribe(
                 txHash -> {
-                    log.info("监听到待确认交易: chain={}, txHash={}", chainEnv, txHash);
-                    transactionHandler.accept(String.valueOf(txHash));
+                    try {
+                        log.info("监听到待确认交易: chain={}, txHash={}", chainEnv, txHash);
+                        transactionHandler.accept(String.valueOf(txHash));
+                    } catch (Exception e) {
+                        log.error("处理待确认交易时发生错误: chain={}, error={}", chainEnv, e.getMessage(), e);
+                    }
                 },
                 error -> {
                     log.error("监听待确认交易发生错误: chain={}, error={}", chainEnv, error.getMessage(), error);

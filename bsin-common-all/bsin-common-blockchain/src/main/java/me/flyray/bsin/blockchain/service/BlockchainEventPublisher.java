@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.web3j.protocol.core.methods.response.Log;
 
 import java.math.BigInteger;
 import java.util.Map;
@@ -114,8 +113,12 @@ public class BlockchainEventPublisher {
     public void stopListening(String key) {
         Disposable subscription = subscriptions.remove(key);
         if (subscription != null && !subscription.isDisposed()) {
-            subscription.dispose();
-            log.info("停止监听: {}", key);
+            try {
+                subscription.dispose();
+                log.info("停止监听: {}", key);
+            } catch (Exception e) {
+                log.warn("停止监听时发生异常: key={}, error={}", key, e.getMessage());
+            }
         }
     }
     
@@ -124,8 +127,13 @@ public class BlockchainEventPublisher {
      */
     public void stopAllListening() {
         subscriptions.forEach((key, subscription) -> {
-            if (!subscription.isDisposed()) {
-                subscription.dispose();
+            try {
+                if (subscription != null && !subscription.isDisposed()) {
+                    subscription.dispose();
+                    log.debug("已停止监听: {}", key);
+                }
+            } catch (Exception e) {
+                log.warn("停止监听时发生异常: key={}, error={}", key, e.getMessage());
             }
         });
         subscriptions.clear();
