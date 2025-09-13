@@ -198,7 +198,7 @@ export default () => {
     <div>
       {/* Pro表格 */}
       <ProTable<columnsDataType>
-        headerTitle={<TableTitle title="元数据模板" />}
+        headerTitle={<TableTitle title="DID身份" />}
         scroll={{ x: 900 }}
         bordered
         // 表头
@@ -300,34 +300,46 @@ export default () => {
         </Form>
       </Modal>
 
-      {/* 查看元数据模板详情模态框 */}
+      {/* 查看DID身份详情模态框 */}
       <Modal
-        title="查看元数据模板详情"
+        title="查看DID身份详情"
         width={800}
         centered
-        visible={isViewTemplateModal}
+        open={isViewTemplateModal}
         onOk={() => setIsViewTemplateModal(false)}
         onCancel={() => setIsViewTemplateModal(false)}
       >
         {/* 详情信息 */}
-        <Descriptions title="模板详情">
-          <Descriptions.Item label="租户ID">
-            {isViewRecord?.tenantId}
-          </Descriptions.Item>
-          <Descriptions.Item label="模板编号">
+        <Descriptions title="DID身份信息">
+          <Descriptions.Item label="ID">
             {isViewRecord?.serialNo}
           </Descriptions.Item>
-          <Descriptions.Item label="模板名称">
-            {isViewRecord?.templateName}
+          <Descriptions.Item label="DID名称">
+            {isViewRecord?.name}
+          </Descriptions.Item>
+          <Descriptions.Item label="DID标识符">
+            {isViewRecord?.did}
+          </Descriptions.Item>
+          <Descriptions.Item label="符号">
+            {isViewRecord?.symbol}
+          </Descriptions.Item>
+          <Descriptions.Item label="描述">
+            {isViewRecord?.description}
+          </Descriptions.Item>
+          <Descriptions.Item label="业务角色类型">
+            {isViewRecord?.bizRoleType}
+          </Descriptions.Item>
+          <Descriptions.Item label="业务角色编号">
+            {isViewRecord?.bizRoleTypeNo}
+          </Descriptions.Item>
+          <Descriptions.Item label="租户ID">
+            {isViewRecord?.tenantId}
           </Descriptions.Item>
           <Descriptions.Item label="创建时间">
             {isViewRecord?.createTime}
           </Descriptions.Item>
-          <Descriptions.Item label="模板描述">
-            {isViewRecord?.description}
-          </Descriptions.Item>
-          <Descriptions.Item label="模板内容">
-            {isViewRecord?.templateContent}
+          <Descriptions.Item label="更新时间">
+            {isViewRecord?.updateTime}
           </Descriptions.Item>
         </Descriptions>
       </Modal>

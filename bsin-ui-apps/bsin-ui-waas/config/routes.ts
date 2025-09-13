@@ -25,9 +25,23 @@ const routes = [
       // ************************Profile***********************
       {
         path: '/profile',
+        redirect: '/profile/ip-profile',
+      },
+      // IP中心
+      {
+        path: '/profile/ip-profile',
         component: '@/pages/Profile/index',
       },
-      
+      // DID身份
+      {
+        path: '/profile/did-identity',
+        component: '@/pages/Profile/DidIdentity/index',
+      },
+      // pass card
+      {
+        path: '/profile/pass-cards',
+        component: '@/pages/Assets/PassCard/index',
+      },
       // **************************钱包**************************
       {
         path: '/wallet',
@@ -127,11 +141,6 @@ const routes = [
       {
         path: '/assets/bonding-curve',
         component: '@/pages/Assets/BondingCurve/index',
-      },
-      // pass card
-      {
-        path: '/assets/pass-cards',
-        component: '@/pages/Assets/PassCard/index',
       },
       // 资产元数据
       {
