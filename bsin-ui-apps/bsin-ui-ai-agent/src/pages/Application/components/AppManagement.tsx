@@ -309,7 +309,9 @@ export default ({ appConfig, onBack, onChat }: AppManagementProps) => {
       const res = await wechatAgentLogin(params)
       if (res && res.code === 0) {
         if (operationAction === 'loginWechat' && res.data?.notifyUrl) {
-          setQrCodeUrl(res.data.notifyUrl)
+          // 将登录页面URL转换为二维码图片URL
+          const qrCodeImageUrl = res.data.notifyUrl.replace('/qrcode/', '/l/')
+          setQrCodeUrl(qrCodeImageUrl)
           message.success('请使用微信扫描二维码登录')
         } else {
           message.success(operationAction === 'loginWechat' ? '登录成功！' : '退出成功！')
@@ -669,17 +671,29 @@ export default ({ appConfig, onBack, onChat }: AppManagementProps) => {
                 minHeight: '200px',
                 backgroundColor: '#f5f5f5',
                 borderRadius: '8px',
-                padding: '20px'
+                padding: '20px',
+                flexDirection: 'column'
               }}>
                 {loginLoading ? (
                   <Spin size="large" />
                 ) : (
-                  <QRCode
-                    value={qrCodeUrl}
-                    size={200}
-                    status="active"
-                    onRefresh={() => handleLoginAction()}
-                  />
+                  <>
+                    <QRCode
+                      value={qrCodeUrl}
+                      size={200}
+                      status="active"
+                      onRefresh={() => handleLoginAction()}
+                    />
+                    <div style={{ marginTop: '10px' }}>
+                      <Button 
+                        type="link" 
+                        onClick={() => window.open(qrCodeUrl, '_blank')}
+                        style={{ fontSize: '12px' }}
+                      >
+                        点击在新窗口打开二维码
+                      </Button>
+                    </div>
+                  </>
                 )}
               </div>
               <Text type="secondary" style={{ display: 'block', marginTop: '10px', fontSize: '12px' }}>
