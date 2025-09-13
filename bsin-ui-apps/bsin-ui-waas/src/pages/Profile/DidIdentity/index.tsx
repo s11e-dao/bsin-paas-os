@@ -310,7 +310,7 @@ export default () => {
         onCancel={() => setIsViewTemplateModal(false)}
       >
         {/* 详情信息 */}
-        <Descriptions title="DID身份信息">
+        <Descriptions>
           <Descriptions.Item label="ID">
             {isViewRecord?.serialNo}
           </Descriptions.Item>
