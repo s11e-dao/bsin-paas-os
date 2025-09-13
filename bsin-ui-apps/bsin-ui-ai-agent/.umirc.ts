@@ -16,7 +16,8 @@ export default {
     'process.env.biganH5Url': process.env.BSIN_BIGAN_H5_URL || 'http://127.0.0.1:8080/', // biganH5 url local test
     'process.env.tenantAppType': 'ai', //
     'process.env.webScoketUrl': process.env.BSIN_WEBSOCKET_BASE_URL || 'ws://localhost:9195/agent-gateway/',
-    'process.env.contextPath_aiAgent': '/appAgent',  // appAgent应用    
+    'process.env.contextPath_aiAgent': '/appAgent',  // appAgent应用 
+    'process.env.contextPath_crm': '/crm',  // crm应用
   },
   antd: false,
   lessLoader: {

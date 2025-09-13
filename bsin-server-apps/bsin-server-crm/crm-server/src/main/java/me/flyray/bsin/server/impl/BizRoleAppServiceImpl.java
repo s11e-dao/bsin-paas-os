@@ -149,6 +149,7 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
         String tenantId = LoginInfoContextHelper.getTenantId();
         String bizRoleTypeNo = LoginInfoContextHelper.getLoginUser().getBizRoleTypeNo();
         String appName = (String) requestMap.get("appName");
+        String appChannel = (String) requestMap.get("appChannel");
         Object paginationObj =  requestMap.get("pagination");
         Pagination pagination = new Pagination();
         BeanUtil.copyProperties(paginationObj,pagination);
@@ -158,6 +159,7 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
         warapper.eq(BizRoleApp::getTenantId, tenantId);
         warapper.eq(BizRoleApp::getBizRoleTypeNo, bizRoleTypeNo);
         warapper.eq(StringUtils.isNotEmpty(appName), BizRoleApp::getAppName, appName);
+        warapper.eq(StringUtils.isNotEmpty(appChannel), BizRoleApp::getAppChannel, appChannel);
         IPage<BizRoleApp> pageList = bizRoleAppMapper.selectPage(page,warapper);
         return pageList;
     }
