@@ -13,6 +13,7 @@ import {
   PlusOutlined,
 } from '@ant-design/icons'
 import AppManagement from './components/AppManagement'
+import { ChatBox } from 'bsin-agent-ui'
 import { getAppConfig, AppConfig, customerOperationApps, collaborationApps, AppDisplayItem } from './config/appConfigs'
 import './index.less'
 
@@ -68,8 +69,9 @@ const AppCard = ({ app, onConnect, onCustom }: AppCardProps) => {
 
 export default () => {
   // 页面状态管理
-  const [currentView, setCurrentView] = useState('list') // 'list' | 'management'
+  const [currentView, setCurrentView] = useState('list') // 'list' | 'management' | 'chat'
   const [currentAppConfig, setCurrentAppConfig] = useState<AppConfig | null>(null)
+  const [currentApp, setCurrentApp] = useState<any>(null) // 当前聊天的应用
 
   // 处理接入操作
   const handleConnect = (app: AppDisplayItem) => {
@@ -95,12 +97,29 @@ export default () => {
   const handleBackToList = () => {
     setCurrentView('list')
     setCurrentAppConfig(null)
+    setCurrentApp(null)
   }
 
   // 处理聊天功能
   const handleChat = (app: any) => {
-    message.info(`正在打开与${app.appName}的聊天...`)
-    // 这里可以添加具体的聊天逻辑
+    setCurrentApp(app)
+    setCurrentView('chat')
+  }
+
+  // 从聊天返回管理页面
+  const handleBackToManagement = () => {
+    setCurrentView('management')
+  }
+
+  // 如果当前是聊天页面，显示聊天组件
+  if (currentView === 'chat' && currentApp) {
+    return (
+      <ChatBox
+        chatSiderShow={false}
+        currentRecord={currentApp}
+        setCurrentContent={handleBackToManagement}
+      />
+    )
   }
 
   // 如果当前是管理页面，显示应用管理组件

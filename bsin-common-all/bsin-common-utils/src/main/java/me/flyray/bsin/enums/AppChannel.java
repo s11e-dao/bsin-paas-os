@@ -24,10 +24,18 @@ public enum AppChannel {
   /** open(微信开放平台) */
   WX_OPEN("7", "微信开放平台"),
 
-  /** open(微信开放平台) */
+  /** wechat(个人微信) */
   WX_WECHAT("8", "个人微信"),
+
   /** open(微信开放平台) */
-  WX_MENU("9", "微信菜单");
+  WX_MENU("9", "微信菜单"),
+
+  /** open(微信开放平台) */
+  FEISHU("15", "飞书"),
+
+  /** open(微信开放平台) */
+  DINGTALK("20", "钉钉");
+
   private String type;
 
   private String desc;

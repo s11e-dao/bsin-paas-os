@@ -12,6 +12,10 @@ import {
   message,
   Popconfirm,
   Typography,
+  Select,
+  Radio,
+  QRCode,
+  Spin,
 } from 'antd'
 import {
   PlusOutlined,
@@ -26,8 +30,10 @@ import {
   DingdingOutlined,
   CloudOutlined,
   AppstoreOutlined,
+  LoginOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons'
-import { getBizRoleAppPageList, addBizRoleApp, editBizRoleApp, deleteBizRoleApp } from '../service'
+import { getBizRoleAppPageList, addBizRoleApp, editBizRoleApp, deleteBizRoleApp, getAgentPagetList, wechatAgentLogin } from '../service'
 import { AppConfig } from '../config/appConfigs'
 
 const { Meta } = Card
@@ -44,8 +50,59 @@ interface AppItem {
   serialNo: string
   appName: string
   appId: string
-  appDescription: string
+  appDescription: string | null
   status: string
+  appChannel: string
+  appSecret: string
+  token: string | null
+  aesKey: string | null
+  notifyUrl: string | null
+  agentId: string | null
+  corpId: string | null
+  mchId: string | null
+  tenantId: string
+  bizRoleType: string
+  bizRoleTypeNo: string
+  appStatus: string | null
+  createTime: string
+  updateTime: string
+  delFlag: number
+}
+
+interface ApiResponse<T> {
+  code: number
+  data: T
+  message: string
+  pagination?: {
+    pageNum: number
+    pageSize: number
+    totalSize: number
+  }
+}
+
+interface AgentItem {
+  serialNo: string
+  name: string
+  description: string
+  agentType: string | null
+  status: number
+  capabilities: number
+  defaultFlag: number
+  issueFlag: number
+  accessAuthority: number | null
+  createBy: string | null
+  updateBy: string | null
+  createTime: string | null
+  updateTime: string | null
+  tenantId: string
+  bizRoleType: string | null
+  bizRoleTypeNo: string | null
+  roleDefinition: string | null
+  prologue: string | null
+  skills: string
+  choreographyContent: string | null
+  iconUrl: string | null
+  version: string | null
   [key: string]: any
 }
 
@@ -69,29 +126,39 @@ const fieldConfig: Record<string, { label: string; placeholder: string; required
   token: { label: 'Token', placeholder: '请输入Token', required: true },
   aesKey: { label: 'AES密钥', placeholder: '请输入AES密钥', required: true },
   notifyUrl: { label: '回调地址', placeholder: '请输入回调地址', required: true },
-  agentId: { label: '智能体ID', placeholder: '请输入智能体ID（可选）', required: false },
+  agentId: { label: '智能体', placeholder: '请选择智能体（可选）', required: false, type: 'select' },
   appDescription: { label: '应用描述', placeholder: '请输入应用描述', required: true, type: 'textarea' },
 }
 
 export default ({ appConfig, onBack, onChat }: AppManagementProps) => {
   const [appList, setAppList] = useState<AppItem[]>([])
+  const [agentList, setAgentList] = useState<AgentItem[]>([])
   const [loading, setLoading] = useState(false)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [editingApp, setEditingApp] = useState<AppItem | null>(null)
   const [form] = Form.useForm()
+  
+  // 登录相关状态
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false)
+  const [operationAction, setOperationAction] = useState<'loginWechat' | 'logoutWechat'>('loginWechat')
+  const [qrCodeUrl, setQrCodeUrl] = useState<string>('')
+  const [loginLoading, setLoginLoading] = useState(false)
+  const [currentLoginApp, setCurrentLoginApp] = useState<AppItem | null>(null)
 
   // 获取应用列表
   const fetchAppList = async () => {
     setLoading(true)
     try {
       const params = {
-        current: 1,
+        pageNum: 1,
         pageSize: 99,
         appChannel: appConfig.appChannel,
       }
-      const res = await getBizRoleAppPageList(params)
-      if (res && (res.code === '000000' || res.code === 0)) {
-        setAppList(res.data?.records || [])
+      const res: ApiResponse<AppItem[]> = await getBizRoleAppPageList(params)
+      if (res && res.code === 0) {
+        setAppList(res.data || [])
+      } else {
+        message.error(res?.message || '获取应用列表失败')
       }
     } catch (error) {
       console.error('获取应用列表失败:', error)
@@ -101,8 +168,25 @@ export default ({ appConfig, onBack, onChat }: AppManagementProps) => {
     }
   }
 
+  // 获取智能体列表
+  const fetchAgentList = async () => {
+    try {
+      const params = {
+        pageNum: 1,
+        pageSize: 99,
+      }
+      const res: ApiResponse<AgentItem[]> = await getAgentPagetList(params)
+      if (res && res.code === 0) {
+        setAgentList(res.data || [])
+      }
+    } catch (error) {
+      console.error('获取智能体列表失败:', error)
+    }
+  }
+
   useEffect(() => {
     fetchAppList()
+    fetchAgentList()
   }, [appConfig.appChannel])
 
   // 新增/编辑应用
@@ -113,14 +197,26 @@ export default ({ appConfig, onBack, onChat }: AppManagementProps) => {
         appChannel: appConfig.appChannel,
         status: '1', // 审核通过
         appStatus: '1', // 在线
+        delFlag: 0, // 未删除
+        bizRoleType: '1', // 默认业务角色类型
       }
 
       if (editingApp) {
-        await editBizRoleApp({ ...appData, serialNo: editingApp.serialNo })
-        message.success('应用更新成功！')
+        const res = await editBizRoleApp({ ...appData, serialNo: editingApp.serialNo })
+        if (res && res.code === 0) {
+          message.success('应用更新成功！')
+        } else {
+          message.error(res?.message || '应用更新失败')
+          return
+        }
       } else {
-        await addBizRoleApp(appData)
-        message.success('应用创建成功！')
+        const res = await addBizRoleApp(appData)
+        if (res && res.code === 0) {
+          message.success('应用创建成功！')
+        } else {
+          message.error(res?.message || '应用创建失败')
+          return
+        }
       }
 
       setIsModalVisible(false)
@@ -136,9 +232,13 @@ export default ({ appConfig, onBack, onChat }: AppManagementProps) => {
   // 删除应用
   const handleDelete = async (app: AppItem) => {
     try {
-      await deleteBizRoleApp(app.serialNo)
-      message.success('应用删除成功！')
-      fetchAppList()
+      const res = await deleteBizRoleApp({ serialNo: app.serialNo })
+      if (res && res.code === 0) {
+        message.success('应用删除成功！')
+        fetchAppList()
+      } else {
+        message.error(res?.message || '应用删除失败')
+      }
     } catch (error) {
       console.error('删除应用失败:', error)
       message.error('删除应用失败')
@@ -160,6 +260,7 @@ export default ({ appConfig, onBack, onChat }: AppManagementProps) => {
       appChannel: appConfig.appChannel,
       status: '1',
       appStatus: '1',
+      delFlag: 0,
     })
     setIsModalVisible(true)
   }
@@ -176,6 +277,53 @@ export default ({ appConfig, onBack, onChat }: AppManagementProps) => {
     console.log('搜索参数:', values)
     // 这里可以实现搜索逻辑
     fetchAppList()
+  }
+
+  // 打开登录模态框
+  const openLoginModal = (app: AppItem) => {
+    setCurrentLoginApp(app)
+    setOperationAction('loginWechat')
+    setQrCodeUrl('')
+    setIsLoginModalVisible(true)
+  }
+
+  // 关闭登录模态框
+  const closeLoginModal = () => {
+    setIsLoginModalVisible(false)
+    setCurrentLoginApp(null)
+    setQrCodeUrl('')
+    setLoginLoading(false)
+  }
+
+  // 处理登录/退出操作
+  const handleLoginAction = async () => {
+    if (!currentLoginApp) return
+
+    setLoginLoading(true)
+    try {
+      const params = {
+        serialNo: currentLoginApp.serialNo,
+        operation: operationAction, // 'loginWechat' 或 'logoutWechat'
+      }
+
+      const res = await wechatAgentLogin(params)
+      if (res && res.code === 0) {
+        if (operationAction === 'loginWechat' && res.data?.notifyUrl) {
+          setQrCodeUrl(res.data.notifyUrl)
+          message.success('请使用微信扫描二维码登录')
+        } else {
+          message.success(operationAction === 'loginWechat' ? '登录成功！' : '退出成功！')
+          closeLoginModal()
+        }
+      } else {
+        message.error(res?.message || `${operationAction === 'loginWechat' ? '登录' : '退出'}失败`)
+      }
+    } catch (error) {
+      console.error(`${operationAction === 'loginWechat' ? '登录' : '退出'}失败:`, error)
+      message.error(`${operationAction === 'loginWechat' ? '登录' : '退出'}失败`)
+    } finally {
+      setLoginLoading(false)
+    }
   }
 
   return (
@@ -255,6 +403,14 @@ export default ({ appConfig, onBack, onChat }: AppManagementProps) => {
                   >
                     <DeleteOutlined title="删除" />
                   </Popconfirm>,
+                  // 个人微信应用添加登录按钮
+                  ...(appConfig.id === 'wechat' ? [
+                    <LoginOutlined
+                      key="login"
+                      onClick={() => openLoginModal(app)}
+                      title="登录/退出"
+                    />
+                  ] : []),
                   ...(onChat ? [
                     <MessageOutlined
                       key="chat"
@@ -289,6 +445,7 @@ export default ({ appConfig, onBack, onChat }: AppManagementProps) => {
                 <div style={{ marginTop: '12px', fontSize: '12px', color: '#999' }}>
                   <div>应用ID: {app.appId}</div>
                   <div>状态: {app.status === '1' ? '已启用' : '待审核'}</div>
+                  <div>创建时间: {app.createTime}</div>
                 </div>
               </Card>
             ))}
@@ -347,6 +504,52 @@ export default ({ appConfig, onBack, onChat }: AppManagementProps) => {
                   maxLength={200}
                   showCount
                 />
+              ) : fieldConfig[field]?.type === 'select' ? (
+                <Select
+                  placeholder={fieldConfig[field]?.placeholder}
+                  allowClear
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => {
+                    const agent = agentList.find(a => a.serialNo === option?.value)
+                    if (!agent) return false
+                    return agent.name.toLowerCase().includes(input.toLowerCase()) ||
+                           (agent.description ? agent.description.toLowerCase().includes(input.toLowerCase()) : false)
+                  }}
+                  optionLabelProp="label"
+                >
+                  {agentList.map((agent) => (
+                    <Select.Option 
+                      key={agent.serialNo} 
+                      value={agent.serialNo}
+                      label={agent.name}
+                    >
+                      <div style={{ padding: '4px 0' }}>
+                        <div style={{ 
+                          fontWeight: 'bold', 
+                          fontSize: '14px',
+                          color: '#262626',
+                          marginBottom: '2px'
+                        }}>
+                          {agent.name}
+                        </div>
+                        {agent.description && (
+                          <div style={{ 
+                            fontSize: '12px', 
+                            color: '#8c8c8c',
+                            lineHeight: '1.4',
+                            maxWidth: '200px',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap'
+                          }}>
+                            {agent.description}
+                          </div>
+                        )}
+                      </div>
+                    </Select.Option>
+                  ))}
+                </Select>
               ) : (
                 <Input placeholder={fieldConfig[field]?.placeholder} />
               )}
@@ -366,12 +569,125 @@ export default ({ appConfig, onBack, onChat }: AppManagementProps) => {
                   maxLength={200}
                   showCount
                 />
+              ) : fieldConfig[field]?.type === 'select' ? (
+                <Select
+                  placeholder={fieldConfig[field]?.placeholder}
+                  allowClear
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => {
+                    const agent = agentList.find(a => a.serialNo === option?.value)
+                    if (!agent) return false
+                    return agent.name.toLowerCase().includes(input.toLowerCase()) ||
+                           (agent.description ? agent.description.toLowerCase().includes(input.toLowerCase()) : false)
+                  }}
+                  optionLabelProp="label"
+                >
+                  {agentList.map((agent) => (
+                    <Select.Option 
+                      key={agent.serialNo} 
+                      value={agent.serialNo}
+                      label={agent.name}
+                    >
+                      <div style={{ padding: '4px 0' }}>
+                        <div style={{ 
+                          fontWeight: 'bold', 
+                          fontSize: '14px',
+                          color: '#262626',
+                          marginBottom: '2px'
+                        }}>
+                          {agent.name}
+                        </div>
+                        {agent.description && (
+                          <div style={{ 
+                            fontSize: '12px', 
+                            color: '#8c8c8c',
+                            lineHeight: '1.4',
+                            maxWidth: '200px',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap'
+                          }}>
+                            {agent.description}
+                          </div>
+                        )}
+                      </div>
+                    </Select.Option>
+                  ))}
+                </Select>
               ) : (
                 <Input placeholder={fieldConfig[field]?.placeholder} />
               )}
             </Form.Item>
           ))}
         </Form>
+      </Modal>
+
+      {/* 登录/退出模态框 */}
+      <Modal
+        title={`${currentLoginApp?.appName || '应用'} - 登录/退出`}
+        open={isLoginModalVisible}
+        onCancel={closeLoginModal}
+        onOk={handleLoginAction}
+        okText="确定"
+        cancelText="取消"
+        confirmLoading={loginLoading}
+        width={500}
+      >
+        <div style={{ padding: '20px 0' }}>
+          <div style={{ marginBottom: '20px' }}>
+            <Text strong>请选择操作：</Text>
+            <Radio.Group
+              value={operationAction}
+              onChange={(e) => setOperationAction(e.target.value)}
+              style={{ marginTop: '10px' }}
+            >
+              <Radio value="loginWechat">
+                <Space>
+                  <LoginOutlined />
+                  登录
+                </Space>
+              </Radio>
+              <Radio value="logoutWechat">
+                <Space>
+                  <LogoutOutlined />
+                  退出
+                </Space>
+              </Radio>
+            </Radio.Group>
+          </div>
+
+          {qrCodeUrl && (
+            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+              <Text strong style={{ display: 'block', marginBottom: '15px' }}>
+                请使用微信扫描下方二维码登录
+              </Text>
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center',
+                minHeight: '200px',
+                backgroundColor: '#f5f5f5',
+                borderRadius: '8px',
+                padding: '20px'
+              }}>
+                {loginLoading ? (
+                  <Spin size="large" />
+                ) : (
+                  <QRCode
+                    value={qrCodeUrl}
+                    size={200}
+                    status="active"
+                    onRefresh={() => handleLoginAction()}
+                  />
+                )}
+              </div>
+              <Text type="secondary" style={{ display: 'block', marginTop: '10px', fontSize: '12px' }}>
+                二维码链接：{qrCodeUrl}
+              </Text>
+            </div>
+          )}
+        </div>
       </Modal>
     </div>
   )

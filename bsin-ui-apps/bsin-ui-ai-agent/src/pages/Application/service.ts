@@ -1,10 +1,11 @@
 import { request } from '@umijs/max';
-let aiAgent = process.env.contextPath_aiAgent;
 let crmPath = process.env.contextPath_crm;
+const aiAgentPath = process.env.contextPath_aiAgent;
+
 
 // 列表数据请求
 export const getLLMPageList = (params) => {
-  return request(aiAgent + '/llm/getPageList', {
+  return request(aiAgentPath + '/llm/getPageList', {
     serviceName: 'LLMService',
     methodName: 'getPageList',
     version: '1.0',
@@ -16,7 +17,7 @@ export const getLLMPageList = (params) => {
 
 // 删除
 export const delLLMInfo = (params) => {
-  return request(aiAgent + '/llm/delete', {
+  return request(aiAgentPath + '/llm/delete', {
     serviceName: 'LLMService',
     methodName: 'delete',
     version: '1.0',
@@ -28,7 +29,7 @@ export const delLLMInfo = (params) => {
 
 //添加
 export const addLLMInfo = (params) => {
-  return request(aiAgent + '/llm/add', {
+  return request(aiAgentPath + '/llm/add', {
     serviceName: 'LLMService',
     methodName: 'add',
     version: '1.0',
@@ -40,7 +41,7 @@ export const addLLMInfo = (params) => {
 
 //编辑
 export const editLLMInfo = (params) => {
-  return request(aiAgent + '/llm/edit', {
+  return request(aiAgentPath + '/llm/edit', {
     serviceName: 'LLMService',
     methodName: 'edit',
     version: '1.0',
@@ -106,6 +107,64 @@ export const getBizRoleAppDetail = (params) => {
   return request(crmPath + '/bizRoleApp/getDetail', {
     serviceName: 'BizRoleAppService',
     methodName: 'getDetail',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
+// 个人微信登录/退出
+export const wechatAgentLogin = (params: any) => {
+  return request(crmPath + '/bizRoleApp/wechatAgentLogin', {
+    serviceName: 'BizRoleAppService',
+    methodName: 'wechatAgentLogin',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
+
+export const getAgentPagetList = (params: any) => {
+  return request(aiAgentPath + '/aiAgent/getPageList', {
+    serviceName: 'AgentService',
+    methodName: 'getPageList',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
+export const getRuleSetList = (params: any) => {
+  return request(aiAgentPath + '/aiAgent/page', {
+    serviceName: 'AgentService',
+    methodName: 'page',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
+
+export const deleteAgent = (params: any) => {
+  return request(aiAgentPath + '/aiAgent/delete', {
+    serviceName: 'AgentService',
+    methodName: 'delete',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
+export const editAgent = (params: any) => {
+  return request(aiAgentPath + '/aiAgent/create', {
+    serviceName: 'AgentService',
+    methodName: 'create',
     version: '1.0',
     bizParams: {
       ...params,

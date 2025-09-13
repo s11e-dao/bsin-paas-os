@@ -173,16 +173,16 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
         String merchantNo = MapUtils.getString(requestMap, "merchantNo");
         if (merchantNo == null) {
             merchantNo = loginUser.getMerchantNo();
-            if (merchantNo == null) {
-                throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-            }
+//            if (merchantNo == null) {
+//                throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
+//            }
         }
         String customerNo = MapUtils.getString(requestMap, "customerNo");
         if (customerNo == null) {
             customerNo = loginUser.getCustomerNo();
-            if (customerNo == null) {
-                throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
-            }
+//            if (customerNo == null) {
+//                throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
+//            }
         }
         String tenantId = MapUtils.getString(requestMap, "tenantId");
         if (tenantId == null) {
@@ -198,7 +198,7 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
             throw new BusinessException("100000", "未找到微信机器人ID:" + serialNo);
         }
 
-        if (!AppChannel.WX_MINIAPP.getType().equals(bizRoleApp.getAppChannel())) {
+        if (!AppChannel.WX_WECHAT.getType().equals(bizRoleApp.getAppChannel())) {
             throw new BusinessException("100000", "not support operation!!!");
         }
 
@@ -212,8 +212,12 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
 
             JSONObject bizParamsObject = new JSONObject();
             bizParamsObject.put("tenantId", tenantId);
-            bizParamsObject.put("merchantNo", merchantNo);
-            bizParamsObject.put("customerNo", customerNo);
+            if (merchantNo != null){
+                bizParamsObject.put("merchantNo", merchantNo);
+            }
+            if (customerNo != null){
+                bizParamsObject.put("customerNo", customerNo);
+            }
             bizParamsObject.put("name", bizRoleApp.getAppName());
             bizParamsObject.put("wxNo", bizRoleApp.getAppId());
             bizParamsObject.put("bizRoleAppNo", serialNo);
