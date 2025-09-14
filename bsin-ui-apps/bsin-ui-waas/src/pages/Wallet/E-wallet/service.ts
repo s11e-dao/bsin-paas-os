@@ -7,7 +7,7 @@ const crmPath = process.env.contextPath_crm;
 export const eWalletService = {
   // 获取账户余额信息
   getAccountBalance: (): Promise<any> => {
-    return request(waasPath + '/wallet/account/getBalance', {
+    return request(crmPath + '/account/getBalance', {
       serviceName: 'WalletService',
       methodName: 'getAccountBalance',
       version: '1.0',
@@ -17,7 +17,7 @@ export const eWalletService = {
 
   // 获取账户流水记录
   getAccountJournalPageList: (params: any): Promise<any> => {
-    return request(waasPath + '/wallet/account/getJournalPageList', {
+    return request(crmPath + '/account/getAccountJournalPageList', {
       serviceName: 'WalletService',
       methodName: 'getAccountJournalPageList',
       version: '1.0',
@@ -29,7 +29,7 @@ export const eWalletService = {
 
   // 获取分类账户信息
   getCategoryAccounts: (params: any): Promise<any> => {
-    return request(waasPath + '/wallet/account/getCategoryAccounts', {
+    return request(crmPath + '/account/getCategoryAccounts', {
       serviceName: 'WalletService',
       methodName: 'getCategoryAccounts',
       version: '1.0',
