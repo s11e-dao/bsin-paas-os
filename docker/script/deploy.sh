@@ -29,7 +29,11 @@ copy(){
 }
 # 启动基础环境（必须）
 middleware(){
-	docker-compose up -d bsin-mysql-3.0 bsin-redis-3.0 bsin-nacos-standalone-3.0 bsin-emqx-3.0 bsin-elasticsearch-3.0 bsin-elasticsearch-3.0-kibana bsin-elasticsearch-3.0-head bsin-rockermq-3.0 bsin-rockermq-broker-3.0 bsin-seata-3.0 #bsin-nginx-3.0 #bsin-rabbitmq-3.0 bsin-milvus-3.0
+	docker-compose up -d bsin-mysql-3.0 bsin-redis-3.0 
+	sleep 30
+	docker-compose up -d bsin-nacos-standalone-3.0 bsin-emqx-3.0 bsin-elasticsearch-3.0 bsin-elasticsearch-3.0-kibana bsin-elasticsearch-3.0-head bsin-rockermq-3.0 bsin-rockermq-broker-3.0 
+	sleep 30
+	docker-compose up -d bsin-seata-3.0 #bsin-nginx-3.0 #bsin-rabbitmq-3.0 bsin-milvus-3.0
 }
 
 # 启动网关模块（必须）
@@ -160,8 +164,11 @@ case "$1" in
 ;;
 "start")
 	middleware
+	sleep 20
 	gateway
+	sleep 20
 	server_apps
+	sleep 20
 	ui_apps
 ;;
 "stop")

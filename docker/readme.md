@@ -218,6 +218,28 @@ docker-compose -f portainer.yml up -d
           ]
         }
       ```
+      Or
+      ```bash
+        # 手动拉取需要的镜像
+        docker pull mysql:8.0
+        docker pull redis:7.0
+        docker pull nacos/nacos-server:v3.0.1
+        docker pull elasticsearch:8.15.0
+        docker pull kibana:8.15.0
+        docker pull mobz/elasticsearch-head:5
+        docker pull apache/rocketmq:4.9.6
+      ```
+      Or
+      ```bash
+        # 在有网络的机器上导出镜像
+        docker save mobz/elasticsearch-head:5 > elasticsearch-head-5.tar
+
+        # 传输到目标机器
+        scp elasticsearch-head-5.tar user@target-machine:/path/
+
+        # 在目标机器上导入镜像
+        docker load < elasticsearch-head-5.tar
+      ```
     - 重启 Docker：
       ```bash
       sudo systemctl daemon-reload
