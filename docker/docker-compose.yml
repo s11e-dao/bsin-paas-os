@@ -74,7 +74,7 @@ services:
       start_period: 60s
     environment:
       MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_MULTIPLE_DATABASES: bsin-nacos-config,bsin-shenyu-gateway,bsin-upms,bsin-crm,bsin-ai,bsin-waas,bsin-oms,bsin-community,bsin-brms,bsin-iot,bsin-damp,bsin-flowable,bsin-workflow,bsin-workflow-admin,bsin-orchestration,bsin-gateway,bsin-intelligent-decision,bsin-seata,bsin-mpc,bsin-mpc-client1,bsin-mpc-client2,bsin-mpc-client3,bsin-mpc-client4
+      MYSQL_MULTIPLE_DATABASES: bsin-nacos-config,bsin-shenyu-gateway,bsin-upms,bsin-crm,bsin-ai,bsin-waas,bsin-oms,bsin-community,bsin-brms,bsin-iot,bsin-damp,bsin-flowable,bsin-workflow,bsin-workflow-admin,bsin-orchestration,bsin-gateway,bsin-intelligent-decision,bsin-seata,bsin-mpc,bsin-mpc-client1,bsin-mpc-client2,bsin-mpc-client3,bsin-mpc-client4,agentscope-schema.sql
       MYSQL_INITDB_SKIP_TZINFO: 1
       MYSQL_ROOT_HOST: '%'
     networks:
@@ -95,40 +95,11 @@ services:
       - ./middleware/redis/conf/redis.conf:/etc/redis/redis.conf # 映射配置文件目录，宿主机:容器
       - ./middleware/redis/data:/data                           # 映射数据目录，宿主机:容器
     command: [ "redis-server","/etc/redis/redis.conf" ]           # 指定配置文件启动redis-server进程
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
     networks:
       compose-network: #指定network
         ipv4_address: 172.28.0.4
-
-  #  bsin-rabbitmq-3.0:
-  #    container_name: bsin-rabbitmq-3.0
-  #    image: bsin-rabbitmq:3.0.0
-  #    build:
-  #      context: middleware/rabbitmq
-  #      dockerfile: dockerfile
-  #    ports:
-  #      - "6379:6379"
-  #    restart: always
-  #    volumes:
-  #      - ./middleware/rabbitmq/conf/rabbitmq.conf:/home/bsin-paas-os/middleware/rabbitmq/rabbitmq.conf
-  #  networks:
-  #    compose-network: #指定network
-  #      ipv4_address: 172.28.0.14
-  #
-  #  bsin-milvus-3.0:
-  #    container_name: bsin-milvus-3.0
-  #    image: bsin-milvus:3.0.0
-  #    build:
-  #      context: middleware/milvus
-  #      dockerfile: dockerfile
-  #    ports:
-  #      - "6379:6379"
-  #    restart: always
-  #    volumes:
-  #      - ./middleware/milvus/conf:/home/bsin-paas-os/middleware/milvus/conf
-  #  networks:
-  #    compose-network: #指定network
-  #      ipv4_address: 172.28.0.15
-
 
 
   bsin-seata-3.0:
@@ -173,46 +144,121 @@ services:
       compose-network:
         ipv4_address: 172.28.0.5
 
-  bsin-rockermq-3.0:
-    image: apache/rocketmq:4.9.6
-    container_name: bsin-rockermq-3.0
+  bsin-rocketmq-namesrv-3.0:
+    image: apache/rocketmq:5.3.2
+    container_name: bsin-rocketmq-namesrv-3.0
+    # restart: always
+    env_file:
+      - ./middleware/rocketmq/.env
+    environment:
+      - NAMESRV_ADDR=bsin-rocketmq-namesrv-3.0:9876
+      - HEAP_OPTS=-Xms128M -Xmx256M -Xmn128M
     ports:
       - 9876:9876   # 映射 namesrv 端口，外部可通过 9876 访问 
     command: sh mqnamesrv
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "ps aux | grep mqnamesrv | grep -v grep || exit 1" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       compose-network:
         ipv4_address: 172.28.0.6
 
-  bsin-rockermq-broker-3.0:
-    image: apache/rocketmq:4.9.6
-    container_name: bsin-rockermq-broker-3.0
+  bsin-rocketmq-broker-3.0:
+    image: apache/rocketmq:5.3.2
+    container_name: bsin-rocketmq-broker-3.0
+    # restart: always
+    environment:
+      - NAMESRV_ADDR=bsin-rocketmq-namesrv-3.0:9876
+      - HEAP_OPTS=-Xms256M -Xmx512M -Xmn256M -XX:MaxDirectMemorySize=128M
+      - ROCKETMQ_HOME=/home/rocketmq/rocketmq-5.3.2
     ports:
       - 10909:10909   # Broker 高速通信端口
       - 10911:10911   # Broker 主端口，客户端/其他 broker 访问
       - 10912:10912   # Broker HA 同步端口
-    environment:
-      - NAMESRV_ADDR=bsin-rockermq-3.0:9876
     volumes:
-      - ./middleware/rockermq/conf/broker.conf:/home/rocketmq/rocketmq-4.9.6/conf/broker.conf
+      - ./middleware/rocketmq/conf/broker.conf:/home/rocketmq/rocketmq-5.3.2/conf/broker.conf
+      - ./middleware/rocketmq/store:/home/rocketmq/store
     depends_on:
-      - bsin-rockermq-3.0
-    command: sh mqbroker -c /home/rocketmq/rocketmq-4.9.6/conf/broker.conf
+      - bsin-rocketmq-namesrv-3.0
+    command: sh mqbroker -c /home/rocketmq/rocketmq-5.3.2/conf/broker.conf
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "ps aux | grep mqbroker | grep -v grep || exit 1" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       compose-network:
         ipv4_address: 172.28.0.7
 
+  bsin-rocketmq-proxy-3.0:
+    image: apache/rocketmq:5.3.2
+    container_name: bsin-rocketmq-proxy-3.0
+    # restart: always
+    environment:
+      - NAMESRV_ADDR=bsin-rocketmq-namesrv-3.0:9876
+      - HEAP_OPTS=-Xms128M -Xmx256M -Xmn128M
+      - ROCKETMQ_HOME=/home/rocketmq/rocketmq-5.3.2
+    ports:
+      - 18080:18080
+      - 18081:18081
+    volumes:
+      - ./middleware/rocketmq/conf:/home/rocketmq/conf
+    command: sh mqproxy -pc /home/rocketmq/conf/rmq-proxy.json
+    depends_on:
+      bsin-rocketmq-namesrv-3.0:
+        condition: service_healthy
+      bsin-rocketmq-broker-3.0:
+        condition: service_healthy
+    networks:
+      compose-network:
+        ipv4_address: 172.28.0.8
+
+  bsin-rocketmq-init-topic-3.0:
+    image: apache/rocketmq:5.3.2
+    container_name: bsin-rocketmq-init-topic-3.0
+    # restart: always
+    env_file:
+      - ./middleware/rocketmq/.env
+    restart: "no"
+    depends_on:
+      bsin-rocketmq-namesrv-3.0:
+        condition: service_healthy
+      bsin-rocketmq-broker-3.0:
+        condition: service_healthy
+    entrypoint: >
+      sh -c "
+        echo 'Waiting for RocketMQ to be ready...' &&
+        sleep 60 &&
+        until sh mqadmin clusterList -n rmq_namesrv:9876; do
+          echo 'Waiting for RocketMQ to be fully ready...' &&
+          sleep 10
+        done &&
+        echo 'Creating topic...' &&
+        sh mqadmin updateTopic -n rmq_namesrv:9876 -t topic_saa_studio_document_index -c DefaultCluster -a +message.type=NORMAL &&
+        sh mqadmin updateSubGroup -n rmq_namesrv:9876 -g group_saa_studio_document_index -c DefaultCluster &&
+        echo 'Verifying topic creation...' &&
+        sh mqadmin topicList -n rmq_namesrv:9876 &&
+        echo 'Topic creation completed'"
+    networks: 
+      compose-network:
+        ipv4_address: 172.28.0.9
+
 
   bsin-elasticsearch-3.0:
     container_name: bsin-elasticsearch-3.0
-    image: elasticsearch:8.15.0
-    restart: unless-stopped
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
+    # restart: unless-stopped
+    restart: always
+    user: "1000:1000"
     environment:
       - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
       - "TZ=Asia/Shanghai"
       - "discovery.type=single-node"
       - "xpack.security.enabled=false"
       - "http.cors.enabled=true"
-      - "http.cors.allow-origin='*'"
+      - "http.cors.allow-origin=\"*\""
       - "http.cors.allow-credentials=false"
       - "http.cors.allow-methods=OPTIONS,HEAD,GET,POST,PUT,DELETE"
       - "http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
@@ -221,10 +267,10 @@ services:
       - "9200:9200"
       - "9300:9300"
     volumes:
-      - ./middleware/elasticsearch/conf:/usr/share/elasticsearch/config
+      # - ./middleware/elasticsearch/conf:/usr/share/elasticsearch/config
       - ./middleware/elasticsearch/data:/usr/share/elasticsearch/data
       - ./middleware/elasticsearch/plugins:/usr/share/elasticsearch/plugins
-      - ./middleware/elasticsearch/conf/kibana.yml:/usr/share/kibana/config/kibana.yml
+      # - ./middleware/elasticsearch/conf/kibana.yml:/usr/share/kibana/config/kibana.yml
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
       interval: 30s
@@ -232,33 +278,36 @@ services:
       retries: 3
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.8
+        ipv4_address: 172.28.0.11
 
   bsin-elasticsearch-3.0-kibana:
     container_name: bsin-elasticsearch-3.0-kibana
-    image: kibana:8.15.0
-    restart: unless-stopped
+    image: docker.elastic.co/kibana/kibana:8.17.2
+    # restart: unless-stopped
     environment:
-      - "TZ=Asia/Shanghai"
-      - "I18N_LOCALE=zh-CN"
-#      - "ELASTICSEARCH_HOSTS=http://bsin-elasticsearch-3.0:9200"
+      - ELASTICSEARCH_HOSTS=http://bsin-elasticsearch-3.0:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=changeme
+      - ELASTICSEARCH_SSL_VERIFICATIONMODE=none
+      - JAVA_OPTS=-Xms64M -Xmx256M
     ports:
       - "5601:5601"
     depends_on:
       - bsin-elasticsearch-3.0
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5601" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: [ "CMD", "curl", "-f", "http://localhost:5601" ]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.9
+        ipv4_address: 172.28.0.12
 
   bsin-elasticsearch-3.0-head:
     container_name: bsin-elasticsearch-3.0-head
     image: mobz/elasticsearch-head:5
-    restart: unless-stopped
+    # restart: unless-stopped
+    user: "1000:1000"
     environment:
       - "TZ=Asia/Shanghai"
     ports:
@@ -267,7 +316,7 @@ services:
       - bsin-elasticsearch-3.0
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.10
+        ipv4_address: 172.28.0.13
 
   # bsin-emqx默认初始账号和密码
   # username：admin
@@ -301,7 +350,7 @@ services:
       retries: 5
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.11
+        ipv4_address: 172.28.0.14
 
   bsin-nginx-3.0:
     container_name: bsin-nginx-3.0
@@ -322,7 +371,7 @@ services:
       # - /home/leonard/ssd12/bsin-paas/bsin-paas-os/hls:/home/bsin-paas-os/middleware/nginx/hls
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.12
+        ipv4_address: 172.28.0.15
 
 #  bsin-srs-3.0:
 #    container_name: bsin-srs-3.0

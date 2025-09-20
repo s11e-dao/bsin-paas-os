@@ -13,12 +13,13 @@ mkdir -p ./middleware/milvus/logs
 mkdir -p ./middleware/nacos/logs
 mkdir -p ./middleware/rabbitmq/logs
 mkdir -p ./middleware/redis/logs
-mkdir -p ./middleware/rockermq/logs
+mkdir -p ./middleware/rocketmq/logs
+mkdir -p ./middleware/rocketmq/store
 mkdir -p ./middleware/elasticsearch/data
 mkdir -p ./middleware/elasticsearch/logs
 mkdir -p ./middleware/elasticsearch/plugins
 mkdir -p ./middleware/elasticsearch/conf
-mkdir -p ./middleware/rockermq/data
+mkdir -p ./middleware/rocketmq/data
 mkdir -p ./middleware/seata/conf
 mkdir -p ./middleware/seata/db
 mkdir -p ./middleware/seata/data

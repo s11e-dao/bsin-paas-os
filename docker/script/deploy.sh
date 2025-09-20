@@ -2,7 +2,7 @@
 
 # 使用说明，用来提示输入参数
 usage(){
-	echo "Usage: sh deploy.sh [build|middleware|gateway|server_apps|ui_apps|start|stop|rm|clean|copy|app_agent|upms|waas|crm|brms|search|workflow|workflow_admin|iot]"
+	echo "Usage: sh deploy.sh [build|middleware|gateway|server_apps|ui_apps|start|stop|rm|clean|copy|app_agent|upms|waas|crm|brms|search|workflow|workflow_admin|iot|elasticsearch|rocketmq]"
 	exit 1
 }
 
@@ -31,9 +31,19 @@ copy(){
 middleware(){
 	docker-compose up -d bsin-mysql-3.0 bsin-redis-3.0 
 	sleep 30
-	docker-compose up -d bsin-nacos-standalone-3.0 bsin-emqx-3.0 bsin-elasticsearch-3.0 bsin-elasticsearch-3.0-kibana bsin-elasticsearch-3.0-head bsin-rockermq-3.0 bsin-rockermq-broker-3.0 
+	docker-compose up -d bsin-nacos-standalone-3.0 bsin-emqx-3.0 bsin-elasticsearch-3.0 bsin-elasticsearch-3.0-head bsin-rocketmq-namesrv-3.0 bsin-rocketmq-broker-3.0 bsin-rocketmq-init-topic-3.0 #bsin-elasticsearch-3.0-kibana #bsin-rocketmq-proxy-3.0
 	sleep 30
 	docker-compose up -d bsin-seata-3.0 #bsin-nginx-3.0 #bsin-rabbitmq-3.0 bsin-milvus-3.0
+}
+
+# 启动es环境
+elasticsearch(){
+	docker-compose up -d bsin-elasticsearch-3.0  bsin-elasticsearch-3.0-head #bsin-elasticsearch-3.0-kibana
+}
+
+# 启动rocketmq环境
+rocketmq(){
+	docker-compose up -d bsin-rocketmq-namesrv-3.0 bsin-rocketmq-broker-3.0 bsin-rocketmq-init-topic-3.0 #bsin-rocketmq-proxy-3.0
 }
 
 # 启动网关模块（必须）
@@ -116,6 +126,12 @@ case "$1" in
 "middleware")
 	middleware
 ;;
+"elasticsearch")
+	elasticsearch
+;;
+"rocketmq")
+	rocketmq
+;;
 "gateway")
 	gateway
 ;;
@@ -164,7 +180,7 @@ case "$1" in
 ;;
 "start")
 	middleware
-	sleep 20
+	# sleep 20
 	gateway
 	sleep 20
 	server_apps

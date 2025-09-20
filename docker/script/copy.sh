@@ -57,6 +57,8 @@ cp ../.env ./app-service/server-apps/iot -rvf
 cp ../.env ./app-service/targe-gateway-admin -rvf
 cp ../.env ./app-service/targe-gateway -rvf
 cp ../.env ./middleware/nacos -rvf
+cp ../.env ./middleware/elasticsearch -rvf
+cp ../.env ./middleware/rocketmq -rvf
 cp ../.env ./app-service/server-apps/go-any/server-golang -rvf
 cp ../.env ./app-service/server-apps/go-any/mpc-client/client1 -rvf
 cp ../.env ./app-service/server-apps/go-any/mpc-client/client2 -rvf

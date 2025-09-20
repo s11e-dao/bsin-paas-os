@@ -224,10 +224,10 @@ docker-compose -f portainer.yml up -d
         docker pull mysql:8.0
         docker pull redis:7.0
         docker pull nacos/nacos-server:v3.0.1
-        docker pull elasticsearch:8.15.0
-        docker pull kibana:8.15.0
+        docker pull elasticsearch:8.17.2
+        docker pull kibana:8.17.2
         docker pull mobz/elasticsearch-head:5
-        docker pull apache/rocketmq:4.9.6
+        docker pull apache/rocketmq:5.3.22
       ```
       Or
       ```bash
