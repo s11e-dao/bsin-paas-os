@@ -30,9 +30,9 @@ copy(){
 # 启动基础环境（必须）
 middleware(){
 	docker-compose up -d bsin-mysql-3.0 bsin-redis-3.0 
-	sleep 30
-	docker-compose up -d bsin-nacos-standalone-3.0 bsin-emqx-3.0 bsin-elasticsearch-3.0 bsin-elasticsearch-3.0-head bsin-rocketmq-namesrv-3.0 bsin-rocketmq-broker-3.0 bsin-rocketmq-init-topic-3.0 #bsin-elasticsearch-3.0-kibana #bsin-rocketmq-proxy-3.0
-	sleep 30
+	sleep 20
+	docker-compose up -d bsin-nacos-standalone-3.0 bsin-emqx-3.0 bsin-elasticsearch-3.0 bsin-elasticsearch-3.0-head bsin-rocketmq-namesrv-3.0 bsin-rocketmq-broker-3.0 bsin-rocketmq-init-topic-3.0 bsin-rocketmq-dashboard-3.0 #bsin-rocketmq-proxy-3.0 #bsin-elasticsearch-3.0-kibana 
+	sleep 20
 	docker-compose up -d bsin-seata-3.0 #bsin-nginx-3.0 #bsin-rabbitmq-3.0 bsin-milvus-3.0
 }
 
@@ -43,7 +43,7 @@ elasticsearch(){
 
 # 启动rocketmq环境
 rocketmq(){
-	docker-compose up -d bsin-rocketmq-namesrv-3.0 bsin-rocketmq-broker-3.0 bsin-rocketmq-init-topic-3.0 #bsin-rocketmq-proxy-3.0
+	docker-compose up -d bsin-rocketmq-namesrv-3.0 bsin-rocketmq-broker-3.0 bsin-rocketmq-init-topic-3.0 bsin-rocketmq-dashboard-3.0 #bsin-rocketmq-proxy-3.0 
 }
 
 # 启动网关模块（必须）

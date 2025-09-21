@@ -183,6 +183,7 @@ services:
     depends_on:
       - bsin-rocketmq-namesrv-3.0
     command: sh mqbroker -c /home/rocketmq/rocketmq-5.3.2/conf/broker.conf
+    # command: sh mqbroker
     healthcheck:
       test: [ "CMD", "sh", "-c", "ps aux | grep mqbroker | grep -v grep || exit 1" ]
       interval: 5s
@@ -192,6 +193,7 @@ services:
       compose-network:
         ipv4_address: 172.28.0.7
 
+  # RocketMQ Proxy 暂时禁用，因为存在系统主题创建问题
   bsin-rocketmq-proxy-3.0:
     image: apache/rocketmq:5.3.2
     container_name: bsin-rocketmq-proxy-3.0
@@ -214,6 +216,22 @@ services:
     networks:
       compose-network:
         ipv4_address: 172.28.0.8
+
+  # $ docker run -d --name rocketmq-dashboard -e "JAVA_OPTS=-Drocketmq.namesrv.addr=127.0.0.1:9876" -p 8080:8080 -t apacherocketmq/rocketmq-dashboard:latest
+  bsin-rocketmq-dashboard-3.0:
+    image: apacherocketmq/rocketmq-dashboard:latest
+    container_name: bsin-rocketmq-dashboard-3.0
+    # restart: always
+    environment:
+      - JAVA_OPTS=-Drocketmq.namesrv.addr=bsin-rocketmq-namesrv-3.0:9876
+    ports:
+      - 8082:8082
+    depends_on:
+      - bsin-rocketmq-namesrv-3.0
+      - bsin-rocketmq-broker-3.0
+    networks:
+      compose-network:
+        ipv4_address: 172.28.0.9
 
   bsin-rocketmq-init-topic-3.0:
     image: apache/rocketmq:5.3.2
@@ -243,7 +261,7 @@ services:
         echo 'Topic creation completed'"
     networks: 
       compose-network:
-        ipv4_address: 172.28.0.9
+        ipv4_address: 172.28.0.10
 
 
   bsin-elasticsearch-3.0:
@@ -251,7 +269,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
     # restart: unless-stopped
     restart: always
-    user: "1000:1000"
+    # user: "1000:1000"
     environment:
       - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
       - "TZ=Asia/Shanghai"
