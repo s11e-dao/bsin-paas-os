@@ -227,16 +227,15 @@ services:
       - bsin-rocketmq-namesrv-3.0
       - bsin-rocketmq-broker-3.0
     networks:
-      compose-network:
-        ipv4_address: 172.28.0.9
+      - rocketmq
 
   bsin-rocketmq-init-topic-3.0:
     image: apache/rocketmq:5.3.2
     container_name: bsin-rocketmq-init-topic-3.0
-    # restart: always
+    user: "${UID}:${GID}"
+    restart: "no"
     env_file:
       - ./.env
-    restart: "no"
     depends_on:
       bsin-rocketmq-namesrv-3.0:
         condition: service_healthy
@@ -256,9 +255,8 @@ services:
         echo 'Verifying topic creation...' &&
         sh mqadmin topicList -n rmq_namesrv:9876 &&
         echo 'Topic creation completed'"
-    networks: 
-      compose-network:
-        ipv4_address: 172.28.0.10
+    networks:
+      - rocketmq
 
 
   bsin-elasticsearch-3.0:
