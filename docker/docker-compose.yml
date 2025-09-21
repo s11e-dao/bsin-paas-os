@@ -7,7 +7,8 @@ networks:
     ipam: #自定义IPAM配置
       config:
         - subnet: 172.28.0.0/16
-      driver: default
+  rocketmq:
+    driver: bridge
 
 # 定义服务
 services:
@@ -147,9 +148,10 @@ services:
   bsin-rocketmq-namesrv-3.0:
     image: apache/rocketmq:5.3.2
     container_name: bsin-rocketmq-namesrv-3.0
-    # restart: always
+    user: "${UID}:${GID}"
+    restart: always
     env_file:
-      - ./middleware/rocketmq/.env
+      - ./.env
     environment:
       - NAMESRV_ADDR=bsin-rocketmq-namesrv-3.0:9876
       - HEAP_OPTS=-Xms128M -Xmx256M -Xmn128M
@@ -162,60 +164,55 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      compose-network:
-        ipv4_address: 172.28.0.6
+      - rocketmq
 
   bsin-rocketmq-broker-3.0:
     image: apache/rocketmq:5.3.2
     container_name: bsin-rocketmq-broker-3.0
-    # restart: always
+    user: "${UID}:${GID}"
+    restart: always
     environment:
       - NAMESRV_ADDR=bsin-rocketmq-namesrv-3.0:9876
       - HEAP_OPTS=-Xms256M -Xmx512M -Xmn256M -XX:MaxDirectMemorySize=128M
-      - ROCKETMQ_HOME=/home/rocketmq/rocketmq-5.3.2
     ports:
       - 10909:10909   # Broker 高速通信端口
       - 10911:10911   # Broker 主端口，客户端/其他 broker 访问
       - 10912:10912   # Broker HA 同步端口
     volumes:
-      - ./middleware/rocketmq/conf/broker.conf:/home/rocketmq/rocketmq-5.3.2/conf/broker.conf
       - ./middleware/rocketmq/store:/home/rocketmq/store
     depends_on:
       - bsin-rocketmq-namesrv-3.0
-    command: sh mqbroker -c /home/rocketmq/rocketmq-5.3.2/conf/broker.conf
-    # command: sh mqbroker
+    command: sh mqbroker
     healthcheck:
       test: [ "CMD", "sh", "-c", "ps aux | grep mqbroker | grep -v grep || exit 1" ]
       interval: 5s
       timeout: 5s
       retries: 5
     networks:
-      compose-network:
-        ipv4_address: 172.28.0.7
+      - rocketmq
 
-  # RocketMQ Proxy 暂时禁用，因为存在系统主题创建问题
+  # RocketMQ Proxy - 使用简化配置
   bsin-rocketmq-proxy-3.0:
     image: apache/rocketmq:5.3.2
     container_name: bsin-rocketmq-proxy-3.0
-    # restart: always
+    user: "${UID}:${GID}"
+    restart: always
+    env_file:
+      - ./.env
+    volumes:
+      - ./middleware/rocketmq/conf:/home/rocketmq/conf
     environment:
       - NAMESRV_ADDR=bsin-rocketmq-namesrv-3.0:9876
       - HEAP_OPTS=-Xms128M -Xmx256M -Xmn128M
-      - ROCKETMQ_HOME=/home/rocketmq/rocketmq-5.3.2
+    networks:
+      - rocketmq
+    depends_on:
+      - bsin-rocketmq-broker-3.0
+      - bsin-rocketmq-namesrv-3.0
     ports:
       - 18080:18080
       - 18081:18081
-    volumes:
-      - ./middleware/rocketmq/conf:/home/rocketmq/conf
     command: sh mqproxy -pc /home/rocketmq/conf/rmq-proxy.json
-    depends_on:
-      bsin-rocketmq-namesrv-3.0:
-        condition: service_healthy
-      bsin-rocketmq-broker-3.0:
-        condition: service_healthy
-    networks:
-      compose-network:
-        ipv4_address: 172.28.0.8
 
   # $ docker run -d --name rocketmq-dashboard -e "JAVA_OPTS=-Drocketmq.namesrv.addr=127.0.0.1:9876" -p 8080:8080 -t apacherocketmq/rocketmq-dashboard:latest
   bsin-rocketmq-dashboard-3.0:
@@ -238,7 +235,7 @@ services:
     container_name: bsin-rocketmq-init-topic-3.0
     # restart: always
     env_file:
-      - ./middleware/rocketmq/.env
+      - ./.env
     restart: "no"
     depends_on:
       bsin-rocketmq-namesrv-3.0:

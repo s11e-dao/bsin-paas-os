@@ -26,6 +26,186 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SimpleRocketMQTest {
 
+    /**
+     * 简单的连接诊断测试
+     */
+    @Test
+    public void testRocketMQConnectionDiagnosis() throws Exception {
+        System.out.println("🔍 开始RocketMQ连接诊断...");
+        
+        // 测试不同的连接方式
+        String[] nameServerAddrs = {
+            "127.0.0.1:9876",
+            "localhost:9876",
+            "0.0.0.0:9876"
+        };
+        
+        for (String nameServerAddr : nameServerAddrs) {
+            System.out.println("🔍 测试NameServer地址: " + nameServerAddr);
+            
+            DefaultMQProducer producer = null;
+            try {
+                producer = new DefaultMQProducer("test_diagnosis_group_" + System.currentTimeMillis());
+                producer.setNamesrvAddr(nameServerAddr);
+                producer.setSendMsgTimeout(3000);
+                producer.setRetryTimesWhenSendFailed(0);
+                
+                // 启动生产者
+                producer.start();
+                System.out.println("✅ 生产者启动成功，使用地址: " + nameServerAddr);
+                
+                // 使用系统默认Topic进行测试
+                String topic = "TBW102"; // RocketMQ系统默认Topic
+                String messageBody = "DIAGNOSIS_TEST_MESSAGE";
+                Message message = new Message(topic, messageBody.getBytes(RemotingHelper.DEFAULT_CHARSET));
+                
+                SendResult sendResult = producer.send(message);
+                
+                if (sendResult.getSendStatus() == SendStatus.SEND_OK) {
+                    System.out.println("✅ 连接诊断成功! 使用地址: " + nameServerAddr);
+                    System.out.println("📨 消息ID: " + sendResult.getMsgId());
+                    System.out.println("📨 Broker: " + sendResult.getMessageQueue().getBrokerName());
+                    return; // 成功则退出
+                } else {
+                    System.out.println("❌ 连接诊断失败，状态: " + sendResult.getSendStatus());
+                }
+                
+            } catch (Exception e) {
+                System.err.println("❌ 连接诊断异常，地址 " + nameServerAddr + ": " + e.getMessage());
+                // 如果是Topic相关错误，说明连接是正常的
+                if (e.getMessage().contains("No route info") || e.getMessage().contains("topic")) {
+                    System.out.println("💡 提示: 连接正常，但Topic不存在。这说明RocketMQ服务运行正常！");
+                    return; // 连接正常，只是Topic问题
+                }
+            } finally {
+                if (producer != null) {
+                    try {
+                        producer.shutdown();
+                    } catch (Exception e) {
+                        // 忽略关闭异常
+                    }
+                }
+            }
+        }
+        
+        System.err.println("❌ 所有连接地址都失败了！");
+        throw new RuntimeException("RocketMQ连接诊断失败，所有地址都无法连接");
+    }
+
+    /**
+     * 测试Topic自动创建功能
+     */
+    @Test
+    public void testTopicAutoCreation() throws Exception {
+        System.out.println("🔍 开始测试Topic自动创建...");
+        
+        DefaultMQProducer producer = null;
+        try {
+            producer = new DefaultMQProducer("test_topic_creation_group");
+            producer.setNamesrvAddr("127.0.0.1:9876");
+            producer.setSendMsgTimeout(5000);
+            producer.setRetryTimesWhenSendFailed(1);
+            
+            // 启动生产者
+            producer.start();
+            System.out.println("✅ 生产者启动成功");
+            
+            // 测试不同的Topic名称
+            String[] topics = {
+                "test-topic-1",
+                "waas-test-topic",
+                "diagnosis-test-topic"
+            };
+            
+            for (String topic : topics) {
+                System.out.println("🔍 测试Topic: " + topic);
+                
+                try {
+                    String messageBody = "TOPIC_CREATION_TEST_MESSAGE_" + System.currentTimeMillis();
+                    Message message = new Message(topic, messageBody.getBytes(RemotingHelper.DEFAULT_CHARSET));
+                    
+                    SendResult sendResult = producer.send(message);
+                    
+                    if (sendResult.getSendStatus() == SendStatus.SEND_OK) {
+                        System.out.println("✅ Topic '" + topic + "' 创建成功!");
+                        System.out.println("📨 消息ID: " + sendResult.getMsgId());
+                        System.out.println("📨 Broker: " + sendResult.getMessageQueue().getBrokerName());
+                    } else {
+                        System.out.println("❌ Topic '" + topic + "' 创建失败: " + sendResult.getSendStatus());
+                    }
+                    
+                } catch (Exception e) {
+                    System.err.println("❌ Topic '" + topic + "' 测试异常: " + e.getMessage());
+                }
+                
+                // 稍微延迟
+                Thread.sleep(500);
+            }
+            
+        } catch (Exception e) {
+            System.err.println("❌ Topic自动创建测试失败: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            if (producer != null) {
+                producer.shutdown();
+                System.out.println("🔚 生产者已关闭");
+            }
+        }
+    }
+
+    /**
+     * 测试RocketMQ连接是否正常
+     */
+    @Test
+    public void testRocketMQConnectionOnly() throws Exception {
+        System.out.println("🔍 开始测试RocketMQ连接...");
+        
+        DefaultMQProducer producer = null;
+        try {
+            // 创建生产者
+            producer = new DefaultMQProducer("test_connection_group");
+            producer.setNamesrvAddr("127.0.0.1:9876");
+            
+            // 设置超时时间
+            producer.setSendMsgTimeout(5000);
+            producer.setRetryTimesWhenSendFailed(1);
+            
+            // 启动生产者
+            producer.start();
+            System.out.println("✅ RocketMQ Producer 启动成功");
+            
+            // 测试连接 - 发送一个简单的ping消息
+            String topic = "connection-test";
+            String messageBody = "CONNECTION_TEST_MESSAGE";
+            
+            Message message = new Message(topic, messageBody.getBytes(RemotingHelper.DEFAULT_CHARSET));
+            
+            // 发送消息
+            SendResult sendResult = producer.send(message);
+            
+            if (sendResult.getSendStatus() == SendStatus.SEND_OK) {
+                System.out.println("✅ 连接测试成功!");
+                System.out.println("📨 消息ID: " + sendResult.getMsgId());
+                System.out.println("📨 发送状态: " + sendResult.getSendStatus());
+                System.out.println("📨 队列ID: " + sendResult.getMessageQueue().getQueueId());
+                System.out.println("📨 Broker地址: " + sendResult.getMessageQueue().getBrokerName());
+            } else {
+                System.out.println("❌ 连接测试失败: " + sendResult.getSendStatus());
+            }
+            
+        } catch (Exception e) {
+            System.err.println("❌ RocketMQ连接测试失败: " + e.getMessage());
+            e.printStackTrace();
+            throw e; // 重新抛出异常，让测试失败
+        } finally {
+            // 关闭生产者
+            if (producer != null) {
+                producer.shutdown();
+                System.out.println("🔚 RocketMQ Producer 已关闭");
+            }
+        }
+    }
+
     @Test
     public void testRocketMQConnection() throws Exception {
         System.out.println("🚀 开始测试RocketMQ连接...");

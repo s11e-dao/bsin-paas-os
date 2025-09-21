@@ -1,10 +1,5 @@
 {
   "rocketMQClusterName": "DefaultCluster",
   "remotingListenPort": 18080,
-  "grpcServerPort": 18081,
-  "namesrvAddr": "bsin-rocketmq-namesrv-3.0:9876",
-  "enableACL": false,
-  "enableProxyProtocol": false,
-  "enableMessageTrace": true,
-  "messageTraceTopicName": "RMQ_SYS_TRACE_TOPIC"
+  "grpcServerPort": 18081
 }

@@ -158,6 +158,9 @@ bash ./script/deploy.sh build
 # 启动所有容器
 bash ./script/deploy.sh start
 
+# 启动rocketMQ 需要root
+echo "123" | sudo -S bash ./script/deploy.sh rocketmq
+
 # 停止所有容器（但不删除）
 bash ./script/deploy.sh stop
 

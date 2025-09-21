@@ -6,8 +6,35 @@ usage(){
 	exit 1
 }
 
+# 创建 .env 文件并修复权限
+setup_environment(){
+	# 创建 .env 文件
+	cat > .env << EOF
+# User ID and Group ID for containers
+UID=$(id -u)
+GID=$(id -g)
+
+# Timezone
+TZ=Asia/Shanghai
+
+# Default values
+MIDDLEWARE_HOME=.
+EOF
+
+	# 修复权限问题
+	echo "Fixing permissions for data directories..."
+	chmod -R 777 middleware/elasticsearch/data 2>/dev/null || true
+	chmod -R 777 middleware/kibana/data 2>/dev/null || true
+	chmod -R 777 middleware/rocketmq/store 2>/dev/null || true
+	chmod -R 777 middleware/mysql/data 2>/dev/null || true
+	chmod -R 777 middleware/redis/data 2>/dev/null || true
+	
+	echo "Created .env file with UID=$(id -u) and GID=$(id -g)"
+}
+
 # 重新构建
 build(){
+	setup_environment
 	docker-compose stop
 	docker-compose rm
 	docker-compose build
@@ -29,29 +56,34 @@ copy(){
 }
 # 启动基础环境（必须）
 middleware(){
-	docker-compose up -d bsin-mysql-3.0 bsin-redis-3.0 
+	setup_environment
+	sudo docker-compose up -d bsin-mysql-3.0 bsin-redis-3.0 
 	sleep 20
-	docker-compose up -d bsin-nacos-standalone-3.0 bsin-emqx-3.0 bsin-elasticsearch-3.0 bsin-elasticsearch-3.0-head bsin-rocketmq-namesrv-3.0 bsin-rocketmq-broker-3.0 bsin-rocketmq-init-topic-3.0 bsin-rocketmq-dashboard-3.0 #bsin-rocketmq-proxy-3.0 #bsin-elasticsearch-3.0-kibana 
+	sudo docker-compose up -d bsin-nacos-standalone-3.0 bsin-emqx-3.0 bsin-elasticsearch-3.0 bsin-elasticsearch-3.0-head bsin-rocketmq-namesrv-3.0 bsin-rocketmq-broker-3.0 bsin-rocketmq-init-topic-3.0 bsin-rocketmq-dashboard-3.0 #bsin-rocketmq-proxy-3.0 #bsin-elasticsearch-3.0-kibana 
 	sleep 20
-	docker-compose up -d bsin-seata-3.0 #bsin-nginx-3.0 #bsin-rabbitmq-3.0 bsin-milvus-3.0
+	sudo docker-compose up -d bsin-seata-3.0 #bsin-nginx-3.0 #bsin-rabbitmq-3.0 bsin-milvus-3.0
 }
 
 # 启动es环境
 elasticsearch(){
-	docker-compose up -d bsin-elasticsearch-3.0  bsin-elasticsearch-3.0-head #bsin-elasticsearch-3.0-kibana
+	setup_environment
+	sudo docker-compose up -d bsin-elasticsearch-3.0  bsin-elasticsearch-3.0-head #bsin-elasticsearch-3.0-kibana
 }
 
 # 启动rocketmq环境
 rocketmq(){
-	docker-compose up -d bsin-rocketmq-namesrv-3.0 bsin-rocketmq-broker-3.0 bsin-rocketmq-init-topic-3.0 bsin-rocketmq-dashboard-3.0 #bsin-rocketmq-proxy-3.0 
+	setup_environment
+	sudo docker-compose up -d bsin-rocketmq-namesrv-3.0 bsin-rocketmq-broker-3.0 bsin-rocketmq-init-topic-3.0 bsin-rocketmq-dashboard-3.0 bsin-rocketmq-proxy-3.0 
 }
 
 # 启动网关模块（必须）
 gateway(){
+	setup_environment
 	docker-compose up -d bsin-targe-gateway-admin-3.0 bsin-targe-gateway-3.0
 }
 # 启动server-apps模块
 server_apps(){
+	setup_environment
 	docker-compose up -d bsin-server-upms-3.0 bsin-server-waas-3.0 bsin-server-crm-3.0 bsin-server-app-agent-3.0 bsin-server-oms-3.0 bsin-server-community-3.0 bsin-server-brms-3.0 bsin-server-golang-3.0 bsin-server-mpc-client1-3.0 bsin-server-mpc-client2-3.0 bsin-server-mpc-client3-3.0 bsin-server-mpc-client4-3.0 #bsin-server-iot-3.0 bsin-server-workflow-3.0 bsin-server-workflow-admin-3.0
 }
 
@@ -106,6 +138,7 @@ mpc_client(){
 }
 # 启动ui-apps模块
 ui_apps(){
+	setup_environment
 	docker-compose up -d bsin-apps-container-3.0 bsin-ui-upms-3.0 bsin-ui-ai-agent-3.0 bsin-ui-doc-3.0 bsin-ui-waas-3.0 bsin-ui-bigan-3.0 bsin-ui-data-warehouse-3.0 bsin-ui-decision-admin-3.0 bsin-ui-sea-condition-3.0
 }
 # 关闭所有环境/模块
@@ -179,6 +212,7 @@ case "$1" in
 	ui_apps
 ;;
 "start")
+	setup_environment
 	middleware
 	# sleep 20
 	gateway
