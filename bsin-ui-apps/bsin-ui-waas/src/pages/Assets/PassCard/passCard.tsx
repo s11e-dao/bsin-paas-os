@@ -26,7 +26,7 @@ import {
 } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { PlusOutlined, ShopOutlined } from '@ant-design/icons';
+import { PlusOutlined, ShopOutlined, SettingOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './data';
 import columnsOpenCardData, { columnsOpenCardDataType } from './openCardData';
 import columnsTransferData, { columnsTransferDataType } from './transferData';
@@ -113,6 +113,9 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
   // 卡片数据源和加载状态
   const [cardDataSource, setCardDataSource] = useState([]);
   const [cardLoading, setCardLoading] = useState(false);
+  
+  // 当前选中的tab
+  const [activeTab, setActiveTab] = useState('3'); // 默认选中"数字会员卡集合列表"
 
   // 查看会员卡开卡详情
   const [isViewOpenRecord, setIsViewOpenRecord] = useState({});
@@ -146,6 +149,13 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
     
     // 加载卡片数据
     loadCardData();
+    
+    // 恢复保存的tab状态
+    const savedTab = localStorage.getItem('passCardActiveTab');
+    if (savedTab) {
+      setActiveTab(savedTab);
+      localStorage.removeItem('passCardActiveTab'); // 使用后清除
+    }
   }, []);
 
   // 加载卡片数据
@@ -396,6 +406,8 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
    * 去配置权益
    */
   const toConfigActivityEquity = async (record) => {
+    // 保存当前tab状态到localStorage
+    localStorage.setItem('passCardActiveTab', activeTab);
     // 条件分类：1、会员等级 2 数字资产 3 任务 4 活动
     record.category = '2';
     configAssetsItem(record, 'configEquity');
@@ -714,7 +726,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
           </Card>
         </Col>
         <Card bordered={false} style={{ width: '100%', marginTop: '10px' }}>
-          <Tabs defaultActiveKey="1">
+          <Tabs activeKey={activeTab} onChange={setActiveTab}>
             <Tabs.TabPane tab="开卡记录" key="1">
               {/* 会员卡开卡记录表格 */}
               <ProTable<columnsOpenCardDataType>
@@ -837,6 +849,11 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
                               key="view"
                               title="查看详情"
                               onClick={() => toViewAssetsCollection(record)}
+                            />,
+                            <SettingOutlined
+                              key="config"
+                              title="权益配置"
+                              onClick={() => toConfigActivityEquity(record)}
                             />,
                             <ShopOutlined
                               key="shelves"
