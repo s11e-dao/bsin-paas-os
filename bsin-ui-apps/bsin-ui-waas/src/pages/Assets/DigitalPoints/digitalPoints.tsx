@@ -1031,7 +1031,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
       </Modal>
       {/* 查看详情模态框 */}
       <Modal
-        title="查看数字资产Item详情"
+        title="数字资产信息"
         width={800}
         centered
         open={isViewAssetsItemModal}
@@ -1039,7 +1039,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
         onCancel={() => setIsViewAssetsItemModal(false)}
       >
         {/* 详情信息 */}
-        <Descriptions title="数字资产信息">
+        <Descriptions>
           <Descriptions.Item label="租户ID">
             {isViewItemRecord?.digitalAssetsItem?.tenantId}
           </Descriptions.Item>

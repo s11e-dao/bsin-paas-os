@@ -487,7 +487,7 @@ export default ({ setCurrentContent, putOnShelves }: Props) => {
 
       {/* 查看详情模态框 */}
       <Modal
-        title="查看数字资产"
+        title="数字资产信息"
         width={800}
         centered
         open={isViewTemplateModal}
@@ -495,7 +495,7 @@ export default ({ setCurrentContent, putOnShelves }: Props) => {
         onCancel={() => setIsViewTemplateModal(false)}
       >
         {/* 详情信息 */}
-        <Descriptions title="数字资产信息">
+        <Descriptions>
           <Descriptions.Item label="租户ID">
             {isViewRecord?.tenantId}
           </Descriptions.Item>
