@@ -182,12 +182,17 @@ export default () => {
   };
 
   /**
-   * 详情，模板类型对应
+   * 业务角色类型枚举处理
    */
-  const handleViewRecordOfType = () => {
-    let { type } = isViewRecord;
-    let typeText = type;
-    return typeText;
+  const getBizRoleTypeText = (bizRoleType: string) => {
+    const typeMap = {
+      '1': '个人用户',
+      '2': '企业用户', 
+      '3': '机构用户',
+      '4': '开发者',
+      '5': '管理员',
+    };
+    return typeMap[bizRoleType] || bizRoleType;
   };
 
   // 表格的引用，便于自定义触发
@@ -327,7 +332,7 @@ export default () => {
             {isViewRecord?.description}
           </Descriptions.Item>
           <Descriptions.Item label="业务角色类型">
-            {isViewRecord?.bizRoleType}
+            {getBizRoleTypeText(isViewRecord?.bizRoleType)}
           </Descriptions.Item>
           <Descriptions.Item label="业务角色编号">
             {isViewRecord?.bizRoleTypeNo}

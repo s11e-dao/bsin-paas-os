@@ -79,6 +79,14 @@ const columnsData: ProColumns<columnsDataType>[] = [
     width: 120,
     dataIndex: 'bizRoleType',
     hideInSearch: true,
+    valueType: 'select',
+    valueEnum: {
+      '1': { text: '个人用户', status: 'Default' },
+      '2': { text: '企业用户', status: 'Processing' },
+      '3': { text: '机构用户', status: 'Success' },
+      '4': { text: '开发者', status: 'Warning' },
+      '5': { text: '管理员', status: 'Error' },
+    },
   },
   {
     title: '业务角色编号',

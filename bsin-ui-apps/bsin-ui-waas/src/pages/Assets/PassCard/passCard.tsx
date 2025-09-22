@@ -20,10 +20,13 @@ import {
   Space,
   Tooltip,
   Divider,
+  Avatar,
+  Tag,
+  Typography,
 } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, ShopOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './data';
 import columnsOpenCardData, { columnsOpenCardDataType } from './openCardData';
 import columnsTransferData, { columnsTransferDataType } from './transferData';
@@ -63,6 +66,8 @@ import sloganLogo from '../../../assets/s11e-slogan.png';
 
 import styles from './index.css';
 import { EyeOutlined, EditOutlined, QrcodeOutlined, KeyOutlined, UploadOutlined } from '@ant-design/icons';
+
+const { Text, Title } = Typography; 
 
 export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
   let biganH5 = process.env.biganH5Url;
@@ -105,6 +110,10 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
 
   const [isViewItemRecord, setIsViewItemRecord] = useState({});
 
+  // 卡片数据源和加载状态
+  const [cardDataSource, setCardDataSource] = useState([]);
+  const [cardLoading, setCardLoading] = useState(false);
+
   // 查看会员卡开卡详情
   const [isViewOpenRecord, setIsViewOpenRecord] = useState({});
 
@@ -134,7 +143,52 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
     getCustomerProfilePageList(params).then((res) => {
       setCustomerProfileList(res?.data);
     });
+    
+    // 加载卡片数据
+    loadCardData();
   }, []);
+
+  // 加载卡片数据
+  const loadCardData = async () => {
+    setCardLoading(true);
+    try {
+      const params = {
+        current: 1,
+        pageSize: 100,
+        assetsType: '5', // pass卡类型
+      };
+      const res = await getDigitalAssetsCollectionPageList(params);
+      setCardDataSource(res.data || []);
+    } catch (error) {
+      console.error('加载卡片数据失败:', error);
+    } finally {
+      setCardLoading(false);
+    }
+  };
+
+  // 获取状态信息
+  const getStatusInfo = (status: string) => {
+    const statusMap = {
+      '0': { text: '草稿', color: 'default' },
+      '1': { text: '已发布', color: 'processing' },
+      '2': { text: '已上架', color: 'success' },
+      '3': { text: '已下架', color: 'warning' },
+    };
+    return statusMap[status] || { text: '未知', color: 'default' };
+  };
+
+  // 获取集合类型文本
+  const getCollectionTypeText = (collectionType: string) => {
+    const typeMap = {
+      '1': '数字徽章',
+      '2': 'PFP',
+      '3': '数字积分',
+      '4': '数字门票',
+      '5': 'Pass卡',
+      '6': '徽章/门票',
+    };
+    return typeMap[collectionType] || collectionType;
+  };
 
   // 获取表单
   const [FormRef] = Form.useForm();
@@ -741,41 +795,120 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
               />
             </Tabs.TabPane>
             <Tabs.TabPane tab="数字会员卡集合列表" key="3">
-              {/* 会员卡发行记录表格 */}
-              <ProTable<columnsDataType>
-                headerTitle={<TableTitle title="数字会员卡发行记录" />}
-                scroll={{ x: 900 }}
-                bordered
-                // 表头
-                columns={columns}
-                actionRef={actionRef}
-                request={async (params) => {
-                  // 品牌商户发行资产类型 1、数字徽章 2、PFP 3、数字积分 4、数字门票 5、pass卡 6、徽章/门票
-                  params.assetsType = '5';
-                  let res = await getDigitalAssetsCollectionPageList({
-                    ...params,
-                    pageNum: params.current,
-                  });
-                  console.log('😒', res);
-                  const result = {
-                    data: res.data,
-                    total: res.pagination.totalSize,
-                  };
-                  return result;
-                }}
-                rowKey="serialNo"
-                // 搜索框配置
-                search={{
-                  labelWidth: 'auto',
-                }}
-                // 搜索表单的配置
-                form={{
-                  ignoreRules: false,
-                }}
-                pagination={{
-                  pageSize: 10,
-                }}
-              />
+              {/* 会员卡发行记录卡片 */}
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <TableTitle title="数字会员卡发行记录" />
+                  <Button 
+                    type="primary" 
+                    icon={<PlusOutlined />}
+                    onClick={loadCardData}
+                    loading={cardLoading}
+                  >
+                    刷新数据
+                  </Button>
+                </div>
+                <Row gutter={[16, 16]}>
+                  {cardDataSource.filter(record => record && record.serialNo).map((record) => {
+                    const statusInfo = getStatusInfo(record.status || '0');
+                    const typeText = getCollectionTypeText(record.collectionType || '5');
+                    
+                    return (
+                      <Col xs={24} sm={12} md={8} lg={6} key={record.serialNo}>
+                        <Card
+                          loading={cardLoading}
+                          style={{ width: '100%', height: '100%', minWidth: 280 }}
+                          styles={{ body: { paddingBottom: 12 } }}
+                          cover={
+                            <div
+                              style={{
+                                height: 120,
+                                background: `linear-gradient(135deg, ${statusInfo.color === 'processing' ? '#1890ff' : 
+                                            statusInfo.color === 'success' ? '#52c41a' : 
+                                            statusInfo.color === 'warning' ? '#faad14' : '#d9d9d9'} 0%, 
+                                            ${statusInfo.color === 'processing' ? '#40a9ff' : 
+                                            statusInfo.color === 'success' ? '#73d13d' : 
+                                            statusInfo.color === 'warning' ? '#ffc53d' : '#f0f0f0'} 100%)`,
+                              }}
+                            />
+                          }
+                          actions={[
+                            <EyeOutlined
+                              key="view"
+                              title="查看详情"
+                              onClick={() => toViewAssetsCollection(record)}
+                            />,
+                            <ShopOutlined
+                              key="shelves"
+                              title="上架资产"
+                              onClick={() => putOnShelves(record)}
+                            />,
+                          ]}
+                        >
+                          <Card.Meta
+                            avatar={
+                              <Avatar
+                                style={{
+                                  backgroundColor: statusInfo.color === 'processing' ? '#1890ff' : 
+                                                 statusInfo.color === 'success' ? '#52c41a' : 
+                                                 statusInfo.color === 'warning' ? '#faad14' : '#d9d9d9',
+                                  color: '#fff',
+                                }}
+                                size="large"
+                              >
+                                {(record.symbol || 'P')[0].toUpperCase()}
+                              </Avatar>
+                            }
+                            title={
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Text strong ellipsis style={{ maxWidth: '70%' }}>
+                                  {record.name || '未知名称'}
+                                </Text>
+                                <Tag color={statusInfo.color}>
+                                  {statusInfo.text}
+                                </Tag>
+                              </div>
+                            }
+                            description={
+                              <div>
+                                <div style={{ marginBottom: 8 }}>
+                                  <Text type="secondary" style={{ fontSize: 12 }}>
+                                  合约地址: 
+                                  </Text>
+                                  <Text copyable style={{ fontSize: 12, marginLeft: 4 }}>
+                                    {record.contractAddress}
+                                  </Text>
+                                </div>
+                                
+                                <div style={{ marginBottom: 8 }}>
+                                  <Space size="small" wrap>
+                                    <Tag color="blue">{record.symbol || '-'}</Tag>
+                                    <Tag color="green">{typeText}</Tag>
+                                  </Space>
+                                </div>
+                                
+                                <div style={{ marginBottom: 8 }}>
+                                  <Text type="secondary" style={{ fontSize: 12 }}>
+                                    ID: {record.serialNo}
+                                  </Text>
+                                </div>
+                                
+                              </div>
+                            }
+                          />
+                        </Card>
+                      </Col>
+                    );
+                  })}
+                </Row>
+                
+                {/* 空状态 */}
+                {!cardLoading && cardDataSource.length === 0 && (
+                  <Card style={{ textAlign: 'center', padding: '40px' }}>
+                    <Text type="secondary">暂无数字会员卡数据</Text>
+                  </Card>
+                )}
+              </div>
             </Tabs.TabPane>
             <Tabs.TabPane tab="数字会员卡item列表" key="4">
               {/* 会员卡发行记录表格 */}
@@ -929,7 +1062,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
         onCancel={() => setIsViewAssetsCollectionModal(false)}
       >
         {/* 详情信息 */}
-        <Descriptions title="数字资产信息">
+        <Descriptions>
           <Descriptions.Item label="租户ID">
             {isViewCollectionRecord?.tenantId}
           </Descriptions.Item>
