@@ -259,6 +259,16 @@ docker-compose -f portainer.yml up -d
 5. **云服务器访问不到服务**
     - 检查安全组／防火墙，确保放通必要端口。
 
+6. rocketMQ 主题缺失
+~~~bash
+# 查看主题
+docker exec bsin-rocketmq-namesrv-3.0 sh mqadmin topicList -n localhost:9876
+# 创建主题
+docker exec bsin-rocketmq-namesrv-3.0 sh mqadmin updateTopic -n localhost:9876 -t topic_saa_studio_document_index -c DefaultCluster
+# 查看主题
+docker exec bsin-rocketmq-namesrv-3.0 sh mqadmin topicList -n localhost:9876 | grep topic_saa_studio_document_index
+~~~
+
 ## 八、端口说明
 
 | 端口   | 服务名称      |

@@ -186,3 +186,7 @@ docker/app-service/server-apps/go-any/mpc-client/client4/bsin-server-mpc-client4
 docker/app-service/server-apps/go-any/server-golang/bsin-server-golang
 
 docker/middleware/seata-2.5/seata-namingserver/
+
+docker/app-service/server-apps/ali-ai-studio/jar/
+
+docker/app-service/ui-apps/ali-ai-studio/dist/

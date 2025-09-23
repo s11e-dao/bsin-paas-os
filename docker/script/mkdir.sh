@@ -43,6 +43,8 @@ mkdir -p ./app-service/server-apps/go-any/mpc-client/client1/conf
 mkdir -p ./app-service/server-apps/go-any/mpc-client/client2/conf
 mkdir -p ./app-service/server-apps/go-any/mpc-client/client3/conf
 mkdir -p ./app-service/server-apps/go-any/mpc-client/client4/conf
+mkdir -p ./app-service/server-apps/ali-ai-studio/jar
+mkdir -p ./app-service/server-apps/ali-ai-studio/logs
 
 
 mkdir -p ./app-service/targe-gateway/jar
@@ -57,6 +59,7 @@ mkdir -p ./app-service/ui-apps/bigan/dist/
 mkdir -p ./app-service/ui-apps/data-warehouse/dist/
 mkdir -p ./app-service/ui-apps/doc/dist/
 mkdir -p ./app-service/ui-apps/sea-condition/dist/
+mkdir -p ./app-service/ui-apps/ali-ai-studio/dist/
 
 echo "2. create dir finished!!!"
 
