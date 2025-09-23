@@ -75,7 +75,7 @@ services:
       start_period: 60s
     environment:
       MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_MULTIPLE_DATABASES: bsin-nacos-config,bsin-shenyu-gateway,bsin-upms,bsin-crm,bsin-ai,bsin-waas,bsin-oms,bsin-community,bsin-brms,bsin-iot,bsin-damp,bsin-flowable,bsin-workflow,bsin-workflow-admin,bsin-orchestration,bsin-gateway,bsin-intelligent-decision,bsin-seata,bsin-mpc,bsin-mpc-client1,bsin-mpc-client2,bsin-mpc-client3,bsin-mpc-client4,agentscope-schema
+      MYSQL_MULTIPLE_DATABASES: bsin-nacos-config,bsin-shenyu-gateway,bsin-upms,bsin-crm,bsin-ai,bsin-waas,bsin-oms,bsin-community,bsin-brms,bsin-iot,bsin-damp,bsin-flowable,bsin-workflow,bsin-workflow-admin,bsin-orchestration,bsin-gateway,bsin-intelligent-decision,bsin-seata,bsin-mpc,bsin-mpc-client1,bsin-mpc-client2,bsin-mpc-client3,bsin-mpc-client4,bsin-ali-ai-agentscope
       MYSQL_INITDB_SKIP_TZINFO: 1
       MYSQL_ROOT_HOST: '%'
     networks:
@@ -728,6 +728,32 @@ services:
       compose-network: #指定network
         ipv4_address: 172.28.0.33
 
+  bsin-server-ali-ai-studio-3.0:
+    container_name: bsin-server-ali-ai-studio-3.0
+    image: bsin-server-ali-ai-studio:3.0.0
+    build:
+      context: ./app-service/server-apps/ali-ai-studio
+      dockerfile: dockerfile
+    env_file:
+      - ./app-service/server-apps/ali-ai-studio/.env
+    ports:
+      - "9180:9180"
+    volumes:
+      - ./app-service/server-apps/ali-ai-studio/logs:/home/bsin-paas-os/server-apps/ali-ai-studio/logs
+    depends_on:
+      - bsin-redis-3.0
+      - bsin-mysql-3.0
+      - bsin-rocketmq-proxy-3.0
+      - bsin-elasticsearch-3.0
+    links:
+      - bsin-redis-3.0
+      - bsin-mysql-3.0 
+      - bsin-rocketmq-proxy-3.0
+      - bsin-elasticsearch-3.0
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.34
+
   # server-apps-golang
   bsin-server-golang-3.0:
     container_name: bsin-server-golang-3.0
@@ -747,7 +773,7 @@ services:
       - bsin-redis-3.0
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.34
+        ipv4_address: 172.28.0.40
 
   bsin-server-mpc-client1-3.0:
     container_name: bsin-server-mpc-client1-3.0
@@ -765,7 +791,7 @@ services:
       - bsin-server-golang-3.0
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.35
+        ipv4_address: 172.28.0.41
   
   bsin-server-mpc-client2-3.0:
     container_name: bsin-server-mpc-client2-3.0
@@ -783,7 +809,7 @@ services:
       - bsin-server-golang-3.0
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.36
+        ipv4_address: 172.28.0.42
 
   bsin-server-mpc-client3-3.0:
     container_name: bsin-server-mpc-client3-3.0
@@ -801,7 +827,8 @@ services:
       - bsin-server-golang-3.0
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.37
+        ipv4_address: 172.28.0.43
+
   bsin-server-mpc-client4-3.0:
     container_name: bsin-server-mpc-client4-3.0
     image: bsin-server-mpc-client4:3.0.0
@@ -818,7 +845,7 @@ services:
       - bsin-server-golang-3.0
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.38
+        ipv4_address: 172.28.0.44
 
   # apps-container
   bsin-apps-container-3.0:
@@ -837,7 +864,7 @@ services:
       - ./app-service/apps-container/logs:/var/log/nginx
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.40
+        ipv4_address: 172.28.0.100
 
   # ui-apps
   bsin-ui-upms-3.0:
@@ -856,7 +883,7 @@ services:
       - ./app-service/ui-apps/upms/logs:/var/log/nginx
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.41
+        ipv4_address: 172.28.0.101
 
   bsin-ui-ai-agent-3.0:
     container_name: bsin-ui-ai-agent-3.0
@@ -874,7 +901,7 @@ services:
       - ./app-service/ui-apps/ai-agent/logs:/var/log/nginx
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.42
+        ipv4_address: 172.28.0.102
 
   bsin-ui-waas-3.0:
     container_name: bsin-ui-waas-3.0
@@ -892,7 +919,7 @@ services:
       - ./app-service/ui-apps/waas/logs:/var/log/nginx
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.43
+        ipv4_address: 172.28.0.103
 
 
   bsin-ui-decision-admin-3.0:
@@ -911,7 +938,7 @@ services:
       - ./app-service/ui-apps/decision-admin/logs:/var/log/nginx
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.44
+        ipv4_address: 172.28.0.104
 
   bsin-ui-bigan-3.0:
     container_name: bsin-ui-bigan-3.0
@@ -929,7 +956,7 @@ services:
       - ./app-service/ui-apps/bigan/logs:/var/log/nginx
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.45
+        ipv4_address: 172.28.0.105
 
   bsin-ui-data-warehouse-3.0:
     container_name: bsin-ui-data-warehouse-3.0
@@ -947,7 +974,7 @@ services:
       - ./app-service/ui-apps/data-warehouse/logs:/var/log/nginx
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.46
+        ipv4_address: 172.28.0.106
 
   bsin-ui-doc-3.0:
     container_name: bsin-ui-doc-3.0
@@ -965,7 +992,7 @@ services:
       - ./app-service/ui-apps/doc/logs:/var/log/nginx
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.47
+        ipv4_address: 172.28.0.107
 
   bsin-ui-sea-condition-3.0:
     container_name: bsin-ui-sea-condition-3.0
@@ -983,4 +1010,23 @@ services:
       - ./app-service/ui-apps/sea-condition/logs:/var/log/nginx
     networks:
       compose-network: #指定network
-        ipv4_address: 172.28.0.48
+        ipv4_address: 172.28.0.108
+
+  
+  bsin-ui-ali-ai-studio-3.0:
+    container_name: bsin-ui-ali-ai-studio-3.0
+    image: bsin-ui-ali-ai-studio:3.0.0
+    build:
+      context: ./app-service/ui-apps/ali-ai-studio
+      dockerfile: dockerfile
+    ports:
+      - "8010:80"
+    #    expose:
+    #      - "80"
+    volumes:
+      - ./app-service/ui-apps/ali-ai-studio/dist:/home/bsin-paas-os/ui-apps/ali-ai-studio/dist
+      - ./app-service/ui-apps/ali-ai-studio/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./app-service/ui-apps/ali-ai-studio/logs:/var/log/nginx
+    networks:
+      compose-network: #指定network
+        ipv4_address: 172.28.0.109

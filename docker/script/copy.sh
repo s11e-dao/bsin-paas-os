@@ -39,6 +39,8 @@ cp -rvf ../bsin-server-apps/bsin-server-go-any/deploy/bsin-server-mpc-client1 ./
 cp -rvf ../bsin-server-apps/bsin-server-go-any/deploy/bsin-server-mpc-client2 ./app-service/server-apps/go-any/mpc-client/client2/bsin-server-mpc-client2
 cp -rvf ../bsin-server-apps/bsin-server-go-any/deploy/bsin-server-mpc-client3 ./app-service/server-apps/go-any/mpc-client/client3/bsin-server-mpc-client3
 cp -rvf ../bsin-server-apps/bsin-server-go-any/deploy/bsin-server-mpc-client4 ./app-service/server-apps/go-any/mpc-client/client4/bsin-server-mpc-client4
+# ali-ai-studio
+cp -rvf /home/leonard/ssd12/bsin-paas/opensource/spring-ai-alibaba/spring-ai-alibaba-studio/spring-ai-alibaba-studio-server/spring-ai-alibaba-studio-server-admin/target/spring-ai-alibaba-studio-server-admin.jar ./app-service/server-apps/ali-ai-studio/jar/ali-ai-studio-server-3.0.0-SNAPSHOT.jar
 
 
 echo "5.3 begin copy .env files"
@@ -64,6 +66,8 @@ cp ../.env ./app-service/server-apps/go-any/mpc-client/client1 -rvf
 cp ../.env ./app-service/server-apps/go-any/mpc-client/client2 -rvf
 cp ../.env ./app-service/server-apps/go-any/mpc-client/client3 -rvf
 cp ../.env ./app-service/server-apps/go-any/mpc-client/client4 -rvf
+# ali-ai-studio
+cp ../.env ./app-service/server-apps/ali-ai-studio -rvf
 
 
 
@@ -88,8 +92,11 @@ cp ../bsin-server-apps/bsin-server-go-any/script/bsin-mpc-client2.sql ./middlewa
 cp ../bsin-server-apps/bsin-server-go-any/script/bsin-mpc-client3.sql ./middleware/mysql/db/sqls/ -rvf
 cp ../bsin-server-apps/bsin-server-go-any/script/bsin-mpc-client4.sql ./middleware/mysql/db/sqls/ -rvf
 
-##
+## sea-condition
 cp -rvf /home/leonard/ssd12/bsin-paas/prj/sea/bsin-ui-sea-condition/dist/* ./app-service/ui-apps/sea-condition/dist/
+
+## ali-ai-studio
+cp -rvf /home/leonard/ssd12/bsin-paas/opensource/spring-ai-alibaba/spring-ai-alibaba-studio/spring-ai-alibaba-studio-server/frontend/packages/main/dist/* ./app-service/ui-apps/ali-ai-studio/dist/
 
 ## jiujiu-paas，业务闭源
 cp -rvf ../../jiujiu-paas/jiujiu-paas-server/bsin-server-oms/oms-server/target/oms-server-3.0.0-SNAPSHOT.jar ./app-service/server-apps/oms/jar/oms-server-3.0.0-SNAPSHOT.jar

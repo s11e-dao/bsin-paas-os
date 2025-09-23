@@ -2,7 +2,7 @@
 
 # 使用说明，用来提示输入参数
 usage(){
-	echo "Usage: sh deploy.sh [build|middleware|gateway|server_apps|ui_apps|start|stop|rm|clean|copy|app_agent|upms|waas|crm|brms|search|workflow|workflow_admin|iot|elasticsearch|rocketmq]"
+	echo "Usage: sh deploy.sh [build|middleware|gateway|server_apps|ui_apps|ali_ai_studio|start|stop|rm|clean|copy|app_agent|upms|waas|crm|brms|search|workflow|workflow_admin|iot|elasticsearch|rocketmq]"
 	exit 1
 }
 
@@ -81,10 +81,11 @@ gateway(){
 	setup_environment
 	docker-compose up -d bsin-targe-gateway-admin-3.0 bsin-targe-gateway-3.0
 }
+
 # 启动server-apps模块
 server_apps(){
 	setup_environment
-	docker-compose up -d bsin-server-upms-3.0 bsin-server-waas-3.0 bsin-server-crm-3.0 bsin-server-app-agent-3.0 bsin-server-oms-3.0 bsin-server-community-3.0 bsin-server-brms-3.0 bsin-server-golang-3.0 bsin-server-mpc-client1-3.0 bsin-server-mpc-client2-3.0 bsin-server-mpc-client3-3.0 bsin-server-mpc-client4-3.0 #bsin-server-iot-3.0 bsin-server-workflow-3.0 bsin-server-workflow-admin-3.0
+	docker-compose up -d bsin-server-upms-3.0 bsin-server-waas-3.0 bsin-server-crm-3.0 bsin-server-app-agent-3.0 bsin-server-oms-3.0 bsin-server-community-3.0 bsin-server-brms-3.0 bsin-server-golang-3.0 bsin-server-mpc-client1-3.0 bsin-server-mpc-client2-3.0 bsin-server-mpc-client3-3.0 bsin-server-mpc-client4-3.0 bsin-server-ali-ai-studio-3.0 #bsin-server-iot-3.0 bsin-server-workflow-3.0 bsin-server-workflow-admin-3.0
 }
 
 # 启动upms模块
@@ -136,10 +137,16 @@ golang(){
 mpc_client(){
 	docker-compose up -d bsin-server-mpc-client1-3.0 bsin-server-mpc-client2-3.0 bsin-server-mpc-client3-3.0 bsin-server-mpc-client4-3.0
 }
+
+ali_ai_studio(){
+	middleware
+	docker-compose up -d bsin-server-ali-ai-studio-3.0 bsin-ui-ali-ai-studio-3.0
+}
+
 # 启动ui-apps模块
 ui_apps(){
 	setup_environment
-	docker-compose up -d bsin-apps-container-3.0 bsin-ui-upms-3.0 bsin-ui-ai-agent-3.0 bsin-ui-doc-3.0 bsin-ui-waas-3.0 bsin-ui-bigan-3.0 bsin-ui-data-warehouse-3.0 bsin-ui-decision-admin-3.0 bsin-ui-sea-condition-3.0
+	docker-compose up -d bsin-apps-container-3.0 bsin-ui-upms-3.0 bsin-ui-ai-agent-3.0 bsin-ui-doc-3.0 bsin-ui-waas-3.0 bsin-ui-bigan-3.0 bsin-ui-data-warehouse-3.0 bsin-ui-decision-admin-3.0 bsin-ui-sea-condition-3.0 bsin-ui-ali-ai-studio-3.0
 }
 # 关闭所有环境/模块
 stop(){
@@ -206,7 +213,16 @@ case "$1" in
 ;;
 "mpc_client")
 	golang
+;;
+"ali_ai_studio")
+	ali_ai_studio
+;;
+"mpc_client")
+	golang
 	mpc_client
+;;
+"ali_ai_studio")
+	ali_ai_studio
 ;;
 "ui_apps")
 	ui_apps
