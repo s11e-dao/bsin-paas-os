@@ -16,3 +16,9 @@
 [submodule "bsin-app-scaffold"]
 	path = bsin-app-scaffold
 	url = https://gitee.com/s11e-DAO/bsin-app-scaffold.git
+[submodule "bsin-decision-ui"]
+	path = bsin-ui-lib/bsin-decision-ui
+	url = https://gitee.com/s11e-DAO/bsin-decision-ui.git
+[submodule "bsin-agent-ui"]
+	path = bsin-ui-lib/bsin-agent-ui
+	url = https://gitee.com/s11e-DAO/bsin-agent-ui.git
