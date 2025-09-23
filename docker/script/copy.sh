@@ -75,7 +75,7 @@ echo "5.3 begin copy .sql files"
 
 cp ../bsin-targe-gateway-admin/script/bsin-shenyu-gateway.sql ./middleware/mysql/db/sqls/ -rvf
 cp ../bsin-server-apps/bsin-server-app-agent/script/bsin-ai.sql ./middleware/mysql/db/sqls/ -rvf
-cp ../bsin-server-apps/bsin-server-app-agent/script/agentscope-schema.sql ./middleware/mysql/db/sqls/ -rvf
+cp ../bsin-server-apps/bsin-server-app-agent/script/agentscope-schema.sql ./middleware/mysql/db/sqls/bsin-ali-ai-agentscope.sql -rvf
 cp ../bsin-server-apps/bsin-server-brms/script/bsin-brms.sql ./middleware/mysql/db/sqls/ -rvf
 cp ../bsin-server-apps/bsin-server-crm/script/bsin-crm.sql ./middleware/mysql/db/sqls/ -rvf
 cp ../bsin-server-apps/bsin-server-file/script/bsin-file.sql ./middleware/mysql/db/sqls/ -rvf
