@@ -7,9 +7,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.BsinEvent;
+import me.flyray.bsin.domain.entity.BsinEventModel;
 import me.flyray.bsin.exception.BusinessException;
 import me.flyray.bsin.facade.service.EventService;
 import me.flyray.bsin.infrastructure.mapper.EventMapper;
+import me.flyray.bsin.infrastructure.mapper.EventModelMapper;
 import me.flyray.bsin.mybatis.utils.Pagination;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import me.flyray.bsin.security.domain.LoginUser;
@@ -34,6 +36,8 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     private EventMapper eventMapper;
+    @Autowired
+    private EventModelMapper eventModelMapper;
 
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
@@ -87,6 +91,30 @@ public class EventServiceImpl implements EventService {
         return pageList;
     }
 
+    @ApiDoc(desc = "modelConfig")
+    @ShenyuDubboClient("/modelConfig")
+    @Override
+    public BsinEventModel modelConfig(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        BsinEventModel eventModel = BsinServiceContext.getReqBodyDto(BsinEventModel.class, requestMap);
+        eventModel.setTenantId(loginUser.getTenantId());
+        eventModel.setSerialNo(BsinSnowflake.getId());
+        eventModelMapper.insert(eventModel);
+        return eventModel;
+    }
+
+    @ApiDoc(desc = "getModelConfig")
+    @ShenyuDubboClient("/getModelConfig")
+    @Override
+    public BsinEventModel getModelConfig(Map<String, Object> requestMap) {
+        String eventCode = MapUtils.getString(requestMap, "eventCode");
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        LambdaQueryWrapper<BsinEventModel> warapper = new LambdaQueryWrapper<>();
+        warapper.eq(BsinEventModel::getTenantId, loginUser.getTenantId());
+        warapper.eq(BsinEventModel::getEventCode, eventCode);
+        BsinEventModel eventModel = eventModelMapper.selectOne(warapper);
+        return eventModel;
+    }
 
     /**
      * 事件详情

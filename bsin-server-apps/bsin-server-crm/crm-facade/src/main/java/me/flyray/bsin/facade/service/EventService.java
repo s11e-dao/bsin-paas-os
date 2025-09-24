@@ -2,6 +2,7 @@ package me.flyray.bsin.facade.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.BsinEvent;
+import me.flyray.bsin.domain.entity.BsinEventModel;
 
 import java.util.Map;
 
@@ -36,5 +37,15 @@ public interface EventService {
      * 租户下所有
      */
     public IPage<?> getPageList(Map<String, Object> requestMap);
+
+    /**
+     * 事件模型配置
+     */
+    public BsinEventModel modelConfig(Map<String, Object> requestMap);
+
+    /**
+     * 事件模型详情
+     */
+    public BsinEventModel getModelConfig(Map<String, Object> requestMap);
 
 }
