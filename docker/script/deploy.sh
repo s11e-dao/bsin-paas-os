@@ -59,7 +59,9 @@ middleware(){
 	setup_environment
 	sudo docker-compose up -d bsin-mysql-3.0 bsin-redis-3.0 
 	sleep 20
-	sudo docker-compose up -d bsin-nacos-standalone-3.0 bsin-emqx-3.0 bsin-elasticsearch-3.0 bsin-elasticsearch-3.0-head bsin-rocketmq-namesrv-3.0 bsin-rocketmq-broker-3.0 bsin-rocketmq-init-topic-3.0 bsin-rocketmq-dashboard-3.0 #bsin-rocketmq-proxy-3.0 #bsin-elasticsearch-3.0-kibana 
+	sudo docker-compose up -d bsin-nacos-standalone-3.0 bsin-emqx-3.0 bsin-elasticsearch-3.0 bsin-elasticsearch-3.0-head #bsin-elasticsearch-3.0-kibana
+	sleep 2
+	rocketmq
 	sleep 20
 	sudo docker-compose up -d bsin-seata-3.0 #bsin-nginx-3.0 #bsin-rabbitmq-3.0 bsin-milvus-3.0
 }
