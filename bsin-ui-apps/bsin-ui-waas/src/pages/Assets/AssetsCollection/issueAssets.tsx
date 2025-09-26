@@ -244,7 +244,6 @@ export default ({ setCurrentContent }) => {
                 <Radio value="true">是</Radio>
               </Radio.Group>
             </Form.Item>
-
             
             {onChainFlag === 'true' && (
               <>

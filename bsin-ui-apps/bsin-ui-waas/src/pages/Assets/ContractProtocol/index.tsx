@@ -353,6 +353,7 @@ export default () => {
         open={addContractProtocolModal}
         onOk={confirmTemplate}
         onCancel={onCancelTemplate}
+        width={780}
       >
         <Form
           name="basic"
@@ -362,19 +363,6 @@ export default () => {
           // 表单默认值
           initialValues={{ protocolStandards: 'Other', type: '10' }}
         >
-          <Form.Item label="上传合约编译文件" name="contractFile">
-            <div class="el-upload__tip text-red">
-              支持多个文件上传，依次点击“选择合约文件”，添加同种类型的合约
-            </div>
-            <Dragger {...uploadPropsFile} listType="text">
-              <p className="ant-upload-drag-icon">
-                <InboxOutlined />
-              </p>
-              <p className="ant-upload-text">点击上传</p>
-            </Dragger>
-            {/* {contractFile ? contractFile : null} */}
-          </Form.Item>
-
           <Form.Item
             label="协议标准"
             name="protocolStandards"
@@ -400,10 +388,10 @@ export default () => {
             <Select style={{ width: '100%' }}>
               <Option value="1">数字徽章</Option>
               <Option value="2">PFP</Option>
-              <Option value="3">账户-DP</Option>
+              <Option value="3">数字积分</Option>
               <Option value="4">数字门票</Option>
               <Option value="5">Pass卡</Option>
-              <Option value="6">账户-BC</Option>
+              <Option value="6">门票</Option>
               <Option value="7">满减</Option>
               <Option value="8">权限</Option>
               <Option value="9">会员等级</Option>
@@ -464,6 +452,20 @@ export default () => {
           >
             <Input />
           </Form.Item>
+
+          <Form.Item label="上传合约编译文件" name="contractFile">
+            <div class="el-upload__tip text-red">
+              支持多个文件上传，依次点击“选择合约文件”，添加同种类型的合约
+            </div>
+            <Dragger {...uploadPropsFile} listType="text">
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">点击上传</p>
+            </Dragger>
+            {/* {contractFile ? contractFile : null} */}
+          </Form.Item>
+
           <Form.Item
             label="协议bytecode"
             name="protocolBytecode"
@@ -500,7 +502,7 @@ export default () => {
       </Modal>
       {/* 查看详情模态框 */}
       <Modal
-        title="查看合约协议"
+        title="合约协议信息"
         width={800}
         centered
         visible={isViewTemplateModal}
@@ -508,7 +510,7 @@ export default () => {
         onCancel={() => setIsViewTemplateModal(false)}
       >
         {/* 详情信息 */}
-        <Descriptions title="合约协议信息">
+        <Descriptions>
           <Descriptions.Item label="租户ID">
             {isViewRecord?.tenantId}
           </Descriptions.Item>

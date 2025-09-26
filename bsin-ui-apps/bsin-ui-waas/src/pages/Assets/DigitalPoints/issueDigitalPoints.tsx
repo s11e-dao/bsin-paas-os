@@ -27,6 +27,7 @@ export default ({ setCurrentContent }) => {
   const [protocolCode, setProtocolCode] = useState('');
   const [protocolStandards, setProtocolStandards] = useState('');
   const [protocolChange, setProtocolChange] = useState(false);
+  const [onChainFlag, setOnChainFlag] = useState('false');
 
   useEffect(() => {
     // 查询合约模板协议
@@ -108,6 +109,7 @@ export default ({ setCurrentContent }) => {
               chainEnv: 'test',
               chainType: 'conflux',
               bondingCurveFlag: '0',
+              onChainFlag: 'false',
               sponsorFlag: '0',
               decimals: 18,
               initialSupply: '0',
@@ -131,35 +133,13 @@ export default ({ setCurrentContent }) => {
                   if (contractProtocol?.protocolStandards == 'ERC20') {
                     return (
                       <Option value={contractProtocol?.protocolCode}>
-                        {(contractProtocol?.serialNo).slice(-4) +
-                          '-' +
-                          contractProtocol?.protocolCode}
+                        {contractProtocol?.protocolName}
                       </Option>
                     );
                   }
                 })}
               </Select>
             </Form.Item>
-
-            <Form.Item
-              label="合约协议编号"
-              name="contractProtocolNo"
-              rules={[{ required: true, message: '请选输入协议编号!' }]}
-            >
-              <Input disabled />
-            </Form.Item>
-            {protocolChange ? (
-              <Form.Item
-                label="集合资产协议标准"
-                name="collectionStandards"
-                rules={[{ required: false, message: '请输入集合资产类型!' }]}
-              >
-                <Input
-                  defaultValue={contractProtocolChoosed?.protocolStandards}
-                  disabled
-                />
-              </Form.Item>
-            ) : null}
 
             {protocolChange ? (
               <Form.Item
@@ -170,7 +150,7 @@ export default ({ setCurrentContent }) => {
                 <Input defaultValue={contractProtocolChoosed?.type} disabled />
               </Form.Item>
             ) : null}
-
+            
             <Form.Item
               label="积分名称"
               name="name"
@@ -223,6 +203,80 @@ export default ({ setCurrentContent }) => {
             </Form.Item>
 
             <Form.Item
+              label="是否上链"
+              name="onChainFlag"
+              rules={[{ required: true, message: '请选择是否上链!' }]}
+            >
+              <Radio.Group 
+                value={onChainFlag}
+                onChange={(e) => setOnChainFlag(e.target.value)}
+              >
+                <Radio value="false">否</Radio>
+                <Radio value="true">是</Radio>
+              </Radio.Group>
+            </Form.Item>
+
+            {onChainFlag === 'true' && (
+              <>
+                <Form.Item
+                  label="合约协议编号"
+                  name="contractProtocolNo"
+                  rules={[{ required: true, message: '请选输入协议编号!' }]}
+                >
+                  <Input disabled />
+                </Form.Item>
+                {protocolChange ? (
+                  <Form.Item
+                    label="集合资产协议标准"
+                    name="collectionStandards"
+                    rules={[{ required: false, message: '请输入集合资产类型!' }]}
+                  >
+                    <Input
+                      defaultValue={contractProtocolChoosed?.protocolStandards}
+                      disabled
+                    />
+                  </Form.Item>
+                ) : null}
+
+                <Form.Item
+                  label="是否赞助合约"
+                  name="sponsorFlag"
+                  rules={[{ required: true, message: '请选择是否赞助合约!' }]}
+                >
+                  <Radio.Group value="0">
+                    <Radio value="0">否</Radio>
+                    <Radio value="1">是</Radio>
+                  </Radio.Group>
+                </Form.Item>
+
+                <Form.Item
+                  label="发行环境"
+                  name="chainEnv"
+                  rules={[{ required: true, message: '请选择发行环境!' }]}
+                >
+                  <Radio.Group value="test">
+                    <Radio value="test">测试网</Radio>
+                    <Radio value="main">正式网</Radio>
+                  </Radio.Group>
+                </Form.Item>
+
+                <Form.Item
+                  label="发行区块链"
+                  name="chainType"
+                  rules={[{ required: true, message: '请选择发行区块链!' }]}
+                >
+                  <Select style={{ width: '100%' }}>
+                    <Option value="conflux">树图</Option>
+                    <Option value="polygon">polygon</Option>
+                    <Option value="bsc">币安</Option>
+                    <Option value="tron">波场</Option>
+                    <Option value="wenchang">文昌链</Option>
+                  </Select>
+                </Form.Item>
+              </>
+            )}
+
+            <Form.Item
               label="基于联合曲线发行"
               name="bondingCurveFlag"
               rules={[
@@ -233,42 +287,6 @@ export default ({ setCurrentContent }) => {
                 <Radio value="0">否</Radio>
                 <Radio value="1">是</Radio>
               </Radio.Group>
-            </Form.Item>
-
-            <Form.Item
-              label="是否赞助合约"
-              name="sponsorFlag"
-              rules={[{ required: true, message: '请选择是否赞助合约!' }]}
-            >
-              <Radio.Group value="0">
-                <Radio value="0">否</Radio>
-                <Radio value="1">是</Radio>
-              </Radio.Group>
-            </Form.Item>
-
-            <Form.Item
-              label="发行环境"
-              name="chainEnv"
-              rules={[{ required: true, message: '请选择发行环境!' }]}
-            >
-              <Radio.Group value="test">
-                <Radio value="test">测试网</Radio>
-                <Radio value="main">正式网</Radio>
-              </Radio.Group>
-            </Form.Item>
-
-            <Form.Item
-              label="发行区块链"
-              name="chainType"
-              rules={[{ required: true, message: '请选择发行区块链!' }]}
-            >
-              <Select style={{ width: '100%' }}>
-                <Option value="conflux">树图</Option>
-                <Option value="polygon">polygon</Option>
-                <Option value="bsc">币安</Option>
-                <Option value="tron">波场</Option>
-                <Option value="wenchang">文昌链</Option>
-              </Select>
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 7, span: 12 }}>
