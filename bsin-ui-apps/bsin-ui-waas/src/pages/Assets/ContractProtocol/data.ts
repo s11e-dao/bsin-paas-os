@@ -169,7 +169,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   // table里面的内容
   {
     title: '协议ID',
-    width: 165,
+    width: 170,
     dataIndex: 'serialNo',
     fixed: 'left',
     hideInSearch: true,
@@ -291,7 +291,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '操作',
-    width: 100,
+    width: 160,
     hideInSearch: true,
     dataIndex: 'action',
     fixed: 'right',

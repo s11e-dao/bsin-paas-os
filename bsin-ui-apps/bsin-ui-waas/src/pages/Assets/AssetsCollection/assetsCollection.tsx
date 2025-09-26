@@ -20,7 +20,7 @@ import {
 } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { PlusOutlined, EyeOutlined, ShopOutlined } from '@ant-design/icons';
+import { PlusOutlined, EyeOutlined, ShopOutlined, SettingOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './data';
 import {
   getDigitalAssetsCollectionPageList,
@@ -57,9 +57,10 @@ interface AssetRecord {
 interface Props {
   setCurrentContent: (content: string) => void;
   putOnShelves: (record: AssetRecord) => void;
+  configEquity: (record: AssetRecord, type: string) => void;
 }
 
-export default ({ setCurrentContent, putOnShelves }: Props) => {
+export default ({ setCurrentContent, putOnShelves, configEquity }: Props) => {
   const { TextArea } = Input;
   const { Option } = Select;
   // 控制新增模态框
@@ -403,6 +404,15 @@ export default ({ setCurrentContent, putOnShelves }: Props) => {
                       key="view"
                       title="查看详情"
                       onClick={() => toViewContractTemplate(record)}
+                    />,
+                    <SettingOutlined
+                      key="config"
+                      title="权益配置"
+                      onClick={() => {
+                        // 设置记录类别为数字资产
+                        record.category = '2';
+                        configEquity(record, 'configEquity');
+                      }}
                     />,
                     <ShopOutlined
                       key="shelves"

@@ -91,8 +91,20 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
     setIsViewAssetsItemObtainCodeModal,
   ] = useState(false);
 
+  // 当前选中的tab
+  const [activeTab, setActiveTab] = useState('1'); // 默认选中"交易流水"
+
   // 数字积分参数详情
   const [isViewTokenParamRecord, setIsViewTokenParamRecord] = useState({});
+
+  // 恢复保存的tab状态
+  React.useEffect(() => {
+    const savedTab = localStorage.getItem('digitalPointsActiveTab');
+    if (savedTab) {
+      setActiveTab(savedTab);
+      localStorage.removeItem('digitalPointsActiveTab'); // 使用后清除
+    }
+  }, []);
 
   // 查看集合详情
   const [isViewCollectionRecord, setIsViewCollectionRecord] = useState({});
@@ -623,7 +635,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
       </Row>
 
       <Card bordered={false} style={{ width: '100%' }}>
-        <Tabs defaultActiveKey="1">
+        <Tabs activeKey={activeTab} onChange={setActiveTab}>
           <Tabs.TabPane tab="交易流水" key="1">
             {/* 交易记录表格 */}
             <ProTable<columnsTradingDataType>

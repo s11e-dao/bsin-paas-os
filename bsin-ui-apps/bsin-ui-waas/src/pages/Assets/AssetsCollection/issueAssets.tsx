@@ -34,6 +34,7 @@ export default ({ setCurrentContent }) => {
   const [protocolCode, setProtocolCode] = useState('');
   const [protocolStandards, setProtocolStandards] = useState('');
   const [protocolChange, setProtocolChange] = useState(false);
+  const [onChainFlag, setOnChainFlag] = useState('false');
 
   useEffect(() => {
     // 查询协议
@@ -126,12 +127,13 @@ export default ({ setCurrentContent }) => {
           <Form
             name="basic"
             form={FormRef}
-            labelCol={{ span: 3 }}
-            wrapperCol={{ span: 7 }}
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 8 }}
             // 表单默认值
             initialValues={{
               chainEnv: 'test',
               metadataImageSameFlag: '0',
+              onChainFlag: 'false',
               bondingCurveFlag: '0',
               sponsorFlag: '0',
               chainType: 'conflux',
@@ -144,6 +146,7 @@ export default ({ setCurrentContent }) => {
               collectionType: '',
             }}
           >
+
             <Form.Item
               label="资产类型"
               name="protocolCode"
@@ -165,37 +168,14 @@ export default ({ setCurrentContent }) => {
                   ) {
                     return (
                       <Option value={contractProtocol?.protocolCode}>
-                        {(contractProtocol?.serialNo).slice(-4) +
-                          '-' +
-                          contractProtocol?.protocolCode +
-                          '-' +
-                          contractProtocol?.version}
+                        {contractProtocol?.protocolName}
                       </Option>
                     );
                   }
                 })}
               </Select>
             </Form.Item>
-            <Form.Item
-              label="合约协议编号"
-              name="contractProtocolNo"
-              rules={[{ required: true, message: '请选输入协议编号!' }]}
-            >
-              <Input disabled />
-            </Form.Item>
-            {protocolChange ? (
-              <Form.Item
-                label="集合资产协议标准"
-                name="collectionStandards"
-                rules={[{ required: false, message: '请输入集合资产类型!' }]}
-              >
-                <Input
-                  defaultValue={contractProtocolChoosed?.protocolStandards}
-                  disabled
-                />
-              </Form.Item>
-            ) : null}
-
+            
             {protocolChange ? (
               <Form.Item
                 label="集合资产类型"
@@ -250,43 +230,118 @@ export default ({ setCurrentContent }) => {
                 })}
               </Select>
             </Form.Item>
+            
             <Form.Item
-              label="元数据图片路径"
-              name="metadataFilePathNo"
-              rules={[{ required: true, message: '请选择元数据图片路径!' }]}
+              label="是否上链"
+              name="onChainFlag"
+              rules={[{ required: true, message: '请选择是否上链!' }]}
             >
-              <Select style={{ width: '100%' }}>
-                <Option value="1">请选择元数据图片路径</Option>
-                {metadataFilePathList?.map((metadataFilePath) => {
-                  return (
-                    <Option value={metadataFilePath?.serialNo}>
-                      {metadataFilePath?.fileName}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-            <Form.Item
-              label="baseURI"
-              name="baseURI"
-              rules={[{ required: true, message: '请输入元数据前缀!' }]}
-            >
-              <Input placeholder="http://ipfs.s11edao.com/ipfs/" />
-            </Form.Item>
-            {protocolCode.match('ERC1155') || protocolCode.match('erc1155') ? (
-              <Form.Item
-                label="是否是同质化铸造NFT"
-                name="metadataImageSameFlag"
-                rules={[
-                  { required: true, message: '请选择是否是同质化铸造NFT!' },
-                ]}
+              <Radio.Group 
+                value={onChainFlag}
+                onChange={(e) => setOnChainFlag(e.target.value)}
               >
-                <Radio.Group value="0">
-                  <Radio value="0">否</Radio>
-                  <Radio value="1">是</Radio>
-                </Radio.Group>
-              </Form.Item>
-            ) : null}
+                <Radio value="false">否</Radio>
+                <Radio value="true">是</Radio>
+              </Radio.Group>
+            </Form.Item>
+
+            
+            {onChainFlag === 'true' && (
+              <>
+                <Form.Item
+                  label="合约协议编号"
+                  name="contractProtocolNo"
+                  rules={[{ required: true, message: '请选输入协议编号!' }]}
+                >
+                  <Input disabled />
+                </Form.Item>
+                {protocolChange ? (
+                  <Form.Item
+                    label="集合资产协议标准"
+                    name="collectionStandards"
+                    rules={[{ required: false, message: '请输入集合资产类型!' }]}
+                  >
+                    <Input
+                      defaultValue={contractProtocolChoosed?.protocolStandards}
+                      disabled
+                    />
+                  </Form.Item>
+                ) : null}
+
+                <Form.Item
+                  label="元数据图片路径"
+                  name="metadataFilePathNo"
+                  rules={[{ required: true, message: '请选择元数据图片路径!' }]}
+                >
+                  <Select style={{ width: '100%' }}>
+                    <Option value="1">请选择元数据图片路径</Option>
+                    {metadataFilePathList?.map((metadataFilePath) => {
+                      return (
+                        <Option value={metadataFilePath?.serialNo}>
+                          {metadataFilePath?.fileName}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+                <Form.Item
+                  label="baseURI"
+                  name="baseURI"
+                  rules={[{ required: true, message: '请输入元数据前缀!' }]}
+                >
+                  <Input placeholder="http://ipfs.s11edao.com/ipfs/" />
+                </Form.Item>
+                {protocolCode.match('ERC1155') || protocolCode.match('erc1155') ? (
+                  <Form.Item
+                    label="是否是同质化铸造NFT"
+                    name="metadataImageSameFlag"
+                    rules={[
+                      { required: true, message: '请选择是否是同质化铸造NFT!' },
+                    ]}
+                  >
+                    <Radio.Group value="0">
+                      <Radio value="0">否</Radio>
+                      <Radio value="1">是</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                ) : null}
+                
+                <Form.Item
+                  label="是否赞助合约"
+                  name="sponsorFlag"
+                  rules={[{ required: true, message: '请选择是否赞助合约!' }]}
+                >
+                  <Radio.Group value="0">
+                    <Radio value="0">否</Radio>
+                    <Radio value="1">是</Radio>
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item
+                  label="发行环境"
+                  name="chainEnv"
+                  rules={[{ required: true, message: '请选择发行环境!' }]}
+                >
+                  <Radio.Group value="test">
+                    <Radio value="test">测试网</Radio>
+                    <Radio value="main">正式网</Radio>
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item
+                  label="发行区块链"
+                  name="chainType"
+                  rules={[{ required: true, message: '请选择发行区块链!' }]}
+                >
+                  <Select style={{ width: '100%' }}>
+                    <Option value="conflux">树图</Option>
+                    <Option value="polygon">polygon</Option>
+                    <Option value="bsc">币安</Option>
+                    <Option value="tron">波场</Option>
+                    <Option value="wenchang">文昌链</Option>
+                  </Select>
+                </Form.Item>
+              </>
+            )}
+            
             <Form.Item
               label="是否基于联合曲线发行"
               name="bondingCurveFlag"
@@ -298,39 +353,6 @@ export default ({ setCurrentContent }) => {
                 <Radio value="0">否</Radio>
                 <Radio value="1">是</Radio>
               </Radio.Group>
-            </Form.Item>
-            <Form.Item
-              label="是否赞助合约"
-              name="sponsorFlag"
-              rules={[{ required: true, message: '请选择是否赞助合约!' }]}
-            >
-              <Radio.Group value="0">
-                <Radio value="0">否</Radio>
-                <Radio value="1">是</Radio>
-              </Radio.Group>
-            </Form.Item>
-            <Form.Item
-              label="发行环境"
-              name="chainEnv"
-              rules={[{ required: true, message: '请选择发行环境!' }]}
-            >
-              <Radio.Group value="test">
-                <Radio value="test">测试网</Radio>
-                <Radio value="main">正式网</Radio>
-              </Radio.Group>
-            </Form.Item>
-            <Form.Item
-              label="发行区块链"
-              name="chainType"
-              rules={[{ required: true, message: '请选择发行区块链!' }]}
-            >
-              <Select style={{ width: '100%' }}>
-                <Option value="conflux">树图</Option>
-                <Option value="polygon">polygon</Option>
-                <Option value="bsc">币安</Option>
-                <Option value="tron">波场</Option>
-                <Option value="wenchang">文昌链</Option>
-              </Select>
             </Form.Item>
             <Form.Item label={null}>
               <Button

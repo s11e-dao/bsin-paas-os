@@ -88,6 +88,8 @@ export default ({ setCurrentContent }) => {
         <Button
           type="primary"
           onClick={() => {
+            // 保存当前tab状态为"数字积分集合列表"
+            localStorage.setItem('digitalPointsActiveTab', '3');
             setCurrentContent('digitalPoints');
           }}
           className={styles.btn}

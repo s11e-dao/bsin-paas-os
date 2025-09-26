@@ -161,7 +161,7 @@ export default () => {
               className="common-img-list"
               style={{
                 width: '100px',
-                height: '100px',
+                height: '25px',
                 marginLeft: '4px',
                 overflow: 'hidden',
               }}

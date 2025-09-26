@@ -25,7 +25,7 @@ export const bizRoleAppColumns: ProColumns<any>[] = [
     title: '应用ID',
     dataIndex: 'appId',
     key: 'appId',
-    width: 150,
+    width: 170,
   },
   {
     title: '应用描述',
