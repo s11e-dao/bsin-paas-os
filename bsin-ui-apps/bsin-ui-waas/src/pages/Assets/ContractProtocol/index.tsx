@@ -53,7 +53,7 @@ export default () => {
   // 查看模态框
   const [isViewTemplateModal, setIsViewTemplateModal] = useState(false);
   // 查看
-  const [isViewRecord, setIsViewRecord] = useState({});
+  const [isViewRecord, setIsViewRecord] = useState<columnsDataType | null>(null);
   // 获取表单
   const [FormRef] = Form.useForm();
 
@@ -102,7 +102,7 @@ export default () => {
   });
 
   // Table action 的引用，便于自定义触发
-  const actionRef = React.useRef<ActionType>();
+  const actionRef = React.useRef<ActionType>(null);
 
   // 上传合约文件
   const uploadPropsFile: UploadProps = {
@@ -124,11 +124,13 @@ export default () => {
         reader.readAsText(file);
         reader.onload = () => {
           console.log(reader.result);
-          let JsonFile = JSON.parse(reader.result);
-          console.log(JsonFile);
-          FormRef.setFieldValue('protocolName', JsonFile?.contractName);
-          FormRef.setFieldValue('protocolBytecode', JsonFile?.bytecode);
-          FormRef.setFieldValue('protocolAbi', JSON.stringify(JsonFile?.abi));
+          if (reader.result && typeof reader.result === 'string') {
+            let JsonFile = JSON.parse(reader.result);
+            console.log(JsonFile);
+            FormRef.setFieldValue('protocolName', JsonFile?.contractName);
+            FormRef.setFieldValue('protocolBytecode', JsonFile?.bytecode);
+            FormRef.setFieldValue('protocolAbi', JSON.stringify(JsonFile?.abi));
+          }
           resolve(file as any);
         };
       });
@@ -225,7 +227,7 @@ export default () => {
   /**
    * 删除模板
    */
-  const toDelContractTemplate = async (record) => {
+  const toDelContractTemplate = async (record: columnsDataType) => {
     console.log('record', record);
     let { serialNo } = record;
     let delRes = await deleteContractProtocol({ serialNo });
@@ -239,7 +241,7 @@ export default () => {
   /**
    * 查看详情
    */
-  const toViewContractTemplate = async (record) => {
+  const toViewContractTemplate = async (record: columnsDataType) => {
     let { serialNo } = record;
     let viewRes = await getContractProtocolDetail({ serialNo });
     setIsViewTemplateModal(true);
@@ -251,6 +253,7 @@ export default () => {
    * 详情，模板类型对应
    */
   const handleViewRecordOfType = () => {
+    if (!isViewRecord) return '';
     let { type } = isViewRecord;
     if (type == `1`) {
       return '数字资产';
@@ -279,6 +282,7 @@ export default () => {
 
   const handleViewRecordOfCategory = () => {
     // 合约分类： 1、Core 2、Factory 3、Extension 4、Wrapper  5、Proxy  6、Other
+    if (!isViewRecord) return '';
     let { category } = isViewRecord;
     if (category == `1`) {
       return 'Core';
@@ -454,7 +458,7 @@ export default () => {
           </Form.Item>
 
           <Form.Item label="上传合约编译文件" name="contractFile">
-            <div class="el-upload__tip text-red">
+            <div className="el-upload__tip text-red">
               支持多个文件上传，依次点击“选择合约文件”，添加同种类型的合约
             </div>
             <Dragger {...uploadPropsFile} listType="text">
@@ -469,7 +473,6 @@ export default () => {
           <Form.Item
             label="协议bytecode"
             name="protocolBytecode"
-            editable="false"
             rules={[{ required: true, message: '请输入协议bytecode!' }]}
           >
             <TextArea />
