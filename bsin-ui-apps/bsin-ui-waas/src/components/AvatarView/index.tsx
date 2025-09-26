@@ -9,11 +9,16 @@ import {
   getLocalStorageInfo,
 } from '@/utils/localStorageInfo'
 
-export default ({ avatar, setUploadAvatarUrl }) => {
+interface Props {
+  avatar: string | null;
+  setUploadAvatarUrl: (url: string) => void;
+}
+
+export default ({ avatar, setUploadAvatarUrl }: Props) => {
   let bsinFileUploadUrl = process.env.bsinFileUploadUrl
   let tenantAppType = process.env.tenantAppType
 
-  const [avatarUrl, setAvatarUrl] = useState<string>()
+  const [avatarUrl, setAvatarUrl] = useState<string>('')
 
   // 查询Copilot信息
   useEffect(() => {

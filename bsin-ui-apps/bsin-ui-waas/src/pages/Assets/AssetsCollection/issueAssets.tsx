@@ -19,17 +19,21 @@ import { issueDigitalAssetsCollection } from './service';
 import { getContractProtocolList } from './../ContractProtocol/service';
 import { getMetadataTemplatePageList } from './../MetadataTemplate/service';
 import { getMetadataFileList } from './../MetadataList/service';
-import styles from './index.css';
+// import styles from './index.css';
 
-export default ({ setCurrentContent }) => {
+interface Props {
+  setCurrentContent: (content: string) => void;
+}
 
-  const [contractProtocolList, setContractProtocolList] = useState([]);
+export default ({ setCurrentContent }: Props) => {
 
-  const [contractProtocolChoosed, setContractProtocolChoosed] = useState({});
+  const [contractProtocolList, setContractProtocolList] = useState<any[]>([]);
 
-  const [metadataTemplateList, setMetadataTemplateList] = useState([]);
+  const [contractProtocolChoosed, setContractProtocolChoosed] = useState<any>({});
 
-  const [metadataFilePathList, setMetadataFilePath] = useState([]);
+  const [metadataTemplateList, setMetadataTemplateList] = useState<any[]>([]);
+
+  const [metadataFilePathList, setMetadataFilePath] = useState<any[]>([]);
 
   const [protocolCode, setProtocolCode] = useState('');
   const [protocolStandards, setProtocolStandards] = useState('');
@@ -97,7 +101,7 @@ export default ({ setCurrentContent }) => {
   //   };
   // }, [arrow]);
 
-  const protocolCodeChange = (value) => {
+  const protocolCodeChange = (value: string) => {
     console.log(value);
     contractProtocolList?.map((contractProtocol) => {
       if (contractProtocol?.protocolCode == value) {
@@ -118,12 +122,12 @@ export default ({ setCurrentContent }) => {
           onClick={() => {
             setCurrentContent('assetsCollection');
           }}
-          className={styles.btn}
+          style={{ float: 'right' }}
         >
           返回
         </Button>
         <Descriptions title="发行数字资产"></Descriptions>
-        <div className={styles.addForm}>
+        <div>
           <Form
             name="basic"
             form={FormRef}

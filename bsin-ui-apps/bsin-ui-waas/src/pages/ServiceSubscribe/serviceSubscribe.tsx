@@ -10,7 +10,7 @@ import ProForm, {
     ProFormCheckbox
 } from '@ant-design/pro-form';
 import { Modal, message, Button, Row, Col, Card, Checkbox } from 'antd';
-import type { CheckboxValueType } from 'antd/es/checkbox/Group';
+type CheckboxValueType = string | number | boolean;
 import {
     getLocalStorageInfo,
     setLocalStorageInfo,
@@ -29,9 +29,13 @@ const waitTime = (time: number = 100) => {
     });
 };
 
-export default ({ setCurrentContent }) => {
+interface Props {
+  setCurrentContent: (content: string) => void;
+}
 
-    const [checkedList, setCheckedList] = useState<CheckboxValueType[]>();
+export default ({ setCurrentContent }: Props) => {
+
+    const [checkedList, setCheckedList] = useState<CheckboxValueType[]>([]);
 
     const onChange = (list: CheckboxValueType[]) => {
         console.log(list)
@@ -39,7 +43,7 @@ export default ({ setCurrentContent }) => {
     };
 
     // 可授权应用集合
-    const [authorizableAppList, setAuthorizableAppList] = useState([]);
+    const [authorizableAppList, setAuthorizableAppList] = useState<any[]>([]);
 
     useEffect(() => {
         // 查询商户可授权应用
@@ -48,9 +52,9 @@ export default ({ setCurrentContent }) => {
         };
         getMerchantAuthorizableAppList(params).then((res) => {
             console.log(res?.data);
-            let typeNoListTemp = [];
+            let typeNoListTemp: any[] = [];
             if (res?.code == 0) {
-                res?.data.map((item) => {
+                res?.data.map((item: any) => {
                     console.log(item);
                     let typeNoJson = {
                         label: item.appName,
@@ -68,7 +72,7 @@ export default ({ setCurrentContent }) => {
     /**
    * 确认订阅服务
    */
-  const confirmRegisterMerchant = (checkedAppIds) => {
+  const confirmRegisterMerchant = (checkedAppIds: any) => {
     // 获取表单结果
     let reqParam = {
       orgCode: getLocalStorageInfo('merchantInfo')?.merchantName,
@@ -91,6 +95,7 @@ export default ({ setCurrentContent }) => {
             >
                 <StepsForm<{
                     name: string;
+                    appIds: any;
                 }>
                     onFinish={async (values) => {
                         console.log(values);

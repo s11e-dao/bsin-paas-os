@@ -44,7 +44,7 @@ export default () => {
   const { Option } = Select;
 
   // 表头数据
-  const [allData, setAllData] = React.useState<AllData>();
+  const [allData, setAllData] = React.useState<AllData | undefined>(undefined);
   // 添加activeTab状态来控制当前激活的Tab
   const [activeTab, setActiveTab] = React.useState<string>('1');
   // 添加刷新触发器，用于通知子组件刷新数据

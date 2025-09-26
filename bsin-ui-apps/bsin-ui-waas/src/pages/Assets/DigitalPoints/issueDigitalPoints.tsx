@@ -19,11 +19,15 @@ import { issueDigitalPoints } from './service';
 import { getContractProtocolList } from './../ContractProtocol/service';
 import { getMetadataTemplatePageList } from './../MetadataTemplate/service';
 import { getMetadataFileList } from './../MetadataList/service';
-import styles from './index.css';
+// import styles from './index.css';
 
-export default ({ setCurrentContent }) => {
-  const [contractProtocolList, setContractProtocolList] = useState([]);
-  const [contractProtocolChoosed, setContractProtocolChoosed] = useState({});
+interface Props {
+  setCurrentContent: (content: string) => void;
+}
+
+export default ({ setCurrentContent }: Props) => {
+  const [contractProtocolList, setContractProtocolList] = useState<any[]>([]);
+  const [contractProtocolChoosed, setContractProtocolChoosed] = useState<any>({});
   const [protocolCode, setProtocolCode] = useState('');
   const [protocolStandards, setProtocolStandards] = useState('');
   const [protocolChange, setProtocolChange] = useState(false);
@@ -70,7 +74,7 @@ export default ({ setCurrentContent }) => {
       .catch(() => { });
   };
 
-  const protocolCodeChange = (value) => {
+  const protocolCodeChange = (value: string) => {
     console.log(value);
     contractProtocolList?.map((contractProtocol) => {
       if (contractProtocol?.protocolCode == value) {
@@ -93,12 +97,12 @@ export default ({ setCurrentContent }) => {
             localStorage.setItem('digitalPointsActiveTab', '3');
             setCurrentContent('digitalPoints');
           }}
-          className={styles.btn}
+          style={{ float: 'right' }}
         >
           返回
         </Button>
         <Descriptions title="发行数字积分"></Descriptions>
-        <div className={styles.addForm}>
+        <div>
           <Form
             name="basic"
             form={FormRef}
