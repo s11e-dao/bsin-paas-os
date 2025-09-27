@@ -28,7 +28,7 @@ interface Props {
 export default ({ setCurrentContent }: Props) => {
   const [contractProtocolList, setContractProtocolList] = useState<any[]>([]);
   const [contractProtocolChoosed, setContractProtocolChoosed] = useState<any>({});
-  const [protocolCode, setProtocolCode] = useState('');
+  const [contractProtocolNo, setContractProtocolNo] = useState('');
   const [protocolStandards, setProtocolStandards] = useState('');
   const [protocolChange, setProtocolChange] = useState(false);
   const [onChainFlag, setOnChainFlag] = useState('false');
@@ -40,6 +40,7 @@ export default ({ setCurrentContent }: Props) => {
       pageSize: '99',
     };
     getContractProtocolList(params).then((res) => {
+      console.log('协议列表数据:', res?.data);
       setContractProtocolList(res?.data);
     });
   }, []);
@@ -53,15 +54,19 @@ export default ({ setCurrentContent }: Props) => {
    */
   const confirmIssue = () => {
     // 获取输入的表单值
+    console.log('开始验证表单...');
+    console.log('当前表单值:', FormRef.getFieldsValue());
     FormRef.validateFields()
       .then(async () => {
         // 获取表单结果
         let response = FormRef.getFieldsValue();
         response.assetsType = contractProtocolChoosed.type;
-        console.log(response);
+        console.log('验证通过，表单数据:', response);
         issueDigitalPoints(response).then((res) => {
           console.log('issue', res);
           if (res?.code == 0) {
+            // 保存当前tab状态为"数字积分集合列表"
+            localStorage.setItem('digitalPointsActiveTab', '3');
             // 返回列表
             setCurrentContent('digitalPoints');
             // 重置输入的表单
@@ -71,21 +76,12 @@ export default ({ setCurrentContent }: Props) => {
           }
         });
       })
-      .catch(() => { });
+      .catch((errorInfo) => {
+        console.log('表单验证失败:', errorInfo);
+        console.log('失败时的表单值:', FormRef.getFieldsValue());
+      });
   };
 
-  const protocolCodeChange = (value: string) => {
-    console.log(value);
-    contractProtocolList?.map((contractProtocol) => {
-      if (contractProtocol?.protocolCode == value) {
-        setContractProtocolChoosed(contractProtocol);
-        FormRef.setFieldValue('contractProtocolNo', contractProtocol.serialNo);
-        console.log(contractProtocol);
-      }
-    });
-    setProtocolCode(value);
-    setProtocolChange(true);
-  };
 
   return (
     <>
@@ -122,25 +118,45 @@ export default ({ setCurrentContent }: Props) => {
           >
             <Form.Item
               label="资产类型"
-              name="protocolCode"
+              name="contractProtocolNo"
               rules={[{ required: true, message: '请选择协议类型!' }]}
             >
               <Select
                 style={{ width: '100%' }}
+                placeholder="请选择资产类型"
                 onChange={(value) => {
-                  protocolCodeChange(value);
+                  console.log('选择协议类型:', value, '类型:', typeof value);
+                  
+                  // 确保值转为字符串，防止类型不匹配
+                  const stringValue = String(value);
+                  setContractProtocolNo(stringValue);
+                  
+                  // 查找协议时也转换为字符串比较
+                  const selectedProtocol = contractProtocolList?.find(p => String(p.serialNo) === stringValue);
+                  console.log('找到的协议:', selectedProtocol);
+                  
+                  if (selectedProtocol) {
+                    setContractProtocolChoosed(selectedProtocol);
+                    FormRef.setFieldValue('contractProtocolSerialNo', selectedProtocol.serialNo);
+                    setProtocolChange(true);
+                  }
+                  
+                  console.log('最终表单值:', FormRef.getFieldsValue());
                 }}
               >
-                <Option value="1">请选择资产类型</Option>
-                {contractProtocolList?.map((contractProtocol) => {
+                {contractProtocolList?.map((contractProtocol, index) => {
                   //筛选出ERC20的合约
+                  console.log(`协议[${index}]:`, contractProtocol);
                   if (contractProtocol?.protocolStandards == 'ERC20') {
+                    const protocolValue = contractProtocol?.serialNo;
+                    console.log(`协议值:`, protocolValue, '类型:', typeof protocolValue);
                     return (
-                      <Option value={contractProtocol?.protocolCode}>
+                      <Option key={index} value={String(protocolValue)}>
                         {contractProtocol?.protocolName}
                       </Option>
                     );
                   }
+                  return null;
                 })}
               </Select>
             </Form.Item>
@@ -224,7 +240,7 @@ export default ({ setCurrentContent }: Props) => {
               <>
                 <Form.Item
                   label="合约协议编号"
-                  name="contractProtocolNo"
+                  name="contractProtocolSerialNo"
                   rules={[{ required: true, message: '请选输入协议编号!' }]}
                 >
                   <Input disabled />
