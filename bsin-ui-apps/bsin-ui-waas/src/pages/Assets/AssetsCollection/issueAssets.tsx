@@ -35,6 +35,7 @@ export default ({ setCurrentContent }: Props) => {
 
   const [metadataFilePathList, setMetadataFilePath] = useState<any[]>([]);
 
+  const [contractProtocolNo, setContractProtocolNo] = useState('');
   const [protocolCode, setProtocolCode] = useState('');
   const [protocolStandards, setProtocolStandards] = useState('');
   const [protocolChange, setProtocolChange] = useState(false);
@@ -101,18 +102,6 @@ export default ({ setCurrentContent }: Props) => {
   //   };
   // }, [arrow]);
 
-  const protocolCodeChange = (value: string) => {
-    console.log(value);
-    contractProtocolList?.map((contractProtocol) => {
-      if (contractProtocol?.protocolCode == value) {
-        setContractProtocolChoosed(contractProtocol);
-        FormRef.setFieldValue('contractProtocolNo', contractProtocol.serialNo);
-        console.log(contractProtocol);
-      }
-    });
-    setProtocolCode(value);
-    setProtocolChange(true);
-  };
 
   return (
     <>
@@ -153,42 +142,68 @@ export default ({ setCurrentContent }: Props) => {
 
             <Form.Item
               label="资产类型"
-              name="protocolCode"
-              rules={[{ required: true, message: '请选择资产类型!' }]}
+              name="contractProtocolNo"
+              rules={[{ required: true, message: '请选择协议类型!' }]}
             >
               <Select
                 style={{ width: '100%' }}
+                placeholder="请选择资产类型"
                 onChange={(value) => {
-                  protocolCodeChange(value);
+                  console.log('选择协议类型:', value, '类型:', typeof value);
+                  
+                  // 确保值转为字符串，防止类型不匹配
+                  const stringValue = String(value);
+                  setContractProtocolNo(stringValue);
+                  
+                  // 查找协议时也转换为字符串比较
+                  const selectedProtocol = contractProtocolList?.find(p => String(p.serialNo) === stringValue);
+                  console.log('找到的协议:', selectedProtocol);
+                  
+                  if (selectedProtocol) {
+                    setContractProtocolChoosed(selectedProtocol);
+                    FormRef.setFieldValue('contractProtocolNo', selectedProtocol.serialNo);
+                    FormRef.setFieldValue('assetsType', selectedProtocol.type);
+                    setProtocolChange(true);
+                  }
+                  
+                  console.log('最终表单值:', FormRef.getFieldsValue());
                 }}
               >
-                <Option value="1">请选择资产类型</Option>
-                {contractProtocolList?.map((contractProtocol) => {
+                {contractProtocolList?.map((contractProtocol, index) => {
                   //筛选出ERC721/1155的合约
-                  console.log(contractProtocol?.protocolStandards);
+                  console.log(`协议[${index}]:`, contractProtocol);
                   if (
-                    contractProtocol?.protocolStandards == 'ERC721' ||
-                    contractProtocol?.protocolStandards == 'ERC1155'
+                    contractProtocol?.protocolStandards === 'ERC721' ||
+                    contractProtocol?.protocolStandards === 'ERC1155'
                   ) {
+                    const protocolValue = contractProtocol?.serialNo;
+                    console.log(`协议值:`, protocolValue, '类型:', typeof protocolValue);
                     return (
-                      <Option value={contractProtocol?.protocolCode}>
+                      <Option key={index} value={String(protocolValue)}>
                         {contractProtocol?.protocolName}
                       </Option>
                     );
                   }
+                  return null;
                 })}
               </Select>
             </Form.Item>
             
-            {protocolChange ? (
-              <Form.Item
+            <Form.Item
                 label="集合资产类型"
-                name="assetsCollectionType"
+                name="assetsType"
                 rules={[{ required: false, message: '请输入集合资产类型!' }]}
               >
-                <Input defaultValue={contractProtocolChoosed?.type} disabled />
+                <Input value={contractProtocolChoosed?.type} disabled />
               </Form.Item>
-            ) : null}
+
+            <Form.Item
+              label="合约协议编号"
+              name="contractProtocolNo"
+              rules={[{ required: true, message: '请选输入协议编号!' }]}
+              >
+              <Input disabled />
+            </Form.Item>
 
             <Form.Item
               label="集合名称"
@@ -251,13 +266,6 @@ export default ({ setCurrentContent }: Props) => {
             
             {onChainFlag === 'true' && (
               <>
-                <Form.Item
-                  label="合约协议编号"
-                  name="contractProtocolNo"
-                  rules={[{ required: true, message: '请选输入协议编号!' }]}
-                >
-                  <Input disabled />
-                </Form.Item>
                 {protocolChange ? (
                   <Form.Item
                     label="集合资产协议标准"

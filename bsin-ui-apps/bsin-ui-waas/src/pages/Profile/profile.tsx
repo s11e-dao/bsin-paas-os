@@ -442,7 +442,7 @@ export default ({ setCurrentContent, configAssetsItem }) => {
       </Modal>
       {/* 查看Profile详情模态框 */}
       <Modal
-        title="查看Profile详情"
+        title="Profile信息"
         width={800}
         centered
         visible={isViewProfileModal}
@@ -450,7 +450,7 @@ export default ({ setCurrentContent, configAssetsItem }) => {
         onCancel={() => setIsViewProfileModal(false)}
       >
         {/* 详情信息 */}
-        <Descriptions title="Profile信息">
+        <Descriptions>
           <Descriptions.Item label="ID">
             {isViewTransferRecord?.serialNo}
           </Descriptions.Item>

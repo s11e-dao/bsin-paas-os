@@ -577,7 +577,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
               suffix="%"
             />
             <Button
-              style={{ marginTop: 16, height: 40 }}
+              style={{ marginTop: 16, height: 32 }}
               type="primary"
               onClick={async () => {
                 setCurrentContent('issueDigitalPoints');
@@ -597,7 +597,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
               prefix={<ArrowDownOutlined />}
               suffix="%"
             />
-            <Button style={{ marginTop: 16, height: 40 }} type="dashed">
+            <Button style={{ marginTop: 16, height: 32 }} type="dashed">
               国库资金
             </Button>
           </Card>
@@ -612,7 +612,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
               prefix={<ArrowDownOutlined />}
               suffix="%"
             />
-            <Button style={{ marginTop: 16, height: 40 }} type="dashed">
+            <Button style={{ marginTop: 16, height: 32 }} type="dashed">
               社区收入
             </Button>
           </Card>
@@ -627,7 +627,7 @@ export default ({ setCurrentContent, putOnShelves, configAssetsItem }) => {
               prefix={<ArrowUpOutlined />}
               suffix="%"
             />
-            <Button style={{ marginTop: 16, height: 40 }} type="dashed">
+            <Button style={{ marginTop: 16, height: 32 }} type="dashed">
               社区支出
             </Button>
           </Card>

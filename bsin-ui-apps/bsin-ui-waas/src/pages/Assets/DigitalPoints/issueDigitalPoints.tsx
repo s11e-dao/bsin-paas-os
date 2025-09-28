@@ -137,7 +137,8 @@ export default ({ setCurrentContent }: Props) => {
                   
                   if (selectedProtocol) {
                     setContractProtocolChoosed(selectedProtocol);
-                    FormRef.setFieldValue('contractProtocolSerialNo', selectedProtocol.serialNo);
+                    FormRef.setFieldValue('contractProtocolNo', selectedProtocol.serialNo);
+                    FormRef.setFieldValue('assetsType', selectedProtocol.type);
                     setProtocolChange(true);
                   }
                   
@@ -161,15 +162,21 @@ export default ({ setCurrentContent }: Props) => {
               </Select>
             </Form.Item>
 
-            {protocolChange ? (
-              <Form.Item
+            <Form.Item
                 label="集合资产类型"
                 name="assetsType"
                 rules={[{ required: false, message: '请输入集合资产类型!' }]}
               >
-                <Input defaultValue={contractProtocolChoosed?.type} disabled />
+                <Input value={contractProtocolChoosed?.type} disabled />
               </Form.Item>
-            ) : null}
+
+            <Form.Item
+              label="合约协议编号"
+              name="contractProtocolNo"
+              rules={[{ required: true, message: '请选输入协议编号!' }]}
+              >
+              <Input disabled />
+            </Form.Item>
             
             <Form.Item
               label="积分名称"
@@ -238,13 +245,6 @@ export default ({ setCurrentContent }: Props) => {
 
             {onChainFlag === 'true' && (
               <>
-                <Form.Item
-                  label="合约协议编号"
-                  name="contractProtocolSerialNo"
-                  rules={[{ required: true, message: '请选输入协议编号!' }]}
-                >
-                  <Input disabled />
-                </Form.Item>
                 {protocolChange ? (
                   <Form.Item
                     label="集合资产协议标准"
