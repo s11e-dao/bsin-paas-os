@@ -192,7 +192,7 @@ export default ({ setCurrentContent, assetsCollectionRecord }) => {
               multimediaType: '1',
               digitalAssetsCollectionNo: assetsCollectionRecord.serialNo,
               name: assetsCollectionRecord.name,
-              assetsType: assetsCollectionRecord.collectionType,
+              assetsType: assetsCollectionRecord.assetsType,
               inventory: assetsCollectionRecord.inventory,
               // coverImage: metadataFile?.coverImage
             }}
@@ -207,7 +207,7 @@ export default ({ setCurrentContent, assetsCollectionRecord }) => {
 
             <Form.Item label="资产类型" name="assetsType">
               <InputNumber
-                defaultValue={assetsCollectionRecord.collectionType}
+                defaultValue={assetsCollectionRecord.assetsType}
                 disabled
               />
             </Form.Item>
@@ -244,7 +244,7 @@ export default ({ setCurrentContent, assetsCollectionRecord }) => {
             >
               <InputNumber min={1} />
             </Form.Item>
-            {assetsCollectionRecord.collectionType == '5' ? (
+            {assetsCollectionRecord.assetsType == '5' ? (
               <Form.Item
                 label="获取方式"
                 name="obtainMethod"
