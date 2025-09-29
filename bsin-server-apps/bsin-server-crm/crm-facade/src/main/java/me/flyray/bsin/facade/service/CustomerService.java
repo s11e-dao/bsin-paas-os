@@ -28,18 +28,14 @@ public interface CustomerService {
   /**
    *
    * 登录切换，根据type:
-   *
    * @see BizRoleType
-   *
    * 来切换登录角色，返回token
    *
    * */
   public Map<String, Object> loginSwitch(Map<String, Object> requestMap) ;
 
   /**
-   *
    * 客户注册
-   *
    * */
   public CustomerBase register(Map<String, Object> requestMap)throws UnsupportedEncodingException ;
 
@@ -52,27 +48,20 @@ public interface CustomerService {
 
   /**
    * 客户注册登录接口:用户注册成一个客户，还不是会员，会员需要开通
-   *
    * 1、微信注册登录
-   *
    * 2、手机验证码注册登录
-   *
    * */
   public Map<String, Object> registerOrLogin(Map<String, Object> requestMap)throws UnsupportedEncodingException ;
 
   /**
-   *
    * 微信平台授权登录
-   *
    * */
   public Map<String, Object> getOpenId(Map<String, Object> requestMap) throws UnsupportedEncodingException;
 
   /**
    *
    * web3登录
-   *
    * 前端钱包签名，后端验证之后换取token
-   *
    * */
   public Map<String, Object> web3Login(Map<String, Object> requestMap) throws SignatureException, UnsupportedEncodingException;
 
@@ -80,17 +69,13 @@ public interface CustomerService {
   public void identityVerification(Map<String, Object> requestMap);
 
   /**
-   *
    * 分页查询客户信息
-   *
    * */
   public IPage<?> getPageList(Map<String, Object> requestMap);
 
   /**
    * 查询客户信息
-   *
    * 1、基础信息
-   *
    * 2、等级信息
    * */
   public CustomerBase getDetail(Map<String, Object> requestMap);
@@ -117,16 +102,18 @@ public interface CustomerService {
   public Map<String, Object> incentiveDistribution(Map<String, Object> requestMap);
 
   /**
-   *
    * 根据数组查询客户信息
-   *
    * */
   public List<?> getListByCustomerNos(Map<String, Object> requestMap);
 
-  /** 实名认证 */
+  /**
+   * 实名认证
+   * */
   public CustomerBase certification(Map<String, Object> requestMap) throws Exception;
 
-  /** 设置钱包信息 */
+  /**
+   * 设置钱包信息
+   * */
   public void settingWallet(Map<String, Object> requestMap);
 
   /**
@@ -148,7 +135,6 @@ public interface CustomerService {
 
   /**
    * 本月连续签到次数
-   *
    * @param requestMap
    * @return
    */
@@ -157,7 +143,6 @@ public interface CustomerService {
 
   /**
    * 获取累计签到数
-   *
    * @param requestMap
    * @return
    */
@@ -165,7 +150,6 @@ public interface CustomerService {
 
   /**
    * 签到
-   *
    * @param requestMap
    * @return
    */
@@ -173,7 +157,6 @@ public interface CustomerService {
 
   /**
    * 签到结果
-   *
    * @param requestMap
    * @return
    */
@@ -181,7 +164,6 @@ public interface CustomerService {
 
   /**
    * 签到信息
-   *
    * @param requestMap
    * @return
    */

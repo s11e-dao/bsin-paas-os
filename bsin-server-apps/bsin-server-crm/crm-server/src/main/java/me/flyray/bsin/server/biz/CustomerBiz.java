@@ -133,7 +133,6 @@ public class CustomerBiz {
           throw new BusinessException(ResponseCode.PASSWORD_ERROR);
         }
       }
-
       return customerInfo;
     }
 
