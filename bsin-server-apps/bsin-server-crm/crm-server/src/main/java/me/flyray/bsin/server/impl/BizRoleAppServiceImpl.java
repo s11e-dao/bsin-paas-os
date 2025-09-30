@@ -170,26 +170,14 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
     @Override
     public BizRoleApp wechatAgentLogin(Map<String, Object> requestMap) throws JsonProcessingException {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-        if (merchantNo == null) {
-            merchantNo = loginUser.getMerchantNo();
-//            if (merchantNo == null) {
-//                throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-//            }
-        }
-        String customerNo = MapUtils.getString(requestMap, "customerNo");
-        if (customerNo == null) {
-            customerNo = loginUser.getCustomerNo();
-//            if (customerNo == null) {
-//                throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
-//            }
-        }
-        String tenantId = MapUtils.getString(requestMap, "tenantId");
+        String merchantNo = StringUtils.defaultIfBlank(
+            MapUtils.getString(requestMap, "merchantNo"), loginUser.getMerchantNo());
+        String customerNo = StringUtils.defaultIfBlank(
+            MapUtils.getString(requestMap, "customerNo"), loginUser.getCustomerNo());
+        String tenantId = StringUtils.defaultIfBlank(
+            MapUtils.getString(requestMap, "tenantId"), loginUser.getTenantId());
         if (tenantId == null) {
-            tenantId = loginUser.getTenantId();
-            if (tenantId == null) {
-                throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
-            }
+            throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
         }
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         String operation = MapUtils.getString(requestMap, "operation");
@@ -260,12 +248,10 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
     @Override
     public BizRoleApp updateWechatLoginStatus(Map<String, Object> requestMap) throws JsonProcessingException {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+        String merchantNo = StringUtils.defaultIfBlank(
+            MapUtils.getString(requestMap, "merchantNo"), loginUser.getMerchantNo());
         if (merchantNo == null) {
-            merchantNo = loginUser.getMerchantNo();
-            if (merchantNo == null) {
-                throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-            }
+            throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
         }
         String appId = MapUtils.getString(requestMap, "appId");
         String serialNo = MapUtils.getString(requestMap, "serialNo");
@@ -284,12 +270,10 @@ public class BizRoleAppServiceImpl implements BizRoleAppService {
     @Override
     public List<?> getWechatLoginList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+        String merchantNo = StringUtils.defaultIfBlank(
+            MapUtils.getString(requestMap, "merchantNo"), loginUser.getMerchantNo());
         if (merchantNo == null) {
-            merchantNo = loginUser.getMerchantNo();
-            if (merchantNo == null) {
-                throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-            }
+            throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
         }
         String customerNo = MapUtils.getString(requestMap, "customerNo");
         String tenantId = loginUser.getTenantId();

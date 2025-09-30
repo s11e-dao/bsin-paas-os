@@ -89,17 +89,13 @@ public class AccountServiceImpl implements AccountService {
       throws UnsupportedEncodingException {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String bizRoleType = MapUtils.getString(requestMap, "bizRoleType");
-    String bizRoleTypeNo = MapUtils.getString(requestMap, "bizRoleTypeNo");
-    if (bizRoleTypeNo == null) {
-      bizRoleTypeNo = loginUser.getBizRoleTypeNo();
-      if(bizRoleTypeNo == null){
-        throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
-      }
+    String bizRoleTypeNo = StringUtils.defaultIfBlank(
+        MapUtils.getString(requestMap, "bizRoleTypeNo"), loginUser.getBizRoleTypeNo());
+    if(bizRoleTypeNo == null){
+      throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
     }
-    String tenantId = MapUtils.getString(requestMap, "tenantId");
-    if (tenantId == null) {
-      tenantId = loginUser.getTenantId();
-    }
+    String tenantId = StringUtils.defaultIfBlank(
+        MapUtils.getString(requestMap, "tenantId"), loginUser.getTenantId());
 
     String ccy = MapUtils.getString(requestMap, "ccy");
     String amount = MapUtils.getString(requestMap, "amount");
@@ -247,14 +243,10 @@ public class AccountServiceImpl implements AccountService {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
 
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-    String tenantId = MapUtils.getString(requestMap, "tenantId");
-    if (tenantId == null) {
-      tenantId = loginUser.getTenantId();
-    }
-    String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-    }
+    String tenantId = StringUtils.defaultIfBlank(
+        MapUtils.getString(requestMap, "tenantId"), loginUser.getTenantId());
+    String merchantNo = StringUtils.defaultIfBlank(
+        MapUtils.getString(requestMap, "merchantNo"), loginUser.getMerchantNo());
     String customerNo = MapUtils.getString(requestMap, "customerNo");
 
     String bizRoleType = MapUtils.getString(requestMap, "bizRoleType");
@@ -275,9 +267,7 @@ public class AccountServiceImpl implements AccountService {
       isAutoOpenAccount = Boolean.parseBoolean(openAccount);
     }
 
-    if (customerNo == null) {
-      customerNo = loginUser.getCustomerNo();
-    }
+    customerNo = StringUtils.defaultIfBlank(customerNo, loginUser.getCustomerNo());
     Account accountDetail = null;
     Account customerAccount =
         BsinServiceContext.getReqBodyDto(Account.class, requestMap);
