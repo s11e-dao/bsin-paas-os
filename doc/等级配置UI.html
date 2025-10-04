@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>等级规则配置系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f5f5; }
+        .header { background: white; border-bottom: 1px solid #e5e5e5; padding: 20px 40px; }
+        .header h1 { font-size: 24px; color: #333; margin-bottom: 5px; }
+        .header p { color: #999; font-size: 14px; }
+        .container { max-width: 1400px; margin: 20px auto; padding: 0 40px; display: flex; gap: 20px; }
+        .sidebar { width: 260px; flex-shrink: 0; }
+        .sidebar-panel { background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .sidebar-title { font-weight: 600; margin-bottom: 15px; color: #333; }
+        .type-btn { width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px; border: none; background: white; border-radius: 8px; cursor: pointer; margin-bottom: 8px; transition: all 0.2s; }
+        .type-btn:hover { background: #f5f5f5; }
+        .type-btn.active { background: #e3f2fd; color: #1976d2; }
+        .type-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; }
+        .quick-btn { width: 100%; text-align: left; padding: 10px 12px; border: none; background: white; color: #666; font-size: 14px; cursor: pointer; border-radius: 6px; margin-bottom: 6px; }
+        .quick-btn:hover { background: #f5f5f5; }
+        .main { flex: 1; }
+        .card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .tabs { display: flex; border-bottom: 1px solid #e5e5e5; }
+        .tab { padding: 16px 24px; border: none; background: none; cursor: pointer; font-size: 15px; color: #666; border-bottom: 2px solid transparent; }
+        .tab.active { color: #1976d2; border-bottom-color: #1976d2; font-weight: 500; }
+        .tab-content { padding: 30px; }
+        .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .content-header h2 { font-size: 18px; color: #333; margin-bottom: 5px; }
+        .content-header p { color: #999; font-size: 13px; }
+        .btn-primary { background: #1976d2; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px; }
+        .btn-primary:hover { background: #1565c0; }
+        .level-item { border: 1px solid #e5e5e5; border-radius: 8px; padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
+        .level-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-2px); }
+        .level-info { display: flex; align-items: center; gap: 15px; }
+        .level-badge { width: 50px; height: 50px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px; }
+        .level-details h3 { font-size: 16px; color: #333; margin-bottom: 5px; }
+        .level-tag { display: inline-block; padding: 3px 10px; background: #f5f5f5; color: #666; font-size: 12px; border-radius: 4px; margin-right: 8px; }
+        .level-desc { color: #999; font-size: 14px; margin-top: 5px; }
+        .action-btns { display: flex; gap: 8px; }
+        .icon-btn { width: 32px; height: 32px; border: none; background: #f5f5f5; border-radius: 6px; cursor: pointer; color: #666; display: flex; align-items: center; justify-content: center; }
+        .icon-btn:hover { background: #e3f2fd; color: #1976d2; }
+        .rule-item { border: 1px solid #e5e5e5; border-radius: 8px; margin-bottom: 15px; overflow: hidden; }
+        .rule-header { padding: 20px; background: #fafafa; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .rule-header:hover { background: #f5f5f5; }
+        .rule-title { display: flex; align-items: center; gap: 12px; }
+        .rule-title h3 { font-size: 15px; color: #333; margin-bottom: 8px; }
+        .rule-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+        .rule-tag { padding: 4px 10px; border-radius: 4px; font-size: 12px; }
+        .tag-blue { background: #e3f2fd; color: #1976d2; }
+        .tag-green { background: #e8f5e9; color: #388e3c; }
+        .tag-purple { background: #f3e5f5; color: #7b1fa2; }
+        .rule-detail { padding: 20px; background: white; display: none; }
+        .rule-detail.show { display: block; }
+        .condition-item { background: #fafafa; padding: 15px; border-radius: 6px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+        .dimension-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .dimension-card { border: 1px solid #e5e5e5; border-radius: 8px; padding: 20px; transition: all 0.2s; }
+        .dimension-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .dimension-card h3 { font-size: 15px; color: #333; margin-bottom: 10px; }
+        .dimension-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+        .meta-tag { padding: 3px 8px; background: #f5f5f5; color: #666; font-size: 11px; border-radius: 3px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
+        .modal.show { display: flex; }
+        .modal-content { background: white; border-radius: 12px; width: 600px; max-height: 90vh; overflow: auto; }
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid #e5e5e5; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 18px; color: #333; }
+        .modal-body { padding: 25px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 14px; color: #333; margin-bottom: 8px; font-weight: 500; }
+        .form-input { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .form-input:focus { outline: none; border-color: #1976d2; }
+        .modal-footer { padding: 20px 25px; border-top: 1px solid #e5e5e5; display: flex; justify-content: flex-end; gap: 10px; }
+        .btn-cancel { padding: 10px 20px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer; }
+        .btn-cancel:hover { background: #f5f5f5; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>等级规则配置系统</h1>
+        <p>统一管理会员、分销、商户等级体系</p>
+    </div>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-panel">
+                <div class="sidebar-title">等级类型</div>
+                <button class="type-btn active" onclick="switchType('member')">
+                    <div class="type-icon" style="background: #2196f3;">👤</div>
+                    <span style="font-weight: 500;">会员等级</span>
+                </button>
+                <button class="type-btn" onclick="switchType('distributor')">
+                    <div class="type-icon" style="background: #4caf50;">👥</div>
+                    <span style="font-weight: 500;">分销等级</span>
+                </button>
+                <button class="type-btn" onclick="switchType('merchant')">
+                    <div class="type-icon" style="background: #9c27b0;">🏪</div>
+                    <span style="font-weight: 500;">商户等级</span>
+                </button>
+            </div>
+
+            <div class="sidebar-panel">
+                <div class="sidebar-title">快捷操作</div>
+                <button class="quick-btn">批量导入配置</button>
+                <button class="quick-btn">导出配置模板</button>
+                <button class="quick-btn">查看变更日志</button>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="card">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('config')">等级配置</button>
+                    <button class="tab" onclick="switchTab('rules')">晋升规则</button>
+                    <button class="tab" onclick="switchTab('dimensions')">维度管理</button>
+                </div>
+
+                <!-- 等级配置 -->
+                <div id="tab-config" class="tab-content">
+                    <div class="content-header">
+                        <div>
+                            <h2>会员等级</h2>
+                            <p>配置等级名称、权益和展示样式</p>
+                        </div>
+                        <button class="btn-primary" onclick="openModal('level')">
+                            <span>➕</span> 添加等级
+                        </button>
+                    </div>
+
+                    <div class="level-item">
+                        <div class="level-info">
+                            <div class="level-badge" style="background: #94a3b8;">V1</div>
+                            <div class="level-details">
+                                <div>
+                                    <h3>普通会员</h3>
+                                    <span class="level-tag">等级 1</span>
+                                </div>
+                                <div class="level-desc">注册即可成为普通会员</div>
+                            </div>
+                        </div>
+                        <div class="action-btns">
+                            <button class="icon-btn" onclick="openModal('level')">✏️</button>
+                            <button class="icon-btn" style="color: #d32f2f;">🗑️</button>
+                        </div>
+                    </div>
+
+                    <div class="level-item">
+                        <div class="level-info">
+                            <div class="level-badge" style="background: #a8a29e;">V2</div>
+                            <div class="level-details">
+                                <div>
+                                    <h3>银卡会员</h3>
+                                    <span class="level-tag">等级 2</span>
+                                </div>
+                                <div class="level-desc">累计消费满1000元</div>
+                            </div>
+                        </div>
+                        <div class="action-btns">
+                            <button class="icon-btn" onclick="openModal('level')">✏️</button>
+                            <button class="icon-btn" style="color: #d32f2f;">🗑️</button>
+                        </div>
+                    </div>
+
+                    <div class="level-item">
+                        <div class="level-info">
+                            <div class="level-badge" style="background: #fbbf24;">V3</div>
+                            <div class="level-details">
+                                <div>
+                                    <h3>金卡会员</h3>
+                                    <span class="level-tag">等级 3</span>
+                                </div>
+                                <div class="level-desc">累计消费满5000元</div>
+                            </div>
+                        </div>
+                        <div class="action-btns">
+                            <button class="icon-btn" onclick="openModal('level')">✏️</button>
+                            <button class="icon-btn" style="color: #d32f2f;">🗑️</button>
+                        </div>
+                    </div>
+
+                    <div class="level-item">
+                        <div class="level-info">
+                            <div class="level-badge" style="background: #3b82f6;">V4</div>
+                            <div class="level-details">
+                                <div>
+                                    <h3>钻石会员</h3>
+                                    <span class="level-tag">等级 4</span>
+                                </div>
+                                <div class="level-desc">累计消费满10000元</div>
+                            </div>
+                        </div>
+                        <div class="action-btns">
+                            <button class="icon-btn" onclick="openModal('level')">✏️</button>
+                            <button class="icon-btn" style="color: #d32f2f;">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 晋升规则 -->
+                <div id="tab-rules" class="tab-content hidden">
+                    <div class="content-header">
+                        <div>
+                            <h2>晋升规则配置</h2>
+                            <p>设置各等级的晋升条件和降级规则</p>
+                        </div>
+                        <button class="btn-primary" onclick="openModal('rule')">
+                            <span>➕</span> 添加规则
+                        </button>
+                    </div>
+
+                    <div class="rule-item">
+                        <div class="rule-header" onclick="toggleRule('rule1')">
+                            <div class="rule-title">
+                                <span id="arrow-rule1">▶</span>
+                                <div>
+                                    <h3>银卡晋升规则</h3>
+                                    <div class="rule-tags">
+                                        <span class="rule-tag tag-blue">目标: 银卡会员</span>
+                                        <span class="rule-tag tag-green">需满足所有条件</span>
+                                        <span class="rule-tag tag-purple">自动晋升</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="action-btns">
+                                <button class="icon-btn" onclick="event.stopPropagation(); openModal('rule')">✏️</button>
+                                <button class="icon-btn" style="color: #d32f2f;" onclick="event.stopPropagation()">🗑️</button>
+                            </div>
+                        </div>
+                        <div id="detail-rule1" class="rule-detail">
+                            <h4 style="font-size: 14px; color: #666; margin-bottom: 12px;">晋升条件：</h4>
+                            <div class="condition-item">
+                                <span style="color: #666;">累计消费金额</span>
+                                <span style="font-weight: 600;">≥</span>
+                                <span style="color: #1976d2; font-weight: 600;">1000</span>
+                                <span style="color: #999;">元</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rule-item">
+                        <div class="rule-header" onclick="toggleRule('rule2')">
+                            <div class="rule-title">
+                                <span id="arrow-rule2">▶</span>
+                                <div>
+                                    <h3>金卡晋升规则</h3>
+                                    <div class="rule-tags">
+                                        <span class="rule-tag tag-blue">目标: 金卡会员</span>
+                                        <span class="rule-tag tag-green">需满足所有条件</span>
+                                        <span class="rule-tag tag-purple">自动晋升</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="action-btns">
+                                <button class="icon-btn" onclick="event.stopPropagation(); openModal('rule')">✏️</button>
+                                <button class="icon-btn" style="color: #d32f2f;" onclick="event.stopPropagation()">🗑️</button>
+                            </div>
+                        </div>
+                        <div id="detail-rule2" class="rule-detail">
+                            <h4 style="font-size: 14px; color: #666; margin-bottom: 12px;">晋升条件：</h4>
+                            <div class="condition-item">
+                                <span style="color: #666;">累计消费金额</span>
+                                <span style="font-weight: 600;">≥</span>
+                                <span style="color: #1976d2; font-weight: 600;">5000</span>
+                                <span style="color: #999;">元</span>
+                            </div>
+                            <div class="condition-item">
+                                <span style="color: #666;">订单数量</span>
+                                <span style="font-weight: 600;">≥</span>
+                                <span style="color: #1976d2; font-weight: 600;">20</span>
+                                <span style="color: #999;">笔</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 维度管理 -->
+                <div id="tab-dimensions" class="tab-content hidden">
+                    <div class="content-header">
+                        <div>
+                            <h2>条件维度管理</h2>
+                            <p>管理可用于晋升规则的各种条件维度</p>
+                        </div>
+                        <button class="btn-primary" onclick="openModal('dimension')">
+                            <span>➕</span> 添加维度
+                        </button>
+                    </div>
+
+                    <div class="dimension-grid">
+                        <div class="dimension-card">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div>
+                                    <h3>累计消费金额</h3>
+                                    <div class="dimension-meta">
+                                        <span class="meta-tag">total_amount</span>
+                                        <span class="meta-tag" style="background: #e3f2fd; color: #1976d2;">money</span>
+                                        <span class="meta-tag">单位: 元</span>
+                                    </div>
+                                </div>
+                                <div class="action-btns">
+                                    <button class="icon-btn">✏️</button>
+                                    <button class="icon-btn" style="color: #d32f2f;">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dimension-card">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div>
+                                    <h3>订单数量</h3>
+                                    <div class="dimension-meta">
+                                        <span class="meta-tag">order_count</span>
+                                        <span class="meta-tag" style="background: #e3f2fd; color: #1976d2;">count</span>
+                                        <span class="meta-tag">单位: 笔</span>
+                                    </div>
+                                </div>
+                                <div class="action-btns">
+                                    <button class="icon-btn">✏️</button>
+                                    <button class="icon-btn" style="color: #d32f2f;">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dimension-card">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div>
+                                    <h3>邀请人数</h3>
+                                    <div class="dimension-meta">
+                                        <span class="meta-tag">invite_count</span>
+                                        <span class="meta-tag" style="background: #e3f2fd; color: #1976d2;">count</span>
+                                        <span class="meta-tag">单位: 人</span>
+                                    </div>
+                                </div>
+                                <div class="action-btns">
+                                    <button class="icon-btn">✏️</button>
+                                    <button class="icon-btn" style="color: #d32f2f;">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dimension-card">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div>
+                                    <h3>团队规模</h3>
+                                    <div class="dimension-meta">
+                                        <span class="meta-tag">team_size</span>
+                                        <span class="meta-tag" style="background: #e3f2fd; color: #1976d2;">count</span>
+                                        <span class="meta-tag">单位: 人</span>
+                                    </div>
+                                </div>
+                                <div class="action-btns">
+                                    <button class="icon-btn">✏️</button>
+                                    <button class="icon-btn" style="color: #d32f2f;">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">添加等级</h3>
+                <button onclick="closeModal()" style="border: none; background: none; font-size: 24px; cursor: pointer; color: #999;">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="form-level">
+                    <div class="form-group">
+                        <label>等级编码</label>
+                        <input type="text" class="form-input" placeholder="例如: V1, D1, M1">
+                    </div>
+                    <div class="form-group">
+                        <label>等级名称</label>
+                        <input type="text" class="form-input" placeholder="例如: 普通会员">
+                    </div>
+                    <div class="form-group">
+                        <label>等级数值</label>
+                        <input type="number" class="form-input" placeholder="用于排序，数值越大等级越高">
+                    </div>
+                    <div class="form-group">
+                        <label>等级颜色</label>
+                        <input type="color" class="form-input" value="#2196f3">
+                    </div>
+                    <div class="form-group">
+                        <label>等级描述</label>
+                        <textarea class="form-input" rows="3" placeholder="简要描述该等级的特点"></textarea>
+                    </div>
+                </div>
+
+                <div id="form-rule" class="hidden">
+                    <div class="form-group">
+                        <label>规则名称</label>
+                        <input type="text" class="form-input" placeholder="例如: 银卡晋升规则">
+                    </div>
+                    <div class="form-group">
+                        <label>目标等级</label>
+                        <select class="form-input">
+                            <option>请选择</option>
+                            <option>银卡会员</option>
+                            <option>金卡会员</option>
+                            <option>钻石会员</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>规则类型</label>
+                        <select class="form-input">
+                            <option>需满足所有条件 (AND)</option>
+                            <option>满足任一条件 (OR)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>晋升条件</label>
+                        <div style="padding: 15px; background: #fafafa; border-radius: 6px;">
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                <select class="form-input" style="flex: 1;">
+                                    <option>累计消费金额</option>
+                                    <option>订单数量</option>
+                                    <option>邀请人数</option>
+                                </select>
+                                <select class="form-input" style="width: 80px;">
+                                    <option>≥</option>
+                                    <option>≤</option>
+                                    <option>=</option>
+                                </select>
+                                <input type="number" class="form-input" placeholder="数值" style="width: 120px;">
+                            </div>
+                            <button style="width: 100%; padding: 8px; border: 1px dashed #ddd; background: white; border-radius: 4px; cursor: pointer; color: #1976d2;">+ 添加条件</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" checked>
+                            <span>自动晋升</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-top: 8px;">
+                            <input type="checkbox">
+                            <span>自动降级</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="form-dimension" class="hidden">
+                    <div class="form-group">
+                        <label>维度编码</label>
+                        <input type="text" class="form-input" placeholder="例如: total_amount">
+                    </div>
+                    <div class="form-group">
+                        <label>维度名称</label>
+                        <input type="text" class="form-input" placeholder="例如: 累计消费金额">
+                    </div>
+                    <div class="form-group">
+                        <label>数据类型</label>
+                        <select class="form-input">
+                            <option>money - 金额</option>
+                            <option>count - 数量</option>
+                            <option>number - 数值</option>
+                            <option>days - 天数</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>单位</label>
+                        <input type="text" class="form-input" placeholder="例如: 元、笔、人">
+                    </div>
+                    <div class="form-group">
+                        <label>描述</label>
+                        <textarea class="form-input" rows="2" placeholder="维度说明"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal()">取消</button>
+                <button class="btn-primary">💾 保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchType(type) {
+            document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+            event.target.closest('.type-btn').classList.add('active');
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tab).classList.remove('hidden');
+        }
+
+        function toggleRule(id) {
+            const detail = document.getElementById('detail-' + id);
+            const arrow = document.getElementById('arrow-' + id);
+            if (detail.classList.contains('show')) {
+                detail.classList.remove('show');
+                arrow.textContent = '▶';
+            } else {
+                detail.classList.add('show');
+                arrow.textContent = '▼';
+            }
+        }
+
+        function openModal(type) {
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modal-title');
+            const levelForm = document.getElementById('form-level');
+            const ruleForm = document.getElementById('form-rule');
+            const dimensionForm = document.getElementById('form-dimension');
+
+            levelForm.classList.add('hidden');
+            ruleForm.classList.add('hidden');
+            dimensionForm.classList.add('hidden');
+
+            if (type === 'level') {
+                title.textContent = '添加等级';
+                levelForm.classList.remove('hidden');
+            } else if (type === 'rule') {
+                title.textContent = '添加晋升规则';
+                ruleForm.classList.remove('hidden');
+            } else if (type === 'dimension') {
+                title.textContent = '添加维度';
+                dimensionForm.classList.remove('hidden');
+            }
+
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
+</body>
+</html>
