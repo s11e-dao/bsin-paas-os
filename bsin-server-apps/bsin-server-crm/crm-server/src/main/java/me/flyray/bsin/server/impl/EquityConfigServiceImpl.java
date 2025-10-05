@@ -37,8 +37,8 @@ public class EquityConfigServiceImpl implements EquityConfigService {
     @Autowired
     private EquityMapper equityMapper;
 
-    @ApiDoc(desc = "add")
-    @ShenyuDubboClient("/add")
+    @ApiDoc(desc = "config")
+    @ShenyuDubboClient("/config")
     @Override
     public EquityRelation config(Map<String, Object> requestMap) {
         EquityRelation equityRelation = BsinServiceContext.getReqBodyDto(EquityRelation.class, requestMap);
