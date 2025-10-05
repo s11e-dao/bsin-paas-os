@@ -7,6 +7,7 @@ import me.flyray.bsin.domain.entity.EquityRelation;
 import me.flyray.bsin.facade.service.EquityConfigService;
 import me.flyray.bsin.infrastructure.mapper.EquityMapper;
 import me.flyray.bsin.infrastructure.mapper.EquityRelationMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -41,6 +42,7 @@ public class EquityConfigServiceImpl implements EquityConfigService {
     @Override
     public EquityRelation config(Map<String, Object> requestMap) {
         EquityRelation equityRelation = BsinServiceContext.getReqBodyDto(EquityRelation.class, requestMap);
+        equityRelation.setTenantId(LoginInfoContextHelper.getLoginUser().getTenantId());
         equityRelationshipMapper.insert(equityRelation);
         return equityRelation;
     }

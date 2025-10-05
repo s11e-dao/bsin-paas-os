@@ -6,6 +6,7 @@ import me.flyray.bsin.domain.entity.ConditionRelation;
 import me.flyray.bsin.facade.service.ConditionConfigService;
 import me.flyray.bsin.infrastructure.mapper.ConditionMapper;
 import me.flyray.bsin.infrastructure.mapper.ConditionRelationMapper;
+import me.flyray.bsin.security.contex.LoginInfoContextHelper;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -38,6 +39,7 @@ public class ConditionConfigServiceImpl implements ConditionConfigService {
     @Override
     public ConditionRelation config(Map<String, Object> requestMap) {
         ConditionRelation conditionRelation = BsinServiceContext.getReqBodyDto(ConditionRelation.class, requestMap);
+        conditionRelation.setTenantId(LoginInfoContextHelper.getLoginUser().getTenantId());
         conditionRelationshipMapper.insert(conditionRelation);
         return conditionRelation;
     }
