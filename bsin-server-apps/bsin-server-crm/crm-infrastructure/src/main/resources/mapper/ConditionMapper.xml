@@ -38,11 +38,11 @@
             c.update_by,c.update_time,c.del_flag,
             c.tenant_id,c.value, c.remark, c.name,
             c.merchant_no,c.type,c.type_no,
-            cr.type_no as crtype_no,
+            cr.condition_no,
             cr.serial_no as condition_relationship_no,
             cr.category_no
         from crm_condition_relation as cr
-                 left join crm_condition as c on cr.type_no = c.serial_no
+                 left join crm_condition as c on cr.condition_no = c.serial_no
         where cr.category_no = #{categoryNo}
         order by c.create_time desc
     </select>

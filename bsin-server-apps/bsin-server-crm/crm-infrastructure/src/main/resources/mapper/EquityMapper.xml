@@ -39,10 +39,10 @@
             e.type,e.type_no,e.total_amount,
             e.value,e.over_flag,e.remark,
             er.serial_no as equity_relationship_no,
-            er.type_no as ertype_no,
+            er.equity_no,
             er.category_no
         from crm_equity_relation as er
-            left join crm_equity as e on er.type_no = e.serial_no
+            left join crm_equity as e on er.equity_no = e.serial_no
         where er.category_no = #{categoryNo}
         order by e.create_time desc
     </select>
