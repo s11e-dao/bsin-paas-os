@@ -57,18 +57,24 @@ public class EquityServiceImpl implements EquityService {
   public Equity add(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     Equity equity = BsinServiceContext.getReqBodyDto(Equity.class, requestMap);
-    if (equity.getTenantId() == null) {
-      equity.setTenantId(loginUser.getTenantId());
-      if (equity.getTenantId() == null) {
-        throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
-      }
+    
+    // 设置租户ID，优先使用传入值，否则从登录用户获取
+    String tenantId = StringUtils.defaultIfBlank(equity.getTenantId(), loginUser.getTenantId());
+    if (StringUtils.isBlank(tenantId)) {
+      throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
     }
-    if (equity.getMerchantNo() == null) {
-      equity.setMerchantNo(loginUser.getMerchantNo());
-      if (equity.getMerchantNo() == null) {
-        throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-      }
+    equity.setTenantId(tenantId);
+
+    // 设置商户编码，优先使用传入值，否则从登录用户获取
+    String merchantNo = StringUtils.defaultIfBlank(equity.getMerchantNo(), loginUser.getMerchantNo());
+    if (StringUtils.isBlank(merchantNo)) {
+      merchantNo = StringUtils.defaultIfBlank(null, loginUser.getTenantMerchantNo());
     }
+    if (StringUtils.isBlank(merchantNo)) {
+      throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
+    }
+    equity.setMerchantNo(merchantNo);
+    
     // TODO 条件的币种账户根据需要商户发行的数字积分的符号来添加，不能直接写死币种
     // typeNo 是数字资产编号 ccyType 不同类型找商户发行的不同币种
     equityMapper.insert(equity);
