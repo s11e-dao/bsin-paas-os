@@ -136,6 +136,10 @@ public class EquityServiceImpl implements EquityService {
   public List<Equity> getList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     Equity equity = BsinServiceContext.getReqBodyDto(Equity.class, requestMap);
+    String merchantNo = StringUtils.defaultIfBlank(equity.getMerchantNo(), loginUser.getMerchantNo());
+    if (StringUtils.isBlank(merchantNo)) {
+      merchantNo = StringUtils.defaultIfBlank(null, loginUser.getTenantMerchantNo());
+    }
     Object paginationObj =  requestMap.get("pagination");
     Pagination pagination = new Pagination();
     BeanUtil.copyProperties(paginationObj,pagination);
@@ -143,7 +147,7 @@ public class EquityServiceImpl implements EquityService {
     LambdaQueryWrapper<Equity> warapper = new LambdaQueryWrapper<>();
     warapper.orderByDesc(Equity::getCreateTime);
     warapper.eq(Equity::getTenantId, loginUser.getTenantId());
-    warapper.eq(Equity::getMerchantNo, loginUser.getMerchantNo());
+    warapper.eq(StringUtils.isNotBlank(merchantNo), Equity::getMerchantNo, merchantNo);
     warapper.eq(StringUtils.isNotBlank(equity.getType()), Equity::getType, equity.getType());
     List<Equity> pageList = equityMapper.selectList(warapper);
     return pageList;
