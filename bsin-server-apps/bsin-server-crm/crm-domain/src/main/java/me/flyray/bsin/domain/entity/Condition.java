@@ -60,9 +60,14 @@ public class Condition implements Serializable {
     private String tenantId;
 
     /**
-     * 条件值
+     * 条件阈值
      */
     private Integer value;
+
+    /**
+     * 操作符：>=/<=/=/>/<
+     */
+    private String operator;
 
     /**
      * 备注

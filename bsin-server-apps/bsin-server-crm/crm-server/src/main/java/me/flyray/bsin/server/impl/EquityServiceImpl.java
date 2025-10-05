@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.context.BsinServiceContext;
+import me.flyray.bsin.domain.entity.Condition;
 import me.flyray.bsin.domain.entity.Equity;
 import me.flyray.bsin.domain.enums.EquityType;
 import me.flyray.bsin.dubbo.invoke.BsinServiceInvoke;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 import static me.flyray.bsin.constants.ResponseCode.EQUITY_NOT_EXISTS;
@@ -124,10 +126,28 @@ public class EquityServiceImpl implements EquityService {
     return pageList;
   }
 
+  @ApiDoc(desc = "getList")
+  @ShenyuDubboClient("/getList")
+  @Override
+  public List<Equity> getList(Map<String, Object> requestMap) {
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+    Equity equity = BsinServiceContext.getReqBodyDto(Equity.class, requestMap);
+    Object paginationObj =  requestMap.get("pagination");
+    Pagination pagination = new Pagination();
+    BeanUtil.copyProperties(paginationObj,pagination);
+    Page<Equity> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+    LambdaQueryWrapper<Equity> warapper = new LambdaQueryWrapper<>();
+    warapper.orderByDesc(Equity::getCreateTime);
+    warapper.eq(Equity::getTenantId, loginUser.getTenantId());
+    warapper.eq(Equity::getMerchantNo, loginUser.getMerchantNo());
+    warapper.eq(StringUtils.isNotBlank(equity.getType()), Equity::getType, equity.getType());
+    List<Equity> pageList = equityMapper.selectList(warapper);
+    return pageList;
+  }
+
   @ApiDoc(desc = "grant")
   @ShenyuDubboClient("/grant")
-  public Map<String, Object> grant(Map<String, Object> requestMap)
-      throws UnsupportedEncodingException {
+  public Map<String, Object> grant(Map<String, Object> requestMap){
 
     Equity equity = (Equity) requestMap.get("equity");
     requestMap.put("value", equity.getValue());

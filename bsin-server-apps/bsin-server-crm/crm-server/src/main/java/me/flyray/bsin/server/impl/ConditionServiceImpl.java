@@ -22,6 +22,7 @@ import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 import static me.flyray.bsin.constants.ResponseCode.CONDITION_NOT_EXISTS;
@@ -47,18 +48,22 @@ public class ConditionServiceImpl implements ConditionService {
     public Condition add(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Condition condition = BsinServiceContext.getReqBodyDto(Condition.class, requestMap);
-        if (condition.getTenantId() == null) {
-            condition.setTenantId(loginUser.getTenantId());
-            if (condition.getTenantId() == null) {
-                throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
-            }
+        // 设置租户ID，优先使用传入值，否则从登录用户获取
+        String tenantId = StringUtils.defaultIfBlank(condition.getTenantId(), loginUser.getTenantId());
+        if (StringUtils.isBlank(tenantId)) {
+            throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
         }
-        if (condition.getMerchantNo() == null) {
-            condition.setMerchantNo(loginUser.getMerchantNo());
-            if (condition.getMerchantNo() == null) {
-                throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
-            }
+        condition.setTenantId(tenantId);
+
+        // 设置商户编码，优先使用传入值，否则从登录用户获取
+        String merchantNo = StringUtils.defaultIfBlank(condition.getMerchantNo(), loginUser.getMerchantNo());
+        if (StringUtils.isBlank(merchantNo)) {
+            merchantNo = StringUtils.defaultIfBlank(null, loginUser.getTenantMerchantNo());
         }
+        if (StringUtils.isBlank(merchantNo)) {
+            throw new BusinessException(ResponseCode.MERCHANT_NO_IS_NULL);
+        }
+        condition.setMerchantNo(merchantNo);
         // TODO 条件的币种账户根据需要商户发行的数字积分的符号来添加，不能直接写死币种
         // typeNo 是数字资产编号 ccyType 不同类型找商户发行的不同币种
         conditionMapper.insert(condition);
@@ -109,6 +114,24 @@ public class ConditionServiceImpl implements ConditionService {
         warapper.eq(Condition::getMerchantNo, loginUser.getMerchantNo());
         warapper.eq(StringUtils.isNotBlank(condition.getType()), Condition::getType, condition.getType());
         IPage<Condition> pageList = conditionMapper.selectPage(page,warapper);
+        return pageList;
+    }
+
+    @ApiDoc(desc = "getList")
+    @ShenyuDubboClient("/getList")
+    @Override
+    public List<Condition> getList(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        Condition condition = BsinServiceContext.getReqBodyDto(Condition.class, requestMap);
+        Object paginationObj =  requestMap.get("pagination");
+        Pagination pagination = new Pagination();
+        BeanUtil.copyProperties(paginationObj,pagination);
+        LambdaUpdateWrapper<Condition> warapper = new LambdaUpdateWrapper<>();
+        warapper.orderByDesc(Condition::getCreateTime);
+        warapper.eq(Condition::getTenantId, loginUser.getTenantId());
+        warapper.eq(Condition::getMerchantNo, loginUser.getMerchantNo());
+        warapper.eq(StringUtils.isNotBlank(condition.getType()), Condition::getType, condition.getType());
+        List<Condition> pageList = conditionMapper.selectList(warapper);
         return pageList;
     }
 

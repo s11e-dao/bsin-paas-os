@@ -13,6 +13,7 @@
             <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
             <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="value" column="value" jdbcType="INTEGER"/>
+            <result property="operator" column="operator" jdbcType="VARCHAR"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="conditionRelationshipNo" column="condition_relationship_no" jdbcType="VARCHAR"/>
@@ -27,7 +28,7 @@
     <sql id="Base_Column_List">
         serial_no,create_by,create_time,
         update_by,update_time,del_flag,
-        tenant_id,value,remark,name,
+        tenant_id,value,operator,remark,name,
         merchant_no,type_no,type_protocol,type_token_id,type
     </sql>
 

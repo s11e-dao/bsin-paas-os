@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.Equity;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,6 +42,8 @@ public interface EquityService{
      */
     public IPage<?> getPageList(Map<String, Object> requestMap);
 
+
+    public List<Equity> getList(Map<String, Object> requestMap);
 
     /**
      * 授权权益

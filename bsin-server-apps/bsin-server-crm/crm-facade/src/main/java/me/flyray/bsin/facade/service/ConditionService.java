@@ -3,6 +3,7 @@ package me.flyray.bsin.facade.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import me.flyray.bsin.domain.entity.Condition;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,5 +40,7 @@ public interface ConditionService {
      * 租户下所有
      */
     public IPage<?> getPageList(Map<String, Object> requestMap);
+
+    public List<Condition> getList(Map<String, Object> requestMap);
 
 }

@@ -1,0 +1,141 @@
+{
+  "接口说明": "Condition条件管理接口 - /condition/add",
+  "请求方法": "POST",
+  "接口路径": "/condition/add",
+  "请求头": {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer {token}"
+  },
+  "请求体示例": {
+    "conditionName": "持有花尖墨劳动价值余额>10",
+    "value": 10,
+    "operator": ">=",
+    "remark": "花尖墨劳动价值余额>=10的条件",
+    "typeNo": "1739222480528232449",
+    "typeProtocol": "ERC20",
+    "typeTokenId": null,
+    "type": "6",
+    "tenantId": "1737841274272223232",
+    "merchantNo": "1737853502828482561"
+  },
+  "字段说明": {
+    "conditionName": {
+      "必填": true,
+      "类型": "String",
+      "说明": "条件名称，如：持有花尖墨劳动价值余额>10",
+      "示例": "持有花尖墨劳动价值余额>10"
+    },
+    "value": {
+      "必填": true,
+      "类型": "Integer",
+      "说明": "条件阈值/条件值",
+      "示例": 10
+    },
+    "operator": {
+      "必填": true,
+      "类型": "String",
+      "说明": "操作符：>=/<=/=/>/<",
+      "可选值": [">=", "<=", "=", ">", "<"],
+      "示例": ">="
+    },
+    "remark": {
+      "必填": false,
+      "类型": "String",
+      "说明": "备注信息",
+      "示例": "花尖墨劳动价值余额>=10的条件"
+    },
+    "typeNo": {
+      "必填": true,
+      "类型": "String",
+      "说明": "条件类型编号，数字资产编号",
+      "示例": "1739222480528232449"
+    },
+    "typeProtocol": {
+      "必填": false,
+      "类型": "String",
+      "说明": "条件类型协议：ERC20/ERC721/ERC1155/ERC3525",
+      "可选值": ["ERC20", "ERC721", "ERC1155", "ERC3525"],
+      "示例": "ERC20"
+    },
+    "typeTokenId": {
+      "必填": false,
+      "类型": "String",
+      "说明": "条件资产tokenId，ERC1155专属",
+      "示例": null
+    },
+    "type": {
+      "必填": true,
+      "类型": "String",
+      "说明": "条件类型",
+      "可选值": {
+        "1": "数字资产",
+        "2": "PFP",
+        "3": "账户-数字token(DP)",
+        "4": "数字门票",
+        "5": "Paas卡",
+        "6": "账户-联合曲线(BC)",
+        "7": "满减",
+        "8": "权限",
+        "9": "会员等级"
+      },
+      "示例": "6"
+    },
+    "tenantId": {
+      "必填": false,
+      "类型": "String",
+      "说明": "租户ID，如果不传会自动从登录用户获取",
+      "示例": "1737841274272223232"
+    },
+    "merchantNo": {
+      "必填": false,
+      "类型": "String",
+      "说明": "商户编码，如果不传会自动从登录用户获取",
+      "示例": "1737853502828482561"
+    }
+  },
+  "完整请求示例": {
+    "requestBody": {
+      "name": "持有花尖墨劳动价值余额>10",
+      "value": 10,
+      "operator": ">=",
+      "remark": "花尖墨劳动价值余额>=10的条件",
+      "typeNo": "1739222480528232449",
+      "typeProtocol": "ERC20",
+      "typeTokenId": null,
+      "type": "6"
+    }
+  },
+  "响应示例": {
+    "code": 200,
+    "message": "success",
+    "data": {
+      "serialNo": "1739269119217389570",
+      "name": "持有花尖墨劳动价值余额>10",
+      "value": 10,
+      "operator": ">=",
+      "remark": "花尖墨劳动价值余额>=10的条件",
+      "typeNo": "1739222480528232449",
+      "typeProtocol": "ERC20",
+      "typeTokenId": null,
+      "type": "6",
+      "tenantId": "1737841274272223232",
+      "merchantNo": "1737853502828482561",
+      "createTime": "2023-12-25 20:57:26",
+      "updateTime": "2023-12-25 20:57:26",
+      "delFlag": 0
+    }
+  },
+  "错误响应示例": {
+    "code": 500,
+    "message": "TENANT_ID_NOT_ISNULL",
+    "data": null
+  },
+  "注意事项": [
+    "1. tenantId和merchantNo如果不传，系统会自动从登录用户信息中获取",
+    "2. type字段必须选择正确的条件类型，对应不同的业务场景",
+    "3. typeNo是数字资产编号，需要根据商户发行的数字积分符号来添加",
+    "4. 操作符operator必须是预定义的值：>=/<=/=/>/<",
+    "5. 接口会自动生成serialNo主键，无需手动传入",
+    "6. 创建时间createTime和修改时间updateTime由系统自动设置"
+  ]
+}
