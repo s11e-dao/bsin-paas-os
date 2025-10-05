@@ -104,6 +104,10 @@ public class ConditionServiceImpl implements ConditionService {
     public IPage<?> getPageList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Condition condition = BsinServiceContext.getReqBodyDto(Condition.class, requestMap);
+        String merchantNo = StringUtils.defaultIfBlank(condition.getMerchantNo(), loginUser.getMerchantNo());
+        if (StringUtils.isBlank(merchantNo)) {
+            merchantNo = StringUtils.defaultIfBlank(null, loginUser.getTenantMerchantNo());
+        }
         Object paginationObj =  requestMap.get("pagination");
         Pagination pagination = new Pagination();
         BeanUtil.copyProperties(paginationObj,pagination);
@@ -111,7 +115,7 @@ public class ConditionServiceImpl implements ConditionService {
         LambdaUpdateWrapper<Condition> warapper = new LambdaUpdateWrapper<>();
         warapper.orderByDesc(Condition::getCreateTime);
         warapper.eq(Condition::getTenantId, loginUser.getTenantId());
-        warapper.eq(Condition::getMerchantNo, loginUser.getMerchantNo());
+        warapper.eq(StringUtils.isNotBlank(merchantNo), Condition::getMerchantNo, merchantNo);
         warapper.eq(StringUtils.isNotBlank(condition.getType()), Condition::getType, condition.getType());
         IPage<Condition> pageList = conditionMapper.selectPage(page,warapper);
         return pageList;
