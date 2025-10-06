@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 public enum ProfitSharingModeEnum {
   NONE("0", "不允许分账"),
   AUTO("1", "自动分账"),
-  MANUAL("2", "手动分钟"),
+  MANUAL("2", "手动分账"),
   ;
 
   private String code;
