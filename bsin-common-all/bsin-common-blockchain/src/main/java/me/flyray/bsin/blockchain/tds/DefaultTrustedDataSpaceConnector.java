@@ -97,7 +97,10 @@ public class DefaultTrustedDataSpaceConnector implements TrustedDataSpaceConnect
             String salt = MapUtils.getString(requestMap, "salt");
 
             // 根据用户信息生成唯一的DID标识符
+            System.out.println("Generated DID for user name: " + name);
+            System.out.println("Generated DID for user idNumber: " + idNumber);
             String didIdentifier = generateDidIdentifier(name, idNumber);
+            System.out.println("Generated DID for user didIdentifier: " + didIdentifier);
             String customDid = "did:s11e:" + didIdentifier;
             
             // 构建服务端点URL
