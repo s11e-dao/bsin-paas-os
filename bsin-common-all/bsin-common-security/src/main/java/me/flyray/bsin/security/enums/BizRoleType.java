@@ -38,6 +38,11 @@ public enum BizRoleType {
      */
     STORE("6", "门店"),
 
+    /**
+     * 分销员
+     */
+    DISTRIBUTOR("7", "分销员"),
+
     /** 无 */
     NONE_PLATFOR("99", "无");
 

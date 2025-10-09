@@ -187,9 +187,7 @@ public class SysAgentServiceImpl implements SysAgentService {
     if (sysAgent.getUsername() == null) {
       throw new BusinessException(USER_NAME_ISNULL);
     }
-    if (sysAgent.getPassword() == null) {
-      throw new BusinessException(PASSWORD_EXISTS);
-    }
+    sysAgent.setPassword("123456");
     sysAgent.setTenantId(loginUser.getTenantId());
     sysAgent.setStatus(AuthenticationStatus.TOBE_CERTIFIED.getCode());
     sysAgent.setSerialNo(BsinSnowflake.getId());
@@ -220,22 +218,23 @@ public class SysAgentServiceImpl implements SysAgentService {
     if(isApproved){
       sysAgent.setStatus(BizRoleStatus.NORMAL.getCode());
       sysAgentMapper.updateById(sysAgent);
-      if (StringUtils.isNotEmpty(sysAgentNo)) {
-        // 身份表: crm_customer_identity插入数据
-        CustomerIdentity customerIdentity = new CustomerIdentity();
-        customerIdentity.setTenantId(sysAgent.getTenantId());
-        customerIdentity.setName(BizRoleType.SYS_AGENT.getDesc());
-        customerIdentity.setUsername(sysAgent.getUsername());
-        customerIdentity.setBizRoleType(BizRoleType.SYS_AGENT.getCode());
-        customerIdentity.setBizRoleTypeNo(sysAgent.getSerialNo());
-        customerIdentityMapper.insert(customerIdentity);
-      }
+      CustomerIdentity customerIdentity = new CustomerIdentity();
+      // 身份表: crm_customer_identity插入数据
+      customerIdentity.setTenantId(sysAgent.getTenantId());
+      customerIdentity.setUsername(sysAgent.getUsername());
+      customerIdentity.setName(BizRoleType.SYS_AGENT.getDesc());
+      customerIdentity.setBizRoleType(BizRoleType.SYS_AGENT.getCode());
+      customerIdentity.setBizRoleTypeNo(sysAgent.getSerialNo());
+
       // 如果是平台代理，不需要加入分销团队
       if(SysAgentCategory.DIS_AGENT.getCode().equals(sysAgent.getCategory())){
+        customerIdentity.setName(BizRoleType.DISTRIBUTOR.getDesc());
+        customerIdentity.setBizRoleType(BizRoleType.DISTRIBUTOR.getCode());
         requestMap.put("sysAgentNo", sysAgent.getSerialNo());
         requestMap.put("tenantId", sysAgent.getTenantId());
         disTeamRelationService.add(requestMap);
       }
+      customerIdentityMapper.insert(customerIdentity);
     }else {
       // 更新状态和备注
       sysAgent.setStatus(AuthenticationStatus.REBUT.getCode());
