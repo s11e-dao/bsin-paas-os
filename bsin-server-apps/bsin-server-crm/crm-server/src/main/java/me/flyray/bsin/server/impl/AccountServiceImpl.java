@@ -241,23 +241,10 @@ public class AccountServiceImpl implements AccountService {
   @Override
   public Account getDetail(Map<String, Object> requestMap) {
     String serialNo = MapUtils.getString(requestMap, "serialNo");
-
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String tenantId = StringUtils.defaultIfBlank(
         MapUtils.getString(requestMap, "tenantId"), loginUser.getTenantId());
-    String merchantNo = StringUtils.defaultIfBlank(
-        MapUtils.getString(requestMap, "merchantNo"), loginUser.getMerchantNo());
-    String customerNo = MapUtils.getString(requestMap, "customerNo");
-
-    String bizRoleType = MapUtils.getString(requestMap, "bizRoleType");
-    String bizRoleTypeNo = "";
-    if(BizRoleType.CUSTOMER.getCode().equals(bizRoleType)){
-      bizRoleTypeNo = customerNo;
-    } else if (BizRoleType.MERCHANT.getCode().equals(bizRoleType)) {
-      bizRoleTypeNo = merchantNo;
-    } else if (BizRoleType.TENANT.getCode().equals(bizRoleType)) {
-      bizRoleTypeNo = tenantId;
-    }
+    String bizRoleTypeNo = loginUser.getBizRoleTypeNo();
 
     // 不存在账户是否立即开户
     String openAccount = MapUtils.getString(requestMap, "openAccount");
@@ -267,7 +254,6 @@ public class AccountServiceImpl implements AccountService {
       isAutoOpenAccount = Boolean.parseBoolean(openAccount);
     }
 
-    customerNo = StringUtils.defaultIfBlank(customerNo, loginUser.getCustomerNo());
     Account accountDetail = null;
     Account customerAccount =
         BsinServiceContext.getReqBodyDto(Account.class, requestMap);
@@ -286,7 +272,7 @@ public class AccountServiceImpl implements AccountService {
       // 如果账户不存在则开通账户
       if (accountDetail == null && isAutoOpenAccount) {
         customerAccount.setTenantId(tenantId);
-        customerAccount.setBizRoleTypeNo(customerNo);
+        customerAccount.setBizRoleTypeNo(bizRoleTypeNo);
         accountBiz.openAccount(customerAccount);
         customerAccount.setBalance(BigDecimal.ZERO);
         accountDetail = customerAccount;
