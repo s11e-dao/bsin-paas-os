@@ -1,11 +1,23 @@
 import { request } from '@umijs/max'
 let crmPath = process.env.contextPath_crm;
+let waasPath = process.env.contextPath_waas;
 
 // 分页查询
 export const getConditionPageList = (params) => {
   return request(crmPath + '/condition/getPageList', {
     serviceName: 'ConditionService',
     methodName: 'getPageList',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
+export const getConditionList = (params) => {
+  return request(crmPath + '/condition/getList', {
+    serviceName: 'ConditionService',
+    methodName: 'getList',
     version: '1.0',
     bizParams: {
       ...params,
@@ -94,6 +106,30 @@ export const deleteConditionConfig = (params) => {
   return request(crmPath + '/conditionConfig/delete', {
     serviceName: 'ConditionConfigService',
     methodName: 'delete',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
+// 查询数字资产列表
+export const getDigitalAssetsItemList = (params) => {
+  return request(waasPath + '/digitalAssetsItem/getList', {
+    serviceName: 'DigitalAssetsItemService',
+    methodName: 'getList',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
+// 查询数字资产曲线积分列表
+export const getBondingCurveTokenList = (params) => {
+  return request(waasPath + '/digitalAssetsItem/getCurveList', {
+    serviceName: 'BondingCurveTokenService',
+    methodName: 'getCurveList',
     version: '1.0',
     bizParams: {
       ...params,

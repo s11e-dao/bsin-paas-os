@@ -43,14 +43,9 @@ public class EquityRelation implements Serializable {
     private String categoryNo;
 
     /**
-     * 权益类型（1-权限，2-利益）
+     * 关联权益编号
      */
-    private Integer type;
-
-    /**
-     * 关联权益类型编号（事件或收益）
-     */
-    private String typeNo;
+    private String equityNo;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

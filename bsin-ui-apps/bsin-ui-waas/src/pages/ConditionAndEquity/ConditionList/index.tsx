@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import {
   Form,
   Input,
+  InputNumber,
   Modal,
   message,
   Button,
   Select,
   Popconfirm,
   Descriptions,
+  Row,
+  Col,
 } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -18,13 +21,10 @@ import {
   addCondition,
   deleteCondition,
   getConditionDetail,
-} from './service';
-
-import {
-  getDigitalAssetsItemPageList,
   getDigitalAssetsItemList,
   getBondingCurveTokenList,
-} from '../../Assets/AssetsItem/service';
+} from './service';
+
 
 import { getGradeList } from '../../Grade/service';
 
@@ -38,9 +38,9 @@ export default () => {
   // 查看模态框
   const [isViewTemplateModal, setIsViewTemplateModal] = useState(false);
   // 查看
-  const [isViewRecord, setIsViewRecord] = useState({});
-  const [typeNoList, setTypeNoList] = useState([]);
-  const [gradeList, setGradeList] = useState([]);
+  const [isViewRecord, setIsViewRecord] = useState<any>({});
+  const [typeNoList, setTypeNoList] = useState<any[]>([]);
+  const [gradeList, setGradeList] = useState<any[]>([]);
   const [digitalAssetsType, setDigitalAssetsType] = useState('');
   // 获取表单
   const [FormRef] = Form.useForm();
@@ -110,26 +110,49 @@ export default () => {
    * 确认添加模板
    */
   const confirmTemplate = () => {
-    // 获取输入的表单值
     FormRef.validateFields()
       .then(async () => {
-        // 获取表单结果
-        let response = FormRef.getFieldsValue();
-        console.log(response);
-        addCondition(response).then((res) => {
+        const formData = FormRef.getFieldsValue();
+        console.log('表单数据:', formData);
+
+        // 构建请求数据，确保包含所有必要字段
+        const requestData: any = {
+          name: formData.name,                    // 条件名称
+          value: formData.type === '9' ? formData.gradeName : formData.value,  // 比较值：会员等级用gradeName，其他用value
+          operator: formData.operator,            // 操作符
+          remark: formData.remark,                // 备注
+          typeNo: formData.typeNo,                // 资产类型ID
+          typeProtocol: formData.typeProtocol,    // 协议类型
+          typeTokenId: formData.typeTokenId,      // Token ID
+          type: formData.type                     // 条件类型
+        };
+
+        // 如果是会员等级类型，添加gradeName字段
+        if (formData.type === '9') {
+          requestData.gradeName = formData.gradeName;
+        }
+
+        console.log('请求数据:', requestData);
+
+        addCondition(requestData).then((res) => {
           console.log('add', res);
-          if (res.code === 0 ) {
-            // 重置输入的表单
+          if (res.code === 0) {
             FormRef.resetFields();
-            // 刷新proTable
             actionRef.current?.reload();
             setIsTemplateModal(false);
+            message.success('条件添加成功！');
           } else {
             message.error(`失败： ${res?.message}`);
           }
+        }).catch((error) => {
+          console.error('添加条件失败:', error);
+          message.error('添加条件失败，请重试！');
         });
       })
-      .catch(() => {});
+      .catch((error) => {
+        console.error('表单验证失败:', error);
+        message.error('请检查表单填写是否正确！');
+      });
   };
 
   /**
@@ -144,7 +167,7 @@ export default () => {
   /**
    * 删除模板
    */
-  const toDelContractTemplate = async (record) => {
+  const toDelContractTemplate = async (record: any) => {
     console.log('record', record);
     let { serialNo } = record;
     let delRes = await deleteCondition({ serialNo });
@@ -158,7 +181,7 @@ export default () => {
   /**
    * 查看详情
    */
-  const toViewContractTemplate = async (record) => {
+  const toViewContractTemplate = async (record: any) => {
     let { serialNo } = record;
     let viewRes = await getConditionDetail({ serialNo });
     setIsViewTemplateModal(true);
@@ -194,185 +217,144 @@ export default () => {
     }
   };
 
-  const typeOnChange = (value) => {
+  // 自动生成条件名称和备注的函数
+  const generateConditionInfo = () => {
+    const formValues = FormRef.getFieldsValue();
+    const { type, operator, amount, gradeName } = formValues;
+    
+    if (!type || !operator || (!amount && !gradeName)) {
+      return { name: '', remark: '' };
+    }
+
+    // 获取条件类型名称
+    const getTypeName = (typeValue: string) => {
+      const typeMap: Record<string, string> = {
+        '1': '数字徽章',
+        '2': 'PFP',
+        '3': '账户-DP',
+        '4': '数字门票',
+        '5': 'Pass卡',
+        '6': '账户-BC',
+        '7': '满减',
+        '8': '权限',
+        '9': '会员等级'
+      };
+      return typeMap[typeValue] || '未知类型';
+    };
+
+    // 获取操作符名称
+    const getOperatorName = (operatorValue: string) => {
+      const operatorMap: Record<string, string> = {
+        'eq': '等于',
+        'ne': '不等于',
+        'gt': '大于',
+        'gte': '大于等于',
+        'lt': '小于',
+        'lte': '小于等于',
+        'in': '包含',
+        'like': '模糊匹配'
+      };
+      return operatorMap[operatorValue] || operatorValue;
+    };
+
+    const typeName = getTypeName(type);
+    const operatorName = getOperatorName(operator);
+    const value = type === '9' ? gradeName : amount;
+
+    // 生成条件名称
+    const name = `${typeName}${operatorName}${value}`;
+    
+    // 生成备注
+    const remark = `当${typeName}${operatorName}${value}时触发此条件`;
+
+    return { name, remark };
+  };
+
+  // 监听表单值变化，自动生成名称和备注
+  const handleFormChange = () => {
+    const { name, remark } = generateConditionInfo();
+    if (name && remark) {
+      FormRef.setFieldsValue({
+        name: name,
+        remark: remark
+      });
+    }
+  };
+
+  // 根据条件类型获取对应的数字资产列表
+  const typeOnChange = (value: string) => {
     console.log(value);
     setDigitalAssetsType(value);
-    // 1、数字徽章 2、PFP 3、数字积分 4、数字门票 5、pass卡 6、账户-联合曲线(BC)  7：满减 8：权限
-    if (value == '1') {
-      // 请求后台获取商户上架的数字资产： ERC1155...
-      let params = {
-        assetsTypes: ['1'],
-      };
-      getDigitalAssetsItemList(params).then((res) => {
-        console.log(res);
-        let typeNoListTemp = [];
-        if (res?.code == 0) {
-          res?.data.map((item) => {
-            console.log(item);
-            let typeNoJson = {
-              typeNo: item.serialNo,
-              name: item.assetsName,
-              tokenId: item.tokenId,
-            };
-            typeNoListTemp.push(typeNoJson);
-          });
-        }
-        setTypeNoList(typeNoListTemp);
-      });
-    } else if (value == '2') {
-      // 请求后台获取商户上架的数字资产： PFP(ERC721)
-      let params = {
-        assetsTypes: ['2'],
-      };
-      getDigitalAssetsItemList(params).then((res) => {
-        console.log(res);
-        let typeNoListTemp = [];
-        if (res?.code == 0) {
-          res?.data.map((item) => {
-            console.log(item);
-            let typeNoJson = {
-              typeNo: item.serialNo,
-              name: item.assetsName,
-              tokenId: item.tokenId,
-            };
-            typeNoListTemp.push(typeNoJson);
-          });
-        }
-        setTypeNoList(typeNoListTemp);
-      });
+    
+    // 清空资产类型选择，避免验证错误
+    FormRef.setFieldsValue({ typeNo: undefined });
+    
+    // 触发自动生成
+    setTimeout(() => {
+      handleFormChange();
+    }, 100);
+    
+    // 定义资产类型映射
+    const assetTypeMapping: { [key: string]: { service: Function | null; params: any } } = {
+      '1': { service: getDigitalAssetsItemList, params: { assetsTypes: ['1'] } },      // 数字徽章
+      '2': { service: getDigitalAssetsItemList, params: { assetsTypes: ['2'] } },      // PFP
+      '3': { service: getDigitalAssetsItemList, params: { assetsTypes: ['3'] } },      // 账户-DP
+      '4': { service: getDigitalAssetsItemList, params: { assetsTypes: ['4'] } },      // 数字门票
+      '5': { service: getDigitalAssetsItemList, params: { assetsTypes: ['5'] } },      // PASS卡
+      '6': { service: getBondingCurveTokenList, params: { assetsTypes: [] } },         // 账户-BC
+      '7': { service: null, params: null },                                             // 满减
+      '8': { service: null, params: null },                                             // 权限
+      '9': { service: getGradeList, params: { assetsTypes: [] } }                      // 会员等级
+    };
+
+    const mapping = assetTypeMapping[value];
+    
+    if (!mapping || !mapping.service) {
+      // 不需要获取数据的类型（满减、权限）
+      setTypeNoList([]);
+      return;
     }
-    // 账户-DP（数字积分）
-    else if (value == '3') {
-      // 请求后台获取商户上架的数字资产： ERC20
-      let params = {
-        // 1、数字徽章 2、PFP 3、数字积分 4、数字门票 5、pass卡 6、徽章/门票
-        assetsTypes: ['3'],
-      };
-      getDigitalAssetsItemList(params).then((res) => {
-        console.log(res);
-        let typeNoListTemp = [];
-        if (res?.code == 0) {
-          res?.data.map((item) => {
-            console.log(item);
-            let typeNoJson = {
-              typeNo: item.serialNo,
-              name: item.assetsName,
-              tokenId: item.tokenId,
-            };
-            typeNoListTemp.push(typeNoJson);
-          });
-        }
-        setTypeNoList(typeNoListTemp);
-      });
-    } else if (value == '4') {
-      // 请求后台获取商户上架的数字资产： 数字门票(ERC1155)
-      let params = {
-        assetsTypes: ['4'],
-      };
-      getDigitalAssetsItemList(params).then((res) => {
-        console.log(res);
-        let typeNoListTemp = [];
-        if (res?.code == 0) {
-          res?.data.map((item) => {
-            console.log(item);
-            let typeNoJson = {
-              typeNo: item.serialNo,
-              name: item.assetsName,
-              tokenId: item.tokenId,
-            };
-            typeNoListTemp.push(typeNoJson);
-          });
-        }
-        setTypeNoList(typeNoListTemp);
-      });
-    } else if (value == '5') {
-      // 请求后台获取商户上架的数字资产： PASS卡(ERC1155)
-      let params = {
-        assetsTypes: ['5'],
-      };
-      getDigitalAssetsItemList(params).then((res) => {
-        console.log(res);
-        let typeNoListTemp = [];
-        if (res?.code == 0) {
-          res?.data.map((item) => {
-            console.log(item);
-            let typeNoJson = {
-              typeNo: item.serialNo,
-              name: item.assetsName,
-              tokenId: item.tokenId,
-            };
-            typeNoListTemp.push(typeNoJson);
-          });
-        }
-        setTypeNoList(typeNoListTemp);
-      });
-    }
-    // 账户-BC
-    else if (value == '6') {
-      // 请求后台获取商户上架的联合曲线积分： bondingCure
-      // let ccys = [
-      //   {
-      //     typeNo: 'bc',
-      //     name: '曲线积分',
-      //   },
-      //   {
-      //     typeNo: 'se',
-      //     name: '平台积分',
-      //   },
-      // ];
-      // setTypeNoList(ccys);
-      let params = {
-        // 1、
-        assetsTypes: [],
-      };
-      getBondingCurveTokenList(params).then((res) => {
-        console.log(res);
-        let typeNoListTemp = [];
-        if (res?.code == 0) {
-          res?.data.map((item) => {
-            console.log(item);
-            let typeNoJson = {
+
+    // 调用对应的服务获取数据
+    mapping.service!(mapping.params).then((res: any) => {
+      console.log(res);
+      let typeNoListTemp: any[] = [];
+      
+      if (res?.code == 0 && res?.data) {
+        res.data.map((item: any) => {
+          let typeNoJson;
+          
+          if (value === '6') {
+            // 联合曲线的数据结构
+            typeNoJson = {
               typeNo: item?.serialNo,
               name: item?.name,
             };
-            typeNoListTemp.push(typeNoJson);
-          });
-        }
-        setTypeNoList(typeNoListTemp);
-      });
-    }
-    // 满减
-    else if (value == '7') {
-      //TODO: query 满减
-      setTypeNoList([]);
-    }
-    // 权限
-    else if (value == '8') {
-      //TODO: query 权限
-      setTypeNoList([]);
-    } else if (value == '9') {
-      // 查询等级
-      let params = {
-        // 1、
-        assetsTypes: [],
-      };
-      getGradeList(params).then((res) => {
-        console.log(res);
-        let typeNoListTemp = [];
-        if (res?.code == 0) {
-          res?.data.map((item) => {
-            console.log(item);
-            let typeNoJson = {
+          } else if (value === '9') {
+            // 等级的数据结构
+            typeNoJson = {
               typeNo: item?.serialNo,
               name: item?.name,
               gradeNum: item?.gradeNum,
             };
-            typeNoListTemp.push(typeNoJson);
-          });
-        }
-        setTypeNoList(typeNoListTemp);
-      });
-    }
+          } else {
+            // 数字资产的数据结构
+            typeNoJson = {
+              typeNo: item.serialNo,
+              name: item.assetsName,
+              tokenId: item.tokenId,
+            };
+          }
+          
+          typeNoListTemp.push(typeNoJson);
+        });
+      }
+      
+      setTypeNoList(typeNoListTemp);
+    }).catch((error: any) => {
+      console.error('获取数据失败:', error);
+      setTypeNoList([]);
+    });
   };
 
   return (
@@ -428,6 +410,7 @@ export default () => {
       <Modal
         title="添加条件"
         centered
+        width={800}
         open={isTemplateModal}
         onOk={confirmTemplate}
         onCancel={onCancelTemplate}
@@ -435,11 +418,147 @@ export default () => {
         <Form
           name="basic"
           form={FormRef}
-          labelCol={{ span: 7 }}
-          wrapperCol={{ span: 14 }}
+          layout="vertical"
           // 表单默认值
-          initialValues={{ type: '0', typeNo: '0', typeProtocol: 'ERC20' }}
+          initialValues={{ 
+            type: '0', 
+            operator: '>=', 
+            typeProtocol: 'ERC20',
+            value: 0,
+            typeNo: '',
+            typeTokenId: null
+          }}
         >
+          <Row gutter={16} style={{ marginTop: '16px' }}>
+            <Col span={8}>
+              <Form.Item
+                label="条件类型"
+                name="type"
+                rules={[{ required: true, message: '请选择条件类型!' }]}
+              >
+                <Select
+                  style={{ width: '100%' }}
+                  onChange={(value) => typeOnChange(value)}
+                >
+                  <Option value="0">请选择条件类型</Option>
+                  <Option value="1">数字徽章</Option>
+                  <Option value="2">PFP</Option>
+                  <Option value="3">账户-DP</Option>
+                  <Option value="4">数字门票</Option>
+                  <Option value="5">Pass卡</Option>
+                  <Option value="6">账户-BC</Option>
+                  <Option value="7">满减</Option>
+                  <Option value="8">权限</Option>
+                  <Option value="9">会员等级</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                label="操作符"
+                name="operator"
+                rules={[{ required: true, message: '请选择操作符!' }]}
+              >
+                <Select 
+                  style={{ width: '100%' }}
+                  onChange={() => {
+                    setTimeout(() => {
+                      handleFormChange();
+                    }, 100);
+                  }}
+                >
+                  <Option value="=">等于</Option>
+                  <Option value="!=">不等于</Option>
+                  <Option value=">">大于</Option>
+                  <Option value=">=">大于等于</Option>
+                  <Option value="<">小于</Option>
+                  <Option value="<=">小于等于</Option>
+                  <Option value="in">包含</Option>
+                  <Option value="like">模糊匹配</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              {digitalAssetsType == '9' ? (
+                <Form.Item
+                  label="等级名称"
+                  name="gradeName"
+                  rules={[{ required: false, message: '请输入等级名称!' }]}
+                >
+                  <Input 
+                    placeholder="请输入等级名称"
+                    onChange={() => {
+                      setTimeout(() => {
+                        handleFormChange();
+                      }, 100);
+                    }}
+                  />
+                </Form.Item>
+              ) : (
+                <Form.Item
+                  label="比较值"
+                  name="value"
+                  rules={[{ required: true, message: '请输入比较值!' }]}
+                >
+                  <InputNumber 
+                    style={{ width: '100%' }}
+                    placeholder="请输入比较值"
+                    min={0}
+                    precision={2}
+                    step={1}
+                    onChange={() => {
+                      setTimeout(() => {
+                        handleFormChange();
+                      }, 100);
+                    }}
+                  />
+                </Form.Item>
+              )}
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="资产类型"
+                name="typeNo"
+                rules={[{ required: true, message: '请选择资产类型!' }]}
+              >
+                <Select 
+                  style={{ width: '100%' }}
+                  placeholder="请选择资产类型"
+                  onChange={() => {
+                    setTimeout(() => {
+                      handleFormChange();
+                    }, 100);
+                  }}
+                >
+                  {typeNoList.map((item: any) => (
+                    <Option key={item.typeNo} value={item.typeNo}>
+                      {item.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="协议类型"
+                name="typeProtocol"
+                rules={[{ required: true, message: '请选择协议类型!' }]}
+              >
+                <Select 
+                  style={{ width: '100%' }}
+                  placeholder="请选择协议类型"
+                >
+                  <Option value="ERC20">ERC20</Option>
+                  <Option value="ERC721">ERC721</Option>
+                  <Option value="ERC1155">ERC1155</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+
           <Form.Item
             label="条件名称"
             name="name"
@@ -447,94 +566,17 @@ export default () => {
           >
             <Input />
           </Form.Item>
-          {/* 1：数字资产 2：账户 3满减, 4:折扣 5权限 */}
-          <Form.Item
-            label="条件类型"
-            name="type"
-            rules={[{ required: true, message: '请选择条件类型!' }]}
-          >
-            <Select
-              style={{ width: '100%' }}
-              onChange={(value) => typeOnChange(value)}
-            >
-              <Option value="0">请选择条件类型</Option>
-              <Option value="1">数字徽章</Option>
-              <Option value="2">PFP</Option>
-              <Option value="3">账户-DP</Option>
-              <Option value="4">数字门票</Option>
-              <Option value="5">Pass卡</Option>
-              <Option value="6">账户-BC</Option>
-              <Option value="7">满减</Option>
-              <Option value="8">权限</Option>
-              <Option value="9">会员等级</Option>
-            </Select>
-          </Form.Item>
-          {/*  
-          <Form.Item
-            label="条件类型协议"
-            name="typeProtocol"
-            rules={[{ required: true, message: '请选择条件类型协议!' }]}
-          >
-            <Select style={{ width: '100%' }}>
-              <Option value="">请选择条件类型</Option>
-              <Option value="ERC20">ERC20</Option>
-              <Option value="ERC721">ERC721</Option>
-              <Option value="ERC1155">ERC1155</Option>
-              <Option value="ERC3525">ERC3525</Option>
-            </Select>
-          </Form.Item> */}
-          <Form.Item
-            label="条件"
-            name="typeNo"
-            rules={[{ required: true, message: '请选择条件!' }]}
-          >
-            <Select style={{ width: '100%' }}>
-              <Option value="0">请选择条件</Option>
-              {typeNoList.map((typeNo) => {
-                return (
-                  <Option value={typeNo?.typeNo}>
-                    {(typeNo?.typeNo).slice(-4) +
-                      '-' +
-                      typeNo?.name +
-                      '-' +
-                      typeNo?.tokenId}
-                  </Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-          {digitalAssetsType == '9' ? null : (
-            <Form.Item
-              label="数量"
-              name="amount"
-              rules={[{ required: false, message: '请输入数量!' }]}
-            >
-              <Input />
-            </Form.Item>
-          )}
-
-          {/* <Form.Item
-            label="会员等级"
-            name="grade"
-            rules={[{ required: false, message: '请选择会员等级!' }]}
-          >
-            <Select style={{ width: '100%' }}>
-              <Option value="0">请选择会员等级</Option>
-              {gradeList.map((grade) => {
-                return (
-                  <Option value={grade?.serialNo}>
-                    {grade?.name + '-' + grade?.gradeNum}
-                  </Option>
-                );
-              })}
-            </Select>
-          </Form.Item> */}
 
           <Form.Item
             label="备注"
             name="remark"
             rules={[{ required: true, message: '请输入备注描述!' }]}
           >
+            <Input.TextArea rows={3} placeholder="请输入备注描述" />
+          </Form.Item>
+
+          {/* 隐藏字段 */}
+          <Form.Item name="typeTokenId" style={{ display: 'none' }}>
             <Input />
           </Form.Item>
         </Form>

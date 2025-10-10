@@ -6,15 +6,13 @@
 
     <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.ConditionRelation">
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
-            <result property="type" column="type" jdbcType="VARCHAR"/>
-            <result property="typeNo" column="type_no" jdbcType="VARCHAR"/>
+            <result property="conditionNo" column="condition_no" jdbcType="VARCHAR"/>
             <result property="category" column="category" jdbcType="VARCHAR"/>
-            <result property="categoryNo" column="category_no" jdbcType="VARCHAR"/>
+            <result property="categoryNo" column="condition_no" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        serial_no,
-        type,type_no,category,
-        category_no
+        serial_no,category,
+        category_no,condition_no
     </sql>
 </mapper>

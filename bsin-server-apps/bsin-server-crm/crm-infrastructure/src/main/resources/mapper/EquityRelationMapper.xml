@@ -8,14 +8,12 @@
             <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
             <result property="category" column="category" jdbcType="VARCHAR"/>
             <result property="categoryNo" column="category_no" jdbcType="VARCHAR"/>
-            <result property="type" column="type" jdbcType="TINYINT"/>
-            <result property="typeNo" column="type_no" jdbcType="VARCHAR"/>
+            <result property="equityNo" column="equity_no" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         serial_no,
-        category,category_no,type,
-        type_no
+        category,category_no,equity_no
     </sql>
 
 </mapper>

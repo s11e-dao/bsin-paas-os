@@ -12,6 +12,11 @@ import {
   Descriptions,
   DatePicker,
   Divider,
+  Row,
+  Col,
+  Space,
+  Collapse,
+  InputNumber,
 } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -19,7 +24,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './conditionData';
 
 import {
-  getConditionPageList,
+  getConditionList,
   getConditionListByCategoryNo,
   getConditionDetail,
   deleteConditionConfig,
@@ -27,11 +32,17 @@ import {
 } from './service';
 
 import TableTitle from '../../../components/TableTitle';
-import styles from './index.css';
+// import styles from './index.css'; // 暂时注释掉，避免类型错误
 
 const { RangePicker } = DatePicker;
+const { Panel } = Collapse;
 
-export default ({ setCurrentContent, record }) => {
+interface Props {
+  record: any;
+  setCurrentContent?: (content: string) => void;
+}
+
+export default ({ record, setCurrentContent }: Props) => {
   const { TextArea } = Input;
   const { Option } = Select;
   // 控制新增模态框
@@ -39,12 +50,23 @@ export default ({ setCurrentContent, record }) => {
   // 查看模态框
   const [isViewConditionModal, setIsViewConditionModal] = useState(false);
   // 查看
-  const [isViewRecord, setIsViewRecord] = useState({});
+  const [isViewRecord, setIsViewRecord] = useState<any>({});
   // 任务起止时间
-  const [conditionList, setConditionList] = useState([]);
+  const [conditionList, setConditionList] = useState<any[]>([]);
   const [basedOnModel, setbasedOnModel] = useState('0');
 
   const [conditionCategory, setConditionCategory] = useState('0');
+  
+  // 条件配置相关状态
+  const [conditionConfig, setConditionConfig] = useState<{
+    operator: string;
+    value: string;
+    description: string;
+  }>({
+    operator: 'eq',
+    value: '',
+    description: ''
+  });
 
   // 获取表单
   const [FormRef] = Form.useForm();
@@ -87,7 +109,7 @@ export default ({ setCurrentContent, record }) => {
    * 以下内容为操作相关
    */
 
-  const baseModelChange = (e: Event) => {
+  const baseModelChange = (e: any) => {
     console.log(e);
     // 根据点击选择展示不同的输入框
     setbasedOnModel(e.target.value);
@@ -95,7 +117,32 @@ export default ({ setCurrentContent, record }) => {
 
   // 新增模板
   const increaseCondition = () => {
-    setIsConditionModal(true);
+    // 先获取条件列表
+    const params = {
+      // 可以根据需要添加查询参数
+    };
+    
+    getConditionList(params).then((res) => {
+      console.log('获取条件列表:', res);
+      let conditionListTemp: any[] = [];
+      if (res?.data && res.data.length > 0) {
+        res.data.map((item: any) => {
+          console.log(item);
+          let conditionJson = {
+            serialNo: item.serialNo,
+            name: item.name,
+          };
+          conditionListTemp.push(conditionJson);
+        });
+      }
+      setConditionList(conditionListTemp);
+      
+      // 获取条件列表后再打开模态框
+      setIsConditionModal(true);
+    }).catch((error) => {
+      console.error('获取条件列表失败:', error);
+      message.error('获取条件列表失败，请重试！');
+    });
   };
 
   /**
@@ -107,23 +154,44 @@ export default ({ setCurrentContent, record }) => {
       .then(async () => {
         // 获取表单结果
         let response = FormRef.getFieldsValue();
-        console.log(response);
-        response.categoryNo = record.serialNo;
-        response.category = conditionCategory;
-        configCondition(response).then((res) => {
+        console.log('表单数据:', response);
+        console.log('条件配置:', conditionConfig);
+        
+        // 合并表单数据和条件配置
+        const submitData = {
+          ...response,
+          categoryNo: record.serialNo,
+          category: conditionCategory
+        };
+        
+        console.log('提交数据:', submitData);
+        
+        configCondition(submitData).then((res) => {
           console.log('add', res);
           if (res.code === 0 ) {
+            message.success('条件添加成功');
             // 重置输入的表单
             FormRef.resetFields();
+            setConditionConfig({
+              operator: 'eq',
+              value: '',
+              description: ''
+            });
             // 刷新proTable
             actionRef.current?.reload();
             setIsConditionModal(false);
           } else {
             message.error(`失败： ${res?.message}`);
           }
+        }).catch((error) => {
+          console.error('添加条件配置失败:', error);
+          message.error('添加条件配置失败，请重试！');
         });
       })
-      .catch(() => {});
+      .catch((error) => {
+        console.error('表单验证失败:', error);
+        message.error('请检查表单填写是否正确');
+      });
   };
 
   /**
@@ -132,13 +200,21 @@ export default ({ setCurrentContent, record }) => {
   const onCancelCondition = () => {
     // 重置输入的表单
     FormRef.resetFields();
+            // 重置条件配置状态
+            setConditionConfig({
+              operator: 'eq',
+              value: '',
+              description: ''
+            });
+    // 清空条件列表
+    setConditionList([]);
     setIsConditionModal(false);
   };
 
   /**
    * 删除模板
    */
-  const toDelCondition = async (record) => {
+  const toDelCondition = async (record: any) => {
     console.log('record', record);
     let { conditionRelationshipNo } = record;
     let delRes = await deleteConditionConfig({
@@ -154,7 +230,7 @@ export default ({ setCurrentContent, record }) => {
   /**
    * 查看详情
    */
-  const toViewCondition = async (record) => {
+  const toViewCondition = async (record: any) => {
     let { serialNo } = record;
     let viewRes = await getConditionDetail({ serialNo });
     setIsViewConditionModal(true);
@@ -171,7 +247,7 @@ export default ({ setCurrentContent, record }) => {
     return typeText;
   };
 
-  const typeOnChange = (value) => {
+  const typeOnChange = (value: string) => {
     console.log(value);
     // 币种
     let params = {
@@ -180,10 +256,10 @@ export default ({ setCurrentContent, record }) => {
       type: value,
     };
     // 请求后台获取条件
-    getConditionPageList(params).then((res) => {
+    getConditionList(params).then((res) => {
       console.log(res);
-      let conditionListTemp = [];
-      res?.data.map((item) => {
+      let conditionListTemp: any[] = [];
+      res?.data.map((item: any) => {
         console.log(item);
         let conditionJson = {
           serialNo: item.serialNo,
@@ -198,15 +274,6 @@ export default ({ setCurrentContent, record }) => {
   return (
     <>
       <Card style={{ marginBottom: 16 }}>
-        <Button
-          type="primary"
-          onClick={() => {
-            setCurrentContent('taskList');
-          }}
-          className={styles.btn}
-        >
-          返回
-        </Button>
         <Descriptions title="配置条件"></Descriptions>
         {/* Pro表格 */}
 
@@ -248,62 +315,91 @@ export default ({ setCurrentContent, record }) => {
               icon={<PlusOutlined />}
               type="primary"
             >
-              添加条件
+              配置条件
             </Button>,
           ]}
         />
         {/* 新增条件模板模态框 */}
         <Modal
-          title="添加条件"
+          title="配置条件"
           centered
           open={isConditionModal}
           onOk={confirmCondition}
           onCancel={onCancelCondition}
+          width={600}
+          okText="保存"
+          cancelText="取消"
         >
           <Form
             name="basic"
             form={FormRef}
-            labelCol={{ span: 7 }}
-            wrapperCol={{ span: 14 }}
+            layout="vertical"
             // 表单默认值
-            initialValues={{ type: '0', typeNo: '0' }}
+            initialValues={{ conditionNo: '0' }}
           >
+            {/* 条件表达式预览 */}
+            <div style={{ 
+              padding: '12px 16px', 
+              backgroundColor: '#f5f5f5', 
+              borderRadius: '6px', 
+              marginBottom: '16px',
+              border: '1px solid #d9d9d9'
+            }}>
+              <div style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>条件表达式预览：</div>
+              <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#1890ff' }}>
+                {(() => {
+                  const conditionNo = FormRef.getFieldValue('conditionNo');
+                  const selectedCondition = conditionList.find(c => c?.serialNo === conditionNo);
+                  
+                  if (selectedCondition) {
+                    return `关联条件: ${selectedCondition.name}`;
+                  } else {
+                    return '请选择关联条件';
+                  }
+                })()}
+              </div>
+            </div>
+
+            <Row gutter={16}>
+              <Col span={24}>
+                <Form.Item
+                  label="关联条件"
+                  name="conditionNo"
+                  rules={[{ required: true, message: '请选择关联条件!' }]}
+                >
+                  <Select 
+                    style={{ width: '100%' }}
+                    placeholder="请选择要关联的条件"
+                    showSearch
+                    filterOption={(input, option) =>
+                      (option?.children as unknown as string)?.toLowerCase().includes(input.toLowerCase())
+                    }
+                  >
+                    <Option value="0">请选择关联条件</Option>
+                    {conditionList.map((condition) => {
+                      return (
+                        <Option key={condition?.serialNo} value={condition?.serialNo}>
+                          {condition?.name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+
+
             <Form.Item
-              label="条件类型"
-              name="type"
-              rules={[{ required: true, message: '请选择条件类型!' }]}
+              label="条件描述"
+              name="description"
+              rules={[{ required: true, message: '请输入条件描述!' }]}
             >
-              <Select
-                style={{ width: '100%' }}
-                onChange={(value) => typeOnChange(value)}
-              >
-                <Option value="0">请选择条件类型</Option>
-                <Option value="1">数字徽章</Option>
-                <Option value="2">PFP</Option>
-                <Option value="3">账户-DP</Option>
-                <Option value="4">数字门票</Option>
-                <Option value="5">Pass卡</Option>
-                <Option value="6">账户-BC</Option>
-                <Option value="7">满减</Option>
-                <Option value="8">权限</Option>
-                <Option value="9">会员等级</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              label="条件"
-              name="typeNo"
-              rules={[{ required: true, message: '请选择条件!' }]}
-            >
-              <Select style={{ width: '100%' }}>
-                <Option value="0">请选择条件</Option>
-                {conditionList.map((condition) => {
-                  return (
-                    <Option value={condition?.serialNo}>
-                      {condition?.name}
-                    </Option>
-                  );
-                })}
-              </Select>
+              <Input.TextArea 
+                rows={3}
+                placeholder="详细描述此条件的含义和作用"
+                value={conditionConfig.description}
+                onChange={(e) => setConditionConfig(prev => ({ ...prev, description: e.target.value }))}
+              />
             </Form.Item>
           </Form>
         </Modal>
@@ -318,7 +414,7 @@ export default ({ setCurrentContent, record }) => {
           onCancel={() => setIsViewConditionModal(false)}
         >
           {/* 详情信息 */}
-          <Descriptions title="任务详细信息">
+          <Descriptions>
             <Descriptions.Item label="租户ID">
               {isViewRecord?.tenantId}
             </Descriptions.Item>

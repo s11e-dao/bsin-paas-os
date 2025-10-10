@@ -9,6 +9,8 @@ import {
   Divider,
   Popconfirm,
   Descriptions,
+  Row,
+  Col,
 } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -19,19 +21,17 @@ import {
   addEquity,
   deleteEquity,
   getEquityDetail,
-} from './service';
-
-import {
-  getDigitalAssetsItemPageList,
   getDigitalAssetsItemList,
   getBondingCurveTokenList,
-} from '../../Assets/AssetsItem/service';
+} from './service';
 
 import { getGradeList } from '../../Grade/service';
 
 import TableTitle from '../../../components/TableTitle';
 
-export default () => {
+interface Props {}
+
+export default ({}: Props) => {
   const { TextArea } = Input;
   const { Option } = Select;
   // 控制新增模态框
@@ -39,9 +39,9 @@ export default () => {
   // 查看模态框
   const [isViewEquityModal, setIsViewEquityModal] = useState(false);
   // 查看
-  const [isViewRecord, setIsViewRecord] = useState({});
-  const [typeNoList, setTypeNoList] = useState([]);
-  const [gradeList, setGradeList] = useState([]);
+  const [isViewRecord, setIsViewRecord] = useState<any>({});
+  const [typeNoList, setTypeNoList] = useState<any[]>([]);
+  const [gradeList, setGradeList] = useState<any[]>([]);
   const [digitalAssetsType, setDigitalAssetsType] = useState('');
   // 获取表单
   const [FormRef] = Form.useForm();
@@ -129,7 +129,7 @@ export default () => {
   /**
    * 删除模板
    */
-  const toDelEquity = async (record) => {
+  const toDelEquity = async (record: any) => {
     console.log('record', record);
     let { serialNo } = record;
     let delRes = await deleteEquity({ serialNo });
@@ -143,7 +143,7 @@ export default () => {
   /**
    * 查看详情
    */
-  const toViewEquity = async (record) => {
+  const toViewEquity = async (record: any) => {
     let { serialNo } = record;
     let viewRes = await getEquityDetail({ serialNo });
     setIsViewEquityModal(true);
@@ -193,20 +193,35 @@ export default () => {
     }
   };
 
-  const typeOnChange = (value) => {
+  // 根据资产类型获取对应的数字资产列表
+  const assetTypeOnChange = (value: string) => {
     console.log(value);
     setDigitalAssetsType(value);
-    // 1、数字徽章 2、PFP 3、数字积分 4、数字门票 5、pass卡 6、账户-联合曲线(BC)  7：满减 8：权限
-    if (value == '1') {
-      // 请求后台获取商户上架的数字资产： ERC1155...
+    
+    // 根据资产类型映射到对应的数字资产类型
+    let assetTypeMapping: { [key: string]: string[] } = {
+      'BADGE': ['1'],      // 数字徽章
+      'PFP': ['2'],        // PFP
+      'POINTS': ['3'],     // 数字积分
+      'TICKET': ['4'],     // 数字门票
+      'PASS': ['5'],       // PASS卡
+      'COIN': ['6'],       // 联合曲线
+      'COUPON': [],        // 优惠券（不需要数字资产）
+      'EXP': []            // 经验值（不需要数字资产）
+    };
+
+    const mappedTypes = assetTypeMapping[value] || [];
+    
+    if (mappedTypes.length > 0) {
+      // 请求后台获取对应的数字资产
       let params = {
-        assetsTypes: ['1'],
+        assetsTypes: mappedTypes,
       };
       getDigitalAssetsItemList(params).then((res) => {
         console.log(res);
-        let typeNoListTemp = [];
+        let typeNoListTemp: any[] = [];
         if (res?.code == 0) {
-          res?.data.map((item) => {
+          res?.data.map((item: any) => {
             console.log(item);
             let typeNoJson = {
               typeNo: item.serialNo,
@@ -218,148 +233,14 @@ export default () => {
         }
         setTypeNoList(typeNoListTemp);
       });
-    } else if (value == '2') {
-      // 请求后台获取商户上架的数字资产： PFP(ERC721)
-      let params = {
-        assetsTypes: ['2'],
-      };
-      getDigitalAssetsItemList(params).then((res) => {
-        console.log(res);
-        let typeNoListTemp = [];
-        if (res?.code == 0) {
-          res?.data.map((item) => {
-            console.log(item);
-            let typeNoJson = {
-              typeNo: item.serialNo,
-              name: item.assetsName,
-              tokenId: item.tokenId,
-            };
-            typeNoListTemp.push(typeNoJson);
-          });
-        }
-        setTypeNoList(typeNoListTemp);
-      });
-    }
-    // 账户-DP（数字积分）
-    else if (value == '3') {
-      // 请求后台获取商户上架的数字资产： ERC20
-      let params = {
-        // 1、数字徽章 2、PFP 3、数字积分 4、数字门票 5、pass卡 6、徽章/门票
-        assetsTypes: ['3'],
-      };
-      getDigitalAssetsItemList(params).then((res) => {
-        console.log(res);
-        let typeNoListTemp = [];
-        if (res?.code == 0) {
-          res?.data.map((item) => {
-            console.log(item);
-            let typeNoJson = {
-              typeNo: item.serialNo,
-              name: item.assetsName,
-              tokenId: item.tokenId,
-            };
-            typeNoListTemp.push(typeNoJson);
-          });
-        }
-        setTypeNoList(typeNoListTemp);
-      });
-    } else if (value == '4') {
-      // 请求后台获取商户上架的数字资产： 数字门票(ERC1155)
-      let params = {
-        assetsTypes: ['4'],
-      };
-      getDigitalAssetsItemList(params).then((res) => {
-        console.log(res);
-        let typeNoListTemp = [];
-        if (res?.code == 0) {
-          res?.data.map((item) => {
-            console.log(item);
-            let typeNoJson = {
-              typeNo: item.serialNo,
-              name: item.assetsName,
-              tokenId: item.tokenId,
-            };
-            typeNoListTemp.push(typeNoJson);
-          });
-        }
-        setTypeNoList(typeNoListTemp);
-      });
-    } else if (value == '5') {
-      // 请求后台获取商户上架的数字资产： PASS卡(ERC1155)
-      let params = {
-        assetsTypes: ['5'],
-      };
-      getDigitalAssetsItemList(params).then((res) => {
-        console.log(res);
-        let typeNoListTemp = [];
-        if (res?.code == 0) {
-          res?.data.map((item) => {
-            console.log(item);
-            let typeNoJson = {
-              typeNo: item.serialNo,
-              name: item.assetsName,
-              tokenId: item.tokenId,
-            };
-            typeNoListTemp.push(typeNoJson);
-          });
-        }
-        setTypeNoList(typeNoListTemp);
-      });
-    }
-    // 账户-BC
-    else if (value == '6') {
-      // 请求后台获取商户上架的联合曲线积分： bondingCure
-      let params = {
-        // 1、
-        assetsTypes: [],
-      };
-      getBondingCurveTokenList(params).then((res) => {
-        console.log(res);
-        let typeNoListTemp = [];
-        if (res?.code == 0) {
-          res?.data.map((item) => {
-            console.log(item);
-            let typeNoJson = {
-              typeNo: item?.serialNo,
-              name: item?.name,
-            };
-            typeNoListTemp.push(typeNoJson);
-          });
-        }
-        setTypeNoList(typeNoListTemp);
-      });
-    }
-    // 满减
-    else if (value == '7') {
-      //TODO: query 满减
-      setTypeNoList([]);
-    }
-    // 权限
-    else if (value == '8') {
-      //TODO: query 权限
-      setTypeNoList([]);
-    } else if (value == '9') {
-      // 查询等级
-      let params = {
-        // 1、
-        assetsTypes: [],
-      };
-      getGradeList(params).then((res) => {
-        console.log(res);
-        let typeNoListTemp = [];
-        if (res?.code == 0) {
-          res?.data.map((item) => {
-            console.log(item);
-            let typeNoJson = {
-              typeNo: item?.serialNo,
-              name: item?.name,
-              gradeNum: item?.gradeNum,
-            };
-            typeNoListTemp.push(typeNoJson);
-          });
-        }
-        setTypeNoList(typeNoListTemp);
-      });
+    } else if (value === 'COUPON') {
+      // 优惠券类型，不需要数字资产
+      let typeNoListTemp: any[] = [];
+      setTypeNoList(typeNoListTemp);
+    } else if (value === 'EXP') {
+      // 经验值类型，不需要数字资产
+      let typeNoListTemp: any[] = [];
+      setTypeNoList(typeNoListTemp);
     }
   };
 
@@ -419,105 +300,109 @@ export default () => {
         open={isEquityModal}
         onOk={confirmEquity}
         onCancel={onCancelEquity}
+        width={800}
+        okText="保存"
+        cancelText="取消"
       >
         <Form
           name="basic"
           form={FormRef}
-          labelCol={{ span: 7 }}
-          wrapperCol={{ span: 14 }}
+          layout="vertical"
           // 表单默认值
-          initialValues={{ type: '0', typeNo: '0' }}
+          initialValues={{ 
+            typeNo: '0',
+            assetType: 'POINTS',
+            amountType: 'FIXED'
+          }}
         >
+
+          <Row gutter={16} style={{ marginTop: '16px' }}>
+            <Col span={12}>
+              <Form.Item
+                label="权益类型"
+                name="assetType"
+                rules={[{ required: true, message: '请选择资产类型!' }]}
+              >
+                <Select 
+                  style={{ width: '100%' }}
+                  onChange={(value) => assetTypeOnChange(value)}
+                >
+                  <Option value="POINTS">积分</Option>
+                  <Option value="COIN">金币</Option>
+                  <Option value="EXP">经验值</Option>
+                  <Option value="COUPON">优惠券</Option>
+                  <Option value="BADGE">徽章</Option>
+                  <Option value="PFP">PFP</Option>
+                  <Option value="TICKET">门票</Option>
+                  <Option value="PASS">Pass卡</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="权益资产"
+                name="typeNo"
+                rules={[{ required: true, message: '请选择权益资产!' }]}
+              >
+                <Select style={{ width: '100%' }}>
+                  <Option value="0">请选择权益资产</Option>
+                  {typeNoList.map((typeNo) => {
+                    return (
+                      <Option key={typeNo?.typeNo} value={typeNo?.typeNo}>
+                        {(typeNo?.typeNo).slice(-4) +
+                          '-' +
+                          typeNo?.name +
+                          '-' +
+                          typeNo?.tokenId}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="奖励类型"
+                name="amountType"
+                rules={[{ required: true, message: '请选择奖励类型!' }]}
+              >
+                <Select style={{ width: '100%' }}>
+                  <Option value="FIXED">固定数量</Option>
+                  <Option value="RANDOM">随机区间</Option>
+                  <Option value="FORMULA">公式计算</Option>
+                  <Option value="PERCENT">按比例</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="奖励数量"
+                name="amount"
+                rules={[{ required: false, message: '请输入奖励数量!' }]}
+              >
+                <Input placeholder="请输入奖励数量" />
+              </Form.Item>
+            </Col>
+          </Row>
+
+
           <Form.Item
             label="权益名称"
             name="name"
             rules={[{ required: true, message: '请输入权益名称!' }]}
           >
-            <Input />
+            <Input placeholder="请输入权益名称" />
           </Form.Item>
-          {/* 1：数字资产 2：账户 3满减, 4:折扣 5权限 */}
-          <Form.Item
-            label="权益类型"
-            name="type"
-            rules={[{ required: true, message: '请选择权益类型!' }]}
-          >
-            <Select
-              style={{ width: '100%' }}
-              onChange={(value) => typeOnChange(value)}
-            >
-              <Option value="0">请选择权益类型</Option>
-              <Option value="1">数字徽章</Option>
-              <Option value="2">PFP</Option>
-              <Option value="3">账户-DP</Option>
-              <Option value="4">数字门票</Option>
-              <Option value="5">Pass卡</Option>
-              <Option value="6">账户-BC</Option>
-              <Option value="7">满减</Option>
-              <Option value="8">权限</Option>
-              <Option value="9">会员等级</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="权益"
-            name="typeNo"
-            rules={[{ required: true, message: '请选择权益!' }]}
-          >
-            <Select style={{ width: '100%' }}>
-              <Option value="0">请选择权益</Option>
-              {typeNoList.map((typeNo) => {
-                return (
-                  <Option value={typeNo?.typeNo}>
-                    {(typeNo?.typeNo).slice(-4) +
-                      '-' +
-                      typeNo?.name +
-                      '-' +
-                      typeNo?.tokenId}
-                  </Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-          {digitalAssetsType == '6' ? (
-            <Form.Item
-              label="劳动价值"
-              name="amount"
-              rules={[{ required: true, message: '请输入数量!' }]}
-            >
-              <Input />
-            </Form.Item>
-          ) : (
-            <Form.Item
-              label="数量"
-              name="amount"
-              rules={[{ required: false, message: '请输入数量!' }]}
-            >
-              <Input />
-            </Form.Item>
-          )}
-
-          {/* <Form.Item
-            label="会员等级"
-            name="grade"
-            rules={[{ required: false, message: '请选择会员等级!' }]}
-          >
-            <Select style={{ width: '100%' }}>
-              <Option value="0">请选择会员等级</Option>
-              {gradeList.map((grade) => {
-                return (
-                  <Option value={grade?.serialNo}>
-                    {grade?.name + '-' + grade?.gradeNum}
-                  </Option>
-                );
-              })}
-            </Select>
-          </Form.Item> */}
 
           <Form.Item
             label="备注"
             name="remark"
             rules={[{ required: true, message: '请输入备注描述!' }]}
           >
-            <Input />
+            <Input.TextArea rows={3} placeholder="请输入备注描述" />
           </Form.Item>
         </Form>
       </Modal>

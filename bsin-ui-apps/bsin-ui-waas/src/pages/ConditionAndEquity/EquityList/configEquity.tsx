@@ -18,28 +18,33 @@ import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons';
 import columnsData, { columnsDataType } from './equityData';
 import {
-  getEquityPageList,
+  getEquityList,
   getListByCategoryNo,
   getEquityDetail,
   deleteEquityConfig,
   configEquity,
 } from './service';
 import TableTitle from '../../../components/TableTitle';
-import styles from './index.css';
+// import styles from './index.css';
 
 const { RangePicker } = DatePicker;
 
-export default ({ setCurrentContent, record }) => {
-  const { TextArea } = Input;
+interface Props {
+  record: any;
+  setCurrentContent?: (content: string) => void;
+}
+
+export default ({ record, setCurrentContent }: Props) => {
+  const { TextArea } = Input; 
   const { Option } = Select;
   // 控制新增模态框
   const [isEquityModal, setIsEquityModal] = useState(false);
   // 查看模态框
   const [isViewEquityModal, setIsViewEquityModal] = useState(false);
   // 查看
-  const [isViewRecord, setIsViewRecord] = useState({});
+  const [isViewRecord, setIsViewRecord] = useState<any>({});
   // 任务起止时间
-  const [equityList, setEquityList] = useState([]);
+  const [equityList, setEquityList] = useState<any[]>([]);
 
   const [basedOnModel, setbasedOnModel] = useState('0');
 
@@ -86,7 +91,7 @@ export default ({ setCurrentContent, record }) => {
    * 以下内容为操作相关
    */
 
-  const baseModelChange = (e: Event) => {
+  const baseModelChange = (e: any) => {
     console.log(e);
     // 根据点击选择展示不同的输入框
     setbasedOnModel(e.target.value);
@@ -94,7 +99,32 @@ export default ({ setCurrentContent, record }) => {
 
   // 新增模板
   const increaseEquity = () => {
-    setIsEquityModal(true);
+    // 先获取权益列表
+    const params = {
+      // 可以根据需要添加查询参数
+    };
+    
+    getEquityList(params).then((res) => {
+      console.log('获取权益列表:', res);
+      let equityListTemp: any[] = [];
+      if (res?.data && res.data.length > 0) {
+        res.data.map((item: any) => {
+          console.log(item);
+          let equityJson = {
+            serialNo: item.serialNo,
+            name: item.name,
+          };
+          equityListTemp.push(equityJson);
+        });
+      }
+      setEquityList(equityListTemp);
+      
+      // 获取权益列表后再打开模态框
+      setIsEquityModal(true);
+    }).catch((error) => {
+      console.error('获取权益列表失败:', error);
+      message.error('获取权益列表失败，请重试！');
+    });
   };
 
   /**
@@ -137,7 +167,7 @@ export default ({ setCurrentContent, record }) => {
   /**
    * 删除
    */
-  const toDelEquity = async (record) => {
+  const toDelEquity = async (record: any) => {
     console.log('record', record);
     let { equityRelationshipNo } = record;
     let delRes = await deleteEquityConfig({ serialNo: equityRelationshipNo });
@@ -151,7 +181,7 @@ export default ({ setCurrentContent, record }) => {
   /**
    * 查看详情
    */
-  const toViewEquity = async (record) => {
+  const toViewEquity = async (record: any) => {
     let { serialNo } = record;
     let viewRes = await getEquityDetail({ serialNo });
     setIsViewEquityModal(true);
@@ -168,7 +198,7 @@ export default ({ setCurrentContent, record }) => {
     return typeText;
   };
 
-  const typeOnChange = (value) => {
+  const typeOnChange = (value: string) => {
     console.log(value);
     // 币种
     let params = {
@@ -177,10 +207,10 @@ export default ({ setCurrentContent, record }) => {
       type: value,
     };
     // 请求后台获取商户上架的资产
-    getEquityPageList(params).then((res) => {
+    getEquityList(params).then((res) => {
       console.log(res);
-      let equityListTemp = [];
-      res?.data.map((item) => {
+      let equityListTemp: any[] = [];
+      res?.data.map((item: any) => {
         console.log(item);
         let equityJson = {
           serialNo: item.serialNo,
@@ -195,15 +225,6 @@ export default ({ setCurrentContent, record }) => {
   return (
     <>
       <Card style={{ marginBottom: 16 }}>
-        <Button
-          type="primary"
-          onClick={() => {
-            setCurrentContent('taskList');
-          }}
-          className={styles.btn}
-        >
-          返回
-        </Button>
         <Descriptions title="权益配置"></Descriptions>
         {/* Pro表格 */}
         <ProTable<columnsDataType>
@@ -244,60 +265,84 @@ export default ({ setCurrentContent, record }) => {
               icon={<PlusOutlined />}
               type="primary"
             >
-              添加权益
+              配置权益
             </Button>,
           ]}
         />
         {/* 新增激励模板模态框 */}
         <Modal
-          title="添加激励"
+          title="配置权益"
           centered
           open={isEquityModal}
           onOk={confirmEquity}
           onCancel={onCancelEquity}
+          width={600}
+          okText="保存"
+          cancelText="取消"
         >
           <Form
             name="basic"
             form={FormRef}
-            labelCol={{ span: 7 }}
-            wrapperCol={{ span: 14 }}
+            layout="vertical"
             // 表单默认值
-            initialValues={{ type: '0', typeNo: '0' }}
+            initialValues={{ equityNo: '0' }}
           >
+            {/* 权益表达式预览 */}
+            <div style={{ 
+              padding: '12px 16px', 
+              backgroundColor: '#f5f5f5', 
+              borderRadius: '6px', 
+              marginBottom: '16px',
+              border: '1px solid #d9d9d9'
+            }}>
+              <div style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>权益表达式预览：</div>
+              <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#1890ff' }}>
+                {(() => {
+                  const equityNo = FormRef.getFieldValue('equityNo');
+                  const selectedEquity = equityList.find(e => e?.serialNo === equityNo);
+                  
+                  if (selectedEquity) {
+                    return `关联权益: ${selectedEquity.name}`;
+                  } else {
+                    return '请选择关联权益';
+                  }
+                })()}
+              </div>
+            </div>
+
             <Form.Item
-              label="激励类型"
-              name="type"
-              rules={[{ required: true, message: '请选择激励类型!' }]}
+              label="关联权益"
+              name="equityNo"
+              rules={[{ required: true, message: '请选择关联权益!' }]}
             >
-              <Select
+              <Select 
                 style={{ width: '100%' }}
-                onChange={(value) => typeOnChange(value)}
+                placeholder="请选择要关联的权益"
+                showSearch
+                filterOption={(input, option) =>
+                  (option?.children as unknown as string)?.toLowerCase().includes(input.toLowerCase())
+                }
               >
-                <Option value="0">请选择条件类型</Option>
-                <Option value="1">数字徽章</Option>
-                <Option value="2">PFP</Option>
-                <Option value="3">账户-DP</Option>
-                <Option value="4">数字门票</Option>
-                <Option value="5">Pass卡</Option>
-                <Option value="6">账户-BC</Option>
-                <Option value="7">满减</Option>
-                <Option value="8">权限</Option>
-                <Option value="9">会员等级</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              label="激励"
-              name="typeNo"
-              rules={[{ required: true, message: '请选择激励!' }]}
-            >
-              <Select style={{ width: '100%' }}>
-                <Option value="0">请选择激励</Option>
+                <Option value="0">请选择关联权益</Option>
                 {equityList.map((equity) => {
                   return (
-                    <Option value={equity?.serialNo}>{equity?.name}</Option>
+                    <Option key={equity?.serialNo} value={equity?.serialNo}>
+                      {equity?.name}
+                    </Option>
                   );
                 })}
               </Select>
+            </Form.Item>
+
+            <Form.Item
+              label="权益描述"
+              name="description"
+              rules={[{ required: true, message: '请输入权益描述!' }]}
+            >
+              <Input.TextArea 
+                rows={3}
+                placeholder="详细描述此权益的含义和作用"
+              />
             </Form.Item>
           </Form>
         </Modal>

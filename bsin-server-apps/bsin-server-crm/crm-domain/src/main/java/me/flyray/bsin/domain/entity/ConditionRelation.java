@@ -28,20 +28,9 @@ public class ConditionRelation implements Serializable {
     private String tenantId;
 
     /**
-     * 商户编码
-     */
-    private String merchantNo;
-
-    /**
-     * 条件类型：1 资产类别；2 成员等级；3 账户
-     * @see ConditionType
-     */
-    private String type;
-
-    /**
      * 类型编号
      */
-    private String typeNo;
+    private String conditionNo;
 
     /**
      * 条件分类：1、会员等级 2 数字资产 3 任务 4 活动

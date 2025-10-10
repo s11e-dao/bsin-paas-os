@@ -368,23 +368,6 @@ export default () => {
           initialValues={{ protocolStandards: 'Other', type: '10' }}
         >
           <Form.Item
-            label="协议标准"
-            name="protocolStandards"
-            rules={[{ required: true, message: '请选择协议标准!' }]}
-          >
-            <Select style={{ width: '100%' }}>
-              <Option value="ERC20">ERC20</Option>
-              <Option value="ERC721">ERC721</Option>
-              <Option value="ERC1155">ERC1155</Option>
-              <Option value="ERC3525">ERC3525</Option>
-              <Option value="DaoBookCore">DaoBookCore</Option>
-              <Option value="DaoBookFactory">DaoBookFactory</Option>
-              <Option value="DaoBookExtension">DaoBookExtension</Option>
-              <Option value="DaoBookWrapper">DaoBookWrapper</Option>
-              <Option value="Other">Other</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
             label="协议类型"
             name="type"
             rules={[{ required: true, message: '请选择协议类型!' }]}
@@ -400,6 +383,24 @@ export default () => {
               <Option value="8">权限</Option>
               <Option value="9">会员等级</Option>
               <Option value="10">其他</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="协议标准"
+            name="protocolStandards"
+            rules={[{ required: true, message: '请选择协议标准!' }]}
+          >
+            <Select style={{ width: '100%' }}>
+              <Option value="ERC20">ERC20</Option>
+              <Option value="ERC721">ERC721</Option>
+              <Option value="ERC1155">ERC1155</Option>
+              <Option value="ERC3525">ERC3525</Option>
+              <Option value="DaoBookCore">DaoBookCore</Option>
+              <Option value="DaoBookFactory">DaoBookFactory</Option>
+              <Option value="DaoBookExtension">DaoBookExtension</Option>
+              <Option value="DaoBookWrapper">DaoBookWrapper</Option>
+              <Option value="Other">Other</Option>
             </Select>
           </Form.Item>
 
