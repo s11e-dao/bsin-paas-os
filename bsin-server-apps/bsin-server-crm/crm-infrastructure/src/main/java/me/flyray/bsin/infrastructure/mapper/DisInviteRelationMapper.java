@@ -23,7 +23,7 @@ public interface DisInviteRelationMapper extends BaseMapper<DisInviteRelation> {
 
     IPage<CustomerBase> selectSysAgentCustormerPageList(@Param("page") IPage<?> page, @Param("sysAgentNo") String sysAgentNo);
 
-    IPage<CustomerBase> selectMyInviteCustormerPageList(@Param("page") IPage<?> page, @Param("customerNo") String customerNo);
+    IPage<CustomerBase> selectMyInviteCustormerPageList(@Param("page") IPage<?> page, @Param("parentNo") String parentNo);
 
 }
 
