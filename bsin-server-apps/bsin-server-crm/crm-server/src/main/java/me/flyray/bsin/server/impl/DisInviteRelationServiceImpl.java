@@ -177,6 +177,24 @@ public class DisInviteRelationServiceImpl implements DisInviteRelationService {
         return pageList;
     }
 
+    /**
+     * 查询我邀请的客户总数
+     * @param requestMap
+     * @return
+     */
+    @ApiDoc(desc = "getMyInviteCustormerCount")
+    @ShenyuDubboClient("/getMyInviteCustormerCount")
+    @Override
+    public Map<String, Integer> getMyInviteCustormerCount(Map<String, Object> requestMap) {
+        LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+        Map<String, Integer> map = new HashMap<>();
+        // 查询总的邀请数
+        LambdaQueryWrapper<DisInviteRelation> totalWarapper = new LambdaQueryWrapper<>();
+        totalWarapper.eq(DisInviteRelation::getParentNo, loginUser.getCustomerNo());
+        Long totalInvite = disInviteRelationMapper.selectCount(totalWarapper);
+        map.put("totalInvite", totalInvite.intValue());
+        return map;
+    }
 
     /**
      * 获取分销角色和等级及分佣比列数据

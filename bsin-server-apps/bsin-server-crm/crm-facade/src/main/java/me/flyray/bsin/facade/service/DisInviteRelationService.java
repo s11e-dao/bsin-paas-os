@@ -45,6 +45,8 @@ public interface DisInviteRelationService {
      */
     public IPage<?> getMyInviteCustormerPageList(Map<String, Object> requestMap);
 
+    public Map<String, Integer> getMyInviteCustormerCount(Map<String, Object> requestMap);
+
     /**
      * 获取分销角色和等级及分佣比列数据
      * @param requestMap
