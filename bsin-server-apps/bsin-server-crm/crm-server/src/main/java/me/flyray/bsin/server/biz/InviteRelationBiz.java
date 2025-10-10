@@ -66,4 +66,19 @@ public class InviteRelationBiz {
         }
     }
 
+    /**
+     * 检查是否被邀请
+     * @param customerNo
+     * @return
+     */
+    public boolean checkInvited(String customerNo) {
+        LambdaQueryWrapper<DisInviteRelation> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(DisInviteRelation::getCustomerNo, customerNo);
+        List<DisInviteRelation> inviteRelations = disInviteRelationMapper.selectList(wrapper);
+        if (inviteRelations.isEmpty()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

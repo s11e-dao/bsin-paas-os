@@ -332,8 +332,7 @@ public class CustomerServiceImpl implements CustomerService {
   @ApiDoc(desc = "registerOrLogin")
   @ShenyuDubboClient("/registerOrLogin")
   @Override
-  public Map<String, Object> registerOrLogin(Map<String, Object> requestMap)
-      throws UnsupportedEncodingException {
+  public Map<String, Object> registerOrLogin(Map<String, Object> requestMap){
     CustomerBase customerBase =
         BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap, AddGroup.class);
     String tenantId = customerBase.getTenantId();

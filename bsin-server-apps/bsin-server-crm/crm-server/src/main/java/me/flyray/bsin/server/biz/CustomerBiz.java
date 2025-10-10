@@ -159,17 +159,20 @@ public class CustomerBiz {
 
     // 根据 inviteCode 插入邀请关系
     if (inviteCode != null) {
-      // 根据邀请码，找到邀请人,写入邀请关系
-      CustomerBase parentCustomer =
-          customerBaseMapper.selectOne(
-              new LambdaQueryWrapper<CustomerBase>()
-                  .eq(CustomerBase::getTenantId, customerBase.getTenantId())
-                  .eq(CustomerBase::getInviteCode, inviteCode));
-      if (parentCustomer == null) {
-        throw new BusinessException(INVITE_CODE_ERROR);
+      // 判断用户是否已经被邀请过
+      if (!inviteRelationBiz.checkInvited(customerBase.getCustomerNo())) {
+        // 根据邀请码，找到邀请人,写入邀请关系
+        CustomerBase parentCustomer =
+                customerBaseMapper.selectOne(
+                        new LambdaQueryWrapper<CustomerBase>()
+                                .eq(CustomerBase::getTenantId, customerBase.getTenantId())
+                                .eq(CustomerBase::getInviteCode, inviteCode));
+        if (parentCustomer == null) {
+          throw new BusinessException(INVITE_CODE_ERROR);
+        }
+        // 添加邀请关系
+        inviteRelationBiz.addInvite(customerBase, parentCustomer, sysAgent);
       }
-      // 添加邀请关系
-      inviteRelationBiz.addInvite(customerBase,parentCustomer, sysAgent);
     }
     return customerBase;
   }
