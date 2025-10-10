@@ -37,6 +37,11 @@ public enum AccountCategory {
     PENDING_SETTLEMENT("pendingSettlement", "待结算账户"),
 
     /**
+     * Withdrawable 可提现账户
+     */
+    WITHDRAWABLE("Withdrawable", "可提现账户"),
+
+    /**
      * 累计提现 accumulatedWithdraw
      */
     ACCUMULATED_WITHDRAW("accumulatedWithdraw", "累计提现"),

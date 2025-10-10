@@ -530,6 +530,25 @@ public class AccountServiceImpl implements AccountService {
   }
 
   /**
+   * 查询不同角色的可提现账户
+   * @param requestMap
+   * @return
+   */
+  @ShenyuDubboClient("/getWithdrawAccount")
+  @ApiDoc(desc = "getWithdrawAccount")
+  @Override
+  public Account getWithdrawAccount(Map<String, Object> requestMap) {
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+    LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
+    warapper.eq(Account::getTenantId, loginUser.getTenantId());
+    warapper.eq(Account::getBizRoleTypeNo, loginUser.getBizRoleTypeNo());
+    warapper.eq(Account::getCategory,AccountCategory.WITHDRAWABLE.getCode());
+    warapper.eq(Account::getCcy, CcyType.CNY.getCode());
+    Account account = accountMapper.selectOne(warapper);
+    return account;
+  }
+
+  /**
    * @see AccountCategory
    * 根据币种 按账户分类查询账户
    * @param requestMap
