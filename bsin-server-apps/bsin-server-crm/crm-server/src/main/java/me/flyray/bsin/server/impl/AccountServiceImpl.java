@@ -513,10 +513,17 @@ public class AccountServiceImpl implements AccountService {
     fdWarapper.eq(Account::getCategory, AccountCategory.BALANCE.getCode());
     fdWarapper.eq(Account::getCcy, CcyType.CNY.getCode());
     Account fdAccountDetail = accountMapper.selectOne(fdWarapper);
-    fdAccountDetail.setAnchoringValue(BigDecimal.valueOf(1));
 
-    payAccounts.put("fireDiamond",fdAccountDetail);
+    LambdaQueryWrapper<Account> cvWarapper = new LambdaQueryWrapper<>();
+    cvWarapper.eq(Account::getTenantId, tenantId);
+    cvWarapper.eq(Account::getBizRoleTypeNo, customerNo);
+    cvWarapper.eq(Account::getCategory, AccountCategory.CONTRIBUTION_VALUE.getCode());
+    cvWarapper.eq(Account::getCcy, CcyType.CNY.getCode());
+    Account cvAccountDetail = accountMapper.selectOne(cvWarapper);
+
     payAccounts.put("brandsPoint",accountDetail);
+    payAccounts.put("fireDiamond",fdAccountDetail);
+    payAccounts.put("contributionValue",cvAccountDetail);
     // * 1、火钻账户（fireDiamond）
     //   * 2、品牌积分账户(brandsPoint)
     return payAccounts;

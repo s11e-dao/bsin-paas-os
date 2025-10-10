@@ -47,6 +47,11 @@ public enum AccountCategory {
     PENDING_BROKERAGE("pendingCommission", "待分佣账户"),
 
     /**
+     * 贡献值账户 Contribution Value
+     */
+    CONTRIBUTION_VALUE("contributionValue", "贡献值账户"),
+
+    /**
      * communityAccumulatedIncome 社区总收入账户
      */
     COMMUNITY_ACCUMULATED_INCOME_TOKEN("communityAccumulatedIncome", "社区总收入账户");
