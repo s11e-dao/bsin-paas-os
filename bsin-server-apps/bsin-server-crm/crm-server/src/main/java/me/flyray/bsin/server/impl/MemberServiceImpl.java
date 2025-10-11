@@ -95,8 +95,8 @@ public class MemberServiceImpl implements MemberService {
             String storeNo = MapUtils.getString(requestMap, "storeNo");
             // 根据商户号查询会员配置信息表的会员模型
             LambdaQueryWrapper<MerchantConfig> memberConfigWrapper = new LambdaQueryWrapper<>();
-            memberConfigWrapper.eq(MerchantConfig::getMerchantNo, merchantNo);
             memberConfigWrapper.eq(MerchantConfig::getTenantId, tenantId);
+            memberConfigWrapper.eq(MerchantConfig::getMerchantNo, merchantNo);
             memberConfigWrapper.last("limit 1");
             MerchantConfig memberConfig = merchantConfigMapper.selectOne(memberConfigWrapper);
             if (TenantMemberModel.UNDER_MERCHANT.getCode().equals(memberConfig.getMemberModel())) {
