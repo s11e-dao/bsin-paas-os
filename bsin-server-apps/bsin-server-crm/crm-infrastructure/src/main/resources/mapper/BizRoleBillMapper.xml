@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.flyray.bsin.infrastructure.mapper.BizRoleBillMapper">
+
+    <resultMap id="BaseResultMap" type="me.flyray.bsin.domain.entity.BizRoleBill">
+            <id property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="billType" column="bill_type" jdbcType="VARCHAR"/>
+            <result property="billTypeNo" column="bill_type_no" jdbcType="VARCHAR"/>
+            <result property="payChannel" column="pay_channel" jdbcType="VARCHAR"/>
+            <result property="discountInfo" column="discount_info" jdbcType="OTHER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="payerType" column="payer_type" jdbcType="VARCHAR"/>
+            <result property="payerNo" column="payer_no" jdbcType="VARCHAR"/>
+            <result property="payeeType" column="payee_type" jdbcType="VARCHAR"/>
+            <result property="payeeNo" column="payee_no" jdbcType="VARCHAR"/>
+            <result property="amount" column="amount" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serial_no,tenant_id,bill_type,
+        bill_type_no,pay_channel,discount_info,
+        create_time,payer_type,payer_no,
+        payee_type,payee_no,amount
+    </sql>
+
+</mapper>
