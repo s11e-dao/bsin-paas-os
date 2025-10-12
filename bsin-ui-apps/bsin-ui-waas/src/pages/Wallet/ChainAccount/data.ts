@@ -1,6 +1,25 @@
 import type { ProColumns } from '@ant-design/pro-table';
 
-export default [
+export type columnsDataType = {
+  serialNo: string;
+  walletName: string;
+  chainName: string;
+  coin: string;
+  chainCoinName: string;
+  chainCoinKey: string;
+  address: string;
+  walletType: string;
+  walletStatus: string;
+  walletTag: string;
+  balance: string;
+  freezeBalance: string;
+  status: string;
+  remark: string;
+  createTime: string;
+  updateTime: string;
+};
+
+const columnsData: ProColumns<columnsDataType>[] = [
   // 搜索表单
   {
     title: '钱包ID',
@@ -139,6 +158,22 @@ export default [
     hideInSearch: true,
   },
   {
+    title: '冻结余额',
+    dataIndex: 'freezeBalance',
+    width: 120,
+    hideInSearch: true,
+  },
+  {
+    title: '账户状态',
+    dataIndex: 'status',
+    width: 100,
+    hideInSearch: true,
+    valueEnum: {
+      '1': { text: '正常', status: 'Success' },
+      '2': { text: '冻结', status: 'Error' },
+    },
+  },
+  {
     title: '备注',
     dataIndex: 'remark',
     width: 180,
@@ -163,5 +198,6 @@ export default [
     dataIndex: 'action',
     fixed: 'right',
   },
-
 ];
+
+export default columnsData;

@@ -10,56 +10,69 @@ import {
   Popconfirm,
   Descriptions,
   Divider,
+  Radio,
+  Tag,
 } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { PlusOutlined } from '@ant-design/icons';
-import columnsData, { columnsDataType } from './data';
-import { getChainWalletPageList, addChainWallet, deleteChainWallet, getChainWalletDetail } from './service';
+import columnsData from './data';
+import type { columnsDataType } from './data';
+import {
+  getWalletPageList,
+  addWallet,
+  editWallet,
+  deleteWallet,
+  getWalletDetail,
+} from './service';
 import TableTitle from '../../../components/TableTitle';
 
 export default () => {
   const { TextArea } = Input;
   const { Option } = Select;
-  // 控制新增模态框
-  const [isTemplateModal, setIsTemplateModal] = useState(false);
+
+  // 控制新增/编辑模态框
+  const [isModalVisible, setIsModalVisible] = useState(false);
   // 查看模态框
-  const [isViewTemplateModal, setIsViewTemplateModal] = useState(false);
-  // 查看
-  const [isViewRecord, setIsViewRecord] = useState({});
+  const [isViewModalVisible, setIsViewModalVisible] = useState(false);
+  // 查看详情数据
+  const [viewRecord, setViewRecord] = useState<any>({});
+  // 编辑模式标识
+  const [isEditMode, setIsEditMode] = useState(false);
+  // 当前编辑的记录ID
+  const [currentSerialNo, setCurrentSerialNo] = useState('');
   // 获取表单
-  const [FormRef] = Form.useForm();
+  const [form] = Form.useForm();
 
   /**
    * 以下内容为表格相关
    */
 
+  // Table action 的引用，便于自定义触发
+  const actionRef = React.useRef<ActionType>();
+
   // 表头数据
-  const columns: ProColumns<columnsDataType>[] = columnsData;
+  const columns: any[] = columnsData;
 
   // 操作行数据 自定义操作行
   const actionRender: any = (text: any, record: any, index: number) => (
     <div key={record.serialNo}>
-      <a onClick={() => {
-            toViewChainWallet(record);
-          }}>查看</a>
+      <a onClick={() => handleView(record)}>查看</a>
       <Divider type="vertical" />
-      <a onClick={() => {
-            toViewChainWalletAccount(record);
-          }}>钱包账户</a>
+      <a onClick={() => handleEdit(record)}>编辑</a>
+      <Divider type="vertical" />
+      <a onClick={() => handleViewAccounts(record)}>钱包账户</a>
       <Divider type="vertical" />
       <Popconfirm
-        title="是否删除此条数据？"
-        onConfirm={() => {
-          toDelChainWallet(record);
-        }}
+        title="确认删除此钱包吗?"
+        onConfirm={() => handleDelete(record.serialNo)}
         onCancel={() => {
-          message.warning(`取消删除！`);
+          message.warning('取消删除');
         }}
-        okText="是"
-        cancelText="否"
+        okText="确认"
+        cancelText="取消"
       >
-        <a>删除</a>
+        <a style={{ color: 'red' }}>删除</a>
       </Popconfirm>
     </div>
   );
@@ -69,116 +82,123 @@ export default () => {
     item.dataIndex === 'action' ? (item.render = actionRender) : undefined;
   });
 
-  // Table action 的引用，便于自定义触发
-  const actionRef = React.useRef<ActionType>();
-
   /**
-   * 以下内容为操作相关
+   * 新增钱包
    */
-
-  // 新增模板
-  const increaseTemplate = () => {
-    setIsTemplateModal(true);
+  const handleAdd = () => {
+    setIsEditMode(false);
+    setCurrentSerialNo('');
+    form.resetFields();
+    setIsModalVisible(true);
   };
 
   /**
-   * 确认添加模板
+   * 编辑钱包
    */
-  const confirmTemplate = () => {
-    // 获取输入的表单值
-    FormRef.validateFields()
+  const handleEdit = async (record: any) => {
+    setIsEditMode(true);
+    setCurrentSerialNo(record.serialNo);
+    const { serialNo } = record;
+    const viewRes = await getWalletDetail({ serialNo });
+    if (viewRes.code === 0) {
+      form.setFieldsValue({
+        ...viewRes.data,
+      });
+      setIsModalVisible(true);
+    } else {
+      message.error(`获取详情失败：${viewRes?.message}`);
+    }
+  };
+
+  /**
+   * 确认添加或编辑
+   */
+  const handleSubmit = () => {
+    form.validateFields()
       .then(async () => {
-        // 获取表单结果
-        let response = FormRef.getFieldsValue();
-        console.log(response);
-        addChainWallet(response).then((res) => {
-          console.log('add', res);
-          if (res.code === 0 ) {
-            // 重置输入的表单
-            FormRef.resetFields();
-            // 刷新proTable
-            actionRef.current?.reload();
-            setIsTemplateModal(false);
-          } else {
-            message.error(`失败： ${res?.message}`);
-          }
-        });
+        const values = form.getFieldsValue();
+        const reqParam = {
+          ...values,
+          serialNo: isEditMode ? currentSerialNo : undefined,
+        };
+        
+        const apiCall = isEditMode ? editWallet : addWallet;
+        const res = await apiCall(reqParam);
+        
+        if (res.code === 0) {
+          message.success(isEditMode ? '编辑成功' : '添加成功');
+          form.resetFields();
+          setIsModalVisible(false);
+          actionRef.current?.reload();
+        } else {
+          message.error(`操作失败：${res?.message}`);
+        }
       })
       .catch(() => {});
   };
 
   /**
-   * 取消添加模板
+   * 取消添加或编辑
    */
-  const onCancelTemplate = () => {
-    // 重置输入的表单
-    FormRef.resetFields();
-    setIsTemplateModal(false);
+  const handleCancel = () => {
+    form.resetFields();
+    setIsModalVisible(false);
   };
 
   /**
-   * 删除模板
+   * 删除钱包
    */
-  const toDelChainWallet = async (record) => {
-    console.log('record', record);
-    let { serialNo } = record;
-    let delRes = await deleteChainWallet({ serialNo });
-    console.log('delRes', delRes);
+  const handleDelete = async (serialNo: string) => {
+    const delRes = await deleteWallet({ serialNo });
     if (delRes.code === 0) {
-      // 删除成功刷新表单
+      message.success('删除成功');
       actionRef.current?.reload();
+    } else {
+      message.error(`删除失败：${delRes?.message}`);
     }
   };
 
   /**
    * 查看详情
    */
-  const toViewChainWallet = async (record) => {
-    let { serialNo } = record;
-    let viewRes = await getChainWalletDetail({ serialNo });
-    setIsViewTemplateModal(true);
-    console.log('viewRes', viewRes);
-    setIsViewRecord(viewRes.data);
+  const handleView = async (record: any) => {
+    const { serialNo } = record;
+    const viewRes = await getWalletDetail({ serialNo });
+    if (viewRes.code === 0) {
+      setViewRecord(viewRes.data);
+      setIsViewModalVisible(true);
+    } else {
+      message.error(`获取详情失败：${viewRes?.message}`);
+    }
   };
 
   /**
    * 查看钱包账户
    */
-  const toViewChainWalletAccount = (record) => {
+  const handleViewAccounts = (record: any) => {
     // 使用路由跳转到链账户页面，传递钱包ID作为参数
     history.push(`/wallet/chain-account?walletSerialNo=${record.serialNo}`);
-  };
-
-  /**
-   * 详情，模板类型对应
-   */
-  const handleViewRecordOfType = () => {
-    let { type } = isViewRecord;
-    let typeText = type;
-    return typeText;
   };
 
   return (
     <div>
       {/* Pro表格 */}
       <ProTable<columnsDataType>
-        headerTitle={<TableTitle title="钱包" />}
-        scroll={{ x: 900 }}
+        headerTitle={<TableTitle title="钱包管理" />}
+        scroll={{ x: 1800 }}
         bordered
         // 表头
         columns={columns}
         actionRef={actionRef}
         // 请求获取的数据
         request={async (params) => {
-          // console.log(params);
-          let res = await getChainWalletPageList({
+          const res = await getWalletPageList({
             ...params,
-            // pageNum: params.current,
           });
-          console.log('😒', res);
           const result = {
-            data: res.data,
-            total: res.pagination.totalSize,
+            data: res.data || [],
+            total: res.pagination?.totalSize || 0,
+            success: res.code === 0,
           };
           return result;
         }}
@@ -193,110 +213,189 @@ export default () => {
         }}
         pagination={{
           pageSize: 10,
+          showSizeChanger: true,
         }}
         toolBarRender={() => [
           <Button
-            onClick={() => {
-              increaseTemplate();
-            }}
+            onClick={handleAdd}
             key="button"
             icon={<PlusOutlined />}
             type="primary"
           >
-            新增
+            添加钱包
           </Button>,
         ]}
       />
-      {/* 新增合约模板模态框 */}
+      
+      {/* 新增/编辑钱包模态框 */}
       <Modal
-        title="新增"
+        title={isEditMode ? '编辑钱包' : '添加钱包'}
+        width={800}
         centered
-        open={isTemplateModal}
-        onOk={confirmTemplate}
-        onCancel={onCancelTemplate}
+        open={isModalVisible}
+        onOk={handleSubmit}
+        onCancel={handleCancel}
+        okText="确认"
+        cancelText="取消"
       >
         <Form
-          name="basic"
-          form={FormRef}
-          labelCol={{ span: 7 }}
-          wrapperCol={{ span: 14 }}
-          // 表单默认值
-          initialValues={{ type: '1' }}
+          name="walletForm"
+          form={form}
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 16 }}
+          initialValues={{ type: '1', category: '1', env: 'EVM', walletTag: 'DEPOSIT', status: '1' }}
         >
           <Form.Item
-            label="类型"
-            name="type"
-            rules={[{ required: true, message: '请选择协议类型!' }]}
+            label="钱包名称"
+            name="walletName"
+            rules={[{ required: true, message: '请输入钱包名称!' }]}
           >
-            <Select style={{ width: '100%' }}>
-              <Option value="1">首页</Option>
-              <Option value="2">数字资产页</Option>
-              <Option value="3">其他</Option>
+            <Input placeholder="请输入钱包名称" maxLength={128} disabled={isEditMode} />
+          </Form.Item>
+          
+          <Form.Item
+            label="钱包类型"
+            name="type"
+            rules={[{ required: true, message: '请选择钱包类型!' }]}
+          >
+            <Radio.Group disabled={isEditMode}>
+              <Radio value="1">默认钱包</Radio>
+              <Radio value="2">自定义钱包</Radio>
+            </Radio.Group>
+          </Form.Item>
+          
+          <Form.Item
+            label="钱包分类"
+            name="category"
+            rules={[{ required: true, message: '请选择钱包分类!' }]}
+          >
+            <Radio.Group disabled={isEditMode}>
+              <Radio value="1">MPC</Radio>
+              <Radio value="2">多签</Radio>
+            </Radio.Group>
+          </Form.Item>
+          
+          <Form.Item
+            label="钱包环境"
+            name="env"
+            rules={[{ required: true, message: '请输入钱包环境!' }]}
+          >
+            <Input placeholder="例如：EVM" disabled={isEditMode} />
+          </Form.Item>
+          
+          <Form.Item
+            label="钱包标签"
+            name="walletTag"
+            rules={[{ required: true, message: '请选择钱包标签!' }]}
+          >
+            <Select placeholder="请选择钱包标签">
+              <Option value="NONE">无</Option>
+              <Option value="DEPOSIT">寄存</Option>
+              <Option value="GATHER">归集</Option>
             </Select>
           </Form.Item>
+          
           <Form.Item
-            label="名称"
-            name="title"
-            rules={[{ required: true, message: '请输入名称!' }]}
+            label="钱包状态"
+            name="status"
+            rules={[{ required: true, message: '请选择钱包状态!' }]}
           >
-            <Input />
+            <Radio.Group>
+              <Radio value="1">正常</Radio>
+              <Radio value="2">冻结</Radio>
+              <Radio value="3">注销</Radio>
+            </Radio.Group>
           </Form.Item>
+          
           <Form.Item
-            label="链接"
-            name="linkUrl"
-            rules={[{ required: true, message: '请输入链接!' }]}
+            label="外部用户ID"
+            name="outUserId"
           >
-            <Input />
+            <Input placeholder="请输入外部用户ID" maxLength={64} />
           </Form.Item>
+          
           <Form.Item
-            label="图片"
-            name="imageUrl"
-            rules={[{ required: true, message: '请输入链接!' }]}
+            label="备注"
+            name="remark"
           >
-            <Input />
+            <TextArea rows={3} placeholder="请输入备注信息" maxLength={500} />
           </Form.Item>
         </Form>
       </Modal>
+      
       {/* 查看详情模态框 */}
       <Modal
-        title="查看"
-        width={800}
+        title="钱包详情"
+        width={900}
         centered
-        open={isViewTemplateModal}
-        onOk={() => setIsViewTemplateModal(false)}
-        onCancel={() => setIsViewTemplateModal(false)}
+        open={isViewModalVisible}
+        onOk={() => setIsViewModalVisible(false)}
+        onCancel={() => setIsViewModalVisible(false)}
+        footer={[
+          <Button key="close" type="primary" onClick={() => setIsViewModalVisible(false)}>
+            关闭
+          </Button>
+        ]}
       >
-        {/* 详情信息 */}
-        <Descriptions title="合约协议信息">
+        <Descriptions bordered column={2}>
+          <Descriptions.Item label="钱包ID" span={2}>
+            {viewRecord?.serialNo}
+          </Descriptions.Item>
+          <Descriptions.Item label="钱包名称">
+            {viewRecord?.walletName}
+          </Descriptions.Item>
+          <Descriptions.Item label="钱包类型">
+            <Tag color={viewRecord?.type === '1' ? 'blue' : 'orange'}>
+              {viewRecord?.type === '1' ? '默认钱包' : '自定义钱包'}
+            </Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="钱包状态">
+            <Tag color={viewRecord?.status === '1' ? 'green' : viewRecord?.status === '2' ? 'red' : 'default'}>
+              {viewRecord?.status === '1' ? '正常' : viewRecord?.status === '2' ? '冻结' : '注销'}
+            </Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="钱包分类">
+            {viewRecord?.category === '1' ? 'MPC' : '多签'}
+          </Descriptions.Item>
+          <Descriptions.Item label="钱包环境">
+            {viewRecord?.env}
+          </Descriptions.Item>
+          <Descriptions.Item label="钱包标签">
+            {viewRecord?.walletTag === 'NONE' ? '无' : viewRecord?.walletTag === 'DEPOSIT' ? '寄存' : '归集'}
+          </Descriptions.Item>
+          <Descriptions.Item label="余额">
+            {viewRecord?.balance || '0'}
+          </Descriptions.Item>
+          <Descriptions.Item label="外部用户ID">
+            {viewRecord?.outUserId || '-'}
+          </Descriptions.Item>
+          <Descriptions.Item label="业务角色类型">
+            {viewRecord?.bizRoleType || '-'}
+          </Descriptions.Item>
+          <Descriptions.Item label="业务角色编号">
+            {viewRecord?.bizRoleTypeNo || '-'}
+          </Descriptions.Item>
           <Descriptions.Item label="租户ID">
-            {isViewRecord?.tenantId}
+            {viewRecord?.tenantId}
           </Descriptions.Item>
-          <Descriptions.Item label="协议编号">
-            {isViewRecord?.serialNo}
-          </Descriptions.Item>
-          <Descriptions.Item label="合约协议类型">
-            {handleViewRecordOfType()}
-          </Descriptions.Item>
-          <Descriptions.Item label="协议名称">
-            {isViewRecord?.templateName}
-          </Descriptions.Item>
-          <Descriptions.Item label="合约协议bytecode">
-            {isViewRecord?.templateBytecode}
-          </Descriptions.Item>
-          <Descriptions.Item label="合约协议abi字符">
-            {isViewRecord?.templateAbi}
+          <Descriptions.Item label="备注" span={2}>
+            {viewRecord?.remark || '-'}
           </Descriptions.Item>
           <Descriptions.Item label="创建者">
-            {isViewRecord?.createBy}
+            {viewRecord?.createBy}
           </Descriptions.Item>
           <Descriptions.Item label="创建时间">
-            {isViewRecord?.createTime}
+            {viewRecord?.createTime}
           </Descriptions.Item>
-          <Descriptions.Item label="协议描述">
-            {isViewRecord?.description}
+          <Descriptions.Item label="更新者">
+            {viewRecord?.updateBy || '-'}
+          </Descriptions.Item>
+          <Descriptions.Item label="更新时间">
+            {viewRecord?.updateTime || '-'}
           </Descriptions.Item>
         </Descriptions>
       </Modal>
     </div>
   );
 };
+
