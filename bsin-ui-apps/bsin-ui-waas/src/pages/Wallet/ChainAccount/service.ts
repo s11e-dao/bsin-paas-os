@@ -13,11 +13,23 @@ export const getWalletAccountPageList = (params: any) => {
   });
 };
 
-// 添加钱包账户
+// 导入钱包账户
 export const addWalletAccount = (params: any) => {
   return request(waasPath + '/walletAccount/add', {
     serviceName: 'WalletAccountService',
     methodName: 'add',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};
+
+// 创建钱包账户
+export const createWalletAccount = (params: any) => {
+  return request(waasPath + '/walletAccount/create', {
+    serviceName: 'WalletAccountService',
+    methodName: 'create',
     version: '1.0',
     bizParams: {
       ...params,

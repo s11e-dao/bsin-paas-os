@@ -22,6 +22,7 @@ import type { columnsDataType } from './data';
 import {
   getWalletAccountPageList,
   addWalletAccount,
+  createWalletAccount,
   editWalletAccount,
   deleteWalletAccount,
   getWalletAccountDetail,
@@ -42,6 +43,8 @@ export default () => {
   const [viewRecord, setViewRecord] = useState<any>({});
   // 编辑模式标识
   const [isEditMode, setIsEditMode] = useState(false);
+  // 操作模式：'import'（导入）、'create'（创建）、'edit'（编辑）
+  const [operationMode, setOperationMode] = useState<'import' | 'create' | 'edit'>('import');
   // 当前编辑的记录ID
   const [currentSerialNo, setCurrentSerialNo] = useState('');
   // 充值模态框
@@ -126,10 +129,22 @@ export default () => {
   });
 
   /**
-   * 新增链账户
+   * 导入链账户
    */
   const handleAdd = () => {
     setIsEditMode(false);
+    setOperationMode('import');
+    setCurrentSerialNo('');
+    form.resetFields();
+    setIsModalVisible(true);
+  };
+
+  /**
+   * 创建链账户
+   */
+  const handleCreate = () => {
+    setIsEditMode(false);
+    setOperationMode('create');
     setCurrentSerialNo('');
     form.resetFields();
     setIsModalVisible(true);
@@ -140,6 +155,7 @@ export default () => {
    */
   const handleEdit = async (record: any) => {
     setIsEditMode(true);
+    setOperationMode('edit');
     setCurrentSerialNo(record.serialNo);
     const { serialNo } = record;
     const viewRes = await getWalletAccountDetail({ serialNo });
@@ -155,7 +171,7 @@ export default () => {
   };
 
   /**
-   * 确认添加或编辑
+   * 确认添加、创建或编辑
    */
   const handleSubmit = () => {
     form.validateFields()
@@ -166,11 +182,29 @@ export default () => {
           serialNo: isEditMode ? currentSerialNo : undefined,
         };
         
-        const apiCall = isEditMode ? editWalletAccount : addWalletAccount;
+        let apiCall: any;
+        let successMsg = '';
+        
+        if (isEditMode) {
+          apiCall = editWalletAccount;
+          successMsg = '编辑成功';
+        } else if (operationMode === 'import') {
+          apiCall = addWalletAccount;
+          successMsg = '导入成功';
+        } else if (operationMode === 'create') {
+          apiCall = createWalletAccount;
+          successMsg = '创建成功';
+        }
+        
+        if (!apiCall) {
+          message.error('操作类型错误');
+          return;
+        }
+        
         const res = await apiCall(reqParam);
         
         if (res.code === 0) {
-          message.success(isEditMode ? '编辑成功' : '添加成功');
+          message.success(successMsg);
           form.resetFields();
           setIsModalVisible(false);
           actionRef.current?.reload();
@@ -273,14 +307,28 @@ export default () => {
             icon={<PlusOutlined />}
             type="primary"
           >
-            添加链账户
+            导入链账户
+          </Button>,
+          <Button
+            onClick={handleCreate}
+            key="button"
+            icon={<PlusOutlined />}
+            type="primary"
+          >
+            创建链账户
           </Button>,
         ]}
       />
       
       {/* 新增/编辑链账户模态框 */}
       <Modal
-        title={isEditMode ? '编辑链账户' : '添加链账户'}
+        title={
+          isEditMode 
+            ? '编辑链账户' 
+            : operationMode === 'import' 
+              ? '导入链账户' 
+              : '创建链账户'
+        }
         width={800}
         centered
         open={isModalVisible}
@@ -296,30 +344,36 @@ export default () => {
           wrapperCol={{ span: 16 }}
           initialValues={{ status: '1' }}
         >
-          <Form.Item
-            label="链地址"
-            name="address"
-            rules={[{ required: true, message: '请输入链地址!' }]}
-          >
-            <Input placeholder="请输入链地址" disabled={isEditMode} />
-          </Form.Item>
+          {/* 导入模式：显示地址、公钥、私钥字段 */}
+          {(operationMode === 'import' || isEditMode) && (
+            <>
+              <Form.Item
+                label="链地址"
+                name="address"
+                rules={[{ required: operationMode === 'import', message: '请输入链地址!' }]}
+              >
+                <Input placeholder="请输入链地址" disabled={isEditMode} />
+              </Form.Item>
+              
+              <Form.Item
+                label="签名公钥"
+                name="pubKey"
+                rules={[{ required: operationMode === 'import', message: '请输入签名公钥!' }]}
+              >
+                <Input placeholder="请输入签名公钥" disabled={isEditMode} />
+              </Form.Item>
+              
+              <Form.Item
+                label="签名私钥"
+                name="privateKey"
+                rules={[{ required: operationMode === 'import', message: '请输入签名私钥!' }]}
+              >
+                <Input.Password placeholder="请输入签名私钥" disabled={isEditMode} />
+              </Form.Item>
+            </>
+          )}
           
-          <Form.Item
-            label="签名公钥"
-            name="pubKey"
-            rules={[{ required: true, message: '请输入签名公钥!' }]}
-          >
-            <Input placeholder="请输入签名公钥" disabled={isEditMode} />
-          </Form.Item>
-          
-          <Form.Item
-            label="签名私钥"
-            name="privateKey"
-            rules={[{ required: true, message: '请输入签名私钥!' }]}
-          >
-            <Input.Password placeholder="请输入签名私钥" disabled={isEditMode} />
-          </Form.Item>
-          
+          {/* 共同字段：链上货币 */}
           <Form.Item
             label="链上货币"
             name="chainCoinNo"
@@ -334,6 +388,7 @@ export default () => {
             </Select>
           </Form.Item>
           
+          {/* 共同字段：钱包ID */}
           <Form.Item
             label="钱包ID"
             name="walletNo"
@@ -342,23 +397,28 @@ export default () => {
             <Input placeholder="请输入钱包ID" disabled={isEditMode} />
           </Form.Item>
           
-          <Form.Item
-            label="账户状态"
-            name="status"
-            rules={[{ required: true, message: '请选择账户状态!' }]}
-          >
-            <Select placeholder="请选择账户状态">
-              <Option value="1">正常</Option>
-              <Option value="2">冻结</Option>
-            </Select>
-          </Form.Item>
-          
-          <Form.Item
-            label="备注"
-            name="remark"
-          >
-            <TextArea rows={3} placeholder="请输入备注信息" maxLength={500} />
-          </Form.Item>
+          {/* 编辑模式：显示账户状态和备注 */}
+          {isEditMode && (
+            <>
+              <Form.Item
+                label="账户状态"
+                name="status"
+                rules={[{ required: true, message: '请选择账户状态!' }]}
+              >
+                <Select placeholder="请选择账户状态">
+                  <Option value="1">正常</Option>
+                  <Option value="2">冻结</Option>
+                </Select>
+              </Form.Item>
+              
+              <Form.Item
+                label="备注"
+                name="remark"
+              >
+                <TextArea rows={3} placeholder="请输入备注信息" maxLength={500} />
+              </Form.Item>
+            </>
+          )}
         </Form>
       </Modal>
       
