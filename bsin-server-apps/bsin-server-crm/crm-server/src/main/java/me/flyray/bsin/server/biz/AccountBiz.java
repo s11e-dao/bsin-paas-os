@@ -64,11 +64,6 @@ public class AccountBiz {
 
   public Account inAccount(String accountNo, BigDecimal amount, String remark){
     Account account = accountMapper.selectById(accountNo);
-    if (account != null) {
-      account.setBalance(account.getBalance().add(amount));
-      accountMapper.updateById(account);
-    }
-
     MD5 md5 = null;
     AccountJournal accountJournal = new AccountJournal();
 

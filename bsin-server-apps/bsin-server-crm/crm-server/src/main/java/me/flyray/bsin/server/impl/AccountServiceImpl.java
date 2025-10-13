@@ -37,6 +37,7 @@ import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -225,6 +226,7 @@ public class AccountServiceImpl implements AccountService {
 
   @ShenyuDubboClient("/recharge")
   @ApiDoc(desc = "recharge")
+  @Transactional
   @Override
   public Map<String, Object> recharge(Map<String, Object> requestMap) {
     String accountNo = MapUtils.getString(requestMap, "serialNo");
