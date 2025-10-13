@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import lombok.Data;
+import me.flyray.bsin.domain.enums.InOutAccountFlag;
 import me.flyray.bsin.enums.TransactionType;
 
 /**
@@ -61,6 +62,7 @@ public class AccountJournal implements Serializable {
 
     /**
      * 出账入账标志 0、出账 1、入账
+     * @see InOutAccountFlag
      */
     private Integer inOutFlag;
 

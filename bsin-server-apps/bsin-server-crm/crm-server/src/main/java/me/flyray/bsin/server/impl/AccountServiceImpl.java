@@ -227,7 +227,14 @@ public class AccountServiceImpl implements AccountService {
   @ApiDoc(desc = "recharge")
   @Override
   public Map<String, Object> recharge(Map<String, Object> requestMap) {
-    return null;
+    String accountNo = MapUtils.getString(requestMap, "serialNo");
+    if (accountNo == null){
+      accountNo = MapUtils.getString(requestMap, "accountNo");
+    }
+    String amount = MapUtils.getString(requestMap, "amount");
+    String remark = MapUtils.getString(requestMap, "remark");
+    accountBiz.inAccount(accountNo, new BigDecimal(amount), remark);
+    return requestMap;
   }
 
   /**

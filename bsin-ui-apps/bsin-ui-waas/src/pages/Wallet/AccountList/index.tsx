@@ -32,6 +32,8 @@ export default () => {
   const [isViewAccountModal, setIsViewAccountModal] = useState(false);
   // 查看
   const [isViewRecord, setIsViewRecord] = useState({});
+  // 是否为充值模式（true=充值当前账户，false=手动出入账）
+  const [isRechargeMode, setIsRechargeMode] = useState(false);
   // 获取表单
   const [FormRef] = Form.useForm();
 
@@ -75,8 +77,10 @@ export default () => {
    * 以下内容为操作相关
    */
 
-  // 新增模板
+  // 新增模板 - 手动出入账
   const increaseAccount = () => {
+    setIsRechargeMode(false);
+    FormRef.resetFields();
     setIsAccountModal(true);
   };
 
@@ -88,9 +92,9 @@ export default () => {
     FormRef.validateFields()
       .then(async () => {
         // 获取表单结果
-        let response = FormRef.getFieldsValue();
-        console.log(response);
-        rechargeAccount(response).then((res) => {
+        let request = FormRef.getFieldsValue();
+        console.log(request);
+        rechargeAccount(request).then((res) => {
           console.log('rechargeAccount', res);
           if (res.code === 0) {
             // 重置输入的表单
@@ -141,10 +145,17 @@ export default () => {
   };
 
   /**
-   * 查看详情
+   * 账户充值 - 给当前账户入账
    */
   const toViewCharge = async (record) => {
-    let { serialNo } = record;
+    console.log('充值账户信息:', record);
+    setIsRechargeMode(true);
+    // 设置表单初始值为当前账户信息
+    FormRef.setFieldsValue({
+      bizRoleTypeNo: record.bizRoleTypeNo,
+      accountNo: record.serialNo,
+      amount: '', // 清空金额，让用户输入
+    });
     setIsAccountModal(true);
   };
   
@@ -244,9 +255,9 @@ export default () => {
           </Button>,
         ]}
       />
-      {/* 手动出入账 */}
+      {/* 手动出入账/账户充值 */}
       <Modal
-        title="手动出入账"
+        title={isRechargeMode ? "账户充值" : "手动出入账"}
         centered
         open={isAccountModal}
         onOk={confirmAccount}
@@ -261,25 +272,31 @@ export default () => {
           initialValues={{ type: '1' }}
         >
           <Form.Item
-            label="客户号"
-            name="customerNo"
-            rules={[{ required: true, message: '请输入客户号!' }]}
+            label="业务角色编号"
+            name="bizRoleTypeNo"
+            rules={[{ required: true, message: '请输入业务角色编号!' }]}
           >
-            <Input />
+            <Input 
+              disabled={isRechargeMode} 
+              placeholder={isRechargeMode ? "自动填充当前账户" : "请输入业务角色编号"} 
+            />
           </Form.Item>
           <Form.Item
             label="账户号"
             name="accountNo"
             rules={[{ required: true, message: '请输入账户号!' }]}
           >
-            <Input />
+            <Input 
+              disabled={isRechargeMode} 
+              placeholder={isRechargeMode ? "自动填充当前账户" : "请输入业务角色编号"} 
+            />
           </Form.Item>
           <Form.Item
             label="金额"
             name="amount"
             rules={[{ required: true, message: '请输入金额!' }]}
           >
-            <Input />
+            <Input placeholder="请输入充值金额" />
           </Form.Item>
         </Form>
       </Modal>
