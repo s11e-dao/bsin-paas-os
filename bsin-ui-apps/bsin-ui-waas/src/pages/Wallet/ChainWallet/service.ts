@@ -15,9 +15,9 @@ export const getWalletPageList = (params: any) => {
 
 // 创建MPC钱包
 export const addWallet = (params: any) => {
-  return request(waasPath + '/wallet/createMPCWallet', {
+  return request(waasPath + '/wallet/addWallet', {
     serviceName: 'WalletService',
-    methodName: 'createMPCWallet',
+    methodName: 'addWallet',
     version: '1.0',
     bizParams: {
       ...params,

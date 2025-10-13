@@ -261,6 +261,7 @@ export default () => {
             <Radio.Group disabled={isEditMode}>
               <Radio value="1">默认钱包</Radio>
               <Radio value="2">自定义钱包</Radio>
+              <Radio value="3">商户钱包</Radio>
             </Radio.Group>
           </Form.Item>
           
@@ -272,6 +273,7 @@ export default () => {
             <Radio.Group disabled={isEditMode}>
               <Radio value="1">MPC</Radio>
               <Radio value="2">多签</Radio>
+              <Radio value="3">EOA钱包</Radio>
             </Radio.Group>
           </Form.Item>
           
@@ -346,7 +348,7 @@ export default () => {
           </Descriptions.Item>
           <Descriptions.Item label="钱包类型">
             <Tag color={viewRecord?.type === '1' ? 'blue' : 'orange'}>
-              {viewRecord?.type === '1' ? '默认钱包' : '自定义钱包'}
+              {viewRecord?.type === '1' ? '默认钱包' : viewRecord?.type === '2' ? '自定义钱包' : '商户钱包'}
             </Tag>
           </Descriptions.Item>
           <Descriptions.Item label="钱包状态">
@@ -355,7 +357,7 @@ export default () => {
             </Tag>
           </Descriptions.Item>
           <Descriptions.Item label="钱包分类">
-            {viewRecord?.category === '1' ? 'MPC' : '多签'}
+            {viewRecord?.category === '1' ? 'MPC' : viewRecord?.category === '2' ? '多签' : 'EOA钱包'}
           </Descriptions.Item>
           <Descriptions.Item label="钱包环境">
             {viewRecord?.env}

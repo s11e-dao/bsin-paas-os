@@ -40,6 +40,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     valueEnum: {
       '1': { text: '默认钱包' },
       '2': { text: '自定义钱包' },
+      '3': { text: '商户钱包' },
     },
   },
   {
@@ -87,6 +88,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     valueEnum: {
       '1': { text: '默认钱包', status: 'Processing' },
       '2': { text: '自定义钱包', status: 'Warning' },
+      '3': { text: '商户钱包', status: 'Default' },
     },
   },
   {
@@ -108,6 +110,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
     valueEnum: {
       '1': { text: 'MPC' },
       '2': { text: '多签' },
+      '3': { text: 'EOA钱包' },
     },
   },
   {

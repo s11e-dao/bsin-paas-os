@@ -464,6 +464,9 @@ export default () => {
           <Descriptions.Item label="签名公钥" span={2}>
             {viewRecord?.pubKey}
           </Descriptions.Item>
+          <Descriptions.Item label="签名私钥" span={2}>
+            {viewRecord?.privateKey}
+          </Descriptions.Item>
           <Descriptions.Item label="余额">
             {viewRecord?.balance || '0'}
           </Descriptions.Item>
@@ -476,7 +479,7 @@ export default () => {
             </Tag>
           </Descriptions.Item>
           <Descriptions.Item label="钱包类型">
-            {viewRecord?.walletType === '1' ? '普通钱包' : '多签钱包'}
+            {viewRecord?.walletType === '1' ? '普通钱包' : viewRecord?.walletType === '2' ? '多签钱包' : 'EOA钱包'}
           </Descriptions.Item>
           <Descriptions.Item label="钱包状态">
             {viewRecord?.walletStatus === '1' ? '正常' : viewRecord?.walletStatus === '2' ? '冻结' : '注销'}
