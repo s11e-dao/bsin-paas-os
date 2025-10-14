@@ -223,18 +223,39 @@ public class AccountServiceImpl implements AccountService {
     return null;
   }
 
+  /**
+   * 基于账户编号充值
+   * 基于账户四要素充值
+   * @param requestMap
+   * @return
+   */
   @ShenyuDubboClient("/recharge")
   @ApiDoc(desc = "recharge")
   @Transactional
   @Override
   public Map<String, Object> recharge(Map<String, Object> requestMap) {
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String accountNo = MapUtils.getString(requestMap, "serialNo");
+    String amount = MapUtils.getString(requestMap, "amount");
+    String remark = MapUtils.getString(requestMap, "remark");
     if (accountNo == null){
       accountNo = MapUtils.getString(requestMap, "accountNo");
     }
-    String amount = MapUtils.getString(requestMap, "amount");
-    String remark = MapUtils.getString(requestMap, "remark");
-    accountBiz.inAccount(accountNo, new BigDecimal(amount), remark);
+    if (accountNo != null){
+      accountBiz.inAccount(accountNo, new BigDecimal(amount), remark);
+    }else {
+      // 基于四要素充值
+      String tenantId = loginUser.getTenantId();
+      String bizRoleType = loginUser.getBizRoleType();
+      String bizRoleTypeNo = loginUser.getBizRoleTypeNo();
+      String accountCategory = AccountCategory.BALANCE.getCode();
+      String accountName = AccountCategory.BALANCE.getDesc();
+      String ccy = "CNY";
+      String orderNo = MapUtils.getString(requestMap, "orderNo");
+      String transactionType = TransactionType.RECHARGE.getCode();
+      Integer decimals = Integer.valueOf(2);
+      accountBiz.inAccount(tenantId, bizRoleType, bizRoleTypeNo, accountCategory, accountName, ccy, orderNo, transactionType, decimals, new BigDecimal(amount), remark);
+    }
     return requestMap;
   }
 
