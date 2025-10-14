@@ -36,6 +36,9 @@ public class AccountBiz {
   @Autowired private AccountJournalMapper customerAccountJournalMapper;
 
   public Account openAccount(Account account) {
+    MD5 md5 = new MD5(account.getBizRoleTypeNo().getBytes());
+    account.setBalance(BigDecimal.ZERO);
+    account.setCheckCode(HexUtil.encodeHexStr(md5.digest(account.getBalance().toString())));
     accountMapper.insert(account);
     return account;
   }
@@ -64,10 +67,8 @@ public class AccountBiz {
 
   public Account inAccount(String accountNo, BigDecimal amount, String remark){
     Account account = accountMapper.selectById(accountNo);
-    MD5 md5 = null;
     AccountJournal accountJournal = new AccountJournal();
-
-    md5 = new MD5(account.getBizRoleTypeNo().getBytes());
+    MD5 md5 = new MD5(account.getBizRoleTypeNo().getBytes());
     // 余额校验
     System.out.println("账户余额: \n\n\n\n" + account.getBalance().toString());
     String checkCode = HexUtil.encodeHexStr(md5.digest(account.getBalance().toString()));
@@ -114,8 +115,7 @@ public class AccountBiz {
       String transactionType,
       Integer decimals,
       BigDecimal amount,
-      String remark)
-      throws UnsupportedEncodingException {
+      String remark){
     return handleAccount(
         tenantId,
         bizRoleType,
@@ -142,8 +142,7 @@ public class AccountBiz {
       String transactionType,
       Integer decimals,
       BigDecimal amount,
-      String remark)
-      throws UnsupportedEncodingException {
+      String remark){
     return handleAccount(
         tenantId,
         bizRoleType,
@@ -257,10 +256,9 @@ public class AccountBiz {
     return account;
   }
 
-  public Account getAccountDetail(
-      String merchantNo, String customerNo, String ccy, String category) {
+  public Account getAccountDetail(String bizRoleTypeNo, String ccy, String category) {
     LambdaQueryWrapper<Account> warapper = new LambdaQueryWrapper<>();
-    warapper.eq(Account::getBizRoleTypeNo, customerNo);
+    warapper.eq(Account::getBizRoleTypeNo, bizRoleTypeNo);
     warapper.eq(Account::getCcy, ccy);
     warapper.eq(Account::getCategory, category);
     Account customerAccount = accountMapper.selectOne(warapper);

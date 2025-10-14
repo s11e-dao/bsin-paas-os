@@ -708,7 +708,8 @@ public class CustomerServiceImpl implements CustomerService {
   @ShenyuDubboClient("/getWalletInfo")
   @Override
   public CustomerAccountVO getWalletInfo(Map<String, Object> requestMap) {
-    String customerNo = LoginInfoContextHelper.getCustomerNo();
+    LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
+    String bizRoleTypeNo = loginUser.getBizRoleTypeNo();
     // 1.获取商户号
     String merchantNo = MapUtils.getString(requestMap, "merchantNo");
     if(StringUtils.isEmpty(merchantNo)){
@@ -729,7 +730,7 @@ public class CustomerServiceImpl implements CustomerService {
       String digitalPointsName = (String) tokenParamMap.get("name");
       Account digitalPointsAccount =
           customerAccountBiz.getAccountDetail(
-              merchantNo, customerNo, digitalPointsSymbol, AccountCategory.BALANCE.getCode());
+                  bizRoleTypeNo, digitalPointsSymbol, AccountCategory.BALANCE.getCode());
       // 设置数字积分余额
       customerAccountVO.setDigitalPointsBalance(
           digitalPointsAccount != null
@@ -779,15 +780,13 @@ public class CustomerServiceImpl implements CustomerService {
       // .1 联合曲线余额账户： 扣除释放的账户
       Account bondingCurveBalanceAccount =
           customerAccountBiz.getAccountDetail(
-              merchantNo,
-              customerNo,
+                  bizRoleTypeNo,
                   (String) bondingCurveTokenParam.get("symbol"),
               AccountCategory.BALANCE.getCode());
       // .2 联合曲线累计账户： 累计贡献值
       Account bondingCurveAccumulatedIncomeBalanceAccount =
           customerAccountBiz.getAccountDetail(
-              merchantNo,
-              customerNo,
+                  bizRoleTypeNo,
                   (String) bondingCurveTokenParam.get("symbol"),
               AccountCategory.ACCUMULATED_INCOME.getCode());
 
@@ -832,7 +831,7 @@ public class CustomerServiceImpl implements CustomerService {
     balance = new BigDecimal("0");
     Account cnyAccount =
         customerAccountBiz.getAccountDetail(
-            merchantNo, customerNo, "cny", AccountCategory.BALANCE.getCode());
+                bizRoleTypeNo, "cny", AccountCategory.BALANCE.getCode());
     if (cnyAccount != null) {
       if (cnyAccount.getDecimals().longValue() > 0) {
         balance =
