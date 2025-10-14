@@ -4,7 +4,7 @@ package me.flyray.bsin.blockchain.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import me.flyray.bsin.blockchain.enums.ChainEnv;
-import me.flyray.bsin.blockchain.enums.ChainType;
+import me.flyray.bsin.blockchain.enums.ChainIdentifier;
 
 /**
  * @author ：bolei
@@ -33,7 +33,7 @@ public class ChainWalletDto {
     private String password;
 
     /**
-     * @see ChainType
+     * @see ChainIdentifier
      * 链类型
      */
     @NotBlank(message = "链类型不能为空！")

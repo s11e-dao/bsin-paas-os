@@ -1,8 +1,7 @@
 package me.flyray.bsin.blockchain.core;
 
 import io.reactivex.disposables.Disposable;
-import me.flyray.bsin.blockchain.core.BsinBlockChainEngine;
-import me.flyray.bsin.blockchain.enums.ChainType;
+import me.flyray.bsin.blockchain.enums.ChainIdentifier;
 import org.web3j.protocol.core.methods.response.Log;
 
 import java.math.BigInteger;
@@ -130,10 +129,10 @@ public interface BlockchainService {
     /**
      * 获取链类型信息
      */
-    ChainType getChainType(String chainName);
+    ChainIdentifier getChainType(String chainName);
     
     /**
      * 获取所有支持的链类型
      */
-    List<ChainType> getSupportedChainTypes();
+    List<ChainIdentifier> getSupportedChainTypes();
 }

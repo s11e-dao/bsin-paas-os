@@ -31,7 +31,7 @@ import org.web3j.protocol.http.HttpService;
 
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.blockchain.core.BsinBlockChainEngine;
-import me.flyray.bsin.blockchain.enums.ChainType;
+import me.flyray.bsin.blockchain.enums.ChainIdentifier;
 import me.flyray.bsin.blockchain.utils.Java2ContractTypeConcert;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.exception.BusinessException;
@@ -75,7 +75,7 @@ public class BscBiz implements BsinBlockChainEngine {
     //        this.web3 = Web3.create(this.confluxRpcUrlMain, 3, 10000);
     this.web3 = Web3j.build(new HttpService(mainnetEndpointAddress));
     this.web3Test = Web3j.build(new HttpService(testnetEndpointAddress));
-    chainType = ChainType.BSC.getCode();
+    chainType = ChainIdentifier.BSC.getCode();
 
     chainIdTset = 56; // TestChain
     chainId = 97; // main

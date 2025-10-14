@@ -25,7 +25,7 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.blockchain.core.BsinBlockChainEngine;
-import me.flyray.bsin.blockchain.enums.ChainType;
+import me.flyray.bsin.blockchain.enums.ChainIdentifier;
 
 /**
  * @author bolei
@@ -91,7 +91,7 @@ public class PolygonBiz implements BsinBlockChainEngine {
     //        this.web3Test = Web3j.build(new HttpService(mainnetEndpointAddress, httpClient,
     // false));
 
-    chainType = ChainType.POLYGON.getCode();
+    chainType = ChainIdentifier.POLYGON.getCode();
   }
 
   private Map<String, Object> loadWallet(String password, String json)

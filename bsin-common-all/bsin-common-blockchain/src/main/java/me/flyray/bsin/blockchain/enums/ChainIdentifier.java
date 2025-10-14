@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 /**
  * 区块链网络类型
  */
-public enum ChainType {
+public enum ChainIdentifier {
 
     /**
      * conflux网络
@@ -36,7 +36,7 @@ public enum ChainType {
 
     private String desc;
 
-    ChainType(String code, String desc) {
+    ChainIdentifier(String code, String desc) {
         this.code = code;
         this.desc = desc;
     }
@@ -53,11 +53,11 @@ public enum ChainType {
      * Json 枚举序列化
      */
     @JsonCreator
-    public static ChainType getInstanceById(String id) {
+    public static ChainIdentifier getInstanceById(String id) {
         if (id == null) {
             return null;
         }
-        for (ChainType status : values()) {
+        for (ChainIdentifier status : values()) {
             if (id.equals(status.getCode())) {
                 return status;
             }
@@ -68,11 +68,11 @@ public enum ChainType {
     /**
      * 根据链名称获取链类型
      */
-    public static ChainType fromChainName(String chainName) {
+    public static ChainIdentifier fromChainName(String chainName) {
         if (chainName == null) {
             return null;
         }
-        for (ChainType chainType : values()) {
+        for (ChainIdentifier chainType : values()) {
             if (chainType.getCode().equalsIgnoreCase(chainName)) {
                 return chainType;
             }

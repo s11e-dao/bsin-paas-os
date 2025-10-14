@@ -46,7 +46,7 @@ import conflux.web3j.types.Address;
 import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.blockchain.core.BsinBlockChainEngine;
 import me.flyray.bsin.blockchain.enums.ChainEnv;
-import me.flyray.bsin.blockchain.enums.ChainType;
+import me.flyray.bsin.blockchain.enums.ChainIdentifier;
 import me.flyray.bsin.blockchain.utils.BsinDefaultFunctionEncoder;
 import me.flyray.bsin.blockchain.utils.Java2ContractTypeConcert;
 import me.flyray.bsin.blockchain.utils.Java2ContractTypeParameter;
@@ -87,7 +87,7 @@ public class ConfluxBiz implements BsinBlockChainEngine {
     this.ipfsGateway = "https://ipfs.s11edao.com/ipfs/";
     this.web3Test = Web3.create("https://test.confluxrpc.com/v2", 3, 10000);
     this.web3 = Web3.create("https://test.confluxrpc.com/v2", 3, 10000);
-    chainType = ChainType.CONFLUX.getCode();
+    chainType = ChainIdentifier.CONFLUX.getCode();
   }
 
   //    private static CofluxWeb3 cofluxSingleton;

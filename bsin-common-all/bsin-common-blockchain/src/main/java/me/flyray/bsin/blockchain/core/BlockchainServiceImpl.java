@@ -3,7 +3,7 @@ package me.flyray.bsin.blockchain.core;
 import io.micrometer.core.instrument.Timer;
 import io.reactivex.disposables.Disposable;
 import lombok.extern.slf4j.Slf4j;
-import me.flyray.bsin.blockchain.enums.ChainType;
+import me.flyray.bsin.blockchain.enums.ChainIdentifier;
 import me.flyray.bsin.blockchain.listener.BlockchainEventPublisher;
 import me.flyray.bsin.blockchain.metrics.BlockchainMetrics;
 import me.flyray.bsin.blockchain.connection.BsinBlockChainEngineFactory;
@@ -153,20 +153,20 @@ public class BlockchainServiceImpl implements BlockchainService {
     }
     
     @Override
-    public ChainType getChainType(String chainName) {
+    public ChainIdentifier getChainType(String chainName) {
         try {
-            return ChainType.valueOf(chainName.toUpperCase());
+            return ChainIdentifier.valueOf(chainName.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("不支持的链类型: " + chainName);
         }
     }
     
     @Override
-    public List<ChainType> getSupportedChainTypes() {
-        List<ChainType> supportedTypes = new ArrayList<>();
+    public List<ChainIdentifier> getSupportedChainTypes() {
+        List<ChainIdentifier> supportedTypes = new ArrayList<>();
         for (String chainName : blockchainEngineFactory.getSupportedChainTypes()) {
             try {
-                supportedTypes.add(ChainType.valueOf(chainName.toUpperCase()));
+                supportedTypes.add(ChainIdentifier.valueOf(chainName.toUpperCase()));
             } catch (IllegalArgumentException e) {
                 // 跳过不支持的链类型
             }

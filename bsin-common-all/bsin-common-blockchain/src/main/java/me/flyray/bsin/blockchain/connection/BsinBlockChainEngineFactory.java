@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.flyray.bsin.blockchain.core.BsinBlockChainEngine;
 import me.flyray.bsin.blockchain.chain.bsc.BscBiz;
 import me.flyray.bsin.blockchain.chain.conflux.ConfluxBiz;
-import me.flyray.bsin.blockchain.enums.ChainType;
+import me.flyray.bsin.blockchain.enums.ChainIdentifier;
 import me.flyray.bsin.blockchain.chain.polygon.PolygonBiz;
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.exception.BusinessException;
@@ -38,26 +38,26 @@ public class BsinBlockChainEngineFactory {
     
     @PostConstruct
     public void initializeEngineSuppliers() {
-        engineSuppliers.put(ChainType.CONFLUX.getCode(), ConfluxBiz::new);
-        engineSuppliers.put(ChainType.BSC.getCode(), BscBiz::new);
-        engineSuppliers.put(ChainType.POLYGON.getCode(), PolygonBiz::new);
+        engineSuppliers.put(ChainIdentifier.CONFLUX.getCode(), ConfluxBiz::new);
+        engineSuppliers.put(ChainIdentifier.BSC.getCode(), BscBiz::new);
+        engineSuppliers.put(ChainIdentifier.POLYGON.getCode(), PolygonBiz::new);
         // 暂时不支持的链
-        engineSuppliers.put(ChainType.TRON.getCode(), () -> {
+        engineSuppliers.put(ChainIdentifier.TRON.getCode(), () -> {
             throw new BusinessException(ResponseCode.NOT_SUPPORTED_ChAIN_TYPE.getCode(), "暂未开放的链，敬请期待！！");
         });
-        engineSuppliers.put(ChainType.ETHEREUM.getCode(), () -> {
+        engineSuppliers.put(ChainIdentifier.ETHEREUM.getCode(), () -> {
             throw new BusinessException(ResponseCode.NOT_SUPPORTED_ChAIN_TYPE.getCode(), "暂未开放的链，敬请期待！！");
         });
     }
 
-    public BsinBlockChainEngine getBsinBlockChainEngineInstance(String chainType) {
+    public BsinBlockChainEngine getBsinBlockChainEngineInstance(String cchainIdentifier) {
         // 参数验证
-        if (chainType == null || chainType.trim().isEmpty()) {
+        if (cchainIdentifier == null || cchainIdentifier.trim().isEmpty()) {
             throw new IllegalArgumentException("链类型不能为空");
         }
         
         // 从缓存获取
-        return engineCache.computeIfAbsent(chainType, this::createEngine);
+        return engineCache.computeIfAbsent(cchainIdentifier, this::createEngine);
     }
     
     private BsinBlockChainEngine createEngine(String chainType) {
