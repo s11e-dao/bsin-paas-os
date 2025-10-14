@@ -66,7 +66,7 @@ public class ConfluxBiz implements BsinBlockChainEngine {
   private String privateKey;
   private String confluxRpcUrlTest;
   private String confluxRpcUrlMain;
-  private String chainType;
+  private String chainIdentifier;
   private Web3 web3;
   private Web3 web3Test;
   private BigInteger gasLimit;
@@ -87,7 +87,7 @@ public class ConfluxBiz implements BsinBlockChainEngine {
     this.ipfsGateway = "https://ipfs.s11edao.com/ipfs/";
     this.web3Test = Web3.create("https://test.confluxrpc.com/v2", 3, 10000);
     this.web3 = Web3.create("https://test.confluxrpc.com/v2", 3, 10000);
-    chainType = ChainIdentifier.CONFLUX.getCode();
+    chainIdentifier = ChainIdentifier.CONFLUX.getCode();
   }
 
   //    private static CofluxWeb3 cofluxSingleton;

@@ -54,7 +54,7 @@ public class BscBiz implements BsinBlockChainEngine {
   private String fromAddress;
   private String testnetEndpointAddress;
   private String mainnetEndpointAddress;
-  private String chainType;
+  private String chainIdentifier;
   private Web3j web3;
   private Web3j web3Test;
   private BigInteger gasLimit;
@@ -75,7 +75,7 @@ public class BscBiz implements BsinBlockChainEngine {
     //        this.web3 = Web3.create(this.confluxRpcUrlMain, 3, 10000);
     this.web3 = Web3j.build(new HttpService(mainnetEndpointAddress));
     this.web3Test = Web3j.build(new HttpService(testnetEndpointAddress));
-    chainType = ChainIdentifier.BSC.getCode();
+    chainIdentifier = ChainIdentifier.BSC.getCode();
 
     chainIdTset = 56; // TestChain
     chainId = 97; // main

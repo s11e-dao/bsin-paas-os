@@ -37,7 +37,7 @@ public class ChainWalletDto {
      * 链类型
      */
     @NotBlank(message = "链类型不能为空！")
-    private String chainType;
+    private String chainIdentifier;
 
     /**
      * @see ChainEnv
