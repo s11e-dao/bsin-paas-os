@@ -123,8 +123,7 @@ public class AccountServiceImpl implements AccountService {
   @ShenyuDubboClient("/outAccount")
   @ApiDoc(desc = "outAccount")
   @Override
-  public void outAccount(Map<String, Object> requestMap)
-      throws UnsupportedEncodingException {
+  public void outAccount(Map<String, Object> requestMap){
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     String bizRoleType = MapUtils.getString(requestMap, "bizRoleType");
     String bizRoleTypeNo = MapUtils.getString(requestMap, "bizRoleTypeNo");

@@ -266,8 +266,8 @@ public class AccountBiz {
   }
 
   public static void main(String[] args) {
-    MD5 md5 = new MD5("1738934400126685184".getBytes());
-    String checkCode = HexUtil.encodeHexStr(md5.digest("11166.00"));
+    MD5 md5 = new MD5("1977924180729008128".getBytes());
+    String checkCode = HexUtil.encodeHexStr(md5.digest("111661111.00"));
     System.out.println(checkCode);
   }
 
