@@ -40,7 +40,6 @@ const columnsData: ProColumns<columnsDataType>[] = [
     valueEnum: {
       '1': { text: '默认钱包' },
       '2': { text: '自定义钱包' },
-      '3': { text: '商户钱包' },
     },
   },
   {
@@ -82,13 +81,26 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   {
     title: '类型',
+    dataIndex: 'bizRoleType',
+    width: 110,
+    hideInSearch: true,
+    valueEnum: {
+      '1': { text: '运营平台' },
+      '2': { text: '租户平台' },
+      '4': { text: '合伙人' },
+      '5': { text: '租户客户' },
+      '6': { text: '门店' },
+      '99': { text: '无' },
+    },
+  },
+  {
+    title: '类型',
     dataIndex: 'type',
     width: 110,
     hideInSearch: true,
     valueEnum: {
       '1': { text: '默认钱包', status: 'Processing' },
       '2': { text: '自定义钱包', status: 'Warning' },
-      '3': { text: '商户钱包', status: 'Default' },
     },
   },
   {

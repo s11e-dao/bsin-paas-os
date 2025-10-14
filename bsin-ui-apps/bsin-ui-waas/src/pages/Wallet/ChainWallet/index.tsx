@@ -45,6 +45,21 @@ export default () => {
   const [form] = Form.useForm();
 
   /**
+   * 业务角色类型配置
+   */
+  const getBizRoleTypeConfig = (bizRoleType: string) => {
+    const configMap: { [key: string]: { color: string; text: string } } = {
+      '1': { color: 'blue', text: '运营平台' },
+      '2': { color: 'orange', text: '租户平台' },
+      '4': { color: 'green', text: '合伙人' },
+      '5': { color: 'red', text: '租户客户' },
+      '6': { color: 'purple', text: '门店' },
+      '99': { color: 'default', text: '无' },
+    };
+    return configMap[bizRoleType] || { color: 'default', text: '-' };
+  };
+
+  /**
    * 以下内容为表格相关
    */
 
@@ -121,10 +136,10 @@ export default () => {
           ...values,
           serialNo: isEditMode ? currentSerialNo : undefined,
         };
-        
+
         const apiCall = isEditMode ? editWallet : addWallet;
         const res = await apiCall(reqParam);
-        
+
         if (res.code === 0) {
           message.success(isEditMode ? '编辑成功' : '添加成功');
           form.resetFields();
@@ -134,7 +149,7 @@ export default () => {
           message.error(`操作失败：${res?.message}`);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   /**
@@ -226,7 +241,7 @@ export default () => {
           </Button>,
         ]}
       />
-      
+
       {/* 新增/编辑钱包模态框 */}
       <Modal
         title={isEditMode ? '编辑钱包' : '添加钱包'}
@@ -252,7 +267,7 @@ export default () => {
           >
             <Input placeholder="请输入钱包名称" maxLength={128} disabled={isEditMode} />
           </Form.Item>
-          
+
           <Form.Item
             label="钱包类型"
             name="type"
@@ -261,10 +276,23 @@ export default () => {
             <Radio.Group disabled={isEditMode}>
               <Radio value="1">默认钱包</Radio>
               <Radio value="2">自定义钱包</Radio>
-              <Radio value="3">商户钱包</Radio>
             </Radio.Group>
           </Form.Item>
-          
+
+          <Form.Item
+            label="业务角色类型"
+            name="bizRoleType"
+            rules={[{ required: true, message: '请选择业务角色类型!' }]}
+          >
+            <Select placeholder="请选择业务角色类型">
+              <Option value="1">运营平台</Option>
+              <Option value="2">租户平台</Option>
+              <Option value="4">合伙人</Option>
+              <Option value="5">租户客户</Option>
+              <Option value="6">门店</Option>
+              <Option value="99">无</Option>
+            </Select>
+          </Form.Item>
           <Form.Item
             label="钱包分类"
             name="category"
@@ -276,7 +304,7 @@ export default () => {
               <Radio value="3">EOA钱包</Radio>
             </Radio.Group>
           </Form.Item>
-          
+
           <Form.Item
             label="钱包环境"
             name="env"
@@ -284,7 +312,7 @@ export default () => {
           >
             <Input placeholder="例如：EVM" disabled={isEditMode} />
           </Form.Item>
-          
+
           <Form.Item
             label="钱包标签"
             name="walletTag"
@@ -296,7 +324,7 @@ export default () => {
               <Option value="GATHER">归集</Option>
             </Select>
           </Form.Item>
-          
+
           <Form.Item
             label="钱包状态"
             name="status"
@@ -308,14 +336,14 @@ export default () => {
               <Radio value="3">注销</Radio>
             </Radio.Group>
           </Form.Item>
-          
+
           <Form.Item
             label="外部用户ID"
             name="outUserId"
           >
             <Input placeholder="请输入外部用户ID" maxLength={64} />
           </Form.Item>
-          
+
           <Form.Item
             label="备注"
             name="remark"
@@ -324,7 +352,7 @@ export default () => {
           </Form.Item>
         </Form>
       </Modal>
-      
+
       {/* 查看详情模态框 */}
       <Modal
         title="钱包详情"
@@ -348,7 +376,7 @@ export default () => {
           </Descriptions.Item>
           <Descriptions.Item label="钱包类型">
             <Tag color={viewRecord?.type === '1' ? 'blue' : 'orange'}>
-              {viewRecord?.type === '1' ? '默认钱包' : viewRecord?.type === '2' ? '自定义钱包' : '商户钱包'}
+              {viewRecord?.type === '1' ? '默认钱包' : viewRecord?.type === '2' ? '自定义钱包' : '-'}
             </Tag>
           </Descriptions.Item>
           <Descriptions.Item label="钱包状态">
@@ -372,7 +400,10 @@ export default () => {
             {viewRecord?.outUserId || '-'}
           </Descriptions.Item>
           <Descriptions.Item label="业务角色类型">
-            {viewRecord?.bizRoleType || '-'}
+            {(() => {
+              const config = getBizRoleTypeConfig(viewRecord?.bizRoleType);
+              return <Tag color={config.color}>{config.text}</Tag>;
+            })()}
           </Descriptions.Item>
           <Descriptions.Item label="业务角色编号">
             {viewRecord?.bizRoleTypeNo || '-'}

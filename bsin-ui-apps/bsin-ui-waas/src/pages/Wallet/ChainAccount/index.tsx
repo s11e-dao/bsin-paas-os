@@ -27,6 +27,7 @@ import {
   deleteWalletAccount,
   getWalletAccountDetail,
   getChainCoinList,
+  getWalletPageList,
 } from './service';
 import TableTitle from '../../../components/TableTitle';
 
@@ -57,14 +58,19 @@ export default () => {
   });
   // 币种列表
   const [chainCoinList, setChainCoinList] = useState<any[]>([]);
+  // 钱包列表
+  const [walletList, setWalletList] = useState<any[]>([]);
+  // 从URL获取的钱包编号
+  const [urlWalletNo, setUrlWalletNo] = useState<string>('');
   // 获取表单
   const [form] = Form.useForm();
   // 搜索表单
   const searchFormRef = React.useRef<FormInstance>();
 
-  // 获取币种列表
+  // 获取币种列表和钱包列表
   useEffect(() => {
     loadChainCoinList();
+    loadWalletList();
   }, []);
 
   // 加载币种列表
@@ -79,14 +85,40 @@ export default () => {
     }
   };
 
-  // 获取URL参数并填充钱包ID
+  // 加载钱包列表
+  const loadWalletList = async () => {
+    try {
+      const res = await getWalletPageList({
+        pagination: {
+          pageNum: 1,
+          pageSize: 9999, // 获取所有钱包
+        }
+      });
+      if (res.code === 0) {
+        setWalletList(res.data || []);
+      }
+    } catch (error) {
+      console.error('加载钱包列表失败', error);
+    }
+  };
+
+  // 获取URL参数并填充钱包ID作为查询条件
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const walletSerialNo = urlParams.get('walletSerialNo');
-    if (walletSerialNo && searchFormRef.current) {
-      searchFormRef.current.setFieldsValue({
-        serialNo: walletSerialNo
-      });
+    console.log('walletSerialNo', walletSerialNo);
+    console.log('searchFormRef.current', searchFormRef.current);
+    if (walletSerialNo) {
+      setUrlWalletNo(walletSerialNo);
+      if (searchFormRef.current) {
+        searchFormRef.current.setFieldsValue({
+          walletNo: walletSerialNo
+        });
+      }
+      // 触发表格重新加载
+      setTimeout(() => {
+        actionRef.current?.reload();
+      }, 100);
     }
   }, [location.search]);
 
@@ -273,11 +305,18 @@ export default () => {
         // 表头
         columns={columns}
         actionRef={actionRef}
+        // 传递额外参数
+        params={{ urlWalletNo }}
         // 请求获取的数据
         request={async (params) => {
-          const res = await getWalletAccountPageList({
+          console.log('ProTable request params:', params);
+          // 优先使用搜索表单中的 walletNo，如果没有则使用 URL 中的
+          const requestParams = {
             ...params,
-          });
+            walletNo: params.walletNo || urlWalletNo || undefined,
+          };
+          console.log('Final request params:', requestParams);
+          const res = await getWalletAccountPageList(requestParams);
           const result = {
             data: res.data || [],
             total: res.pagination?.totalSize || 0,
@@ -352,7 +391,7 @@ export default () => {
                 name="address"
                 rules={[{ required: operationMode === 'import', message: '请输入链地址!' }]}
               >
-                <Input placeholder="请输入链地址" disabled={isEditMode} />
+                <Input placeholder="请输入链地址" />
               </Form.Item>
               
               <Form.Item
@@ -360,7 +399,7 @@ export default () => {
                 name="pubKey"
                 rules={[{ required: operationMode === 'import', message: '请输入签名公钥!' }]}
               >
-                <Input placeholder="请输入签名公钥" disabled={isEditMode} />
+                <Input placeholder="请输入签名公钥" />
               </Form.Item>
               
               <Form.Item
@@ -368,7 +407,7 @@ export default () => {
                 name="privateKey"
                 rules={[{ required: operationMode === 'import', message: '请输入签名私钥!' }]}
               >
-                <Input.Password placeholder="请输入签名私钥" disabled={isEditMode} />
+                <Input.Password placeholder="请输入签名私钥" />
               </Form.Item>
             </>
           )}
@@ -392,9 +431,15 @@ export default () => {
           <Form.Item
             label="钱包ID"
             name="walletNo"
-            rules={[{ required: true, message: '请输入钱包ID!' }]}
+            rules={[{ required: true, message: '请选择钱包!' }]}
           >
-            <Input placeholder="请输入钱包ID" disabled={isEditMode} />
+            <Select placeholder="请选择钱包" disabled={isEditMode} showSearch optionFilterProp="children">
+              {walletList.map((item: any) => (
+                <Option key={item.serialNo} value={item.serialNo}>
+                  {item.walletName} ({item.serialNo})
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
           
           {/* 编辑模式：显示账户状态和备注 */}

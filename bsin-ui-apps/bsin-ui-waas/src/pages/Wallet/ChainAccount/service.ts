@@ -92,3 +92,15 @@ export const getChainCoinList = () => {
     bizParams: {},
   });
 };
+
+// 获取钱包列表
+export const getWalletPageList = (params: any) => {
+  return request(waasPath + '/wallet/getPageList', {
+    serviceName: 'WalletService',
+    methodName: 'getPageList',
+    version: '1.0',
+    bizParams: {
+      ...params,
+    },
+  });
+};

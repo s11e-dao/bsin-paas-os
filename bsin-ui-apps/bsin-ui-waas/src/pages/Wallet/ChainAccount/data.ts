@@ -23,7 +23,7 @@ const columnsData: ProColumns<columnsDataType>[] = [
   // 搜索表单
   {
     title: '钱包ID',
-    dataIndex: 'serialNo',
+    dataIndex: 'walletNo',
     hideInTable: true,
   },
   {
@@ -75,10 +75,16 @@ const columnsData: ProColumns<columnsDataType>[] = [
   },
   // 表格内容
   {
-    title: '钱包ID',
+    title: '账户ID',
     dataIndex: 'serialNo',
     width: 190,
     fixed: 'left',
+    hideInSearch: true,
+  },
+  {
+    title: '钱包ID',
+    dataIndex: 'walletNo',
+    width: 190,
     hideInSearch: true,
   },
   {
