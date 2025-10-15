@@ -187,8 +187,8 @@ public class BlockchainProperties {
     /**
      * 获取指定链的配置
      */
-    public ChainConfig getChainConfig(String chainName) {
-        return chains.get(chainName);
+    public ChainConfig getChainConfig(String chainIdentifier) {
+        return chains.get(chainIdentifier);
     }
     
     /**

@@ -117,8 +117,8 @@ public class Web3jConnectionPoolService {
     /**
      * 获取HTTP Web3j连接
      */
-    public Web3j getHttpConnection(String chainName) {
-        return getConnection(chainName, true);
+    public Web3j getHttpConnection(String chainIdentifier) {
+        return getConnection(chainIdentifier, true);
     }
 
     /**

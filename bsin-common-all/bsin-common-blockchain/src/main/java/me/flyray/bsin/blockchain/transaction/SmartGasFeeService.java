@@ -73,19 +73,19 @@ public class SmartGasFeeService {
     /**
      * 获取智能Gas价格
      * 
-     * @param chainName 链名称
+     * @param chainIdentifier 链名称
      * @param web3j Web3j实例
      * @param transactionType 交易类型（fast/normal/slow）
      * @return Gas价格信息
      */
-    public GasPriceInfo getSmartGasPrice(String chainName, Web3j web3j, String transactionType) {
+    public GasPriceInfo getSmartGasPrice(String chainIdentifier, Web3j web3j, String transactionType) {
         try {
-            String cacheKey = chainName + "_" + transactionType;
+            String cacheKey = chainIdentifier + "_" + transactionType;
             GasPriceCache cached = gasPriceCache.get(cacheKey);
             
             // 检查缓存是否有效
             if (cached != null && !cached.isExpired()) {
-                log.debug("使用缓存的Gas价格: chain={}, type={}", chainName, transactionType);
+                log.debug("使用缓存的Gas价格: chain={}, type={}", chainIdentifier, transactionType);
                 return cached.gasPriceInfo;
             }
 
@@ -95,14 +95,14 @@ public class SmartGasFeeService {
             // 更新缓存
             gasPriceCache.put(cacheKey, new GasPriceCache(gasPriceInfo));
             
-            log.info("获取智能Gas价格: chain={}, type={}, gasPrice={}, maxFeePerGas={}", 
-                    chainName, transactionType, gasPriceInfo.gasPrice, gasPriceInfo.maxFeePerGas);
+            log.info("获取智能Gas价格: chain={}, type={}, gasPrice={}, maxFeePerGas={}",
+                    chainIdentifier, transactionType, gasPriceInfo.gasPrice, gasPriceInfo.maxFeePerGas);
             
             return gasPriceInfo;
             
         } catch (Exception e) {
-            log.error("获取智能Gas价格失败: chain={}, type={}", chainName, transactionType, e);
-            return getFallbackGasPrice(chainName, transactionType);
+            log.error("获取智能Gas价格失败: chain={}, type={}", chainIdentifier, transactionType, e);
+            return getFallbackGasPrice(chainIdentifier, transactionType);
         }
     }
 
@@ -219,11 +219,11 @@ public class SmartGasFeeService {
     /**
      * 获取备用Gas价格（当实时获取失败时）
      */
-    private GasPriceInfo getFallbackGasPrice(String chainName, String transactionType) {
-        log.warn("使用备用Gas价格: chain={}, type={}", chainName, transactionType);
+    private GasPriceInfo getFallbackGasPrice(String chainIdentifier, String transactionType) {
+        log.warn("使用备用Gas价格: chain={}, type={}", chainIdentifier, transactionType);
         
         // 根据链配置获取默认值
-        blockchainProperties.getChainConfig(chainName);
+        blockchainProperties.getChainConfig(chainIdentifier);
         
         BigInteger defaultGasPrice = BigInteger.valueOf(20_000_000_000L); // 20 Gwei
         BigInteger gasLimit = getGasLimitForTransactionType(transactionType);

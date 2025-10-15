@@ -48,7 +48,7 @@ public class BlockchainTransactionService {
     /**
      * ERC-20 代币转账
      * 
-     * @param chainName 链名称
+     * @param chainIdentifier 链标识
      * @param fromAddress 发送地址
      * @param toAddress 接收地址
      * @param contractAddress 代币合约地址
@@ -56,12 +56,12 @@ public class BlockchainTransactionService {
      * @param decimals 代币精度
      * @return 交易哈希
      */
-    public String tokenTransfer(String chainName, String fromAddress, String toAddress, 
+    public String tokenTransfer(String chainIdentifier, String fromAddress, String toAddress,
                                String contractAddress, BigInteger amount, BigInteger decimals) throws Exception {
-        log.info("开始代币转账，chain: {}, from: {}, to: {}, contract: {}, amount: {}", 
-                chainName, fromAddress, toAddress, contractAddress, amount);
+        log.info("开始代币转账，chain: {}, from: {}, to: {}, contract: {}, amount: {}",
+                chainIdentifier, fromAddress, toAddress, contractAddress, amount);
 
-        Web3j web3j = getWeb3jInstance(chainName);
+        Web3j web3j = getWeb3jInstance(chainIdentifier);
 
         // 1. 获取交易参数
         EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(
@@ -90,7 +90,7 @@ public class BlockchainTransactionService {
         BigInteger gasLimit = gasEstimate.getAmountUsed();
 
         // 4. 计算 Gas 价格（使用智能Gas费管理）
-        SmartGasFeeService.GasPriceInfo gasPriceInfo = smartGasFeeService.getSmartGasPrice(chainName, web3j, "normal");
+        SmartGasFeeService.GasPriceInfo gasPriceInfo = smartGasFeeService.getSmartGasPrice(chainIdentifier, web3j, "normal");
         
         // 5. 构建原始交易
         RawTransaction rawTransaction;
@@ -118,23 +118,23 @@ public class BlockchainTransactionService {
         }
 
         // 6. 签名并发送交易
-        return signAndSendTransaction(chainName, rawTransaction, fromAddress);
+        return signAndSendTransaction(chainIdentifier, rawTransaction, fromAddress);
     }
 
     /**
      * ETH 转账
      * 
-     * @param chainName 链名称
+     * @param chainIdentifier 链标识
      * @param fromAddress 发送地址
      * @param toAddress 接收地址
      * @param amount ETH 金额（Wei）
      * @return 交易哈希
      */
-    public String ethTransfer(String chainName, String fromAddress, String toAddress, BigInteger amount) throws Exception {
-        log.info("开始ETH转账，chain: {}, from: {}, to: {}, amount: {}", 
-                chainName, fromAddress, toAddress, amount);
+    public String ethTransfer(String chainIdentifier, String fromAddress, String toAddress, BigInteger amount) throws Exception {
+        log.info("开始ETH转账，chain: {}, from: {}, to: {}, amount: {}",
+                chainIdentifier, fromAddress, toAddress, amount);
 
-        Web3j web3j = getWeb3jInstance(chainName);
+        Web3j web3j = getWeb3jInstance(chainIdentifier);
 
         // 1. 获取交易参数
         EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(
@@ -145,7 +145,7 @@ public class BlockchainTransactionService {
         BigInteger chainId = ethChainId.getChainId();
 
         // 2. 计算 Gas 价格（使用智能Gas费管理）
-        SmartGasFeeService.GasPriceInfo gasPriceInfo = smartGasFeeService.getSmartGasPrice(chainName, web3j, "normal");
+        SmartGasFeeService.GasPriceInfo gasPriceInfo = smartGasFeeService.getSmartGasPrice(chainIdentifier, web3j, "normal");
 
         // 3. 构建原始交易
         RawTransaction rawTransaction;
@@ -172,22 +172,22 @@ public class BlockchainTransactionService {
         }
 
         // 4. 签名并发送交易
-        return signAndSendTransaction(chainName, rawTransaction, fromAddress);
+        return signAndSendTransaction(chainIdentifier, rawTransaction, fromAddress);
     }
 
     /**
      * 查询代币余额
      * 
-     * @param chainName 链名称
+     * @param chainIdentifier 链名称
      * @param contractAddress 代币合约地址
      * @param holderAddress 持有者地址
      * @return 代币余额
      */
-    public BigInteger getTokenBalance(String chainName, String contractAddress, String holderAddress) throws Exception {
-        log.info("查询代币余额，chain: {}, contract: {}, holder: {}", 
-                chainName, contractAddress, holderAddress);
+    public BigInteger getTokenBalance(String chainIdentifier, String contractAddress, String holderAddress) throws Exception {
+        log.info("查询代币余额，chain: {}, contract: {}, holder: {}",
+                chainIdentifier, contractAddress, holderAddress);
 
-        Web3j web3j = getWeb3jInstance(chainName);
+        Web3j web3j = getWeb3jInstance(chainIdentifier);
 
         // 构建查询函数
         Function function = new Function(
@@ -214,14 +214,14 @@ public class BlockchainTransactionService {
     /**
      * 查询交易收据
      * 
-     * @param chainName 链名称
+     * @param chainIdentifier 链名称
      * @param txHash 交易哈希
      * @return 交易收据
      */
-    public TransactionReceipt getTransactionReceipt(String chainName, String txHash) throws Exception {
-        log.info("查询交易收据，chain: {}, txHash: {}", chainName, txHash);
+    public TransactionReceipt getTransactionReceipt(String chainIdentifier, String txHash) throws Exception {
+        log.info("查询交易收据，chain: {}, txHash: {}", chainIdentifier, txHash);
 
-        Web3j web3j = getWeb3jInstance(chainName);
+        Web3j web3j = getWeb3jInstance(chainIdentifier);
 
         EthGetTransactionReceipt receipt = web3j.ethGetTransactionReceipt(txHash).send();
         return receipt.getTransactionReceipt().orElse(null);
@@ -308,7 +308,7 @@ public class BlockchainTransactionService {
     /**
      * 签名并发送交易
      */
-    private String signAndSendTransaction(String chainName, RawTransaction rawTransaction, String fromAddress) throws Exception {
+    private String signAndSendTransaction(String chainIdentifier, RawTransaction rawTransaction, String fromAddress) throws Exception {
         // 1. 序列化交易
         byte[] encodedRawTransaction = TransactionEncoder.encode(rawTransaction);
         String unsignedHash = Numeric.toHexString(Hash.sha3(encodedRawTransaction));
@@ -317,7 +317,7 @@ public class BlockchainTransactionService {
         String signedTransaction = signRawTransaction(rawTransaction, unsignedHash, fromAddress, "", "");
 
         // 3. 发送交易
-        Web3j web3j = getWeb3jInstance(chainName);
+        Web3j web3j = getWeb3jInstance(chainIdentifier);
         EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedTransaction).send();
         
         String transactionHash = ethSendTransaction.getTransactionHash();
@@ -376,8 +376,8 @@ public class BlockchainTransactionService {
     /**
      * 获取 Web3j 实例（使用连接池）
      */
-    private Web3j getWeb3jInstance(String chainName) {
-        return connectionPoolService.getHttpConnection(chainName);
+    private Web3j getWeb3jInstance(String chainIdentifier) {
+        return connectionPoolService.getHttpConnection(chainIdentifier);
     }
 
     /**
