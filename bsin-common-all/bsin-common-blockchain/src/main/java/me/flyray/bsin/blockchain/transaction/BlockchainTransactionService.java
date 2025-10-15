@@ -57,7 +57,7 @@ public class BlockchainTransactionService {
      * @return 交易哈希
      */
     public String tokenTransfer(String chainIdentifier, String fromAddress, String toAddress,
-                               String contractAddress, BigInteger amount, BigInteger decimals) throws Exception {
+                               String contractAddress, BigInteger amount, Integer decimals) throws Exception {
         log.info("开始代币转账，chain: {}, from: {}, to: {}, contract: {}, amount: {}",
                 chainIdentifier, fromAddress, toAddress, contractAddress, amount);
 
