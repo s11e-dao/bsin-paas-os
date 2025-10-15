@@ -18,6 +18,7 @@ import me.flyray.bsin.server.biz.AccountBiz;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -211,20 +212,24 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public List<?> getGradeAndMemberList(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-        String tenantId = MapUtils.getString(requestMap, "tenantId");
+        
+        // 优先从参数获取，其次从登录用户获取
+        String tenantId = ObjectUtils.firstNonNull(
+            MapUtils.getString(requestMap, "tenantId"),
+            loginUser.getTenantId()
+        );
         if (tenantId == null) {
-            tenantId = loginUser.getTenantId();
-            if (tenantId == null) {
-                throw new BusinessException(TENANT_ID_NOT_ISNULL);
-            }
+            throw new BusinessException(TENANT_ID_NOT_ISNULL);
         }
-        String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-        if (merchantNo == null) {
-            merchantNo = loginUser.getMerchantNo();
+        // 优先从参数获取，其次从用户商户号，最后从租户商户号
+        String merchantNo = ObjectUtils.firstNonNull(
+            MapUtils.getString(requestMap, "merchantNo"),
+            loginUser.getMerchantNo(),
+            loginUser.getTenantMerchantNo()
+        );
+        // 更新requestMap中的merchantNo（如果原来为空）
+        if (MapUtils.getString(requestMap, "merchantNo") == null && merchantNo != null) {
             requestMap.put("merchantNo", merchantNo);
-            if (merchantNo == null) {
-                merchantNo = loginUser.getTenantMerchantNo();
-            }
         }
         String gradeNum = MapUtils.getString(requestMap, "gradeNum");
         String name = MapUtils.getString(requestMap, "name");

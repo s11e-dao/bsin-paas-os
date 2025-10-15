@@ -159,13 +159,13 @@ public class MemberServiceImpl implements MemberService {
         String type = MapUtils.getString(requestMap, "type");
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         Member member = BsinServiceContext.getReqBodyDto(Member.class, requestMap);
-        String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-        if (merchantNo == null) {
-            merchantNo = loginUser.getMerchantNo();
-            if (merchantNo == null) {
-                merchantNo = loginUser.getTenantMerchantNo();
-            }
-        }
+        
+        // 优先从参数获取，其次从用户商户号，最后从租户商户号
+        String merchantNo = ObjectUtils.firstNonNull(
+            MapUtils.getString(requestMap, "merchantNo"),
+            loginUser.getMerchantNo(),
+            loginUser.getTenantMerchantNo()
+        );
         Object paginationObj = requestMap.get("pagination");
         Pagination pagination = new Pagination();
         BeanUtil.copyProperties(paginationObj, pagination);

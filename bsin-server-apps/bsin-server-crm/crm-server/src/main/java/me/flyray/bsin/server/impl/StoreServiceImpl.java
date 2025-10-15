@@ -29,6 +29,7 @@ import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -216,13 +217,13 @@ public class StoreServiceImpl implements StoreService {
   public IPage<?> getPageList(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
     Store store = BsinServiceContext.getReqBodyDto(Store.class, requestMap);
-    String merchantNo = MapUtils.getString(requestMap, "merchantNo");
-    if (merchantNo == null) {
-      merchantNo = loginUser.getMerchantNo();
-      if (merchantNo == null) {
-        merchantNo = loginUser.getTenantMerchantNo();
-      }
-    }
+    
+    // 优先从参数获取，其次从用户商户号，最后从租户商户号
+    String merchantNo = ObjectUtils.firstNonNull(
+        MapUtils.getString(requestMap, "merchantNo"),
+        loginUser.getMerchantNo(),
+        loginUser.getTenantMerchantNo()
+    );
     Object paginationObj = requestMap.get("pagination");
     Pagination pagination = new Pagination();
     BeanUtil.copyProperties(paginationObj, pagination);

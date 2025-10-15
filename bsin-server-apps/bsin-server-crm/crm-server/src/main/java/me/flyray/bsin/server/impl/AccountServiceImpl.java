@@ -30,6 +30,7 @@ import me.flyray.bsin.server.biz.AccountBiz;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.utils.BsinSnowflake;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
 import org.apache.shenyu.client.apidocs.annotations.ApiDoc;
@@ -41,7 +42,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_ACCOUNT_IS_NULL;
 import static me.flyray.bsin.constants.ResponseCode.TASK_NON_CLAIM_CONDITION;
@@ -127,10 +131,12 @@ public class AccountServiceImpl implements AccountService {
     if (bizRoleTypeNo == null) {
       throw new BusinessException(ResponseCode.CUSTOMER_NO_NOT_ISNULL);
     }
-    String tenantId = MapUtils.getString(requestMap, "tenantId");
-    if (tenantId == null) {
-      tenantId = loginUser.getTenantId();
-    }
+    
+    // 优先从参数获取，其次从登录用户获取
+    String tenantId = ObjectUtils.firstNonNull(
+        MapUtils.getString(requestMap, "tenantId"),
+        loginUser.getTenantId()
+    );
 
     String ccy = MapUtils.getString(requestMap, "ccy");
     String amount = MapUtils.getString(requestMap, "amount");
@@ -232,22 +238,31 @@ public class AccountServiceImpl implements AccountService {
   @Override
   public Map<String, Object> recharge(Map<String, Object> requestMap) {
     LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
-    String accountNo = MapUtils.getString(requestMap, "serialNo");
+    
+    // 优先从serialNo获取，其次从accountNo获取
+    String accountNo = ObjectUtils.firstNonNull(
+        MapUtils.getString(requestMap, "serialNo"),
+        MapUtils.getString(requestMap, "accountNo")
+    );
     String amount = MapUtils.getString(requestMap, "amount");
     String remark = MapUtils.getString(requestMap, "remark");
-    if (accountNo == null){
-      accountNo = MapUtils.getString(requestMap, "accountNo");
-    }
+    
     if (accountNo != null){
       accountBiz.inAccount(accountNo, new BigDecimal(amount), remark);
     }else {
-      // 基于四要素充值
-      String tenantId = Optional.ofNullable(MapUtils.getString(requestMap, "tenantId"))
-              .orElse(loginUser.getTenantId());
-      String bizRoleType = Optional.ofNullable(MapUtils.getString(requestMap, "bizRoleType"))
-              .orElse(loginUser.getBizRoleType());
-      String bizRoleTypeNo = Optional.ofNullable(MapUtils.getString(requestMap, "bizRoleTypeNo"))
-              .orElse(loginUser.getBizRoleTypeNo());
+
+      String tenantId = ObjectUtils.firstNonNull(
+              MapUtils.getString(requestMap, "tenantId"),
+              loginUser.getTenantId()
+      );
+      String bizRoleType = ObjectUtils.firstNonNull(
+              MapUtils.getString(requestMap, "bizRoleType"),
+              loginUser.getBizRoleType()
+      );
+      String bizRoleTypeNo = ObjectUtils.firstNonNull(
+              MapUtils.getString(requestMap, "bizRoleTypeNo"),
+              loginUser.getBizRoleTypeNo()
+      );
       String accountCategory = AccountCategory.BALANCE.getCode();
       String accountName = AccountCategory.BALANCE.getDesc();
       String ccy = "CNY";
