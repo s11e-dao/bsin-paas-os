@@ -25,6 +25,7 @@ import org.apache.shenyu.client.apidocs.annotations.ApiModule;
 import org.apache.shenyu.client.dubbo.common.annotation.ShenyuDubboClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
     @Autowired
     private DisTeamRelationMapper disTeamRelationMapper;
     @Autowired
-    private SysAgentMapper SysAgentMapper;
+    private SysAgentMapper sysAgentMapper;
     @Autowired
     private CustomerIdentityMapper customerIdentityMapper;
     @Autowired
@@ -65,18 +66,29 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
     @ApiDoc(desc = "add")
     @ShenyuDubboClient("/add")
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public DisTeamRelation add(Map<String, Object> requestMap) {
-
-        // TODO 根据分销模型确定团队关系
-
-        // 生成crm_sys_agent 数据后调用,requestMap ->{"sysAgentNo": 成为分销后的serial_no, "tenantId":租户ID}
-        DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
+        // 参数校验
         String customerNo = MapUtils.getString(requestMap, "customerNo");
-        String merchantNo = MapUtils.getString(requestMap, "merchantNo");
         String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
         String tenantId = MapUtils.getString(requestMap, "tenantId");
+        String merchantNo = MapUtils.getString(requestMap, "merchantNo");
+        
+        if (ObjectUtils.isEmpty(customerNo)) {
+            throw new BusinessException("999", "客户编号不能为空");
+        }
+        if (ObjectUtils.isEmpty(sysAgentNo)) {
+            throw new BusinessException("999", "合伙人编号不能为空");
+        }
+        if (ObjectUtils.isEmpty(tenantId)) {
+            throw new BusinessException("999", "租户ID不能为空");
+        }
+        
+        log.info("开始处理合伙人加入团队, customerNo={}, sysAgentNo={}, tenantId={}", customerNo, sysAgentNo, tenantId);
+
+        DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
         // 查询分销模型配置信息
-        LambdaQueryWrapper queryWrapper =new LambdaQueryWrapper<DisModel>()
+        LambdaQueryWrapper<DisModel> queryWrapper = new LambdaQueryWrapper<DisModel>()
                 .eq(DisModel::getTenantId, tenantId)
                 .eq(ObjectUtils.isNotEmpty(merchantNo),DisModel::getMerchantNo, merchantNo);
         DisModel disModel = disModelMapper.selectOne(queryWrapper);
@@ -84,7 +96,7 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
             throw new BusinessException(DIS_MODEL_NOT_EXISTS);
         }
         // 根据sysAgentNo查询代理信息
-        SysAgent agent = SysAgentMapper.selectById(sysAgentNo);
+        SysAgent agent = sysAgentMapper.selectById(sysAgentNo);
         if (agent == null) {
             throw new BusinessException(SYS_AGENT_NOT_EXISTS);
         }
@@ -95,12 +107,14 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         );
         // 1、没有邀请关系说明没有上级, 合伙人直接组建团队成为老板合伙人,返回新建团队信息
         if (inviteRelation == null) {
+            log.info("客户无邀请关系, 直接组建团队成为老板合伙人, customerNo={}", customerNo);
             disTeamRelation.setDisAgentType(DisAgentType.BOSS.getCode());
             disTeamRelation.setSysAgentNo(agent.getSerialNo());
             disTeamRelation.setSerialNo(BsinSnowflake.getId());
             disTeamRelation.setTenantId(tenantId);
             // 插入分销团队关系到数据库
             disTeamRelationMapper.insert(disTeamRelation);
+            log.info("合伙人加入团队成功(老板), teamRelationNo={}", disTeamRelation.getSerialNo());
             return disTeamRelation;
         }
         // 根据邀请关系找到邀请人ID
@@ -134,61 +148,83 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
             disTeamRelationMapper.insert(disTeamRelation);
         }else {
             // 3、如果有邀请关系，并且邀请人不是合伙人或者邀请人没有团队，则创建团队自己是老板
+            log.info("邀请人不是合伙人或无团队, 创建独立团队, customerNo={}, parentCustomerNo={}", customerNo, parentCustomerNo);
             disTeamRelation.setDisAgentType(DisAgentType.BOSS.getCode());
             disTeamRelation.setSysAgentNo(agent.getSerialNo());
             disTeamRelation.setSerialNo(BsinSnowflake.getId());
             disTeamRelation.setTenantId(tenantId);
             // 插入分销团队关系到数据库
             disTeamRelationMapper.insert(disTeamRelation);
+            log.info("合伙人加入团队成功(老板), teamRelationNo={}", disTeamRelation.getSerialNo());
             return disTeamRelation;
         }
 
         // 不同的分销模型做不同的处理: 链动2+1，走人和留人
         if (DisModelEnum.DIS_LEVEL21.getCode().equals(disModel.getModel()) && parentSysAgentNo != null) {
+            log.info("开始检查链动2+1走人机制, parentSysAgentNo={}, quitLimit={}", parentSysAgentNo, disModel.getQuitCurrentLimit());
             // 如果邀请人还不是老板,进行链路2+1逻辑
             if (!DisAgentType.BOSS.getCode().equals(parentDisTeamRelation.getDisAgentType())) {
                 // 查询邀请人的下级是否已经大于设置的链动人数
                 LambdaQueryWrapper<DisTeamRelation> wrapper = new LambdaQueryWrapper<>();
                 wrapper.eq(DisTeamRelation::getPrarentSysAgentNo, parentSysAgentNo);
                 List<DisTeamRelation> list = disTeamRelationMapper.selectList(wrapper);
+                log.info("邀请人当前直推人数={}, 走人阈值={}", list.size(), disModel.getQuitCurrentLimit());
                 // 超过链动设置的人数，则邀请人变为老板并退出团队,邀请人的下级给邀请人的上级, 人数判断必须大于等于,只判断等于,获得下级的下级后会有问题
                 if (list.size() >= disModel.getQuitCurrentLimit()) {
+                    log.info("触发链动2+1走人机制, 晋升老板={}, 转移下级数={}", parentSysAgentNo, list.size());
                     // 邀请人名下的所有人，都给邀请人的上级
+                    String grandParentNo = parentDisTeamRelation.getPrarentSysAgentNo();
                     for (DisTeamRelation item : list) {
-                        item.setPrarentSysAgentNo(parentDisTeamRelation.getPrarentSysAgentNo());
+                        item.setPrarentSysAgentNo(grandParentNo);
                         disTeamRelationMapper.updateById(item);
                     }
                     // 邀请人走人成为老板
                     parentDisTeamRelation.setDisAgentType(DisAgentType.BOSS.getCode());
                     parentDisTeamRelation.setPrarentSysAgentNo("-1");
                     disTeamRelationMapper.updateById(parentDisTeamRelation);
+                    log.info("链动2+1走人机制执行完成, 新老板={}, 转移给={}", parentSysAgentNo, grandParentNo);
                 }
             }
         }
 
+        log.info("合伙人加入团队成功, teamRelationNo={}, agentType={}", disTeamRelation.getSerialNo(), disTeamRelation.getDisAgentType());
         return disTeamRelation;
     }
 
     @ApiDoc(desc = "delete")
     @ShenyuDubboClient("/delete")
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Map<String, Object> requestMap) {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
-        if (disTeamRelationMapper.deleteById(serialNo) == 0){
-            throw new BusinessException(GRADE_NOT_EXISTS);
+        if (ObjectUtils.isEmpty(serialNo)) {
+            throw new BusinessException("999", "团队关系编号不能为空");
         }
+        log.info("删除团队关系, serialNo={}", serialNo);
+        if (disTeamRelationMapper.deleteById(serialNo) == 0){
+            throw new BusinessException("999", "团队关系不存在");
+        }
+        log.info("删除团队关系成功, serialNo={}", serialNo);
     }
 
     @ApiDoc(desc = "edit")
     @ShenyuDubboClient("/edit")
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public DisTeamRelation edit(Map<String, Object> requestMap) {
         LoginUser loginUser = LoginInfoContextHelper.getLoginUser();
         DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
+        
+        if (ObjectUtils.isEmpty(disTeamRelation.getSerialNo())) {
+            throw new BusinessException("999", "团队关系编号不能为空");
+        }
+        
+        log.info("更新团队关系, serialNo={}", disTeamRelation.getSerialNo());
         disTeamRelation.setTenantId(loginUser.getTenantId());
         if (disTeamRelationMapper.updateById(disTeamRelation) == 0){
-            throw new BusinessException(GRADE_NOT_EXISTS);
+            throw new BusinessException("999", "团队关系不存在");
         }
+        log.info("更新团队关系成功, serialNo={}", disTeamRelation.getSerialNo());
         return disTeamRelation;
     }
 
@@ -201,7 +237,6 @@ public class DisTeamRelationServiceImpl implements DisTeamRelationService {
         Pagination pagination = new Pagination();
         BeanUtil.copyProperties(paginationObj,pagination);
         Page<DisTeamRelation> page = new Page<>(pagination.getPageNum(), pagination.getPageSize());
-        DisTeamRelation disTeamRelation = BsinServiceContext.getReqBodyDto(DisTeamRelation.class, requestMap);
         LambdaQueryWrapper<DisTeamRelation> warapper = new LambdaQueryWrapper<>();
         warapper.eq(DisTeamRelation::getTenantId, loginUser.getTenantId());
         IPage<DisTeamRelation> pageList = disTeamRelationMapper.selectPage(page, warapper);
