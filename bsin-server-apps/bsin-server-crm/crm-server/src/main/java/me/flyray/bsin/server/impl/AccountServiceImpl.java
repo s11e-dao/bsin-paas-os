@@ -41,10 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static me.flyray.bsin.constants.ResponseCode.CUSTOMER_ACCOUNT_IS_NULL;
 import static me.flyray.bsin.constants.ResponseCode.TASK_NON_CLAIM_CONDITION;
@@ -245,9 +242,12 @@ public class AccountServiceImpl implements AccountService {
       accountBiz.inAccount(accountNo, new BigDecimal(amount), remark);
     }else {
       // 基于四要素充值
-      String tenantId = loginUser.getTenantId();
-      String bizRoleType = loginUser.getBizRoleType();
-      String bizRoleTypeNo = loginUser.getBizRoleTypeNo();
+      String tenantId = Optional.ofNullable(MapUtils.getString(requestMap, "tenantId"))
+              .orElse(loginUser.getTenantId());
+      String bizRoleType = Optional.ofNullable(MapUtils.getString(requestMap, "bizRoleType"))
+              .orElse(loginUser.getBizRoleType());
+      String bizRoleTypeNo = Optional.ofNullable(MapUtils.getString(requestMap, "bizRoleTypeNo"))
+              .orElse(loginUser.getBizRoleTypeNo());
       String accountCategory = AccountCategory.BALANCE.getCode();
       String accountName = AccountCategory.BALANCE.getDesc();
       String ccy = "CNY";
