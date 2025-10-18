@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 
 import cn.hutool.crypto.digest.MD5;
@@ -36,9 +37,10 @@ public class AccountBiz {
   @Autowired private AccountJournalMapper customerAccountJournalMapper;
 
   public Account openAccount(Account account) {
-    MD5 md5 = new MD5(account.getBizRoleTypeNo().getBytes());
+    MD5 md5 = new MD5(account.getBizRoleTypeNo().getBytes(StandardCharsets.UTF_8));
     account.setBalance(BigDecimal.ZERO);
-    account.setCheckCode(HexUtil.encodeHexStr(md5.digest(account.getBalance().toString())));
+    String balanceStr = formatBalanceForCheckCode(account.getBalance(), account.getDecimals());
+    account.setCheckCode(HexUtil.encodeHexStr(md5.digest(balanceStr.getBytes(StandardCharsets.UTF_8))));
     accountMapper.insert(account);
     return account;
   }
@@ -68,12 +70,11 @@ public class AccountBiz {
   public Account inAccount(String accountNo, BigDecimal amount, String remark){
     Account account = accountMapper.selectById(accountNo);
     AccountJournal accountJournal = new AccountJournal();
-    MD5 md5 = new MD5(account.getBizRoleTypeNo().getBytes());
-    // 余额校验
-    System.out.println("账户余额: \n\n\n\n" + account.getBalance().toString());
-    String checkCode = HexUtil.encodeHexStr(md5.digest(account.getBalance().toString()));
-    System.out.println("2.Check Code: \n\n\n\n" + checkCode);
-    System.out.println("3.getCheckCode: \n\n\n\n" + account.getCheckCode());
+    MD5 md5 = new MD5(account.getBizRoleTypeNo().getBytes(StandardCharsets.UTF_8));
+    // 余额校验 - 生成CheckCode进行比对
+    String balancePlainString = formatBalanceForCheckCode(account.getBalance(), account.getDecimals());
+    byte[] balanceBytes = balancePlainString.getBytes(StandardCharsets.UTF_8);
+    String checkCode = HexUtil.encodeHexStr(md5.digest(balanceBytes));
     if (!checkCode.equals(account.getCheckCode())) {
       throw new BusinessException(ResponseCode.ACCOUNT_BALANCE_ANNORMAL);
     }
@@ -83,10 +84,9 @@ public class AccountBiz {
     account.setBalance(account.getBalance().add(amount));
     accountJournal.setInOutFlag(InOutAccountFlag.INT_ACCOUNT.getCode());
 
-    String newBalance = account.getBalance().toString();
-    System.out.println("新的账户余额: \n\n\n\n" + newBalance);
+    String newBalanceStr = formatBalanceForCheckCode(account.getBalance(), account.getDecimals());
+    byte[] newBalance = newBalanceStr.getBytes(StandardCharsets.UTF_8);
     String newCheckCode = HexUtil.encodeHexStr(md5.digest(newBalance));
-    System.out.println("4.newBalance getCheckCode: \n\n\n\n" + newCheckCode);
     account.setCheckCode(newCheckCode);
 
     accountJournal.setRemark(remark);
@@ -177,10 +177,9 @@ public class AccountBiz {
     warapper.eq(Account::getCcy, ccy);
     warapper.eq(ObjectUtil.isNotNull(category), Account::getCategory, category);
     Account account = accountMapper.selectOne(warapper);
-    DecimalFormat decimalFormat = new DecimalFormat("#.00");
     MD5 md5 = null;
     AccountJournal accountJournal = new AccountJournal();
-    if (amount.compareTo(BigDecimal.ZERO) < 1) {
+    if (amount.compareTo(BigDecimal.ZERO) <= 0 ) {
       throw new BusinessException(ResponseCode.AMOUNT_MUST_GREATER_THAN_ZERO);
     }
     if (account == null) {
@@ -193,28 +192,30 @@ public class AccountBiz {
       account.setName(accountName);
       account.setCategory(category);
       account.setDecimals(decimals);
-      String amountStr = decimalFormat.format(amount);
       if (InOutAccountFlag.INT_ACCOUNT.getCode().equals(journalDirection)) {
-        account.setBalance(amount);
         accountJournal.setInOutFlag(1);
       } else {
         // 如果是出账，则账户不存在
         throw new BusinessException(ResponseCode.ACCOUNT_NOT_EXISTS);
       }
       account.setBalance(amount);
-      md5 = new MD5(account.getBizRoleTypeNo().getBytes());
-      String checkCode = HexUtil.encodeHexStr(md5.digest(amountStr));
-      System.out.println("1.Check Code: \n\n\n\n" + checkCode);
+      md5 = new MD5(account.getBizRoleTypeNo().getBytes(StandardCharsets.UTF_8));
+      
+      // 使用统一的格式：根据decimals统一格式化余额
+      String balancePlainString = formatBalanceForCheckCode(account.getBalance(), decimals);
+      byte[] balanceBytes = balancePlainString.getBytes(StandardCharsets.UTF_8);
+      
+      String checkCode = HexUtil.encodeHexStr(md5.digest(balanceBytes));
       account.setCheckCode(checkCode);
       account.setStatus(AccountEnum.NORMAL.getCode());
       accountMapper.insert(account);
    } else {
-      md5 = new MD5(account.getBizRoleTypeNo().getBytes());
-      // 余额校验
-      System.out.println("账户余额: \n\n\n\n" + account.getBalance().toString());
-      String checkCode = HexUtil.encodeHexStr(md5.digest(account.getBalance().toString()));
-      System.out.println("2.Check Code: \n\n\n\n" + checkCode);
-      System.out.println("3.getCheckCode: \n\n\n\n" + account.getCheckCode());
+      md5 = new MD5(account.getBizRoleTypeNo().getBytes(StandardCharsets.UTF_8));
+      
+      // 使用统一的格式：根据账户的decimals统一格式化余额进行校验
+      String balancePlainString = formatBalanceForCheckCode(account.getBalance(), account.getDecimals());
+      byte[] balanceBytes = balancePlainString.getBytes(StandardCharsets.UTF_8);
+      String checkCode = HexUtil.encodeHexStr(md5.digest(balanceBytes));
       if (!checkCode.equals(account.getCheckCode())) {
           throw new BusinessException(ResponseCode.ACCOUNT_BALANCE_ANNORMAL);
       }
@@ -236,11 +237,11 @@ public class AccountBiz {
       }
 
       // 使用更新后的余额生成新的校验码
-      String newBalance = account.getBalance().toString();
-      System.out.println("新的账户余额: \n\n\n\n" + newBalance);
+      String newBalanceStr = formatBalanceForCheckCode(account.getBalance(), account.getDecimals());
+      byte[] newBalance = newBalanceStr.getBytes(StandardCharsets.UTF_8);
       String newCheckCode = HexUtil.encodeHexStr(md5.digest(newBalance));
-      System.out.println("4.newBalance getCheckCode: \n\n\n\n" + newCheckCode);
       account.setCheckCode(newCheckCode);
+      accountMapper.updateById(account);
     }
 
     accountJournal.setRemark(remark);
@@ -255,8 +256,6 @@ public class AccountBiz {
     accountJournal.setCcy(account.getCcy());
     accountJournal.setTenantId(account.getTenantId());
     customerAccountJournalMapper.insert(accountJournal);
-    accountMapper.updateById(account);
-
     return account;
   }
 
@@ -267,6 +266,29 @@ public class AccountBiz {
     warapper.eq(Account::getCategory, category);
     Account customerAccount = accountMapper.selectOne(warapper);
     return customerAccount;
+  }
+
+  /**
+   * 统一格式化余额用于CheckCode生成，确保格式一致性
+   */
+  private String formatBalanceForCheckCode(BigDecimal balance, Integer decimals) {
+    if (balance == null) {
+      return "0.00";
+    }
+    
+    if (decimals == null || decimals == 2) {
+      // 默认使用2位小数格式
+      DecimalFormat decimalFormat = new DecimalFormat("#.00");
+      return decimalFormat.format(balance);
+    } else {
+      // 根据指定的精度格式化
+      StringBuilder pattern = new StringBuilder("#.");
+      for (int i = 0; i < decimals; i++) {
+        pattern.append("0");
+      }
+      DecimalFormat decimalFormat = new DecimalFormat(pattern.toString());
+      return decimalFormat.format(balance);
+    }
   }
 
   public static void main(String[] args) {

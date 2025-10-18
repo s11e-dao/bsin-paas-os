@@ -27,7 +27,7 @@ public enum ResponseCode implements ReturnCode {
   USER_EXIST("100105", "该用户已存在"),
   USER_UPDATE_EXCEPTION("100106", "用户更新异常"),
   USERNAME_PASSWORD_ERROR("100107", "用户不存在或密码错误"),
-  PASSWORD_ERROR("100108", "口令错误"),
+  PASSWORD_ERROR("100108", "密码或口令错误"),
   USER_POST_IS_RELATED("100109", "用户岗位存在关联关系"),
   USER_NOT_APP_ROLE("100111", "您没有该应用的角色"),
   DATA_HAS_EXIST("100116", "数据已存在！"),
