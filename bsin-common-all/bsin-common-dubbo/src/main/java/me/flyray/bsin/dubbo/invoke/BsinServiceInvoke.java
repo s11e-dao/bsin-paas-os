@@ -71,6 +71,51 @@ public class BsinServiceInvoke {
     }
 
     /**
+     * 泛化调用engine类型服务的方法
+     * @param serviceName 服务名称
+     * @param methodName 方法名称
+     * @param version 版本
+     * @param reqParam 请求参数
+     * @return 调用结果
+     */
+    public Object genericInvokeEngine(String serviceName, String methodName, String version, Map<String, Object> reqParam) {
+        String cacheKey = serviceName + "_engine";
+        GenericService genericService = concurrentHashMapBolt.get(cacheKey);
+
+        if (genericService == null){
+            ApplicationConfig application = new ApplicationConfig();
+            application.setName("api-generic-provider");
+
+            //注册中心
+            RegistryConfig registry = new RegistryConfig();
+            registry.setAddress(nacosAddess);
+            registry.setUsername(nacosUsername);
+            registry.setPassword(nacosPassword);
+            application.setRegistry(registry);
+
+            // 引用远程服务
+            ReferenceConfig<GenericService> reference = new ReferenceConfig<GenericService>();
+            reference.setApplication(application);
+            reference.setInterface("me.flyray.bsin.facade.engine." + serviceName); // engine包路径
+            reference.setVersion(version);
+            reference.setGeneric(true); // 开启泛化调用
+            // 设置超时时间（毫秒）
+            reference.setTimeout(30000);
+            // 设置重试次数
+            // reference.setRetries(2);
+
+            // 引用服务
+            genericService = reference.get();
+            // 放入线程池中
+            concurrentHashMapBolt.put(cacheKey, genericService);
+        }
+
+        // 泛化调用
+        Object result = genericService.$invoke(methodName, new String[]{"java.util.Map"}, new Object[]{reqParam});
+        return result;
+    }
+
+    /**
      * 接口计费服务
      * {
      *   "serviceName":"TenantApiConsumingRecordService",
