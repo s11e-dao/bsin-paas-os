@@ -99,9 +99,25 @@ public class MultiChainTransactionService {
             BsinBlockChainEngine engine = getEngine(chainName);
             BlockchainConfig.ChainConfig config = getChainConfig(chainName);
             
-            // 检查余额
+            // 检查余额 - 修复金额计算逻辑
+            log.info("💰 代币转账金额计算: 原始amount={}, decimals={}", amount, decimals);
+            
             BigInteger balance = getTokenBalance(chainName, fromAddress, contractAddress, decimals);
-            BigInteger transferAmount = amount.multiply(BigInteger.TEN.pow(decimals.intValue()));
+            BigInteger transferAmount;
+            
+            // 检查amount是否已经包含了精度
+            String amountStr = amount.toString();
+            if (amountStr.length() <= decimals.intValue()) {
+                // 如果amount看起来像是小数形式，需要转换为Wei
+                log.info("🔧 amount看起来是小数形式，转换为Wei单位");
+                transferAmount = amount.multiply(BigInteger.TEN.pow(decimals.intValue()));
+            } else {
+                // amount已经是Wei单位，直接使用
+                log.info("✅ amount已经是Wei单位，直接使用");
+                transferAmount = amount;
+            }
+            
+            log.info("🎯 最终转账金额: {} (Wei), 当前余额: {} (Wei)", transferAmount, balance);
             
             if (balance.compareTo(transferAmount) < 0) {
                 throw BlockchainException.insufficientBalance("余额不足: 需要 " + transferAmount + ", 可用 " + balance);

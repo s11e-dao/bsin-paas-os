@@ -57,10 +57,10 @@ public class BlockchainTransactionService {
      * @param decimals 代币精度
      * @return 交易哈希
      */
-    public String tokenTransfer(String chainIdentifier, String fromAddress, String toAddress,
+    public String tokenTransfer(String chainIdentifier, String fromAddress, String fromAddressPrivateKey, String toAddress,
                                String contractAddress, BigInteger amount, Integer decimals) throws Exception {
-        log.info("开始代币转账，chain: {}, from: {}, to: {}, contract: {}, amount: {}",
-                chainIdentifier, fromAddress, toAddress, contractAddress, amount);
+        log.info("🔀 开始代币转账，chain: {}, from: {}, to: {}, contract: {}, amount: {}, decimals: {}",
+                chainIdentifier, fromAddress, toAddress, contractAddress, amount, decimals);
 
         Web3j web3j = getWeb3jInstance(chainIdentifier);
 
@@ -72,23 +72,98 @@ public class BlockchainTransactionService {
         EthChainId ethChainId = web3j.ethChainId().send();
         BigInteger chainId = ethChainId.getChainId();
 
-        // 2. 构建转账函数
-        BigDecimal tokenValue = new BigDecimal(amount).multiply(new BigDecimal(Math.pow(10, decimals.longValue())));
+        // 2. 构建转账函数 - 修复金额计算逻辑
+        // amount参数应该已经是正确精度的值，不需要再次乘以10^decimals
+        log.info("💰 代币转账金额计算: 原始amount={}, decimals={}", amount, decimals);
+        
+        // 验证amount的合理性：如果是小数形式的金额，需要转换为Wei单位
+        // 但是从调用方传来的amount看起来已经是Wei单位了（33000000000000000000）
+        BigInteger tokenAmount;
+        try {
+            // 检查amount是否已经包含了精度（通过数值大小判断）
+            String amountStr = amount.toString();
+            if (amountStr.length() <= decimals) {
+                // 如果amount看起来像是小数形式，需要转换为Wei
+                log.info("🔧 amount看起来是小数形式，转换为Wei单位");
+                BigDecimal decimalAmount = new BigDecimal(amount);
+                BigDecimal multiplier = BigDecimal.TEN.pow(decimals);
+                tokenAmount = decimalAmount.multiply(multiplier).toBigInteger();
+            } else {
+                // amount已经是Wei单位，直接使用
+                log.info("✅ amount已经是Wei单位，直接使用");
+                tokenAmount = amount;
+            }
+            
+            log.info("🎯 最终转账金额: {} (Wei)", tokenAmount);
+            
+        } catch (Exception e) {
+            log.error("❌ 金额转换失败: amount={}, decimals={}", amount, decimals, e);
+            throw new Exception("代币金额计算失败: " + e.getMessage(), e);
+        }
+        
         Function function = new Function(
                 "transfer",
-                Arrays.asList(new Address(toAddress), new Uint256(tokenValue.toBigInteger())),
+                Arrays.asList(new Address(toAddress), new Uint256(tokenAmount)),
                 Arrays.asList(new TypeReference<org.web3j.abi.datatypes.Type<?>>() {})
         );
         String data = FunctionEncoder.encode(function);
+        log.info("📋 构建的转账函数数据长度: {}", data.length());
 
-        // 3. 估算 Gas 费用
+        // 3. 估算 Gas 费用 - 增加详细的错误处理
+        log.info("⛽ 开始估算Gas费用: from={}, to={}, contract={}", fromAddress, toAddress, contractAddress);
+        
         Transaction transaction = Transaction.createEthCallTransaction(fromAddress, contractAddress, data);
         EthEstimateGas gasEstimate = web3j.ethEstimateGas(transaction).send();
+        
         if (gasEstimate.hasError()) {
-            throw new Exception(String.format("Gas 估算失败: %s-%s", 
-                    gasEstimate.getError().getCode(), gasEstimate.getError().getMessage()));
+            String errorCode = String.valueOf(gasEstimate.getError().getCode());
+            String errorMessage = gasEstimate.getError().getMessage();
+            
+            log.error("❌ Gas估算失败: code={}, message={}", errorCode, errorMessage);
+            log.error("🔍 详细错误信息:");
+            log.error("   - fromAddress: {}", fromAddress);
+            log.error("   - toAddress: {}", toAddress);
+            log.error("   - contractAddress: {}", contractAddress);
+            log.error("   - tokenAmount: {} (Wei)", tokenAmount);
+            log.error("   - decimals: {}", decimals);
+            log.error("   - data length: {}", data.length());
+            
+            // 提供更详细的错误诊断
+            if (errorMessage.contains("revert") || errorMessage.contains("execution reverted")) {
+                log.error("🚨 诊断: 合约调用被回滚，可能原因:");
+                log.error("   1. 余额不足: fromAddress可能没有足够的代币余额");
+                log.error("   2. 授权问题: 可能需要先授权合约使用代币");
+                log.error("   3. 合约问题: 代币合约可能存在问题");
+                log.error("   4. 金额错误: 转账金额可能超出余额或格式错误");
+                
+                // 尝试查询余额进行进一步诊断
+                try {
+                    BigInteger balanceWei = getTokenBalance(chainIdentifier, contractAddress, fromAddress);
+                    BigDecimal balanceDisplay = new BigDecimal(balanceWei).divide(BigDecimal.TEN.pow(decimals));
+                    BigDecimal transferAmountDisplay = new BigDecimal(tokenAmount).divide(BigDecimal.TEN.pow(decimals));
+                    
+                    log.error("💡 余额诊断信息:");
+                    log.error("   - 当前代币余额: {} ({}) (Wei单位)", balanceWei, balanceDisplay);
+                    log.error("   - 尝试转账金额: {} ({}) (Wei单位)", tokenAmount, transferAmountDisplay);
+                    
+                    if (balanceWei.compareTo(tokenAmount) < 0) {
+                        log.error("🚨 确认: 余额不足，无法完成转账");
+                        log.error("   - 余额: {} (显示单位)", balanceDisplay);
+                        log.error("   - 需要: {} (显示单位)", transferAmountDisplay);
+                        log.error("   - 缺少: {} (显示单位)", transferAmountDisplay.subtract(balanceDisplay));
+                    } else {
+                        log.info("✅ 余额充足，问题可能在其他地方");
+                    }
+                } catch (Exception balanceError) {
+                    log.warn("⚠️ 无法查询余额进行诊断: {}", balanceError.getMessage());
+                }
+            }
+            
+            throw new Exception(String.format("Gas 估算失败: %s-%s", errorCode, errorMessage));
         }
+        
         BigInteger gasLimit = gasEstimate.getAmountUsed();
+        log.info("✅ Gas估算成功: gasLimit={}", gasLimit);
 
         // 4. 计算 Gas 价格（使用智能Gas费管理）
         SmartGasFeeService.GasPriceInfo gasPriceInfo = smartGasFeeService.getSmartGasPrice(chainIdentifier, web3j, "normal");
@@ -119,7 +194,7 @@ public class BlockchainTransactionService {
         }
 
         // 6. 签名并发送交易
-        return signAndSendTransaction(chainIdentifier, rawTransaction, fromAddress, "1");
+        return signAndSendTransaction(chainIdentifier, rawTransaction, fromAddress, fromAddressPrivateKey);
     }
 
     /**
