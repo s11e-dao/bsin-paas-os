@@ -102,7 +102,6 @@ public class BsinBlockChainTransactionProcessor {
         processed.setChainName(chainName);
         processed.setTxHash(transaction.getHash());
         processed.setFromAddress(transaction.getFrom());
-        processed.setToAddress(transaction.getTo());
         processed.setContractAddress(ethLog.getAddress());
         processed.setBlockNumber(ethLog.getBlockNumber());
         processed.setTransactionIndex(ethLog.getTransactionIndex());
@@ -111,37 +110,102 @@ public class BsinBlockChainTransactionProcessor {
         processed.setStatus("0x1".equals(receipt.getStatus()) ? "SUCCESS" : "FAIL");
         processed.setGasUsed(receipt.getCumulativeGasUsed());
         
-            // TODO 解析合约方法调用
-            String input = transaction.getInput();
-            if (input != null && !input.equals("0x")) {
-                ContractMethodInfo methodInfo = parseContractMethod(input);
-                processed.setContractMethod(methodInfo.getMethodName());
-                processed.setMethodId(methodInfo.getMethodId());
-                processed.setMethodInvokeWay(methodInfo.getInvokeWay());
-                processed.setTokenAmount(methodInfo.getTokenAmount());
-                
-                // 如果是 ERC-20 转账，更新接收地址
-                if ("0xa9059cbb".equals(methodInfo.getMethodId())) {
-                    String receiverAddress = "0x" + Numeric.cleanHexPrefix(input.substring(34, 74));
-                    processed.setToAddress(receiverAddress);
-                    log.debug("检测到 ERC-20 转账，接收地址: {}", receiverAddress);
-                }
+        // 首先检查是否是ERC-20 Transfer事件，从Event Log解析地址
+        String toAddress = parseToAddressFromEventLog(ethLog);
+        if (toAddress != null) {
+            processed.setToAddress(toAddress);
+            log.info("🎯 从Event Log解析到接收地址: {}", toAddress);
+        } else {
+            // 如果不是ERC-20事件，使用交易的基本to地址
+            processed.setToAddress(transaction.getTo());
+            log.debug("使用交易基本to地址: {}", transaction.getTo());
+        }
+        
+        // 解析合约方法调用
+        String input = transaction.getInput();
+        if (input != null && !input.equals("0x")) {
+            ContractMethodInfo methodInfo = parseContractMethod(input);
+            processed.setContractMethod(methodInfo.getMethodName());
+            processed.setMethodId(methodInfo.getMethodId());
+            processed.setMethodInvokeWay(methodInfo.getInvokeWay());
+            processed.setTokenAmount(methodInfo.getTokenAmount());
+            log.debug("解析合约方法: methodId={}, methodName={}", methodInfo.getMethodId(), methodInfo.getMethodName());
+        }
+        
+        // 如果从 input 解析不到金额，尝试从 Log 的 data 字段解析
+        if (processed.getTokenAmount() == null && ethLog.getData() != null) {
+            try {
+                String dataHex = ethLog.getData().startsWith("0x") ? 
+                    ethLog.getData().substring(2) : ethLog.getData();
+                BigInteger amount = new BigInteger(dataHex, 16);
+                processed.setTokenAmount(amount);
+                log.debug("从 Log data 字段解析金额: data={}, amount={}", ethLog.getData(), amount);
+            } catch (Exception e) {
+                log.warn("解析 Log data 字段金额失败: data={}", ethLog.getData(), e);
             }
-            
-            // 如果从 input 解析不到金额，尝试从 Log 的 data 字段解析
-            if (processed.getTokenAmount() == null && ethLog.getData() != null) {
-                try {
-                    String dataHex = ethLog.getData().startsWith("0x") ? 
-                        ethLog.getData().substring(2) : ethLog.getData();
-                    BigInteger amount = new BigInteger(dataHex, 16);
-                    processed.setTokenAmount(amount);
-                    log.debug("从 Log data 字段解析金额: data={}, amount={}", ethLog.getData(), amount);
-                } catch (Exception e) {
-                    log.warn("解析 Log data 字段金额失败: data={}", ethLog.getData(), e);
-                }
-            }
+        }
+        
+        log.info("📋 交易解析完成: txHash={}, from={}, to={}, contract={}, amount={}", 
+                processed.getTxHash(), processed.getFromAddress(), processed.getToAddress(), 
+                processed.getContractAddress(), processed.getTokenAmount());
         
         return processed;
+    }
+
+    /**
+     * 从Event Log解析ERC-20 Transfer事件的接收地址
+     * ERC-20 Transfer事件签名: Transfer(address indexed from, address indexed to, uint256 value)
+     * topics[0]: 事件签名哈希 (0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef)
+     * topics[1]: from地址 (indexed)
+     * topics[2]: to地址 (indexed)
+     * data: 转账金额 (uint256)
+     */
+    private String parseToAddressFromEventLog(Log ethLog) {
+        try {
+            if (ethLog.getTopics() == null || ethLog.getTopics().size() < 3) {
+                log.debug("Event Log topics数量不足，无法解析ERC-20转账: topicsCount={}", 
+                        ethLog.getTopics() != null ? ethLog.getTopics().size() : 0);
+                return null;
+            }
+            
+            // 检查是否是ERC-20 Transfer事件
+            String transferEventSignature = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+            String firstTopic = ethLog.getTopics().get(0);
+            
+            if (!transferEventSignature.equals(firstTopic)) {
+                log.debug("不是ERC-20 Transfer事件，事件签名: {}", firstTopic);
+                return null;
+            }
+            
+            // 解析to地址 (topics[2])
+            String toTopic = ethLog.getTopics().get(2);
+            if (toTopic != null && toTopic.length() >= 42) {
+                // 移除前面的0x和补齐的0，获取真实地址
+                String addressHex = toTopic.substring(toTopic.length() - 40);
+                String toAddress = "0x" + addressHex;
+                
+                log.debug("✅ 解析ERC-20 Transfer事件成功: from={}, to={}", 
+                        parseAddressFromTopic(ethLog.getTopics().get(1)), toAddress);
+                
+                return toAddress;
+            }
+            
+        } catch (Exception e) {
+            log.warn("解析ERC-20 Transfer事件失败: {}", e.getMessage(), e);
+        }
+        
+        return null;
+    }
+
+    /**
+     * 从topic解析地址
+     */
+    private String parseAddressFromTopic(String topic) {
+        if (topic != null && topic.length() >= 42) {
+            String addressHex = topic.substring(topic.length() - 40);
+            return "0x" + addressHex;
+        }
+        return null;
     }
     
     /**

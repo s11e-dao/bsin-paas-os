@@ -11,6 +11,7 @@ import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.generated.Uint256;
+import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Hash;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.Sign;
@@ -118,7 +119,7 @@ public class BlockchainTransactionService {
         }
 
         // 6. 签名并发送交易
-        return signAndSendTransaction(chainIdentifier, rawTransaction, fromAddress);
+        return signAndSendTransaction(chainIdentifier, rawTransaction, fromAddress, "1");
     }
 
     /**
@@ -130,7 +131,7 @@ public class BlockchainTransactionService {
      * @param amount ETH 金额（Wei）
      * @return 交易哈希
      */
-    public String ethTransfer(String chainIdentifier, String fromAddress, String toAddress, BigInteger amount) throws Exception {
+    public String ethTransfer(String chainIdentifier, String fromAddress, String fromAddressPrivateKey, String toAddress, BigInteger amount) throws Exception {
         log.info("开始ETH转账，chain: {}, from: {}, to: {}, amount: {}",
                 chainIdentifier, fromAddress, toAddress, amount);
 
@@ -172,7 +173,7 @@ public class BlockchainTransactionService {
         }
 
         // 4. 签名并发送交易
-        return signAndSendTransaction(chainIdentifier, rawTransaction, fromAddress);
+        return signAndSendTransaction(chainIdentifier, rawTransaction, fromAddress, fromAddressPrivateKey);
     }
 
     /**
@@ -219,12 +220,55 @@ public class BlockchainTransactionService {
      * @return 交易收据
      */
     public TransactionReceipt getTransactionReceipt(String chainIdentifier, String txHash) throws Exception {
-        log.info("查询交易收据，chain: {}, txHash: {}", chainIdentifier, txHash);
+        log.info("🔍 查询交易收据，chain: {}, txHash: {}", chainIdentifier, txHash);
 
-        Web3j web3j = getWeb3jInstance(chainIdentifier);
+        try {
+            Web3j web3j = getWeb3jInstance(chainIdentifier);
+            
+            // 首先检查交易是否存在
+            EthTransaction ethTransaction = web3j.ethGetTransactionByHash(txHash).send();
+            if (ethTransaction.getTransaction().isEmpty()) {
+                log.warn("⚠️ 交易不存在于区块链网络中: chain={}, txHash={}", chainIdentifier, txHash);
+                return null;
+            }
+            log.debug("✅ 交易存在于区块链网络中: chain={}, txHash={}", chainIdentifier, txHash);
 
-        EthGetTransactionReceipt receipt = web3j.ethGetTransactionReceipt(txHash).send();
-        return receipt.getTransactionReceipt().orElse(null);
+            // 查询交易收据
+            EthGetTransactionReceipt receipt = web3j.ethGetTransactionReceipt(txHash).send();
+            TransactionReceipt transactionReceipt = receipt.getTransactionReceipt().orElse(null);
+            
+            if (transactionReceipt == null) {
+                log.info("⏳ 交易收据为空，可能原因:");
+                log.info("   1. 交易还在被打包中 (Pending)");
+                log.info("   2. 交易发送失败但区块链尚未记录");
+                log.info("   3. 网络延迟导致收据还未生成");
+                log.info("   建议: 等待几个区块确认后重试，chain={}, txHash={}", chainIdentifier, txHash);
+            } else {
+                log.info("✅ 成功获取交易收据: chain={}, txHash={}, status={}, blockNumber={}, gasUsed={}", 
+                        chainIdentifier, txHash, transactionReceipt.isStatusOK(), 
+                        transactionReceipt.getBlockNumber(), transactionReceipt.getGasUsed());
+            }
+            
+            return transactionReceipt;
+            
+        } catch (Exception e) {
+            log.error("❌ 查询交易收据异常: chain={}, txHash={}, error={}", chainIdentifier, txHash, e.getMessage(), e);
+            
+            // 提供更详细的错误诊断
+            if (e.getMessage() != null) {
+                String errorMsg = e.getMessage().toLowerCase();
+                if (errorMsg.contains("connection") || errorMsg.contains("timeout")) {
+                    log.error("🚨 诊断: 网络连接问题，请检查:");
+                    log.error("   1. RPC节点是否可用");
+                    log.error("   2. 网络连接是否正常");
+                    log.error("   3. 是否需要增加超时时间");
+                } else if (errorMsg.contains("invalid") && errorMsg.contains("hash")) {
+                    log.error("🚨 诊断: 交易哈希格式可能有问题: {}", txHash);
+                }
+            }
+            
+            throw e;
+        }
     }
 
     /**
@@ -241,6 +285,66 @@ public class BlockchainTransactionService {
         Web3j web3j = getWeb3jInstance(chainName);
 
         return web3j.ethGetTransactionReceipt(txHash).send().getTransactionReceipt().orElse(null);
+    }
+
+    /**
+     * 带重试机制的交易收据查询
+     * 
+     * @param chainIdentifier 链名称
+     * @param txHash 交易哈希
+     * @param maxRetries 最大重试次数
+     * @param retryIntervalMs 重试间隔（毫秒）
+     * @return 交易收据，如果多次重试后仍然为空则返回null
+     */
+    public TransactionReceipt getTransactionReceiptWithRetry(String chainIdentifier, String txHash, 
+                                                           int maxRetries, long retryIntervalMs) throws Exception {
+        log.info("🔄 开始带重试的交易收据查询: chain={}, txHash={}, maxRetries={}, interval={}ms", 
+                chainIdentifier, txHash, maxRetries, retryIntervalMs);
+
+        TransactionReceipt receipt = null;
+        Exception lastException = null;
+
+        for (int attempt = 0; attempt <= maxRetries; attempt++) {
+            try {
+                if (attempt > 0) {
+                    log.info("🔄 第 {} 次重试查询交易收据: chain={}, txHash={}", attempt, chainIdentifier, txHash);
+                    Thread.sleep(retryIntervalMs);
+                }
+
+                receipt = getTransactionReceipt(chainIdentifier, txHash);
+                
+                if (receipt != null) {
+                    log.info("✅ 成功获取交易收据 (第{}次尝试): chain={}, txHash={}, status={}, blockNumber={}", 
+                            attempt + 1, chainIdentifier, txHash, receipt.isStatusOK(), receipt.getBlockNumber());
+                    return receipt;
+                } else {
+                    log.info("⏳ 第{}次查询交易收据为空，继续重试: chain={}, txHash={}", 
+                            attempt + 1, chainIdentifier, txHash);
+                }
+
+            } catch (Exception e) {
+                lastException = e;
+                log.warn("❌ 第{}次查询交易收据异常: chain={}, txHash={}, error={}", 
+                        attempt + 1, chainIdentifier, txHash, e.getMessage());
+                
+                // 如果不是最后一次重试，继续
+                if (attempt < maxRetries) {
+                    continue;
+                }
+            }
+        }
+
+        // 所有重试都失败了
+        if (lastException != null) {
+            log.error("❌ 查询交易收据最终失败，已重试{}次: chain={}, txHash={}, lastError={}", 
+                    maxRetries + 1, chainIdentifier, txHash, lastException.getMessage());
+            throw lastException;
+        } else {
+            log.warn("⚠️ 查询交易收据多次重试后仍为空: chain={}, txHash={}, 已重试{}次", 
+                    chainIdentifier, txHash, maxRetries + 1);
+        }
+
+        return null;
     }
 
     /**
@@ -272,7 +376,7 @@ public class BlockchainTransactionService {
                             rawTransaction.getGasPrice(), boostedGasPrice);
                 }
                 
-                txHash = signAndSendTransaction(chainName, rawTransaction, fromAddress);
+                txHash = signAndSendTransaction(chainName, rawTransaction, fromAddress, fromAddress);
                 log.info("交易发送成功: chain={}, txHash={}, retry={}", chainName, txHash, retry);
                 break;
                 
@@ -308,26 +412,150 @@ public class BlockchainTransactionService {
     /**
      * 签名并发送交易
      */
-    private String signAndSendTransaction(String chainIdentifier, RawTransaction rawTransaction, String fromAddress) throws Exception {
-        // 1. 序列化交易
-        byte[] encodedRawTransaction = TransactionEncoder.encode(rawTransaction);
-        String unsignedHash = Numeric.toHexString(Hash.sha3(encodedRawTransaction));
+    private String signAndSendTransaction(String chainIdentifier, RawTransaction rawTransaction, String fromAddress, String fromAddressPrivateKey) throws Exception {
+        log.info("开始签名并发送交易 - chainIdentifier: {}, fromAddress: {}, privateKeyLength: {}", 
+                chainIdentifier, fromAddress, 
+                fromAddressPrivateKey != null ? fromAddressPrivateKey.length() : 0);
 
-        // 2. 签名交易 - 需要在实际业务模块中实现
-        String signedTransaction = signRawTransaction(rawTransaction, unsignedHash, fromAddress, "", "");
+        try {
+            // 1. 序列化交易
+            log.debug("Step 1: 序列化原始交易");
+            byte[] encodedRawTransaction = TransactionEncoder.encode(rawTransaction);
+            String unsignedHash = Numeric.toHexString(Hash.sha3(encodedRawTransaction));
+            log.debug("原始交易序列化完成 - unsignedHash: {}, encodedLength: {}", 
+                    unsignedHash, encodedRawTransaction.length);
 
-        // 3. 发送交易
-        Web3j web3j = getWeb3jInstance(chainIdentifier);
-        EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedTransaction).send();
-        
-        String transactionHash = ethSendTransaction.getTransactionHash();
-        if (transactionHash == null) {
-            log.error("交易发送失败: {}", ethSendTransaction.getError().getMessage());
-            throw new RuntimeException("交易发送失败: " + ethSendTransaction.getError().getMessage());
+            // 记录交易基本信息
+            String data = rawTransaction.getData();
+            
+            // 安全地获取Gas价格信息，处理EIP-1559交易
+            String gasPriceInfo;
+            try {
+                BigInteger gasPrice = rawTransaction.getGasPrice();
+                gasPriceInfo = "gasPrice=" + gasPrice;
+            } catch (UnsupportedOperationException e) {
+                // EIP-1559交易，RawTransaction.getGasPrice()会抛出异常
+                // 由于web3j的RawTransaction类可能没有直接提供getMaxFeePerGas()方法
+                // 我们通过检查异常来识别EIP-1559交易，并记录为EIP1559类型
+                log.debug("检测到EIP-1559交易类型，gasPrice方法不可用");
+                gasPriceInfo = "gasPrice=EIP1559_transaction";
+            } catch (Exception ex) {
+                // 其他异常情况
+                log.warn("获取gasPrice失败，交易类型未知: {}", ex.getMessage());
+                gasPriceInfo = "gasPrice=unknown_error";
+            }
+            
+            log.info("交易信息 - nonce: {}, {}, gasLimit: {}, to: {}, value: {}, dataLength: {}", 
+                    rawTransaction.getNonce(),
+                    gasPriceInfo,
+                    rawTransaction.getGasLimit(), 
+                    rawTransaction.getTo(),
+                    rawTransaction.getValue(),
+                    data != null ? data.length() : 0);
+
+            // 2. 签名交易 - 判断是根据私钥还是mpc签名
+            log.debug("Step 2: 开始签名交易");
+            long signStartTime = System.currentTimeMillis();
+            String signedTransaction = signRawTransaction(rawTransaction, unsignedHash, fromAddress, fromAddressPrivateKey, "");
+            long signEndTime = System.currentTimeMillis();
+            log.info("交易签名完成 - 耗时: {}ms, signedTransactionLength: {}", 
+                    (signEndTime - signStartTime), signedTransaction.length());
+
+            // 3. 发送交易
+            log.debug("Step 3: 开始发送交易到区块链");
+            Web3j web3j = getWeb3jInstance(chainIdentifier);
+            log.debug("获取Web3j连接实例成功 - chainIdentifier: {}", chainIdentifier);
+            
+            long sendStartTime = System.currentTimeMillis();
+            EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedTransaction).send();
+            long sendEndTime = System.currentTimeMillis();
+            log.info("交易发送到区块链完成 - 耗时: {}ms", (sendEndTime - sendStartTime));
+            
+            String transactionHash = ethSendTransaction.getTransactionHash();
+            if (transactionHash == null) {
+                String errorMessage = ethSendTransaction.getError() != null ? 
+                    ethSendTransaction.getError().getMessage() : "未知错误";
+                log.error("交易发送失败 - chainIdentifier: {}, fromAddress: {}, error: {}", 
+                        chainIdentifier, fromAddress, errorMessage);
+                throw new RuntimeException("交易发送失败: " + errorMessage);
+            }
+
+            log.info("交易签名并发送成功 - chainIdentifier: {}, fromAddress: {}, txHash: {}, 总耗时: {}ms", 
+                    chainIdentifier, fromAddress, transactionHash, (sendEndTime - signStartTime));
+            return transactionHash;
+
+        } catch (Exception e) {
+            log.error("签名并发送交易异常 - chainIdentifier: {}, fromAddress: {}, error: {}", 
+                    chainIdentifier, fromAddress, e.getMessage(), e);
+            throw e;
         }
+    }
 
-        log.info("交易发送成功，txHash: {}", transactionHash);
-        return transactionHash;
+    /**
+     * 签名原始交易
+     *
+     * @param rawTransaction 原始交易
+     * @param unsignedHash 未签名哈希
+     * @param address 地址
+     * @param fromAddressPrivateKey 私钥
+     * @param gatewayUrl 网关URL
+     * @return 签名后的交易
+     */
+    public String signRawTransaction(RawTransaction rawTransaction, String unsignedHash, String address,
+                                          String fromAddressPrivateKey, String gatewayUrl) throws Exception {
+        log.info("开始签名交易 - address: {}, unsignedHash: {}, gatewayUrl: {}", 
+                address, unsignedHash, gatewayUrl != null ? gatewayUrl : "null");
+
+        try {
+            // 验证私钥格式
+            log.debug("验证私钥格式");
+            if (fromAddressPrivateKey == null || fromAddressPrivateKey.isEmpty()) {
+                log.error("私钥为空 - address: {}", address);
+                throw new IllegalArgumentException("私钥不能为空");
+            }
+            log.debug("私钥格式验证通过 - 长度: {}", fromAddressPrivateKey.length());
+            
+            // 处理私钥格式（去掉0x前缀）
+            String privateKey = fromAddressPrivateKey.startsWith("0x") ? 
+                fromAddressPrivateKey.substring(2) : fromAddressPrivateKey;
+            log.debug("私钥格式处理完成 - 原始长度: {}, 处理后长度: {}", 
+                    fromAddressPrivateKey.length(), privateKey.length());
+            
+            // 根据私钥创建凭证
+            log.debug("开始创建Credentials凭证");
+            long credentialsStartTime = System.currentTimeMillis();
+            Credentials credentials = Credentials.create(privateKey);
+            long credentialsEndTime = System.currentTimeMillis();
+            log.debug("Credentials创建完成 - 耗时: {}ms, 地址: {}", 
+                    (credentialsEndTime - credentialsStartTime), credentials.getAddress());
+            
+            // 验证地址是否匹配
+            if (!credentials.getAddress().equalsIgnoreCase(address)) {
+                log.warn("地址不匹配警告 - 私钥对应地址: {}, 传入地址: {}, 但继续签名", 
+                    credentials.getAddress(), address);
+            } else {
+                log.debug("地址匹配验证通过 - address: {}", address);
+            }
+            
+            // 使用私钥签名交易
+            log.debug("开始使用私钥签名交易");
+            long signStartTime = System.currentTimeMillis();
+            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+            long signEndTime = System.currentTimeMillis();
+            log.debug("私钥签名完成 - 耗时: {}ms, 签名数据长度: {}", 
+                    (signEndTime - signStartTime), signedMessage.length);
+            
+            String signedTransaction = Numeric.toHexString(signedMessage);
+            log.info("签名交易完成 - address: {}, 耗时: {}ms, signedTxLength: {}, signedTxPrefix: {}", 
+                    address, (signEndTime - credentialsStartTime), 
+                    signedTransaction.length(), signedTransaction.substring(0, Math.min(20, signedTransaction.length())));
+            return signedTransaction;
+            
+        } catch (Exception e) {
+            log.error("签名交易失败 - address: {}, error: {}, type: {}", 
+                    address, e.getMessage(), e.getClass().getSimpleName(), e);
+            throw new Exception("签名交易失败: " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -340,7 +568,7 @@ public class BlockchainTransactionService {
      * @param gatewayUrl 网关URL
      * @return 签名后的交易
      */
-    public String signRawTransaction(RawTransaction rawTransaction, String unsignedHash, String address, 
+    public String signRawTransactionByMpc(RawTransaction rawTransaction, String unsignedHash, String address,
                                    String pubkey, String gatewayUrl) throws Exception {
         log.info("开始签名交易，address: {}", address);
 

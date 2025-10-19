@@ -5,6 +5,7 @@ import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,9 @@ public class RocketMQProducer {
 
     @Autowired
     public RocketMQTemplate mqTemplate;
+    
+    @Value("${rocketmq.producer.sendMessageTimeout:10000}")
+    private int sendMessageTimeout;
 
     /**
      * 发送同步消息
@@ -58,13 +62,16 @@ public class RocketMQProducer {
      * 延时消息等级分为18个：1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
      * @param topic      主题
      * @param body       消息
+     * @param callback   回调函数
      * @param delayLevel 延迟等级
      * @author tyg
      * @date 2021-03-24 14:55
      * @return void
      */
-    public void sendDelay(String topic, String body,SendCallback callback, Integer delayLevel){
-        mqTemplate.asyncSend(topic,MessageBuilder.withPayload(body).build(),callback,3000,delayLevel);
+    public void sendDelay(String topic, String body, SendCallback callback, Integer delayLevel){
+        // 使用配置的超时时间而不是硬编码3000
+        mqTemplate.asyncSend(topic, MessageBuilder.withPayload(body).build(), callback, sendMessageTimeout, delayLevel);
+        log.debug("发送延时消息: topic={}, delayLevel={}, timeout={}", topic, delayLevel, sendMessageTimeout);
     }
 
     /**

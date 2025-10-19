@@ -86,7 +86,12 @@ const routes = [
       {
         path: '/wallet/withdraw-setting',
         component: '@/pages/Wallet/WithdrawSetting/index',
-      },  
+      },
+      // 收款设置
+      {
+        path: '/wallet/receive-setting',
+        component: '@/pages/Wallet/ReceiveSetting/index',
+      },
       // ****************************收银************************
       {
         path: '/cashier',

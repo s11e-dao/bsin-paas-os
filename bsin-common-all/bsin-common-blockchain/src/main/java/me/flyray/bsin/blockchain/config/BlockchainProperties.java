@@ -56,7 +56,12 @@ public class BlockchainProperties {
         /**
          * Gas 费用账户地址
          */
-        private String address = "0x5d90A41098954fd90eb70805b3E9442AF9E91625";
+        private String address = "";
+
+        /**
+         * Gas 费用账户私钥
+         */
+        private String privateKey = "";
 
         /**
          * Gas 费用金额
