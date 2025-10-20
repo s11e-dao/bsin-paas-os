@@ -25,6 +25,11 @@ public enum MqEventCode {
      * 资金归集通知
      */
     CASH_CONCENTRATION_NOTIFY("cashConcentrationNotify", "资金归集"),
+
+    /**
+     * CRM用户充值通知
+     */
+    CRM_RECHARGE_NOTIFY("crmRechargeNotify", "CRM用户充值"),
     ;
 
     private String code;
