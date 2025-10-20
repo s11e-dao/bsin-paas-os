@@ -9,6 +9,7 @@ import me.flyray.bsin.context.BsinServiceContext;
 import me.flyray.bsin.domain.entity.BsinEvent;
 import me.flyray.bsin.domain.entity.BsinEventModel;
 import me.flyray.bsin.exception.BusinessException;
+import me.flyray.bsin.facade.engine.EventServiceEngine;
 import me.flyray.bsin.facade.service.EventService;
 import me.flyray.bsin.infrastructure.mapper.EventMapper;
 import me.flyray.bsin.infrastructure.mapper.EventModelMapper;
@@ -32,7 +33,7 @@ import static me.flyray.bsin.constants.ResponseCode.GRADE_NOT_EXISTS;
 @ShenyuDubboService(path = "/event", timeout = 6000)
 @ApiModule(value = "event")
 @Service
-public class EventServiceImpl implements EventService {
+public class EventServiceImpl implements EventService, EventServiceEngine {
 
     @Autowired
     private EventMapper eventMapper;
@@ -128,6 +129,13 @@ public class EventServiceImpl implements EventService {
         String serialNo = MapUtils.getString(requestMap, "serialNo");
         BsinEvent event = eventMapper.selectById(serialNo);
         return event;
+    }
+
+    @ApiDoc(desc = "execute")
+    @ShenyuDubboClient("/execute")
+    @Override
+    public void execute(Map<String, Object> params) {
+
     }
 
 }
