@@ -19,6 +19,18 @@ import java.util.Map;
 public interface CustomerService {
 
   /**
+   * 预授权接口获取临时token
+   * 用于获取短信验证码
+   */
+  public Map<String, Object> getPreAuthToken(Map<String, Object> requestMap);
+
+  /**
+   * 根据临时token
+   * 获取验证码
+   * */
+  public Map<String, Object> getSmsCode(Map<String, Object> requestMap);
+
+  /**
    *
    * 客户登录
    *
@@ -132,42 +144,6 @@ public interface CustomerService {
    * @return
    */
   public CustomerAccountVO getWalletInfo(Map<String, Object> requestMap);
-
-  /**
-   * 本月连续签到次数
-   * @param requestMap
-   * @return
-   */
-  public Map<String, Object> getContinuousSignCount(Map<String, Object> requestMap)
-      throws ParseException;
-
-  /**
-   * 获取累计签到数
-   * @param requestMap
-   * @return
-   */
-  public Map<String, Object> getSumSignCount(Map<String, Object> requestMap) throws ParseException;
-
-  /**
-   * 签到
-   * @param requestMap
-   * @return
-   */
-  public String sign(Map<String, Object> requestMap) throws ParseException;
-
-  /**
-   * 签到结果
-   * @param requestMap
-   * @return
-   */
-  public boolean getSignResult(Map<String, Object> requestMap) throws ParseException;
-
-  /**
-   * 签到信息
-   * @param requestMap
-   * @return
-   */
-  public Map<String, String> getSignInfo(Map<String, Object> requestMap) throws ParseException;
 
   /**
    * 获取客户邀请列表

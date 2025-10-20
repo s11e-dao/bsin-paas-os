@@ -554,4 +554,145 @@ public class BsinRedisProvider {
         batch.execute();
         return buckets.stream().map(RFuture::getNow).collect(Collectors.toList());
     }
+
+    // ==================== 位操作相关方法 ====================
+
+    /**
+     * 设置位值
+     *
+     * @param key       Redis键
+     * @param bitOffset 位偏移量
+     * @param value     位值
+     * @return 设置前的位值
+     */
+    public static boolean setBit(String key, long bitOffset, boolean value) {
+        RBitSet bitSet = CLIENT.getBitSet(key);
+        return bitSet.set(bitOffset, value);
+    }
+
+    /**
+     * 获取位值
+     *
+     * @param key       Redis键
+     * @param bitOffset 位偏移量
+     * @return 位值
+     */
+    public static boolean getBit(String key, long bitOffset) {
+        RBitSet bitSet = CLIENT.getBitSet(key);
+        return bitSet.get(bitOffset);
+    }
+
+    /**
+     * 统计位集合中值为1的位数
+     *
+     * @param key Redis键
+     * @return 值为1的位数
+     */
+    public static long bitCount(String key) {
+        RBitSet bitSet = CLIENT.getBitSet(key);
+        return bitSet.cardinality();
+    }
+
+    /**
+     * 统计位集合中指定范围内值为1的位数
+     *
+     * @param key   Redis键
+     * @param start 起始位置
+     * @param end   结束位置
+     * @return 指定范围内值为1的位数
+     */
+    public static long bitCount(String key, long start, long end) {
+        RBitSet bitSet = CLIENT.getBitSet(key);
+        // RBitSet的cardinality方法不支持范围参数，需要手动遍历
+        long count = 0;
+        for (long i = start; i <= end; i++) {
+            if (bitSet.get(i)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 获取位集合的长度
+     *
+     * @param key Redis键
+     * @return 位集合长度
+     */
+    public static long bitLength(String key) {
+        RBitSet bitSet = CLIENT.getBitSet(key);
+        return bitSet.length();
+    }
+
+    /**
+     * 清空位集合
+     *
+     * @param key Redis键
+     */
+    public static void clearBitSet(String key) {
+        RBitSet bitSet = CLIENT.getBitSet(key);
+        bitSet.clear();
+    }
+
+    /**
+     * 删除位集合
+     *
+     * @param key Redis键
+     * @return 是否删除成功
+     */
+    public static boolean deleteBitSet(String key) {
+        RBitSet bitSet = CLIENT.getBitSet(key);
+        return bitSet.delete();
+    }
+
+    /**
+     * 检查位集合是否存在
+     *
+     * @param key Redis键
+     * @return 是否存在
+     */
+    public static boolean existsBitSet(String key) {
+        RBitSet bitSet = CLIENT.getBitSet(key);
+        return bitSet.isExists();
+    }
+
+    /**
+     * 获取位集合对象（用于复杂操作）
+     *
+     * @param key Redis键
+     * @return RBitSet对象
+     */
+    public static RBitSet getBitSet(String key) {
+        return CLIENT.getBitSet(key);
+    }
+
+    /**
+     * 批量设置位值
+     *
+     * @param key        Redis键
+     * @param bitOffsets 位偏移量数组
+     * @param value      位值
+     */
+    public static void setBits(String key, long[] bitOffsets, boolean value) {
+        RBitSet bitSet = CLIENT.getBitSet(key);
+        for (long bitOffset : bitOffsets) {
+            bitSet.set(bitOffset, value);
+        }
+    }
+
+    /**
+     * 批量获取位值
+     *
+     * @param key        Redis键
+     * @param bitOffsets 位偏移量数组
+     * @return 位值数组
+     */
+    public static boolean[] getBits(String key, long[] bitOffsets) {
+        RBitSet bitSet = CLIENT.getBitSet(key);
+        boolean[] results = new boolean[bitOffsets.length];
+        for (int i = 0; i < bitOffsets.length; i++) {
+            results[i] = bitSet.get(bitOffsets[i]);
+        }
+        return results;
+    }
 }

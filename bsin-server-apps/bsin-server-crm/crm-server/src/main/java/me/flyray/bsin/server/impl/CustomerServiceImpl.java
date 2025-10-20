@@ -1,7 +1,6 @@
 package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
@@ -31,7 +30,7 @@ import me.flyray.bsin.server.biz.AccountBiz;
 import me.flyray.bsin.server.biz.CustomerBiz;
 import me.flyray.bsin.server.controller.WxPortalController;
 import me.flyray.bsin.server.utils.Pagination;
-import me.flyray.bsin.server.utils.SignUtils;
+import me.flyray.bsin.server.biz.SignUpBiz;
 import me.flyray.bsin.utils.StringUtils;
 import me.flyray.bsin.validate.AddGroup;
 import org.apache.commons.collections4.MapUtils;
@@ -48,9 +47,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.SignatureException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +84,7 @@ public class CustomerServiceImpl implements CustomerService {
   @Autowired private CustomerBiz customerBiz;
   @Autowired private MemberMapper memberMapper;
   @Autowired private AccountBiz customerAccountBiz;
-  @Autowired private SignUtils signUtils;
+  @Autowired private SignUpBiz signUtils;
   @Autowired private WxPortalController wxPortalController;
   @Autowired
   private MerchantConfigMapper merchantConfigMapper;
@@ -100,6 +96,32 @@ public class CustomerServiceImpl implements CustomerService {
 
   @DubboReference(version = "${dubbo.provider.version}")
   private UserService userService;
+
+  /**
+   * 一个IP地址只能获取一次临时授权码
+   * @param requestMap
+   * @return
+   */
+  @ApiDoc(desc = "getPreAuthToken")
+  @ShenyuDubboClient("/getPreAuthToken")
+  @Override
+  public Map<String, Object> getPreAuthToken(Map<String, Object> requestMap) {
+
+    return null;
+  }
+
+  /**
+   * 临时token获取验证码
+   * @param requestMap
+   * @return
+   */
+  @ApiDoc(desc = "getSmsCode")
+  @ShenyuDubboClient("/getSmsCode")
+  @Override
+  public Map<String, Object> getSmsCode(Map<String, Object> requestMap) {
+
+    return null;
+  }
 
   /**
    * @param requestMap
@@ -854,125 +876,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     return customerAccountVO;
-  }
-
-  /**
-   * 本月连续签到次数
-   *
-   * @param requestMap
-   * @return
-   */
-  @ApiDoc(desc = "getContinuousSignCount")
-  @ShenyuDubboClient("/getContinuousSignCount")
-  @Override
-  public Map<String, Object> getContinuousSignCount(Map<String, Object> requestMap)
-      throws ParseException {
-    String customerNo = (String) requestMap.get("customerNo");
-    if (customerNo == null) {
-      customerNo = LoginInfoContextHelper.getCustomerNo();
-    }
-    // 定义输出格式
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    // 将字符串转化为日期
-    Date date = sdf.parse((String) requestMap.get("date"));
-    Map<String, Object> responseMap = new HashMap<String, Object>();
-    responseMap.put("continuousSignCount", signUtils.getContinuousSignCount(customerNo, date));
-    return responseMap;
-  }
-
-  /**
-   * 获取累计签到数
-   *
-   * @param requestMap
-   * @return
-   */
-  @ApiDoc(desc = "getSumSignCount")
-  @ShenyuDubboClient("/getSumSignCount")
-  @Override
-  public Map<String, Object> getSumSignCount(Map<String, Object> requestMap) throws ParseException {
-    String customerNo = (String) requestMap.get("customerNo");
-    if (customerNo == null) {
-      customerNo = LoginInfoContextHelper.getCustomerNo();
-    }
-    // 定义输出格式
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    // 将字符串转化为日期
-    Date date = sdf.parse((String) requestMap.get("date"));
-    Map<String, Object> responseMap = new HashMap<String, Object>();
-    responseMap.put("continuousSignCount", signUtils.getSumSignCount(customerNo, date));
-    return responseMap;
-  }
-
-  /**
-   * 签到
-   *
-   * @return
-   */
-  @ApiDoc(desc = "sign")
-  @ShenyuDubboClient("/sign")
-  @Override
-  public String sign(Map<String, Object> requestMap) throws ParseException {
-    String customerNo = (String) requestMap.get("customerNo");
-    if (customerNo == null) {
-      customerNo = LoginInfoContextHelper.getCustomerNo();
-    }
-    // 定义输出格式
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    // 将字符串转化为日期
-    Date date = sdf.parse((String) requestMap.get("date"));
-    if (date == null) {
-      date = new DateTime();
-    }
-    return signUtils.sign(customerNo, date);
-  }
-
-  /**
-   * 签到结果
-   *
-   * @param requestMap
-   * @return
-   */
-  @ApiDoc(desc = "getSignResult")
-  @ShenyuDubboClient("/getSignResult")
-  @Override
-  public boolean getSignResult(Map<String, Object> requestMap) throws ParseException {
-    String customerNo = (String) requestMap.get("customerNo");
-    if (customerNo == null) {
-      customerNo = LoginInfoContextHelper.getCustomerNo();
-    }
-    // 定义输出格式
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    // 将字符串转化为日期
-    Date date = sdf.parse((String) requestMap.get("date"));
-    if (date == null) {
-      date = new DateTime();
-    }
-    return signUtils.checkSign(customerNo, date);
-  }
-
-  /**
-   * 签到信息
-   *
-   * @param requestMap
-   * @return
-   */
-  @ApiDoc(desc = "getSignInfo")
-  @ShenyuDubboClient("/getSignInfo")
-  @Override
-  public Map<String, String> getSignInfo(Map<String, Object> requestMap) throws ParseException {
-
-    String customerNo = (String) requestMap.get("customerNo");
-    if (customerNo == null) {
-      customerNo = LoginInfoContextHelper.getCustomerNo();
-    }
-    // 定义输出格式
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    // 将字符串转化为日期
-    Date date = sdf.parse((String) requestMap.get("date"));
-    if (date == null) {
-      date = new DateTime();
-    }
-    return signUtils.getSignInfo(customerNo, date);
   }
 
   @ApiDoc(desc = "getInviteeList")
