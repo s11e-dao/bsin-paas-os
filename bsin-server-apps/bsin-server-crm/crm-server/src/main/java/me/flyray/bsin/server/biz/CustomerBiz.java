@@ -27,6 +27,8 @@ import me.flyray.bsin.facade.service.EquityService;
 import me.flyray.bsin.infrastructure.mapper.CustomerBaseMapper;
 import me.flyray.bsin.utils.BsinSnowflake;
 import me.flyray.bsin.utils.UniqueInviteCodeGenerator;
+import me.flyray.bsin.redis.provider.BsinRedisProvider;
+import me.flyray.bsin.utils.StringUtils;
 
 import static me.flyray.bsin.constants.ResponseCode.INVITE_CODE_ERROR;
 
@@ -40,6 +42,9 @@ public class CustomerBiz {
 
   @Autowired private CustomerBaseMapper customerBaseMapper;
   @Autowired private CustomerIdentityMapper customerIdentityMapper;
+
+  @Value("${bsin.security.authentication-secretKey}")
+  private String authSecretKey;
 
   @Value("${bsin.jiujiu.tenantId}")
   private String jiujiuTenantId;
@@ -85,6 +90,17 @@ public class CustomerBiz {
    * @return
    */
   public CustomerBase register(CustomerBase customerBase, SysAgent sysAgent) {
+    return register(customerBase, sysAgent, null);
+  }
+
+  /**
+   *
+   * @param customerBase
+   * @param sysAgent
+   * @param smsCode 短信验证码
+   * @return
+   */
+  public CustomerBase register(CustomerBase customerBase, SysAgent sysAgent, String smsCode) {
     String inviteCode = customerBase.getInviteCode();
     // 客户用户名在商户下唯一，查询客户信息
     LambdaQueryWrapper<CustomerBase> warapper = new LambdaQueryWrapper<>();
@@ -126,14 +142,60 @@ public class CustomerBiz {
           throw new BusinessException(ResponseCode.PASSWORD_ERROR);
         }
       } else {
-        if (!ObjectUtils.isNotEmpty(customerBase.getSessionKey())) {
-          throw new BusinessException(ResponseCode.PASSWORD_ERROR);
+
+        if (AuthMethod.WECHAT.getType().equals(customerBase.getAuthMethod())){
+          if (!ObjectUtils.isNotEmpty(customerBase.getSessionKey())) {
+            throw new BusinessException(ResponseCode.PASSWORD_ERROR);
+          }
+          if (!customerBase.getSessionKey().equals(customerInfo.getSessionKey())) {
+            throw new BusinessException(ResponseCode.PASSWORD_ERROR);
+          }
         }
-        if (!customerBase.getSessionKey().equals(customerInfo.getSessionKey())) {
-          throw new BusinessException(ResponseCode.PASSWORD_ERROR);
+        if (AuthMethod.PHONE.getType().equals(customerBase.getAuthMethod())){
+          // 校验手机号验证码是否正确
+          if (StringUtils.isEmpty(smsCode)) {
+            throw new BusinessException(ResponseCode.SMS_VERIFY_CODE_NO_USE);
+          }
+          
+          // 从Redis缓存中获取验证码
+          String cacheKey = "sms:code:" + customerBase.getPhone();
+          String cachedCode = BsinRedisProvider.getCacheObject(cacheKey);
+          
+          if (StringUtils.isEmpty(cachedCode)) {
+            throw new BusinessException(ResponseCode.SMS_VERIFY_CODE_NO_USE);
+          }
+          
+          if (!smsCode.equals(cachedCode)) {
+            throw new BusinessException(ResponseCode.PASSWORD_ERROR);
+          }
+          
+          // 验证成功后删除验证码，防止重复使用
+          BsinRedisProvider.deleteObject(cacheKey);
         }
       }
       return customerInfo;
+    }
+
+    // 如果是手机号注册，需要验证短信验证码
+    if (AuthMethod.PHONE.getType().equals(customerBase.getAuthMethod())) {
+      if (StringUtils.isEmpty(smsCode)) {
+        throw new BusinessException(ResponseCode.SMS_VERIFY_CODE_NO_USE);
+      }
+      
+      // 从Redis缓存中获取验证码
+      String cacheKey = "sms:code:" + customerBase.getPhone();
+      String cachedCode = BsinRedisProvider.getCacheObject(cacheKey);
+      
+      if (StringUtils.isEmpty(cachedCode)) {
+        throw new BusinessException(ResponseCode.SMS_VERIFY_CODE_NO_USE);
+      }
+      
+      if (!smsCode.equals(cachedCode)) {
+        throw new BusinessException(ResponseCode.PASSWORD_ERROR);
+      }
+      
+      // 验证成功后删除验证码，防止重复使用
+      BsinRedisProvider.deleteObject(cacheKey);
     }
 
     customerBase.setCustomerNo(BsinSnowflake.getId());
@@ -188,5 +250,34 @@ public class CustomerBiz {
     return customerIdentityMapper.selectList(wrapper);
   }
 
+  /**
+   * 生成临时授权码
+   * @param crcValue CRC32计算值
+   * @param clientIp 客户端IP
+   * @param crcString CRC校验字符串
+   * @return 临时授权码
+   */
+  public String generatePreAuthToken(long crcValue, String clientIp, String crcString) {
+    // 使用CRC值、IP地址、CRC字符串和时间戳生成临时授权码
+    String timestamp = String.valueOf(System.currentTimeMillis());
+    String combinedString = crcValue + clientIp + crcString + timestamp + authSecretKey;
+
+    // 使用MD5生成最终的授权码
+    try {
+      java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+      byte[] hash = md.digest(combinedString.getBytes("UTF-8"));
+      StringBuilder hexString = new StringBuilder();
+      for (byte b : hash) {
+        String hex = Integer.toHexString(0xff & b);
+        if (hex.length() == 1) {
+          hexString.append('0');
+        }
+        hexString.append(hex);
+      }
+      return hexString.toString();
+    } catch (Exception e) {
+      throw new BusinessException(ResponseCode.FAIL);
+    }
+  }
 
 }

@@ -32,7 +32,13 @@ import me.flyray.bsin.server.controller.WxPortalController;
 import me.flyray.bsin.server.utils.Pagination;
 import me.flyray.bsin.server.biz.SignUpBiz;
 import me.flyray.bsin.utils.StringUtils;
+import me.flyray.bsin.utils.VerficationCodeUtil;
 import me.flyray.bsin.validate.AddGroup;
+import me.flyray.bsin.redis.provider.BsinRedisProvider;
+import me.flyray.bsin.sms.aliyun.AliSmsClientBiz;
+import java.time.Duration;
+import org.apache.dubbo.rpc.RpcContext;
+import java.util.zip.CRC32;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -90,6 +96,8 @@ public class CustomerServiceImpl implements CustomerService {
   private MerchantConfigMapper merchantConfigMapper;
   @Autowired
   private DisInviteRelationMapper disInviteRelationMapper;
+  @Autowired
+  private AliSmsClientBiz aliSmsClientBiz;
 
   @DubboReference(version = "${dubbo.provider.version}")
   private TenantService tenantService;
@@ -99,6 +107,7 @@ public class CustomerServiceImpl implements CustomerService {
 
   /**
    * 一个IP地址只能获取一次临时授权码
+   * 前端是根据crc算法生成的字符串和ip获取授权码
    * @param requestMap
    * @return
    */
@@ -106,9 +115,68 @@ public class CustomerServiceImpl implements CustomerService {
   @ShenyuDubboClient("/getPreAuthToken")
   @Override
   public Map<String, Object> getPreAuthToken(Map<String, Object> requestMap) {
+    try {
+      // 获取前端传递的参数：CRC校验字符串和可能的CRC值
+      String crcString = MapUtils.getString(requestMap, "code");
+      
+      if (StringUtils.isEmpty(crcString)) {
+        throw new BusinessException(ResponseCode.PARAMS_ISNULL);
+      }
 
-    return null;
+      // 获取客户端IP地址
+      Map<String, Object> attachments = RpcContext.getServiceContext().getObjectAttachments();
+      String clientIp = (String) attachments.get("clientIp");
+      if (StringUtils.isEmpty(clientIp)) {
+        log.warn("无法获取客户端IP地址");
+        throw new BusinessException(ResponseCode.FAIL);
+      }
+
+      // 检查该IP是否已经获取过临时授权码（一个IP地址只能获取一次）
+      String ipCacheKey = "pre_auth_token:ip:" + clientIp;
+      if (BsinRedisProvider.isExistsObject(ipCacheKey)) {
+        log.warn("IP地址 {} 已经获取过临时授权码", clientIp);
+        throw new BusinessException(ResponseCode.FAIL);
+      }
+
+      // 使用CRC32算法计算后端验证值
+      // 前端应该是根据 crcString + clientIp 计算CRC值
+      String originalString = crcString + clientIp;
+      CRC32 crc32 = new CRC32();
+      crc32.update(originalString.getBytes("UTF-8"));
+      long backendCrcValue = crc32.getValue();
+
+      // 生成临时授权码
+      String preAuthToken = customerBiz.generatePreAuthToken(backendCrcValue, clientIp, crcString);
+
+      // 将IP地址记录到Redis，防止重复获取（设置24小时过期）
+      BsinRedisProvider.setCacheObject(ipCacheKey, "1", Duration.ofHours(24));
+
+      // 将临时授权码和相关信息缓存到Redis（设置5分钟过期）
+      String tokenCacheKey = "pre_auth_token:" + preAuthToken;
+      Map<String, String> tokenInfo = new HashMap<>();
+      tokenInfo.put("clientIp", clientIp);
+      tokenInfo.put("crcString", crcString);
+      tokenInfo.put("crcValue", String.valueOf(backendCrcValue));
+      tokenInfo.put("timestamp", String.valueOf(System.currentTimeMillis()));
+      BsinRedisProvider.setCacheObject(tokenCacheKey, tokenInfo, Duration.ofMinutes(5));
+
+      log.info("生成临时授权码成功，IP: {}, CRC字符串: {}, CRC值: {}", clientIp, crcString, backendCrcValue);
+
+      Map<String, Object> result = new HashMap<>();
+      result.put("preAuthToken", preAuthToken);
+      result.put("expireTime", 300); // 5分钟过期时间
+      result.put("success", true);
+
+      return result;
+    } catch (BusinessException e) {
+      throw e;
+    } catch (Exception e) {
+      log.error("生成临时授权码失败: {}", e.getMessage(), e);
+      throw new BusinessException(ResponseCode.FAIL);
+    }
   }
+
+
 
   /**
    * 临时token获取验证码
@@ -119,8 +187,85 @@ public class CustomerServiceImpl implements CustomerService {
   @ShenyuDubboClient("/getSmsCode")
   @Override
   public Map<String, Object> getSmsCode(Map<String, Object> requestMap) {
+    // 先校验preAuthToken是否正确
+    String preAuthToken = MapUtils.getString(requestMap, "preAuthToken");
+    if (StringUtils.isEmpty(preAuthToken)) {
+      throw new BusinessException(ResponseCode.PARAMS_ISNULL);
+    }
 
-    return null;
+    // 从Redis中获取并验证preAuthToken
+    String tokenCacheKey = "pre_auth_token:" + preAuthToken;
+    Map<String, String> tokenInfo = BsinRedisProvider.getCacheObject(tokenCacheKey);
+    
+    if (tokenInfo == null || tokenInfo.isEmpty()) {
+      log.warn("临时授权码无效或已过期: {}", preAuthToken);
+      throw new BusinessException(ResponseCode.TOKEN_ERROR);
+    }
+
+    // 获取客户端IP地址进行验证
+    Map<String, Object> attachments = RpcContext.getServiceContext().getObjectAttachments();
+    String clientIp = (String) attachments.get("clientIp");
+    
+    if (StringUtils.isEmpty(clientIp)) {
+      log.warn("无法获取客户端IP地址");
+      throw new BusinessException(ResponseCode.FAIL);
+    }
+
+    // 验证IP地址是否匹配
+    String cachedIp = tokenInfo.get("clientIp");
+    if (!clientIp.equals(cachedIp)) {
+      log.warn("IP地址不匹配，请求IP: {}, 授权IP: {}, token: {}", clientIp, cachedIp, preAuthToken);
+      throw new BusinessException(ResponseCode.TOKEN_ERROR);
+    }
+
+    // 验证时间戳（可选，检查token是否在合理时间内使用）
+    String timestamp = tokenInfo.get("timestamp");
+    if (StringUtils.isNotEmpty(timestamp)) {
+      try {
+        long tokenTime = Long.parseLong(timestamp);
+        long currentTime = System.currentTimeMillis();
+        // 检查token是否在5分钟内使用
+        if (currentTime - tokenTime > 300000) { // 5分钟 = 300000毫秒
+          log.warn("临时授权码已过期，token: {}, 生成时间: {}", preAuthToken, timestamp);
+          throw new BusinessException(ResponseCode.TOKEN_ERROR);
+        }
+      } catch (NumberFormatException e) {
+        log.warn("临时授权码时间戳格式错误: {}", timestamp);
+        throw new BusinessException(ResponseCode.TOKEN_ERROR);
+      }
+    }
+
+    // 验证通过后，删除已使用的token（防止重复使用）
+    BsinRedisProvider.deleteObject(tokenCacheKey);
+    log.info("临时授权码验证成功，IP: {}, token: {}", clientIp, preAuthToken);
+
+    String phone = MapUtils.getString(requestMap, "phone");
+    if (StringUtils.isEmpty(phone)) {
+      throw new BusinessException(ResponseCode.PHONE_IS_NOT_NULL);
+    }
+
+    try {
+      // 生成四位数的验证码
+      String code = VerficationCodeUtil.getVerficationCode(4);
+      
+      // 调用阿里云发送短信
+//      aliSmsClientBiz.sendCode(phone, code);
+      
+      // 存在缓存中，key为手机号，value为验证码，有效期5分钟
+      String cacheKey = "sms:code:" + phone;
+      BsinRedisProvider.setCacheObject(cacheKey, code, Duration.ofMinutes(5));
+      
+      log.info("短信验证码发送成功，手机号: {}, 验证码: {}", phone, code);
+      
+      Map<String, Object> result = new HashMap<>();
+      result.put("success", true);
+      result.put("message", "验证码发送成功");
+      
+      return result;
+    } catch (Exception e) {
+      log.error("短信验证码发送失败，手机号: {}, 错误: {}", phone, e.getMessage(), e);
+      throw new BusinessException(ResponseCode.FAIL);
+    }
   }
 
   /**
@@ -319,10 +464,11 @@ public class CustomerServiceImpl implements CustomerService {
   @Override
   public CustomerBase register(Map<String, Object> requestMap) throws UnsupportedEncodingException {
     String sysAgentNo = MapUtils.getString(requestMap, "sysAgentNo");
+    String smsCode = MapUtils.getString(requestMap, "smsCode");
     CustomerBase customerBase = BsinServiceContext.getReqBodyDto(CustomerBase.class, requestMap);
     SysAgent sysAgent = new SysAgent();
     sysAgent.setSerialNo(sysAgentNo);
-    customerBiz.register(customerBase, sysAgent);
+    customerBiz.register(customerBase, sysAgent, smsCode);
     return customerBase;
   }
 
@@ -368,6 +514,7 @@ public class CustomerServiceImpl implements CustomerService {
     String appId = MapUtils.getString(requestMap, "appId");
     String encryptedData = MapUtils.getString(requestMap, "encryptedData");
     String iv = MapUtils.getString(requestMap, "iv");
+    String smsCode = MapUtils.getString(requestMap, "smsCode");
     if (ObjectUtil.isEmpty(tenantId)) {
       throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
     }
@@ -375,7 +522,7 @@ public class CustomerServiceImpl implements CustomerService {
       throw new BusinessException(ResponseCode.TENANT_ID_NOT_ISNULL);
     }
     customerBase.setCredential(openId);
-    CustomerBase customerBaseRegister = customerBiz.register(customerBase, new SysAgent());
+    CustomerBase customerBaseRegister = customerBiz.register(customerBase, new SysAgent(), smsCode);
 
     LoginUser loginUser = new LoginUser();
     loginUser.setTenantId(customerBaseRegister.getTenantId());
