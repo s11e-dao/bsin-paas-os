@@ -258,9 +258,9 @@ public class CustomerBiz {
    * @return 临时授权码
    */
   public String generatePreAuthToken(long crcValue, String clientIp, String crcString) {
-    // 使用CRC值、IP地址、CRC字符串和时间戳生成临时授权码
+    // 使用CRC值、CRC字符串和时间戳生成临时授权码（去掉IP依赖）
     String timestamp = String.valueOf(System.currentTimeMillis());
-    String combinedString = crcValue + clientIp + crcString + timestamp + authSecretKey;
+    String combinedString = crcValue + (clientIp != null ? clientIp : "") + crcString + timestamp + authSecretKey;
 
     // 使用MD5生成最终的授权码
     try {
