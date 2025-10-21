@@ -2,8 +2,13 @@ package me.flyray.bsin.server.impl;
 
 import cn.hutool.core.date.DateTime;
 import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.domain.entity.Account;
+import me.flyray.bsin.domain.enums.AccountCategory;
+import me.flyray.bsin.domain.enums.CcyType;
+import me.flyray.bsin.facade.service.AccountService;
 import me.flyray.bsin.facade.service.SignUpService;
 import me.flyray.bsin.security.contex.LoginInfoContextHelper;
+import me.flyray.bsin.security.domain.LoginUser;
 import me.flyray.bsin.server.biz.SignUpBiz;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.shenyu.client.apache.dubbo.annotation.ShenyuDubboService;
@@ -26,6 +31,8 @@ public class SignUpServiceImpl implements SignUpService {
 
     @Autowired
     private SignUpBiz signUpBiz;
+    @Autowired
+    private AccountService accountService;
 
     /**
      * 本月连续签到次数
@@ -120,6 +127,7 @@ public class SignUpServiceImpl implements SignUpService {
     @ShenyuDubboClient("/sign")
     @Override
     public String sign(Map<String, Object> requestMap) throws ParseException {
+        LoginUser currentUser = LoginInfoContextHelper.getLoginUser();
         try {
             String customerNo = (String) requestMap.get("customerNo");
             if (customerNo == null) {
@@ -145,7 +153,7 @@ public class SignUpServiceImpl implements SignUpService {
             }
             
             // 执行签到
-            String result = signUpBiz.sign(customerNo, date);
+            String result = signUpBiz.sign(currentUser.getTenantId(), customerNo, date);
             log.info("用户 {} 签到成功，日期: {}", customerNo, date);
             return result;
         } catch (Exception e) {
@@ -156,7 +164,6 @@ public class SignUpServiceImpl implements SignUpService {
 
     /**
      * 签到结果
-     *
      * @param requestMap
      * @return
      */
@@ -201,6 +208,7 @@ public class SignUpServiceImpl implements SignUpService {
     @ShenyuDubboClient("/getSignInfo")
     @Override
     public Map<String, String> getSignInfo(Map<String, Object> requestMap) throws ParseException {
+        LoginUser currentUser = LoginInfoContextHelper.getLoginUser();
         try {
             String customerNo = (String) requestMap.get("customerNo");
             if (customerNo == null) {
@@ -243,7 +251,21 @@ public class SignUpServiceImpl implements SignUpService {
             if (continuousDays != null && continuousDays >= 7) {
                 bonusPoints = Math.floorDiv(continuousDays, 7) * 2000;
             }
-            signInfo.put("totalPoints", String.valueOf(basePoints + bonusPoints));
+
+            // 查询积分账户
+            Map<String, Object> requestAccountMap = new HashMap<>();
+            requestAccountMap.put("tenantId", currentUser.getTenantId());
+            requestAccountMap.put("bizRoleTypeNo", currentUser.getBizRoleTypeNo());
+            requestAccountMap.put("category", AccountCategory.CONTRIBUTION_VALUE.getCode());
+            requestAccountMap.put("ccy", CcyType.CNY.getCode());
+            Account account = accountService.getDetail(requestAccountMap);
+
+            // 防止空指针异常
+            String totalPoints = "0";
+            if (account != null && account.getBalance() != null) {
+                totalPoints = account.getBalance().toString();
+            }
+            signInfo.put("totalPoints", totalPoints);
             signInfo.put("basePoints", String.valueOf(basePoints));
             signInfo.put("bonusPoints", String.valueOf(bonusPoints));
             

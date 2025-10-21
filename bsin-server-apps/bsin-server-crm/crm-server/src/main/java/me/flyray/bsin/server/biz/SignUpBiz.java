@@ -2,13 +2,17 @@ package me.flyray.bsin.server.biz;
 
 import cn.hutool.core.date.DateUtil;
 import lombok.extern.slf4j.Slf4j;
+import me.flyray.bsin.facade.engine.EventServiceEngine;
 import me.flyray.bsin.redis.provider.BsinRedisProvider;
+import me.flyray.bsin.security.enums.BizRoleType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -16,6 +20,8 @@ import java.util.Map;
 @Component
 public class SignUpBiz {
 
+  @Autowired
+  private EventServiceEngine eventServiceEngine;
 
   /**
    * 签到
@@ -24,12 +30,8 @@ public class SignUpBiz {
    * @param date 日期
    * @return
    */
-  public String sign(String customerNo, Date date) {
+  public String sign(String tenantId, String customerNo, Date date) {
     try {
-      // 参数验证
-      if (customerNo == null || customerNo.trim().isEmpty()) {
-        throw new IllegalArgumentException("用户编号不能为空");
-      }
       if (date == null) {
         throw new IllegalArgumentException("日期不能为空");
       }
@@ -58,6 +60,15 @@ public class SignUpBiz {
         BsinRedisProvider.expire(key, expireTimeSeconds);
         log.debug("设置签到数据过期时间: {}秒", expireTimeSeconds);
       }
+
+      // 调用事件引擎进行签到积分入账
+      // 调用事件引擎
+      Map<String, Object> executeEvent = new HashMap<>();
+      executeEvent.put("eventCode", "signUp");
+      executeEvent.put("tenantId", tenantId);
+      executeEvent.put("bizRoleType", BizRoleType.CUSTOMER.getCode());
+      executeEvent.put("bizRoleTypeNo", customerNo);
+      eventServiceEngine.execute(executeEvent);
       
       log.info("用户 {} 签到成功，日期: {}, 位位置: {}", customerNo, DateUtil.format(date, "yyyy-MM-dd"), bitPosition);
       return "签到成功";
