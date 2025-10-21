@@ -7,9 +7,11 @@ import me.flyray.bsin.domain.entity.CustomerIdentity;
 import me.flyray.bsin.domain.entity.DisInviteRelation;
 import me.flyray.bsin.domain.entity.SysAgent;
 import me.flyray.bsin.enums.AuthMethod;
+import me.flyray.bsin.facade.engine.EventServiceEngine;
 import me.flyray.bsin.infrastructure.mapper.CustomerIdentityMapper;
 import me.flyray.bsin.security.enums.BizRoleType;
 import me.flyray.bsin.domain.enums.CustomerType;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import me.flyray.bsin.constants.ResponseCode;
 import me.flyray.bsin.domain.entity.CustomerBase;
@@ -57,6 +61,8 @@ public class CustomerBiz {
 
   @Autowired
   private InviteRelationBiz inviteRelationBiz;
+  @Autowired
+  private EventServiceEngine eventServiceEngine;
 
   public CustomerBase login(CustomerBase customerBase) {
     // 客户用户名唯一，查询客户信息
@@ -207,6 +213,14 @@ public class CustomerBiz {
     //    }
     customerBase.setInviteCode(UniqueInviteCodeGenerator.generateUniqueInviteCode(6));
     customerBaseMapper.insert(customerBase);
+
+    // 调用事件引擎
+    Map<String, Object> executeEvent = new HashMap<>();
+    executeEvent.put("eventCode", "register");
+    executeEvent.put("tenantId", customerBase.getTenantId());
+    executeEvent.put("bizRoleType", BizRoleType.CUSTOMER.getCode());
+    executeEvent.put("bizRoleTypeNo", customerBase.getCustomerNo());
+    eventServiceEngine.execute(executeEvent);
 
     // 身份表: crm_customer_identity插入数据
     CustomerIdentity customerIdentity = new CustomerIdentity();

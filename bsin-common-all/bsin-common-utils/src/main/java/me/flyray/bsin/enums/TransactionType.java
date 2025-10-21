@@ -21,7 +21,8 @@ public enum TransactionType {
 
     INCOME("7","收入"),
 
-    REDEEM("8","赎回");
+    REDEEM("8","赎回"),
+    REWARD("9","奖励");
 
     // 状态码
     private String code;

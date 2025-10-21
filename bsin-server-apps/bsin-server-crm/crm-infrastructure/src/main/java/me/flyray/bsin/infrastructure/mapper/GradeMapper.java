@@ -13,7 +13,6 @@ import me.flyray.bsin.domain.entity.Grade;
 * @createDate 2023-09-19 23:06:17
 * @Entity me.flyray.bsin.domain.Grade
 */
-
 @Repository
 @Mapper
 public interface GradeMapper extends BaseMapper<Grade> {
