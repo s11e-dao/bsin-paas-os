@@ -17,6 +17,7 @@
             <result property="type" column="type" jdbcType="TINYINT"/>
             <result property="typeNo" column="type_no" jdbcType="VARCHAR"/>
             <result property="totalAmount" column="total_amount" jdbcType="DECIMAL"/>
+            <result property="valueType" column="value_type" jdbcType="INTEGER"/>
             <result property="value" column="value" jdbcType="INTEGER"/>
             <result property="equityRelationshipNo" column="equity_relationship_no" jdbcType="VARCHAR"/>
             <result property="overFlag" column="over_flag" jdbcType="VARCHAR"/>
@@ -27,7 +28,7 @@
         serial_no,create_by,create_time,
         update_by,update_time,del_flag,
         tenant_id,merchant_no,name,
-        type,type_no,total_amount,
+        type,type_no,total_amount,value_type,
         value,over_flag,remark
     </sql>
 
@@ -36,7 +37,7 @@
             e.serial_no,e.create_by,e.create_time,
             e.update_by,e.update_time,e.del_flag,
             e.tenant_id,e.merchant_no,e.name,
-            e.type,e.type_no,e.total_amount,
+            e.type,e.type_no,e.total_amount,e.value_type,
             e.value,e.over_flag,e.remark,
             er.serial_no as equity_relationship_no,
             er.equity_no,

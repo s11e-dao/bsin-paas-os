@@ -85,6 +85,11 @@ public class Equity implements Serializable {
     private BigDecimal totalAmount;
 
     /**
+     * FIXED: 固定数量  RANDOM: 随机区间 FORMULA: 公式计算 PERCENT: 按比例
+     */
+    private String valueType;
+
+    /**
      * 满减金额、赠送金额、赠送数量 折扣值
      */
     private Integer value;
